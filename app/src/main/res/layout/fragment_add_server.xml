@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddServerFragment">
+
+
+    <ImageView
+        android:id="@+id/image_banner"
+        android:layout_width="268dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="64dp"
+        android:contentDescription="@string/jellyfin_banner"
+        android:src="@drawable/ic_banner_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_banner">
+
+        <TextView
+            android:id="@+id/text_add_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/add_server" />
+
+        <EditText
+            android:id="@+id/edit_text_server_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/edit_text_server_address_hint"
+            android:autofillHints="" />
+
+        <Button
+            android:id="@+id/button_add_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_connect" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
