@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="text_giant_header">
+        <item name="android:textSize">48sp</item>
+        <item name="android:textFontWeight" tools:targetApi="p">700</item>
+    </style>
+    <style name="text_title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+    </style>
+    <style name="text_header">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+    </style>
+    <style name="text_regular">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="text_subtitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+    </style>
+    <style name="text_metadata">
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>
