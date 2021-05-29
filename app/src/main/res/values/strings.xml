@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Jellyfin</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
     <string name="edit_text_server_address_hint">Server address</string>
