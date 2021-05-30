@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:autofillHints="serverAddress"
+            android:autofillHints="no"
             android:background="@drawable/edit_text_background"
             android:hint="@string/edit_text_server_address_hint"
             android:inputType="text"
@@ -54,7 +54,7 @@
             android:textColorHint="@color/neutral_400" />
 
         <Button
-            android:id="@+id/button_add_server"
+            android:id="@+id/button_connect"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/button_setup_background"
