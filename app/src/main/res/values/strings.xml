@@ -3,9 +3,11 @@
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
     <string name="login">Login</string>
+    <string name="select_server">Select server</string>
     <string name="edit_text_server_address_hint">Server address</string>
     <string name="edit_text_username_hint">Username</string>
     <string name="edit_text_password_hint">Password</string>
     <string name="button_connect">Connect</string>
     <string name="button_login">Login</string>
+    <string name="server_icon">Server icon</string>
 </resources>

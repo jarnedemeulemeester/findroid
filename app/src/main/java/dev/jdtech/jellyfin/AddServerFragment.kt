@@ -15,14 +15,13 @@ class AddServerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddServerBinding.inflate(inflater, container, false)
-        val view = binding.root
 
         binding.buttonConnect.setOnClickListener { v: View ->
             v.findNavController().navigate(R.id.action_addServerFragment_to_loginFragment)
         }
 
-        return view
+        return binding.root
     }
 }

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="dev.jdtech.jellyfin.serverselect.ServerSelectViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -40,27 +46,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:text="@string/add_server"
+                android:text="@string/select_server"
                 android:textColor="?android:textColorPrimary" />
 
-            <EditText
-                android:id="@+id/edit_text_server_address"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/servers_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:autofillHints="no"
-                android:background="@drawable/edit_text_background"
-                android:hint="@string/edit_text_server_address_hint"
-                android:inputType="text"
-                android:padding="10dp"
-                android:textAppearance="@style/text_subtitle"
-                android:textColorHint="@color/neutral_400" />
-
-            <Button
-                android:id="@+id/button_connect"
-                style="@style/setup_button"
-                android:layout_width="match_parent"
-                android:text="@string/button_connect" />
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_banner"
+                app:layout_constraintVertical_bias="0.36"
+                app:listData="@{viewModel.servers}"
+                app:spanCount="3"
+                tools:itemCount="4"
+                tools:listitem="@layout/server_item" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/button_add_server"
+            style="@style/setup_button"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/add_server"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_content" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

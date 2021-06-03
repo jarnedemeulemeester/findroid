@@ -68,8 +68,7 @@
         <Button
             android:id="@+id/button_login"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/button_setup_background"
+            style="@style/setup_button"
             android:text="@string/button_login" />
     </LinearLayout>
 
