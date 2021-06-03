@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginFragment">
+
+    <ImageView
+        android:id="@+id/image_banner"
+        android:layout_width="268dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="64dp"
+        android:contentDescription="@string/jellyfin_banner"
+        android:src="@drawable/ic_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_banner"
+        app:layout_constraintVertical_bias="0.36">
+
+        <TextView
+            android:id="@+id/text_login"
+            style="@style/text_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/login"
+            android:textColor="?android:textColorPrimary" />
+
+        <EditText
+            android:id="@+id/edit_text_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:autofillHints="username"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/edit_text_username_hint"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textAppearance="@style/text_subtitle"
+            android:textColorHint="@color/neutral_400" />
+
+        <EditText
+            android:id="@+id/edit_text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:autofillHints="password"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/edit_text_password_hint"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textAppearance="@style/text_subtitle"
+            android:textColorHint="@color/neutral_400" />
+
+        <Button
+            android:id="@+id/button_login"
+            android:layout_width="match_parent"
+            style="@style/setup_button"
+            android:text="@string/button_login" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

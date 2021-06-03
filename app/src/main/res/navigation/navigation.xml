@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/serverSelectFragment">
+    <fragment
+        android:id="@+id/addServerFragment"
+        android:name="dev.jdtech.jellyfin.AddServerFragment"
+        android:label="fragment_add_server"
+        tools:layout="@layout/fragment_add_server" >
+        <action
+            android:id="@+id/action_addServerFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dev.jdtech.jellyfin.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/serverSelectFragment"
+        android:name="dev.jdtech.jellyfin.serverselect.ServerSelectFragment"
+        android:label="ServerSelectFragment" >
+        <action
+            android:id="@+id/action_serverSelectFragment_to_addServerFragment"
+            app:destination="@id/addServerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+</navigation>

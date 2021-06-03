@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="dev.jdtech.jellyfin.serverselect.ServerSelectViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AddServerFragment">
+
+
+        <ImageView
+            android:id="@+id/image_banner"
+            android:layout_width="268dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="64dp"
+            android:contentDescription="@string/jellyfin_banner"
+            android:src="@drawable/ic_banner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_banner"
+            app:layout_constraintVertical_bias="0.36">
+
+            <TextView
+                android:id="@+id/text_add_server"
+                style="@style/text_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@string/select_server"
+                android:textColor="?android:textColorPrimary" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/servers_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_banner"
+                app:layout_constraintVertical_bias="0.36"
+                app:listData="@{viewModel.servers}"
+                app:spanCount="3"
+                tools:itemCount="4"
+                tools:listitem="@layout/server_item" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_add_server"
+            style="@style/setup_button"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/add_server"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_content" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
