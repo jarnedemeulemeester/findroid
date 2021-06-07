@@ -1,9 +1,15 @@
 package dev.jdtech.jellyfin.database
 
-import java.util.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "servers")
 data class Server(
-    val id: UUID,
+    @PrimaryKey
+    val id: String,
     val name: String,
-    val address: String
+    val address: String,
+    val userId: String,
+    val userName: String,
+    val accessToken: String,
 )
