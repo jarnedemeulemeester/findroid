@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 
 
@@ -18,7 +19,12 @@ class ServerSelectFragment : Fragment() {
     ): View? {
         val binding = FragmentServerSelectBinding.inflate(inflater)
 
-        val viewModel = ViewModelProvider(this).get(ServerSelectViewModel::class.java)
+        val application = requireNotNull(this.activity).application
+
+        val dataSource = ServerDatabase.getInstance(application).serverDatabaseDao
+
+        val viewModelFactory = ServerSelectViewModelFactory(dataSource)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(ServerSelectViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
