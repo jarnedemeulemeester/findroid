@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
+import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 
 
 class ServerSelectFragment : Fragment() {
@@ -32,7 +33,7 @@ class ServerSelectFragment : Fragment() {
         binding.serversRecyclerView.adapter = ServerGridAdapter(ServerGridAdapter.OnClickListener { server ->
             Toast.makeText(application, "You selected server ${server.name}", Toast.LENGTH_SHORT).show()
         }, ServerGridAdapter.OnLongClickListener { server ->
-            viewModel.deleteServer(server)
+            DeleteServerDialogFragment(viewModel, server).show(parentFragmentManager, "deleteServer")
             true
         })
 

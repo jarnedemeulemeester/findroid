@@ -10,4 +10,8 @@
     <string name="button_connect">Connect</string>
     <string name="button_login">Login</string>
     <string name="server_icon">Server icon</string>
+    <string name="remove_server">Remove server</string>
+    <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
 </resources>
