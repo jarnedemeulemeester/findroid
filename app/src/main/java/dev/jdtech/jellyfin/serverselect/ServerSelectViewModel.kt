@@ -8,6 +8,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class ServerSelectViewModel(
     val database: ServerDatabaseDao,
@@ -17,11 +18,16 @@ class ServerSelectViewModel(
         get() = _servers
 
     init {
-        val demoServer = Server("0", "Demo", "https://demo.jellyfin.org", "0", "demo", "")
+        val demoServer = Server(UUID.randomUUID().toString(), "Demo", "https://demo.jellyfin.org", "0", "demo", "")
 
         viewModelScope.launch {
-            clearDatabase()
             insert(demoServer)
+        }
+    }
+
+    fun deleteServer(server: Server) {
+        viewModelScope.launch {
+            delete(server)
         }
     }
 

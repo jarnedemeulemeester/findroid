@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
@@ -16,7 +17,7 @@ class ServerSelectFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentServerSelectBinding.inflate(inflater)
 
         val application = requireNotNull(this.activity).application
@@ -28,7 +29,11 @@ class ServerSelectFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        binding.serversRecyclerView.adapter = ServerGridAdapter(ServerGridAdapter.OnClickListener {
+        binding.serversRecyclerView.adapter = ServerGridAdapter(ServerGridAdapter.OnClickListener { server ->
+            Toast.makeText(application, "You selected server ${server.name}", Toast.LENGTH_SHORT).show()
+        }, ServerGridAdapter.OnLongClickListener { server ->
+            viewModel.deleteServer(server)
+            true
         })
 
         binding.buttonAddServer.setOnClickListener {

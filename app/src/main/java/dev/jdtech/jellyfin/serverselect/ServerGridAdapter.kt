@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.databinding.ServerItemBinding
 
-class ServerGridAdapter(val onClickListener: OnClickListener) :
-    ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
+class ServerGridAdapter(
+    private val onClickListener: OnClickListener,
+    private val onLongClickListener: OnLongClickListener
+    ) : ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
     class ServerViewHolder(private var binding: ServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(server: Server) {
@@ -31,19 +33,26 @@ class ServerGridAdapter(val onClickListener: OnClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ServerGridAdapter.ServerViewHolder {
+    ): ServerViewHolder {
         return ServerViewHolder(ServerItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
-    override fun onBindViewHolder(holder: ServerGridAdapter.ServerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ServerViewHolder, position: Int) {
         val server = getItem(position)
         holder.itemView.setOnClickListener {
             onClickListener.onClick(server)
+        }
+        holder.itemView.setOnLongClickListener {
+            onLongClickListener.onLongClick(server)
         }
         holder.bind(server)
     }
 
     class OnClickListener(val clickListener: (server: Server) -> Unit) {
         fun onClick(server: Server) = clickListener(server)
+    }
+
+    class OnLongClickListener(val clickListener: (server: Server) -> Boolean) {
+        fun onLongClick(server: Server) = clickListener(server)
     }
 }
