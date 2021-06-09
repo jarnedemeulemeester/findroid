@@ -25,7 +25,7 @@ class ServerSelectFragment : Fragment() {
 
         val dataSource = ServerDatabase.getInstance(application).serverDatabaseDao
 
-        val viewModelFactory = ServerSelectViewModelFactory(dataSource)
+        val viewModelFactory = ServerSelectViewModelFactory(dataSource, application)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ServerSelectViewModel::class.java)
 
         binding.lifecycleOwner = this

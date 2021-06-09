@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.serverselect
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import java.util.*
 
 class ServerSelectViewModel(
     val database: ServerDatabaseDao,
+    val application: Application,
 ) : ViewModel() {
     private val _servers = database.getAllServers()
     val servers: LiveData<List<Server>>
