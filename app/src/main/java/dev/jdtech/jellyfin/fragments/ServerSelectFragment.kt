@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.serverselect
+package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,6 +12,9 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
+import dev.jdtech.jellyfin.adapters.ServerGridAdapter
+import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModelFactory
+import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 
 
 class ServerSelectFragment : Fragment() {

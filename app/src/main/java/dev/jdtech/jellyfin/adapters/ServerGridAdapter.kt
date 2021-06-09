@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.serverselect
+package dev.jdtech.jellyfin.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.serverselect
+package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

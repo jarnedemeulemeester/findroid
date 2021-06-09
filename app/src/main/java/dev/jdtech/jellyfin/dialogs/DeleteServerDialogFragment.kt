@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.Server
-import dev.jdtech.jellyfin.serverselect.ServerSelectViewModel
+import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import java.lang.IllegalStateException
 
 class DeleteServerDialogFragment(private val viewModel: ServerSelectViewModel, val server: Server) : DialogFragment() {
