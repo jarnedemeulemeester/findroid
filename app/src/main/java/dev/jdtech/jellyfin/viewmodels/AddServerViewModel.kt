@@ -28,7 +28,7 @@ class AddServerViewModel(val application: Application) : ViewModel() {
                 _error.value = null
                 _navigateToLogin.value = true
             } catch (e: Exception) {
-                Log.e("JellyfinApi", "${e.message}")
+                Log.e("AddServerViewModel", "${e.message}")
                 _error.value = e.message
                 _navigateToLogin.value = false
             }

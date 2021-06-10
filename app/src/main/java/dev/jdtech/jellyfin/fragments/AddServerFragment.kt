@@ -26,7 +26,7 @@ class AddServerFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.buttonConnect.setOnClickListener { v: View ->
+        binding.buttonConnect.setOnClickListener {
             val serverAddress = binding.editTextServerAddress.text.toString()
             if (serverAddress.isNotBlank()) {
                 viewModel.checkServer(serverAddress)

@@ -6,6 +6,7 @@ import dev.jdtech.jellyfin.BuildConfig
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.android
 import org.jellyfin.sdk.api.operations.SystemApi
+import org.jellyfin.sdk.api.operations.UserApi
 import org.jellyfin.sdk.model.ClientInfo
 
 class JellyfinApi(context: Context, baseUrl: String) {
@@ -16,6 +17,7 @@ class JellyfinApi(context: Context, baseUrl: String) {
     }
     val api = jellyfin.createApi(baseUrl = baseUrl)
     val systemApi = SystemApi(api)
+    val userApi = UserApi(api)
 
     init {
         Log.i("JellyfinApi", "Constructor called!")
