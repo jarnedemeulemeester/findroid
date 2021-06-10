@@ -70,6 +70,7 @@
             android:id="@+id/button_add_server"
             style="@style/setup_button"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/add_server"
             app:layout_constraintEnd_toEndOf="parent"
