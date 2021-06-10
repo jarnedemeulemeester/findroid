@@ -12,7 +12,6 @@ import dev.jdtech.jellyfin.database.ServerDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import java.lang.Exception
 
