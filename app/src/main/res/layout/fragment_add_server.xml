@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="dev.jdtech.jellyfin.viewmodels.AddServerViewModel" />
@@ -26,6 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -62,11 +64,28 @@
                 android:textAppearance="@style/text_subtitle"
                 android:textColorHint="@color/neutral_400" />
 
-            <Button
-                android:id="@+id/button_connect"
-                style="@style/setup_button"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:text="@string/button_connect" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/button_connect"
+                    style="@style/setup_button"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_launcher_foreground"
+                    android:text="@string/button_connect" />
+
+                <ProgressBar
+                    android:id="@+id/progress_circular"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:elevation="8dp"
+                    android:indeterminateTint="@color/white"
+                    android:padding="8dp"
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
