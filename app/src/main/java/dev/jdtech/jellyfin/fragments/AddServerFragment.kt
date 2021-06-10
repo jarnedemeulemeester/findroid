@@ -44,6 +44,10 @@ class AddServerFragment : Fragment() {
             binding.progressCircular.visibility = View.GONE
         })
 
+        viewModel.error.observe(viewLifecycleOwner, {
+            binding.editTextServerAddress.error = it
+        })
+
         return binding.root
     }
 }

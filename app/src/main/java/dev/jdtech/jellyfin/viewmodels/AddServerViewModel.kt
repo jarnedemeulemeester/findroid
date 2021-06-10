@@ -16,14 +16,20 @@ class AddServerViewModel(val application: Application) : ViewModel() {
     val navigateToLogin: LiveData<Boolean>
         get() = _navigateToLogin
 
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String>
+        get() = _error
+
     fun checkServer(baseUrl: String) {
         viewModelScope.launch {
             val jellyfinApi = JellyfinApi.newInstance(application, baseUrl)
             try {
                 jellyfinApi.systemApi.getPublicSystemInfo()
+                _error.value = null
                 _navigateToLogin.value = true
             } catch (e: Exception) {
                 Log.e("JellyfinApi", "${e.message}")
+                _error.value = e.message
                 _navigateToLogin.value = false
             }
         }
