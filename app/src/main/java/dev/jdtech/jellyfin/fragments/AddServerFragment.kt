@@ -32,7 +32,7 @@ class AddServerFragment : Fragment() {
                 viewModel.checkServer(serverAddress)
                 binding.progressCircular.visibility = View.VISIBLE
             } else {
-                binding.editTextServerAddress.error = "Empty server address"
+                binding.editTextServerAddressLayout.error = "Empty server address"
             }
         }
 
@@ -45,7 +45,7 @@ class AddServerFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, {
-            binding.editTextServerAddress.error = it
+            binding.editTextServerAddressLayout.error = it
         })
 
         return binding.root

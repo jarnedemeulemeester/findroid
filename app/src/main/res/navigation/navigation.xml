@@ -25,7 +25,8 @@
     <fragment
         android:id="@+id/serverSelectFragment"
         android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
-        android:label="ServerSelectFragment" >
+        android:label="ServerSelectFragment"
+        tools:layout="@layout/fragment_server_select">
         <action
             android:id="@+id/action_serverSelectFragment_to_addServerFragment"
             app:destination="@id/addServerFragment"

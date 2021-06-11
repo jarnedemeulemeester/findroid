@@ -51,18 +51,23 @@
                 android:text="@string/add_server"
                 android:textColor="?android:textColorPrimary" />
 
-            <EditText
-                android:id="@+id/edit_text_server_address"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_text_server_address_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:autofillHints="no"
-                android:background="@drawable/edit_text_background"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/edit_text_server_address_hint"
-                android:inputType="text"
-                android:padding="10dp"
-                android:textAppearance="@style/text_subtitle"
-                android:textColorHint="@color/neutral_400" />
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_server_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

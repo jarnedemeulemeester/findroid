@@ -49,32 +49,40 @@
                 android:text="@string/login"
                 android:textColor="?android:textColorPrimary" />
 
-            <EditText
-                android:id="@+id/edit_text_username"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_text_username_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="username"
-                android:background="@drawable/edit_text_background"
-                android:hint="@string/edit_text_username_hint"
-                android:inputType="text"
-                android:padding="10dp"
-                android:textAppearance="@style/text_subtitle"
-                android:textColorHint="@color/neutral_400" />
+                android:hint="@string/edit_text_username_hint">
 
-            <EditText
-                android:id="@+id/edit_text_password"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:autofillHints="username"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_text_password_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:autofillHints="password"
-                android:background="@drawable/edit_text_background"
                 android:hint="@string/edit_text_password_hint"
-                android:inputType="textPassword"
-                android:padding="10dp"
-                android:textAppearance="@style/text_subtitle"
-                android:textColorHint="@color/neutral_400" />
+                app:passwordToggleEnabled="true">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:autofillHints="password"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

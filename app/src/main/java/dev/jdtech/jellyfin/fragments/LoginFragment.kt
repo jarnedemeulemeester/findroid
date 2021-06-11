@@ -32,7 +32,7 @@ class LoginFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, {
             binding.progressCircular.visibility = View.GONE
-            binding.editTextUsername.error = it
+            binding.editTextUsernameLayout.error = it
         })
 
         return binding.root
