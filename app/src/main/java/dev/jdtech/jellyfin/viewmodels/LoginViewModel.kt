@@ -16,24 +16,38 @@ import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import java.lang.Exception
 
 class LoginViewModel(application: Application) : ViewModel() {
+    // BaseUrl can be empty string because we want to get the existing instance.
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
     private val database = ServerDatabase.getInstance(application).serverDatabaseDao
 
     private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
-        get() = _error
+    val error: LiveData<String> = _error
 
+    /**
+     * Send a authentication request to the Jellyfin server
+     *
+     * @param username Username
+     * @param password Password
+     */
     fun login(username: String, password: String) {
         viewModelScope.launch {
             try {
                 val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
                     data = AuthenticateUserByName(
                         username = username,
-                        pw = password)
+                        pw = password
+                    )
                 )
                 _error.value = null
                 val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-                val server = Server(serverInfo.id!!, serverInfo.serverName!!, jellyfinApi.api.baseUrl!!, authenticationResult.user?.id.toString(), authenticationResult.user?.name!!, authenticationResult.accessToken!!)
+                val server = Server(
+                    serverInfo.id!!,
+                    serverInfo.serverName!!,
+                    jellyfinApi.api.baseUrl!!,
+                    authenticationResult.user?.id.toString(),
+                    authenticationResult.user?.name!!,
+                    authenticationResult.accessToken!!
+                )
                 insert(server)
             } catch (e: Exception) {
                 Log.e("LoginViewModel", "${e.message}")
@@ -42,6 +56,11 @@ class LoginViewModel(application: Application) : ViewModel() {
         }
     }
 
+    /**
+     * Add server to the database
+     *
+     * @param server The server
+     */
     private suspend fun insert(server: Server) {
         withContext(Dispatchers.IO) {
             database.insert(server)

@@ -18,13 +18,17 @@ class AddServerViewModel(val application: Application) : ViewModel() {
     private val database = ServerDatabase.getInstance(application).serverDatabaseDao
 
     private val _navigateToLogin = MutableLiveData<Boolean>()
-    val navigateToLogin: LiveData<Boolean>
-        get() = _navigateToLogin
+    val navigateToLogin: LiveData<Boolean> = _navigateToLogin
 
     private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
-        get() = _error
+    val error: LiveData<String> = _error
 
+    /**
+     * Run multiple check on the server before continuing:
+     *
+     * - Connect to server and check if it is a Jellyfin server
+     * - Check if server is not already in Database
+     */
     fun checkServer(baseUrl: String) {
         _error.value = null
 
@@ -49,6 +53,12 @@ class AddServerViewModel(val application: Application) : ViewModel() {
         }
     }
 
+    /**
+     * Check if server is already in database using server ID
+     *
+     * @param id Server ID
+     * @return True if server is already in database
+     */
     private suspend fun serverAlreadyInDatabase(id: String?): Boolean {
         val servers: List<Server>
         withContext(Dispatchers.IO) {

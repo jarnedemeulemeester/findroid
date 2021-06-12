@@ -15,18 +15,18 @@ class ServerSelectViewModel(
     val application: Application,
 ) : ViewModel() {
     private val _servers = database.getAllServers()
-    val servers: LiveData<List<Server>>
-        get() = _servers
+    val servers: LiveData<List<Server>> = _servers
 
+    /**
+     * Delete server from database
+     *
+     * @param server The server
+     */
     fun deleteServer(server: Server) {
         viewModelScope.launch {
-            delete(server)
-        }
-    }
-
-    private suspend fun delete(server: Server) {
-        withContext(Dispatchers.IO) {
-            database.delete(server.id)
+            withContext(Dispatchers.IO) {
+                database.delete(server.id)
+            }
         }
     }
 }

@@ -9,6 +9,14 @@ import org.jellyfin.sdk.api.operations.SystemApi
 import org.jellyfin.sdk.api.operations.UserApi
 import org.jellyfin.sdk.model.ClientInfo
 
+
+/**
+ * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
+ *
+ * @param context The context
+ * @param baseUrl The url of the server
+ * @constructor Creates a new [JellyfinApi] instance
+ */
 class JellyfinApi(context: Context, baseUrl: String) {
     val jellyfin = Jellyfin {
         clientInfo =
@@ -27,6 +35,14 @@ class JellyfinApi(context: Context, baseUrl: String) {
         @Volatile
         private var INSTANCE: JellyfinApi? = null
 
+        /**
+         * Creates or gets a new instance of [JellyfinApi]
+         *
+         * If there already is an instance, it will return that instance and ignore the [baseUrl] parameter
+         *
+         * @param context The context
+         * @param baseUrl The url of the server
+         */
         fun getInstance(context: Context, baseUrl: String): JellyfinApi {
             synchronized(this) {
                 var instance = INSTANCE
@@ -38,6 +54,12 @@ class JellyfinApi(context: Context, baseUrl: String) {
             }
         }
 
+        /**
+         * Create a new [JellyfinApi] instance
+         *
+         * @param context The context
+         * @param baseUrl The url of the server
+         */
         fun newInstance(context: Context, baseUrl: String): JellyfinApi {
             synchronized(this) {
                 val instance = JellyfinApi(context.applicationContext, baseUrl)
