@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jellyfin">
         <activity
-            android:name=".MainActivity"
+            android:name=".SetupActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
