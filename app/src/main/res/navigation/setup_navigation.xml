@@ -34,5 +34,12 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_serverSelectFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="dev.jdtech.jellyfin.MainActivity"
+        android:label="MainActivity" />
 </navigation>

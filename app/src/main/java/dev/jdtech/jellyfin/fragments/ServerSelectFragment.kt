@@ -35,6 +35,7 @@ class ServerSelectFragment : Fragment() {
         binding.viewModel = viewModel
         binding.serversRecyclerView.adapter = ServerGridAdapter(ServerGridAdapter.OnClickListener { server ->
             Toast.makeText(application, "You selected server $server", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_serverSelectFragment_to_mainActivity)
         }, ServerGridAdapter.OnLongClickListener { server ->
             DeleteServerDialogFragment(viewModel, server).show(parentFragmentManager, "deleteServer")
             true

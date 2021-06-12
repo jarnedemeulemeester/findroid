@@ -14,4 +14,8 @@
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_media">My media</string>
+    <string name="title_settings">Settings</string>
 </resources>
