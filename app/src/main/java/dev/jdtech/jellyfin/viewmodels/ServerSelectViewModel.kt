@@ -2,13 +2,16 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class ServerSelectViewModel(
     val database: ServerDatabaseDao,
@@ -16,6 +19,9 @@ class ServerSelectViewModel(
 ) : ViewModel() {
     private val _servers = database.getAllServers()
     val servers: LiveData<List<Server>> = _servers
+
+    private val _navigateToMain = MutableLiveData<Boolean>()
+    val navigateToMain: LiveData<Boolean> = _navigateToMain
 
     /**
      * Delete server from database
@@ -28,5 +34,17 @@ class ServerSelectViewModel(
                 database.delete(server.id)
             }
         }
+    }
+
+    fun connectToServer(server: Server) {
+        JellyfinApi.getInstance(application, server.address).apply {
+            api.accessToken = server.accessToken
+            userId = UUID.fromString(server.userId)
+        }
+        _navigateToMain.value = true
+    }
+
+    fun doneNavigatingToMain() {
+        _navigateToMain.value = false
     }
 }

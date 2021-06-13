@@ -7,7 +7,9 @@ import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.android
 import org.jellyfin.sdk.api.operations.SystemApi
 import org.jellyfin.sdk.api.operations.UserApi
+import org.jellyfin.sdk.api.operations.UserViewsApi
 import org.jellyfin.sdk.model.ClientInfo
+import java.util.*
 
 
 /**
@@ -24,8 +26,11 @@ class JellyfinApi(context: Context, baseUrl: String) {
         android(context)
     }
     val api = jellyfin.createApi(baseUrl = baseUrl)
+    var userId: UUID? = null
+
     val systemApi = SystemApi(api)
     val userApi = UserApi(api)
+    val viewsApi = UserViewsApi(api)
 
     init {
         Log.i("JellyfinApi", "Constructor called!")
