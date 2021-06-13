@@ -7,18 +7,20 @@
 
         <variable
             name="view"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            type="dev.jdtech.jellyfin.models.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="42dp">
 
         <TextView
             android:id="@+id/view_name"
             style="@style/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:text="@{view.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,10 +31,22 @@
             style="@style/text_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
             android:text="View all"
             app:layout_constraintBaseline_toBaselineOf="@id/view_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/items_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:items="@{view.items}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/view_name"
+            tools:listitem="@layout/base_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

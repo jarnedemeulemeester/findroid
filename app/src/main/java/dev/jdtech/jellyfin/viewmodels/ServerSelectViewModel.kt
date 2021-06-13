@@ -37,7 +37,7 @@ class ServerSelectViewModel(
     }
 
     fun connectToServer(server: Server) {
-        JellyfinApi.getInstance(application, server.address).apply {
+        JellyfinApi.newInstance(application, server.address).apply {
             api.accessToken = server.accessToken
             userId = UUID.fromString(server.userId)
         }

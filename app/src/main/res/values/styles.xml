@@ -26,4 +26,9 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:background">@drawable/button_setup_background</item>
     </style>
+
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>

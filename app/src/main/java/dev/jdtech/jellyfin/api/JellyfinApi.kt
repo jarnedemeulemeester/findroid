@@ -5,9 +5,7 @@ import android.util.Log
 import dev.jdtech.jellyfin.BuildConfig
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.android
-import org.jellyfin.sdk.api.operations.SystemApi
-import org.jellyfin.sdk.api.operations.UserApi
-import org.jellyfin.sdk.api.operations.UserViewsApi
+import org.jellyfin.sdk.api.operations.*
 import org.jellyfin.sdk.model.ClientInfo
 import java.util.*
 
@@ -31,6 +29,8 @@ class JellyfinApi(context: Context, baseUrl: String) {
     val systemApi = SystemApi(api)
     val userApi = UserApi(api)
     val viewsApi = UserViewsApi(api)
+    val itemsApi = ItemsApi(api)
+    val userLibraryApi = UserLibraryApi(api)
 
     init {
         Log.i("JellyfinApi", "Constructor called!")
