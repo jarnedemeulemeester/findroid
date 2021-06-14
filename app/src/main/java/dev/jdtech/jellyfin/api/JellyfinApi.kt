@@ -32,10 +32,6 @@ class JellyfinApi(context: Context, baseUrl: String) {
     val itemsApi = ItemsApi(api)
     val userLibraryApi = UserLibraryApi(api)
 
-    init {
-        Log.i("JellyfinApi", "Constructor called!")
-    }
-
     companion object {
         @Volatile
         private var INSTANCE: JellyfinApi? = null

@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:text="View all"
+            android:text="@string/view_all"
             app:layout_constraintBaseline_toBaselineOf="@id/view_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:paddingHorizontal="12dp"
+            android:clipToPadding="false"
             android:orientation="horizontal"
             app:items="@{view.items}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
