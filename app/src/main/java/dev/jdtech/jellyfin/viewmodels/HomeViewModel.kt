@@ -1,13 +1,15 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.models.ViewItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemDtoQueryResult
 import java.util.*
 
 class HomeViewModel(
@@ -21,18 +23,19 @@ class HomeViewModel(
     private val _items = MutableLiveData<List<BaseItemDto>>()
     val items: LiveData<List<BaseItemDto>> = _items
 
+    private val _finishedLoading = MutableLiveData<Boolean>()
+    val finishedLoading: LiveData<Boolean> = _finishedLoading
+
     init {
         viewModelScope.launch {
             val views: MutableList<View> = mutableListOf()
-
-            val result by jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!)
-
-            for (view in result.items!!) {
+            val viewsResult = getViews(jellyfinApi.userId!!)
+            for (view in viewsResult.items!!) {
                 val items: MutableList<ViewItem> = mutableListOf()
-                val resultItems by jellyfinApi.userLibraryApi.getLatestMedia(jellyfinApi.userId!!, parentId = view.id)
-                if (resultItems.isEmpty()) continue
+                val latestItems = getLatestMedia(jellyfinApi.userId!!, view.id)
+                if (latestItems.isEmpty()) continue
                 val v = view.toView()
-                for (item in resultItems) {
+                for (item in latestItems) {
                     val i = jellyfinApi.api.baseUrl?.let { item.toViewItem(it) }
                     if (i != null) {
                         items.add(i)
@@ -43,13 +46,29 @@ class HomeViewModel(
             }
 
             _views.value = views
-
+            _finishedLoading.value = true
         }
+    }
+
+    private suspend fun getViews(userId: UUID): BaseItemDtoQueryResult {
+        val views: BaseItemDtoQueryResult
+        withContext(Dispatchers.IO) {
+            views = jellyfinApi.viewsApi.getUserViews(userId).content
+        }
+        return views
+    }
+
+    private suspend fun getLatestMedia(userId: UUID, parentId: UUID): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.userLibraryApi.getLatestMedia(userId, parentId = parentId).content
+        }
+        return items
     }
 
 }
 
-private fun BaseItemDto.toViewItem(baseUrl: String) : ViewItem {
+private fun BaseItemDto.toViewItem(baseUrl: String): ViewItem {
     return when (type) {
         "Episode" -> ViewItem(
             id = seriesId!!,
@@ -64,7 +83,7 @@ private fun BaseItemDto.toViewItem(baseUrl: String) : ViewItem {
     }
 }
 
-private fun BaseItemDto.toView() : View {
+private fun BaseItemDto.toView(): View {
     return View(
         id = id,
         name = name

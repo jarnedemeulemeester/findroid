@@ -28,6 +28,12 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter = ViewListAdapter()
 
+        viewModel.finishedLoading.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.loadingIncicator.visibility = View.GONE
+            }
+        })
+
         return binding.root
     }
 }
