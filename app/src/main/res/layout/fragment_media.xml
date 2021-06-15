@@ -31,14 +31,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:paddingHorizontal="24dp"
+            android:paddingHorizontal="12dp"
             app:collections="@{viewModel.collections}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="4"
+            app:spanCount="@integer/collection_colums"
             tools:listitem="@layout/collection_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

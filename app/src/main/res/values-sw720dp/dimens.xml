@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="server_colums" type="integer">8</item>
+    <item name="collection_colums" type="integer">4</item>
+</resources>

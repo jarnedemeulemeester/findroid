@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="match_parent" type="dimen">-1</item>
+    <item name="wrap_content" type="dimen">-2</item>
+    <dimen name="setup_container_width">@dimen/match_parent</dimen>
+    <item name="server_colums" type="integer">3</item>
+    <item name="collection_colums" type="integer">1</item>
+</resources>
