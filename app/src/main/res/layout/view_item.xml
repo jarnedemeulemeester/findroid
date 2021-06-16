@@ -39,14 +39,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/items_recycler_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:paddingHorizontal="12dp"
             android:clipToPadding="false"
+            android:layoutAnimation="@anim/overview_media_animation"
             android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
             app:items="@{view.items}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_name"
             tools:listitem="@layout/base_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>

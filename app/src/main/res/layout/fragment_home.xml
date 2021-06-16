@@ -19,16 +19,16 @@
             android:id="@+id/loading_incicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminate="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:trackCornerRadius="10dp"
-            android:indeterminate="true"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:trackCornerRadius="10dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -5,4 +5,5 @@
     <dimen name="setup_container_width">@dimen/match_parent</dimen>
     <item name="server_colums" type="integer">3</item>
     <item name="collection_colums" type="integer">1</item>
+    <item name="recyclerview_animation_duration" type="integer">250</item>
 </resources>

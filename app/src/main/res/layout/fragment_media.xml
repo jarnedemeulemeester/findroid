@@ -13,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.MediaFragment">
+        tools:context=".fragments.MediaFragment"
+        android:animateLayoutChanges="true">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loading_incicator"
@@ -28,7 +29,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingHorizontal="12dp"

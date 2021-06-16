@@ -3,4 +3,5 @@
     <dimen name="setup_container_width">400dp</dimen>
     <item name="server_colums" type="integer">6</item>
     <item name="collection_colums" type="integer">3</item>
+    <item name="recyclerview_animation_duration" type="integer">450</item>
 </resources>
