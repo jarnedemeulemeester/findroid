@@ -8,7 +8,7 @@
         android:id="@+id/addServerFragment"
         android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
         android:label="fragment_add_server"
-        tools:layout="@layout/fragment_add_server" >
+        tools:layout="@layout/fragment_add_server">
         <action
             android:id="@+id/action_addServerFragment_to_loginFragment"
             app:destination="@id/loginFragment"
@@ -21,7 +21,11 @@
         android:id="@+id/loginFragment"
         android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/serverSelectFragment"
         android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
@@ -41,5 +45,6 @@
     <activity
         android:id="@+id/mainActivity"
         android:name="dev.jdtech.jellyfin.MainActivity"
-        android:label="MainActivity" />
+        android:label="MainActivity"
+        tools:layout="@layout/activity_main" />
 </navigation>

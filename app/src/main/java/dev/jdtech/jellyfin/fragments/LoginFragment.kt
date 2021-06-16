@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.viewmodels.LoginViewModelFactory
@@ -33,6 +35,13 @@ class LoginFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner, {
             binding.progressCircular.visibility = View.GONE
             binding.editTextUsernameLayout.error = it
+        })
+
+        viewModel.navigateToMain.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
+                viewModel.doneNavigatingToMain()
+            }
         })
 
         return binding.root
