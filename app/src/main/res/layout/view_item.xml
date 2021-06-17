@@ -17,22 +17,22 @@
 
         <TextView
             android:id="@+id/view_name"
-            style="@style/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:text="@{view.name}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Movies" />
 
         <TextView
             android:id="@+id/view_all"
-            style="@style/text_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:text="@string/view_all"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
             app:layout_constraintBaseline_toBaselineOf="@id/view_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

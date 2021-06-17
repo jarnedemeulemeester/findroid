@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/text_add_server"
-                style="@style/text_header"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"

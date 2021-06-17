@@ -44,11 +44,11 @@
 
             <TextView
                 android:id="@+id/text_add_server"
-                style="@style/text_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:text="@string/add_server"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="?android:textColorPrimary" />
 
             <com.google.android.material.textfield.TextInputLayout

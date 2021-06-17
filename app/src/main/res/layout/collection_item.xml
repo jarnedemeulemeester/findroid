@@ -26,10 +26,10 @@
             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
         <TextView
-            style="@style/text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{collection.name}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             tools:text="Movies" />
     </LinearLayout>
 </layout>
