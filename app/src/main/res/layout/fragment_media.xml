@@ -13,8 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.MediaFragment"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        tools:context=".fragments.MediaFragment">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loading_incicator"
@@ -33,14 +33,15 @@
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingHorizontal="12dp"
+            android:paddingTop="16dp"
             app:collections="@{viewModel.collections}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="4"
             app:spanCount="@integer/collection_colums"
+            tools:itemCount="4"
             tools:listitem="@layout/collection_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

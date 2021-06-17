@@ -4,8 +4,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
@@ -28,8 +27,26 @@
             app:layout_constraintBottom_toTopOf="@id/nav_view"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_toolbar_layout"
             app:navGraph="@navigation/main_navigation" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/main_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toTopOf="@id/nav_host_fragment_activity_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

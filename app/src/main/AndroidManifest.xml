@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.jdtech.jellyfin">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Jellyfin">
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"/>
+            android:label="@string/title_activity_main" />
         <activity
             android:name=".SetupActivity"
             android:windowSoftInputMode="adjustPan">
