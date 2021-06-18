@@ -11,7 +11,6 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
-import dev.jdtech.jellyfin.viewmodels.MediaViewModelFactory
 
 class MediaFragment : Fragment() {
     override fun onCreateView(
@@ -19,10 +18,8 @@ class MediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val application = requireNotNull(this.activity).application
         val binding = FragmentMediaBinding.inflate(inflater, container, false)
-        val viewModelFactory = MediaViewModelFactory(application)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(MediaViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(MediaViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -10,17 +10,14 @@ import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
-import dev.jdtech.jellyfin.viewmodels.LoginViewModelFactory
 
 class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val application = requireNotNull(this.activity).application
         val binding = FragmentLoginBinding.inflate(inflater)
-        val viewModelFactory = LoginViewModelFactory(application)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

@@ -10,18 +10,15 @@ import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
-import dev.jdtech.jellyfin.viewmodels.AddServerViewModelFactory
 
 class AddServerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val application = requireNotNull(this.activity).application
         val binding = FragmentAddServerBinding.inflate(inflater)
-        val viewModelFactory = AddServerViewModelFactory(application)
         val viewModel =
-            ViewModelProvider(this, viewModelFactory).get(AddServerViewModel::class.java)
+            ViewModelProvider(this).get(AddServerViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

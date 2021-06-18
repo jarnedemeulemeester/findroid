@@ -13,7 +13,7 @@ import java.util.*
 
 class HomeViewModel(
     application: Application
-) : ViewModel() {
+) : AndroidViewModel(application) {
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
     private val _views = MutableLiveData<List<View>>()

@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
-import dev.jdtech.jellyfin.viewmodels.HomeViewModelFactory
 
 class HomeFragment : Fragment() {
     override fun onCreateView(
@@ -17,10 +16,8 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val application = requireNotNull(this.activity).application
         val binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val viewModelFactory = HomeViewModelFactory(application)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

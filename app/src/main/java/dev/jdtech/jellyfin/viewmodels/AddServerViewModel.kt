@@ -2,10 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabase
@@ -14,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 
-class AddServerViewModel(val application: Application) : ViewModel() {
+class AddServerViewModel(application: Application) : AndroidViewModel(application) {
     private val database = ServerDatabase.getInstance(application).serverDatabaseDao
 
     private val _navigateToLogin = MutableLiveData<Boolean>()
@@ -22,6 +19,8 @@ class AddServerViewModel(val application: Application) : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+    private val app = application
 
     /**
      * Run multiple check on the server before continuing:
@@ -33,7 +32,7 @@ class AddServerViewModel(val application: Application) : ViewModel() {
         _error.value = null
 
         viewModelScope.launch {
-            val jellyfinApi = JellyfinApi.newInstance(application, baseUrl)
+            val jellyfinApi = JellyfinApi.newInstance(app, baseUrl)
             try {
                 val publicSystemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
                 Log.i("AddServerViewModel", "Remote server: ${publicSystemInfo.id}")

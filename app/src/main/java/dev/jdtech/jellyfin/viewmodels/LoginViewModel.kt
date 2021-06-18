@@ -2,10 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabase
@@ -15,7 +12,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import java.lang.Exception
 
-class LoginViewModel(application: Application) : ViewModel() {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
     // BaseUrl can be empty string because we want to get the existing instance.
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
     private val database = ServerDatabase.getInstance(application).serverDatabaseDao
