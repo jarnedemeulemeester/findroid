@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.View
-import dev.jdtech.jellyfin.models.ViewItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

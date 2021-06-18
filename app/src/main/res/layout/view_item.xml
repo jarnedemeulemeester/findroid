@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="42dp">
+        android:layout_marginBottom="36dp">
 
         <TextView
             android:id="@+id/view_name"
@@ -22,18 +22,17 @@
             android:layout_marginStart="24dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textSize="18sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/view_all"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="Movies" />
 
-        <TextView
+        <Button
             android:id="@+id/view_all"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:text="@string/view_all"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-            app:layout_constraintBaseline_toBaselineOf="@id/view_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
