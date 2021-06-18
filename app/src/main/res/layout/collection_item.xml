@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@{collection.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textSize="18sp"
             tools:text="Movies" />
     </LinearLayout>
 </layout>

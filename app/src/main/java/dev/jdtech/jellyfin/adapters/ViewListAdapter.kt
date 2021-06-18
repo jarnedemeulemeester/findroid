@@ -12,6 +12,8 @@ class ViewListAdapter : ListAdapter<View, ViewListAdapter.ViewViewHolder>(DiffCa
     class ViewViewHolder(private var binding: ViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(view: View) {
             binding.view = view
+            // TODO: Change to string placeholder
+            binding.viewName.text = "Latest ${view.name}"
             binding.itemsRecyclerView.adapter = ViewItemListAdapter()
             binding.executePendingBindings()
         }

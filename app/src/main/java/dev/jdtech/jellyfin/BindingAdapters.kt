@@ -28,16 +28,20 @@ fun bindViews(recyclerView: RecyclerView, data: List<View>?) {
 }
 
 @BindingAdapter("items")
-fun bindItems(recyclerView: RecyclerView, data: List<ViewItem>?) {
+fun bindItems(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as ViewItemListAdapter
     adapter.submitList(data)
 }
 
 @BindingAdapter("itemImage")
-fun bindItemImage(imageView: ImageView, item: ViewItem) {
+fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+    val itemId = if (item.type == "Episode") item.seriesId else item.id
+
     Glide
         .with(imageView.context)
-        .load(item.primaryImageUrl)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Primary"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)

@@ -31,17 +31,10 @@ class HomeViewModel(
             val views: MutableList<View> = mutableListOf()
             val viewsResult = getViews(jellyfinApi.userId!!)
             for (view in viewsResult.items!!) {
-                val items: MutableList<ViewItem> = mutableListOf()
                 val latestItems = getLatestMedia(jellyfinApi.userId!!, view.id)
                 if (latestItems.isEmpty()) continue
                 val v = view.toView()
-                for (item in latestItems) {
-                    val i = jellyfinApi.api.baseUrl?.let { item.toViewItem(it) }
-                    if (i != null) {
-                        items.add(i)
-                    }
-                }
-                v.items = items
+                v.items = latestItems
                 views.add(v)
             }
 
@@ -66,21 +59,6 @@ class HomeViewModel(
         return items
     }
 
-}
-
-private fun BaseItemDto.toViewItem(baseUrl: String): ViewItem {
-    return when (type) {
-        "Episode" -> ViewItem(
-            id = seriesId!!,
-            name = seriesName,
-            primaryImageUrl = baseUrl.plus("/items/${seriesId}/Images/Primary")
-        )
-        else -> ViewItem(
-            id = id,
-            name = name,
-            primaryImageUrl = baseUrl.plus("/items/${id}/Images/Primary")
-        )
-    }
 }
 
 private fun BaseItemDto.toView(): View {

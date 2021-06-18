@@ -7,10 +7,10 @@
 
         <variable
             name="item"
-            type="dev.jdtech.jellyfin.models.ViewItem" />
+            type="org.jellyfin.sdk.model.api.BaseItemDto" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -20,19 +20,38 @@
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:layout_marginBottom="8dp"
             android:scaleType="centerCrop"
             app:itemImage="@{item}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{item.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_image"
             tools:text="Movie title" />
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_count"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:gravity="center"
+            android:text="@{item.userData.unplayedItemCount.toString()}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="9" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
