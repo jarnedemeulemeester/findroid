@@ -2,4 +2,5 @@
 <resources>
     <item name="server_colums" type="integer">8</item>
     <item name="collection_colums" type="integer">3</item>
+    <item name="library_colums" type="integer">6</item>
 </resources>

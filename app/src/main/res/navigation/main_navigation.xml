@@ -15,11 +15,20 @@
         android:id="@+id/navigation_media"
         android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
         android:label="@string/title_media"
-        tools:layout="@layout/fragment_media" />
+        tools:layout="@layout/fragment_media" >
+        <action
+            android:id="@+id/action_navigation_media_to_libraryFragment"
+            app:destination="@id/libraryFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
+        android:label="library_fragment"
+        tools:layout="@layout/fragment_library" />
 </navigation>

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import dev.jdtech.jellyfin.models.ViewItem
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 class ViewItemListAdapter :
@@ -18,7 +17,7 @@ class ViewItemListAdapter :
             binding.item = item
             binding.itemName.text = if (item.type == "Episode") item.seriesName else item.name
             binding.itemCount.visibility =
-                if (item.userData?.unplayedItemCount != null) View.VISIBLE else View.GONE
+                if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             binding.executePendingBindings()
         }
     }
