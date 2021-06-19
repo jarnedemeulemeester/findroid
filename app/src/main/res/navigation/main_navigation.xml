@@ -15,7 +15,7 @@
         android:id="@+id/navigation_media"
         android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
         android:label="@string/title_media"
-        tools:layout="@layout/fragment_media" >
+        tools:layout="@layout/fragment_media">
         <action
             android:id="@+id/action_navigation_media_to_libraryFragment"
             app:destination="@id/libraryFragment" />
@@ -29,10 +29,15 @@
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
-        android:label="library_fragment"
-        tools:layout="@layout/fragment_library" >
+        android:label="{libraryName}"
+        tools:layout="@layout/fragment_library">
         <argument
             android:name="libraryId"
             app:argType="java.util.UUID" />
+        <argument
+            android:name="libraryName"
+            android:defaultValue="Library"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

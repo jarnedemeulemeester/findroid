@@ -26,7 +26,8 @@ class MediaFragment : Fragment() {
             CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->
                 findNavController().navigate(
                     MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
-                        library.id
+                        library.id,
+                        library.name
                     )
                 )
 
