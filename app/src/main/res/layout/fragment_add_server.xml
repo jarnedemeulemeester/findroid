@@ -58,7 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:hint="@string/edit_text_server_address_hint"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_server">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_server_address"
