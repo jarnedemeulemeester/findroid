@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="32dp"
+        android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView

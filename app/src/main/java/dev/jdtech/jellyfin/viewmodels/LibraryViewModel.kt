@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.*
 
-class LibraryViewModel(application: Application) : AndroidViewModel(application) {
+class LibraryViewModel(application: Application, userId: UUID) : AndroidViewModel(application) {
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
     private val _items = MutableLiveData<List<BaseItemDto>>()
@@ -20,7 +20,7 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         viewModelScope.launch {
-            _items.value = getItems(jellyfinApi.userId!!, UUID.fromString("0c419071-40d8-02bb-5843-0fed7e2cd79e"))
+            _items.value = getItems(jellyfinApi.userId!!, userId)
             _finishedLoading.value = true
         }
     }

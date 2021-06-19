@@ -6,23 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
+import dev.jdtech.jellyfin.viewmodels.LibraryViewModelFactory
 
 class LibraryFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = LibraryFragment()
-    }
 
     private lateinit var binding: FragmentLibraryBinding
     private lateinit var viewModel: LibraryViewModel
 
+    private val args: LibraryFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
@@ -32,7 +32,8 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LibraryViewModel::class.java)
+        val viewModelFactory = LibraryViewModelFactory(requireNotNull(this.activity).application, args.libraryId)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(LibraryViewModel::class.java)
         binding.viewModel = viewModel
         binding.itemsRecyclerView.adapter = ViewItemListAdapter()
     }

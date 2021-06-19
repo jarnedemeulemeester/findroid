@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 
-class CollectionListAdapter :
-    ListAdapter<BaseItemDto, CollectionListAdapter.ViewViewHolder>(DiffCallback) {
-    class ViewViewHolder(private var binding: CollectionItemBinding) :
+class CollectionListAdapter(
+    private val onClickListener: OnClickListener
+) : ListAdapter<BaseItemDto, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
+    class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(collection: BaseItemDto) {
             binding.collection = collection
@@ -28,8 +29,8 @@ class CollectionListAdapter :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewViewHolder {
-        return ViewViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CollectionViewHolder {
+        return CollectionViewHolder(
             CollectionItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -38,8 +39,15 @@ class CollectionListAdapter :
         )
     }
 
-    override fun onBindViewHolder(holder: ViewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CollectionViewHolder, position: Int) {
         val collection = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(collection)
+        }
         holder.bind(collection)
+    }
+
+    class OnClickListener(val clickListener: (collection: BaseItemDto) -> Unit) {
+        fun onClick(collection: BaseItemDto) = clickListener(collection)
     }
 }
