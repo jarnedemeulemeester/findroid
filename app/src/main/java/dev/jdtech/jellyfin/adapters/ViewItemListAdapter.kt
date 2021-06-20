@@ -6,18 +6,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 
-class ViewItemListAdapter :
+class ViewItemListAdapter(private val fixedWidth: Boolean = false) :
     ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
-    class ItemViewHolder(private var binding: BaseItemBinding) :
+
+    class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: BaseItemDto) {
+        fun bind(item: BaseItemDto, fixedWidth: Boolean) {
             binding.item = item
             binding.itemName.text = if (item.type == "Episode") item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
+            if (fixedWidth) {
+                binding.itemLayout.layoutParams.width =
+                    parent.resources.getDimension(R.dimen.overview_media_width).toInt()
+                (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
+            }
             binding.executePendingBindings()
         }
     }
@@ -38,12 +45,12 @@ class ViewItemListAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ), parent
         )
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, fixedWidth)
     }
 }
