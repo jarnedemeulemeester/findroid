@@ -16,7 +16,7 @@
         tools:context=".fragments.HomeFragment">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/loading_incicator"
+            android:id="@+id/loading_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -25,6 +25,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:trackCornerRadius="10dp" />
+
+        <include
+            android:id="@+id/error_layout"
+            layout="@layout/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"

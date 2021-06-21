@@ -25,20 +25,34 @@ class HomeViewModel(
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
-    init {
-        viewModelScope.launch {
-            val views: MutableList<View> = mutableListOf()
-            val viewsResult = getViews(jellyfinApi.userId!!)
-            for (view in viewsResult.items!!) {
-                val latestItems = getLatestMedia(jellyfinApi.userId!!, view.id)
-                if (latestItems.isEmpty()) continue
-                val v = view.toView()
-                v.items = latestItems
-                views.add(v)
-            }
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> = _error
 
-            _views.value = views
-            _finishedLoading.value = true
+    init {
+        loadData()
+    }
+
+    fun loadData() {
+        _error.value = false
+        _finishedLoading.value = false
+        viewModelScope.launch {
+            try {
+                val views: MutableList<View> = mutableListOf()
+                val viewsResult = getViews(jellyfinApi.userId!!)
+                for (view in viewsResult.items!!) {
+                    val latestItems = getLatestMedia(jellyfinApi.userId!!, view.id)
+                    if (latestItems.isEmpty()) continue
+                    val v = view.toView()
+                    v.items = latestItems
+                    views.add(v)
+                }
+
+                _views.value = views
+                _finishedLoading.value = true
+            } catch (e: Exception) {
+                _finishedLoading.value = true
+                _error.value = true
+            }
         }
     }
 
