@@ -19,4 +19,6 @@
     <string name="title_media">My media</string>
     <string name="title_settings">Settings</string>
     <string name="view_all">View all</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="retry">Retry</string>
 </resources>

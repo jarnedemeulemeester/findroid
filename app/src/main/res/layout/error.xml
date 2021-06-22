@@ -8,7 +8,7 @@
         android:id="@+id/error_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error loading data"
+        android:text="@string/error_loading_data"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
     <Button
@@ -17,6 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Retry" />
+        android:text="@string/retry" />
 
 </LinearLayout>
