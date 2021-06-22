@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="24dp"
+        android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -24,10 +25,10 @@
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:itemImage="@{item}"
+            app:layout_constraintDimensionRatio="H,2:3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintDimensionRatio="H,2:3"
             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
         <TextView

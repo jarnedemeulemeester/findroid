@@ -10,7 +10,10 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 
-class ViewItemListAdapter(private val fixedWidth: Boolean = false) :
+class ViewItemListAdapter(
+    private val onClickListener: OnClickListener,
+    private val fixedWidth: Boolean = false,
+    ) :
     ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
@@ -51,6 +54,13 @@ class ViewItemListAdapter(private val fixedWidth: Boolean = false) :
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(item)
+        }
         holder.bind(item, fixedWidth)
+    }
+
+    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
+        fun onClick(item: BaseItemDto) = clickListener(item)
     }
 }

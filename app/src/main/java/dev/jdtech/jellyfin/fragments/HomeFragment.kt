@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
@@ -26,6 +27,13 @@ class HomeFragment : Fragment() {
         binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
+                    it.id,
+                    it.name
+                )
+            )
+        }, ViewItemListAdapter.OnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     it.id,
                     it.name
                 )

@@ -9,14 +9,15 @@ import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.View
 
 class ViewListAdapter(
-    private val onClickListener: OnClickListener
+    private val onClickListener: OnClickListener,
+    private val onItemClickListener: ViewItemListAdapter.OnClickListener
 ) : ListAdapter<View, ViewListAdapter.ViewViewHolder>(DiffCallback) {
     class ViewViewHolder(private var binding: ViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(view: View, onClickListener: OnClickListener) {
+        fun bind(view: View, onClickListener: OnClickListener, onItemClickListener: ViewItemListAdapter.OnClickListener) {
             binding.view = view
             // TODO: Change to string placeholder
             binding.viewName.text = "Latest ${view.name}"
-            binding.itemsRecyclerView.adapter = ViewItemListAdapter(fixedWidth = true)
+            binding.itemsRecyclerView.adapter = ViewItemListAdapter(onItemClickListener, fixedWidth = true)
             binding.viewAll.setOnClickListener {
                 onClickListener.onClick(view)
             }
@@ -40,7 +41,7 @@ class ViewListAdapter(
 
     override fun onBindViewHolder(holder: ViewViewHolder, position: Int) {
         val view = getItem(position)
-        holder.bind(view, onClickListener)
+        holder.bind(view, onClickListener, onItemClickListener)
     }
 
     class OnClickListener(val clickListener: (view: View) -> Unit) {

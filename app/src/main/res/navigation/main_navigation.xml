@@ -17,6 +17,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
     </fragment>
 
     <fragment
@@ -51,5 +54,22 @@
             android:defaultValue="Library"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_libraryFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaInfoFragment"
+        android:name="dev.jdtech.jellyfin.fragments.MediaInfoFragment"
+        android:label="{itemName}"
+        tools:layout="@layout/fragment_media_info">
+        <argument
+            android:name="itemId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="itemName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Media Info" />
     </fragment>
 </navigation>

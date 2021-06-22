@@ -21,4 +21,8 @@
     <string name="view_all">View all</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
+    <string name="genres">Genres</string>
+    <string name="director">Director</string>
+    <string name="writers">Writers</string>
+    <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
 </resources>
