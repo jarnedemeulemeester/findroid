@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="item"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            name="viewModel"
+            type="dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel" />
     </data>
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -22,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="@{item.originalTitle}"
+            android:text="@{viewModel.item.originalTitle}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <LinearLayout
@@ -36,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{item.productionYear}"
+                android:text="@{viewModel.item.productionYear.toString()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="2019" />
 
@@ -45,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{item.runTimeTicks.toString()}"
+                android:text="@{viewModel.item.runTimeTicks.toString()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="122 min" />
 
@@ -54,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{item.officialRating}"
+                android:text="@{viewModel.item.officialRating}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="PG-13" />
 
@@ -62,7 +61,7 @@
                 android:id="@+id/community_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{item.communityRating.toString()}"
+                android:text="@{viewModel.item.communityRating.toString()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="7.3" />
         </LinearLayout>
@@ -162,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="@{item.overview}"
+            android:text="@{viewModel.item.overview}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
 
