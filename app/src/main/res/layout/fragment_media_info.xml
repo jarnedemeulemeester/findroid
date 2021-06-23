@@ -16,13 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
         tools:context=".fragments.MediaInfoFragment">
 
         <TextView
             android:id="@+id/original_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="12dp"
             android:text="@{viewModel.item.originalTitle}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -30,6 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="16dp">
 
 
@@ -73,6 +74,7 @@
             android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="12dp"
             android:orientation="vertical">
 
@@ -169,6 +171,7 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="24dp"
             android:text="@{viewModel.item.overview}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -182,9 +185,23 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="12dp"
                 android:text="@string/cast_amp_crew"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textSize="18sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/people_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:people="@{viewModel.actors}"
+                tools:itemCount="3"
+                tools:listitem="@layout/person_item" />
         </LinearLayout>
 
     </LinearLayout>

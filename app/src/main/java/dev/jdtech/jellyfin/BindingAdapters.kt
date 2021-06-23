@@ -5,15 +5,13 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import dev.jdtech.jellyfin.adapters.CollectionListAdapter
-import dev.jdtech.jellyfin.adapters.ServerGridAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.adapters.ViewListAdapter
+import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.models.ViewItem
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemPerson
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -67,4 +65,24 @@ fun bindCollectionImage(imageView: ImageView, item: BaseItemDto) {
         .into(imageView)
 
     imageView.contentDescription = "${item.name} image"
+}
+
+@BindingAdapter("people")
+fun bindPeople(recyclerView: RecyclerView, data: List<BaseItemPerson>?) {
+    val adapter = recyclerView.adapter as PersonListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("personImage")
+fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+    Glide
+        .with(imageView.context)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/Primary"))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .placeholder(R.color.neutral_800)
+        .into(imageView)
+
+    imageView.contentDescription = "${person.name} poster"
 }
