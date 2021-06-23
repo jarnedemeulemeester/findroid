@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel" />
@@ -18,6 +20,7 @@
         tools:context=".fragments.MediaInfoFragment">
 
         <TextView
+            android:id="@+id/original_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -35,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{viewModel.item.productionYear.toString()}"
+                android:text="@{viewModel.dateString}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="2019" />
 
@@ -44,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{viewModel.item.runTimeTicks.toString()}"
+                android:text="@{viewModel.runTime}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="122 min" />
 
@@ -70,14 +73,15 @@
             android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/genres_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                android:visibility="@{viewModel.item.genres.size() &lt; 1 ? View.GONE : View.VISIBLE}">
 
                 <TextView
                     android:id="@+id/genres_title"
@@ -93,6 +97,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
+                    android:text="@{viewModel.genresString}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +109,8 @@
                 android:id="@+id/director_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                android:visibility="@{viewModel.director == null ? View.GONE : View.VISIBLE}">
 
                 <TextView
                     android:id="@+id/director_title"
@@ -120,6 +126,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
+                    android:text="@{viewModel.director.name}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +137,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/writers_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:visibility="@{viewModel.writers.size() &lt; 1 ? View.GONE : View.VISIBLE}">
 
                 <TextView
                     android:id="@+id/writers_title"
@@ -138,7 +147,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/writers"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -147,6 +155,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
+                    android:text="@{viewModel.writersString}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

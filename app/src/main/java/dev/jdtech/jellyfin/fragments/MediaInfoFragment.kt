@@ -35,6 +35,14 @@ class MediaInfoFragment : Fragment() {
         val viewModelFactory = MediaInfoViewModelFactory(requireNotNull(this.activity).application, args.itemId)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MediaInfoViewModel::class.java)
         binding.viewModel = viewModel
+
+        viewModel.item.observe(viewLifecycleOwner, {
+            if (it.originalTitle != it.name) {
+                binding.originalTitle.visibility = View.VISIBLE
+            } else {
+                binding.originalTitle.visibility = View.GONE
+            }
+        })
     }
 
 }
