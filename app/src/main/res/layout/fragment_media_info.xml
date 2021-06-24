@@ -75,6 +75,63 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginHorizontal="24dp">
+
+                <ImageButton
+                    android:id="@+id/play_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_setup_background"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="12dp"
+                    android:src="@drawable/ic_play"
+                    android:contentDescription="@string/play_button_description" />
+
+                <ImageButton
+                    android:id="@+id/trailer_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_film"
+                    android:contentDescription="@string/trailer_button_description" />
+
+                <ImageButton
+                    android:id="@+id/shuffle_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_shuffle"
+                    android:contentDescription="@string/shuffle_button_description" />
+
+                <ImageButton
+                    android:id="@+id/check_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_check"
+                    android:contentDescription="@string/check_button_description" />
+
+                <ImageButton
+                    android:id="@+id/favorite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_accent_background"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_heart"
+                    android:contentDescription="@string/favorite_button_description" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -185,8 +242,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:visibility="@{viewModel.seasons != null ? View.VISIBLE : View.GONE}"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="@{viewModel.seasons != null ? View.VISIBLE : View.GONE}">
 
                 <TextView
                     android:layout_width="match_parent"
