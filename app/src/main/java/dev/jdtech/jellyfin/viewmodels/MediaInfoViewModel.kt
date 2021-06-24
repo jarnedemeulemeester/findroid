@@ -42,6 +42,9 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
     private val _dateString = MutableLiveData<String>()
     val dateString: LiveData<String> = _dateString
 
+    private val _seasons = MutableLiveData<List<BaseItemDto>>()
+    val seasons: LiveData<List<BaseItemDto>> = _seasons
+
     init {
         viewModelScope.launch {
             _item.value = getItemDetails(itemId)
@@ -53,6 +56,9 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
             _item.value!!.status?.let { Log.i("MediaInfoViewModel", it) }
+            if (_item.value!!.type == "Series") {
+                _seasons.value = getSeasons(itemId)
+            }
         }
     }
 
@@ -62,6 +68,14 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
             item = jellyfinApi.userLibraryApi.getItem(jellyfinApi.userId!!, itemId).content
         }
         return item
+    }
+
+    private suspend fun getSeasons(itemId: UUID): List<BaseItemDto>? {
+        val seasons: List<BaseItemDto>?
+        withContext(Dispatchers.IO) {
+            seasons = jellyfinApi.showsApi.getSeasons(itemId, jellyfinApi.userId!!).content.items
+        }
+        return seasons
     }
 
     private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson>? {

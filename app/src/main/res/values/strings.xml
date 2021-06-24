@@ -25,4 +25,5 @@
     <string name="director">Director</string>
     <string name="writers">Writers</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
+    <string name="seasons">Seasons</string>
 </resources>

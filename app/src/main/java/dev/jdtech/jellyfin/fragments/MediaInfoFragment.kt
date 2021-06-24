@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
+import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModelFactory
@@ -45,6 +46,7 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        binding.seasonsRecyclerView.adapter = ViewItemListAdapter(ViewItemListAdapter.OnClickListener {}, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter()
     }
 
