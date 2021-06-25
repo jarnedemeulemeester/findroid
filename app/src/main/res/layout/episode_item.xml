@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="episode"
+            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/episode_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageView" />
+
+        <ImageView
+            android:id="@+id/played_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="4dp"
+            android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_check"
+            app:layout_constraintEnd_toEndOf="@id/episode_image"
+            app:layout_constraintTop_toTopOf="@id/episode_image"
+            android:contentDescription="@string/episode_watched_indicator" />
+
+        <TextView
+            android:id="@+id/episode_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintBottom_toTopOf="@id/episode_desc"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/episode_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1. To You, in 2000 Years: The Fall of Shiganshina, Part 1" />
+
+        <TextView
+            android:id="@+id/episode_desc"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/episode_title"
+            app:layout_constraintTop_toBottomOf="@id/episode_title"
+            tools:text="After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy. After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
