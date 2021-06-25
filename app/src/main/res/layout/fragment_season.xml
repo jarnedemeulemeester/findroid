@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.SeasonFragment">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="dev.jdtech.jellyfin.viewmodels.SeasonViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_setup_background"
+                android:contentDescription="@string/play_button_description"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_play" />
+
+            <ImageButton
+                android:id="@+id/trailer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_accent_background"
+                android:contentDescription="@string/trailer_button_description"
+                android:padding="12dp"
+                android:src="@drawable/ic_film" />
+
+            <ImageButton
+                android:id="@+id/shuffle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_accent_background"
+                android:contentDescription="@string/shuffle_button_description"
+                android:padding="12dp"
+                android:src="@drawable/ic_shuffle" />
+
+            <ImageButton
+                android:id="@+id/check_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_accent_background"
+                android:contentDescription="@string/check_button_description"
+                android:padding="12dp"
+                android:src="@drawable/ic_check" />
+
+            <ImageButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_accent_background"
+                android:contentDescription="@string/favorite_button_description"
+                android:padding="12dp"
+                android:src="@drawable/ic_heart" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/episodes_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            app:episodes="@{viewModel.episodes}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttons"
+            tools:itemCount="4"
+            tools:listitem="@layout/episode_item" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

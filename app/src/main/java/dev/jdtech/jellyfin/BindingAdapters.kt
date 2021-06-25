@@ -86,3 +86,23 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
 
     imageView.contentDescription = "${person.name} poster"
 }
+
+@BindingAdapter("episodes")
+fun bindEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
+    val adapter = recyclerView.adapter as EpisodeListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("episodeImage")
+fun bindEpisodeImage(imageView: ImageView, episode: BaseItemDto) {
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+    Glide
+        .with(imageView.context)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${episode.id}/Images/Primary"))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .placeholder(R.color.neutral_800)
+        .into(imageView)
+
+    imageView.contentDescription = "${episode.name} poster"
+}

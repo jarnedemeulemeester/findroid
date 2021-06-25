@@ -9,7 +9,7 @@
         android:id="@+id/navigation_home"
         android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_home_to_libraryFragment"
             app:destination="@id/libraryFragment"
@@ -76,8 +76,28 @@
             app:argType="java.util.UUID" />
         <argument
             android:name="itemName"
+            android:defaultValue="Media Info"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="Media Info" />
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_mediaInfoFragment_to_seasonFragment"
+            app:destination="@id/seasonFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/seasonFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
+        android:label="{seasonName}"
+        tools:layout="@layout/fragment_season">
+        <argument
+            android:name="seriesId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="seasonId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="seasonName"
+            android:defaultValue="Season"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

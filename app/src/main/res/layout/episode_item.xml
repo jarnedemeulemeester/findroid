@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="episode"
@@ -13,13 +14,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
+            app:episodeImage="@{episode}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,19 +34,20 @@
             android:layout_height="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:padding="4dp"
-            android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
             android:background="@drawable/circle_background"
+            android:contentDescription="@string/episode_watched_indicator"
+            android:padding="4dp"
             android:src="@drawable/ic_check"
+            android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image"
-            android:contentDescription="@string/episode_watched_indicator" />
+            app:layout_constraintTop_toTopOf="@id/episode_image" />
 
         <TextView
             android:id="@+id/episode_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:text="@{episode.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintBottom_toTopOf="@id/episode_desc"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +59,7 @@
             android:id="@+id/episode_desc"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:text="@{episode.overview}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

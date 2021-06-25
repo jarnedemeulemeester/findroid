@@ -1,16 +1,17 @@
 package dev.jdtech.jellyfin.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
+import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModelFactory
 
 class MediaInfoFragment : Fragment() {
@@ -34,7 +35,8 @@ class MediaInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val viewModelFactory = MediaInfoViewModelFactory(requireNotNull(this.activity).application, args.itemId)
+        val viewModelFactory =
+            MediaInfoViewModelFactory(requireNotNull(this.activity).application, args.itemId)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MediaInfoViewModel::class.java)
         binding.viewModel = viewModel
 
@@ -46,7 +48,16 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
-        binding.seasonsRecyclerView.adapter = ViewItemListAdapter(ViewItemListAdapter.OnClickListener {}, fixedWidth = true)
+        binding.seasonsRecyclerView.adapter =
+            ViewItemListAdapter(ViewItemListAdapter.OnClickListener {
+                findNavController().navigate(
+                    MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
+                        it.seriesId!!,
+                        it.id,
+                        it.name
+                    )
+                )
+            }, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter()
     }
 
