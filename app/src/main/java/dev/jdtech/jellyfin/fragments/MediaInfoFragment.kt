@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,13 +42,21 @@ class MediaInfoFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(MediaInfoViewModel::class.java)
         binding.viewModel = viewModel
 
-        viewModel.item.observe(viewLifecycleOwner, {
-            if (it.originalTitle != it.name) {
+        viewModel.item.observe(viewLifecycleOwner, { item ->
+            if (item.originalTitle != item.name) {
                 binding.originalTitle.visibility = View.VISIBLE
             } else {
                 binding.originalTitle.visibility = View.GONE
             }
+            if (item.trailerCount != null && item.trailerCount!! < 1) {
+                binding.trailerButton.visibility = View.GONE
+            }
         })
+
+        binding.trailerButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.item.value?.remoteTrailers?.get(0)?.url))
+            startActivity(intent)
+        }
 
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener {
