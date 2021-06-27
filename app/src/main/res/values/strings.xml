@@ -32,4 +32,5 @@
     <string name="check_button_description">Mark as watched or unwatched</string>
     <string name="favorite_button_description">Favorite</string>
     <string name="episode_watched_indicator">Episode watched indicator</string>
+    <string name="episode_name">%1$d. %2$s</string>
 </resources>
