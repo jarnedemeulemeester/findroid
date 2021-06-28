@@ -47,6 +47,21 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
     imageView.contentDescription = "${item.name} poster"
 }
 
+@BindingAdapter("itemBackdropImage")
+fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
+    if (item != null) {
+        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+        Glide
+            .with(imageView.context)
+            .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/Backdrop"))
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(imageView)
+
+        imageView.contentDescription = "${item.name} backdrop"
+    }
+}
+
 @BindingAdapter("collections")
 fun bindCollections(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as CollectionListAdapter
