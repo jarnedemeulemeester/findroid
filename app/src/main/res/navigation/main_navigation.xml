@@ -95,6 +95,11 @@
             android:name="seasonId"
             app:argType="java.util.UUID" />
         <argument
+            android:name="seriesName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Series" />
+        <argument
             android:name="seasonName"
             android:defaultValue="Season"
             app:argType="string"

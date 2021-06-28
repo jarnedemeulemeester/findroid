@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.models.ViewItem
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import java.util.*
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -59,6 +60,19 @@ fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
             .into(imageView)
 
         imageView.contentDescription = "${item.name} backdrop"
+    }
+}
+
+@BindingAdapter("itemBackdropById")
+fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
+    if (itemId != null) {
+        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+        Glide
+            .with(imageView.context)
+            .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Backdrop"))
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(imageView)
     }
 }
 
@@ -120,4 +134,16 @@ fun bindEpisodeImage(imageView: ImageView, episode: BaseItemDto) {
         .into(imageView)
 
     imageView.contentDescription = "${episode.name} poster"
+}
+
+@BindingAdapter("seasonPoster")
+fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+    Glide
+        .with(imageView.context)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${seasonId}/Images/Primary"))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .placeholder(R.color.neutral_800)
+        .into(imageView)
 }

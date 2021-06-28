@@ -64,6 +64,7 @@ class MediaInfoFragment : Fragment() {
                     MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
                         it.seriesId!!,
                         it.id,
+                        it.seriesName,
                         it.name
                     )
                 )

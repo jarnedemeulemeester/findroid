@@ -55,7 +55,8 @@
                     android:text="@{viewModel.item.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     app:layout_constraintBottom_toTopOf="@id/original_title"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Alita: Battle Angel"/>
 
                 <TextView
                     android:id="@+id/original_title"

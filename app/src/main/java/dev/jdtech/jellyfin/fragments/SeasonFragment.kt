@@ -38,6 +38,10 @@ class SeasonFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(SeasonViewModel::class.java)
         binding.viewModel = viewModel
         binding.episodesRecyclerView.adapter = EpisodeListAdapter()
+        binding.seriesName.text = args.seriesName
+        binding.seasonName.text = args.seasonName
+        binding.seriesId = args.seriesId
+        binding.seasonId = args.seasonId
     }
 
 }
