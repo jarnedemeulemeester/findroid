@@ -147,3 +147,19 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
         .placeholder(R.color.neutral_800)
         .into(imageView)
 }
+
+@BindingAdapter("itemPrimaryImage")
+fun bindItemPrimaryImage(imageView: ImageView, item: BaseItemDto?) {
+    if (item != null) {
+        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+
+        Glide
+            .with(imageView.context)
+            .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/Primary"))
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .placeholder(R.color.neutral_800)
+            .into(imageView)
+
+        imageView.contentDescription = "${item.name} poster"
+    }
+}

@@ -31,8 +31,8 @@
                     android:id="@+id/item_banner"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    app:itemBackdropImage="@{viewModel.item}"
                     android:scaleType="centerCrop"
+                    app:itemBackdropImage="@{viewModel.item}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +56,7 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     app:layout_constraintBottom_toTopOf="@id/original_title"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Alita: Battle Angel"/>
+                    tools:text="Alita: Battle Angel" />
 
                 <TextView
                     android:id="@+id/original_title"
@@ -275,6 +275,41 @@
                 android:text="@{viewModel.item.overview}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp"
+                android:visibility="@{viewModel.nextUp != null ? View.VISIBLE : View.GONE}">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/next_up"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="8dp"
+                    app:itemPrimaryImage="@{viewModel.nextUp}"
+                    app:shapeAppearance="@style/roundedImageView" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    tools:text="The Girl Flautist" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
