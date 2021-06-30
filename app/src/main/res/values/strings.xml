@@ -33,6 +33,7 @@
     <string name="favorite_button_description">Favorite</string>
     <string name="episode_watched_indicator">Episode watched indicator</string>
     <string name="episode_name">%1$d. %2$s</string>
-    <string name="episode_name_extended">S%1$dE%2$d - %3$s</string>
-    <string name="next_up">Next up</string>
+    <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
+    <string name="next_up">Next Up</string>
+    <string name="latest_library">Latest %1$s</string>
 </resources>

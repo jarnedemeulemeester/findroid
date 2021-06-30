@@ -8,8 +8,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
-import dev.jdtech.jellyfin.models.View
-import dev.jdtech.jellyfin.models.ViewItem
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import java.util.*
@@ -21,7 +19,7 @@ fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
 }
 
 @BindingAdapter("views")
-fun bindViews(recyclerView: RecyclerView, data: List<View>?) {
+fun bindViews(recyclerView: RecyclerView, data: List<HomeItem>?) {
     val adapter = recyclerView.adapter as ViewListAdapter
     adapter.submitList(data)
 }
@@ -65,15 +63,13 @@ fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
 
 @BindingAdapter("itemBackdropById")
 fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
-    if (itemId != null) {
-        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
-        Glide
-            .with(imageView.context)
-            .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Backdrop"))
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(imageView)
-    }
+    Glide
+        .with(imageView.context)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Backdrop"))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(imageView)
 }
 
 @BindingAdapter("collections")
@@ -119,6 +115,12 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
 @BindingAdapter("episodes")
 fun bindEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as EpisodeListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("homeEpisodes")
+fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
+    val adapter = recyclerView.adapter as HomeEpisodeListAdapter
     adapter.submitList(data)
 }
 

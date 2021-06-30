@@ -2,7 +2,10 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
+import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.NextUp
 import dev.jdtech.jellyfin.models.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,8 +19,10 @@ class HomeViewModel(
 ) : AndroidViewModel(application) {
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
-    private val _views = MutableLiveData<List<View>>()
-    val views: LiveData<List<View>> = _views
+    private val nextUpString = application.resources.getString(R.string.next_up)
+
+    private val _views = MutableLiveData<List<HomeItem>>()
+    val views: LiveData<List<HomeItem>> = _views
 
     private val _items = MutableLiveData<List<BaseItemDto>>()
     val items: LiveData<List<BaseItemDto>> = _items
@@ -47,7 +52,14 @@ class HomeViewModel(
                     views.add(v)
                 }
 
-                _views.value = views
+                val nextUpItems = getNextUp()
+                val nextUp = NextUp(UUID.randomUUID(), nextUpString, nextUpItems)
+
+                _views.value = when (nextUpItems) {
+                    null -> views.map { HomeItem.ViewItem(it) }
+                    else -> listOf(HomeItem.NextUpSection(nextUp)) + views.map { HomeItem.ViewItem(it) }
+                }
+
                 _finishedLoading.value = true
             } catch (e: Exception) {
                 _finishedLoading.value = true
@@ -68,6 +80,14 @@ class HomeViewModel(
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             items = jellyfinApi.userLibraryApi.getLatestMedia(userId, parentId = parentId).content
+        }
+        return items
+    }
+
+    private suspend fun getNextUp(): List<BaseItemDto>? {
+        val items: List<BaseItemDto>?
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.showsApi.getNextUp(jellyfinApi.userId!!).content.items
         }
         return items
     }
