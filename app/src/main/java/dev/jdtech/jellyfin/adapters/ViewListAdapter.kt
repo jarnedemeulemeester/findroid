@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
-import dev.jdtech.jellyfin.models.NextUp
+import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
-import org.jellyfin.sdk.model.api.BaseItemDto
 import java.lang.ClassCastException
 import java.util.*
 
@@ -42,8 +41,8 @@ class ViewListAdapter(
 
     class NextUpViewHolder(private var binding: NextUpSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(section: HomeItem.NextUpSection) {
-            binding.section = section.nextUp
+        fun bind(section: HomeItem.Section) {
+            binding.section = section.homeSection
             binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter()
             binding.executePendingBindings()
         }
@@ -82,7 +81,7 @@ class ViewListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_NEXT_UP -> {
-                val view = getItem(position) as HomeItem.NextUpSection
+                val view = getItem(position) as HomeItem.Section
                 (holder as NextUpViewHolder).bind(view)
             }
             ITEM_VIEW_TYPE_VIEW -> {
@@ -94,7 +93,7 @@ class ViewListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is HomeItem.NextUpSection -> ITEM_VIEW_TYPE_NEXT_UP
+            is HomeItem.Section -> ITEM_VIEW_TYPE_NEXT_UP
             is HomeItem.ViewItem -> ITEM_VIEW_TYPE_VIEW
         }
     }
@@ -105,8 +104,8 @@ class ViewListAdapter(
 }
 
 sealed class HomeItem {
-    data class NextUpSection(val nextUp: NextUp) : HomeItem() {
-        override val id = nextUp.id
+    data class Section(val homeSection: HomeSection) : HomeItem() {
+        override val id = homeSection.id
     }
 
     data class ViewItem(val view: View) : HomeItem() {

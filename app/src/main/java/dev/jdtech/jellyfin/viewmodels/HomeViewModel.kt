@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.models.NextUp
+import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +19,7 @@ class HomeViewModel(
 ) : AndroidViewModel(application) {
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
+    private val continueWatchingString = application.resources.getString(R.string.continue_watching)
     private val nextUpString = application.resources.getString(R.string.next_up)
 
     private val _views = MutableLiveData<List<HomeItem>>()
@@ -52,13 +53,23 @@ class HomeViewModel(
                     views.add(v)
                 }
 
-                val nextUpItems = getNextUp()
-                val nextUp = NextUp(UUID.randomUUID(), nextUpString, nextUpItems)
+                val items = mutableListOf<HomeItem>()
 
-                _views.value = when (nextUpItems) {
-                    null -> views.map { HomeItem.ViewItem(it) }
-                    else -> listOf(HomeItem.NextUpSection(nextUp)) + views.map { HomeItem.ViewItem(it) }
+                val resumeItems = getResumeItems()
+                val resumeSection = HomeSection(UUID.randomUUID(), continueWatchingString, resumeItems)
+
+                if (!resumeItems.isNullOrEmpty()) {
+                    items.add(HomeItem.Section(resumeSection))
                 }
+
+                val nextUpItems = getNextUp()
+                val nextUpSection = HomeSection(UUID.randomUUID(), nextUpString, nextUpItems)
+
+                if (!nextUpItems.isNullOrEmpty()) {
+                    items.add(HomeItem.Section(nextUpSection))
+                }
+
+                _views.value = items + views.map { HomeItem.ViewItem(it) }
 
                 _finishedLoading.value = true
             } catch (e: Exception) {
@@ -92,6 +103,13 @@ class HomeViewModel(
         return items
     }
 
+    private suspend fun getResumeItems(): List<BaseItemDto>? {
+        val items: List<BaseItemDto>?
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.itemsApi.getResumeItems(jellyfinApi.userId!!).content.items
+        }
+        return items
+    }
 }
 
 private fun BaseItemDto.toView(): View {
