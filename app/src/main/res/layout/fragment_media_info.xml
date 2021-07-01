@@ -306,7 +306,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     tools:text="The Girl Flautist" />
 
             </LinearLayout>

@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.adapters
 
+import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +15,19 @@ class HomeEpisodeListAdapter : ListAdapter<BaseItemDto, HomeEpisodeListAdapter.E
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: BaseItemDto) {
             binding.episode = episode
+            if (episode.userData?.playedPercentage != null) {
+                binding.progressBar.layoutParams.width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    (episode.userData?.playedPercentage?.times(2.24))!!.toFloat(), binding.progressBar.context.resources.displayMetrics).toInt()
+                binding.progressBar.visibility = View.VISIBLE
+            }
+
+            if (episode.type == "Movie") {
+                binding.primaryName.text = episode.name
+                binding.secondaryName.visibility = View.GONE
+            } else if (episode.type == "Episode") {
+                binding.primaryName.text = episode.seriesName
+            }
+
             binding.executePendingBindings()
         }
     }
