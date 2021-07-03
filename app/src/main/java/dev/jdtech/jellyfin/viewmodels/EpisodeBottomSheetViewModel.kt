@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.text.DateFormat
+import java.time.ZoneOffset
 import java.util.*
 
 class EpisodeBottomSheetViewModel(application: Application, episodeId: UUID) : AndroidViewModel(application) {
@@ -42,23 +44,13 @@ class EpisodeBottomSheetViewModel(application: Application, episodeId: UUID) : A
     }
 
     private fun getDateString(item: BaseItemDto): String {
-        val dateString: String = item.productionYear.toString()
-        return when (item.status) {
-            "Continuing" -> dateString.plus(" - Present")
-            "Ended" -> {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return if (item.productionYear == item.endDate?.year) {
-                        dateString
-                    } else {
-                        dateString.plus(" - ${item.endDate?.year}")
-                    }
-                } else {
-                    // TODO: Implement a way to get the year from LocalDateTime in Android < O
-                    dateString
-                }
-
-            }
-            else -> dateString
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val instant = item.premiereDate?.toInstant(ZoneOffset.UTC)
+            val date = Date.from(instant)
+            DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+        } else {
+            // TODO: Implement a way to get the year from LocalDateTime in Android < O
+            item.premiereDate.toString()
         }
     }
 }

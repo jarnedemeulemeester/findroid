@@ -40,11 +40,24 @@ class HomeFragment : Fragment() {
                 )
             )
         }, HomeEpisodeListAdapter.OnClickListener {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
-                    it.id
-                )
-            )
+            when (it.type) {
+                "Episode" -> {
+                    findNavController().navigate(
+                        HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
+                            it.id
+                        )
+                    )
+                }
+                "Movie" -> {
+                    findNavController().navigate(
+                        HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
+                            it.id,
+                            it.name
+                        )
+                    )
+                }
+            }
+
         })
 
         binding.errorLayout.findViewById<View>(R.id.retry_button).setOnClickListener {

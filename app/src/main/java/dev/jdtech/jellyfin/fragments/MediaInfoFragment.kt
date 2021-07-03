@@ -58,6 +58,10 @@ class MediaInfoFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.nextUp.setOnClickListener {
+            findNavController().navigate(MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(viewModel.nextUp.value!!.id))
+        }
+
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener {
                 findNavController().navigate(

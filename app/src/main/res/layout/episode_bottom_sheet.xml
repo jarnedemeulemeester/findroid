@@ -13,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="24dp">
+        android:paddingBottom="24dp"
+        android:background="?android:attr/colorBackgroundFloating">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
@@ -22,10 +23,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:scaleType="centerCrop"
+            app:itemPrimaryImage="@{viewModel.item}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/roundedImageView"
-            app:itemPrimaryImage="@{viewModel.item}"/>
+            app:shapeAppearance="@style/roundedImageView" />
 
         <TextView
             android:id="@+id/episode_name"
@@ -33,8 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="24dp"
+            android:text="@{String.format(@string/episode_name_extended, viewModel.item.parentIndexNumber, viewModel.item.indexNumber, viewModel.item.name)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="@{viewModel.item.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/episode_image"
             app:layout_constraintTop_toTopOf="@id/episode_image"
@@ -45,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
+            android:gravity="bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/episode_name"
             app:layout_constraintTop_toBottomOf="@id/episode_name">
@@ -55,8 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:text="@{viewModel.dateString}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="4/6/2013" />
 
             <TextView
@@ -64,16 +66,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:text="@{viewModel.runTime}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="26 min" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_star"
+                app:tint="#F2C94C" />
 
             <TextView
                 android:id="@+id/community_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:text="@{viewModel.item.communityRating.toString()}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="8.8" />
         </LinearLayout>
 
@@ -124,8 +133,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="12dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:text="@{viewModel.item.overview}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttons"

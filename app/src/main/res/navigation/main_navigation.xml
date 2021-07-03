@@ -85,6 +85,9 @@
         <action
             android:id="@+id/action_mediaInfoFragment_to_seasonFragment"
             app:destination="@id/seasonFragment" />
+        <action
+            android:id="@+id/action_mediaInfoFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
     </fragment>
     <fragment
         android:id="@+id/seasonFragment"

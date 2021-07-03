@@ -73,7 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:gravity="bottom">
 
 
                 <TextView
@@ -102,6 +103,13 @@
                     android:text="@{viewModel.item.officialRating}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     tools:text="PG-13" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_star"
+                    app:tint="#F2C94C" />
 
                 <TextView
                     android:id="@+id/community_rating"
@@ -279,8 +287,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginBottom="24dp"
+                android:orientation="vertical"
                 android:visibility="@{viewModel.nextUp != null ? View.VISIBLE : View.GONE}">
 
                 <TextView
@@ -292,22 +300,29 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textSize="18sp" />
 
-                <com.google.android.material.imageview.ShapeableImageView
+                <LinearLayout
+                    android:id="@+id/next_up"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginBottom="8dp"
-                    app:itemPrimaryImage="@{viewModel.nextUp}"
-                    app:shapeAppearance="@style/roundedImageView" />
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    tools:text="The Girl Flautist" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:adjustViewBounds="true"
+                        app:itemPrimaryImage="@{viewModel.nextUp}"
+                        app:shapeAppearance="@style/roundedImageView" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="The Girl Flautist" />
+                </LinearLayout>
 
             </LinearLayout>
 

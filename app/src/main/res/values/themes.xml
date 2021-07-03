@@ -13,5 +13,6 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/neutral_100</item>
+        <item name="android:colorBackgroundFloating">@color/neutral_100</item>
     </style>
 </resources>

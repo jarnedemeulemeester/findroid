@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
@@ -37,7 +38,14 @@ class SeasonFragment : Fragment() {
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(SeasonViewModel::class.java)
         binding.viewModel = viewModel
-        binding.episodesRecyclerView.adapter = EpisodeListAdapter()
+        binding.episodesRecyclerView.adapter =
+            EpisodeListAdapter(EpisodeListAdapter.OnClickListener {
+                findNavController().navigate(
+                    SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
+                        it.id
+                    )
+                )
+            })
         binding.seriesName.text = args.seriesName
         binding.seasonName.text = args.seasonName
         binding.seriesId = args.seriesId

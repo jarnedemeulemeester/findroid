@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 
-class EpisodeListAdapter :
+class EpisodeListAdapter(private val onClickListener: OnClickListener) :
     ListAdapter<BaseItemDto, EpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
@@ -41,6 +41,13 @@ class EpisodeListAdapter :
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(item)
+        }
         holder.bind(item)
+    }
+
+    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
+        fun onClick(item: BaseItemDto) = clickListener(item)
     }
 }
