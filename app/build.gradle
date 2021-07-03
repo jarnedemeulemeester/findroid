@@ -42,11 +42,11 @@ dependencies {
     def room_version = "2.3.0"
     def jellyfin_version = "1.0.0-beta.9"
 
-    implementation 'androidx.core:core-ktx:1.5.0'
+    implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
 
     // Material
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     // ConstraintLayout
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
