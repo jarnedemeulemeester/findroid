@@ -24,6 +24,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
     </fragment>
 
     <fragment
@@ -104,5 +107,17 @@
             android:defaultValue="Season"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/episodeBottomSheetFragment"
+        android:name="dev.jdtech.jellyfin.fragments.EpisodeBottomSheetFragment"
+        android:label="EpisodeBottomSheetFragment"
+        tools:layout="@layout/episode_bottom_sheet">
+        <argument
+            android:name="episodeId"
+            app:argType="java.util.UUID" />
+    </dialog>
 </navigation>

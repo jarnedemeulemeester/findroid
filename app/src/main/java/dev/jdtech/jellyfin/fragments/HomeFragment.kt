@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
@@ -36,6 +37,12 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     it.id,
                     it.name
+                )
+            )
+        }, HomeEpisodeListAdapter.OnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
+                    it.id
                 )
             )
         })

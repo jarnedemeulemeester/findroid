@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
+import org.jellyfin.sdk.model.api.BaseItemDto
 import java.lang.ClassCastException
 import java.util.*
 
@@ -17,7 +19,8 @@ private const val ITEM_VIEW_TYPE_VIEW = 1
 
 class ViewListAdapter(
     private val onClickListener: OnClickListener,
-    private val onItemClickListener: ViewItemListAdapter.OnClickListener
+    private val onItemClickListener: ViewItemListAdapter.OnClickListener,
+    private val onNextUpClickListener: HomeEpisodeListAdapter.OnClickListener
 ) : ListAdapter<HomeItem, RecyclerView.ViewHolder>(DiffCallback) {
     class ViewViewHolder(private var binding: ViewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -28,8 +31,7 @@ class ViewListAdapter(
         ) {
             val view = dataItem.view
             binding.view = view
-            // TODO: Change to string placeholder
-            binding.viewName.text = "Latest ${view.name}"
+            binding.viewName.text = String.format(binding.viewName.context.resources.getString(R.string.latest_library), view.name)
             binding.itemsRecyclerView.adapter =
                 ViewItemListAdapter(onItemClickListener, fixedWidth = true)
             binding.viewAll.setOnClickListener {
@@ -41,9 +43,9 @@ class ViewListAdapter(
 
     class NextUpViewHolder(private var binding: NextUpSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(section: HomeItem.Section) {
+        fun bind(section: HomeItem.Section, onClickListener: HomeEpisodeListAdapter.OnClickListener) {
             binding.section = section.homeSection
-            binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter()
+            binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener)
             binding.executePendingBindings()
         }
     }
@@ -82,7 +84,7 @@ class ViewListAdapter(
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_NEXT_UP -> {
                 val view = getItem(position) as HomeItem.Section
-                (holder as NextUpViewHolder).bind(view)
+                (holder as NextUpViewHolder).bind(view, onNextUpClickListener)
             }
             ITEM_VIEW_TYPE_VIEW -> {
                 val view = getItem(position) as HomeItem.ViewItem
