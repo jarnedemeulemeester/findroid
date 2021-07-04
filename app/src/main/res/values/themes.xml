@@ -10,9 +10,15 @@
         <item name="colorSecondaryVariant">@color/secondary_variant</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/neutral_100</item>
         <item name="android:colorBackgroundFloating">@color/neutral_100</item>
+    </style>
+
+    <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenBackground">@color/neutral_100</item>
+        <item name="postSplashScreenTheme">@style/Theme.Jellyfin</item>
     </style>
 </resources>

@@ -16,7 +16,8 @@
             android:label="@string/title_activity_main" />
         <activity
             android:name=".SetupActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.JellyfinSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

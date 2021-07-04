@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 'android-S'
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -43,6 +43,7 @@ dependencies {
     def jellyfin_version = "1.0.0-beta.9"
 
     implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-splashscreen:1.0.0-alpha01'
     implementation 'androidx.appcompat:appcompat:1.3.0'
 
     // Material
