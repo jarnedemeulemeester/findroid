@@ -37,14 +37,26 @@ class ServerSelectViewModel(
     }
 
     fun connectToServer(server: Server) {
-        JellyfinApi.newInstance(application, server.address).apply {
+        val jellyfinApi = JellyfinApi.newInstance(application, server.address).apply {
             api.accessToken = server.accessToken
             userId = UUID.fromString(server.userId)
         }
+
+        viewModelScope.launch {
+            postCapabilities(jellyfinApi)
+        }
+
+
         _navigateToMain.value = true
     }
 
     fun doneNavigatingToMain() {
         _navigateToMain.value = false
+    }
+
+    private suspend fun postCapabilities(jellyfinApi: JellyfinApi) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.sessionApi.postCapabilities(playableMediaTypes = listOf("Video"), supportsMediaControl = false, supportsSync = false, supportsPersistentIdentifier = true)
+        }
     }
 }
