@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
@@ -12,11 +13,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
-class ServerSelectViewModel(
-    val database: ServerDatabaseDao,
-    val application: Application,
+@HiltViewModel
+class ServerSelectViewModel
+@Inject
+constructor(
+    private val application: Application,
+    private val database: ServerDatabaseDao,
 ) : ViewModel() {
+
     private val _servers = database.getAllServers()
     val servers: LiveData<List<Server>> = _servers
 
@@ -56,7 +62,12 @@ class ServerSelectViewModel(
 
     private suspend fun postCapabilities(jellyfinApi: JellyfinApi) {
         withContext(Dispatchers.IO) {
-            jellyfinApi.sessionApi.postCapabilities(playableMediaTypes = listOf("Video"), supportsMediaControl = false, supportsSync = false, supportsPersistentIdentifier = true)
+            jellyfinApi.sessionApi.postCapabilities(
+                playableMediaTypes = listOf("Video"),
+                supportsMediaControl = false,
+                supportsSync = false,
+                supportsPersistentIdentifier = true
+            )
         }
     }
 }

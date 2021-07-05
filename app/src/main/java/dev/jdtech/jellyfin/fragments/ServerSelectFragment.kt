@@ -6,33 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
-import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModelFactory
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 
-
+@AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
+
+    private lateinit var binding: FragmentServerSelectBinding
+    private val viewModel: ServerSelectViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentServerSelectBinding.inflate(inflater)
-
-        val application = requireNotNull(this.activity).application
-
-        val dataSource = ServerDatabase.getInstance(application).serverDatabaseDao
-
-        val viewModelFactory = ServerSelectViewModelFactory(dataSource, application)
-        val viewModel: ServerSelectViewModel by viewModels { viewModelFactory }
+        binding = FragmentServerSelectBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
+
         binding.viewModel = viewModel
+
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(ServerGridAdapter.OnClickListener { server ->
                 viewModel.connectToServer(server)
@@ -45,16 +42,24 @@ class ServerSelectFragment : Fragment() {
             })
 
         binding.buttonAddServer.setOnClickListener {
-            this.findNavController().navigate(R.id.action_serverSelectFragment_to_addServerFragment)
+            navigateToAddServerFragment()
         }
 
         viewModel.navigateToMain.observe(viewLifecycleOwner, {
             if (it) {
-                findNavController().navigate(R.id.action_serverSelectFragment_to_mainActivity)
-                viewModel.doneNavigatingToMain()
+                navigateToMainActivity()
             }
         })
 
         return binding.root
+    }
+
+    private fun navigateToAddServerFragment() {
+        findNavController().navigate(R.id.action_serverSelectFragment_to_addServerFragment)
+    }
+
+    private fun navigateToMainActivity() {
+        findNavController().navigate(R.id.action_serverSelectFragment_to_mainActivity)
+        viewModel.doneNavigatingToMain()
     }
 }

@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -37,12 +38,18 @@ android {
     buildFeatures {
         dataBinding true
     }
+
+    kapt {
+        javacOptions {
+            // These options are normally set automatically via the Hilt Gradle plugin, but we
+            // set them manually to workaround a bug in the Kotlin 1.5.20
+            option("-Adagger.fastInit=ENABLED")
+            option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+        }
+    }
 }
 
 dependencies {
-    def room_version = "2.3.0"
-    def jellyfin_version = "1.0.0-beta.9"
-
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha01'
     implementation 'androidx.appcompat:appcompat:1.3.0'
@@ -62,16 +69,23 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 
     // Room
+    def room_version = "2.3.0"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
     // Jellyfin
+    def jellyfin_version = "1.0.0-beta.9"
     implementation "org.jellyfin.sdk:jellyfin-platform-android:$jellyfin_version"
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
+
+    // Hilt
+    def hilt_version = "2.37"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
