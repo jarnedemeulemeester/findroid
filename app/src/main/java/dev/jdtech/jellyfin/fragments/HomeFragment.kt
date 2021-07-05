@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
@@ -14,9 +13,11 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 class HomeFragment : Fragment() {
 
+    private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
@@ -24,40 +25,21 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
-                    it.id,
-                    it.name
-                )
-            )
+            navigateToLibraryFragment(it)
         }, ViewItemListAdapter.OnClickListener {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    it.id,
-                    it.name
-                )
-            )
-        }, HomeEpisodeListAdapter.OnClickListener {
-            when (it.type) {
+            navigateToMediaInfoFragment(it)
+        }, HomeEpisodeListAdapter.OnClickListener { item ->
+            when (item.type) {
                 "Episode" -> {
-                    findNavController().navigate(
-                        HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
-                            it.id
-                        )
-                    )
+                    navigateToEpisodeBottomSheetFragment(item)
                 }
                 "Movie" -> {
-                    findNavController().navigate(
-                        HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                            it.id,
-                            it.name
-                        )
-                    )
+                    navigateToMediaInfoFragment(item)
                 }
             }
 
@@ -68,11 +50,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            if (it) {
-                binding.loadingIndicator.visibility = View.GONE
-            } else {
-                binding.loadingIndicator.visibility = View.VISIBLE
-            }
+            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
         })
 
         viewModel.error.observe(viewLifecycleOwner, {
@@ -86,5 +64,31 @@ class HomeFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
+                view.id,
+                view.name
+            )
+        )
+    }
+
+    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
+                item.id,
+                item.name
+            )
+        )
+    }
+
+    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
+                episode.id
+            )
+        )
     }
 }

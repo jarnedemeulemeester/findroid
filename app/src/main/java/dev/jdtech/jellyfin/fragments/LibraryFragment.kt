@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModelFactory
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 class LibraryFragment : Fragment() {
 
@@ -37,13 +38,17 @@ class LibraryFragment : Fragment() {
         val viewModel: LibraryViewModel by viewModels { viewModelFactory }
         binding.viewModel = viewModel
         binding.itemsRecyclerView.adapter =
-            ViewItemListAdapter(ViewItemListAdapter.OnClickListener {
-                findNavController().navigate(
-                    LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-                        it.id,
-                        it.name
-                    )
-                )
+            ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
+                navigateToMediaInfoFragment(item)
             })
+    }
+
+    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
+        findNavController().navigate(
+            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
+                item.id,
+                item.name
+            )
+        )
     }
 }

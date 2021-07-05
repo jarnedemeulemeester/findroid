@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.api
 
 import android.content.Context
-import android.util.Log
 import dev.jdtech.jellyfin.BuildConfig
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.android

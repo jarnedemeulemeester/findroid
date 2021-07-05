@@ -1,13 +1,12 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 
@@ -38,11 +37,15 @@ class LoginFragment : Fragment() {
 
         viewModel.navigateToMain.observe(viewLifecycleOwner, {
             if (it) {
-                findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
-                viewModel.doneNavigatingToMain()
+                navigateToMainActivity()
             }
         })
 
         return binding.root
+    }
+
+    private fun navigateToMainActivity() {
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity())
+        viewModel.doneNavigatingToMain()
     }
 }

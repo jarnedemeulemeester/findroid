@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModelFactory
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 class MediaInfoFragment : Fragment() {
 
@@ -54,12 +55,15 @@ class MediaInfoFragment : Fragment() {
         })
 
         binding.trailerButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.item.value?.remoteTrailers?.get(0)?.url))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(viewModel.item.value?.remoteTrailers?.get(0)?.url)
+            )
             startActivity(intent)
         }
 
         binding.nextUp.setOnClickListener {
-            findNavController().navigate(MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(viewModel.nextUp.value!!.id))
+            navigateToEpisodeBottomSheetFragment(viewModel.nextUp.value!!)
         }
 
         binding.seasonsRecyclerView.adapter =
@@ -76,4 +80,11 @@ class MediaInfoFragment : Fragment() {
         binding.peopleRecyclerView.adapter = PersonListAdapter()
     }
 
+    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(
+                episode.id
+            )
+        )
+    }
 }

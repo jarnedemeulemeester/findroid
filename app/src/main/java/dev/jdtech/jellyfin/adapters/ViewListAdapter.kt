@@ -10,8 +10,6 @@ import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
-import org.jellyfin.sdk.model.api.BaseItemDto
-import java.lang.ClassCastException
 import java.util.*
 
 private const val ITEM_VIEW_TYPE_NEXT_UP = 0

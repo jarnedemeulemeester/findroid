@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModelFactory
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 class SeasonFragment : Fragment() {
 
@@ -38,12 +39,8 @@ class SeasonFragment : Fragment() {
         val viewModel: SeasonViewModel by viewModels { viewModelFactory }
         binding.viewModel = viewModel
         binding.episodesRecyclerView.adapter =
-            EpisodeListAdapter(EpisodeListAdapter.OnClickListener {
-                findNavController().navigate(
-                    SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
-                        it.id
-                    )
-                )
+            EpisodeListAdapter(EpisodeListAdapter.OnClickListener { episode ->
+                navigateToEpisodeBottomSheetFragment(episode)
             })
         binding.seriesName.text = args.seriesName
         binding.seasonName.text = args.seasonName
@@ -51,4 +48,11 @@ class SeasonFragment : Fragment() {
         binding.seasonId = args.seasonId
     }
 
+    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+        findNavController().navigate(
+            SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
+                episode.id
+            )
+        )
+    }
 }

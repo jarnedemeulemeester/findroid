@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.PersonLookupInfo
 import java.util.*
 
 class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewModel(application) {

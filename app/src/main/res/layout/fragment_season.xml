@@ -34,14 +34,15 @@
 
             <ImageView
                 android:id="@+id/item_banner"
-                itemBackdropById="@{seriesId}"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
+                app:itemBackdropById="@{seriesId}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/series_poster"/>
 
             <FrameLayout
                 android:layout_width="0dp"

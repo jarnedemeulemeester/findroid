@@ -6,21 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
 class AddServerFragment : Fragment() {
 
+    private lateinit var binding: FragmentAddServerBinding
     private val viewModel: AddServerViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentAddServerBinding.inflate(inflater)
+        binding = FragmentAddServerBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -37,8 +36,7 @@ class AddServerFragment : Fragment() {
 
         viewModel.navigateToLogin.observe(viewLifecycleOwner, {
             if (it) {
-                this.findNavController().navigate(R.id.action_addServerFragment_to_loginFragment)
-                viewModel.onNavigateToLoginDone()
+                navigateToLoginFragment()
             }
             binding.progressCircular.visibility = View.GONE
         })
@@ -48,5 +46,10 @@ class AddServerFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun navigateToLoginFragment() {
+        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
+        viewModel.onNavigateToLoginDone()
     }
 }

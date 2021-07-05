@@ -61,7 +61,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/image_banner"
                 app:layout_constraintVertical_bias="0.36"
                 app:servers="@{viewModel.servers}"
-                app:spanCount="@integer/server_colums"
+                app:spanCount="@integer/server_columns"
                 tools:itemCount="4"
                 tools:listitem="@layout/server_item" />
         </LinearLayout>

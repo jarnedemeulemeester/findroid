@@ -14,13 +14,18 @@ import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModelFactory
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private val args: EpisodeBottomSheetFragmentArgs by navArgs()
 
+    private lateinit var binding: EpisodeBottomSheetBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
-        val viewModelFactory = EpisodeBottomSheetViewModelFactory(requireNotNull(this.activity).application, args.episodeId)
+        binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
+        val viewModelFactory = EpisodeBottomSheetViewModelFactory(
+            requireNotNull(this.activity).application,
+            args.episodeId
+        )
         val viewModel: EpisodeBottomSheetViewModel by viewModels { viewModelFactory }
 
         binding.lifecycleOwner = this

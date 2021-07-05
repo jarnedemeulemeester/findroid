@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 class MediaFragment : Fragment() {
 
+    private lateinit var binding: FragmentMediaBinding
     private val viewModel: MediaViewModel by viewModels()
 
     override fun onCreateView(
@@ -21,27 +22,30 @@ class MediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentMediaBinding.inflate(inflater, container, false)
+        binding = FragmentMediaBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter =
             CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->
-                findNavController().navigate(
-                    MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
-                        library.id,
-                        library.name
-                    )
-                )
-
+                nagivateToLibraryFragment(library)
             })
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
             if (it) {
-                binding.loadingIncicator.visibility = View.GONE
+                binding.loadingIndicator.visibility = View.GONE
             }
         })
 
         return binding.root
+    }
+
+    private fun nagivateToLibraryFragment(library: BaseItemDto) {
+        findNavController().navigate(
+            MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
+                library.id,
+                library.name
+            )
+        )
     }
 }

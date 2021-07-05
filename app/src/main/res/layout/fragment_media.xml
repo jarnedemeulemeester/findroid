@@ -17,7 +17,7 @@
         tools:context=".fragments.MediaFragment">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/loading_incicator"
+            android:id="@+id/loading_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -40,7 +40,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="@integer/collection_colums"
+            app:spanCount="@integer/collection_columns"
             tools:itemCount="4"
             tools:listitem="@layout/collection_item" />
 
