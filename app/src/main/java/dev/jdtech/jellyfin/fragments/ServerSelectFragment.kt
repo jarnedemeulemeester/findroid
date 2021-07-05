@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
@@ -28,8 +29,7 @@ class ServerSelectFragment : Fragment() {
         val dataSource = ServerDatabase.getInstance(application).serverDatabaseDao
 
         val viewModelFactory = ServerSelectViewModelFactory(dataSource, application)
-        val viewModel =
-            ViewModelProvider(this, viewModelFactory).get(ServerSelectViewModel::class.java)
+        val viewModel: ServerSelectViewModel by viewModels { viewModelFactory }
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

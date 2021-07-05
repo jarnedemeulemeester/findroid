@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
@@ -12,13 +13,14 @@ import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
 class AddServerFragment : Fragment() {
+
+    private val viewModel: AddServerViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentAddServerBinding.inflate(inflater)
-        val viewModel =
-            ViewModelProvider(this).get(AddServerViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

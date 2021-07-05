@@ -5,19 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 
 class LoginFragment : Fragment() {
+
+    private val viewModel: LoginViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentLoginBinding.inflate(inflater)
-        val viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

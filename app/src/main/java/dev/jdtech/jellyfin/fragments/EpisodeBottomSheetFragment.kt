@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
@@ -21,7 +21,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     ): View {
         val binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
         val viewModelFactory = EpisodeBottomSheetViewModelFactory(requireNotNull(this.activity).application, args.episodeId)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(EpisodeBottomSheetViewModel::class.java)
+        val viewModel: EpisodeBottomSheetViewModel by viewModels { viewModelFactory }
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

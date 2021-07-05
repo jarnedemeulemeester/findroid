@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
@@ -15,7 +15,6 @@ import dev.jdtech.jellyfin.viewmodels.SeasonViewModelFactory
 
 class SeasonFragment : Fragment() {
 
-    private lateinit var viewModel: SeasonViewModel
     private lateinit var binding: FragmentSeasonBinding
 
     private val args: SeasonFragmentArgs by navArgs()
@@ -36,7 +35,7 @@ class SeasonFragment : Fragment() {
             args.seriesId,
             args.seasonId
         )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SeasonViewModel::class.java)
+        val viewModel: SeasonViewModel by viewModels { viewModelFactory }
         binding.viewModel = viewModel
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(EpisodeListAdapter.OnClickListener {

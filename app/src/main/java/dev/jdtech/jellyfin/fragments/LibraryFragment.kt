@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -16,7 +16,6 @@ import dev.jdtech.jellyfin.viewmodels.LibraryViewModelFactory
 class LibraryFragment : Fragment() {
 
     private lateinit var binding: FragmentLibraryBinding
-    private lateinit var viewModel: LibraryViewModel
 
     private val args: LibraryFragmentArgs by navArgs()
 
@@ -35,7 +34,7 @@ class LibraryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val viewModelFactory =
             LibraryViewModelFactory(requireNotNull(this.activity).application, args.libraryId)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(LibraryViewModel::class.java)
+        val viewModel: LibraryViewModel by viewModels { viewModelFactory }
         binding.viewModel = viewModel
         binding.itemsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener {

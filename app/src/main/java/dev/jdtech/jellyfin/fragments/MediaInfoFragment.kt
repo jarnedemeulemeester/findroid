@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
@@ -19,7 +19,6 @@ import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModelFactory
 class MediaInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaInfoBinding
-    private lateinit var viewModel: MediaInfoViewModel
 
     private val args: MediaInfoFragmentArgs by navArgs()
 
@@ -39,7 +38,8 @@ class MediaInfoFragment : Fragment() {
 
         val viewModelFactory =
             MediaInfoViewModelFactory(requireNotNull(this.activity).application, args.itemId)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MediaInfoViewModel::class.java)
+        val viewModel: MediaInfoViewModel by viewModels { viewModelFactory }
+
         binding.viewModel = viewModel
 
         viewModel.item.observe(viewLifecycleOwner, { item ->
