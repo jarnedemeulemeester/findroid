@@ -30,7 +30,7 @@ class MediaFragment : Fragment() {
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter =
             CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->
-                nagivateToLibraryFragment(library)
+                navigateToLibraryFragment(library)
             })
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
@@ -42,7 +42,7 @@ class MediaFragment : Fragment() {
         return binding.root
     }
 
-    private fun nagivateToLibraryFragment(library: BaseItemDto) {
+    private fun navigateToLibraryFragment(library: BaseItemDto) {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
                 library.id,
