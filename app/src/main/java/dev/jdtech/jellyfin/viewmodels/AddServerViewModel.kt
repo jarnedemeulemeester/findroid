@@ -2,30 +2,32 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
-import dev.jdtech.jellyfin.database.ServerDatabase
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class AddServerViewModel
 @Inject
-constructor(application: Application) : ViewModel() {
-    private val database = ServerDatabase.getInstance(application).serverDatabaseDao
+constructor(
+    private val application: Application,
+    private val database: ServerDatabaseDao
+) : ViewModel() {
 
     private val _navigateToLogin = MutableLiveData<Boolean>()
     val navigateToLogin: LiveData<Boolean> = _navigateToLogin
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
-
-    private val app = application
 
     /**
      * Run multiple check on the server before continuing:
@@ -37,7 +39,7 @@ constructor(application: Application) : ViewModel() {
         _error.value = null
 
         viewModelScope.launch {
-            val jellyfinApi = JellyfinApi.newInstance(app, baseUrl)
+            val jellyfinApi = JellyfinApi.newInstance(application, baseUrl)
             try {
                 val publicSystemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
                 Log.i("AddServerViewModel", "Remote server: ${publicSystemInfo.id}")

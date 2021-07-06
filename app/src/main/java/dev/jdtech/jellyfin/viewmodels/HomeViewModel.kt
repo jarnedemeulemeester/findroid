@@ -1,9 +1,11 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.BaseApplication
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.api.JellyfinApi

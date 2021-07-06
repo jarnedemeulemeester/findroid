@@ -11,13 +11,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
-import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModelFactory
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private val args: EpisodeBottomSheetFragmentArgs by navArgs()
 
     private lateinit var binding: EpisodeBottomSheetBinding
+    private val viewModel: EpisodeBottomSheetViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,11 +25,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
-        val viewModelFactory = EpisodeBottomSheetViewModelFactory(
-            requireNotNull(this.activity).application,
-            args.episodeId
-        )
-        val viewModel: EpisodeBottomSheetViewModel by viewModels { viewModelFactory }
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -43,6 +38,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.visibility = View.VISIBLE
             }
         })
+
+        viewModel.loadEpisode(args.episodeId)
 
         return binding.root
     }
