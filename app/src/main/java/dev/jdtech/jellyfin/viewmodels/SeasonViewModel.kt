@@ -1,40 +1,25 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import dev.jdtech.jellyfin.api.JellyfinApi
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import java.util.*
+import javax.inject.Inject
 
-class SeasonViewModel(application: Application, seriesId: UUID, seasonId: UUID) :
-    AndroidViewModel(application) {
-    private val jellyfinApi = JellyfinApi.getInstance(application, "")
+@HiltViewModel
+class SeasonViewModel
+@Inject
+constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     private val _episodes = MutableLiveData<List<BaseItemDto>>()
     val episodes: LiveData<List<BaseItemDto>> = _episodes
 
-    init {
+    fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
         viewModelScope.launch {
-            _episodes.value = getEpisodes(seriesId, seasonId)
+            _episodes.value = jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW))
         }
-    }
-
-    private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID): List<BaseItemDto>? {
-        val episodes: List<BaseItemDto>?
-        withContext(Dispatchers.IO) {
-            episodes = jellyfinApi.showsApi.getEpisodes(
-                seriesId, jellyfinApi.userId!!, seasonId = seasonId, fields = listOf(
-                    ItemFields.OVERVIEW
-                )
-            ).content.items
-        }
-        return episodes
     }
 }

@@ -4,6 +4,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.ItemFields
 import java.util.*
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
@@ -44,5 +45,19 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             ).content.items ?: listOf()
         }
         return nextUpItems
+    }
+
+    override suspend fun getEpisodes(
+        seriesId: UUID,
+        seasonId: UUID,
+        fields: List<ItemFields>?
+    ): List<BaseItemDto> {
+        val episodes: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            episodes = jellyfinApi.showsApi.getEpisodes(
+                seriesId, jellyfinApi.userId!!, seasonId = seasonId, fields = fields
+            ).content.items ?: listOf()
+        }
+        return episodes
     }
 }

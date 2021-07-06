@@ -12,13 +12,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
-import dev.jdtech.jellyfin.viewmodels.SeasonViewModelFactory
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 @AndroidEntryPoint
 class SeasonFragment : Fragment() {
 
     private lateinit var binding: FragmentSeasonBinding
+    private val viewModel: SeasonViewModel by viewModels()
 
     private val args: SeasonFragmentArgs by navArgs()
 
@@ -33,12 +33,6 @@ class SeasonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModelFactory = SeasonViewModelFactory(
-            requireNotNull(this.activity).application,
-            args.seriesId,
-            args.seasonId
-        )
-        val viewModel: SeasonViewModel by viewModels { viewModelFactory }
         binding.viewModel = viewModel
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(EpisodeListAdapter.OnClickListener { episode ->
@@ -48,6 +42,8 @@ class SeasonFragment : Fragment() {
         binding.seasonName.text = args.seasonName
         binding.seriesId = args.seriesId
         binding.seasonId = args.seasonId
+
+        viewModel.loadEpisodes(args.seriesId, args.seasonId)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
