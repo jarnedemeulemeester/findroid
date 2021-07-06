@@ -13,19 +13,29 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="24dp"
-        android:background="?android:attr/colorBackgroundFloating">
+        android:background="?android:attr/colorBackgroundFloating"
+        android:paddingBottom="24dp">
+
+        <ImageView
+            android:id="@+id/holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_minus_fat"
+            app:tint="?attr/colorOnBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:importantForAccessibility="no"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
             android:layout_width="142dp"
             android:layout_height="85dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
             android:scaleType="centerCrop"
             app:itemPrimaryImage="@{viewModel.item}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/holder"
             app:shapeAppearance="@style/roundedImageView" />
 
         <FrameLayout
