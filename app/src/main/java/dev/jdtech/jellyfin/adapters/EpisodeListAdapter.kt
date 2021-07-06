@@ -8,10 +8,37 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
+import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.*
 
-class EpisodeListAdapter(private val onClickListener: OnClickListener) :
-    ListAdapter<BaseItemDto, EpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+private const val ITEM_VIEW_TYPE_HEADER = 0
+private const val ITEM_VIEW_TYPE_EPISODE = 1
+
+class EpisodeListAdapter(
+    private val onClickListener: OnClickListener,
+    private val seriesId: UUID,
+    private val seriesName: String?,
+    private val seasonId: UUID,
+    private val seasonName: String?
+) :
+    ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
+
+    class HeaderViewHolder(private var binding: SeasonHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            seriesId: UUID,
+            seriesName: String?,
+            seasonId: UUID,
+            seasonName: String?
+        ) {
+            binding.seriesId = seriesId
+            binding.seasonId = seasonId
+            binding.seasonName.text = seasonName
+            binding.seriesName.text = seriesName
+            binding.executePendingBindings()
+        }
+    }
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -20,7 +47,9 @@ class EpisodeListAdapter(private val onClickListener: OnClickListener) :
             if (episode.userData?.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(), binding.progressBar.context.resources.displayMetrics).toInt()
+                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(),
+                    binding.progressBar.context.resources.displayMetrics
+                ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             } else {
                 binding.progressBar.visibility = View.GONE
@@ -29,35 +58,75 @@ class EpisodeListAdapter(private val onClickListener: OnClickListener) :
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<BaseItemDto>() {
-        override fun areItemsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<EpisodeItem>() {
+        override fun areItemsTheSame(oldItem: EpisodeItem, newItem: EpisodeItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+        override fun areContentsTheSame(oldItem: EpisodeItem, newItem: EpisodeItem): Boolean {
             return oldItem == newItem
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {
-        return EpisodeViewHolder(
-            EpisodeItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            ITEM_VIEW_TYPE_HEADER -> {
+                HeaderViewHolder(
+                    SeasonHeaderBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            ITEM_VIEW_TYPE_EPISODE -> {
+                EpisodeViewHolder(
+                    EpisodeItemBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            else -> throw ClassCastException("Unknown viewType $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder.itemViewType) {
+            ITEM_VIEW_TYPE_HEADER -> {
+                (holder as HeaderViewHolder).bind(seriesId, seriesName, seasonId, seasonName)
+            }
+            ITEM_VIEW_TYPE_EPISODE -> {
+                val item = getItem(position) as EpisodeItem.Episode
+                holder.itemView.setOnClickListener {
+                    onClickListener.onClick(item.episode)
+                }
+                (holder as EpisodeViewHolder).bind(item.episode)
+            }
         }
-        holder.bind(item)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is EpisodeItem.Header -> ITEM_VIEW_TYPE_HEADER
+            is EpisodeItem.Episode -> ITEM_VIEW_TYPE_EPISODE
+        }
     }
 
     class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
         fun onClick(item: BaseItemDto) = clickListener(item)
+    }
+}
+
+sealed class EpisodeItem {
+    abstract val id: UUID
+
+    object Header : EpisodeItem() {
+        override val id: UUID = UUID.randomUUID()
+    }
+
+    data class Episode(val episode: BaseItemDto) : EpisodeItem() {
+        override val id = episode.id
     }
 }

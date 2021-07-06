@@ -37,11 +37,7 @@ class SeasonFragment : Fragment() {
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(EpisodeListAdapter.OnClickListener { episode ->
                 navigateToEpisodeBottomSheetFragment(episode)
-            })
-        binding.seriesName.text = args.seriesName
-        binding.seasonName.text = args.seasonName
-        binding.seriesId = args.seriesId
-        binding.seasonId = args.seasonId
+            }, args.seriesId, args.seriesName, args.seasonId, args.seasonName)
 
         viewModel.loadEpisodes(args.seriesId, args.seasonId)
     }
