@@ -2,16 +2,21 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.*
+import javax.inject.Inject
 
-class MediaViewModel(
+@HiltViewModel
+class MediaViewModel
+@Inject
+constructor(
     application: Application
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
     private val _collections = MutableLiveData<List<BaseItemDto>>()

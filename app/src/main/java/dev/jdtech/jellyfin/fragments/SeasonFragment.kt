@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModelFactory
 import org.jellyfin.sdk.model.api.BaseItemDto
 
+@AndroidEntryPoint
 class SeasonFragment : Fragment() {
 
     private lateinit var binding: FragmentSeasonBinding

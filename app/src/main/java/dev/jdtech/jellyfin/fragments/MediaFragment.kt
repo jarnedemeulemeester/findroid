@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
+@AndroidEntryPoint
 class MediaFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaBinding

@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModelFactory
 import org.jellyfin.sdk.model.api.BaseItemDto
 
+@AndroidEntryPoint
 class LibraryFragment : Fragment() {
 
     private lateinit var binding: FragmentLibraryBinding
