@@ -28,6 +28,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearance="@style/roundedImageView" />
 
+        <FrameLayout
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="4dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_setup_background"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/episode_image"
+            app:layout_constraintStart_toStartOf="@id/episode_image"
+            tools:layout_width="50dp"
+            tools:visibility="visible" />
+
         <TextView
             android:id="@+id/episode_name"
             android:layout_width="0dp"

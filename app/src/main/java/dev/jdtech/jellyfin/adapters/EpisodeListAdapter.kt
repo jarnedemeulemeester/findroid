@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.adapters
 
+import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +17,14 @@ class EpisodeListAdapter(private val onClickListener: OnClickListener) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: BaseItemDto) {
             binding.episode = episode
+            if (episode.userData?.playedPercentage != null) {
+                binding.progressBar.layoutParams.width = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(), binding.progressBar.context.resources.displayMetrics).toInt()
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
             binding.executePendingBindings()
         }
     }

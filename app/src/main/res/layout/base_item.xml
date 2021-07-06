@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="item"
             type="org.jellyfin.sdk.model.api.BaseItemDto" />
@@ -57,5 +59,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="9" />
+
+        <ImageView
+            android:id="@+id/played_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:contentDescription="@string/episode_watched_indicator"
+            android:padding="4dp"
+            android:src="@drawable/ic_check"
+            android:visibility="@{item.userData.played == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="@id/item_image"
+            app:layout_constraintTop_toTopOf="@id/item_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

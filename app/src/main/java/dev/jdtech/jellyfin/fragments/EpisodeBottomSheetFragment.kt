@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,16 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        viewModel.item.observe(viewLifecycleOwner, { episode ->
+            if (episode.userData?.playedPercentage != null) {
+                binding.progressBar.layoutParams.width = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    (episode.userData?.playedPercentage?.times(1.26))!!.toFloat(), context?.resources?.displayMetrics
+                ).toInt()
+                binding.progressBar.visibility = View.VISIBLE
+            }
+        })
 
         return binding.root
     }
