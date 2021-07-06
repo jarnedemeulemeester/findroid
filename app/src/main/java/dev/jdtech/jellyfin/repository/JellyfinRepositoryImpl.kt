@@ -14,4 +14,12 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         }
         return item
     }
+
+    override suspend fun getItems(parentId: UUID): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.itemsApi.getItems(jellyfinApi.userId!!, parentId = parentId).content.items ?: listOf()
+        }
+        return items
+    }
 }
