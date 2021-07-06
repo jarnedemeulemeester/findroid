@@ -15,13 +15,13 @@ import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
-import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModelFactory
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaInfoBinding
+    private val viewModel: MediaInfoViewModel by viewModels()
 
     private val args: MediaInfoFragmentArgs by navArgs()
 
@@ -38,10 +38,6 @@ class MediaInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val viewModelFactory =
-            MediaInfoViewModelFactory(requireNotNull(this.activity).application, args.itemId)
-        val viewModel: MediaInfoViewModel by viewModels { viewModelFactory }
 
         binding.viewModel = viewModel
 
@@ -69,23 +65,29 @@ class MediaInfoFragment : Fragment() {
         }
 
         binding.seasonsRecyclerView.adapter =
-            ViewItemListAdapter(ViewItemListAdapter.OnClickListener {
-                findNavController().navigate(
-                    MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
-                        it.seriesId!!,
-                        it.id,
-                        it.seriesName,
-                        it.name
-                    )
-                )
+            ViewItemListAdapter(ViewItemListAdapter.OnClickListener { season ->
+                navigateToSeasonFragment(season)
             }, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter()
+
+        viewModel.loadData(args.itemId)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(
                 episode.id
+            )
+        )
+    }
+
+    private fun navigateToSeasonFragment(season: BaseItemDto) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
+                season.seriesId!!,
+                season.id,
+                season.seriesName,
+                season.name
             )
         )
     }

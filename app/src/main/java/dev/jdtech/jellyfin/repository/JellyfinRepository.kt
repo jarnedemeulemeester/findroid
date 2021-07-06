@@ -7,4 +7,8 @@ interface JellyfinRepository {
     suspend fun getItem(itemId: UUID): BaseItemDto
 
     suspend fun getItems(parentId: UUID): List<BaseItemDto>
+
+    suspend fun getSeasons(seriesId: UUID): List<BaseItemDto>
+
+    suspend fun getNextUp(seriesId: UUID): List<BaseItemDto>
 }

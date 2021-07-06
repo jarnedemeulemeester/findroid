@@ -1,22 +1,24 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import android.os.Build
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.jdtech.jellyfin.api.JellyfinApi
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import java.util.*
+import javax.inject.Inject
 
-class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewModel(application) {
-    private val jellyfinApi = JellyfinApi.getInstance(application, "")
+@HiltViewModel
+class MediaInfoViewModel
+@Inject
+constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     private val _item = MutableLiveData<BaseItemDto>()
     val item: LiveData<BaseItemDto> = _item
@@ -47,9 +49,9 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
     private val _seasons = MutableLiveData<List<BaseItemDto>>()
     val seasons: LiveData<List<BaseItemDto>> = _seasons
 
-    init {
+    fun loadData(itemId: UUID) {
         viewModelScope.launch {
-            _item.value = getItemDetails(itemId)
+            _item.value = jellyfinRepository.getItem(itemId)
             _actors.value = getActors(_item.value!!)
             _director.value = getDirector(_item.value!!)
             _writers.value = getWriters(_item.value!!)
@@ -58,28 +60,11 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
             _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
-            _item.value!!.status?.let { Log.i("MediaInfoViewModel", it) }
             if (_item.value!!.type == "Series") {
                 _nextUp.value = getNextUp(itemId)
-                _seasons.value = getSeasons(itemId)
+                _seasons.value = jellyfinRepository.getSeasons(itemId)
             }
         }
-    }
-
-    private suspend fun getItemDetails(itemId: UUID): BaseItemDto {
-        val item: BaseItemDto
-        withContext(Dispatchers.IO) {
-            item = jellyfinApi.userLibraryApi.getItem(jellyfinApi.userId!!, itemId).content
-        }
-        return item
-    }
-
-    private suspend fun getSeasons(itemId: UUID): List<BaseItemDto>? {
-        val seasons: List<BaseItemDto>?
-        withContext(Dispatchers.IO) {
-            seasons = jellyfinApi.showsApi.getSeasons(itemId, jellyfinApi.userId!!).content.items
-        }
-        return seasons
     }
 
     private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson>? {
@@ -107,21 +92,12 @@ class MediaInfoViewModel(application: Application, itemId: UUID) : AndroidViewMo
     }
 
     private suspend fun getNextUp(seriesId: UUID): BaseItemDto? {
-        val nextUpItems: List<BaseItemDto>?
-        withContext(Dispatchers.IO) {
-            nextUpItems = jellyfinApi.showsApi.getNextUp(
-                jellyfinApi.userId!!,
-                seriesId = seriesId.toString()
-            ).content.items
+        val nextUpItems = jellyfinRepository.getNextUp(seriesId)
+        return if (nextUpItems.isNotEmpty()) {
+            nextUpItems[0]
+        } else {
+            null
         }
-        if (nextUpItems != null) {
-            return if (nextUpItems.isNotEmpty()) {
-                nextUpItems[0]
-            } else {
-                null
-            }
-        }
-        return null
     }
 
     private fun getDateString(item: BaseItemDto): String {
