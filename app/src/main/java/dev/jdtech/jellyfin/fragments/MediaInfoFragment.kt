@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.*
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -70,6 +71,10 @@ class MediaInfoFragment : Fragment() {
             }, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter()
 
+        binding.playButton.setOnClickListener {
+            navigateToPlayerActivity(args.itemId)
+        }
+
         viewModel.loadData(args.itemId)
     }
 
@@ -89,6 +94,12 @@ class MediaInfoFragment : Fragment() {
                 season.seriesName,
                 season.name
             )
+        )
+    }
+
+    private fun navigateToPlayerActivity(itemId: UUID) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(itemId)
         )
     }
 }

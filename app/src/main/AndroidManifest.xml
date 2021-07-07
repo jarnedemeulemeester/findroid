@@ -12,13 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jellyfin">
+        <activity android:name=".PlayerActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
         <activity
             android:name=".SetupActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.JellyfinSplashScreen">
+            android:theme="@style/Theme.JellyfinSplashScreen"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

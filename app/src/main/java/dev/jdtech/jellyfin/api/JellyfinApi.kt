@@ -32,6 +32,8 @@ class JellyfinApi(context: Context, baseUrl: String) {
     val userLibraryApi = UserLibraryApi(api)
     val showsApi = TvShowsApi(api)
     val sessionApi = SessionApi(api)
+    val videosApi = VideosApi(api)
+    val mediaInfoApi = MediaInfoApi(api)
 
     companion object {
         @Volatile

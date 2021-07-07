@@ -14,4 +14,6 @@ interface JellyfinRepository {
     suspend fun getNextUp(seriesId: UUID): List<BaseItemDto>
 
     suspend fun getEpisodes(seriesId: UUID, seasonId: UUID, fields: List<ItemFields>? = null): List<BaseItemDto>
+
+    suspend fun getStreamUrl(itemId: UUID): String
 }
