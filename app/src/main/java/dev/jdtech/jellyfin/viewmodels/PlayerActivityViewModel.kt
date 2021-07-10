@@ -9,10 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,8 +40,9 @@ constructor(
     fun initializePlayer(itemId: UUID) {
         if (player.value == null) {
             val trackSelector = DefaultTrackSelector(application)
+            val renderersFactory = DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
             trackSelector.parameters.buildUpon().setMaxVideoSizeSd()
-            _player.value = SimpleExoPlayer.Builder(application)
+            _player.value = SimpleExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
                 .build()
         }
@@ -66,7 +64,7 @@ constructor(
         player.value?.prepare()
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         if (player.value != null) {
             playWhenReady = player.value!!.playWhenReady
             playbackPosition = player.value!!.currentPosition

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.repository
 
+import android.util.Log
 import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -63,39 +64,44 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getStreamUrl(itemId: UUID): String {
         val streamUrl: String
         withContext(Dispatchers.IO) {
-            /*val mediaInfo = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                itemId, PlaybackInfoDto(
-                    userId = jellyfinApi.userId!!,
-                    deviceProfile = DeviceProfile(
-                        name = "Direct play all",
-                        maxStaticBitrate = 1_000_000_000,
-                        maxStreamingBitrate = 1_000_000_000,
-                        codecProfiles = listOf(),
-                        containerProfiles = listOf(),
-                        directPlayProfiles = listOf(
-                            DirectPlayProfile(
-                                type = DlnaProfileType.VIDEO
-                            ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
+            try {
+                val mediaInfo by jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                    itemId, PlaybackInfoDto(
+                        userId = jellyfinApi.userId!!,
+                        deviceProfile = DeviceProfile(
+                            name = "Direct play all",
+                            maxStaticBitrate = 1_000_000_000,
+                            maxStreamingBitrate = 1_000_000_000,
+                            codecProfiles = listOf(),
+                            containerProfiles = listOf(),
+                            directPlayProfiles = listOf(
+                                DirectPlayProfile(
+                                    type = DlnaProfileType.VIDEO
+                                ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
+                            ),
+                            transcodingProfiles = listOf(),
+                            responseProfiles = listOf(),
+                            enableAlbumArtInDidl = false,
+                            enableMsMediaReceiverRegistrar = false,
+                            enableSingleAlbumArtLimit = false,
+                            enableSingleSubtitleLimit = false,
+                            ignoreTranscodeByteRangeRequests = false,
+                            maxAlbumArtHeight = 1_000_000_000,
+                            maxAlbumArtWidth = 1_000_000_000,
+                            requiresPlainFolders = false,
+                            requiresPlainVideoItems = false,
+                            timelineOffsetSeconds = 0
                         ),
-                        transcodingProfiles = listOf(),
-                        responseProfiles = listOf(),
-                        enableAlbumArtInDidl = false,
-                        enableMsMediaReceiverRegistrar = false,
-                        enableSingleAlbumArtLimit = false,
-                        enableSingleSubtitleLimit = false,
-                        ignoreTranscodeByteRangeRequests = false,
-                        maxAlbumArtHeight = 1_000_000_000,
-                        maxAlbumArtWidth = 1_000_000_000,
-                        requiresPlainFolders = false,
-                        requiresPlainVideoItems = false,
-                        timelineOffsetSeconds = 0
-                    ),
-                    startTimeTicks = null,
-                    audioStreamIndex = null,
-                    subtitleStreamIndex = null,
-                    maxStreamingBitrate = 1_000_000_000,
+                        startTimeTicks = null,
+                        audioStreamIndex = null,
+                        subtitleStreamIndex = null,
+                        maxStreamingBitrate = 1_000_000_000,
+                    )
                 )
-            ).content*/
+                Log.d("JellyfinRepository", mediaInfo.mediaSources.toString())
+            } catch (e: Exception) {
+                Log.e("JellyfinRepository", "${e.message}")
+            }
             streamUrl = jellyfinApi.videosApi.getVideoStreamUrl(
                 itemId,
                 static = true,
