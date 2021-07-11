@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.MediaSourceInfo
 import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.*
@@ -30,11 +31,15 @@ constructor(
     private val _dateString = MutableLiveData<String>()
     val dateString: LiveData<String> = _dateString
 
+    private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
+    val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
+
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             _item.value = jellyfinRepository.getItem(episodeId)
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
+            _mediaSources.value = jellyfinRepository.getMediaSources(episodeId)
         }
     }
 
