@@ -61,52 +61,57 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return episodes
     }
 
-    override suspend fun getStreamUrl(itemId: UUID): String {
-        val streamUrl: String
+    override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> {
+        val mediaSourceInfoList: List<MediaSourceInfo>
+        val mediaInfo by jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+            itemId, PlaybackInfoDto(
+                userId = jellyfinApi.userId!!,
+                deviceProfile = DeviceProfile(
+                    name = "Direct play all",
+                    maxStaticBitrate = 1_000_000_000,
+                    maxStreamingBitrate = 1_000_000_000,
+                    codecProfiles = listOf(),
+                    containerProfiles = listOf(),
+                    directPlayProfiles = listOf(
+                        DirectPlayProfile(
+                            type = DlnaProfileType.VIDEO
+                        ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
+                    ),
+                    transcodingProfiles = listOf(),
+                    responseProfiles = listOf(),
+                    enableAlbumArtInDidl = false,
+                    enableMsMediaReceiverRegistrar = false,
+                    enableSingleAlbumArtLimit = false,
+                    enableSingleSubtitleLimit = false,
+                    ignoreTranscodeByteRangeRequests = false,
+                    maxAlbumArtHeight = 1_000_000_000,
+                    maxAlbumArtWidth = 1_000_000_000,
+                    requiresPlainFolders = false,
+                    requiresPlainVideoItems = false,
+                    timelineOffsetSeconds = 0
+                ),
+                startTimeTicks = null,
+                audioStreamIndex = null,
+                subtitleStreamIndex = null,
+                maxStreamingBitrate = 1_000_000_000,
+            )
+        )
+        mediaSourceInfoList = mediaInfo.mediaSources ?: listOf()
+        return mediaSourceInfoList
+    }
+
+    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
+        var streamUrl: String = ""
         withContext(Dispatchers.IO) {
             try {
-                val mediaInfo by jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                    itemId, PlaybackInfoDto(
-                        userId = jellyfinApi.userId!!,
-                        deviceProfile = DeviceProfile(
-                            name = "Direct play all",
-                            maxStaticBitrate = 1_000_000_000,
-                            maxStreamingBitrate = 1_000_000_000,
-                            codecProfiles = listOf(),
-                            containerProfiles = listOf(),
-                            directPlayProfiles = listOf(
-                                DirectPlayProfile(
-                                    type = DlnaProfileType.VIDEO
-                                ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
-                            ),
-                            transcodingProfiles = listOf(),
-                            responseProfiles = listOf(),
-                            enableAlbumArtInDidl = false,
-                            enableMsMediaReceiverRegistrar = false,
-                            enableSingleAlbumArtLimit = false,
-                            enableSingleSubtitleLimit = false,
-                            ignoreTranscodeByteRangeRequests = false,
-                            maxAlbumArtHeight = 1_000_000_000,
-                            maxAlbumArtWidth = 1_000_000_000,
-                            requiresPlainFolders = false,
-                            requiresPlainVideoItems = false,
-                            timelineOffsetSeconds = 0
-                        ),
-                        startTimeTicks = null,
-                        audioStreamIndex = null,
-                        subtitleStreamIndex = null,
-                        maxStreamingBitrate = 1_000_000_000,
-                    )
+                streamUrl = jellyfinApi.videosApi.getVideoStreamUrl(
+                    itemId,
+                    static = true,
+                    mediaSourceId = mediaSourceId
                 )
-                Log.d("JellyfinRepository", mediaInfo.mediaSources.toString())
             } catch (e: Exception) {
                 Log.e("JellyfinRepository", "${e.message}")
             }
-            streamUrl = jellyfinApi.videosApi.getVideoStreamUrl(
-                itemId,
-                static = true,
-                mediaSourceId = itemId.toString()
-            )
         }
         return streamUrl
     }

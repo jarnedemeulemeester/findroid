@@ -81,7 +81,8 @@ class HomeFragment : Fragment() {
         findNavController().navigate(
             HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                 item.id,
-                item.name
+                item.name,
+                item.type ?: "Unknown"
             )
         )
     }

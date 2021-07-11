@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jellyfin">
-        <activity android:name=".PlayerActivity"></activity>
+        <activity android:name=".PlayerActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />

@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
+import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.*
@@ -53,6 +54,10 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
+            mediaSource.id?.let { navigateToPlayerActivity(args.itemId, it) }
+        })
+
         binding.trailerButton.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
@@ -72,10 +77,24 @@ class MediaInfoFragment : Fragment() {
         binding.peopleRecyclerView.adapter = PersonListAdapter()
 
         binding.playButton.setOnClickListener {
-            navigateToPlayerActivity(args.itemId)
+            if (args.itemType == "Movie") {
+                if (!viewModel.mediaSources.value.isNullOrEmpty()) {
+                    if (viewModel.mediaSources.value!!.size > 1) {
+                        VideoVersionDialogFragment(viewModel).show(
+                            parentFragmentManager,
+                            "videoversiondialog"
+                        )
+                    } else {
+                        navigateToPlayerActivity(
+                            args.itemId,
+                            viewModel.mediaSources.value!![0].id!!
+                        )
+                    }
+                }
+            }
         }
 
-        viewModel.loadData(args.itemId)
+        viewModel.loadData(args.itemId, args.itemType)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
@@ -97,9 +116,12 @@ class MediaInfoFragment : Fragment() {
         )
     }
 
-    private fun navigateToPlayerActivity(itemId: UUID) {
+    private fun navigateToPlayerActivity(itemId: UUID, mediaSourceId: String) {
         findNavController().navigate(
-            MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(itemId)
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
+                itemId,
+                mediaSourceId
+            )
         )
     }
 }

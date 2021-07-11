@@ -91,6 +91,9 @@
         <action
             android:id="@+id/action_mediaInfoFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <argument
+            android:name="itemType"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/seasonFragment"
@@ -134,5 +137,8 @@
         <argument
             android:name="itemId"
             app:argType="java.util.UUID" />
+        <argument
+            android:name="mediaSourceId"
+            app:argType="string" />
     </activity>
 </navigation>

@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.repository
 
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.MediaSourceInfo
 import java.util.*
 
 interface JellyfinRepository {
@@ -15,5 +16,7 @@ interface JellyfinRepository {
 
     suspend fun getEpisodes(seriesId: UUID, seasonId: UUID, fields: List<ItemFields>? = null): List<BaseItemDto>
 
-    suspend fun getStreamUrl(itemId: UUID): String
+    suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
+
+    suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 }

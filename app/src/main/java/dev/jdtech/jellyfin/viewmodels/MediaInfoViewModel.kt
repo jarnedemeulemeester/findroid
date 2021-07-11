@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.MediaSourceInfo
 import java.util.*
 import javax.inject.Inject
 
@@ -49,7 +50,13 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _seasons = MutableLiveData<List<BaseItemDto>>()
     val seasons: LiveData<List<BaseItemDto>> = _seasons
 
-    fun loadData(itemId: UUID) {
+    private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
+    val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
+
+    private val _navigateToPlayer = MutableLiveData<MediaSourceInfo>()
+    val navigateToPlayer: LiveData<MediaSourceInfo> = _navigateToPlayer
+
+    fun loadData(itemId: UUID, itemType: String) {
         viewModelScope.launch {
             _item.value = jellyfinRepository.getItem(itemId)
             _actors.value = getActors(_item.value!!)
@@ -60,9 +67,12 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
-            if (_item.value!!.type == "Series") {
+            if (itemType == "Series") {
                 _nextUp.value = getNextUp(itemId)
                 _seasons.value = jellyfinRepository.getSeasons(itemId)
+            }
+            if (itemType == "Movie") {
+                _mediaSources.value = jellyfinRepository.getMediaSources(itemId)
             }
         }
     }
@@ -119,5 +129,9 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             }
             else -> dateString
         }
+    }
+
+    fun navigateToPlayer(mediaSource: MediaSourceInfo) {
+        _navigateToPlayer.value = mediaSource
     }
 }
