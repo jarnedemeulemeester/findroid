@@ -55,7 +55,13 @@ class MediaInfoFragment : Fragment() {
         })
 
         viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
-            mediaSource.id?.let { navigateToPlayerActivity(args.itemId, it) }
+            mediaSource.id?.let {
+                navigateToPlayerActivity(
+                    args.itemId,
+                    it,
+                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                )
+            }
         })
 
         binding.trailerButton.setOnClickListener {
@@ -87,7 +93,8 @@ class MediaInfoFragment : Fragment() {
                     } else {
                         navigateToPlayerActivity(
                             args.itemId,
-                            viewModel.mediaSources.value!![0].id!!
+                            viewModel.mediaSources.value!![0].id!!,
+                            viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
                         )
                     }
                 }
@@ -116,11 +123,16 @@ class MediaInfoFragment : Fragment() {
         )
     }
 
-    private fun navigateToPlayerActivity(itemId: UUID, mediaSourceId: String) {
+    private fun navigateToPlayerActivity(
+        itemId: UUID,
+        mediaSourceId: String,
+        playbackPosition: Long
+    ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
                 itemId,
-                mediaSourceId
+                mediaSourceId,
+                playbackPosition
             )
         )
     }

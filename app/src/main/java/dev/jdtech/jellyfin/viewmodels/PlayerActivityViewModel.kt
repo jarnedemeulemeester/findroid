@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
@@ -33,31 +32,29 @@ constructor(
         playbackStateListener = PlaybackStateListener()
     }
 
-    fun initializePlayer(itemId: UUID, mediaSourceId: String) {
-        if (player.value == null) {
-            val trackSelector = DefaultTrackSelector(application)
-            val renderersFactory = DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            trackSelector.parameters.buildUpon().setMaxVideoSizeSd()
-            _player.value = SimpleExoPlayer.Builder(application, renderersFactory)
-                .setTrackSelector(trackSelector)
-                .build()
-        }
+    fun initializePlayer(itemId: UUID, mediaSourceId: String, playbackPosition: Long) {
+        val renderersFactory =
+            DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+        val player = SimpleExoPlayer.Builder(application, renderersFactory)
+            .build()
 
-        player.value?.addListener(playbackStateListener)
+        player.addListener(playbackStateListener)
 
         viewModelScope.launch {
             val streamUrl = jellyfinRepository.getStreamUrl(itemId, mediaSourceId)
+            Log.d("PlayerActivity", streamUrl)
             val mediaItem =
                 MediaItem.Builder()
                     .setMediaId(itemId.toString())
                     .setUri(streamUrl)
                     .build()
-            player.value?.setMediaItem(mediaItem)
+            player.setMediaItem(mediaItem, playbackPosition)
         }
 
-        player.value?.playWhenReady = playWhenReady
-        player.value?.seekTo(currentWindow, playbackPosition)
-        player.value?.prepare()
+        player.playWhenReady = playWhenReady
+        player.prepare()
+
+        _player.value = player
     }
 
     private fun releasePlayer() {

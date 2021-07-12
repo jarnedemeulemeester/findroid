@@ -143,5 +143,8 @@
         <argument
             android:name="mediaSourceId"
             app:argType="string" />
+        <argument
+            android:name="playbackPosition"
+            app:argType="long" />
     </activity>
 </navigation>

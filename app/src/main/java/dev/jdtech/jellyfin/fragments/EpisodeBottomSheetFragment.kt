@@ -34,7 +34,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             viewModel.mediaSources.value?.get(0)?.id?.let { mediaSourceId ->
                 navigateToPlayerActivity(args.episodeId,
-                    mediaSourceId
+                    mediaSourceId,
+                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
                 )
             }
         }
@@ -55,11 +56,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun navigateToPlayerActivity(itemId: UUID, mediaSourceId: String) {
+    private fun navigateToPlayerActivity(itemId: UUID, mediaSourceId: String, playbackPosition: Long) {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 itemId,
-                mediaSourceId
+                mediaSourceId,
+                playbackPosition
             )
         )
     }

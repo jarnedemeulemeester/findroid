@@ -34,7 +34,7 @@ class PlayerActivity : AppCompatActivity() {
         })
 
         if (viewModel.player.value == null) {
-            viewModel.initializePlayer(args.itemId, args.mediaSourceId)
+            viewModel.initializePlayer(args.itemId, args.mediaSourceId, args.playbackPosition)
         }
         hideSystemUI()
     }
