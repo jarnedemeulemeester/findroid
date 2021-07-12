@@ -9,7 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.navArgs
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 
@@ -19,7 +19,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private val args: PlayerActivityArgs by navArgs()
 
-    private lateinit var playerView: PlayerView
+    private lateinit var playerView: StyledPlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
