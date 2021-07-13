@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
@@ -23,22 +24,31 @@ constructor(
     private var _player = MutableLiveData<SimpleExoPlayer>()
     var player: LiveData<SimpleExoPlayer> = _player
 
+
     private var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    private var playbackStateListener: PlaybackStateListener
+    private var _playbackStateListener: PlaybackStateListener
+
+    val playbackStateListener: PlaybackStateListener
+        get() = _playbackStateListener
 
     init {
-        playbackStateListener = PlaybackStateListener()
+        _playbackStateListener = PlaybackStateListener()
     }
 
     fun initializePlayer(itemId: UUID, mediaSourceId: String, playbackPosition: Long) {
         val renderersFactory =
             DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+        val trackSelector = DefaultTrackSelector(application)
+        trackSelector.setParameters(
+            trackSelector.buildUponParameters().setTunnelingEnabled(true),
+        )
         val player = SimpleExoPlayer.Builder(application, renderersFactory)
+            .setTrackSelector(trackSelector)
             .build()
 
-        player.addListener(playbackStateListener)
+        player.addListener(_playbackStateListener)
 
         viewModelScope.launch {
             val streamUrl = jellyfinRepository.getStreamUrl(itemId, mediaSourceId)
@@ -49,12 +59,10 @@ constructor(
                     .setUri(streamUrl)
                     .build()
             player.setMediaItem(mediaItem, playbackPosition)
+            player.playWhenReady = playWhenReady
+            player.prepare()
+            _player.value = player
         }
-
-        player.playWhenReady = playWhenReady
-        player.prepare()
-
-        _player.value = player
     }
 
     private fun releasePlayer() {
@@ -62,13 +70,16 @@ constructor(
             playWhenReady = player.value!!.playWhenReady
             playbackPosition = player.value!!.currentPosition
             currentWindow = player.value!!.currentWindowIndex
-            player.value!!.removeListener(playbackStateListener)
+            player.value!!.removeListener(_playbackStateListener)
             player.value!!.release()
             _player.value = null
         }
     }
 
     class PlaybackStateListener : Player.Listener {
+        private val _navigateBack = MutableLiveData<Boolean>()
+        val navigateBack: LiveData<Boolean> = _navigateBack
+
         override fun onPlaybackStateChanged(state: Int) {
             var stateString = "UNKNOWN_STATE             -"
             when (state) {
@@ -83,6 +94,7 @@ constructor(
                 }
                 ExoPlayer.STATE_ENDED -> {
                     stateString = "ExoPlayer.STATE_ENDED     -"
+                    _navigateBack.value = true
                 }
             }
             Log.d("PlayerActivity", "changed state to $stateString")

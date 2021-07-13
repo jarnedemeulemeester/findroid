@@ -33,6 +33,12 @@ class PlayerActivity : AppCompatActivity() {
             playerView.player = it
         })
 
+        viewModel.playbackStateListener.navigateBack.observe(this, {
+            if (it) {
+                onBackPressed()
+            }
+        })
+
         if (viewModel.player.value == null) {
             viewModel.initializePlayer(args.itemId, args.mediaSourceId, args.playbackPosition)
         }
