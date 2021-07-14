@@ -128,9 +128,11 @@ fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
 fun bindEpisodeImage(imageView: ImageView, episode: BaseItemDto) {
     val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
+    val imageType = if (episode.type == "Movie") "Backdrop" else "Primary"
+
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${episode.id}/Images/Primary"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${episode.id}/Images/$imageType"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)
