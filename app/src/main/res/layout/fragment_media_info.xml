@@ -149,16 +149,6 @@
                     android:src="@drawable/ic_film" />
 
                 <ImageButton
-                    android:id="@+id/shuffle_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/button_accent_background"
-                    android:contentDescription="@string/shuffle_button_description"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_shuffle" />
-
-                <ImageButton
                     android:id="@+id/check_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
