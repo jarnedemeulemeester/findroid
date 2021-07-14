@@ -101,7 +101,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
-        var streamUrl: String = ""
+        var streamUrl = ""
         withContext(Dispatchers.IO) {
             try {
                 streamUrl = jellyfinApi.videosApi.getVideoStreamUrl(
@@ -114,5 +114,25 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             }
         }
         return streamUrl
+    }
+
+    override suspend fun postPlaybackStart(itemId: UUID) {
+        Log.d("PlayerActivity", "Sending start $itemId")
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
+        }
+    }
+
+    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
+        Log.d("PlayerActivity", "Sending stop $itemId")
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackStopped(jellyfinApi.userId!!, itemId, positionTicks = positionTicks)
+        }
+    }
+
+    override suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
+        }
     }
 }

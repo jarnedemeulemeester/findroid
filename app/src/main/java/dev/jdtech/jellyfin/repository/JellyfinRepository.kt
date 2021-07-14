@@ -19,4 +19,10 @@ interface JellyfinRepository {
     suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
+
+    suspend fun postPlaybackStart(itemId: UUID)
+
+    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long)
+
+    suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
 }
