@@ -47,7 +47,8 @@ class LibraryFragment : Fragment() {
         findNavController().navigate(
             LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
                 item.id,
-                item.name
+                item.name,
+                item.type ?: "Unknown"
             )
         )
     }

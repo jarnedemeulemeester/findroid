@@ -88,6 +88,12 @@
         <action
             android:id="@+id/action_mediaInfoFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_mediaInfoFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
+        <argument
+            android:name="itemType"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/seasonFragment"
@@ -122,5 +128,23 @@
         <argument
             android:name="episodeId"
             app:argType="java.util.UUID" />
+        <action
+            android:id="@+id/action_episodeBottomSheetFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </dialog>
+    <activity
+        android:id="@+id/playerActivity"
+        android:name="dev.jdtech.jellyfin.PlayerActivity"
+        android:label="activity_player"
+        tools:layout="@layout/activity_player" >
+        <argument
+            android:name="itemId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="mediaSourceId"
+            app:argType="string" />
+        <argument
+            android:name="playbackPosition"
+            app:argType="long" />
+    </activity>
 </navigation>

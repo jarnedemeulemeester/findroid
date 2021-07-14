@@ -1,10 +1,10 @@
 package dev.jdtech.jellyfin.repository
 
+import android.util.Log
 import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.*
 import java.util.*
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
@@ -59,5 +59,80 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             ).content.items ?: listOf()
         }
         return episodes
+    }
+
+    override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> {
+        val mediaSourceInfoList: List<MediaSourceInfo>
+        val mediaInfo by jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+            itemId, PlaybackInfoDto(
+                userId = jellyfinApi.userId!!,
+                deviceProfile = DeviceProfile(
+                    name = "Direct play all",
+                    maxStaticBitrate = 1_000_000_000,
+                    maxStreamingBitrate = 1_000_000_000,
+                    codecProfiles = listOf(),
+                    containerProfiles = listOf(),
+                    directPlayProfiles = listOf(
+                        DirectPlayProfile(
+                            type = DlnaProfileType.VIDEO
+                        ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
+                    ),
+                    transcodingProfiles = listOf(),
+                    responseProfiles = listOf(),
+                    enableAlbumArtInDidl = false,
+                    enableMsMediaReceiverRegistrar = false,
+                    enableSingleAlbumArtLimit = false,
+                    enableSingleSubtitleLimit = false,
+                    ignoreTranscodeByteRangeRequests = false,
+                    maxAlbumArtHeight = 1_000_000_000,
+                    maxAlbumArtWidth = 1_000_000_000,
+                    requiresPlainFolders = false,
+                    requiresPlainVideoItems = false,
+                    timelineOffsetSeconds = 0
+                ),
+                startTimeTicks = null,
+                audioStreamIndex = null,
+                subtitleStreamIndex = null,
+                maxStreamingBitrate = 1_000_000_000,
+            )
+        )
+        mediaSourceInfoList = mediaInfo.mediaSources ?: listOf()
+        return mediaSourceInfoList
+    }
+
+    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
+        var streamUrl = ""
+        withContext(Dispatchers.IO) {
+            try {
+                streamUrl = jellyfinApi.videosApi.getVideoStreamUrl(
+                    itemId,
+                    static = true,
+                    mediaSourceId = mediaSourceId
+                )
+            } catch (e: Exception) {
+                Log.e("JellyfinRepository", "${e.message}")
+            }
+        }
+        return streamUrl
+    }
+
+    override suspend fun postPlaybackStart(itemId: UUID) {
+        Log.d("PlayerActivity", "Sending start $itemId")
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
+        }
+    }
+
+    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
+        Log.d("PlayerActivity", "Sending stop $itemId")
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackStopped(jellyfinApi.userId!!, itemId, positionTicks = positionTicks)
+        }
+    }
+
+    override suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playstateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
+        }
     }
 }

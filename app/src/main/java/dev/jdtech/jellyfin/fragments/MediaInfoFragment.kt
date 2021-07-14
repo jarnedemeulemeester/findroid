@@ -14,8 +14,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
+import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.*
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -52,6 +54,16 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
+            mediaSource.id?.let {
+                navigateToPlayerActivity(
+                    args.itemId,
+                    it,
+                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                )
+            }
+        })
+
         binding.trailerButton.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
@@ -70,7 +82,26 @@ class MediaInfoFragment : Fragment() {
             }, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter()
 
-        viewModel.loadData(args.itemId)
+        binding.playButton.setOnClickListener {
+            if (args.itemType == "Movie") {
+                if (!viewModel.mediaSources.value.isNullOrEmpty()) {
+                    if (viewModel.mediaSources.value!!.size > 1) {
+                        VideoVersionDialogFragment(viewModel).show(
+                            parentFragmentManager,
+                            "videoversiondialog"
+                        )
+                    } else {
+                        navigateToPlayerActivity(
+                            args.itemId,
+                            viewModel.mediaSources.value!![0].id!!,
+                            viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                        )
+                    }
+                }
+            }
+        }
+
+        viewModel.loadData(args.itemId, args.itemType)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
@@ -88,6 +119,20 @@ class MediaInfoFragment : Fragment() {
                 season.id,
                 season.seriesName,
                 season.name
+            )
+        )
+    }
+
+    private fun navigateToPlayerActivity(
+        itemId: UUID,
+        mediaSourceId: String,
+        playbackPosition: Long
+    ) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
+                itemId,
+                mediaSourceId,
+                playbackPosition
             )
         )
     }

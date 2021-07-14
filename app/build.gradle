@@ -67,6 +67,7 @@ dependencies {
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
+    implementation files('libs/extension-ffmpeg-release.aar')
 
     // Room
     def room_version = "2.3.0"
@@ -86,6 +87,11 @@ dependencies {
     def hilt_version = "2.37"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // ExoPlayer
+    def exoplayer_version = "2.14.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
