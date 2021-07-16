@@ -25,4 +25,8 @@ interface JellyfinRepository {
     suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long)
 
     suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
+
+    suspend fun markAsFavorite(itemId: UUID)
+
+    suspend fun unmarkAsFavorite(itemId: UUID)
 }

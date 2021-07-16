@@ -135,4 +135,16 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             jellyfinApi.playstateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
         }
     }
+
+    override suspend fun markAsFavorite(itemId: UUID) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.markFavoriteItem(jellyfinApi.userId!!, itemId)
+        }
+    }
+
+    override suspend fun unmarkAsFavorite(itemId: UUID) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.unmarkFavoriteItem(jellyfinApi.userId!!, itemId)
+        }
+    }
 }

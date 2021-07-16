@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import java.util.*
@@ -40,6 +41,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
+        binding.favoriteButton.setOnClickListener {
+            when (viewModel.favorite.value) {
+                true -> viewModel.unmarkAsFavorite(args.episodeId)
+                false -> viewModel.markAsFavorite(args.episodeId)
+            }
+        }
+
         viewModel.item.observe(viewLifecycleOwner, { episode ->
             if (episode.userData?.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
@@ -49,6 +57,15 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
+        })
+
+        viewModel.favorite.observe(viewLifecycleOwner, {
+            val drawable = when (it) {
+                true -> R.drawable.ic_heart_filled
+                false -> R.drawable.ic_heart
+            }
+
+            binding.favoriteButton.setImageResource(drawable)
         })
 
         viewModel.loadEpisode(args.episodeId)

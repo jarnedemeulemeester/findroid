@@ -56,6 +56,9 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _navigateToPlayer = MutableLiveData<MediaSourceInfo>()
     val navigateToPlayer: LiveData<MediaSourceInfo> = _navigateToPlayer
 
+    private val _favorite = MutableLiveData<Boolean>()
+    val favorite: LiveData<Boolean> = _favorite
+
     fun loadData(itemId: UUID, itemType: String) {
         viewModelScope.launch {
             _item.value = jellyfinRepository.getItem(itemId)
@@ -67,6 +70,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
+            _favorite.value = _item.value?.userData?.isFavorite
             if (itemType == "Series") {
                 _nextUp.value = getNextUp(itemId)
                 _seasons.value = jellyfinRepository.getSeasons(itemId)
@@ -108,6 +112,20 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         } else {
             null
         }
+    }
+
+    fun markAsFavorite(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.markAsFavorite(itemId)
+        }
+        _favorite.value = true
+    }
+
+    fun unmarkAsFavorite(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.unmarkAsFavorite(itemId)
+        }
+        _favorite.value = false
     }
 
     private fun getDateString(item: BaseItemDto): String {

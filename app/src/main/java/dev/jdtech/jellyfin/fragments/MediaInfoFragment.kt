@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
@@ -64,6 +65,15 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        viewModel.favorite.observe(viewLifecycleOwner, {
+            val drawable = when (it) {
+                true -> R.drawable.ic_heart_filled
+                false -> R.drawable.ic_heart
+            }
+
+            binding.favoriteButton.setImageResource(drawable)
+        })
+
         binding.trailerButton.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
@@ -98,6 +108,13 @@ class MediaInfoFragment : Fragment() {
                         )
                     }
                 }
+            }
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            when (viewModel.favorite.value) {
+                true -> viewModel.unmarkAsFavorite(args.itemId)
+                false -> viewModel.markAsFavorite(args.itemId)
             }
         }
 
