@@ -119,20 +119,20 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun postPlaybackStart(itemId: UUID) {
         Log.d("PlayerActivity", "Sending start $itemId")
         withContext(Dispatchers.IO) {
-            jellyfinApi.playstateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
+            jellyfinApi.playStateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
         }
     }
 
     override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
         Log.d("PlayerActivity", "Sending stop $itemId")
         withContext(Dispatchers.IO) {
-            jellyfinApi.playstateApi.onPlaybackStopped(jellyfinApi.userId!!, itemId, positionTicks = positionTicks)
+            jellyfinApi.playStateApi.onPlaybackStopped(jellyfinApi.userId!!, itemId, positionTicks = positionTicks)
         }
     }
 
     override suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean) {
         withContext(Dispatchers.IO) {
-            jellyfinApi.playstateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
+            jellyfinApi.playStateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
         }
     }
 
@@ -145,6 +145,18 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun unmarkAsFavorite(itemId: UUID) {
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.unmarkFavoriteItem(jellyfinApi.userId!!, itemId)
+        }
+    }
+
+    override suspend fun markAsPlayed(itemId: UUID) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playStateApi.markPlayedItem(jellyfinApi.userId!!, itemId)
+        }
+    }
+
+    override suspend fun markAsUnplayed(itemId: UUID) {
+        withContext(Dispatchers.IO) {
+            jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
         }
     }
 }

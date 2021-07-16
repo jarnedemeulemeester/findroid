@@ -56,6 +56,9 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _navigateToPlayer = MutableLiveData<MediaSourceInfo>()
     val navigateToPlayer: LiveData<MediaSourceInfo> = _navigateToPlayer
 
+    private val _played = MutableLiveData<Boolean>()
+    val played: LiveData<Boolean> = _played
+
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
@@ -70,6 +73,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
+            _played.value = _item.value?.userData?.played
             _favorite.value = _item.value?.userData?.isFavorite
             if (itemType == "Series") {
                 _nextUp.value = getNextUp(itemId)
@@ -112,6 +116,20 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         } else {
             null
         }
+    }
+
+    fun markAsPlayed(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.markAsPlayed(itemId)
+        }
+        _played.value = true
+    }
+
+    fun markAsUnplayed(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.markAsUnplayed(itemId)
+        }
+        _played.value = false
     }
 
     fun markAsFavorite(itemId: UUID) {

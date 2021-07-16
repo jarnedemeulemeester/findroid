@@ -41,6 +41,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
+        binding.checkButton.setOnClickListener {
+            when (viewModel.played.value) {
+                true -> viewModel.markAsUnplayed(args.episodeId)
+                false -> viewModel.markAsPlayed(args.episodeId)
+            }
+        }
+
         binding.favoriteButton.setOnClickListener {
             when (viewModel.favorite.value) {
                 true -> viewModel.unmarkAsFavorite(args.episodeId)
@@ -57,6 +64,15 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
+        })
+
+        viewModel.played.observe(viewLifecycleOwner, {
+            val drawable = when (it) {
+                true -> R.drawable.ic_check_filled
+                false -> R.drawable.ic_check
+            }
+
+            binding.checkButton.setImageResource(drawable)
         })
 
         viewModel.favorite.observe(viewLifecycleOwner, {

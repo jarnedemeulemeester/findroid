@@ -65,6 +65,15 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        viewModel.played.observe(viewLifecycleOwner, {
+            val drawable = when (it) {
+                true -> R.drawable.ic_check_filled
+                false -> R.drawable.ic_check
+            }
+
+            binding.checkButton.setImageResource(drawable)
+        })
+
         viewModel.favorite.observe(viewLifecycleOwner, {
             val drawable = when (it) {
                 true -> R.drawable.ic_heart_filled
@@ -108,6 +117,13 @@ class MediaInfoFragment : Fragment() {
                         )
                     }
                 }
+            }
+        }
+
+        binding.checkButton.setOnClickListener {
+            when (viewModel.played.value) {
+                true -> viewModel.markAsUnplayed(args.itemId)
+                false -> viewModel.markAsPlayed(args.itemId)
             }
         }
 

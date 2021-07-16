@@ -34,7 +34,7 @@ class JellyfinApi(context: Context, baseUrl: String) {
     val sessionApi = SessionApi(api)
     val videosApi = VideosApi(api)
     val mediaInfoApi = MediaInfoApi(api)
-    val playstateApi = PlayStateApi(api)
+    val playStateApi = PlayStateApi(api)
 
     companion object {
         @Volatile

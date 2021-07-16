@@ -34,6 +34,9 @@ constructor(
     private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
     val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
 
+    private val _played = MutableLiveData<Boolean>()
+    val played: LiveData<Boolean> = _played
+
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
@@ -43,8 +46,23 @@ constructor(
             _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
             _dateString.value = getDateString(_item.value!!)
             _mediaSources.value = jellyfinRepository.getMediaSources(episodeId)
+            _played.value = _item.value?.userData?.played
             _favorite.value = _item.value?.userData?.isFavorite
         }
+    }
+
+    fun markAsPlayed(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.markAsPlayed(itemId)
+        }
+        _played.value = true
+    }
+
+    fun markAsUnplayed(itemId: UUID) {
+        viewModelScope.launch {
+            jellyfinRepository.markAsUnplayed(itemId)
+        }
+        _played.value = false
     }
 
     fun markAsFavorite(itemId: UUID) {

@@ -29,4 +29,8 @@ interface JellyfinRepository {
     suspend fun markAsFavorite(itemId: UUID)
 
     suspend fun unmarkAsFavorite(itemId: UUID)
+
+    suspend fun markAsPlayed(itemId: UUID)
+
+    suspend fun markAsUnplayed(itemId: UUID)
 }
