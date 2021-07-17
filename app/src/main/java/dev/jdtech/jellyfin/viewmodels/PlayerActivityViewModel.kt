@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,8 @@ constructor(
     val playbackStateListener: PlaybackStateListener
         get() = _playbackStateListener
 
+    private val sp = PreferenceManager.getDefaultSharedPreferences(application)
+
     init {
         _playbackStateListener = PlaybackStateListener()
     }
@@ -49,7 +52,10 @@ constructor(
             DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
         val trackSelector = DefaultTrackSelector(application)
         trackSelector.setParameters(
-            trackSelector.buildUponParameters().setTunnelingEnabled(true),
+            trackSelector.buildUponParameters()
+                .setTunnelingEnabled(true)
+                .setPreferredAudioLanguage(sp.getString("audio_language", null))
+                .setPreferredTextLanguage(sp.getString("subtitle_language", null))
         )
         val player = SimpleExoPlayer.Builder(application, renderersFactory)
             .setTrackSelector(trackSelector)

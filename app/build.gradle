@@ -75,6 +75,10 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
+    // Preference
+    def preference_version = "1.1.1"
+    implementation "androidx.preference:preference-ktx:$preference_version"
+
     // Jellyfin
     def jellyfin_version = "1.0.1"
     implementation "org.jellyfin.sdk:jellyfin-platform-android:$jellyfin_version"
