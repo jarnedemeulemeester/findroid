@@ -8,6 +8,15 @@ import org.jellyfin.sdk.model.api.*
 import java.util.*
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
+    override suspend fun getUserViews(): List<BaseItemDto> {
+        val views: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            views =
+                jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items ?: listOf()
+        }
+        return views
+    }
+
     override suspend fun getItem(itemId: UUID): BaseItemDto {
         val item: BaseItemDto
         withContext(Dispatchers.IO) {
@@ -27,6 +36,26 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return items
     }
 
+    override suspend fun getResumeItems(): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items =
+                jellyfinApi.itemsApi.getResumeItems(jellyfinApi.userId!!).content.items ?: listOf()
+        }
+        return items
+    }
+
+    override suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.userLibraryApi.getLatestMedia(
+                jellyfinApi.userId!!,
+                parentId = parentId
+            ).content
+        }
+        return items
+    }
+
     override suspend fun getSeasons(seriesId: UUID): List<BaseItemDto> {
         val seasons: List<BaseItemDto>
         withContext(Dispatchers.IO) {
@@ -36,12 +65,12 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return seasons
     }
 
-    override suspend fun getNextUp(seriesId: UUID): List<BaseItemDto> {
+    override suspend fun getNextUp(seriesId: UUID?): List<BaseItemDto> {
         val nextUpItems: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             nextUpItems = jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
-                seriesId = seriesId.toString()
+                seriesId = seriesId?.toString(),
             ).content.items ?: listOf()
         }
         return nextUpItems
@@ -126,13 +155,26 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
         Log.d("PlayerActivity", "Sending stop $itemId")
         withContext(Dispatchers.IO) {
-            jellyfinApi.playStateApi.onPlaybackStopped(jellyfinApi.userId!!, itemId, positionTicks = positionTicks)
+            jellyfinApi.playStateApi.onPlaybackStopped(
+                jellyfinApi.userId!!,
+                itemId,
+                positionTicks = positionTicks
+            )
         }
     }
 
-    override suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean) {
+    override suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean
+    ) {
         withContext(Dispatchers.IO) {
-            jellyfinApi.playStateApi.onPlaybackProgress(jellyfinApi.userId!!, itemId, positionTicks = positionTicks, isPaused = isPaused)
+            jellyfinApi.playStateApi.onPlaybackProgress(
+                jellyfinApi.userId!!,
+                itemId,
+                positionTicks = positionTicks,
+                isPaused = isPaused
+            )
         }
     }
 

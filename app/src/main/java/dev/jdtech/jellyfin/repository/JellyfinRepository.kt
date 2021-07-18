@@ -6,13 +6,19 @@ import org.jellyfin.sdk.model.api.MediaSourceInfo
 import java.util.*
 
 interface JellyfinRepository {
+    suspend fun getUserViews(): List<BaseItemDto>
+
     suspend fun getItem(itemId: UUID): BaseItemDto
 
     suspend fun getItems(parentId: UUID? = null): List<BaseItemDto>
 
+    suspend fun getResumeItems(): List<BaseItemDto>
+
+    suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto>
+
     suspend fun getSeasons(seriesId: UUID): List<BaseItemDto>
 
-    suspend fun getNextUp(seriesId: UUID): List<BaseItemDto>
+    suspend fun getNextUp(seriesId: UUID? = null): List<BaseItemDto>
 
     suspend fun getEpisodes(seriesId: UUID, seasonId: UUID, fields: List<ItemFields>? = null): List<BaseItemDto>
 
