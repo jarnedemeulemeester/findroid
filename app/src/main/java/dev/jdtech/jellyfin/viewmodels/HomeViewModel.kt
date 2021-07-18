@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
@@ -88,9 +89,4 @@ constructor(
     }
 }
 
-private fun BaseItemDto.toView(): View {
-    return View(
-        id = id,
-        name = name
-    )
-}
+
