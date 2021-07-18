@@ -1,10 +1,10 @@
 package dev.jdtech.jellyfin.repository
 
-import android.util.Log
 import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.*
+import timber.log.Timber
 import java.util.*
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
@@ -139,21 +139,21 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                     mediaSourceId = mediaSourceId
                 )
             } catch (e: Exception) {
-                Log.e("JellyfinRepository", "${e.message}")
+                Timber.e(e)
             }
         }
         return streamUrl
     }
 
     override suspend fun postPlaybackStart(itemId: UUID) {
-        Log.d("PlayerActivity", "Sending start $itemId")
+        Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
             jellyfinApi.playStateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
         }
     }
 
     override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
-        Log.d("PlayerActivity", "Sending stop $itemId")
+        Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
             jellyfinApi.playStateApi.onPlaybackStopped(
                 jellyfinApi.userId!!,
@@ -168,6 +168,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         positionTicks: Long,
         isPaused: Boolean
     ) {
+        Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
             jellyfinApi.playStateApi.onPlaybackProgress(
                 jellyfinApi.userId!!,

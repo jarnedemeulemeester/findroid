@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +42,7 @@ constructor(
             val jellyfinApi = JellyfinApi.newInstance(application, baseUrl)
             try {
                 val publicSystemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-                Log.i("AddServerViewModel", "Remote server: ${publicSystemInfo.id}")
+                Timber.d("Remote server: ${publicSystemInfo.id}")
 
                 if (serverAlreadyInDatabase(publicSystemInfo.id)) {
                     _error.value = "Server already added"
@@ -52,7 +52,7 @@ constructor(
                     _navigateToLogin.value = true
                 }
             } catch (e: Exception) {
-                Log.e("AddServerViewModel", "${e.message}")
+                Timber.e(e)
                 _error.value = e.message
                 _navigateToLogin.value = false
             }
@@ -71,9 +71,9 @@ constructor(
             servers = database.getAllServersSync()
         }
         for (server in servers) {
-            Log.i("AddServerViewModel", "Database server: ${server.id}")
+            Timber.d("Database server: ${server.id}")
             if (server.id == id) {
-                Log.i("AddServerViewModel", "Server already in the database")
+                Timber.w("Server already in the database")
                 return true
             }
         }

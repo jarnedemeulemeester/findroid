@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -65,7 +65,7 @@ constructor(
 
         viewModelScope.launch {
             val streamUrl = jellyfinRepository.getStreamUrl(itemId, mediaSourceId)
-            Log.d("PlayerActivity", streamUrl)
+            Timber.d("Stream url: $streamUrl")
             val mediaItem =
                 MediaItem.Builder()
                     .setMediaId(itemId.toString())
@@ -106,10 +106,6 @@ constructor(
         val runnable: Runnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
-                    Log.d(
-                        "PlayerActivity",
-                        "Posting progress of $itemId, position: ${player.currentPosition}"
-                    )
                     jellyfinRepository.postPlaybackProgress(
                         itemId,
                         player.currentPosition.times(10000),
@@ -143,13 +139,13 @@ constructor(
                     _navigateBack.value = true
                 }
             }
-            Log.d("PlayerActivity", "changed state to $stateString")
+            Timber.d("Changed player state to $stateString")
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d("PlayerActivity", "onCleared ViewModel")
+        Timber.d("Clearing Player ViewModel")
         releasePlayer()
     }
 }

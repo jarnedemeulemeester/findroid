@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
@@ -12,6 +11,7 @@ import androidx.navigation.navArgs
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
@@ -23,7 +23,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("PlayerActivity", "onCreate")
+        Timber.d("Creating player activity")
         setContentView(R.layout.activity_player)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -47,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("PlayerActivity", "onDestroy")
+        Timber.d("Destroying player activity")
         showSystemUI()
     }
 

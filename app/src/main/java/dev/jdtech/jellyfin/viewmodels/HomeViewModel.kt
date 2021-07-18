@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -80,7 +80,7 @@ constructor(
 
                 _finishedLoading.value = true
             } catch (e: Exception) {
-                Log.e("HomeViewModel", e.message.toString())
+                Timber.e(e.message.toString())
                 _finishedLoading.value = true
                 _error.value = true
             }

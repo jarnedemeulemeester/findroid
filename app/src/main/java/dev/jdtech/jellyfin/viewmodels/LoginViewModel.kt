@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -11,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
+import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -63,7 +63,7 @@ constructor(
                 }
                 _navigateToMain.value = true
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "${e.message}")
+                Timber.e(e)
                 _error.value = e.message
             }
         }
