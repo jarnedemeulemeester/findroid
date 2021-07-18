@@ -1,9 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +19,25 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                navigateToSettingsFragment()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,6 +109,12 @@ class HomeFragment : Fragment() {
             HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
                 episode.id
             )
+        )
+    }
+
+    private fun navigateToSettingsFragment() {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToNavigationSettings()
         )
     }
 }
