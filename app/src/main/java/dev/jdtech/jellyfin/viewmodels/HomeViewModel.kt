@@ -43,6 +43,9 @@ constructor(
 
     init {
         loadData()
+        viewModelScope.launch {
+            jellyfinRepository.postCapabilities()
+        }
     }
 
     fun loadData() {

@@ -145,6 +145,30 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return streamUrl
     }
 
+    override suspend fun postCapabilities() {
+        Timber.d("Sending capabilities")
+        withContext(Dispatchers.IO) {
+            jellyfinApi.sessionApi.postCapabilities(
+                playableMediaTypes = listOf("Video"),
+                supportedCommands = listOf(
+                    GeneralCommandType.VOLUME_UP,
+                    GeneralCommandType.VOLUME_DOWN,
+                    GeneralCommandType.TOGGLE_MUTE,
+                    GeneralCommandType.SET_AUDIO_STREAM_INDEX,
+                    GeneralCommandType.SET_SUBTITLE_STREAM_INDEX,
+                    GeneralCommandType.MUTE,
+                    GeneralCommandType.UNMUTE,
+                    GeneralCommandType.SET_VOLUME,
+                    GeneralCommandType.DISPLAY_MESSAGE,
+                    GeneralCommandType.PLAY,
+                    GeneralCommandType.PLAY_STATE,
+                    GeneralCommandType.PLAY_NEXT,
+                    GeneralCommandType.PLAY_MEDIA_SOURCE
+                ), supportsMediaControl = true
+            )
+        }
+    }
+
     override suspend fun postPlaybackStart(itemId: UUID) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {

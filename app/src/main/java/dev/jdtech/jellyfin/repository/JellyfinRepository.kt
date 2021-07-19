@@ -26,6 +26,8 @@ interface JellyfinRepository {
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
+    suspend fun postCapabilities()
+
     suspend fun postPlaybackStart(itemId: UUID)
 
     suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long)
