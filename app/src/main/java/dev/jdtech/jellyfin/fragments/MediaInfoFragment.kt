@@ -55,6 +55,13 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        viewModel.actors.observe(viewLifecycleOwner, { actors ->
+            when (actors.isNullOrEmpty()) {
+                false -> binding.actors.visibility = View.VISIBLE
+                true -> binding.actors.visibility = View.GONE
+            }
+        })
+
         viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
             mediaSource.id?.let {
                 navigateToPlayerActivity(
