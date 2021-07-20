@@ -57,7 +57,10 @@ constructor(
                 val userViews = jellyfinRepository.getUserViews()
                 for (view in userViews) {
                     Timber.d("Collection type: ${view.collectionType}")
-                    if (view.collectionType == "homevideos") continue
+                    if (view.collectionType == "homevideos" ||
+                        view.collectionType == "music" ||
+                        view.collectionType == "playlists"
+                    ) continue
                     val latestItems = jellyfinRepository.getLatestMedia(view.id)
                     if (latestItems.isEmpty()) continue
                     val v = view.toView()
