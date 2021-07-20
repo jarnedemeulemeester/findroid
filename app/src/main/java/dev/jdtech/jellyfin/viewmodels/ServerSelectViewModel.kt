@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class ServerSelectViewModel
 @Inject
 constructor(
-    private val application: Application,
+    private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
 
@@ -43,7 +42,8 @@ constructor(
     }
 
     fun connectToServer(server: Server) {
-        JellyfinApi.newInstance(application, server.address).apply {
+        jellyfinApi.apply {
+            api.baseUrl = server.address
             api.accessToken = server.accessToken
             userId = UUID.fromString(server.userId)
         }

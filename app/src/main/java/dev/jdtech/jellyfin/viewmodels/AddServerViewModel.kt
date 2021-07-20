@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class AddServerViewModel
 @Inject
 constructor(
-    private val application: Application,
+    private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
 
@@ -39,7 +38,10 @@ constructor(
         _error.value = null
 
         viewModelScope.launch {
-            val jellyfinApi = JellyfinApi.newInstance(application, baseUrl)
+            jellyfinApi.apply {
+                api.baseUrl = baseUrl
+                api.accessToken = null
+            }
             try {
                 val publicSystemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
                 Timber.d("Remote server: ${publicSystemInfo.id}")

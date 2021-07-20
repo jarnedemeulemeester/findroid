@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -18,11 +17,9 @@ import javax.inject.Inject
 class LoginViewModel
 @Inject
 constructor(
-    application: Application,
+    private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
-    // BaseUrl can be empty string because we want to get the existing instance.
-    private val jellyfinApi = JellyfinApi.getInstance(application, "")
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
