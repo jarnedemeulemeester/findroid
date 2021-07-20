@@ -56,6 +56,8 @@ constructor(
                 val views: MutableList<View> = mutableListOf()
                 val userViews = jellyfinRepository.getUserViews()
                 for (view in userViews) {
+                    Timber.d("Collection type: ${view.collectionType}")
+                    if (view.collectionType == "homevideos") continue
                     val latestItems = jellyfinRepository.getLatestMedia(view.id)
                     if (latestItems.isEmpty()) continue
                     val v = view.toView()

@@ -23,7 +23,7 @@ constructor(
     init {
         viewModelScope.launch {
             val items = jellyfinRepository.getItems()
-            _collections.value = items
+            _collections.value = items.filter { it.collectionType != "homevideos" }
             _finishedLoading.value = true
         }
     }
