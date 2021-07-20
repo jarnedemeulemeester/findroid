@@ -18,6 +18,7 @@
             android:label="@string/title_activity_main" />
         <activity
             android:name=".SetupActivity"
+            android:exported="true"
             android:theme="@style/Theme.JellyfinSplashScreen"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
