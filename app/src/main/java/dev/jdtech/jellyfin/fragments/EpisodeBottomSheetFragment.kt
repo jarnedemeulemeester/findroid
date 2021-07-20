@@ -34,7 +34,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.playButton.setOnClickListener {
             viewModel.mediaSources.value?.get(0)?.id?.let { mediaSourceId ->
-                navigateToPlayerActivity(args.episodeId,
+                navigateToPlayerActivity(
+                    args.episodeId,
                     mediaSourceId,
                     viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
                 )
@@ -64,6 +65,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
+            binding.communityRating.visibility = when (episode.communityRating != null) {
+                false -> View.GONE
+                true -> View.VISIBLE
+            }
         })
 
         viewModel.played.observe(viewLifecycleOwner, {
@@ -89,7 +94,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun navigateToPlayerActivity(itemId: UUID, mediaSourceId: String, playbackPosition: Long) {
+    private fun navigateToPlayerActivity(
+        itemId: UUID,
+        mediaSourceId: String,
+        playbackPosition: Long
+    ) {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 itemId,

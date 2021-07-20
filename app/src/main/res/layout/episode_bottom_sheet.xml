@@ -20,12 +20,12 @@
             android:id="@+id/holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_minus_fat"
-            app:tint="?attr/colorOnBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:importantForAccessibility="no"/>
+            app:tint="?attr/colorOnBackground" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
@@ -69,7 +69,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:gravity="bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/episode_name"
             app:layout_constraintTop_toBottomOf="@id/episode_name">
@@ -93,20 +92,18 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="26 min" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_star"
-                app:tint="#F2C94C" />
-
             <TextView
                 android:id="@+id/community_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:gravity="bottom"
                 android:text="@{viewModel.item.communityRating.toString()}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:drawableStartCompat="@drawable/ic_star"
+                app:drawableTint="@color/yellow"
                 tools:text="8.8" />
+
         </LinearLayout>
 
         <LinearLayout

@@ -74,8 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="bottom">
+                android:layout_marginBottom="16dp">
 
 
                 <TextView
@@ -105,19 +104,16 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     tools:text="PG-13" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_star"
-                    app:tint="#F2C94C" />
-
                 <TextView
                     android:id="@+id/community_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawablePadding="4dp"
+                    android:gravity="bottom"
                     android:text="@{viewModel.item.communityRating.toString()}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    app:drawableStartCompat="@drawable/ic_star"
+                    app:drawableTint="@color/yellow"
                     tools:text="7.3" />
             </LinearLayout>
 

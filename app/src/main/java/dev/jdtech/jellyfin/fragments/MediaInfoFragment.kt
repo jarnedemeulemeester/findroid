@@ -53,6 +53,10 @@ class MediaInfoFragment : Fragment() {
             if (item.trailerCount != null && item.trailerCount!! < 1) {
                 binding.trailerButton.visibility = View.GONE
             }
+            binding.communityRating.visibility = when (item.communityRating != null) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
         })
 
         viewModel.actors.observe(viewLifecycleOwner, { actors ->
