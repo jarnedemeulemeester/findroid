@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
@@ -46,6 +47,12 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        val snackbar =
+            Snackbar.make(binding.mainLayout, getString(R.string.error_loading_data), Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction(getString(R.string.retry)) {
+            viewModel.loadData()
+        }
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
@@ -64,21 +71,13 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.errorLayout.findViewById<View>(R.id.retry_button).setOnClickListener {
-            viewModel.loadData()
-        }
-
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
             binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
         })
 
-        viewModel.error.observe(viewLifecycleOwner, {
-            if (it) {
-                binding.errorLayout.visibility = View.VISIBLE
-                binding.viewsRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.visibility = View.GONE
-                binding.viewsRecyclerView.visibility = View.VISIBLE
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            if (error) {
+                snackbar.show()
             }
         })
 

@@ -43,9 +43,6 @@ constructor(
 
     init {
         loadData()
-        viewModelScope.launch {
-            jellyfinRepository.postCapabilities()
-        }
     }
 
     fun loadData() {
@@ -53,6 +50,7 @@ constructor(
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
+                jellyfinRepository.postCapabilities()
                 val views: MutableList<View> = mutableListOf()
                 val userViews = jellyfinRepository.getUserViews()
                 for (view in userViews) {
@@ -89,7 +87,7 @@ constructor(
 
                 _finishedLoading.value = true
             } catch (e: Exception) {
-                Timber.e(e.message.toString())
+                Timber.e(e)
                 _finishedLoading.value = true
                 _error.value = true
             }
