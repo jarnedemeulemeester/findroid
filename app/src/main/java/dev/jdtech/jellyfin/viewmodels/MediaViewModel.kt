@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,16 +21,30 @@ constructor(
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> = _error
+
     init {
+        loadData()
+    }
+
+    fun loadData() {
+        _finishedLoading.value = false
+        _error.value = false
         viewModelScope.launch {
-            val items = jellyfinRepository.getItems()
-            _collections.value =
-                items.filter {
-                    it.collectionType != "homevideos" &&
-                            it.collectionType != "music" &&
-                            it.collectionType != "playlists" &&
-                            it.collectionType != "boxsets"
-                }
+            try {
+                val items = jellyfinRepository.getItems()
+                _collections.value =
+                    items.filter {
+                        it.collectionType != "homevideos" &&
+                                it.collectionType != "music" &&
+                                it.collectionType != "playlists" &&
+                                it.collectionType != "boxsets"
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _error.value = true
+            }
             _finishedLoading.value = true
         }
     }

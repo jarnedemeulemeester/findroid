@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -62,25 +63,34 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> = _error
+
     fun loadData(itemId: UUID, itemType: String) {
+        _error.value = false
         viewModelScope.launch {
-            _item.value = jellyfinRepository.getItem(itemId)
-            _actors.value = getActors(_item.value!!)
-            _director.value = getDirector(_item.value!!)
-            _writers.value = getWriters(_item.value!!)
-            _writersString.value =
-                _writers.value?.joinToString(separator = ", ") { it.name.toString() }
-            _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
-            _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
-            _dateString.value = getDateString(_item.value!!)
-            _played.value = _item.value?.userData?.played
-            _favorite.value = _item.value?.userData?.isFavorite
-            if (itemType == "Series") {
-                _nextUp.value = getNextUp(itemId)
-                _seasons.value = jellyfinRepository.getSeasons(itemId)
-            }
-            if (itemType == "Movie") {
-                _mediaSources.value = jellyfinRepository.getMediaSources(itemId)
+            try {
+                _item.value = jellyfinRepository.getItem(itemId)
+                _actors.value = getActors(_item.value!!)
+                _director.value = getDirector(_item.value!!)
+                _writers.value = getWriters(_item.value!!)
+                _writersString.value =
+                    _writers.value?.joinToString(separator = ", ") { it.name.toString() }
+                _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
+                _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
+                _dateString.value = getDateString(_item.value!!)
+                _played.value = _item.value?.userData?.played
+                _favorite.value = _item.value?.userData?.isFavorite
+                if (itemType == "Series") {
+                    _nextUp.value = getNextUp(itemId)
+                    _seasons.value = jellyfinRepository.getSeasons(itemId)
+                }
+                if (itemType == "Movie") {
+                    _mediaSources.value = jellyfinRepository.getMediaSources(itemId)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _error.value = true
             }
         }
     }

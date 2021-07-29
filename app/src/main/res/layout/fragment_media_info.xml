@@ -12,366 +12,373 @@
             type="dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel" />
     </data>
 
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context=".fragments.MediaInfoFragment">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="8dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:context=".fragments.MediaInfoFragment">
 
-                <ImageView
-                    android:id="@+id/item_banner"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    app:itemBackdropImage="@{viewModel.item}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
+                    android:layout_marginBottom="8dp">
 
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@drawable/header_gradient"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@+id/item_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        app:itemBackdropImage="@{viewModel.item}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:text="@{viewModel.item.name}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    app:layout_constraintBottom_toTopOf="@id/original_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Alita: Battle Angel" />
-
-                <TextView
-                    android:id="@+id/original_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:text="@{viewModel.item.originalTitle}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{viewModel.dateString}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    tools:text="2019" />
-
-                <TextView
-                    android:id="@+id/playtime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{viewModel.runTime}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    tools:text="122 min" />
-
-                <TextView
-                    android:id="@+id/official_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{viewModel.item.officialRating}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    tools:text="PG-13" />
-
-                <TextView
-                    android:id="@+id/community_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:gravity="bottom"
-                    android:text="@{viewModel.item.communityRating.toString()}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    app:drawableStartCompat="@drawable/ic_star"
-                    app:drawableTint="@color/yellow"
-                    tools:text="7.3" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="24dp">
-
-                <ImageButton
-                    android:id="@+id/play_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/button_setup_background"
-                    android:contentDescription="@string/play_button_description"
-                    android:paddingHorizontal="24dp"
-                    android:paddingVertical="12dp"
-                    android:src="@drawable/ic_play" />
-
-                <ImageButton
-                    android:id="@+id/trailer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/button_accent_background"
-                    android:contentDescription="@string/trailer_button_description"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_film" />
-
-                <ImageButton
-                    android:id="@+id/check_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/button_accent_background"
-                    android:contentDescription="@string/check_button_description"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_check" />
-
-                <ImageButton
-                    android:id="@+id/favorite_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_accent_background"
-                    android:contentDescription="@string/favorite_button_description"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_heart" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="12dp"
-                android:orientation="vertical">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/genres_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:visibility="@{viewModel.item.genres.size() &lt; 1 ? View.GONE : View.VISIBLE}">
-
-                    <TextView
-                        android:id="@+id/genres_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/genres"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/header_gradient"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/genres"
-                        android:layout_width="0dp"
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:text="@{viewModel.genresString}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginHorizontal="24dp"
+                        android:text="@{viewModel.item.name}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        app:layout_constraintBottom_toTopOf="@id/original_title"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Action, Science Fiction, Adventure" />
+                        tools:text="Alita: Battle Angel" />
+
+                    <TextView
+                        android:id="@+id/original_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:text="@{viewModel.item.originalTitle}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/director_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:visibility="@{viewModel.director == null ? View.GONE : View.VISIBLE}">
-
-                    <TextView
-                        android:id="@+id/director_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/director"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/director"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:text="@{viewModel.director.name}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Robert Rodriguez" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/writers_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:visibility="@{viewModel.writers.size() &lt; 1 ? View.GONE : View.VISIBLE}">
-
-                    <TextView
-                        android:id="@+id/writers_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/writers"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/writers"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:text="@{viewModel.writersString}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="James Cameron, Laeta Kalogridis, Yukito Kishiro" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="24dp"
-                android:text="@{viewModel.item.overview}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical"
-                android:visibility="@{viewModel.nextUp != null ? View.VISIBLE : View.GONE}">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/next_up"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:textSize="18sp" />
 
                 <LinearLayout
-                    android:id="@+id/next_up"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:layout_marginBottom="16dp">
+
+
+                    <TextView
+                        android:id="@+id/year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{viewModel.dateString}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="2019" />
+
+                    <TextView
+                        android:id="@+id/playtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{viewModel.runTime}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="122 min" />
+
+                    <TextView
+                        android:id="@+id/official_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{viewModel.item.officialRating}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="PG-13" />
+
+                    <TextView
+                        android:id="@+id/community_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:gravity="bottom"
+                        android:text="@{viewModel.item.communityRating.toString()}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:drawableStartCompat="@drawable/ic_star"
+                        app:drawableTint="@color/yellow"
+                        tools:text="7.3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="24dp">
+
+                    <ImageButton
+                        android:id="@+id/play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_setup_background"
+                        android:contentDescription="@string/play_button_description"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="12dp"
+                        android:src="@drawable/ic_play" />
+
+                    <ImageButton
+                        android:id="@+id/trailer_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/trailer_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_film" />
+
+                    <ImageButton
+                        android:id="@+id/check_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/check_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_check" />
+
+                    <ImageButton
+                        android:id="@+id/favorite_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/favorite_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_heart" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="12dp"
                     android:orientation="vertical">
 
-                    <com.google.android.material.imageview.ShapeableImageView
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/genres_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:adjustViewBounds="true"
-                        app:itemPrimaryImage="@{viewModel.nextUp}"
-                        app:shapeAppearance="@style/roundedImageView" />
+                        android:layout_marginBottom="12dp"
+                        android:visibility="@{viewModel.item.genres.size() &lt; 1 ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            android:id="@+id/genres_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/genres"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/genres"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="64dp"
+                            android:text="@{viewModel.genresString}"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Action, Science Fiction, Adventure" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/director_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="@{viewModel.director == null ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            android:id="@+id/director_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/director"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/director"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="64dp"
+                            android:text="@{viewModel.director.name}"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Robert Rodriguez" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/writers_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="@{viewModel.writers.size() &lt; 1 ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            android:id="@+id/writers_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/writers"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/writers"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="64dp"
+                            android:text="@{viewModel.writersString}"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="James Cameron, Laeta Kalogridis, Yukito Kishiro" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="@{viewModel.item.overview}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.nextUp != null ? View.VISIBLE : View.GONE}">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        tools:text="The Girl Flautist" />
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/next_up"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:id="@+id/next_up"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:adjustViewBounds="true"
+                            app:itemPrimaryImage="@{viewModel.nextUp}"
+                            app:shapeAppearance="@style/roundedImageView" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            tools:text="The Girl Flautist" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical"
+                    android:visibility="@{viewModel.seasons != null ? View.VISIBLE : View.GONE}">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/seasons"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textSize="18sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/seasons_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
+                        app:items="@{viewModel.seasons}"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/base_item" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/cast_amp_crew"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textSize="18sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/people_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:people="@{viewModel.actors}"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/person_item" />
                 </LinearLayout>
 
             </LinearLayout>
+        </ScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical"
-                android:visibility="@{viewModel.seasons != null ? View.VISIBLE : View.GONE}">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/seasons"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:textSize="18sp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/seasons_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="12dp"
-                    app:items="@{viewModel.seasons}"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/base_item" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/actors"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/cast_amp_crew"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:textSize="18sp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/people_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:people="@{viewModel.actors}"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/person_item" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

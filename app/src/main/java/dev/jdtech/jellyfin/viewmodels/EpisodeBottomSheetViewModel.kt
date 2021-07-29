@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.*
@@ -42,12 +43,17 @@ constructor(
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
-            _item.value = jellyfinRepository.getItem(episodeId)
-            _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
-            _dateString.value = getDateString(_item.value!!)
-            _mediaSources.value = jellyfinRepository.getMediaSources(episodeId)
-            _played.value = _item.value?.userData?.played
-            _favorite.value = _item.value?.userData?.isFavorite
+            try {
+                val item = jellyfinRepository.getItem(episodeId)
+                _item.value = item
+                _runTime.value = "${item.runTimeTicks?.div(600000000)} min"
+                _dateString.value = getDateString(item)
+                _mediaSources.value = jellyfinRepository.getMediaSources(episodeId)
+                _played.value = item.userData?.played
+                _favorite.value = item.userData?.isFavorite
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

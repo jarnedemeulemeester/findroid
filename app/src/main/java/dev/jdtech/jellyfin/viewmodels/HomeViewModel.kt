@@ -85,12 +85,11 @@ constructor(
 
                 _views.value = items + views.map { HomeItem.ViewItem(it) }
 
-                _finishedLoading.value = true
             } catch (e: Exception) {
                 Timber.e(e)
-                _finishedLoading.value = true
                 _error.value = true
             }
+            _finishedLoading.value = true
         }
     }
 }

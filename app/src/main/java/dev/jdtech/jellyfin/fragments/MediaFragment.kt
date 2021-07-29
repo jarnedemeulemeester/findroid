@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
@@ -26,6 +28,16 @@ class MediaFragment : Fragment() {
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
+        val snackbar =
+            Snackbar.make(
+                binding.mainLayout,
+                getString(R.string.error_loading_data),
+                Snackbar.LENGTH_INDEFINITE
+            )
+        snackbar.setAction(getString(R.string.retry)) {
+            viewModel.loadData()
+        }
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter =
@@ -34,8 +46,12 @@ class MediaFragment : Fragment() {
             })
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            if (it) {
-                binding.loadingIndicator.visibility = View.GONE
+            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            if (error) {
+                snackbar.show()
             }
         })
 

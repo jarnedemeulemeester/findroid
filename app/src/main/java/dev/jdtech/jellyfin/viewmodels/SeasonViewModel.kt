@@ -9,6 +9,7 @@ import dev.jdtech.jellyfin.adapters.EpisodeItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -20,9 +21,23 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _episodes = MutableLiveData<List<EpisodeItem>>()
     val episodes: LiveData<List<EpisodeItem>> = _episodes
 
+    private val _finishedLoading = MutableLiveData<Boolean>()
+    val finishedLoading: LiveData<Boolean> = _finishedLoading
+
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> = _error
+
     fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
+        _error.value = false
+        _finishedLoading.value = false
         viewModelScope.launch {
-            _episodes.value = getEpisodes(seriesId, seasonId)
+            try {
+                _episodes.value = getEpisodes(seriesId, seasonId)
+            } catch (e: Exception) {
+                Timber.e(e)
+                _error.value = true
+            }
+            _finishedLoading.value = true
         }
     }
 
