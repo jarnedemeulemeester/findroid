@@ -38,6 +38,7 @@
                 android:clipToPadding="false"
                 android:paddingHorizontal="12dp"
                 android:paddingTop="16dp"
+                android:scrollbars="none"
                 app:items="@{viewModel.items}"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"

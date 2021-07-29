@@ -22,7 +22,7 @@
             android:id="@+id/person_image"
             android:layout_width="110dp"
             android:layout_height="160dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
             app:personImage="@{person}"
             app:shapeAppearanceOverlay="@style/roundedImageView" />

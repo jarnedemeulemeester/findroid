@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="@{collection.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textSize="18sp"
