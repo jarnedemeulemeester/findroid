@@ -12,8 +12,8 @@
         android:title="@string/title_media" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/title_settings" />
+        android:id="@+id/favoriteFragment"
+        android:icon="@drawable/ic_heart"
+        android:title="@string/title_favorite" />
 
 </menu>

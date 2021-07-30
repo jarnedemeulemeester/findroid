@@ -36,6 +36,19 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return items
     }
 
+    override suspend fun getFavoriteItems(): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+                filters = listOf(ItemFilter.IS_FAVORITE),
+                includeItemTypes = listOf("Movie", "Series", "Episode"),
+                recursive = true
+            ).content.items ?: listOf()
+        }
+        return items
+    }
+
     override suspend fun getResumeItems(): List<BaseItemDto> {
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {

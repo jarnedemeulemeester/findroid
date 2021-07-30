@@ -8,6 +8,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.FavoriteSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import java.util.*
@@ -166,4 +167,10 @@ fun bindItemPrimaryImage(imageView: ImageView, item: BaseItemDto?) {
 
         imageView.contentDescription = "${item.name} poster"
     }
+}
+
+@BindingAdapter("favoriteSections")
+fun bindFavoriteSections(recyclerView: RecyclerView, data: List<FavoriteSection>?) {
+    val adapter = recyclerView.adapter as FavoritesListAdapter
+    adapter.submitList(data)
 }

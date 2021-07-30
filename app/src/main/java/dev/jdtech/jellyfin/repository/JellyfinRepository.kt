@@ -12,6 +12,8 @@ interface JellyfinRepository {
 
     suspend fun getItems(parentId: UUID? = null): List<BaseItemDto>
 
+    suspend fun getFavoriteItems(): List<BaseItemDto>
+
     suspend fun getResumeItems(): List<BaseItemDto>
 
     suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto>

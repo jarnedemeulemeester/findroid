@@ -154,4 +154,16 @@
             android:name="playbackPosition"
             app:argType="long" />
     </activity>
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"
+        android:label="@string/title_favorite"
+        tools:layout="@layout/fragment_favorite">
+        <action
+            android:id="@+id/action_favoriteFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_favoriteFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
+    </fragment>
 </navigation>
