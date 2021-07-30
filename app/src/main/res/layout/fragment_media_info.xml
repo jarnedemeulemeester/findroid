@@ -18,6 +18,7 @@
         android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/media_info_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
