@@ -21,7 +21,7 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentLoginBinding.inflate(inflater)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         binding.buttonLogin.setOnClickListener {

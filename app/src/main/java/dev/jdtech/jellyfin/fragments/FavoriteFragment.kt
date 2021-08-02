@@ -39,7 +39,7 @@ class FavoriteFragment : Fragment() {
             viewModel.loadData()
         }
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
             ViewItemListAdapter.OnClickListener { item ->

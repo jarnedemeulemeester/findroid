@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
             viewModel.loadData()
         }
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
             navigateToLibraryFragment(it)

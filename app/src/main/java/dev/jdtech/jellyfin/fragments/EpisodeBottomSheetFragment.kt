@@ -29,7 +29,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     ): View {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         binding.playButton.setOnClickListener {

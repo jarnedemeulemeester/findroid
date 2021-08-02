@@ -35,7 +35,7 @@ class MediaInfoFragment : Fragment() {
     ): View {
         binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         return binding.root
     }

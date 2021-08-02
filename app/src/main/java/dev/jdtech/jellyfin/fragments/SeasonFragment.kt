@@ -29,7 +29,7 @@ class SeasonFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSeasonBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

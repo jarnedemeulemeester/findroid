@@ -38,7 +38,7 @@ class MediaFragment : Fragment() {
             viewModel.loadData()
         }
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter =
             CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->

@@ -23,7 +23,7 @@ class AddServerFragment : Fragment() {
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         binding.buttonConnect.setOnClickListener {

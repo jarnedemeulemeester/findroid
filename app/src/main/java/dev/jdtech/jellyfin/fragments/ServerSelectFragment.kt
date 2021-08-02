@@ -26,7 +26,7 @@ class ServerSelectFragment : Fragment() {
     ): View {
         binding = FragmentServerSelectBinding.inflate(inflater)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.viewModel = viewModel
 
