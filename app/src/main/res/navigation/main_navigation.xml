@@ -53,8 +53,7 @@
     <fragment
         android:id="@+id/navigation_settings"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:label="@string/title_settings"/>
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
