@@ -14,6 +14,8 @@ interface JellyfinRepository {
 
     suspend fun getFavoriteItems(): List<BaseItemDto>
 
+    suspend fun getSearchItems(searchQuery: String): List<BaseItemDto>
+
     suspend fun getResumeItems(): List<BaseItemDto>
 
     suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto>

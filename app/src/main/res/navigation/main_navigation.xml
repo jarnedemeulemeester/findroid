@@ -48,12 +48,15 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_media_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
-        android:label="@string/title_settings"/>
+        android:label="@string/title_settings" />
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
@@ -114,9 +117,9 @@
             app:argType="java.util.UUID" />
         <argument
             android:name="seriesName"
+            android:defaultValue="Series"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="Series" />
+            app:nullable="true" />
         <argument
             android:name="seasonName"
             android:defaultValue="Season"
@@ -142,7 +145,7 @@
         android:id="@+id/playerActivity"
         android:name="dev.jdtech.jellyfin.PlayerActivity"
         android:label="activity_player"
-        tools:layout="@layout/activity_player" >
+        tools:layout="@layout/activity_player">
         <argument
             android:name="itemId"
             app:argType="java.util.UUID" />
@@ -164,5 +167,20 @@
         <action
             android:id="@+id/action_favoriteFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
+        android:label="{query}"
+        tools:layout="@layout/fragment_search_result" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_favoriteFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
+        <argument
+            android:name="query"
+            app:argType="string" />
     </fragment>
 </navigation>

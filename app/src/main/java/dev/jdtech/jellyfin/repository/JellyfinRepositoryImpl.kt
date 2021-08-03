@@ -49,6 +49,19 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return items
     }
 
+    override suspend fun getSearchItems(searchQuery: String): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+                searchTerm = searchQuery,
+                includeItemTypes = listOf("Movie", "Series", "Episode"),
+                recursive = true
+            ).content.items ?: listOf()
+        }
+        return items
+    }
+
     override suspend fun getResumeItems(): List<BaseItemDto> {
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {

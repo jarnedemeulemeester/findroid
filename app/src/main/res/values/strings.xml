@@ -40,7 +40,8 @@
     <string name="latest_library">Latest %1$s</string>
     <string name="series_poster">Series poster</string>
     <string name="no_favorites">You have no favorites</string>
-
+    <string name="search">Search</string>
+    <string name="no_search_results">No search results</string>
     <string name="settings_category_language">Language</string>
     <string name="settings_preferred_audio_language">Preferred audio language</string>
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
