@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity())
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragment2ToNavigationHome())
         viewModel.doneNavigatingToMain()
     }
 }

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class LoginViewModel
 @Inject
 constructor(
+    private val sharedPreferences: SharedPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
@@ -54,6 +56,9 @@ constructor(
                     authenticationResult.accessToken!!
                 )
                 insert(server)
+                val spEdit = sharedPreferences.edit()
+                spEdit.putString("selectedServer", server.id)
+                spEdit.apply()
                 jellyfinApi.apply {
                     api.accessToken = authenticationResult.accessToken
                     userId = authenticationResult.user?.id

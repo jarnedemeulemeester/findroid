@@ -51,7 +51,7 @@ class AddServerFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
+        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragment3ToLoginFragment2())
         viewModel.onNavigateToLoginDone()
     }
 }

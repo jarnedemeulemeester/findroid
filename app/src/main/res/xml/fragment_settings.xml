@@ -21,5 +21,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_category_servers">
+
+        <Preference
+            app:key="switchServer"
+            app:title="@string/switch_server" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

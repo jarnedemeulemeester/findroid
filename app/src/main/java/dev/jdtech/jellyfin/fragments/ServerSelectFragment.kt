@@ -55,11 +55,13 @@ class ServerSelectFragment : Fragment() {
     }
 
     private fun navigateToAddServerFragment() {
-        findNavController().navigate(R.id.action_serverSelectFragment_to_addServerFragment)
+        findNavController().navigate(
+            ServerSelectFragmentDirections.actionServerSelectFragment2ToAddServerFragment3()
+        )
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(R.id.action_serverSelectFragment_to_mainActivity)
+        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
         viewModel.doneNavigatingToMain()
     }
 }

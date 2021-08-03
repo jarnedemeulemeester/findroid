@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ServerSelectViewModel
 @Inject
 constructor(
+    private val sharedPreferences: SharedPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
@@ -42,6 +44,10 @@ constructor(
     }
 
     fun connectToServer(server: Server) {
+        val spEdit = sharedPreferences.edit()
+        spEdit.putString("selectedServer", server.id)
+        spEdit.apply()
+
         jellyfinApi.apply {
             api.baseUrl = server.address
             api.accessToken = server.accessToken

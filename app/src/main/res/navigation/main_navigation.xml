@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/initializingFragment">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/homeFragment"
         android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
@@ -29,7 +29,7 @@
             app:destination="@id/episodeBottomSheetFragment" />
         <action
             android:id="@+id/action_navigation_home_to_navigation_settings"
-            app:destination="@id/navigation_settings"
+            app:destination="@id/settingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -37,7 +37,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_media"
+        android:id="@+id/mediaFragment"
         android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
         android:label="@string/title_media"
         tools:layout="@layout/fragment_media">
@@ -54,9 +54,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_settings"
+        android:id="@+id/settingsFragment"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
-        android:label="@string/title_settings" />
+        android:label="@string/title_settings" >
+        <action
+            android:id="@+id/action_navigation_settings_to_serverSelectFragment2"
+            app:destination="@id/serverSelectFragment" />
+    </fragment>
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
@@ -182,5 +186,55 @@
         <argument
             android:name="query"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/addServerFragment"
+        android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
+        android:label="AddServerFragment"
+        tools:layout="@layout/fragment_add_server">
+        <action
+            android:id="@+id/action_addServerFragment3_to_loginFragment2"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/serverSelectFragment"
+        android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
+        android:label="ServerSelectFragment"
+        tools:layout="@layout/fragment_server_select">
+        <action
+            android:id="@+id/action_serverSelectFragment2_to_addServerFragment3"
+            app:destination="@id/addServerFragment" />
+        <action
+            android:id="@+id/action_serverSelectFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment2_to_navigation_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/initializingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/initializingFragment"
+        android:name="dev.jdtech.jellyfin.fragments.InitializingFragment"
+        android:label="fragment_initializing"
+        tools:layout="@layout/fragment_initializing" >
+        <action
+            android:id="@+id/action_initializingFragment_to_navigation_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/initializingFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_initializingFragment_to_addServerFragment3"
+            app:destination="@id/addServerFragment"
+            app:popUpTo="@id/initializingFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
