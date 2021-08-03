@@ -29,7 +29,6 @@
     <string name="seasons">Seasons</string>
     <string name="play_button_description">Play the media</string>
     <string name="trailer_button_description">Watch the trailer</string>
-    <string name="shuffle_button_description">Shuffle</string>
     <string name="check_button_description">Mark as watched or unwatched</string>
     <string name="favorite_button_description">Favorite</string>
     <string name="episode_watched_indicator">Episode watched indicator</string>
