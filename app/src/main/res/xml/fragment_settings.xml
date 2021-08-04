@@ -29,4 +29,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_category_appearance">
+        <ListPreference
+            app:defaultValue="system"
+            app:entries="@array/themes"
+            app:entryValues="@array/themes_value"
+            app:key="theme"
+            app:title="@string/theme"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

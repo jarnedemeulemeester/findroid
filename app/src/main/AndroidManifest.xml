@@ -13,12 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jellyfin"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PlayerActivity" />
+        <activity
+            android:name=".PlayerActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:theme="@style/Theme.JellyfinSplashScreen"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="true">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -22,9 +22,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         installSplashScreen()
+        super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -66,7 +65,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.doneLoading.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
+                if (navController.currentDestination!!.id == R.id.initializingFragment) {
+                    navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
+                }
             }
         })
     }

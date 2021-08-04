@@ -22,4 +22,16 @@
         <item name="windowSplashScreenBackground">@color/neutral_100</item>
         <item name="postSplashScreenTheme">@style/Theme.Jellyfin</item>
     </style>
+
+    <string-array name="themes">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="themes_value">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
 </resources>

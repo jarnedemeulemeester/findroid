@@ -47,4 +47,6 @@
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="switch_server">Switch server</string>
+    <string name="settings_category_appearance">Appearance</string>
+    <string name="theme">Theme</string>
 </resources>
