@@ -190,7 +190,7 @@
     <fragment
         android:id="@+id/addServerFragment"
         android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
-        android:label="AddServerFragment"
+        android:label="@string/add_server"
         tools:layout="@layout/fragment_add_server">
         <action
             android:id="@+id/action_addServerFragment3_to_loginFragment2"
@@ -199,7 +199,7 @@
     <fragment
         android:id="@+id/serverSelectFragment"
         android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
-        android:label="ServerSelectFragment"
+        android:label="@string/select_server"
         tools:layout="@layout/fragment_server_select">
         <action
             android:id="@+id/action_serverSelectFragment2_to_addServerFragment3"
@@ -213,7 +213,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
-        android:label="LoginFragment"
+        android:label="@string/login"
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment2_to_navigation_home"
@@ -224,7 +224,7 @@
     <fragment
         android:id="@+id/initializingFragment"
         android:name="dev.jdtech.jellyfin.fragments.InitializingFragment"
-        android:label="fragment_initializing"
+        android:label="@string/initializing"
         tools:layout="@layout/fragment_initializing" >
         <action
             android:id="@+id/action_initializingFragment_to_navigation_home"
