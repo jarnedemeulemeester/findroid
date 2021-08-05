@@ -11,6 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        app:show_subtitle_button="true"/>
+        app:show_subtitle_button="true" />
 
 </FrameLayout>

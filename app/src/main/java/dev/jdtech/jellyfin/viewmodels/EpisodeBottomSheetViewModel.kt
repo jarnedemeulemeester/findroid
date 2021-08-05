@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.MediaSourceInfo
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -32,14 +32,13 @@ constructor(
     private val _dateString = MutableLiveData<String>()
     val dateString: LiveData<String> = _dateString
 
-    private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
-    val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
-
     private val _played = MutableLiveData<Boolean>()
     val played: LiveData<Boolean> = _played
 
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
+
+    var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
@@ -48,12 +47,20 @@ constructor(
                 _item.value = item
                 _runTime.value = "${item.runTimeTicks?.div(600000000)} min"
                 _dateString.value = getDateString(item)
-                _mediaSources.value = jellyfinRepository.getMediaSources(episodeId)
+                createPlayerItems(item)
                 _played.value = item.userData?.played
                 _favorite.value = item.userData?.isFavorite
             } catch (e: Exception) {
                 Timber.e(e)
             }
+        }
+    }
+
+    private suspend fun createPlayerItems(startEpisode: BaseItemDto) {
+        val episodes = jellyfinRepository.getEpisodes(startEpisode.seriesId!!, startEpisode.seasonId!!, startIndex = startEpisode.indexNumber?.minus(1))
+        for (episode in episodes) {
+            val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+            playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
         }
     }
 

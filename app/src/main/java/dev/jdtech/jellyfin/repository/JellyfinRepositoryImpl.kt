@@ -105,12 +105,17 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getEpisodes(
         seriesId: UUID,
         seasonId: UUID,
-        fields: List<ItemFields>?
+        fields: List<ItemFields>?,
+        startIndex: Int?
     ): List<BaseItemDto> {
         val episodes: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             episodes = jellyfinApi.showsApi.getEpisodes(
-                seriesId, jellyfinApi.userId!!, seasonId = seasonId, fields = fields
+                seriesId,
+                jellyfinApi.userId!!,
+                seasonId = seasonId,
+                fields = fields,
+                startIndex = startIndex
             ).content.items ?: listOf()
         }
         return episodes

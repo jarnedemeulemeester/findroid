@@ -17,9 +17,9 @@ import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
-import java.util.*
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -84,13 +84,10 @@ class MediaInfoFragment : Fragment() {
         })
 
         viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
-            mediaSource.id?.let {
-                navigateToPlayerActivity(
-                    args.itemId,
-                    it,
-                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
-                )
-            }
+            navigateToPlayerActivity(
+                arrayOf(PlayerItem(args.itemId, mediaSource.id!!)),
+                viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+            )
         })
 
         viewModel.played.observe(viewLifecycleOwner, {
@@ -139,9 +136,8 @@ class MediaInfoFragment : Fragment() {
                         )
                     } else {
                         navigateToPlayerActivity(
-                            args.itemId,
-                            viewModel.mediaSources.value!![0].id!!,
-                            viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                            arrayOf(PlayerItem(args.itemId, viewModel.mediaSources.value!![0].id!!)),
+                            viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000),
                         )
                     }
                 }
@@ -185,14 +181,12 @@ class MediaInfoFragment : Fragment() {
     }
 
     private fun navigateToPlayerActivity(
-        itemId: UUID,
-        mediaSourceId: String,
-        playbackPosition: Long
+        playerItems: Array<PlayerItem>,
+        playbackPosition: Long,
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
-                itemId,
-                mediaSourceId,
+                playerItems,
                 playbackPosition
             )
         )

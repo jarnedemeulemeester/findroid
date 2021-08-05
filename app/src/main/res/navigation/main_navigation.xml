@@ -151,11 +151,8 @@
         android:label="activity_player"
         tools:layout="@layout/activity_player">
         <argument
-            android:name="itemId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="mediaSourceId"
-            app:argType="string" />
+            android:name="items"
+            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
         <argument
             android:name="playbackPosition"
             app:argType="long" />
