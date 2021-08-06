@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,7 +15,6 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
-import java.util.*
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -34,10 +34,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.viewModel = viewModel
 
         binding.playButton.setOnClickListener {
-            navigateToPlayerActivity(
-                viewModel.playerItems.toTypedArray(),
-                viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
-            )
+            binding.playButton.setImageResource(android.R.color.transparent)
+            binding.progressCircular.visibility = View.VISIBLE
+            viewModel.preparePlayer()
         }
 
         binding.checkButton.setOnClickListener {
@@ -85,6 +84,18 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             binding.favoriteButton.setImageResource(drawable)
+        })
+
+        viewModel.navigateToPlayer.observe(viewLifecycleOwner, {
+            if (it) {
+                navigateToPlayerActivity(
+                    viewModel.playerItems.toTypedArray(),
+                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                )
+                viewModel.doneNavigateToPlayer()
+                binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                binding.progressCircular.visibility = View.INVISIBLE
+            }
         })
 
         viewModel.loadEpisode(args.episodeId)

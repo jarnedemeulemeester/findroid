@@ -38,6 +38,9 @@ constructor(
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
+    private val _navigateToPlayer = MutableLiveData<Boolean>()
+    val navigateToPlayer: LiveData<Boolean> = _navigateToPlayer
+
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     fun loadEpisode(episodeId: UUID) {
@@ -47,12 +50,18 @@ constructor(
                 _item.value = item
                 _runTime.value = "${item.runTimeTicks?.div(600000000)} min"
                 _dateString.value = getDateString(item)
-                createPlayerItems(item)
                 _played.value = item.userData?.played
                 _favorite.value = item.userData?.isFavorite
             } catch (e: Exception) {
                 Timber.e(e)
             }
+        }
+    }
+
+    fun preparePlayer() {
+        viewModelScope.launch {
+            createPlayerItems(_item.value!!)
+            _navigateToPlayer.value = true
         }
     }
 
@@ -101,5 +110,9 @@ constructor(
             // TODO: Implement a way to get the year from LocalDateTime in Android < O
             item.premiereDate.toString()
         }
+    }
+
+    fun doneNavigateToPlayer() {
+        _navigateToPlayer.value = false
     }
 }
