@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -83,11 +84,16 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { mediaSource ->
-            navigateToPlayerActivity(
-                arrayOf(PlayerItem(args.itemId, mediaSource.id!!)),
-                viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
-            )
+        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { playerItems ->
+            if (playerItems != null) {
+                navigateToPlayerActivity(
+                    playerItems,
+                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                )
+                viewModel.doneNavigatingToPlayer()
+                binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                binding.progressCircular.visibility = View.INVISIBLE
+            }
         })
 
         viewModel.played.observe(viewLifecycleOwner, {
@@ -127,6 +133,8 @@ class MediaInfoFragment : Fragment() {
         binding.peopleRecyclerView.adapter = PersonListAdapter()
 
         binding.playButton.setOnClickListener {
+            binding.playButton.setImageResource(android.R.color.transparent)
+            binding.progressCircular.visibility = View.VISIBLE
             if (args.itemType == "Movie") {
                 if (!viewModel.mediaSources.value.isNullOrEmpty()) {
                     if (viewModel.mediaSources.value!!.size > 1) {
@@ -139,8 +147,12 @@ class MediaInfoFragment : Fragment() {
                             arrayOf(PlayerItem(args.itemId, viewModel.mediaSources.value!![0].id!!)),
                             viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000),
                         )
+                        binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                        binding.progressCircular.visibility = View.INVISIBLE
                     }
                 }
+            } else if (args.itemType == "Series") {
+                viewModel.preparePlayer()
             }
         }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,8 +55,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
     val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
 
-    private val _navigateToPlayer = MutableLiveData<MediaSourceInfo>()
-    val navigateToPlayer: LiveData<MediaSourceInfo> = _navigateToPlayer
+    private val _navigateToPlayer = MutableLiveData<Array<PlayerItem>>()
+    val navigateToPlayer: LiveData<Array<PlayerItem>> = _navigateToPlayer
 
     private val _played = MutableLiveData<Boolean>()
     val played: LiveData<Boolean> = _played
@@ -65,6 +66,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     private val _error = MutableLiveData<Boolean>()
     val error: LiveData<Boolean> = _error
+
+    var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     fun loadData(itemId: UUID, itemType: String) {
         _error.value = false
@@ -177,7 +180,38 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
     }
 
+    fun preparePlayer() {
+        viewModelScope.launch {
+            createPlayerItems(_item.value!!)
+            _navigateToPlayer.value = playerItems.toTypedArray()
+        }
+    }
+
+    private suspend fun createPlayerItems(series: BaseItemDto) {
+        if (nextUp.value != null) {
+            val startEpisode = nextUp.value!!
+            val episodes = jellyfinRepository.getEpisodes(startEpisode.seriesId!!, startEpisode.seasonId!!, startIndex = startEpisode.indexNumber?.minus(1))
+            for (episode in episodes) {
+                val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+                playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
+            }
+        } else {
+            for (season in seasons.value!!) {
+                if (season.indexNumber == 0) continue
+                val episodes = jellyfinRepository.getEpisodes(series.id, season.id)
+                for (episode in episodes) {
+                    val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+                    playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
+                }
+            }
+        }
+    }
+
     fun navigateToPlayer(mediaSource: MediaSourceInfo) {
-        _navigateToPlayer.value = mediaSource
+        _navigateToPlayer.value = arrayOf(PlayerItem(item.value!!.id, mediaSource.id!!))
+    }
+
+    fun doneNavigatingToPlayer() {
+        _navigateToPlayer.value = null
     }
 }
