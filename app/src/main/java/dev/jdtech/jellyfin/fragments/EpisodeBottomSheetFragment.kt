@@ -98,6 +98,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         })
 
+        viewModel.playerItemsError.observe(viewLifecycleOwner, {
+            when (it) {
+                true -> {
+                    binding.playerItemsError.visibility = View.VISIBLE
+                    binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                    binding.progressCircular.visibility = View.INVISIBLE
+                }
+                false -> binding.playerItemsError.visibility = View.GONE
+            }
+        })
+
         viewModel.loadEpisode(args.episodeId)
 
         return binding.root

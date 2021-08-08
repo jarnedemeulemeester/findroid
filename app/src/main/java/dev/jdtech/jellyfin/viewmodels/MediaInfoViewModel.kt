@@ -69,6 +69,9 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
+    private val _playerItemsError = MutableLiveData<Boolean>()
+    val playerItemsError: LiveData<Boolean> = _playerItemsError
+
     fun loadData(itemId: UUID, itemType: String) {
         _error.value = false
         viewModelScope.launch {
@@ -181,9 +184,14 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     }
 
     fun preparePlayer() {
+        _playerItemsError.value = false
         viewModelScope.launch {
-            createPlayerItems(_item.value!!)
-            _navigateToPlayer.value = playerItems.toTypedArray()
+            try {
+                createPlayerItems(_item.value!!)
+                _navigateToPlayer.value = playerItems.toTypedArray()
+            } catch (e: Exception) {
+                _playerItemsError.value = true
+            }
         }
     }
 

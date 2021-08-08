@@ -148,10 +148,10 @@
                             android:id="@+id/progress_circular"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:elevation="8dp"
-                            android:padding="8dp"
                             android:layout_centerHorizontal="true"
+                            android:elevation="8dp"
                             android:indeterminateTint="@color/white"
+                            android:padding="8dp"
                             android:visibility="invisible" />
                     </RelativeLayout>
 
@@ -184,6 +184,19 @@
                         android:padding="12dp"
                         android:src="@drawable/ic_heart" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/player_items_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/error_preparing_player_items"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/red"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/info"

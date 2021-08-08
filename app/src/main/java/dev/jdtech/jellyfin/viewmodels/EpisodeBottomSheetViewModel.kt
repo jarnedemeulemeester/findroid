@@ -43,6 +43,9 @@ constructor(
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
+    private val _playerItemsError = MutableLiveData<Boolean>()
+    val playerItemsError: LiveData<Boolean> = _playerItemsError
+
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             try {
@@ -59,14 +62,23 @@ constructor(
     }
 
     fun preparePlayer() {
+        _playerItemsError.value = false
         viewModelScope.launch {
-            createPlayerItems(_item.value!!)
-            _navigateToPlayer.value = true
+            try {
+                createPlayerItems(_item.value!!)
+                _navigateToPlayer.value = true
+            } catch (e: Exception) {
+                _playerItemsError.value = true
+            }
         }
     }
 
     private suspend fun createPlayerItems(startEpisode: BaseItemDto) {
-        val episodes = jellyfinRepository.getEpisodes(startEpisode.seriesId!!, startEpisode.seasonId!!, startIndex = startEpisode.indexNumber?.minus(1))
+        val episodes = jellyfinRepository.getEpisodes(
+            startEpisode.seriesId!!,
+            startEpisode.seasonId!!,
+            startIndex = startEpisode.indexNumber?.minus(1)
+        )
         for (episode in episodes) {
             val mediaSources = jellyfinRepository.getMediaSources(episode.id)
             playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))

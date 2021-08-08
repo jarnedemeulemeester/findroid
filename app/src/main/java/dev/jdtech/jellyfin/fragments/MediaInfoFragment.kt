@@ -114,6 +114,17 @@ class MediaInfoFragment : Fragment() {
             binding.favoriteButton.setImageResource(drawable)
         })
 
+        viewModel.playerItemsError.observe(viewLifecycleOwner, {
+            when (it) {
+                true -> {
+                    binding.playerItemsError.visibility = View.VISIBLE
+                    binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                    binding.progressCircular.visibility = View.INVISIBLE
+                }
+                false -> binding.playerItemsError.visibility = View.GONE
+            }
+        })
+
         binding.trailerButton.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
