@@ -49,7 +49,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
 
     // ConstraintLayout
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
 
     // Navigation
     def navigation_version = "2.3.5"
