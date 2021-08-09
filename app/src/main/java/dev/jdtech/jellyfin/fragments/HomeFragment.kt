@@ -96,13 +96,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type ?: "Unknown"
+        if (item.type == "Episode") {
+            findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
+                    item.seriesId!!,
+                    item.seriesName,
+                    "Series"
+                )
             )
-        )
+        } else {
+            findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
+                    item.id,
+                    item.name,
+                    item.type ?: "Unknown"
+                )
+            )
+        }
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
