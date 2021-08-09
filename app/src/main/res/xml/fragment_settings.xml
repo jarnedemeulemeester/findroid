@@ -25,7 +25,7 @@
 
         <Preference
             app:key="switchServer"
-            app:title="@string/switch_server" />
+            app:title="@string/manage_servers" />
 
     </PreferenceCategory>
 
