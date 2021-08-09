@@ -18,18 +18,27 @@
         android:paddingEnd="12dp"
         android:paddingBottom="24dp">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/server_icon"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/server_icon"
+            android:background="@drawable/button_setup_background"
             app:layout_constraintBottom_toTopOf="@id/server_name"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/button_setup_background" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                app:srcCompat="@drawable/ic_server"
+                app:tint="@color/white" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/server_name"
