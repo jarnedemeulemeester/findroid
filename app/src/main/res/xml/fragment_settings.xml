@@ -36,7 +36,17 @@
             app:entryValues="@array/themes_value"
             app:key="theme"
             app:title="@string/theme"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/about">
+
+        <Preference
+            app:key="ossLicenses"
+            app:title="@string/open_source_licenses" />
+
+        <dev.jdtech.jellyfin.utils.VersionPreference app:title="@string/version" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

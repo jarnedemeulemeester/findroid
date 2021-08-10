@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -93,6 +94,9 @@ dependencies {
     // Timber
     def timber_version = "4.7.1"
     implementation "com.jakewharton.timber:timber:$timber_version"
+
+    def oss_licenses_version = "17.0.0"
+    implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

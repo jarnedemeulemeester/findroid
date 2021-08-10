@@ -16,6 +16,9 @@ buildscript {
 
         def hilt_version = "2.37"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+
+        def oss_licenses_version = "0.10.4"
+        classpath "com.google.android.gms:oss-licenses-plugin:$oss_licenses_version"
     }
 }
 
