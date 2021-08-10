@@ -321,29 +321,37 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         android:textSize="18sp" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/next_up"
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/nextup_media_width"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
                         android:foreground="?attr/selectableItemBackground"
                         android:orientation="vertical">
 
                         <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
+                            android:id="@+id/next_up_image"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
                             android:adjustViewBounds="true"
                             app:itemPrimaryImage="@{viewModel.nextUp}"
+                            app:layout_constraintDimensionRatio="H,16:9"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:shapeAppearance="@style/roundedImageView" />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="@{String.format(@string/episode_name_extended, viewModel.nextUp.parentIndexNumber, viewModel.nextUp.indexNumber, viewModel.nextUp.name)}"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/next_up_image"
                             tools:text="The Girl Flautist" />
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
 

@@ -5,4 +5,5 @@
     <item name="collection_columns" type="integer">2</item>
     <item name="library_columns" type="integer">4</item>
     <item name="recyclerview_animation_duration" type="integer">450</item>
+    <dimen name="nextup_media_width">350dp</dimen>
 </resources>
