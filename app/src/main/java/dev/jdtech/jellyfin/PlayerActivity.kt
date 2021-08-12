@@ -43,6 +43,11 @@ class PlayerActivity : AppCompatActivity() {
         hideSystemUI()
     }
 
+    override fun onPause() {
+        super.onPause()
+        playerView.player?.playWhenReady = false
+    }
+
     @Suppress("DEPRECATION")
     private fun hideSystemUI() {
         // These methods are deprecated but we still use them because the new WindowInsetsControllerCompat has a bug which makes the action bar reappear
