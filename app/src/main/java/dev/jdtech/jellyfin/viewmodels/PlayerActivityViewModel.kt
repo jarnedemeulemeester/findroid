@@ -32,7 +32,7 @@ constructor(
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
 
-    private var playWhenReady = true
+    var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
 

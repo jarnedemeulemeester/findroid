@@ -45,7 +45,14 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        viewModel.playWhenReady = viewModel.player.value?.playWhenReady == true
         playerView.player?.playWhenReady = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.player.value?.playWhenReady = viewModel.playWhenReady
+        hideSystemUI()
     }
 
     @Suppress("DEPRECATION")

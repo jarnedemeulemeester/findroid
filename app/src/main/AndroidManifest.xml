@@ -15,7 +15,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".PlayerActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="userLandscape" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
