@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jellyfin</string>
+    <string name="app_name">Findroid</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
     <string name="login">Login</string>
