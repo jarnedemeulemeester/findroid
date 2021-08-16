@@ -1,0 +1,4 @@
+Findroid does not collection any personal data.
+
+Findroid connects to a provided Jellyfin server which may collect some personal data such as IP address and device name.
+This provided Jellyfin server is in most cases owned by the user themselves.
