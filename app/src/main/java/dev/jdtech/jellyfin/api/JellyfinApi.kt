@@ -19,7 +19,7 @@ import java.util.*
 class JellyfinApi(context: Context, baseUrl: String) {
     val jellyfin = Jellyfin {
         clientInfo =
-            ClientInfo(name = BuildConfig.APPLICATION_ID, version = BuildConfig.VERSION_NAME)
+            ClientInfo(name = context.applicationInfo.loadLabel(context.packageManager).toString(), version = BuildConfig.VERSION_NAME)
         android(context)
     }
     val api = jellyfin.createApi(baseUrl = baseUrl)
