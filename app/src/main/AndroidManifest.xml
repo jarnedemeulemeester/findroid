@@ -2,20 +2,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.jdtech.jellyfin">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Jellyfin">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.Jellyfin"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".PlayerActivity"
+            android:screenOrientation="userLandscape" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.JellyfinSplashScreen"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+
     </application>
 
 </manifest>

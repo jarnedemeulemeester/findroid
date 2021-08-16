@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/settings_category_language">
+
+        <ListPreference
+            app:defaultValue="null"
+            app:entries="@array/languages"
+            app:entryValues="@array/languages_values"
+            app:key="audio_language"
+            app:title="@string/settings_preferred_audio_language"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="null"
+            app:entries="@array/languages"
+            app:entryValues="@array/languages_values"
+            app:key="subtitle_language"
+            app:title="@string/settings_preferred_subtitle_language"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_category_servers">
+
+        <Preference
+            app:key="switchServer"
+            app:title="@string/manage_servers" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_category_appearance">
+        <ListPreference
+            app:defaultValue="system"
+            app:entries="@array/themes"
+            app:entryValues="@array/themes_value"
+            app:key="theme"
+            app:title="@string/theme"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/about">
+
+        <Preference
+            app:key="privacyPolicy"
+            app:title="@string/privacy_policy" />
+
+        <Preference
+            app:key="ossLicenses"
+            app:title="@string/open_source_licenses" />
+
+        <dev.jdtech.jellyfin.utils.VersionPreference app:title="@string/version" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

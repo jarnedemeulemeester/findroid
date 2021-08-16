@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/decelerate_interpolator"
+    android:shareInterpolator="true"
+    android:duration="@integer/recyclerview_animation_duration">
+    <translate
+        android:fromXDelta="20%"
+        android:toXDelta="0" />
+    <alpha
+        android:fromAlpha="0"
+        android:toAlpha="1" />
+</set>
