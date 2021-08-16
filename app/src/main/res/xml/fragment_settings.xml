@@ -42,6 +42,10 @@
     <PreferenceCategory app:title="@string/about">
 
         <Preference
+            app:key="privacyPolicy"
+            app:title="@string/privacy_policy" />
+
+        <Preference
             app:key="ossLicenses"
             app:title="@string/open_source_licenses" />
 

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 "light" -> setDefaultNightMode(MODE_NIGHT_NO)
                 "dark" -> setDefaultNightMode(MODE_NIGHT_YES)
             }
+            true
+        }
+
+        findPreference<Preference>("privacyPolicy")?.setOnPreferenceClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/jarnedemeulemeester/findroid/blob/main/PRIVACY")
+            )
+            startActivity(intent)
             true
         }
 
