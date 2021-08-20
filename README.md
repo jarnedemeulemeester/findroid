@@ -8,6 +8,8 @@ I am developing this application in my spare time.
 
 **This project is in its early stages so expect bugs.**
 
+<a href='https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/></a>
+
 ## Screenshots
 Home | Library | Movie | Season | Episode
 -----|---------|-------|--------|--------
@@ -38,3 +40,5 @@ The logo is a combination of the Jellyfin logo and the Android robot.
 The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.
 
 Android is a trademark of Google LLC.
+
+Google Play and the Google Play logo are trademarks of Google LLC.
