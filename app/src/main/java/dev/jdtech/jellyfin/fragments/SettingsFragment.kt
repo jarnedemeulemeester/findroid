@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dev.jdtech.jellyfin.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -38,8 +37,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>("ossLicenses")?.setOnPreferenceClickListener {
-            startActivity(Intent(requireContext(), OssLicensesMenuActivity::class.java))
+        findPreference<Preference>("appInfo")?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAboutLibraries())
             true
         }
     }
