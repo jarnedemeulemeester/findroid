@@ -9,8 +9,11 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.discovery.RecommendedServerInfo
+import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,19 +37,32 @@ constructor(
      * - Connect to server and check if it is a Jellyfin server
      * - Check if server is not already in Database
      */
-    fun checkServer(baseUrl: String) {
+    fun checkServer(inputValue: String) {
         _error.value = null
 
         viewModelScope.launch {
-            jellyfinApi.apply {
-                api.baseUrl = baseUrl
-                api.accessToken = null
-            }
             try {
-                val publicSystemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-                Timber.d("Remote server: ${publicSystemInfo.id}")
+                val candidates = jellyfinApi.jellyfin.discovery.getAddressCandidates(inputValue)
+                val recommended = jellyfinApi.jellyfin.discovery.getRecommendedServers(
+                    candidates,
+                    RecommendedServerInfoScore.GOOD
+                )
+                val recommendedServer: RecommendedServerInfo
 
-                if (serverAlreadyInDatabase(publicSystemInfo.id)) {
+                try {
+                    recommendedServer = recommended.first()
+                } catch (e: NoSuchElementException) {
+                    throw Exception("Server not found")
+                }
+
+                jellyfinApi.apply {
+                    api.baseUrl = recommendedServer.address
+                    api.accessToken = null
+                }
+
+                Timber.d("Remote server: ${recommendedServer.systemInfo?.id}")
+
+                if (serverAlreadyInDatabase(recommendedServer.systemInfo?.id)) {
                     _error.value = "Server already added"
                     _navigateToLogin.value = false
                 } else {
