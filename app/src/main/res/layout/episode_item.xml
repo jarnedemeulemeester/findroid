@@ -82,5 +82,13 @@
             app:layout_constraintStart_toStartOf="@id/episode_title"
             app:layout_constraintTop_toBottomOf="@id/episode_title"
             tools:text="After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy. After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy." />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:background="@drawable/header_gradient"
+            app:layout_constraintBottom_toBottomOf="@id/episode_desc"
+            app:layout_constraintEnd_toEndOf="@id/episode_desc"
+            app:layout_constraintStart_toStartOf="@id/episode_desc" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
