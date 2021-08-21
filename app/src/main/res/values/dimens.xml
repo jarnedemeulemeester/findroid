@@ -5,7 +5,7 @@
     <dimen name="setup_container_width">@dimen/match_parent</dimen>
     <dimen name="overview_media_width">150dp</dimen>
     <item name="server_columns" type="integer">3</item>
-    <item name="collection_columns" type="integer">1</item>
+    <item name="collection_columns" type="integer">2</item>
     <item name="library_columns" type="integer">2</item>
     <item name="recyclerview_animation_duration" type="integer">250</item>
     <dimen name="nextup_media_width">@dimen/match_parent</dimen>
