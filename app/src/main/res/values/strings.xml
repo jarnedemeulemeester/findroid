@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Findroid</string>
+    <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
     <string name="login">Login</string>
@@ -14,7 +15,6 @@
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="title_media">My media</string>
     <string name="title_favorite">Favorites</string>
@@ -50,8 +50,7 @@
     <string name="settings_category_appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items</string>
-    <string name="version">Version</string>
-    <string name="open_source_licenses">Open source licenses</string>
     <string name="about">About</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="app_info">App info</string>
 </resources>
