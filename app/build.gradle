@@ -96,7 +96,7 @@ dependencies {
     implementation files('libs/extension-ffmpeg-release.aar')
 
     // Timber
-    def timber_version = "5.0.0"
+    def timber_version = "5.0.1"
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     def about_libraries_version = "8.9.1"
