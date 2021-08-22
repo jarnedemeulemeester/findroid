@@ -39,7 +39,8 @@ constructor(
                         it.collectionType != "homevideos" &&
                                 it.collectionType != "music" &&
                                 it.collectionType != "playlists" &&
-                                it.collectionType != "boxsets"
+                                it.collectionType != "boxsets" &&
+                                it.collectionType != "books"
                     }
             } catch (e: Exception) {
                 Timber.e(e)
