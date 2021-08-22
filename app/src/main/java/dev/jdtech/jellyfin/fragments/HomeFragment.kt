@@ -5,13 +5,13 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
+import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -49,12 +49,6 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        val snackbar =
-            Snackbar.make(binding.mainLayout, getString(R.string.error_loading_data), Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction(getString(R.string.retry)) {
-            viewModel.loadData()
-        }
-
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
@@ -78,10 +72,22 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error) {
-                snackbar.show()
+            if (error != null) {
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.viewsRecyclerView.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.viewsRecyclerView.visibility = View.VISIBLE
             }
         })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData()
+        }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         return binding.root
     }

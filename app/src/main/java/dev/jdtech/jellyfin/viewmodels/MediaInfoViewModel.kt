@@ -64,16 +64,16 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
-    private val _error = MutableLiveData<Boolean>()
-    val error: LiveData<Boolean> = _error
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    private val _playerItemsError = MutableLiveData<Boolean>()
-    val playerItemsError: LiveData<Boolean> = _playerItemsError
+    private val _playerItemsError = MutableLiveData<String>()
+    val playerItemsError: LiveData<String> = _playerItemsError
 
     fun loadData(itemId: UUID, itemType: String) {
-        _error.value = false
+        _error.value = null
         viewModelScope.launch {
             try {
                 _item.value = jellyfinRepository.getItem(itemId)
@@ -96,7 +96,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = true
+                _error.value = e.message
             }
         }
     }
@@ -184,13 +184,13 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     }
 
     fun preparePlayer() {
-        _playerItemsError.value = false
+        _playerItemsError.value = null
         viewModelScope.launch {
             try {
                 createPlayerItems(_item.value!!)
                 _navigateToPlayer.value = playerItems.toTypedArray()
             } catch (e: Exception) {
-                _playerItemsError.value = true
+                _playerItemsError.value = e.message
             }
         }
     }

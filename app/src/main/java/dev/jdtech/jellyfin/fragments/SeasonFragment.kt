@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
+import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -37,21 +37,23 @@ class SeasonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        val snackbar =
-            Snackbar.make(
-                binding.mainLayout,
-                getString(R.string.error_loading_data),
-                Snackbar.LENGTH_INDEFINITE
-            )
-        snackbar.setAction(getString(R.string.retry)) {
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            if (error != null) {
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.episodesRecyclerView.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.episodesRecyclerView.visibility = View.VISIBLE
+            }
+        })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadEpisodes(args.seriesId, args.seasonId)
         }
 
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error) {
-                snackbar.show()
-            }
-        })
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
             binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE

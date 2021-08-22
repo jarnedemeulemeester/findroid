@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
+import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
@@ -44,23 +44,25 @@ class MediaInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val snackbar =
-            Snackbar.make(
-                binding.mainLayout,
-                getString(R.string.error_loading_data),
-                Snackbar.LENGTH_INDEFINITE
-            )
-        snackbar.setAction(getString(R.string.retry)) {
-            viewModel.loadData(args.itemId, args.itemType)
-        }
-
         binding.viewModel = viewModel
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error) {
-                snackbar.show()
+            if (error != null) {
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.mediaInfoScrollview.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.mediaInfoScrollview.visibility = View.VISIBLE
             }
         })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData(args.itemId, args.itemType)
+        }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         viewModel.item.observe(viewLifecycleOwner, { item ->
             if (item.originalTitle != item.name) {
@@ -91,7 +93,12 @@ class MediaInfoFragment : Fragment() {
                     viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
                 )
                 viewModel.doneNavigatingToPlayer()
-                binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                binding.playButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_play
+                    )
+                )
                 binding.progressCircular.visibility = View.INVISIBLE
             }
         })
@@ -114,16 +121,24 @@ class MediaInfoFragment : Fragment() {
             binding.favoriteButton.setImageResource(drawable)
         })
 
-        viewModel.playerItemsError.observe(viewLifecycleOwner, {
-            when (it) {
-                true -> {
-                    binding.playerItemsError.visibility = View.VISIBLE
-                    binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
-                    binding.progressCircular.visibility = View.INVISIBLE
-                }
-                false -> binding.playerItemsError.visibility = View.GONE
+        viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
+            if (errorMessage != null) {
+                binding.playerItemsError.visibility = View.VISIBLE
+                binding.playButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_play
+                    )
+                )
+                binding.progressCircular.visibility = View.INVISIBLE
+            } else {
+                binding.playerItemsError.visibility = View.GONE
             }
         })
+
+        binding.playerItemsErrorDetails.setOnClickListener {
+            ErrorDialogFragment(viewModel.playerItemsError.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         binding.trailerButton.setOnClickListener {
             val intent = Intent(
@@ -155,10 +170,20 @@ class MediaInfoFragment : Fragment() {
                         )
                     } else {
                         navigateToPlayerActivity(
-                            arrayOf(PlayerItem(args.itemId, viewModel.mediaSources.value!![0].id!!)),
+                            arrayOf(
+                                PlayerItem(
+                                    args.itemId,
+                                    viewModel.mediaSources.value!![0].id!!
+                                )
+                            ),
                             viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000),
                         )
-                        binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                        binding.playButton.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireActivity(),
+                                R.drawable.ic_play
+                            )
+                        )
                         binding.progressCircular.visibility = View.INVISIBLE
                     }
                 }

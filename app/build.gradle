@@ -5,7 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'dagger.hilt.android.plugin'
-    id 'com.google.android.gms.oss-licenses-plugin'
+    id "com.mikepenz.aboutlibraries.plugin"
 }
 
 android {
@@ -16,8 +16,8 @@ android {
         applicationId "dev.jdtech.jellyfin"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 2
+        versionName "0.1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,6 +42,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 }
 
@@ -96,11 +97,12 @@ dependencies {
     implementation files('libs/extension-ffmpeg-release.aar')
 
     // Timber
-    def timber_version = "5.0.0"
+    def timber_version = "5.0.1"
     implementation "com.jakewharton.timber:timber:$timber_version"
 
-    def oss_licenses_version = "17.0.0"
-    implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
+    def about_libraries_version = "8.9.1"
+    implementation "com.mikepenz:aboutlibraries-core:$about_libraries_version"
+    implementation "com.mikepenz:aboutlibraries:$about_libraries_version"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

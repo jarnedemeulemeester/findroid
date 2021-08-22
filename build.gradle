@@ -4,9 +4,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.android.tools.build:gradle:7.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,8 +20,8 @@ buildscript {
         def hilt_version = "2.38.1"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
-        def oss_licenses_version = "0.10.4"
-        classpath "com.google.android.gms:oss-licenses-plugin:$oss_licenses_version"
+        def about_libraries_version = "8.9.1"
+        classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$about_libraries_version"
     }
 }
 

@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
+import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.viewmodels.FavoriteViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -29,16 +29,6 @@ class FavoriteFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        val snackbar =
-            Snackbar.make(
-                binding.mainLayout,
-                getString(R.string.error_loading_data),
-                Snackbar.LENGTH_INDEFINITE
-            )
-        snackbar.setAction(getString(R.string.retry)) {
-            viewModel.loadData()
-        }
-
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
@@ -53,10 +43,22 @@ class FavoriteFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error) {
-                snackbar.show()
+            if (error != null) {
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.favoritesRecyclerView.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.favoritesRecyclerView.visibility = View.VISIBLE
             }
         })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData()
+        }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         viewModel.favoriteSections.observe(viewLifecycleOwner, { sections ->
             if (sections.isEmpty()) {

@@ -20,18 +20,18 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
-    private val _error = MutableLiveData<Boolean>()
-    val error: LiveData<Boolean> = _error
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
 
     fun loadItems(parentId: UUID) {
-        _error.value = false
+        _error.value = null
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
                 _items.value = jellyfinRepository.getItems(parentId)
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = true
+                _error.value = e.message
             }
             _finishedLoading.value = true
         }

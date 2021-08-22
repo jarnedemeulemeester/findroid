@@ -56,10 +56,13 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
-        android:label="@string/title_settings" >
+        android:label="@string/title_settings">
         <action
             android:id="@+id/action_navigation_settings_to_serverSelectFragment2"
             app:destination="@id/serverSelectFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_about_libraries"
+            app:destination="@id/about_libraries" />
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"
@@ -173,7 +176,7 @@
         android:id="@+id/searchResultFragment"
         android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
         android:label="{query}"
-        tools:layout="@layout/fragment_search_result" >
+        tools:layout="@layout/fragment_search_result">
         <action
             android:id="@+id/action_favoriteFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
@@ -222,7 +225,7 @@
         android:id="@+id/initializingFragment"
         android:name="dev.jdtech.jellyfin.fragments.InitializingFragment"
         android:label="@string/initializing"
-        tools:layout="@layout/fragment_initializing" >
+        tools:layout="@layout/fragment_initializing">
         <action
             android:id="@+id/action_initializingFragment_to_navigation_home"
             app:destination="@id/homeFragment"
@@ -234,4 +237,7 @@
             app:popUpTo="@id/initializingFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <include app:graph="@navigation/aboutlibs_navigation" />
+
 </navigation>

@@ -43,8 +43,8 @@ constructor(
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    private val _playerItemsError = MutableLiveData<Boolean>()
-    val playerItemsError: LiveData<Boolean> = _playerItemsError
+    private val _playerItemsError = MutableLiveData<String>()
+    val playerItemsError: LiveData<String> = _playerItemsError
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
@@ -62,13 +62,13 @@ constructor(
     }
 
     fun preparePlayer() {
-        _playerItemsError.value = false
+        _playerItemsError.value = null
         viewModelScope.launch {
             try {
                 createPlayerItems(_item.value!!)
                 _navigateToPlayer.value = true
             } catch (e: Exception) {
-                _playerItemsError.value = true
+                _playerItemsError.value = e.message
             }
         }
     }

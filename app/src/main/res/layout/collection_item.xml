@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
@@ -37,7 +37,6 @@
             android:layout_marginTop="4dp"
             android:text="@{collection.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/collection_image"
