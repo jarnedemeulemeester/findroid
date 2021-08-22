@@ -66,7 +66,10 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             items =
-                jellyfinApi.itemsApi.getResumeItems(jellyfinApi.userId!!).content.items ?: listOf()
+                jellyfinApi.itemsApi.getResumeItems(
+                    jellyfinApi.userId!!,
+                    includeItemTypes = listOf("Movie", "Episode"),
+                ).content.items ?: listOf()
         }
         return items
     }

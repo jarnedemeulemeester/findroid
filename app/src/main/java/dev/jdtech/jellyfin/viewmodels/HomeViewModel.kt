@@ -57,7 +57,8 @@ constructor(
                     Timber.d("Collection type: ${view.collectionType}")
                     if (view.collectionType == "homevideos" ||
                         view.collectionType == "music" ||
-                        view.collectionType == "playlists"
+                        view.collectionType == "playlists" ||
+                        view.collectionType == "books"
                     ) continue
                     val latestItems = jellyfinRepository.getLatestMedia(view.id)
                     if (latestItems.isEmpty()) continue
