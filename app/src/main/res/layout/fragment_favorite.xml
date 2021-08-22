@@ -9,12 +9,6 @@
             type="dev.jdtech.jellyfin.viewmodels.FavoriteViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.FavoriteFragment">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -29,6 +23,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:trackCornerRadius="10dp" />
+
+            <include
+                android:id="@+id/error_layout"
+                layout="@layout/error_panel" />
 
             <TextView
                 android:id="@+id/no_favorites_text"
@@ -57,7 +55,5 @@
                 tools:listitem="@layout/favorite_section" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -110,7 +110,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         })
 
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(viewModel.playerItemsError.value ?: "Unknown error").show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.playerItemsError.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
         }
 
         viewModel.loadEpisode(args.episodeId)

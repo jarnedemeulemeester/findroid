@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
@@ -45,23 +44,25 @@ class MediaInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val snackbar =
-            Snackbar.make(
-                binding.mainLayout,
-                getString(R.string.error_loading_data),
-                Snackbar.LENGTH_INDEFINITE
-            )
-        snackbar.setAction(getString(R.string.retry)) {
-            viewModel.loadData(args.itemId, args.itemType)
-        }
-
         binding.viewModel = viewModel
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error) {
-                snackbar.show()
+            if (error != null) {
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.mediaInfoScrollview.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.mediaInfoScrollview.visibility = View.VISIBLE
             }
         })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData(args.itemId, args.itemType)
+        }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+        }
 
         viewModel.item.observe(viewLifecycleOwner, { item ->
             if (item.originalTitle != item.name) {
@@ -136,7 +137,7 @@ class MediaInfoFragment : Fragment() {
         })
 
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(viewModel.playerItemsError.value ?: "Unknown error").show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.playerItemsError.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
         }
 
         binding.trailerButton.setOnClickListener {
