@@ -65,13 +65,14 @@
             tools:text="1. To You, in 2000 Years: The Fall of Shiganshina, Part 1" />
 
         <LinearLayout
+            android:id="@+id/episode_metadata"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/episode_name"
-            app:layout_constraintTop_toBottomOf="@id/episode_name">
+            app:layout_constraintStart_toStartOf="@id/episode_image"
+            app:layout_constraintTop_toBottomOf="@id/episode_image">
 
 
             <TextView
@@ -115,7 +116,7 @@
             android:layout_marginBottom="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/episode_image">
+            app:layout_constraintTop_toBottomOf="@id/episode_metadata">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
