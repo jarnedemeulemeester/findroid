@@ -78,7 +78,7 @@ constructor(
                 _favoriteSections.value = tempFavoriteSections
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.message
+                _error.value = e.toString()
             }
             _finishedLoading.value = true
         }

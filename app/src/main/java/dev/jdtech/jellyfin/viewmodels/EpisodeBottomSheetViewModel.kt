@@ -68,7 +68,7 @@ constructor(
                 createPlayerItems(_item.value!!)
                 _navigateToPlayer.value = true
             } catch (e: Exception) {
-                _playerItemsError.value = e.message
+                _playerItemsError.value = e.toString()
             }
         }
     }

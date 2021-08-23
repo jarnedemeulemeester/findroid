@@ -41,7 +41,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 )
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.message
+                _error.value = e.toString()
             }
             _finishedLoading.value = true
         }
