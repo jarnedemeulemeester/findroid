@@ -10,7 +10,11 @@ interface JellyfinRepository {
 
     suspend fun getItem(itemId: UUID): BaseItemDto
 
-    suspend fun getItems(parentId: UUID? = null): List<BaseItemDto>
+    suspend fun getItems(
+        parentId: UUID? = null,
+        includeTypes: List<String>? = null,
+        recursive: Boolean = false
+    ): List<BaseItemDto>
 
     suspend fun getFavoriteItems(): List<BaseItemDto>
 

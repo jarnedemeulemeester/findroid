@@ -6,6 +6,7 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 fun BaseItemDto.toView(): View {
     return View(
         id = id,
-        name = name
+        name = name,
+        type = collectionType
     )
 }

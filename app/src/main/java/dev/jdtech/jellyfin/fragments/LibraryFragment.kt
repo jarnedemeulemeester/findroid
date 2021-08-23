@@ -50,7 +50,7 @@ class LibraryFragment : Fragment() {
         })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadItems(args.libraryId)
+            viewModel.loadItems(args.libraryId, args.libraryType)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
@@ -65,7 +65,7 @@ class LibraryFragment : Fragment() {
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
             })
-        viewModel.loadItems(args.libraryId)
+        viewModel.loadItems(args.libraryId, args.libraryType)
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {

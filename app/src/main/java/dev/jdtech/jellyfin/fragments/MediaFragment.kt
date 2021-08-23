@@ -89,7 +89,8 @@ class MediaFragment : Fragment() {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
                 library.id,
-                library.name
+                library.name,
+                library.collectionType,
             )
         )
     }

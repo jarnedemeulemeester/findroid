@@ -96,7 +96,8 @@ class HomeFragment : Fragment() {
         findNavController().navigate(
             HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
                 view.id,
-                view.name
+                view.name,
+                view.type
             )
         )
     }
