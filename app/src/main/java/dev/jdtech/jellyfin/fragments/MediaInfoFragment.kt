@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -48,6 +49,7 @@ class MediaInfoFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.mediaInfoScrollview.visibility = View.GONE
             } else {

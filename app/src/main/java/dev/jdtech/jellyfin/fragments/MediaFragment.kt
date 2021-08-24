@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -66,6 +67,7 @@ class MediaFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.viewsRecyclerView.visibility = View.GONE
             } else {

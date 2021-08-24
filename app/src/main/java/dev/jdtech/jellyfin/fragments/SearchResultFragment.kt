@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSearchResultBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.SearchResultViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -47,6 +48,7 @@ class SearchResultFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.searchResultsRecyclerView.visibility = View.GONE
             } else {

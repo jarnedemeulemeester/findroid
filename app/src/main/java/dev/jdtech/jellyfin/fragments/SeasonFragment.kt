@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -39,6 +40,7 @@ class SeasonFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.episodesRecyclerView.visibility = View.GONE
             } else {

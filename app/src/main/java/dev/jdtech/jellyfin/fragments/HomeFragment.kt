@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -73,6 +74,7 @@ class HomeFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.viewsRecyclerView.visibility = View.GONE
             } else {
@@ -86,7 +88,10 @@ class HomeFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         return binding.root
