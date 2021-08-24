@@ -12,7 +12,9 @@ import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.toView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 import java.util.*
@@ -50,42 +52,55 @@ constructor(
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
+
+
                 jellyfinRepository.postCapabilities()
-                val views: MutableList<View> = mutableListOf()
-                val userViews = jellyfinRepository.getUserViews()
-                for (view in userViews) {
-                    Timber.d("Collection type: ${view.collectionType}")
-                    if (view.collectionType == "homevideos" ||
-                        view.collectionType == "music" ||
-                        view.collectionType == "playlists" ||
-                        view.collectionType == "books" ||
-                        view.collectionType == "livetv"
-                    ) continue
-                    val latestItems = jellyfinRepository.getLatestMedia(view.id)
-                    if (latestItems.isEmpty()) continue
-                    val v = view.toView()
-                    v.items = latestItems
-                    views.add(v)
-                }
 
                 val items = mutableListOf<HomeItem>()
 
-                val resumeItems = jellyfinRepository.getResumeItems()
-                val resumeSection =
-                    HomeSection(UUID.randomUUID(), continueWatchingString, resumeItems)
+                withContext(Dispatchers.Default) {
 
-                if (!resumeItems.isNullOrEmpty()) {
-                    items.add(HomeItem.Section(resumeSection))
+                    val resumeItems = jellyfinRepository.getResumeItems()
+                    val resumeSection =
+                        HomeSection(UUID.randomUUID(), continueWatchingString, resumeItems)
+
+                    if (!resumeItems.isNullOrEmpty()) {
+                        items.add(HomeItem.Section(resumeSection))
+                    }
+
+                    val nextUpItems = jellyfinRepository.getNextUp()
+                    val nextUpSection = HomeSection(UUID.randomUUID(), nextUpString, nextUpItems)
+
+                    if (!nextUpItems.isNullOrEmpty()) {
+                        items.add(HomeItem.Section(nextUpSection))
+                    }
                 }
 
-                val nextUpItems = jellyfinRepository.getNextUp()
-                val nextUpSection = HomeSection(UUID.randomUUID(), nextUpString, nextUpItems)
+                _views.value = items
 
-                if (!nextUpItems.isNullOrEmpty()) {
-                    items.add(HomeItem.Section(nextUpSection))
+                val views: MutableList<View> = mutableListOf()
+
+                withContext(Dispatchers.Default) {
+                    val userViews = jellyfinRepository.getUserViews()
+
+                    for (view in userViews) {
+                        Timber.d("Collection type: ${view.collectionType}")
+                        if (view.collectionType == "homevideos" ||
+                            view.collectionType == "music" ||
+                            view.collectionType == "playlists" ||
+                            view.collectionType == "books" ||
+                            view.collectionType == "livetv"
+                        ) continue
+                        val latestItems = jellyfinRepository.getLatestMedia(view.id)
+                        if (latestItems.isEmpty()) continue
+                        val v = view.toView()
+                        v.items = latestItems
+                        views.add(v)
+                    }
                 }
 
                 _views.value = items + views.map { HomeItem.ViewItem(it) }
+
 
             } catch (e: Exception) {
                 Timber.e(e)

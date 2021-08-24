@@ -16,18 +16,18 @@
         android:layout_height="match_parent"
         tools:context=".fragments.HomeFragment">
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loading_indicator"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:trackCornerRadius="10dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <include android:id="@+id/error_layout" layout="@layout/error_panel" />
+        <include
+            android:id="@+id/error_layout"
+            layout="@layout/error_panel" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"
