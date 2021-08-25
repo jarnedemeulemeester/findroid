@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="org.jellyfin.sdk.model.api.LocationType" />
+
         <variable
             name="viewModel"
             type="dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel" />
@@ -37,6 +41,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/holder"
             app:shapeAppearance="@style/roundedImageView" />
+
+        <FrameLayout
+            android:id="@+id/missing_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/red"
+            android:visibility="@{viewModel.item.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="@id/episode_image"
+            app:layout_constraintTop_toTopOf="@id/episode_image">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="M"
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/progress_bar"
