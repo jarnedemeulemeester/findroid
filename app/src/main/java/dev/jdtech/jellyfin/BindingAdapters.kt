@@ -124,7 +124,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     if (!episode.imageTags.isNullOrEmpty()) {
         when (episode.type) {
             "Movie" -> {
-                if (episode.imageTags!!.keys.contains(ImageType.BACKDROP)) {
+                if (!episode.backdropImageTags.isNullOrEmpty()) {
                     imageType = ImageType.BACKDROP
                 }
             }
