@@ -61,7 +61,7 @@ constructor(
         }
     }
 
-    fun preparePlayer() {
+    fun preparePlayerItems() {
         _playerItemsError.value = null
         viewModelScope.launch {
             try {
@@ -77,12 +77,14 @@ constructor(
         val episodes = jellyfinRepository.getEpisodes(
             startEpisode.seriesId!!,
             startEpisode.seasonId!!,
-            startIndex = startEpisode.indexNumber?.minus(1)
+            startItemId = startEpisode.id
         )
         for (episode in episodes) {
             val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+            if (mediaSources.isEmpty()) continue
             playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
         }
+        if (playerItems.isEmpty()) throw Exception("No playable items found")
     }
 
     fun markAsPlayed(itemId: UUID) {

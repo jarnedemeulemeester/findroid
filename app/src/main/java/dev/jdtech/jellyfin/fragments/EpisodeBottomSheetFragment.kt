@@ -37,7 +37,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            viewModel.preparePlayer()
+            viewModel.preparePlayerItems()
         }
 
         binding.checkButton.setOnClickListener {

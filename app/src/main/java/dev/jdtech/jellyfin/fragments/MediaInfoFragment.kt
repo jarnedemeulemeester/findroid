@@ -190,7 +190,7 @@ class MediaInfoFragment : Fragment() {
                     }
                 }
             } else if (args.itemType == "Series") {
-                viewModel.preparePlayer()
+                viewModel.preparePlayerItems()
             }
         }
 

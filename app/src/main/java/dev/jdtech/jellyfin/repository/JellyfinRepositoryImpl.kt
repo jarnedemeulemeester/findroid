@@ -115,7 +115,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>?,
-        startIndex: Int?
+        startItemId: UUID?
     ): List<BaseItemDto> {
         val episodes: List<BaseItemDto>
         withContext(Dispatchers.IO) {
@@ -124,7 +124,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.userId!!,
                 seasonId = seasonId,
                 fields = fields,
-                startIndex = startIndex
+                startItemId = startItemId
             ).content.items ?: listOf()
         }
         return episodes

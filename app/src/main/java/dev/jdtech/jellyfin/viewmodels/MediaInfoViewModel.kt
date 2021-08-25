@@ -183,7 +183,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
     }
 
-    fun preparePlayer() {
+    fun preparePlayerItems() {
         _playerItemsError.value = null
         viewModelScope.launch {
             try {
@@ -198,9 +198,14 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private suspend fun createPlayerItems(series: BaseItemDto) {
         if (nextUp.value != null) {
             val startEpisode = nextUp.value!!
-            val episodes = jellyfinRepository.getEpisodes(startEpisode.seriesId!!, startEpisode.seasonId!!, startIndex = startEpisode.indexNumber?.minus(1))
+            val episodes = jellyfinRepository.getEpisodes(
+                startEpisode.seriesId!!,
+                startEpisode.seasonId!!,
+                startItemId = startEpisode.id
+            )
             for (episode in episodes) {
                 val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+                if (mediaSources.isEmpty()) continue
                 playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
             }
         } else {
@@ -209,10 +214,12 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 val episodes = jellyfinRepository.getEpisodes(series.id, season.id)
                 for (episode in episodes) {
                     val mediaSources = jellyfinRepository.getMediaSources(episode.id)
+                    if (mediaSources.isEmpty()) continue
                     playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
                 }
             }
         }
+        if (playerItems.isEmpty()) throw Exception("No playable items found")
     }
 
     fun navigateToPlayer(mediaSource: MediaSourceInfo) {

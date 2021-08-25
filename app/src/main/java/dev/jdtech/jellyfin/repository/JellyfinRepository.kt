@@ -32,7 +32,7 @@ interface JellyfinRepository {
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>? = null,
-        startIndex: Int? = null
+        startItemId: UUID? = null
     ): List<BaseItemDto>
 
     suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
