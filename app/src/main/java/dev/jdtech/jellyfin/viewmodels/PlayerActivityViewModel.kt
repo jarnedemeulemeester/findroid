@@ -84,10 +84,14 @@ constructor(
     private fun releasePlayer() {
         _player.value?.let { player ->
             runBlocking {
-                jellyfinRepository.postPlaybackStop(
-                    UUID.fromString(player.currentMediaItem?.mediaId),
-                    player.currentPosition.times(10000)
-                )
+                try {
+                    jellyfinRepository.postPlaybackStop(
+                        UUID.fromString(player.currentMediaItem?.mediaId),
+                        player.currentPosition.times(10000)
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
 
@@ -107,11 +111,15 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null) {
-                        jellyfinRepository.postPlaybackProgress(
-                            UUID.fromString(player.currentMediaItem!!.mediaId),
-                            player.currentPosition.times(10000),
-                            !player.isPlaying
-                        )
+                        try {
+                            jellyfinRepository.postPlaybackProgress(
+                                UUID.fromString(player.currentMediaItem!!.mediaId),
+                                player.currentPosition.times(10000),
+                                !player.isPlaying
+                            )
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
                     }
                 }
                 handler.postDelayed(this, 2000)
