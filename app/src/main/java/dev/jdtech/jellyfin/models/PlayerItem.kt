@@ -7,5 +7,6 @@ import java.util.*
 @Parcelize
 data class PlayerItem(
     val itemId: UUID,
-    val mediaSourceId: String
+    val mediaSourceId: String,
+    val playbackPosition: Long
 ) : Parcelable

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.api.ItemFields
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -52,9 +52,6 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _seasons = MutableLiveData<List<BaseItemDto>>()
     val seasons: LiveData<List<BaseItemDto>> = _seasons
 
-    private val _mediaSources = MutableLiveData<List<MediaSourceInfo>>()
-    val mediaSources: LiveData<List<MediaSourceInfo>> = _mediaSources
-
     private val _navigateToPlayer = MutableLiveData<Array<PlayerItem>>()
     val navigateToPlayer: LiveData<Array<PlayerItem>> = _navigateToPlayer
 
@@ -90,9 +87,6 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 if (itemType == "Series") {
                     _nextUp.value = getNextUp(itemId)
                     _seasons.value = jellyfinRepository.getSeasons(itemId)
-                }
-                if (itemType == "Movie") {
-                    _mediaSources.value = jellyfinRepository.getMediaSources(itemId)
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -183,11 +177,11 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
     }
 
-    fun preparePlayerItems() {
+    fun preparePlayerItems(mediaSourceIndex: Int? = null) {
         _playerItemsError.value = null
         viewModelScope.launch {
             try {
-                createPlayerItems(_item.value!!)
+                createPlayerItems(_item.value!!, mediaSourceIndex)
                 _navigateToPlayer.value = playerItems.toTypedArray()
             } catch (e: Exception) {
                 _playerItemsError.value = e.message
@@ -195,35 +189,76 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
     }
 
-    private suspend fun createPlayerItems(series: BaseItemDto) {
-        if (nextUp.value != null) {
-            val startEpisode = nextUp.value!!
-            val episodes = jellyfinRepository.getEpisodes(
-                startEpisode.seriesId!!,
-                startEpisode.seasonId!!,
-                startItemId = startEpisode.id
-            )
-            for (episode in episodes) {
-                val mediaSources = jellyfinRepository.getMediaSources(episode.id)
-                if (mediaSources.isEmpty()) continue
-                playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
+    private suspend fun createPlayerItems(series: BaseItemDto, mediaSourceIndex: Int? = null) {
+        playerItems.clear()
+
+        val playbackPosition = item.value?.userData?.playbackPositionTicks?.div(10000) ?: 0
+
+        // Intros
+        var introsCount = 0
+
+        if (playbackPosition <= 0) {
+            val intros = jellyfinRepository.getIntros(series.id)
+            for (intro in intros) {
+                if (intro.mediaSources.isNullOrEmpty()) continue
+                playerItems.add(PlayerItem(intro.id, intro.mediaSources?.get(0)?.id!!, 0))
+                introsCount += 1
             }
-        } else {
-            for (season in seasons.value!!) {
-                if (season.indexNumber == 0) continue
-                val episodes = jellyfinRepository.getEpisodes(series.id, season.id)
-                for (episode in episodes) {
-                    val mediaSources = jellyfinRepository.getMediaSources(episode.id)
-                    if (mediaSources.isEmpty()) continue
-                    playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
+        }
+
+        when (series.type) {
+            "Movie" -> {
+                playerItems.add(
+                    PlayerItem(
+                        series.id,
+                        series.mediaSources?.get(mediaSourceIndex ?: 0)?.id!!,
+                        playbackPosition
+                    )
+                )
+            }
+            "Series" -> {
+                if (nextUp.value != null) {
+                    val startEpisode = nextUp.value!!
+                    val episodes = jellyfinRepository.getEpisodes(
+                        startEpisode.seriesId!!,
+                        startEpisode.seasonId!!,
+                        startItemId = startEpisode.id,
+                        fields = listOf(ItemFields.MEDIA_SOURCES)
+                    )
+                    for (episode in episodes) {
+                        if (episode.mediaSources.isNullOrEmpty()) continue
+                        playerItems.add(
+                            PlayerItem(
+                                episode.id,
+                                episode.mediaSources?.get(0)?.id!!,
+                                0
+                            )
+                        )
+                    }
+                } else {
+                    for (season in seasons.value!!) {
+                        if (season.indexNumber == 0) continue
+                        val episodes = jellyfinRepository.getEpisodes(
+                            series.id,
+                            season.id,
+                            fields = listOf(ItemFields.MEDIA_SOURCES)
+                        )
+                        for (episode in episodes) {
+                            if (episode.mediaSources.isNullOrEmpty()) continue
+                            playerItems.add(
+                                PlayerItem(
+                                    episode.id,
+                                    episode.mediaSources?.get(0)?.id!!,
+                                    0
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
-        if (playerItems.isEmpty()) throw Exception("No playable items found")
-    }
 
-    fun navigateToPlayer(mediaSource: MediaSourceInfo) {
-        _navigateToPlayer.value = arrayOf(PlayerItem(item.value!!.id, mediaSource.id!!))
+        if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
     }
 
     fun doneNavigatingToPlayer() {

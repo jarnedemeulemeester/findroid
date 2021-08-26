@@ -266,4 +266,14 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
         }
     }
+
+    override suspend fun getIntros(itemId: UUID): List<BaseItemDto> {
+        val intros: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            intros =
+                jellyfinApi.userLibraryApi.getIntros(jellyfinApi.userId!!, itemId).content.items
+                    ?: listOf()
+        }
+        return intros
+    }
 }

@@ -63,7 +63,10 @@ class MediaInfoFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         viewModel.item.observe(viewLifecycleOwner, { item ->
@@ -91,8 +94,7 @@ class MediaInfoFragment : Fragment() {
         viewModel.navigateToPlayer.observe(viewLifecycleOwner, { playerItems ->
             if (playerItems != null) {
                 navigateToPlayerActivity(
-                    playerItems,
-                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
+                    playerItems
                 )
                 viewModel.doneNavigatingToPlayer()
                 binding.playButton.setImageDrawable(
@@ -139,7 +141,9 @@ class MediaInfoFragment : Fragment() {
         })
 
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(viewModel.playerItemsError.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(
+                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
+            ).show(parentFragmentManager, "errordialog")
         }
 
         binding.trailerButton.setOnClickListener {
@@ -164,29 +168,14 @@ class MediaInfoFragment : Fragment() {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
             if (args.itemType == "Movie") {
-                if (!viewModel.mediaSources.value.isNullOrEmpty()) {
-                    if (viewModel.mediaSources.value!!.size > 1) {
+                if (viewModel.item.value?.mediaSources != null) {
+                    if (viewModel.item.value?.mediaSources?.size!! > 1) {
                         VideoVersionDialogFragment(viewModel).show(
                             parentFragmentManager,
                             "videoversiondialog"
                         )
                     } else {
-                        navigateToPlayerActivity(
-                            arrayOf(
-                                PlayerItem(
-                                    args.itemId,
-                                    viewModel.mediaSources.value!![0].id!!
-                                )
-                            ),
-                            viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000),
-                        )
-                        binding.playButton.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireActivity(),
-                                R.drawable.ic_play
-                            )
-                        )
-                        binding.progressCircular.visibility = View.INVISIBLE
+                        viewModel.preparePlayerItems()
                     }
                 }
             } else if (args.itemType == "Series") {
@@ -232,12 +221,10 @@ class MediaInfoFragment : Fragment() {
 
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
-        playbackPosition: Long,
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
                 playerItems,
-                playbackPosition
             )
         )
     }

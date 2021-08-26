@@ -160,9 +160,6 @@
         <argument
             android:name="items"
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
-        <argument
-            android:name="playbackPosition"
-            app:argType="long" />
     </activity>
     <fragment
         android:id="@+id/favoriteFragment"

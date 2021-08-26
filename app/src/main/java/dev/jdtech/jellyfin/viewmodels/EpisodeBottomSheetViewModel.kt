@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.ItemFields
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -74,17 +75,39 @@ constructor(
     }
 
     private suspend fun createPlayerItems(startEpisode: BaseItemDto) {
+        playerItems.clear()
+
+        val playbackPosition = startEpisode.userData?.playbackPositionTicks?.div(10000) ?: 0
+        // Intros
+        var introsCount = 0
+
+        if (playbackPosition <= 0) {
+            val intros = jellyfinRepository.getIntros(startEpisode.id)
+            for (intro in intros) {
+                if (intro.mediaSources.isNullOrEmpty()) continue
+                playerItems.add(PlayerItem(intro.id, intro.mediaSources?.get(0)?.id!!, 0))
+                introsCount += 1
+            }
+        }
+
         val episodes = jellyfinRepository.getEpisodes(
             startEpisode.seriesId!!,
             startEpisode.seasonId!!,
-            startItemId = startEpisode.id
+            startItemId = startEpisode.id,
+            fields = listOf(ItemFields.MEDIA_SOURCES)
         )
         for (episode in episodes) {
-            val mediaSources = jellyfinRepository.getMediaSources(episode.id)
-            if (mediaSources.isEmpty()) continue
-            playerItems.add(PlayerItem(episode.id, mediaSources[0].id!!))
+            if (episode.mediaSources.isNullOrEmpty()) continue
+            playerItems.add(
+                PlayerItem(
+                    episode.id,
+                    episode.mediaSources?.get(0)?.id!!,
+                    playbackPosition
+                )
+            )
         }
-        if (playerItems.isEmpty()) throw Exception("No playable items found")
+
+        if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
     }
 
     fun markAsPlayed(itemId: UUID) {
