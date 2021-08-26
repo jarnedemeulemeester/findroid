@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep public class dev.jdtech.jellyfin.models.PlayerItem
+-keepnames class dev.jdtech.jellyfin.models.PlayerItem

@@ -39,8 +39,7 @@ constructor(
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     fun initializePlayer(
-        items: Array<PlayerItem>,
-        playbackPosition: Long
+        items: Array<PlayerItem>
     ) {
 
         val renderersFactory =
@@ -61,18 +60,22 @@ constructor(
         viewModelScope.launch {
             val mediaItems: MutableList<MediaItem> = mutableListOf()
 
-            for (item in items) {
-                val streamUrl = jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
-                Timber.d("Stream url: $streamUrl")
-                val mediaItem =
-                    MediaItem.Builder()
-                        .setMediaId(item.itemId.toString())
-                        .setUri(streamUrl)
-                        .build()
-                mediaItems.add(mediaItem)
+            try {
+                for (item in items) {
+                    val streamUrl = jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                    Timber.d("Stream url: $streamUrl")
+                    val mediaItem =
+                        MediaItem.Builder()
+                            .setMediaId(item.itemId.toString())
+                            .setUri(streamUrl)
+                            .build()
+                    mediaItems.add(mediaItem)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentWindow, playbackPosition)
+            player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
             player.playWhenReady = playWhenReady
             player.prepare()
             _player.value = player
@@ -84,10 +87,14 @@ constructor(
     private fun releasePlayer() {
         _player.value?.let { player ->
             runBlocking {
-                jellyfinRepository.postPlaybackStop(
-                    UUID.fromString(player.currentMediaItem?.mediaId),
-                    player.currentPosition.times(10000)
-                )
+                try {
+                    jellyfinRepository.postPlaybackStop(
+                        UUID.fromString(player.currentMediaItem?.mediaId),
+                        player.currentPosition.times(10000)
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
 
@@ -107,11 +114,15 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null) {
-                        jellyfinRepository.postPlaybackProgress(
-                            UUID.fromString(player.currentMediaItem!!.mediaId),
-                            player.currentPosition.times(10000),
-                            !player.isPlaying
-                        )
+                        try {
+                            jellyfinRepository.postPlaybackProgress(
+                                UUID.fromString(player.currentMediaItem!!.mediaId),
+                                player.currentPosition.times(10000),
+                                !player.isPlaying
+                            )
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
                     }
                 }
                 handler.postDelayed(this, 2000)
@@ -123,7 +134,11 @@ constructor(
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         viewModelScope.launch {
-            jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
+            try {
+                jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

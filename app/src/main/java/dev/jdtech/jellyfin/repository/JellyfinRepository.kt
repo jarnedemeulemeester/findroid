@@ -10,7 +10,11 @@ interface JellyfinRepository {
 
     suspend fun getItem(itemId: UUID): BaseItemDto
 
-    suspend fun getItems(parentId: UUID? = null): List<BaseItemDto>
+    suspend fun getItems(
+        parentId: UUID? = null,
+        includeTypes: List<String>? = null,
+        recursive: Boolean = false
+    ): List<BaseItemDto>
 
     suspend fun getFavoriteItems(): List<BaseItemDto>
 
@@ -28,7 +32,7 @@ interface JellyfinRepository {
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>? = null,
-        startIndex: Int? = null
+        startItemId: UUID? = null
     ): List<BaseItemDto>
 
     suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
@@ -50,4 +54,6 @@ interface JellyfinRepository {
     suspend fun markAsPlayed(itemId: UUID)
 
     suspend fun markAsUnplayed(itemId: UUID)
+
+    suspend fun getIntros(itemId: UUID): List<BaseItemDto>
 }

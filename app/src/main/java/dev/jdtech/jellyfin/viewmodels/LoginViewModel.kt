@@ -66,7 +66,7 @@ constructor(
                 _navigateToMain.value = true
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.message
+                _error.value = e.toString()
             }
         }
     }

@@ -37,7 +37,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            viewModel.preparePlayer()
+            viewModel.preparePlayerItems()
         }
 
         binding.checkButton.setOnClickListener {
@@ -91,10 +91,14 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             if (it) {
                 navigateToPlayerActivity(
                     viewModel.playerItems.toTypedArray(),
-                    viewModel.item.value!!.userData!!.playbackPositionTicks.div(10000)
                 )
                 viewModel.doneNavigateToPlayer()
-                binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                binding.playButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_play
+                    )
+                )
                 binding.progressCircular.visibility = View.INVISIBLE
             }
         })
@@ -102,7 +106,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
             if (errorMessage != null) {
                 binding.playerItemsError.visibility = View.VISIBLE
-                binding.playButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_play))
+                binding.playButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_play
+                    )
+                )
                 binding.progressCircular.visibility = View.INVISIBLE
             } else {
                 binding.playerItemsError.visibility = View.GONE
@@ -110,7 +119,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         })
 
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(viewModel.playerItemsError.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(
+                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
+            ).show(parentFragmentManager, "errordialog")
         }
 
         viewModel.loadEpisode(args.episodeId)
@@ -120,12 +131,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
-        playbackPosition: Long
     ) {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
-                playbackPosition
             )
         )
     }

@@ -35,7 +35,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 _episodes.value = getEpisodes(seriesId, seasonId)
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.message
+                _error.value = e.toString()
             }
             _finishedLoading.value = true
         }

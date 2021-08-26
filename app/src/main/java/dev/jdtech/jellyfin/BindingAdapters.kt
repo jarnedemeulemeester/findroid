@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.models.FavoriteSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.ImageType
 import java.util.*
 
 @BindingAdapter("servers")
@@ -35,11 +36,12 @@ fun bindItems(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
     val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
-    val itemId = if (item.type == "Episode") item.seriesId else item.id
+    val itemId =
+        if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
 
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Primary"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)
@@ -49,17 +51,16 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
 
 @BindingAdapter("itemBackdropImage")
 fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
-    if (item != null) {
-        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
+    if (item == null) return
+    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
-        Glide
-            .with(imageView.context)
-            .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/Backdrop"))
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(imageView)
+    Glide
+        .with(imageView.context)
+        .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/${ImageType.BACKDROP}"))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(imageView)
 
-        imageView.contentDescription = "${item.name} backdrop"
-    }
+    imageView.contentDescription = "${item.name} backdrop"
 }
 
 @BindingAdapter("itemBackdropById")
@@ -68,7 +69,7 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
 
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/Backdrop"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/${ImageType.BACKDROP}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(imageView)
 }
@@ -77,20 +78,6 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
 fun bindCollections(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as CollectionListAdapter
     adapter.submitList(data)
-}
-
-@BindingAdapter("collectionImage")
-fun bindCollectionImage(imageView: ImageView, item: BaseItemDto) {
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/Primary"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
-        .into(imageView)
-
-    imageView.contentDescription = "${item.name} image"
 }
 
 @BindingAdapter("people")
@@ -105,7 +92,7 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
 
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/Primary"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)
@@ -125,15 +112,38 @@ fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     adapter.submitList(data)
 }
 
-@BindingAdapter("episodeImage")
-fun bindEpisodeImage(imageView: ImageView, episode: BaseItemDto) {
+@BindingAdapter("baseItemImage")
+fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
+    if (episode == null) return
+
     val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
-    val imageType = if (episode.type == "Movie") "Backdrop" else "Primary"
+    var imageItemId = episode.id
+    var imageType = ImageType.PRIMARY
+
+    if (!episode.imageTags.isNullOrEmpty()) {
+        when (episode.type) {
+            "Movie" -> {
+                if (!episode.backdropImageTags.isNullOrEmpty()) {
+                    imageType = ImageType.BACKDROP
+                }
+            }
+            else -> {
+                if (!episode.imageTags!!.keys.contains(ImageType.PRIMARY)) {
+                    imageType = ImageType.BACKDROP
+                }
+            }
+        }
+    } else {
+        if (episode.type == "Episode") {
+            imageItemId = episode.seriesId!!
+            imageType = ImageType.BACKDROP
+        }
+    }
 
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${episode.id}/Images/$imageType"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${imageItemId}/Images/$imageType"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)
@@ -147,26 +157,10 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
 
     Glide
         .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${seasonId}/Images/Primary"))
+        .load(jellyfinApi.api.baseUrl.plus("/items/${seasonId}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
         .into(imageView)
-}
-
-@BindingAdapter("itemPrimaryImage")
-fun bindItemPrimaryImage(imageView: ImageView, item: BaseItemDto?) {
-    if (item != null) {
-        val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
-        Glide
-            .with(imageView.context)
-            .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/Primary"))
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .placeholder(R.color.neutral_800)
-            .into(imageView)
-
-        imageView.contentDescription = "${item.name} poster"
-    }
 }
 
 @BindingAdapter("favoriteSections")

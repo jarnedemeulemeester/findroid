@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 @AndroidEntryPoint
@@ -41,6 +42,7 @@ class LibraryFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
+                checkIfLoginRequired(error)
                 binding.errorLayout.errorPanel.visibility = View.VISIBLE
                 binding.itemsRecyclerView.visibility = View.GONE
             } else {
@@ -50,7 +52,7 @@ class LibraryFragment : Fragment() {
         })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadItems(args.libraryId)
+            viewModel.loadItems(args.libraryId, args.libraryType)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
@@ -65,7 +67,7 @@ class LibraryFragment : Fragment() {
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
             })
-        viewModel.loadItems(args.libraryId)
+        viewModel.loadItems(args.libraryId, args.libraryType)
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {

@@ -6,5 +6,6 @@ import java.util.*
 data class View(
     val id: UUID,
     val name: String?,
-    var items: List<BaseItemDto>? = null
+    var items: List<BaseItemDto>? = null,
+    val type: String?
 )

@@ -84,6 +84,10 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="libraryType"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/mediaInfoFragment"
@@ -156,9 +160,6 @@
         <argument
             android:name="items"
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
-        <argument
-            android:name="playbackPosition"
-            app:argType="long" />
     </activity>
     <fragment
         android:id="@+id/favoriteFragment"
@@ -239,5 +240,8 @@
     </fragment>
 
     <include app:graph="@navigation/aboutlibs_navigation" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment" />
 
 </navigation>

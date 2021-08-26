@@ -25,12 +25,18 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return item
     }
 
-    override suspend fun getItems(parentId: UUID?): List<BaseItemDto> {
+    override suspend fun getItems(
+        parentId: UUID?,
+        includeTypes: List<String>?,
+        recursive: Boolean
+    ): List<BaseItemDto> {
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             items = jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
-                parentId = parentId
+                parentId = parentId,
+                includeItemTypes = includeTypes,
+                recursive = recursive
             ).content.items ?: listOf()
         }
         return items
@@ -109,7 +115,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>?,
-        startIndex: Int?
+        startItemId: UUID?
     ): List<BaseItemDto> {
         val episodes: List<BaseItemDto>
         withContext(Dispatchers.IO) {
@@ -118,7 +124,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.userId!!,
                 seasonId = seasonId,
                 fields = fields,
-                startIndex = startIndex
+                startItemId = startItemId
             ).content.items ?: listOf()
         }
         return episodes
@@ -259,5 +265,15 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         withContext(Dispatchers.IO) {
             jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
         }
+    }
+
+    override suspend fun getIntros(itemId: UUID): List<BaseItemDto> {
+        val intros: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            intros =
+                jellyfinApi.userLibraryApi.getIntros(jellyfinApi.userId!!, itemId).content.items
+                    ?: listOf()
+        }
+        return intros
     }
 }

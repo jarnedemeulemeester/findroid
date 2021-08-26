@@ -38,7 +38,7 @@ class PlayerActivity : AppCompatActivity() {
         })
 
         if (viewModel.player.value == null) {
-            viewModel.initializePlayer(args.items, args.playbackPosition)
+            viewModel.initializePlayer(args.items)
         }
         hideSystemUI()
     }
