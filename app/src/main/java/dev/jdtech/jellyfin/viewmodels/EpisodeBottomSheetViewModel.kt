@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -98,6 +99,7 @@ constructor(
         )
         for (episode in episodes) {
             if (episode.mediaSources.isNullOrEmpty()) continue
+            if (episode.locationType == LocationType.VIRTUAL) continue
             playerItems.add(
                 PlayerItem(
                     episode.id,

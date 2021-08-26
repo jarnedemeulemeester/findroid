@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -227,6 +228,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                     )
                     for (episode in episodes) {
                         if (episode.mediaSources.isNullOrEmpty()) continue
+                        if (episode.locationType == LocationType.VIRTUAL) continue
                         playerItems.add(
                             PlayerItem(
                                 episode.id,
@@ -245,6 +247,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                         )
                         for (episode in episodes) {
                             if (episode.mediaSources.isNullOrEmpty()) continue
+                            if (episode.locationType == LocationType.VIRTUAL) continue
                             playerItems.add(
                                 PlayerItem(
                                     episode.id,
