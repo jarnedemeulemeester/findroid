@@ -6,30 +6,25 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityPlayerBinding
     private val viewModel: PlayerActivityViewModel by viewModels()
-
     private val args: PlayerActivityArgs by navArgs()
-
-    private lateinit var playerView: StyledPlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("Creating player activity")
-        setContentView(R.layout.activity_player)
+        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        playerView = findViewById(R.id.video_view)
-
-        viewModel.player.observe(this, {
-            playerView.player = it
-        })
+        binding.playerView.player = viewModel.player
 
         viewModel.navigateBack.observe(this, {
             if (it) {
@@ -37,21 +32,19 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
-        if (viewModel.player.value == null) {
-            viewModel.initializePlayer(args.items)
-        }
+        viewModel.initializePlayer(args.items)
         hideSystemUI()
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.playWhenReady = viewModel.player.value?.playWhenReady == true
-        playerView.player?.playWhenReady = false
+        viewModel.playWhenReady = viewModel.player.playWhenReady == true
+        viewModel.player.playWhenReady = false
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.player.value?.playWhenReady = viewModel.playWhenReady
+        viewModel.player.playWhenReady = viewModel.playWhenReady
         hideSystemUI()
     }
 

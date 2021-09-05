@@ -23,11 +23,10 @@ import javax.inject.Inject
 class PlayerActivityViewModel
 @Inject
 constructor(
-    private val application: Application,
+    application: Application,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel(), Player.Listener {
-    private var _player = MutableLiveData<SimpleExoPlayer>()
-    var player: LiveData<SimpleExoPlayer> = _player
+    var player: SimpleExoPlayer
 
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
@@ -38,10 +37,7 @@ constructor(
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
-    fun initializePlayer(
-        items: Array<PlayerItem>
-    ) {
-
+    init {
         val renderersFactory =
             DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
         val trackSelector = DefaultTrackSelector(application)
@@ -51,10 +47,14 @@ constructor(
                 .setPreferredAudioLanguage(sp.getString("audio_language", null))
                 .setPreferredTextLanguage(sp.getString("subtitle_language", null))
         )
-        val player = SimpleExoPlayer.Builder(application, renderersFactory)
+        player = SimpleExoPlayer.Builder(application, renderersFactory)
             .setTrackSelector(trackSelector)
             .build()
+    }
 
+    fun initializePlayer(
+        items: Array<PlayerItem>
+    ) {
         player.addListener(this)
 
         viewModelScope.launch {
@@ -78,14 +78,13 @@ constructor(
             player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
             player.playWhenReady = playWhenReady
             player.prepare()
-            _player.value = player
         }
 
         pollPosition(player)
     }
 
     private fun releasePlayer() {
-        _player.value?.let { player ->
+        player.let { player ->
             runBlocking {
                 try {
                     jellyfinRepository.postPlaybackStop(
@@ -98,14 +97,11 @@ constructor(
             }
         }
 
-        if (player.value != null) {
-            playWhenReady = player.value!!.playWhenReady
-            playbackPosition = player.value!!.currentPosition
-            currentWindow = player.value!!.currentWindowIndex
-            player.value!!.removeListener(this)
-            player.value!!.release()
-            _player.value = null
-        }
+            playWhenReady = player.playWhenReady
+            playbackPosition = player.currentPosition
+            currentWindow = player.currentWindowIndex
+            player.removeListener(this)
+            player.release()
     }
 
     private fun pollPosition(player: SimpleExoPlayer) {

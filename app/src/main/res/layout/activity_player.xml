@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,10 +7,11 @@
     tools:context=".PlayerActivity">
 
     <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/video_view"
+        android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        app:show_subtitle_button="true" />
+        app:show_subtitle_button="true"
+        app:show_buffering="always"/>
 
-</merge>
+</FrameLayout>
