@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -26,7 +27,7 @@ constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel(), Player.Listener {
-    var player: SimpleExoPlayer
+    var player: BasePlayer
 
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
@@ -38,18 +39,24 @@ constructor(
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
-        val renderersFactory =
-            DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-        val trackSelector = DefaultTrackSelector(application)
-        trackSelector.setParameters(
-            trackSelector.buildUponParameters()
-                .setTunnelingEnabled(true)
-                .setPreferredAudioLanguage(sp.getString("audio_language", null))
-                .setPreferredTextLanguage(sp.getString("subtitle_language", null))
-        )
+        val useMpv = sp.getBoolean("mpv_player", false)
+
+        if (useMpv) {
+            player = MPVPlayer(application, false)
+        } else {
+            val renderersFactory =
+                DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+            val trackSelector = DefaultTrackSelector(application)
+            trackSelector.setParameters(
+                trackSelector.buildUponParameters()
+                    .setTunnelingEnabled(true)
+                    .setPreferredAudioLanguage(sp.getString("audio_language", null))
+                    .setPreferredTextLanguage(sp.getString("subtitle_language", null))
+            )
         player = SimpleExoPlayer.Builder(application, renderersFactory)
             .setTrackSelector(trackSelector)
             .build()
+        }
     }
 
     fun initializePlayer(
@@ -75,9 +82,17 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-            player.playWhenReady = playWhenReady
-            player.prepare()
+            val useMpv = sp.getBoolean("mpv_player", false)
+
+            if (useMpv) {
+                player.setMediaItem(mediaItems[0])
+                player.prepare()
+                player.play()
+            } else {
+                player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
+                player.playWhenReady = playWhenReady
+                player.prepare()
+            }
         }
 
         pollPosition(player)
@@ -104,7 +119,7 @@ constructor(
             player.release()
     }
 
-    private fun pollPosition(player: SimpleExoPlayer) {
+    private fun pollPosition(player: BasePlayer) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {

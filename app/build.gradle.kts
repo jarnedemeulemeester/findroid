@@ -103,6 +103,8 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion")
     implementation(files("libs/extension-ffmpeg-release.aar"))
 
+    implementation(files("libs/libmpv/app-release.aar"))
+
     // Timber
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
