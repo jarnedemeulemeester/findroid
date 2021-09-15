@@ -32,6 +32,11 @@ constructor(
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
 
+    private val _currentItemTitle = MutableLiveData<String>()
+    val currentItemTitle: LiveData<String> = _currentItemTitle
+
+    private var items: Array<PlayerItem> = arrayOf()
+
     var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
@@ -62,6 +67,7 @@ constructor(
     fun initializePlayer(
         items: Array<PlayerItem>
     ) {
+        this.items = items
         player.addListener(this)
 
         viewModelScope.launch {
@@ -146,6 +152,11 @@ constructor(
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         viewModelScope.launch {
             try {
+                for (item in items) {
+                    if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
+                        _currentItemTitle.value = item.name
+                    }
+                }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
             } catch (e: Exception) {
                 Timber.e(e)

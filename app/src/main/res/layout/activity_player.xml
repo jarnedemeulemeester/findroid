@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         android:background="@color/black"
         app:show_subtitle_button="true"
-        app:show_buffering="always"/>
+        app:show_buffering="always"
+        app:controller_layout_id="@layout/exo_player_styled_control_view"
+        app:animation_enabled="false"/>
 
 </FrameLayout>

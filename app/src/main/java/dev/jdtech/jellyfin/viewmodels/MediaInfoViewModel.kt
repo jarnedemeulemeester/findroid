@@ -202,7 +202,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             val intros = jellyfinRepository.getIntros(series.id)
             for (intro in intros) {
                 if (intro.mediaSources.isNullOrEmpty()) continue
-                playerItems.add(PlayerItem(intro.id, intro.mediaSources?.get(0)?.id!!, 0))
+                playerItems.add(PlayerItem(intro.name, intro.id, intro.mediaSources?.get(0)?.id!!, 0))
                 introsCount += 1
             }
         }
@@ -211,6 +211,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             "Movie" -> {
                 playerItems.add(
                     PlayerItem(
+                        series.name,
                         series.id,
                         series.mediaSources?.get(mediaSourceIndex ?: 0)?.id!!,
                         playbackPosition
@@ -231,6 +232,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                         if (episode.locationType == LocationType.VIRTUAL) continue
                         playerItems.add(
                             PlayerItem(
+                                episode.name,
                                 episode.id,
                                 episode.mediaSources?.get(0)?.id!!,
                                 0
@@ -250,6 +252,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                             if (episode.locationType == LocationType.VIRTUAL) continue
                             playerItems.add(
                                 PlayerItem(
+                                    episode.name,
                                     episode.id,
                                     episode.mediaSources?.get(0)?.id!!,
                                     0

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +26,16 @@ class PlayerActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
+
+        binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
+            onBackPressed()
+        }
+
+        val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
+
+        viewModel.currentItemTitle.observe(this, { title ->
+            videoNameTextView.text = title
+        })
 
         viewModel.navigateBack.observe(this, {
             if (it) {
