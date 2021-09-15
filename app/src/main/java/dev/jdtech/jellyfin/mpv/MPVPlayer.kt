@@ -140,7 +140,7 @@ class MPVPlayer(
     private var currentPositionMs: Long? = null
     private var currentDurationMs: Long? = null
     private var currentCacheDurationMs: Long? = null
-    private var currentTracks: List<Track> = emptyList()
+    var currentTracks: List<Track> = emptyList()
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialSeekTo: Long = 0L
 

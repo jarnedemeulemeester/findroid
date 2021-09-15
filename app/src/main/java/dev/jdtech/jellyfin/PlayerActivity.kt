@@ -4,11 +4,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector
+import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
+import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
 
@@ -36,6 +44,71 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.currentItemTitle.observe(this, { title ->
             videoNameTextView.text = title
         })
+
+        val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
+        val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
+
+        audioButton.setOnClickListener {
+            when (viewModel.player) {
+                is MPVPlayer -> {
+                    TrackSelectionDialogFragment(TrackType.AUDIO, viewModel).show(
+                        supportFragmentManager,
+                        "trackselectiondialog"
+                    )
+                }
+                is SimpleExoPlayer -> {
+                    val mappedTrackInfo =
+                        viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
+
+                    var audioRenderer: Int? = null
+                    for (i in 0 until mappedTrackInfo.rendererCount) {
+                        if (isRendererType(mappedTrackInfo, i, C.TRACK_TYPE_AUDIO)) {
+                            audioRenderer = i
+                        }
+                    }
+
+                    if (audioRenderer == null) return@setOnClickListener
+
+                    val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
+                        this, "Select audio track",
+                        viewModel.trackSelector, audioRenderer
+                    )
+                    val trackSelectionDialog = trackSelectionDialogBuilder.build()
+                    trackSelectionDialog.show()
+                }
+            }
+        }
+
+        subtitleButton.setOnClickListener {
+            when (viewModel.player) {
+                is MPVPlayer -> {
+                    TrackSelectionDialogFragment(TrackType.SUBTITLE, viewModel).show(
+                        supportFragmentManager,
+                        "trackselectiondialog"
+                    )
+                }
+                is SimpleExoPlayer -> {
+                    val mappedTrackInfo =
+                        viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
+
+                    var subtitleRenderer: Int? = null
+                    for (i in 0 until mappedTrackInfo.rendererCount) {
+                        if (isRendererType(mappedTrackInfo, i, C.TRACK_TYPE_TEXT)) {
+                            subtitleRenderer = i
+                        }
+                    }
+
+                    if (subtitleRenderer == null) return@setOnClickListener
+
+                    val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
+                        this, "Select subtitle track",
+                        viewModel.trackSelector, subtitleRenderer
+                    )
+                    val trackSelectionDialog = trackSelectionDialogBuilder.build()
+                    trackSelectionDialog.show()
+                }
+            }
+        }
 
         viewModel.navigateBack.observe(this, {
             if (it) {
@@ -67,6 +140,19 @@ class PlayerActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    private fun isRendererType(
+        mappedTrackInfo: MappingTrackSelector.MappedTrackInfo,
+        rendererIndex: Int,
+        type: Int
+    ): Boolean {
+        val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
+        if (trackGroupArray.length == 0) {
+            return false
+        }
+        val trackType = mappedTrackInfo.getRendererType(rendererIndex)
+        return type == trackType
     }
 }
 

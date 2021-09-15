@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -27,7 +28,7 @@ constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel(), Player.Listener {
-    var player: BasePlayer
+    val player: BasePlayer
 
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
@@ -35,8 +36,12 @@ constructor(
     private val _currentItemTitle = MutableLiveData<String>()
     val currentItemTitle: LiveData<String> = _currentItemTitle
 
+    var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
+    var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
+
     private var items: Array<PlayerItem> = arrayOf()
 
+    val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
@@ -51,7 +56,6 @@ constructor(
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            val trackSelector = DefaultTrackSelector(application)
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
@@ -175,6 +179,25 @@ constructor(
             }
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
+                currentAudioTracks.clear()
+                currentSubtitleTracks.clear()
+                when (player) {
+                    is MPVPlayer -> {
+                        player.currentTracks.forEach {
+                            when (it.type) {
+                                TrackType.AUDIO -> {
+                                    currentAudioTracks.add(it)
+                                }
+                                TrackType.SUBTITLE -> {
+                                    currentSubtitleTracks.add(it)
+                                }
+                            }
+                        }
+                    }
+                    is SimpleExoPlayer -> {
+                        Timber.d(player.currentTrackGroups.length.toString())
+                    }
+                }
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
@@ -188,5 +211,13 @@ constructor(
         super.onCleared()
         Timber.d("Clearing Player ViewModel")
         releasePlayer()
+    }
+
+    fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
+        if (player is MPVPlayer) {
+            player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
+        } else if (player is SimpleExoPlayer) {
+
+        }
     }
 }
