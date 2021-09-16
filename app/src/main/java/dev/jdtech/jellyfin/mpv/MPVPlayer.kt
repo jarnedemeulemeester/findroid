@@ -39,7 +39,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 @Suppress("SpellCheckingInspection")
 class MPVPlayer(
     context: Context,
-    requestAudioFocus: Boolean
+    requestAudioFocus: Boolean,
+    preferredLanguages: Map<String, String>
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -80,6 +81,17 @@ class MPVPlayer(
         MPVLib.setOptionString("save-position-on-quit", "no")
         MPVLib.setOptionString("sub-font-provider", "none")
         MPVLib.setOptionString("ytdl", "no")
+
+        for (preferredLanguage in preferredLanguages) {
+            when (preferredLanguage.key) {
+                TrackType.AUDIO -> {
+                    MPVLib.setOptionString("alang", preferredLanguage.value)
+                }
+                TrackType.SUBTITLE -> {
+                    MPVLib.setOptionString("slang", preferredLanguage.value)
+                }
+            }
+        }
 
         MPVLib.addObserver(this)
 

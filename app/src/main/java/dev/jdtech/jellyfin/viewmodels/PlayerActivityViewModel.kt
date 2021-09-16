@@ -51,16 +51,20 @@ constructor(
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
 
+        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+
         if (useMpv) {
-            player = MPVPlayer(application, false)
+            val preferredLanguages = mapOf(TrackType.AUDIO to preferredAudioLanguage, TrackType.SUBTITLE to preferredSubtitleLanguage)
+            player = MPVPlayer(application, false, preferredLanguages)
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
-                    .setPreferredAudioLanguage(sp.getString("audio_language", null))
-                    .setPreferredTextLanguage(sp.getString("subtitle_language", null))
+                    .setPreferredAudioLanguage(preferredAudioLanguage)
+                    .setPreferredTextLanguage(preferredSubtitleLanguage)
             )
         player = SimpleExoPlayer.Builder(application, renderersFactory)
             .setTrackSelector(trackSelector)
