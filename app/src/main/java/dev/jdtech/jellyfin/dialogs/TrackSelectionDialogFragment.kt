@@ -11,40 +11,50 @@ import java.lang.IllegalStateException
 class TrackSelectionDialogFragment(
     private val type: String,
     private val viewModel: PlayerActivityViewModel
-): DialogFragment() {
+) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val trackNames: List<String>
         when (type) {
             TrackType.AUDIO -> {
-                trackNames = viewModel.currentAudioTracks.map {
-                    if (it.title.isEmpty()) {
-                        "${it.lang} - ${it.codec}"
+                trackNames = viewModel.currentAudioTracks.map { track ->
+                    if (track.title.isEmpty()) {
+                        "${track.lang} - ${track.codec}"
                     } else {
-                        "${it.title} - ${it.lang} - ${it.codec}"
+                        "${track.title} - ${track.lang} - ${track.codec}"
                     }
                 }
-                return activity?.let {
-                    val builder = AlertDialog.Builder(it)
+                return activity?.let { activity ->
+                    val builder = AlertDialog.Builder(activity)
                     builder.setTitle("Select audio track")
-                        .setItems(trackNames.toTypedArray()) { _, which ->
-                            viewModel.switchToTrack(TrackType.AUDIO, viewModel.currentAudioTracks[which])
+                        .setSingleChoiceItems(
+                            trackNames.toTypedArray(),
+                            viewModel.currentAudioTracks.indexOfFirst { it.selected }) { _, which ->
+                            viewModel.switchToTrack(
+                                TrackType.AUDIO,
+                                viewModel.currentAudioTracks[which]
+                            )
                         }
                     builder.create()
                 } ?: throw IllegalStateException("Activity cannot be null")
             }
             TrackType.SUBTITLE -> {
-                trackNames = viewModel.currentSubtitleTracks.map {
-                    if (it.title.isEmpty()) {
-                        "${it.lang} - ${it.codec}"
+                trackNames = viewModel.currentSubtitleTracks.map { track ->
+                    if (track.title.isEmpty()) {
+                        "${track.lang} - ${track.codec}"
                     } else {
-                        "${it.title} - ${it.lang} - ${it.codec}"
+                        "${track.title} - ${track.lang} - ${track.codec}"
                     }
                 }
-                return activity?.let {
-                    val builder = AlertDialog.Builder(it)
+                return activity?.let { activity ->
+                    val builder = AlertDialog.Builder(activity)
                     builder.setTitle("Select subtitle track")
-                        .setItems(trackNames.toTypedArray()) { _, which ->
-                            viewModel.switchToTrack(TrackType.SUBTITLE, viewModel.currentSubtitleTracks[which])
+                        .setSingleChoiceItems(
+                            trackNames.toTypedArray(),
+                            viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { _, which ->
+                            viewModel.switchToTrack(
+                                TrackType.SUBTITLE,
+                                viewModel.currentSubtitleTracks[which]
+                            )
                         }
                     builder.create()
                 } ?: throw IllegalStateException("Activity cannot be null")

@@ -39,6 +39,9 @@ constructor(
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
 
+    private val _fileLoaded = MutableLiveData(false)
+    val fileLoaded: LiveData<Boolean> = _fileLoaded
+
     private var items: Array<PlayerItem> = arrayOf()
 
     val trackSelector = DefaultTrackSelector(application)
@@ -96,16 +99,17 @@ constructor(
                 Timber.e(e)
             }
 
-            val useMpv = sp.getBoolean("mpv_player", false)
-
-            if (useMpv) {
-                player.setMediaItem(mediaItems[0])
-                player.prepare()
-                player.play()
-            } else {
-                player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-                player.playWhenReady = playWhenReady
-                player.prepare()
+            when (player) {
+                is MPVPlayer -> {
+                    player.setMediaItem(mediaItems[0])
+                    player.prepare()
+                    player.play()
+                }
+                is SimpleExoPlayer -> {
+                    player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
+                    player.playWhenReady = playWhenReady
+                    player.prepare()
+                }
             }
         }
 
@@ -198,10 +202,8 @@ constructor(
                             }
                         }
                     }
-                    is SimpleExoPlayer -> {
-                        Timber.d(player.currentTrackGroups.length.toString())
-                    }
                 }
+                _fileLoaded.value = true
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
@@ -220,8 +222,6 @@ constructor(
     fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
         if (player is MPVPlayer) {
             player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
-        } else if (player is SimpleExoPlayer) {
-
         }
     }
 }

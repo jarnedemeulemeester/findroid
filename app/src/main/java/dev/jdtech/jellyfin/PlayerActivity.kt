@@ -48,6 +48,12 @@ class PlayerActivity : AppCompatActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
 
+        audioButton.isEnabled = false
+        audioButton.imageAlpha = 75
+
+        subtitleButton.isEnabled = false
+        subtitleButton.imageAlpha = 75
+
         audioButton.setOnClickListener {
             when (viewModel.player) {
                 is MPVPlayer -> {
@@ -109,6 +115,15 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
+
+        viewModel.fileLoaded.observe(this, {
+            if (it) {
+                audioButton.isEnabled = true
+                audioButton.imageAlpha = 255
+                subtitleButton.isEnabled = true
+                subtitleButton.imageAlpha = 255
+            }
+        })
 
         viewModel.navigateBack.observe(this, {
             if (it) {

@@ -1285,7 +1285,8 @@ class MPVPlayer(
                 COMMAND_GET_MEDIA_ITEMS_METADATA,
                 COMMAND_CHANGE_MEDIA_ITEMS,
                 COMMAND_SET_VIDEO_SURFACE,
-                COMMAND_SEEK_FORWARD
+                COMMAND_SEEK_FORWARD,
+                COMMAND_SEEK_BACK
             )
             .build()
 
