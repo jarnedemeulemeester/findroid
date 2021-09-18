@@ -58,20 +58,30 @@ constructor(
         val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
 
         if (useMpv) {
-            val preferredLanguages = mapOf(TrackType.AUDIO to preferredAudioLanguage, TrackType.SUBTITLE to preferredSubtitleLanguage)
-            player = MPVPlayer(application, false, preferredLanguages, sp.getBoolean("mpv_disable_hwdec", false))
+            val preferredLanguages = mapOf(
+                TrackType.AUDIO to preferredAudioLanguage,
+                TrackType.SUBTITLE to preferredSubtitleLanguage
+            )
+            player = MPVPlayer(
+                application,
+                false,
+                preferredLanguages,
+                sp.getBoolean("mpv_disable_hwdec", false)
+            )
         } else {
             val renderersFactory =
-                DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                DefaultRenderersFactory(application).setExtensionRendererMode(
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                )
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
                     .setPreferredAudioLanguage(preferredAudioLanguage)
                     .setPreferredTextLanguage(preferredSubtitleLanguage)
             )
-        player = SimpleExoPlayer.Builder(application, renderersFactory)
-            .setTrackSelector(trackSelector)
-            .build()
+            player = SimpleExoPlayer.Builder(application, renderersFactory)
+                .setTrackSelector(trackSelector)
+                .build()
         }
     }
 
@@ -99,18 +109,9 @@ constructor(
                 Timber.e(e)
             }
 
-            when (player) {
-                is MPVPlayer -> {
-                    player.setMediaItems(mediaItems)
-                    player.prepare()
-                    player.play()
-                }
-                is SimpleExoPlayer -> {
-                    player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-                    player.playWhenReady = playWhenReady
-                    player.prepare()
-                }
-            }
+            player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
+            player.prepare()
+            player.play()
         }
 
         pollPosition(player)
@@ -130,11 +131,11 @@ constructor(
             }
         }
 
-            playWhenReady = player.playWhenReady
-            playbackPosition = player.currentPosition
-            currentWindow = player.currentWindowIndex
-            player.removeListener(this)
-            player.release()
+        playWhenReady = player.playWhenReady
+        playbackPosition = player.currentPosition
+        currentWindow = player.currentWindowIndex
+        player.removeListener(this)
+        player.release()
     }
 
     private fun pollPosition(player: BasePlayer) {

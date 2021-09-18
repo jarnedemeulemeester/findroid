@@ -293,6 +293,7 @@ class MPVPlayer(
                         }
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
+                            Log.d("mpv", "Starting playback...")
                             MPVLib.setPropertyBoolean("pause", false)
                         }
                         for (videoListener in videoListeners) {
@@ -586,7 +587,8 @@ class MPVPlayer(
      * bounds of the list of media items.
      */
     override fun setMediaItems(mediaItems: MutableList<MediaItem>, startWindowIndex: Int, startPositionMs: Long) {
-        TODO("Not yet implemented")
+        internalMediaItems = mediaItems
+        initialSeekTo = startPositionMs / 1000
     }
 
     /**
@@ -658,7 +660,7 @@ class MPVPlayer(
         trackSelectionArray = TrackSelectionArray()
         playbackParameters = PlaybackParameters.DEFAULT
         initialCommands.clear()
-        initialSeekTo = 0L
+        //initialSeekTo = 0L
     }
 
     /** Prepares the player.  */
@@ -814,6 +816,7 @@ class MPVPlayer(
             val seekTo = if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
             if (isPlayerReady) {
                 MPVLib.command(arrayOf("seek", "$seekTo", "absolute"))
+                initialSeekTo = 0L
             } else {
                 initialSeekTo = seekTo
             }
