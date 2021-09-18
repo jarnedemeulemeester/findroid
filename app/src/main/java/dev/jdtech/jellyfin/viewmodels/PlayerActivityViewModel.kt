@@ -59,7 +59,7 @@ constructor(
 
         if (useMpv) {
             val preferredLanguages = mapOf(TrackType.AUDIO to preferredAudioLanguage, TrackType.SUBTITLE to preferredSubtitleLanguage)
-            player = MPVPlayer(application, false, preferredLanguages)
+            player = MPVPlayer(application, false, preferredLanguages, sp.getBoolean("mpv_disable_hwdec", false))
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
@@ -101,7 +101,7 @@ constructor(
 
             when (player) {
                 is MPVPlayer -> {
-                    player.setMediaItem(mediaItems[0])
+                    player.setMediaItems(mediaItems)
                     player.prepare()
                     player.play()
                 }

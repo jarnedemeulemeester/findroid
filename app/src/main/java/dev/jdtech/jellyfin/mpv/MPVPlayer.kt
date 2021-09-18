@@ -40,7 +40,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 class MPVPlayer(
     context: Context,
     requestAudioFocus: Boolean,
-    preferredLanguages: Map<String, String>
+    preferredLanguages: Map<String, String>,
+    disableHardwareDecoding: Boolean
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -50,13 +51,11 @@ class MPVPlayer(
 
     init {
         require(context is Application)
-        @Suppress("DEPRECATION")
         val mpvDir = File(context.getExternalFilesDir(null) ?: context.filesDir, "mpv")
         if (!mpvDir.exists()) {
             mpvDir.mkdirs()
         }
-        // https://github.com/mpv-android/mpv-android/commit/12d4d78
-        arrayOf("mpv.conf", "subfont.ttf"/*, "cacert.pem"*/).forEach { fileName ->
+        arrayOf("mpv.conf", "subfont.ttf").forEach { fileName ->
             val file = File(mpvDir, fileName)
             Log.i("mpv", "File ${file.absolutePath}")
             if (!file.exists()) {
@@ -64,23 +63,42 @@ class MPVPlayer(
             }
         }
         MPVLib.create(context)
-        MPVLib.setOptionString("config", "yes")
+
+        // General
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        // vo: set display fps as reported by android
         MPVLib.setOptionString("vo", "gpu")
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("ao", "audiotrack,opensles")
 
-        MPVLib.init()
+        // Hardware video decoding
+        if (disableHardwareDecoding) {
+            MPVLib.setOptionString("hwdec", "no")
+        } else {
+            MPVLib.setOptionString("hwdec", "mediacodec-copy")
+        }
+        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
 
-        // hardcoded options
+        // TLS
+        MPVLib.setOptionString("tls-verify", "no")
+
+        // Cache
         MPVLib.setOptionString("cache", "yes")
         MPVLib.setOptionString("cache-pause-initial", "yes")
+        MPVLib.setOptionString("demuxer-max-bytes", "32MiB")
+        MPVLib.setOptionString("demuxer-max-back-bytes", "32MiB")
+
+        // Subs
+        MPVLib.setOptionString("sub-scale-with-window", "no")
+        MPVLib.setOptionString("sub-use-margins", "no")
+
+        // Other options
         MPVLib.setOptionString("force-window", "no")
         MPVLib.setOptionString("keep-open", "always")
         MPVLib.setOptionString("save-position-on-quit", "no")
         MPVLib.setOptionString("sub-font-provider", "none")
         MPVLib.setOptionString("ytdl", "no")
+
+        MPVLib.init()
 
         for (preferredLanguage in preferredLanguages) {
             when (preferredLanguage.key) {
@@ -1281,7 +1299,6 @@ class MPVPlayer(
                 COMMAND_PREPARE_STOP,
                 COMMAND_SET_SPEED_AND_PITCH,
                 COMMAND_GET_CURRENT_MEDIA_ITEM,
-                //COMMAND_GET_MEDIA_ITEMS,
                 COMMAND_GET_MEDIA_ITEMS_METADATA,
                 COMMAND_CHANGE_MEDIA_ITEMS,
                 COMMAND_SET_VIDEO_SURFACE,
@@ -1454,8 +1471,6 @@ class MPVPlayer(
             } catch (e: JSONException) {}
             return Triple(tracks, trackGroupArray, trackSelectionArray)
         }
-
-        const val PLAYER_NAME = "MPV Player"
 
         /**
          * Merges multiple [subtitleSources] into a single [videoSource]
