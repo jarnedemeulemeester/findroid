@@ -42,13 +42,13 @@
     <PreferenceCategory app:title="Player">
         <SwitchPreference
             app:key="mpv_player"
-            app:title="MPV Player"
-            app:summary="Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs."/>
+            app:title="@string/mpv_player"
+            app:summary="@string/mpv_player_summary"/>
         <SwitchPreference
             app:key="mpv_disable_hwdec"
             app:dependency="mpv_player"
-            app:title="Force software decoding"
-            app:summary="Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts."/>
+            app:title="@string/force_software_decoding"
+            app:summary="@string/force_software_decoding_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/about">

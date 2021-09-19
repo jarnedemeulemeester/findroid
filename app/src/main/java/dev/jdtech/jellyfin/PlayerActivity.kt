@@ -76,7 +76,7 @@ class PlayerActivity : AppCompatActivity() {
                     if (audioRenderer == null) return@setOnClickListener
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this, "Select audio track",
+                        this, resources.getString(R.string.select_audio_track),
                         viewModel.trackSelector, audioRenderer
                     )
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
@@ -107,7 +107,7 @@ class PlayerActivity : AppCompatActivity() {
                     if (subtitleRenderer == null) return@setOnClickListener
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this, "Select subtitle track",
+                        this, resources.getString(R.string.select_subtile_track),
                         viewModel.trackSelector, subtitleRenderer
                     )
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
