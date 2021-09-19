@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.view.updatePadding
 import androidx.navigation.navArgs
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -34,6 +36,22 @@ class PlayerActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
+
+        val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            binding.playerView.findViewById<View>(R.id.player_controls)
+                .setOnApplyWindowInsetsListener { _, windowInsets ->
+                    val cutout = windowInsets.displayCutout
+                    playerControls.updatePadding(
+                        left = cutout?.safeInsetLeft ?: 0,
+                        top = cutout?.safeInsetTop ?: 0,
+                        right = cutout?.safeInsetRight ?: 0,
+                        bottom = cutout?.safeInsetBottom ?: 0,
+                    )
+                    return@setOnApplyWindowInsetsListener windowInsets
+                }
+        }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
             onBackPressed()
@@ -155,6 +173,10 @@ class PlayerActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
     }
 
     private fun isRendererType(
