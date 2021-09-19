@@ -104,7 +104,7 @@ dependencies {
     implementation(files("libs/extension-ffmpeg-release.aar"))
 
     // MPV
-    implementation(files("libs/libmpv/app-release.aar"))
+    implementation(files("libs/libmpv.aar"))
 
     // Timber
     val timberVersion = "5.0.1"
