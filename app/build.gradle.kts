@@ -84,7 +84,7 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.0.2"
+    val jellyfinVersion = "1.0.3"
     implementation("org.jellyfin.sdk:jellyfin-platform-android:$jellyfinVersion")
 
     // Glide
@@ -103,6 +103,7 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion")
     implementation(files("libs/extension-ffmpeg-release.aar"))
 
+    // MPV
     implementation(files("libs/libmpv/app-release.aar"))
 
     // Timber
