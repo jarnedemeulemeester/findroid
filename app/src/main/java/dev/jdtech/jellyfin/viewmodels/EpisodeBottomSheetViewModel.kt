@@ -86,7 +86,7 @@ constructor(
             val intros = jellyfinRepository.getIntros(startEpisode.id)
             for (intro in intros) {
                 if (intro.mediaSources.isNullOrEmpty()) continue
-                playerItems.add(PlayerItem(intro.id, intro.mediaSources?.get(0)?.id!!, 0))
+                playerItems.add(PlayerItem(intro.name, intro.id, intro.mediaSources?.get(0)?.id!!, 0))
                 introsCount += 1
             }
         }
@@ -102,6 +102,7 @@ constructor(
             if (episode.locationType == LocationType.VIRTUAL) continue
             playerItems.add(
                 PlayerItem(
+                    episode.name,
                     episode.id,
                     episode.mediaSources?.get(0)?.id!!,
                     playbackPosition
