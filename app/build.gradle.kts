@@ -16,8 +16,8 @@ android {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 24
         targetSdk = 31
-        versionCode = 4
-        versionName = "0.2.0"
+        versionCode = 5
+        versionName = "0.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,14 +26,14 @@ android {
         getByName("debug") {
             applicationIdSuffix = ".debug"
         }
-        create("staging") {
-            initWith(getByName("release"))
-            applicationIdSuffix = ".staging"
-        }
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        create("staging") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".staging"
         }
     }
 
