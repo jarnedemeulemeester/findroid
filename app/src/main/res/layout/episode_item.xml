@@ -53,7 +53,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="?attr/colorError"
             android:visibility="@{episode.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@id/played_icon"
             app:layout_constraintTop_toTopOf="@id/episode_image">

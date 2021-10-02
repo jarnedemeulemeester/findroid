@@ -210,7 +210,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="@string/error_preparing_player_items"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/red" />
+                        android:textColor="?attr/colorError" />
 
                     <TextView
                         android:id="@+id/player_items_error_details"
@@ -218,7 +218,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/view_details_underlined"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/red" />
+                        android:textColor="?attr/colorError" />
                 </LinearLayout>
 
 
