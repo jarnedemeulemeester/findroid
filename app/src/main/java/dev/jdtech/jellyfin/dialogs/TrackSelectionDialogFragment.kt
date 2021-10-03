@@ -1,9 +1,9 @@
 package dev.jdtech.jellyfin.dialogs
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
@@ -24,15 +24,16 @@ class TrackSelectionDialogFragment(
                     }
                 }
                 return activity?.let { activity ->
-                    val builder = AlertDialog.Builder(activity)
+                    val builder = MaterialAlertDialogBuilder(activity)
                     builder.setTitle("Select audio track")
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
-                            viewModel.currentAudioTracks.indexOfFirst { it.selected }) { _, which ->
+                            viewModel.currentAudioTracks.indexOfFirst { it.selected }) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.AUDIO,
                                 viewModel.currentAudioTracks[which]
                             )
+                            dialog.dismiss()
                         }
                     builder.create()
                 } ?: throw IllegalStateException("Activity cannot be null")
@@ -46,15 +47,16 @@ class TrackSelectionDialogFragment(
                     }
                 }
                 return activity?.let { activity ->
-                    val builder = AlertDialog.Builder(activity)
+                    val builder = MaterialAlertDialogBuilder(activity)
                     builder.setTitle("Select subtitle track")
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
-                            viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { _, which ->
+                            viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.SUBTITLE,
                                 viewModel.currentSubtitleTracks[which]
                             )
+                            dialog.dismiss()
                         }
                     builder.create()
                 } ?: throw IllegalStateException("Activity cannot be null")
@@ -62,7 +64,7 @@ class TrackSelectionDialogFragment(
             else -> {
                 trackNames = listOf()
                 return activity?.let {
-                    val builder = AlertDialog.Builder(it)
+                    val builder = MaterialAlertDialogBuilder(it)
                     builder.setTitle("Select ? track")
                         .setMessage("Unknown track type")
                     builder.create()

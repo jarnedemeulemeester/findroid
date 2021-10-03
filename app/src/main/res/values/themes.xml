@@ -30,6 +30,8 @@
 
         <!-- Shapes -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Findroid.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Findroid.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Findroid.LargeComponent</item>
 
         <!-- Toolbar -->
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
