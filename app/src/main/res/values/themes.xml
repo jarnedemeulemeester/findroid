@@ -28,6 +28,9 @@
         <!-- Navigation bar -->
         <item name="android:navigationBarColor">?attr/colorSurface</item>
 
+        <!-- Shapes -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Findroid.SmallComponent</item>
+
         <!-- Toolbar -->
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
     </style>

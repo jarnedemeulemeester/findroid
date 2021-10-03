@@ -39,7 +39,7 @@
             app:baseItemImage="@{viewModel.item}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/holder"
-            app:shapeAppearance="@style/roundedImageView" />
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <FrameLayout
             android:id="@+id/missing_icon"
