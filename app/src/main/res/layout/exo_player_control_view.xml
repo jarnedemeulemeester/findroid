@@ -62,7 +62,8 @@
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_speaker" />
+                android:src="@drawable/ic_speaker"
+                app:tint="@color/white" />
 
             <Space
                 android:layout_width="16dp"
@@ -75,7 +76,8 @@
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_closed_caption" />
+                android:src="@drawable/ic_closed_caption"
+                app:tint="@color/white" />
 
         </LinearLayout>
 
