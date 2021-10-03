@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Findroid" parent="Base.Theme.Findroid">
         <!-- Main colors -->
-        <item name="colorPrimary">@color/blue_600</item>
-        <item name="colorPrimaryVariant">@color/blue_800</item>
-        <item name="colorSecondary">@color/green_300</item>
-        <item name="colorSecondaryVariant">@color/green_800</item>
+        <item name="colorPrimary">@android:color/system_accent1_400</item>
+        <item name="colorPrimaryVariant">@android:color/system_accent1_800</item>
+        <item name="colorSecondary">@android:color/system_accent2_400</item>
+        <item name="colorSecondaryVariant">@android:color/system_accent2_800</item>
 
         <!-- Background colors and error state color -->
         <item name="android:colorBackground">@color/black</item>
-        <item name="colorSurface">@color/neutral_900</item>
+        <item name="colorSurface">@android:color/system_neutral1_900</item>
         <item name="colorError">@color/red</item>
 
         <!-- Text, icons and strokes in relation to the surface -->
@@ -19,11 +20,5 @@
         <item name="colorOnError">@color/white</item>
 
         <item name="elevationOverlayEnabled">false</item>
-    </style>
-
-    <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/black</item>
-        <item name="postSplashScreenTheme">@style/Theme.Findroid</item>
     </style>
 </resources>

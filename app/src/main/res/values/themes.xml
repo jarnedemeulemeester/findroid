@@ -10,8 +10,8 @@
         <item name="colorSecondaryVariant">@color/green_800</item>
 
         <!-- Background colors and error state color -->
-        <item name="android:colorBackground">@color/neutral_100</item>
-        <item name="colorSurface">@color/neutral_100</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorSurface">@color/white</item>
         <item name="colorError">@color/red</item>
 
         <!-- Text, icons and strokes in relation to the surface -->
@@ -22,16 +22,19 @@
         <item name="colorOnError">@color/white</item>
 
         <!-- Status bar -->
-        <item name="android:statusBarColor">?android:attr/colorBackground</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
-        <!-- Extra's -->
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <!-- Toolbar -->
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
     </style>
 
     <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/neutral_100</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
         <item name="postSplashScreenTheme">@style/Theme.Findroid</item>
     </style>
 
