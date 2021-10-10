@@ -25,9 +25,6 @@
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
-        <!-- Navigation bar -->
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-
         <!-- Shapes -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Findroid.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Findroid.MediumComponent</item>

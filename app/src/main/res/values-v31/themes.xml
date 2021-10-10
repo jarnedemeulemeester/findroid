@@ -6,5 +6,9 @@
         <item name="colorPrimaryVariant">@android:color/system_accent1_800</item>
         <item name="colorSecondary">@android:color/system_accent2_500</item>
         <item name="colorSecondaryVariant">@android:color/system_accent2_800</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
     </style>
 </resources>

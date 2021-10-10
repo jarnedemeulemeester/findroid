@@ -19,6 +19,10 @@
         <item name="colorOnSurface">@color/white</item>
         <item name="colorOnError">@color/white</item>
 
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+
         <item name="elevationOverlayEnabled">false</item>
     </style>
 </resources>
