@@ -24,10 +24,10 @@
             android:id="@+id/media_info_scrollview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -147,6 +147,7 @@
                             android:layout_height="48dp"
                             android:background="@drawable/button_setup_background"
                             android:contentDescription="@string/play_button_description"
+                            android:foreground="@drawable/ripple_background"
                             android:paddingHorizontal="24dp"
                             android:paddingVertical="12dp"
                             android:src="@drawable/ic_play" />
@@ -350,7 +351,9 @@
                         android:layout_width="@dimen/nextup_media_width"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
-                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="@drawable/ripple_background"
                         android:orientation="vertical">
 
                         <com.google.android.material.imageview.ShapeableImageView

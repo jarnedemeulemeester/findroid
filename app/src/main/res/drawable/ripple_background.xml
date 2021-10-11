@@ -2,13 +2,9 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?attr/colorControlHighlight">
     <item android:id="@android:id/mask">
-        <shape android:shape="oval">
-            <solid android:color="@color/white" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <solid android:color="@android:color/transparent" />
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp"/>
+            <solid android:color="#ffffff"/>
         </shape>
     </item>
 </ripple>
