@@ -95,6 +95,7 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
         .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
+        .error(R.drawable.person_placeholder)
         .into(imageView)
 
     imageView.contentDescription = "${person.name} poster"
