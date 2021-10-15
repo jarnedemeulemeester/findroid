@@ -31,7 +31,7 @@ class MediaFragment : Fragment() {
 
         val search = menu.findItem(R.id.action_search)
         val searchView = search.actionView as SearchView
-        searchView.queryHint = "Search movies, shows, episodes..."
+        searchView.queryHint = getString(R.string.search_hint)
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
