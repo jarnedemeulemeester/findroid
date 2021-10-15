@@ -10,6 +10,7 @@
 /.idea/discord.xml
 /.idea/gradle.xml
 /.idea/deploymentTargetDropDown.xml
+/.idea/misc.xml
 .DS_Store
 /build
 /captures

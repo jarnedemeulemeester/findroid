@@ -23,6 +23,7 @@ object DatabaseModule {
             "servers"
         )
             .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
             .build()
             .serverDatabaseDao
     }

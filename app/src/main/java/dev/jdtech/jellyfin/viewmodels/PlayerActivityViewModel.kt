@@ -12,6 +12,8 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -23,38 +25,70 @@ import javax.inject.Inject
 class PlayerActivityViewModel
 @Inject
 constructor(
-    private val application: Application,
+    application: Application,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel(), Player.Listener {
-    private var _player = MutableLiveData<SimpleExoPlayer>()
-    var player: LiveData<SimpleExoPlayer> = _player
+    val player: BasePlayer
 
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
 
+    private val _currentItemTitle = MutableLiveData<String>()
+    val currentItemTitle: LiveData<String> = _currentItemTitle
+
+    var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
+    var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
+
+    private val _fileLoaded = MutableLiveData(false)
+    val fileLoaded: LiveData<Boolean> = _fileLoaded
+
+    private var items: Array<PlayerItem> = arrayOf()
+
+    val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
+    init {
+        val useMpv = sp.getBoolean("mpv_player", false)
+
+        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+
+        if (useMpv) {
+            val preferredLanguages = mapOf(
+                TrackType.AUDIO to preferredAudioLanguage,
+                TrackType.SUBTITLE to preferredSubtitleLanguage
+            )
+            player = MPVPlayer(
+                application,
+                false,
+                preferredLanguages,
+                sp.getBoolean("mpv_disable_hwdec", false)
+            )
+        } else {
+            val renderersFactory =
+                DefaultRenderersFactory(application).setExtensionRendererMode(
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                )
+            trackSelector.setParameters(
+                trackSelector.buildUponParameters()
+                    .setTunnelingEnabled(true)
+                    .setPreferredAudioLanguage(preferredAudioLanguage)
+                    .setPreferredTextLanguage(preferredSubtitleLanguage)
+            )
+            player = SimpleExoPlayer.Builder(application, renderersFactory)
+                .setTrackSelector(trackSelector)
+                .build()
+        }
+    }
+
     fun initializePlayer(
         items: Array<PlayerItem>
     ) {
-
-        val renderersFactory =
-            DefaultRenderersFactory(application).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-        val trackSelector = DefaultTrackSelector(application)
-        trackSelector.setParameters(
-            trackSelector.buildUponParameters()
-                .setTunnelingEnabled(true)
-                .setPreferredAudioLanguage(sp.getString("audio_language", null))
-                .setPreferredTextLanguage(sp.getString("subtitle_language", null))
-        )
-        val player = SimpleExoPlayer.Builder(application, renderersFactory)
-            .setTrackSelector(trackSelector)
-            .build()
-
+        this.items = items
         player.addListener(this)
 
         viewModelScope.launch {
@@ -76,16 +110,15 @@ constructor(
             }
 
             player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-            player.playWhenReady = playWhenReady
             player.prepare()
-            _player.value = player
+            player.play()
         }
 
         pollPosition(player)
     }
 
     private fun releasePlayer() {
-        _player.value?.let { player ->
+        player.let { player ->
             runBlocking {
                 try {
                     jellyfinRepository.postPlaybackStop(
@@ -98,17 +131,14 @@ constructor(
             }
         }
 
-        if (player.value != null) {
-            playWhenReady = player.value!!.playWhenReady
-            playbackPosition = player.value!!.currentPosition
-            currentWindow = player.value!!.currentWindowIndex
-            player.value!!.removeListener(this)
-            player.value!!.release()
-            _player.value = null
-        }
+        playWhenReady = player.playWhenReady
+        playbackPosition = player.currentPosition
+        currentWindow = player.currentWindowIndex
+        player.removeListener(this)
+        player.release()
     }
 
-    private fun pollPosition(player: SimpleExoPlayer) {
+    private fun pollPosition(player: BasePlayer) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
@@ -135,6 +165,11 @@ constructor(
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         viewModelScope.launch {
             try {
+                for (item in items) {
+                    if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
+                        _currentItemTitle.value = item.name
+                    }
+                }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
             } catch (e: Exception) {
                 Timber.e(e)
@@ -153,6 +188,23 @@ constructor(
             }
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
+                currentAudioTracks.clear()
+                currentSubtitleTracks.clear()
+                when (player) {
+                    is MPVPlayer -> {
+                        player.currentTracks.forEach {
+                            when (it.type) {
+                                TrackType.AUDIO -> {
+                                    currentAudioTracks.add(it)
+                                }
+                                TrackType.SUBTITLE -> {
+                                    currentSubtitleTracks.add(it)
+                                }
+                            }
+                        }
+                    }
+                }
+                _fileLoaded.value = true
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
@@ -166,5 +218,11 @@ constructor(
         super.onCleared()
         Timber.d("Clearing Player ViewModel")
         releasePlayer()
+    }
+
+    fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
+        if (player is MPVPlayer) {
+            player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
+        }
     }
 }

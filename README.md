@@ -1,4 +1,4 @@
-![Findroid banner](images/banner.svg)
+![Findroid banner](images/findroid-banner.png)
 
 # Findroid
 
@@ -21,12 +21,19 @@ Home | Library | Movie | Season | Episode
 - Completely native interface
 - Supported media items: movies, series, seasons, episodes 
   - Direct play only, (no transcoding)
-- Video codes: H.263, H.264, H.265, VP8, VP9, AV1 
-  - Support depends on Android device
-- Audio codes: Vorbis, Opus, FLAC, ALAC, PCM µ-law, PCM A-law, MP1, MP2, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
-  - Support provided by ExoPlayer FFmpeg extension
-- Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
-  - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
+- ExoPlayer
+  - Video codes: H.263, H.264, H.265, VP8, VP9, AV1 
+    - Support depends on Android device
+  - Audio codes: Vorbis, Opus, FLAC, ALAC, PCM µ-law, PCM A-law, MP1, MP2, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
+    - Support provided by ExoPlayer FFmpeg extension
+  - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
+    - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
+- **NEW** MPV Player
+  - Should play everything, including SSA/ASS subs with proper styling!
+  - Optionally force software decoding when hardware decoding has issues.
+  - Issues:
+    - Can only play one item at a time, doesn't transistion to the next episode
+
 
 ## Planned features
 - Websocket connection (Syncplay)

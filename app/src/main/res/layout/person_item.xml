@@ -25,7 +25,7 @@
             android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
             app:personImage="@{person}"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <TextView
             android:id="@+id/person_name"

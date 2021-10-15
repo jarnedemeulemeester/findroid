@@ -56,7 +56,7 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="app_info">App info</string>
     <string name="unknown_error">Unknown error</string>
-	<string name="search_hint">Search movies, shows, episodes...</string>
+  	<string name="search_hint">Search movies, shows, episodes...</string>
     <string name="select_audio_track">Select audio track</string>
     <string name="select_subtile_track">Select subtitle track</string>
     <string name="mpv_player">MPV Player</string>

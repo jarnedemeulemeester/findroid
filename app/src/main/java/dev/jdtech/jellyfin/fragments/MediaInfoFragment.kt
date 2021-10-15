@@ -75,7 +75,7 @@ class MediaInfoFragment : Fragment() {
             } else {
                 binding.originalTitle.visibility = View.GONE
             }
-            if (item.trailerCount != null && item.trailerCount!! < 1) {
+            if (item.remoteTrailers.isNullOrEmpty()) {
                 binding.trailerButton.visibility = View.GONE
             }
             binding.communityRating.visibility = when (item.communityRating != null) {
@@ -147,6 +147,7 @@ class MediaInfoFragment : Fragment() {
         }
 
         binding.trailerButton.setOnClickListener {
+            if (viewModel.item.value?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
             val intent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse(viewModel.item.value?.remoteTrailers?.get(0)?.url)

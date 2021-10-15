@@ -17,7 +17,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackgroundFloating"
         android:paddingBottom="24dp">
 
         <ImageView
@@ -29,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnBackground" />
+            app:tint="?attr/colorOnSurface" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
@@ -40,7 +39,7 @@
             app:baseItemImage="@{viewModel.item}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/holder"
-            app:shapeAppearance="@style/roundedImageView" />
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <FrameLayout
             android:id="@+id/missing_icon"
@@ -49,7 +48,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="?attr/colorError"
             android:visibility="@{viewModel.item.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/episode_image"
             app:layout_constraintTop_toTopOf="@id/episode_image">
@@ -154,6 +153,7 @@
                     android:layout_height="48dp"
                     android:background="@drawable/button_setup_background"
                     android:contentDescription="@string/play_button_description"
+                    android:foreground="@drawable/ripple_background"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="12dp"
                     android:src="@drawable/ic_play" />
@@ -210,7 +210,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/error_preparing_player_items"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/red" />
+                android:textColor="?attr/colorError" />
 
             <TextView
                 android:id="@+id/player_items_error_details"
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/view_details_underlined"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/red" />
+                android:textColor="?attr/colorError" />
         </LinearLayout>
 
         <TextView
