@@ -34,6 +34,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CopyOnWriteArraySet
 
 @Suppress("SpellCheckingInspection")
@@ -1199,22 +1200,22 @@ class MPVPlayer(
      * @param volume The volume to set.
      */
     override fun setDeviceVolume(volume: Int) {
-        TODO("Not yet implemented")
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
     /** Increases the volume of the device.  */
     override fun increaseDeviceVolume() {
-        TODO("Not yet implemented")
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
     /** Decreases the volume of the device.  */
     override fun decreaseDeviceVolume() {
-        TODO("Not yet implemented")
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
     /** Sets the mute state of the device.  */
     override fun setDeviceMuted(muted: Boolean) {
-        TODO("Not yet implemented")
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
     private class CurrentTrackSelection(
