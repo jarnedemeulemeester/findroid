@@ -8,7 +8,6 @@ import org.jellyfin.sdk.api.operations.*
 import org.jellyfin.sdk.model.ClientInfo
 import java.util.*
 
-
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
  *

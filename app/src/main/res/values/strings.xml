@@ -62,4 +62,9 @@
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
+    <string name="person_detail_title">Person Detail</string>
+    <string name="error_getting_person_id">Detail unavailable</string>
+    <string name="movies_label">Movies</string>
+    <string name="shows_label">TV Shows</string>
+    <string name="hide">Hide</string>
 </resources>

@@ -111,6 +111,10 @@
         <action
             android:id="@+id/action_mediaInfoFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <action
+            android:id="@+id/action_mediaInfoFragment_to_personDetailFragment"
+            app:destination="@id/personDetailFragment"
+            />
         <argument
             android:name="itemType"
             app:argType="string" />
@@ -237,6 +241,21 @@
             app:destination="@id/addServerFragment"
             app:popUpTo="@id/initializingFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/personDetailFragment"
+        android:name="dev.jdtech.jellyfin.fragments.PersonDetailFragment"
+        android:label="@string/person_detail_title"
+        tools:layout="@layout/fragment_person_detail">
+
+        <argument
+            android:name="personId"
+            app:argType="java.util.UUID" />
+
+        <action
+            android:id="@+id/action_personDetailFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
     </fragment>
 
     <include app:graph="@navigation/aboutlibs_navigation" />

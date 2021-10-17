@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="starredIn"
+            type="dev.jdtech.jellyfin.models.StarredIn"
+            />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/starred_in_preview"
+            android:layout_width="110dp"
+            android:layout_height="160dp"
+            android:scaleType="centerInside"
+            app:itemImage="@{starredIn.dto}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageView"
+            />
+
+        <TextView
+            android:id="@+id/starred_in_title"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/starred_in_preview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:text="@{starredIn.title}"
+            android:textAlignment="textStart"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="Starred In"
+            />
+
+        <TextView
+            android:id="@+id/released"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/starred_in_title"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:text="@{starredIn.released}"
+            android:maxLines="1"
+            android:ellipsize="end"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
