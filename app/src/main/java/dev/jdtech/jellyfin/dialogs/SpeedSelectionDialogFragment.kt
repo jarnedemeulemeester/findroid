@@ -20,7 +20,7 @@ class SpeedSelectionDialogFragment(
             builder.setTitle("Select playback speed")
                 .setSingleChoiceItems(
                     speedTexts.toTypedArray(),
-                    speedNumbers.indexOf(viewModel.mpvPlaybackSpeed)
+                    speedNumbers.indexOf(viewModel.playbackSpeed)
                 ) { dialog, which ->
                     viewModel.selectSpeed(
                         speedNumbers[which]

@@ -49,7 +49,7 @@ constructor(
     private var currentWindow = 0
     private var playbackPosition: Long = 0
 
-    var mpvPlaybackSpeed: Float = 1f
+    var playbackSpeed: Float = 1f
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
@@ -231,7 +231,11 @@ constructor(
     fun selectSpeed(speed: Float) {
         if (player is MPVPlayer) {
             player.selectPlaybackSpeed(speed)
-            mpvPlaybackSpeed = speed
+            playbackSpeed = speed
+        }
+        else if (player is SimpleExoPlayer) {
+            player.setPlaybackSpeed(speed)
+            playbackSpeed = speed
         }
     }
 }

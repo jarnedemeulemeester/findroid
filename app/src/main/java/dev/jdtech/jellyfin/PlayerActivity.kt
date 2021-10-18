@@ -75,7 +75,6 @@ class PlayerActivity : AppCompatActivity() {
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
 
-        speedButton.isVisible = false
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
@@ -142,12 +141,10 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         speedButton.setOnClickListener {
-            if (viewModel.player is MPVPlayer) {
-                SpeedSelectionDialogFragment(viewModel).show(
-                    supportFragmentManager,
-                    "speedselectiondialog"
-                )
-            }
+            SpeedSelectionDialogFragment(viewModel).show(
+                supportFragmentManager,
+                "speedselectiondialog"
+            )
         }
 
         viewModel.fileLoaded.observe(this, {
@@ -156,11 +153,8 @@ class PlayerActivity : AppCompatActivity() {
                 audioButton.imageAlpha = 255
                 subtitleButton.isEnabled = true
                 subtitleButton.imageAlpha = 255
-                if (viewModel.player is MPVPlayer) {
-                    speedButton.isVisible = true
-                    speedButton.isEnabled = true
-                    speedButton.imageAlpha = 255
-                }
+                speedButton.isEnabled = true
+                speedButton.imageAlpha = 255
             }
         })
 
