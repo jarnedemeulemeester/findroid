@@ -36,7 +36,8 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.userId!!,
                 parentId = parentId,
                 includeItemTypes = includeTypes,
-                recursive = recursive
+                recursive = recursive,
+                sortBy = listOf("SortName")
             ).content.items ?: listOf()
         }
         return items
