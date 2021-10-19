@@ -54,6 +54,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.leanback:leanback:1.2.0-alpha01")
+
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.core:core-splashscreen:1.0.0-alpha01")
     implementation("androidx.appcompat:appcompat:1.3.1")
