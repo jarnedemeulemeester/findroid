@@ -52,8 +52,6 @@ constructor(
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
-
-
                 jellyfinRepository.postCapabilities()
 
                 val items = mutableListOf<HomeItem>()
@@ -75,8 +73,6 @@ constructor(
                         items.add(HomeItem.Section(nextUpSection))
                     }
                 }
-
-                _views.value = items
 
                 val views: MutableList<View> = mutableListOf()
 
