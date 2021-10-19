@@ -229,13 +229,7 @@ constructor(
     }
 
     fun selectSpeed(speed: Float) {
-        if (player is MPVPlayer) {
-            player.selectPlaybackSpeed(speed)
-            playbackSpeed = speed
-        }
-        else if (player is SimpleExoPlayer) {
-            player.setPlaybackSpeed(speed)
-            playbackSpeed = speed
-        }
+        player.setPlaybackSpeed(speed)
+        playbackSpeed = speed
     }
 }
