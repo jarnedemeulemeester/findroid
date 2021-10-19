@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
+        binding.viewsRecyclerView?.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
             navigateToLibraryFragment(it)
         }, ViewItemListAdapter.OnClickListener {
             navigateToMediaInfoFragment(it)
@@ -69,25 +69,25 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
+            binding.loadingIndicator?.visibility = if (it) View.GONE else View.VISIBLE
         })
 
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error != null) {
                 checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.viewsRecyclerView.visibility = View.GONE
+                binding.errorLayout?.errorPanel?.visibility = View.VISIBLE
+                binding.viewsRecyclerView?.visibility = View.GONE
             } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.viewsRecyclerView.visibility = View.VISIBLE
+                binding.errorLayout?.errorPanel?.visibility = View.GONE
+                binding.viewsRecyclerView?.visibility = View.VISIBLE
             }
         })
 
-        binding.errorLayout.errorRetryButton.setOnClickListener {
+        binding.errorLayout?.errorRetryButton?.setOnClickListener {
             viewModel.loadData()
         }
 
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
+        binding.errorLayout?.errorDetailsButton?.setOnClickListener {
             ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
                 parentFragmentManager,
                 "errordialog"
