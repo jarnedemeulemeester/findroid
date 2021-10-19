@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -46,6 +47,7 @@ constructor(
 
     val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
+    private var playFromDownloads = false
     private var currentWindow = 0
     private var playbackPosition: Long = 0
 
@@ -53,7 +55,6 @@ constructor(
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-
         val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
         val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
 
@@ -93,10 +94,15 @@ constructor(
 
         viewModelScope.launch {
             val mediaItems: MutableList<MediaItem> = mutableListOf()
-
             try {
                 for (item in items) {
-                    val streamUrl = jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                    playFromDownloads = item.mediaSourceUri.isNotEmpty()
+                    val streamUrl = if(!playFromDownloads){
+                        jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                    }else{
+                        item.mediaSourceUri
+                    }
+
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
                         MediaItem.Builder()
@@ -110,7 +116,9 @@ constructor(
             }
 
             player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-            player.prepare()
+            val useMpv = sp.getBoolean("mpv_player", false)
+            if(!useMpv || !playFromDownloads)
+                player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
             player.play()
         }
 
@@ -144,14 +152,17 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null) {
-                        try {
-                            jellyfinRepository.postPlaybackProgress(
-                                UUID.fromString(player.currentMediaItem!!.mediaId),
-                                player.currentPosition.times(10000),
-                                !player.isPlaying
-                            )
-                        } catch (e: Exception) {
-                            Timber.e(e)
+                            try {
+                                jellyfinRepository.postPlaybackProgress(
+                                    UUID.fromString(player.currentMediaItem!!.mediaId),
+                                    player.currentPosition.times(10000),
+                                    !player.isPlaying
+                                )
+                            } catch (e: Exception) {
+                                Timber.e(e)
+                            }
+                        if(playFromDownloads){
+                            postDownloadPlaybackProgress(items[0].mediaSourceUri, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automaticcaly use the correct item
                         }
                     }
                 }

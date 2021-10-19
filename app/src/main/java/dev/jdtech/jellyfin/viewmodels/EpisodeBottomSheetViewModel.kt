@@ -6,8 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.DownloadMetadata
+import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
@@ -17,6 +22,7 @@ import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.*
 import javax.inject.Inject
+
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel
@@ -43,11 +49,15 @@ constructor(
     private val _navigateToPlayer = MutableLiveData<Boolean>()
     val navigateToPlayer: LiveData<Boolean> = _navigateToPlayer
 
+    private val _downloadEpisode = MutableLiveData<Boolean>()
+    val downloadEpisode: LiveData<Boolean> = _downloadEpisode
+
     var playerItems: MutableList<PlayerItem> = mutableListOf()
+
+    lateinit var downloadRequestItem: DownloadRequestItem
 
     private val _playerItemsError = MutableLiveData<String>()
     val playerItemsError: LiveData<String> = _playerItemsError
-
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             try {
@@ -63,15 +73,26 @@ constructor(
         }
     }
 
+    fun loadEpisode(playerItem : PlayerItem){
+        playerItems.add(playerItem)
+        val metadata = playerItem.metadata!!
+        _item.value = downloadMetadataToBaseItemDto(playerItem.metadata)
+    }
+
     fun preparePlayerItems() {
         _playerItemsError.value = null
         viewModelScope.launch {
-            try {
-                createPlayerItems(_item.value!!)
+            if(playerItems.isEmpty()){
+                try {
+                    createPlayerItems(_item.value!!)
+                    _navigateToPlayer.value = true
+                } catch (e: Exception) {
+                    _playerItemsError.value = e.toString()
+                }
+            }else {
                 _navigateToPlayer.value = true
-            } catch (e: Exception) {
-                _playerItemsError.value = e.toString()
             }
+
         }
     }
 
@@ -141,6 +162,21 @@ constructor(
         _favorite.value = false
     }
 
+    fun loadDownloadRequestItem(itemId: UUID) {
+        viewModelScope.launch {
+            loadEpisode(itemId)
+            val episode = _item.value
+            val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(episode)
+            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
+            _downloadEpisode.value = true
+        }
+    }
+
+    fun deleteEpisode() {
+        deleteDownloadedEpisode(playerItems[0].mediaSourceUri)
+    }
+
     private fun getDateString(item: BaseItemDto): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val instant = item.premiereDate?.toInstant(ZoneOffset.UTC)
@@ -154,5 +190,9 @@ constructor(
 
     fun doneNavigateToPlayer() {
         _navigateToPlayer.value = false
+    }
+
+    fun doneDownloadEpisode() {
+        _downloadEpisode.value = false
     }
 }

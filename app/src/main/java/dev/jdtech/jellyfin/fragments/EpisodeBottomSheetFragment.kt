@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -15,7 +16,9 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.requestDownload
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
+import java.util.*
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -38,20 +41,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
             viewModel.preparePlayerItems()
-        }
-
-        binding.checkButton.setOnClickListener {
-            when (viewModel.played.value) {
-                true -> viewModel.markAsUnplayed(args.episodeId)
-                false -> viewModel.markAsPlayed(args.episodeId)
-            }
-        }
-
-        binding.favoriteButton.setOnClickListener {
-            when (viewModel.favorite.value) {
-                true -> viewModel.unmarkAsFavorite(args.episodeId)
-                false -> viewModel.markAsFavorite(args.episodeId)
-            }
         }
 
         viewModel.item.observe(viewLifecycleOwner, { episode ->
@@ -103,6 +92,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         })
 
+        viewModel.downloadEpisode.observe(viewLifecycleOwner, {
+            if (it) {
+                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem)
+                viewModel.doneDownloadEpisode()
+            }
+        })
+
         viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
             if (errorMessage != null) {
                 binding.playerItemsError.visibility = View.VISIBLE
@@ -124,7 +120,43 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             ).show(parentFragmentManager, "errordialog")
         }
 
-        viewModel.loadEpisode(args.episodeId)
+        if(args.episodeId != null){
+            val episodeId: UUID = args.episodeId!!
+            binding.checkButton.setOnClickListener {
+                when (viewModel.played.value) {
+                    true -> viewModel.markAsUnplayed(episodeId)
+                    false -> viewModel.markAsPlayed(episodeId)
+                }
+            }
+
+            binding.favoriteButton.setOnClickListener {
+                when (viewModel.favorite.value) {
+                    true -> viewModel.unmarkAsFavorite(episodeId)
+                    false -> viewModel.markAsFavorite(episodeId)
+                }
+            }
+
+            binding.downloadButton.setOnClickListener {
+                viewModel.loadDownloadRequestItem(episodeId)
+            }
+
+            binding.deleteButton.visibility = View.GONE
+
+            viewModel.loadEpisode(episodeId)
+        }else {
+            val playerItem = args.playerItem!!
+            viewModel.loadEpisode(playerItem)
+
+            binding.deleteButton.setOnClickListener {
+                viewModel.deleteEpisode()
+                dismiss()
+                findNavController().navigate(R.id.downloadFragment)
+            }
+
+            binding.checkButton.visibility = View.GONE
+            binding.favoriteButton.visibility = View.GONE
+            binding.downloadButton.visibility = View.GONE
+        }
 
         return binding.root
     }

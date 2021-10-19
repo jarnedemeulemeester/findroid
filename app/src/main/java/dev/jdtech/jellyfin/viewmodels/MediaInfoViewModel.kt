@@ -6,8 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -65,7 +69,12 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    var playerItems: MutableList<PlayerItem> = mutableListOf()
+    private var playerItems: MutableList<PlayerItem> = mutableListOf()
+
+    private val _downloadMedia = MutableLiveData<Boolean>()
+    val downloadMedia: LiveData<Boolean> = _downloadMedia
+
+    lateinit var downloadRequestItem: DownloadRequestItem
 
     private val _playerItemsError = MutableLiveData<String>()
     val playerItemsError: LiveData<String> = _playerItemsError
@@ -94,6 +103,12 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 _error.value = e.toString()
             }
         }
+    }
+
+    fun loadData(playerItem: PlayerItem) {
+        playerItems.add(playerItem)
+        val metadata = playerItem.metadata!!
+        _item.value = downloadMetadataToBaseItemDto(metadata)
     }
 
     private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson>? {
@@ -181,11 +196,16 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     fun preparePlayerItems(mediaSourceIndex: Int? = null) {
         _playerItemsError.value = null
         viewModelScope.launch {
-            try {
-                createPlayerItems(_item.value!!, mediaSourceIndex)
+            if(playerItems.isEmpty()){
+                try {
+                    createPlayerItems(_item.value!!, mediaSourceIndex)
+                    _navigateToPlayer.value = playerItems.toTypedArray()
+                } catch (e: Exception) {
+                    _playerItemsError.value = e.message
+                }
+            } else {
+                Timber.d("NAVIGATRING TO PLAYER")
                 _navigateToPlayer.value = playerItems.toTypedArray()
-            } catch (e: Exception) {
-                _playerItemsError.value = e.message
             }
         }
     }
@@ -267,7 +287,25 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
     }
 
+    fun loadDownloadRequestItem(itemId: UUID) {
+        viewModelScope.launch {
+            val downloadItem = _item.value
+            val uri = jellyfinRepository.getStreamUrl(itemId, downloadItem?.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(downloadItem)
+            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
+            _downloadMedia.value = true
+        }
+    }
+
+    fun deleteItem() {
+        deleteDownloadedEpisode(playerItems[0].mediaSourceUri)
+    }
+
     fun doneNavigatingToPlayer() {
         _navigateToPlayer.value = null
+    }
+
+    fun doneDownloadMedia() {
+        _downloadMedia.value = false
     }
 }

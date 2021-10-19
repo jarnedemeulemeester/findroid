@@ -1,5 +1,8 @@
 package dev.jdtech.jellyfin.utils
 
+import android.content.Context
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.MainNavigationDirections
@@ -21,3 +24,6 @@ fun Fragment.checkIfLoginRequired(error: String) {
         findNavController().navigate(MainNavigationDirections.actionGlobalLoginFragment())
     }
 }
+
+inline fun Context.toast(@StringRes text: Int, duration: Int = Toast.LENGTH_SHORT) =
+    Toast.makeText(this, text, duration).show()

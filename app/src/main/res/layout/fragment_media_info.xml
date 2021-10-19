@@ -186,10 +186,31 @@
                         android:id="@+id/favorite_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
                         android:background="@drawable/button_accent_background"
-                        android:contentDescription="@string/favorite_button_description"
+                        android:contentDescription="@string/download_button_description"
                         android:padding="12dp"
                         android:src="@drawable/ic_heart" />
+
+                    <ImageButton
+                        android:id="@+id/download_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/download_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_download" />
+
+                    <ImageButton
+                        android:id="@+id/delete_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/delete_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_delete" />
                 </LinearLayout>
 
                 <LinearLayout
