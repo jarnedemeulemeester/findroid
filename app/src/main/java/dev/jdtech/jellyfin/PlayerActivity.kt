@@ -8,7 +8,6 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.navigation.navArgs
 import com.google.android.exoplayer2.C
