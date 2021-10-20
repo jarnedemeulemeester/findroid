@@ -8,6 +8,7 @@ import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
@@ -42,7 +43,8 @@ internal class HomeFragment : BrowseSupportFragment() {
     private fun HomeItem.toListRow(): ListRow {
         return ListRow(
             toHeader(),
-            ArrayObjectAdapter(MediaItemPresenter()).apply { addAll(0, toItems()) }
+            ArrayObjectAdapter(MediaItemPresenter { navigateToMediaInfoFragment(it) })
+                .apply { addAll(0, toItems()) }
         )
     }
 
@@ -63,5 +65,15 @@ internal class HomeFragment : BrowseSupportFragment() {
             is HomeItem.Section -> homeSection.items!!.map { it }
             is HomeItem.ViewItem -> view.items!!.map { it }
         }
+    }
+
+    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToMediaDetailFragment(
+                item.seriesId ?: item.id,
+                item.seriesName ?: item.name,
+                item.type ?: "Unknown"
+            )
+        )
     }
 }

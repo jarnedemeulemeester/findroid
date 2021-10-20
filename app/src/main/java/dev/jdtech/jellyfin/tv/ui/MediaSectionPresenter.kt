@@ -8,7 +8,7 @@ import androidx.leanback.widget.Presenter
 import dev.jdtech.jellyfin.databinding.MediaItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 
-class MediaItemPresenter : Presenter() {
+class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val mediaView =
@@ -22,6 +22,7 @@ class MediaItemPresenter : Presenter() {
         if (item is BaseItemDto) {
             DataBindingUtil.getBinding<MediaItemBinding>(viewHolder.view)?.apply {
                 itemDto = item
+                viewHolder.view.setOnClickListener { onClick(item) }
             }
         }
     }
