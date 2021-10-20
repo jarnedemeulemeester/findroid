@@ -34,6 +34,7 @@ internal class HomeFragment : BrowseSupportFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.views.observe(viewLifecycleOwner) { homeItems ->
+            rowsAdapter.clear()
             homeItems.map { section -> rowsAdapter.add(section.toListRow()) }
         }
     }
