@@ -85,7 +85,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 _dateString.value = getDateString(_item.value!!)
                 _played.value = _item.value?.userData?.played
                 _favorite.value = _item.value?.userData?.isFavorite
-                if (itemType == "Series") {
+                if (itemType == "Series" || itemType == "Episode") {
                     _nextUp.value = getNextUp(itemId)
                     _seasons.value = jellyfinRepository.getSeasons(itemId)
                 }
@@ -175,6 +175,20 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
             }
             else -> dateString
+        }
+    }
+
+    fun attemptToPlayMedia(itemType: String, onVersionSelectRequired: () -> Unit) {
+        if (itemType == "Movie") {
+            if (item.value?.mediaSources != null) {
+                if (item.value?.mediaSources?.size!! > 1) {
+                    onVersionSelectRequired()
+                } else {
+                    preparePlayerItems()
+                }
+            }
+        } else if (itemType == "Series" || itemType == "Episode") {
+            preparePlayerItems()
         }
     }
 

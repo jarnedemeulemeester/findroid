@@ -168,19 +168,11 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            if (args.itemType == "Movie") {
-                if (viewModel.item.value?.mediaSources != null) {
-                    if (viewModel.item.value?.mediaSources?.size!! > 1) {
-                        VideoVersionDialogFragment(viewModel).show(
-                            parentFragmentManager,
-                            "videoversiondialog"
-                        )
-                    } else {
-                        viewModel.preparePlayerItems()
-                    }
-                }
-            } else if (args.itemType == "Series") {
-                viewModel.preparePlayerItems()
+            viewModel.attemptToPlayMedia(args.itemType) {
+                VideoVersionDialogFragment(viewModel).show(
+                    parentFragmentManager,
+                    "videoversiondialog"
+                )
             }
         }
 
@@ -225,7 +217,7 @@ class MediaInfoFragment : Fragment() {
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
-                playerItems,
+                playerItems
             )
         )
     }

@@ -8,7 +8,36 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="dev.jdtech.jellyfin.tv.ui.HomeFragment"
-        android:label="@string/title_home" />
+        android:label="@string/title_home" >
+
+        <action
+            android:id="@+id/action_homeFragment_to_mediaDetailFragment"
+            app:destination="@id/mediaDetailFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaDetailFragment"
+        android:name="dev.jdtech.jellyfin.tv.ui.MediaDetailFragment"
+        android:label="{itemName}"
+        tools:layout="@layout/media_detail_fragment">
+
+        <argument
+            android:name="itemId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="itemName"
+            android:defaultValue="Media Info"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="itemType"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_mediaDetailFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/initializingFragment"
@@ -27,5 +56,15 @@
             app:popUpTo="@id/initializingFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <activity
+        android:id="@+id/playerActivity"
+        android:name="dev.jdtech.jellyfin.PlayerActivity"
+        android:label="activity_player"
+        tools:layout="@layout/activity_player">
+        <argument
+            android:name="items"
+            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
+    </activity>
 
 </navigation>
