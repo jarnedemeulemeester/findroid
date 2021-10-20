@@ -4,4 +4,7 @@
     <dimen name="horizontal_margin">48dp</dimen>
     <dimen name="vertical_margin">48dp</dimen>
 
+    <dimen name="tv_controls_padding">8dp</dimen>
+    <dimen name="tv_controls_margin_start">32dp</dimen>
+
 </resources>

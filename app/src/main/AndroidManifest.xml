@@ -24,6 +24,10 @@
             android:screenOrientation="userLandscape" />
 
         <activity
+            android:name=".tv.TvPlayerActivity"
+            android:screenOrientation="userLandscape" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.JellyfinSplashScreen"

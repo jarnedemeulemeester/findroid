@@ -36,7 +36,7 @@
 
         <action
             android:id="@+id/action_mediaDetailFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
+            app:destination="@id/playerActivityTv" />
     </fragment>
 
     <fragment
@@ -58,10 +58,10 @@
     </fragment>
 
     <activity
-        android:id="@+id/playerActivity"
-        android:name="dev.jdtech.jellyfin.PlayerActivity"
-        android:label="activity_player"
-        tools:layout="@layout/activity_player">
+        android:id="@+id/playerActivityTv"
+        android:name="dev.jdtech.jellyfin.tv.TvPlayerActivity"
+        android:label="activity_player_tv"
+        tools:layout="@layout/activity_player_tv">
         <argument
             android:name="items"
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
