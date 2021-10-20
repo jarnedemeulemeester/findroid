@@ -63,4 +63,5 @@
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="runtime_minutes">%1$d mins</string>
+    <string name="select_video_version_title">Select version</string>
 </resources>

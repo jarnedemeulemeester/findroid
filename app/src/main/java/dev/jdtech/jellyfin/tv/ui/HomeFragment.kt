@@ -62,7 +62,7 @@ internal class HomeFragment : BrowseSupportFragment() {
     private fun HomeItem.toItems(): ArrayObjectAdapter {
         return when (this) {
             is HomeItem.Section -> ArrayObjectAdapter(DynamicMediaItemPresenter { item ->
-                navigateToMediaInfoFragment(item)
+               navigateToMediaInfoFragment(item)
             }).apply { addAll(0, homeSection.items) }
             is HomeItem.ViewItem -> ArrayObjectAdapter(MediaItemPresenter { item ->
                 navigateToMediaInfoFragment(item)

@@ -20,6 +20,8 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.Movie
 import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.TvShow
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import timber.log.Timber
 
 @AndroidEntryPoint
 internal class MediaDetailFragment : Fragment() {
@@ -28,6 +30,7 @@ internal class MediaDetailFragment : Fragment() {
 
     private val viewModel: MediaInfoViewModel by viewModels()
     private val detailViewModel: MediaDetailViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     private val args: MediaDetailFragmentArgs by navArgs()
 
@@ -58,24 +61,15 @@ internal class MediaDetailFragment : Fragment() {
 
     private fun bindState(state: MediaDetailViewModel.State) {
         detailViewModel.resumableItems()
-        
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner) { playerItems ->
-            if (playerItems != null) {
-                navigateToPlayerActivity(
-                    playerItems
-                )
-                viewModel.doneNavigatingToPlayer()
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.isVisible = false
+
+        playerViewModel.playerItems().observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(state)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(state)
             }
         }
 
-        when(state.media) {
+        when (state.media) {
             is Movie -> binding.title.text = state.media.title
             is TvShow -> with(binding.subtitle) {
                 binding.title.text = state.media.episode
@@ -85,14 +79,40 @@ internal class MediaDetailFragment : Fragment() {
         }
     }
 
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.message)
+
+        binding.errorLayout.errorPanel.isVisible = true
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
     private fun bindActions(state: MediaDetailViewModel.State) {
         binding.playButton.setOnClickListener {
             binding.progressCircular.isVisible = true
-            viewModel.attemptToPlayMedia(args.itemType) {
-                VideoVersionDialogFragment(viewModel).show(
-                    parentFragmentManager,
-                    "videoversiondialog"
-                )
+            viewModel.item.value?.let { item ->
+                playerViewModel.loadPlayerItems(item) {
+                    VideoVersionDialogFragment(item, playerViewModel).show(
+                        parentFragmentManager,
+                        "videoversiondialog"
+                    )
+                }
             }
         }
 
