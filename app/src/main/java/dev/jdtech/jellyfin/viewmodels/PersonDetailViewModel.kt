@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.ContentType.MOVIE
 import dev.jdtech.jellyfin.models.ContentType.TVSHOW
-import dev.jdtech.jellyfin.models.StarredIn.Movie
-import dev.jdtech.jellyfin.models.StarredIn.Show
 import dev.jdtech.jellyfin.models.contentType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers.IO
@@ -22,8 +20,7 @@ internal class PersonDetailViewModel @Inject internal constructor(
 ) : ViewModel() {
 
     val data = MutableLiveData<PersonOverview>()
-    val starredInMovies = MutableLiveData<List<Movie>>()
-    val starredInShows = MutableLiveData<List<Show>>()
+    val starredIn = MutableLiveData<StarredIn>()
 
     fun loadData(personId: UUID) {
         viewModelScope.launch(IO) {
@@ -45,35 +42,21 @@ internal class PersonDetailViewModel @Inject internal constructor(
                 recursive = true
             )
 
-            items
-                .filter { it.contentType() == MOVIE }
-                .map { item -> item.toMovie() }
-                .let { starredInMovies.postValue(it) }
+            val movies = items.filter { it.contentType() == MOVIE }
+            val shows = items.filter { it.contentType() == TVSHOW }
 
-            items
-                .filter { it.contentType() == TVSHOW }
-                .map { item -> item.toShow() }
-                .let { starredInShows.postValue(it) }
+            starredIn.postValue(StarredIn(movies, shows))
         }
     }
-
-    private fun BaseItemDto.toMovie() = Movie(
-        id = id,
-        title = name.orEmpty(),
-        released = productionYear?.toString().orEmpty(),
-        dto = this
-    )
-
-    private fun BaseItemDto.toShow() = Show(
-        id = id,
-        title = name.orEmpty(),
-        released = productionYear?.toString().orEmpty(),
-        dto = this
-    )
 
     data class PersonOverview(
         val name: String,
         val overview: String,
         val dto: BaseItemDto
+    )
+
+    data class StarredIn(
+        val movies: List<BaseItemDto>,
+        val shows: List<BaseItemDto>
     )
 }

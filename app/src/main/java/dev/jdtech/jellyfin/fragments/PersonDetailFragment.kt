@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.adapters.StarredInAdapter
+import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
@@ -41,8 +41,8 @@ internal class PersonDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.moviesList.adapter = StarredInAdapter { navigateToMediaInfoFragment(it) }
-        binding.showList.adapter = StarredInAdapter { navigateToMediaInfoFragment(it) }
+        binding.moviesList.adapter = adapter()
+        binding.showList.adapter = adapter()
 
         viewModel.data.observe(viewLifecycleOwner) { data ->
             binding.name.text = data.name
@@ -56,6 +56,11 @@ internal class PersonDetailFragment : Fragment() {
 
         viewModel.loadData(args.personId)
     }
+
+    private fun adapter() = ViewItemListAdapter(
+        fixedWidth = true,
+        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaInfoFragment(it) }
+    )
 
     private fun setupOverviewExpansion() = binding.overview.post {
         binding.readAll.isVisible = binding.overview.isCollapsed()

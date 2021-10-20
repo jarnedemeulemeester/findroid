@@ -92,7 +92,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/movies_label"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                android:visibility="@{viewModel.starredInMovies.empty ? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewModel.starredIn.movies.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/read_all"
                 />
@@ -109,7 +109,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/movie_label"
-                app:starredIn="@{viewModel.starredInMovies}"
+                app:items="@{viewModel.starredIn.movies}"
                 tools:itemCount="4"
                 />
 
@@ -121,7 +121,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/shows_label"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                android:visibility="@{viewModel.starredInShows.empty ? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewModel.starredIn.shows.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/movies_list"
                 />
@@ -138,7 +138,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/show_label"
-                app:starredIn="@{viewModel.starredInShows}"
+                app:items="@{viewModel.starredIn.shows}"
                 tools:itemCount="4"
                 />
 
