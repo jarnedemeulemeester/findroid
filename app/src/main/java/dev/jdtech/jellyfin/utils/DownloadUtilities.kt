@@ -24,33 +24,33 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-fun Fragment.requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem) {
+fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Fragment) {
     // Storage permission for downloads isn't necessary from Android 10 onwards
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
         @Suppress("MagicNumber")
         Timber.d("REQUESTING PERMISSION")
 
-        if (ContextCompat.checkSelfPermission(requireActivity(),
+        if (ContextCompat.checkSelfPermission(context.requireActivity(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context.requireActivity(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(requireActivity(),
+                ActivityCompat.requestPermissions(context.requireActivity(),
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
             } else {
-                ActivityCompat.requestPermissions(requireActivity(),
+                ActivityCompat.requestPermissions(context.requireActivity(),
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
             }
         }
 
-        val granted = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val granted = ContextCompat.checkSelfPermission(context.requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
         if (!granted) {
-            requireContext().toast(R.string.download_no_storage_permission)
+            context.requireContext().toast(R.string.download_no_storage_permission)
             return
         }
     }
-    val defaultStorage = requireContext().getDownloadLocation()
+    val defaultStorage = getDownloadLocation(context.requireContext())
     Timber.d(defaultStorage.toString())
     val downloadRequest = DownloadManager.Request(uri)
         .setTitle(downloadRequestItem.metadata.name)
@@ -58,12 +58,12 @@ fun Fragment.requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem)
         .setDestinationUri(Uri.fromFile(File(defaultStorage, downloadRequestItem.itemId.toString())))
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     if(!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
-        requireContext().downloadFile(downloadRequest, 1)
-    requireContext().createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId)
+        downloadFile(downloadRequest, 1, context.requireContext())
+    createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId, context.requireContext())
 }
 
-private fun Context.createMetadataFile(metadata: DownloadMetadata, itemId: UUID) {
-    val defaultStorage = getDownloadLocation()
+private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context: Context) {
+    val defaultStorage = getDownloadLocation(context)
     val metadataFile = File(defaultStorage, "${itemId}.metadata")
 
     metadataFile.writeText("") //This might be necessary to make sure that the metadata file is empty
@@ -92,22 +92,22 @@ private fun Context.createMetadataFile(metadata: DownloadMetadata, itemId: UUID)
 
 }
 
-private fun Context.downloadFile(request: DownloadManager.Request, downloadMethod: Int) {
+private fun downloadFile(request: DownloadManager.Request, downloadMethod: Int, context: Context) {
     require(downloadMethod >= 0) { "Download method hasn't been set" }
     request.apply {
         setAllowedOverMetered(false)
         setAllowedOverRoaming(false)
     }
-    getSystemService<DownloadManager>()?.enqueue(request)
+    context.getSystemService<DownloadManager>()?.enqueue(request)
 }
 
-private fun Context.getDownloadLocation(): File? {
-    return getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+private fun getDownloadLocation(context: Context): File? {
+    return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
 }
 
-fun Context.loadDownloadedEpisodes(): List<PlayerItem> {
+fun loadDownloadedEpisodes(context: Context): List<PlayerItem> {
     val items = mutableListOf<PlayerItem>()
-    val defaultStorage = getDownloadLocation()
+    val defaultStorage = getDownloadLocation(context)
     defaultStorage?.walk()?.forEach {
         if (it.isFile && it.extension == "") {
             try{
@@ -207,8 +207,8 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
     }
 }
 
-suspend fun Context.syncPlaybackProgress(jellyfinRepository: JellyfinRepository) {
-    val items = loadDownloadedEpisodes()
+suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context: Context) {
+    val items = loadDownloadedEpisodes(context)
     items.forEach(){
         try {
             val localPlaybackProgress = it.metadata?.playbackPosition
@@ -236,7 +236,7 @@ suspend fun Context.syncPlaybackProgress(jellyfinRepository: JellyfinRepository)
 
             if (playbackProgress != 0.toLong()) {
                 postDownloadPlaybackProgress(it.mediaSourceUri, playbackProgress, playedPercentage)
-                jellyfinRepository.postPlaybackProgress(it.itemId, playbackProgress.times(10000), false)
+                jellyfinRepository.postPlaybackProgress(it.itemId, playbackProgress.times(10000), true)
                 Timber.d("Percentage: $playedPercentage")
             }
         } catch (e: Exception) {

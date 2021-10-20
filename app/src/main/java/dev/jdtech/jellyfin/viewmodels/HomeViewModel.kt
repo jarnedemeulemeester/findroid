@@ -101,7 +101,7 @@ constructor(
                 }
 
                 withContext(Dispatchers.Default) {
-                    application.syncPlaybackProgress(jellyfinRepository)
+                    syncPlaybackProgress(jellyfinRepository, application)
                 }
 
                 _views.value = items + views.map { HomeItem.ViewItem(it) }

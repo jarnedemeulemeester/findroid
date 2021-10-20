@@ -94,7 +94,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
         viewModel.downloadEpisode.observe(viewLifecycleOwner, {
             if (it) {
-                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem)
+                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)
                 viewModel.doneDownloadEpisode()
             }
         })

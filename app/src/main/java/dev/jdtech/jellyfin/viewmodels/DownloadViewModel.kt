@@ -42,7 +42,7 @@ constructor(
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
-                val items = application.loadDownloadedEpisodes()
+                val items = loadDownloadedEpisodes(application)
                 if (items.isEmpty()) {
                     _downloadSections.value = listOf()
                     _finishedLoading.value = true
