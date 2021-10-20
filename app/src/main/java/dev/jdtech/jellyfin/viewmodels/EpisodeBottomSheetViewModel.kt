@@ -75,7 +75,6 @@ constructor(
 
     fun loadEpisode(playerItem : PlayerItem){
         playerItems.add(playerItem)
-        val metadata = playerItem.metadata!!
         _item.value = downloadMetadataToBaseItemDto(playerItem.metadata)
     }
 

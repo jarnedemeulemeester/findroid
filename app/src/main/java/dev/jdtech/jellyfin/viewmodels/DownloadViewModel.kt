@@ -22,7 +22,6 @@ class DownloadViewModel
 @Inject
 constructor(
     private val application: Application,
-    private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
     private val _downloadSections = MutableLiveData<List<DownloadSection>>()
     val downloadSections: LiveData<List<DownloadSection>> = _downloadSections
