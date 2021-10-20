@@ -56,6 +56,20 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
+                android:id="@+id/btn_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/transparent_circle_background"
+                android:padding="16dp"
+                android:src="@drawable/ic_gauge"
+                app:tint="@color/white" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="0dp" />
+
+            <ImageButton
                 android:id="@+id/btn_audio_track"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
