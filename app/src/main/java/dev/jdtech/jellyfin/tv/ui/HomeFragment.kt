@@ -43,8 +43,7 @@ internal class HomeFragment : BrowseSupportFragment() {
     private fun HomeItem.toListRow(): ListRow {
         return ListRow(
             toHeader(),
-            ArrayObjectAdapter(MediaItemPresenter { navigateToMediaInfoFragment(it) })
-                .apply { addAll(0, toItems()) }
+            toItems()
         )
     }
 
@@ -60,17 +59,25 @@ internal class HomeFragment : BrowseSupportFragment() {
         }
     }
 
-    private fun HomeItem.toItems(): List<BaseItemDto> {
+    private fun HomeItem.toItems(): ArrayObjectAdapter {
         return when (this) {
-            is HomeItem.Section -> homeSection.items!!.map { it }
-            is HomeItem.ViewItem -> view.items!!.map { it }
+            is HomeItem.Section -> ArrayObjectAdapter(DynamicMediaItemPresenter { item ->
+                navigateToMediaInfoFragment(item)
+            }).apply { addAll(0, homeSection.items) }
+            is HomeItem.ViewItem -> ArrayObjectAdapter(MediaItemPresenter { item ->
+                navigateToMediaInfoFragment(item)
+            }).apply { addAll(0, view.items) }
         }
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToMediaDetailFragment(
-                item.seriesId ?: item.id,
+                if (item.type == "Movie" || item.type == "Episode") {
+                    item.id
+                } else {
+                    item.seriesId!!
+                },
                 item.seriesName ?: item.name,
                 item.type ?: "Unknown"
             )

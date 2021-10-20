@@ -17,6 +17,8 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.MediaDetailFragmentBinding
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.Movie
+import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.TvShow
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 
 @AndroidEntryPoint
@@ -55,6 +57,8 @@ internal class MediaDetailFragment : Fragment() {
     }
 
     private fun bindState(state: MediaDetailViewModel.State) {
+        detailViewModel.resumableItems()
+        
         viewModel.navigateToPlayer.observe(viewLifecycleOwner) { playerItems ->
             if (playerItems != null) {
                 navigateToPlayerActivity(
@@ -71,9 +75,11 @@ internal class MediaDetailFragment : Fragment() {
             }
         }
 
-        if (state.episodeTitle != null) {
-            with(binding.episodeTitle) {
-                text = state.episodeTitle
+        when(state.media) {
+            is Movie -> binding.title.text = state.media.title
+            is TvShow -> with(binding.subtitle) {
+                binding.title.text = state.media.episode
+                text = state.media.show
                 isVisible = true
             }
         }
