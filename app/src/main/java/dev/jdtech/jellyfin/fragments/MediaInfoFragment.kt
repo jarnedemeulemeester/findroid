@@ -21,13 +21,16 @@ import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaInfoBinding
     private val viewModel: MediaInfoViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     private val args: MediaInfoFragmentArgs by navArgs()
 
@@ -62,13 +65,6 @@ class MediaInfoFragment : Fragment() {
             viewModel.loadData(args.itemId, args.itemType)
         }
 
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
-                parentFragmentManager,
-                "errordialog"
-            )
-        }
-
         viewModel.item.observe(viewLifecycleOwner, { item ->
             if (item.originalTitle != item.name) {
                 binding.originalTitle.visibility = View.VISIBLE
@@ -91,21 +87,12 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { playerItems ->
-            if (playerItems != null) {
-                navigateToPlayerActivity(
-                    playerItems
-                )
-                viewModel.doneNavigatingToPlayer()
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
+        playerViewModel.playerItems().observe(viewLifecycleOwner) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
-        })
+        }
 
         viewModel.played.observe(viewLifecycleOwner, {
             val drawable = when (it) {
@@ -124,27 +111,6 @@ class MediaInfoFragment : Fragment() {
 
             binding.favoriteButton.setImageResource(drawable)
         })
-
-        viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage != null) {
-                binding.playerItemsError.visibility = View.VISIBLE
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            } else {
-                binding.playerItemsError.visibility = View.GONE
-            }
-        })
-
-        binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(
-                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
-            ).show(parentFragmentManager, "errordialog")
-        }
 
         binding.trailerButton.setOnClickListener {
             if (viewModel.item.value?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
@@ -168,19 +134,14 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            if (args.itemType == "Movie") {
-                if (viewModel.item.value?.mediaSources != null) {
-                    if (viewModel.item.value?.mediaSources?.size!! > 1) {
-                        VideoVersionDialogFragment(viewModel).show(
-                            parentFragmentManager,
-                            "videoversiondialog"
-                        )
-                    } else {
-                        viewModel.preparePlayerItems()
-                    }
+
+            viewModel.item.value?.let { item ->
+                playerViewModel.loadPlayerItems(item) {
+                    VideoVersionDialogFragment(item, playerViewModel).show(
+                        parentFragmentManager,
+                        "videoversiondialog"
+                    )
                 }
-            } else if (args.itemType == "Series") {
-                viewModel.preparePlayerItems()
             }
         }
 
@@ -199,6 +160,33 @@ class MediaInfoFragment : Fragment() {
         }
 
         viewModel.loadData(args.itemId, args.itemType)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.message)
+
+        binding.playerItemsError.visibility = View.VISIBLE
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
+        }
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
