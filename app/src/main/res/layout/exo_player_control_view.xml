@@ -62,7 +62,7 @@
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_speed"
+                android:src="@drawable/ic_gauge"
                 app:tint="@color/white" />
 
             <Space
