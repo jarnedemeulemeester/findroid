@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/track_selection_item_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="MissingDefaultResource"
+    >
+
+    <Button
+        android:id="@+id/track_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true"
+        android:textSize="@dimen/track_selection_item_text_size"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="subtitle track"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

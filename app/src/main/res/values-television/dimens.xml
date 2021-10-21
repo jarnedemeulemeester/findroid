@@ -7,4 +7,7 @@
     <dimen name="tv_controls_padding">8dp</dimen>
     <dimen name="tv_controls_margin_start">32dp</dimen>
 
+    <dimen name="track_selection_item_height">48dp</dimen>
+    <dimen name="track_selection_item_text_size">16sp</dimen>
+
 </resources>

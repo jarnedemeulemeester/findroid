@@ -18,8 +18,10 @@
         android:contentDescription="@string/player_controls_exit"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_arrow_left"
+        android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:nextFocusDown="@id/btn_audio_track"
         />
 
     <TextView
@@ -46,8 +48,12 @@
         android:contentDescription="@string/select_audio_track"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_speaker"
+        android:focusable="true"
         app:layout_constraintBottom_toTopOf="@id/exo_progress"
         app:layout_constraintStart_toStartOf="parent"
+        android:nextFocusRight="@id/btn_subtitle"
+        android:nextFocusUp="@id/back_button"
+        android:nextFocusDown="@id/exo_progress"
         />
 
     <ImageButton
@@ -59,8 +65,12 @@
         android:contentDescription="@string/select_subtile_track"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_closed_caption"
+        android:focusable="true"
         app:layout_constraintBottom_toTopOf="@id/exo_progress"
         app:layout_constraintStart_toEndOf="@id/btn_audio_track"
+        android:nextFocusLeft="@id/btn_audio_track"
+        android:nextFocusUp="@id/back_button"
+        android:nextFocusDown="@id/exo_progress"
         />
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
@@ -70,7 +80,10 @@
         app:layout_constraintBottom_toTopOf="@id/exo_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true"
         app:played_color="@color/primary"
+        android:nextFocusUp="@id/btn_audio_track"
+        android:nextFocusDown="@id/exo_play_pause"
         />
 
     <ImageButton
@@ -81,8 +94,11 @@
         android:contentDescription="@string/player_controls_rewind"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_rewind"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:nextFocusUp="@id/exo_progress"
+        android:nextFocusRight="@id/exo_play_pause"
         />
 
     <ImageButton
@@ -95,9 +111,13 @@
         android:contentDescription="@string/play_button_description"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_play"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_rew"
         app:tint="@color/black"
+        android:nextFocusUp="@id/exo_progress"
+        android:nextFocusLeft="@id/exo_rew"
+        android:nextFocusRight="@id/exo_ffwd"
         />
 
     <ImageButton
@@ -109,8 +129,12 @@
         android:contentDescription="@string/player_controls_fast_forward"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_fast_forward"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_play_pause"
+        android:nextFocusUp="@id/exo_progress"
+        android:nextFocusLeft="@id/exo_play_pause"
+        android:nextFocusRight="@id/exo_next"
         />
 
     <ImageButton
@@ -122,8 +146,11 @@
         android:contentDescription="@string/player_controls_skip"
         android:padding="@dimen/tv_controls_padding"
         android:src="@drawable/ic_skip_forward"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_ffwd"
+        android:nextFocusUp="@id/exo_progress"
+        android:nextFocusLeft="@id/exo_ffwd"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
