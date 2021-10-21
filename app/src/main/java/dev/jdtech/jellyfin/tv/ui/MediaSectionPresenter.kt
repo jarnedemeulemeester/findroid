@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.tv.ui
 import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.leanback.widget.Presenter
 import dev.jdtech.jellyfin.databinding.DynamicMediaItemBinding
@@ -31,7 +32,7 @@ class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter
     override fun onUnbindViewHolder(viewHolder: ViewHolder) = Unit
 }
 
-class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit): Presenter() {
+class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val mediaView =
@@ -45,6 +46,10 @@ class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit): Pre
         if (item is BaseItemDto) {
             DataBindingUtil.getBinding<DynamicMediaItemBinding>(viewHolder.view)?.apply {
                 itemDto = item
+                item.userData?.playedPercentage?.toInt()?.let {
+                    progress.progress = it
+                    progress.isVisible = true
+                }
                 viewHolder.view.setOnClickListener { onClick(item) }
             }
         }
