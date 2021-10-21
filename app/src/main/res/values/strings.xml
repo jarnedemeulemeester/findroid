@@ -64,4 +64,9 @@
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
+    <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_rewind">Rewind</string>
+    <string name="player_controls_fast_forward">Fast forward</string>
+    <string name="player_controls_pause">Pause</string>
+    <string name="player_controls_skip">Skip</string>
 </resources>
