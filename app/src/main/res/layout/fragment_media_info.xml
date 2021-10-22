@@ -210,7 +210,7 @@
                         android:background="@drawable/button_accent_background"
                         android:contentDescription="@string/delete_button_description"
                         android:padding="12dp"
-                        android:src="@drawable/ic_delete" />
+                        android:src="@drawable/ic_trash" />
                 </LinearLayout>
 
                 <LinearLayout
