@@ -4,6 +4,7 @@ import dev.jdtech.jellyfin.models.ContentType
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.api.SortOrder
 import java.util.*
 
 interface JellyfinRepository {
@@ -14,7 +15,9 @@ interface JellyfinRepository {
     suspend fun getItems(
         parentId: UUID? = null,
         includeTypes: List<String>? = null,
-        recursive: Boolean = false
+        recursive: Boolean = false,
+        sortBy: String = "SortName",
+        sortOrder: SortOrder = SortOrder.ASCENDING
     ): List<BaseItemDto>
 
     suspend fun getPersonItems(
