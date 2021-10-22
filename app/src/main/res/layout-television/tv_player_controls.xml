@@ -21,7 +21,6 @@
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:nextFocusDown="@id/btn_audio_track"
         />
 
     <TextView
@@ -51,9 +50,6 @@
         android:focusable="true"
         app:layout_constraintBottom_toTopOf="@id/exo_progress"
         app:layout_constraintStart_toStartOf="parent"
-        android:nextFocusRight="@id/btn_subtitle"
-        android:nextFocusUp="@id/back_button"
-        android:nextFocusDown="@id/exo_progress"
         />
 
     <ImageButton
@@ -68,9 +64,6 @@
         android:focusable="true"
         app:layout_constraintBottom_toTopOf="@id/exo_progress"
         app:layout_constraintStart_toEndOf="@id/btn_audio_track"
-        android:nextFocusLeft="@id/btn_audio_track"
-        android:nextFocusUp="@id/back_button"
-        android:nextFocusDown="@id/exo_progress"
         />
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
@@ -82,8 +75,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:focusable="true"
         app:played_color="@color/primary"
-        android:nextFocusUp="@id/btn_audio_track"
-        android:nextFocusDown="@id/exo_play_pause"
         />
 
     <ImageButton
@@ -97,8 +88,6 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:nextFocusUp="@id/exo_progress"
-        android:nextFocusRight="@id/exo_play_pause"
         />
 
     <ImageButton
@@ -115,9 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_rew"
         app:tint="@color/black"
-        android:nextFocusUp="@id/exo_progress"
-        android:nextFocusLeft="@id/exo_rew"
-        android:nextFocusRight="@id/exo_ffwd"
+        android:focusedByDefault="true"
         />
 
     <ImageButton
@@ -132,9 +119,6 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_play_pause"
-        android:nextFocusUp="@id/exo_progress"
-        android:nextFocusLeft="@id/exo_play_pause"
-        android:nextFocusRight="@id/exo_next"
         />
 
     <ImageButton
@@ -149,8 +133,6 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_ffwd"
-        android:nextFocusUp="@id/exo_progress"
-        android:nextFocusLeft="@id/exo_ffwd"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

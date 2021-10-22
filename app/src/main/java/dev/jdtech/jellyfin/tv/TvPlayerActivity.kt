@@ -18,7 +18,8 @@ import dev.jdtech.jellyfin.PlayerActivityArgs
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.ActivityPlayerTvBinding
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.mpv.TrackType.AUDIO
+import dev.jdtech.jellyfin.mpv.TrackType.SUBTITLE
 import dev.jdtech.jellyfin.tv.ui.TrackSelectorAdapter
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
@@ -93,7 +94,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         audioBtn.setOnFocusChangeListener { v, hasFocus ->
             displayedPopup = if (hasFocus) {
                 val items = viewModel.currentSubtitleTracks.toUiTrack()
-                audioBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+                audioBtn.showPopupWindowAbove(items, AUDIO)
             } else {
                 displayedPopup?.dismiss()
                 null
@@ -105,17 +106,14 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         val subtitleBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
 
         subtitleBtn.setOnFocusChangeListener { v, hasFocus ->
+            v.isFocusable = true
             displayedPopup = if (hasFocus) {
                 val items = viewModel.currentSubtitleTracks.toUiTrack()
-                subtitleBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+                subtitleBtn.showPopupWindowAbove(items, SUBTITLE)
             } else {
                 displayedPopup?.dismiss()
                 null
             }
-        }
-        subtitleBtn.setOnClickListener {
-            val items = viewModel.currentSubtitleTracks.toUiTrack()
-            subtitleBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
         }
     }
 
@@ -129,7 +127,10 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         )
     }
 
-    private fun View.showPopupWindowAbove(items: List<TrackSelectorAdapter.Track>, type: String): PopupWindow {
+    private fun View.showPopupWindowAbove(
+        items: List<TrackSelectorAdapter.Track>,
+        type: String
+    ): PopupWindow {
         val popup = PopupWindow(this.context)
         popup.contentView = LayoutInflater.from(context).inflate(R.layout.track_selector, null)
         val recyclerView = popup.contentView.findViewById<RecyclerView>(R.id.track_selector)

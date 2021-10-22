@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.tv.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.mpv.MPVPlayer
@@ -37,7 +37,7 @@ class TrackSelectorAdapter(
             trackType: String,
             dismissWindow: () -> Unit
         ) {
-            view.findViewById<TextView>(R.id.track_name).apply {
+            view.findViewById<Button>(R.id.track_name).apply {
                 text = String.format(
                     view.resources.getString(R.string.track_selection),
                     item.language,
@@ -58,7 +58,6 @@ class TrackSelectorAdapter(
                     dismissWindow()
                 }
             }
-            if (item.selected) view.requestFocus()
         }
     }
 

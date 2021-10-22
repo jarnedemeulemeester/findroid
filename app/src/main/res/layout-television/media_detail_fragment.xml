@@ -22,6 +22,7 @@
         <include
             android:id="@+id/error_layout"
             layout="@layout/error_panel"
+            tools:visibility="gone"
             />
 
         <ScrollView
@@ -34,17 +35,6 @@
                 android:layout_height="wrap_content"
                 >
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/poster"
-                    android:layout_width="100dp"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="@dimen/horizontal_margin"
-                    android:layout_marginTop="@dimen/vertical_margin"
-                    app:baseItemImage="@{item.dto}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
@@ -53,9 +43,20 @@
                     android:layout_marginStart="@dimen/horizontal_margin"
                     android:layout_marginTop="@dimen/vertical_margin"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    app:layout_constraintStart_toEndOf="@id/poster"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Alita: Battle Angel"
+                    />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/poster"
+                    android:layout_width="320dp"
+                    android:layout_height="180dp"
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    android:scaleType="centerCrop"
+                    app:baseItemImage="@{item.dto}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title"
                     />
 
                 <TextView
