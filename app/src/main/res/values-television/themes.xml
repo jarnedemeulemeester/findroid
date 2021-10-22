@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/neutral_900</item>
         <item name="android:colorBackgroundFloating">@color/neutral_900</item>
+
+        <item name="defaultBrandColor">@color/neutral_900</item>
     </style>
 
     <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">
