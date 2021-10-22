@@ -29,6 +29,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
     private lateinit var binding: ActivityPlayerTvBinding
     override val viewModel: PlayerActivityViewModel by viewModels()
     private val args: PlayerActivityArgs by navArgs()
+    private var displayedPopup: PopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("Player activity created.")
@@ -89,15 +90,29 @@ internal class TvPlayerActivity : BasePlayerActivity() {
     private fun bindAudioControl() {
         val audioBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
 
-        audioBtn.setOnClickListener {
-            val items = viewModel.currentSubtitleTracks.toUiTrack()
-            audioBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+        audioBtn.setOnFocusChangeListener { v, hasFocus ->
+            displayedPopup = if (hasFocus) {
+                val items = viewModel.currentSubtitleTracks.toUiTrack()
+                audioBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+            } else {
+                displayedPopup?.dismiss()
+                null
+            }
         }
     }
 
     private fun bindSubtitleControl() {
         val subtitleBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
 
+        subtitleBtn.setOnFocusChangeListener { v, hasFocus ->
+            displayedPopup = if (hasFocus) {
+                val items = viewModel.currentSubtitleTracks.toUiTrack()
+                subtitleBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+            } else {
+                displayedPopup?.dismiss()
+                null
+            }
+        }
         subtitleBtn.setOnClickListener {
             val items = viewModel.currentSubtitleTracks.toUiTrack()
             subtitleBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
@@ -114,7 +129,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         )
     }
 
-    private fun View.showPopupWindowAbove(items: List<TrackSelectorAdapter.Track>, type: String) {
+    private fun View.showPopupWindowAbove(items: List<TrackSelectorAdapter.Track>, type: String): PopupWindow {
         val popup = PopupWindow(this.context)
         popup.contentView = LayoutInflater.from(context).inflate(R.layout.track_selector, null)
         val recyclerView = popup.contentView.findViewById<RecyclerView>(R.id.track_selector)
@@ -133,5 +148,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
             startViewCoords.last() - totalHeight,
             Gravity.TOP
         )
+
+        return popup
     }
 }
