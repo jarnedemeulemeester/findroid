@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Jellyfin.Tv" parent="Theme.Leanback">
+    <style name="Theme.Jellyfin.Tv" parent="Theme.AppCompat.Leanback">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>
@@ -16,6 +16,7 @@
         <item name="android:colorBackgroundFloating">@color/neutral_900</item>
 
         <item name="defaultBrandColor">@color/neutral_900</item>
+        <item name="browseTitleViewLayout">@layout/browse_support_fragment_title_view</item>
     </style>
 
     <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">

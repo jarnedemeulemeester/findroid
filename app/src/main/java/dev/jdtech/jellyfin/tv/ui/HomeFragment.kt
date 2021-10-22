@@ -1,7 +1,10 @@
 package dev.jdtech.jellyfin.tv.ui
 
 import android.os.Bundle
+import android.view.KeyEvent.KEYCODE_DPAD_DOWN
+import android.view.KeyEvent.KEYCODE_DPAD_DOWN_LEFT
 import android.view.View
+import android.widget.ImageButton
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -25,7 +28,6 @@ internal class HomeFragment : BrowseSupportFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        title = resources.getString(R.string.title_home)
         headersState = HEADERS_ENABLED
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         adapter = rowsAdapter
@@ -33,6 +35,18 @@ internal class HomeFragment : BrowseSupportFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<ImageButton>(R.id.settings).apply {
+            setOnKeyListener { _, keyCode, _ ->
+                if (keyCode == KEYCODE_DPAD_DOWN || keyCode == KEYCODE_DPAD_DOWN_LEFT) {
+                    headersSupportFragment.view?.requestFocus()
+                    true
+                } else {
+                    false
+                }
+            }
+            setOnClickListener { navigateToSettingsFragment() }
+        }
 
         viewModel.views.observe(viewLifecycleOwner) { homeItems ->
             rowsAdapter.clear()
@@ -62,7 +76,7 @@ internal class HomeFragment : BrowseSupportFragment() {
     private fun HomeItem.toItems(): ArrayObjectAdapter {
         return when (this) {
             is HomeItem.Section -> ArrayObjectAdapter(DynamicMediaItemPresenter { item ->
-               navigateToMediaInfoFragment(item)
+                navigateToMediaInfoFragment(item)
             }).apply { addAll(0, homeSection.items) }
             is HomeItem.ViewItem -> ArrayObjectAdapter(MediaItemPresenter { item ->
                 navigateToMediaInfoFragment(item)
@@ -77,6 +91,12 @@ internal class HomeFragment : BrowseSupportFragment() {
                 item.seriesName ?: item.name,
                 item.type ?: "Unknown"
             )
+        )
+    }
+
+    private fun navigateToSettingsFragment() {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToSettings()
         )
     }
 }
