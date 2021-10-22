@@ -149,7 +149,7 @@ internal class MediaDetailFragment : Fragment() {
             }
         }
 
-        binding.backButton.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.backButton.setOnClickListener { activity?.onBackPressed() }
     }
 
     private fun playTrailer(url: String) {
