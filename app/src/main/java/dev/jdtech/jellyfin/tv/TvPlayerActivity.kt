@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.PopupWindow
@@ -18,6 +17,9 @@ import dev.jdtech.jellyfin.BasePlayerActivity
 import dev.jdtech.jellyfin.PlayerActivityArgs
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.ActivityPlayerTvBinding
+import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.tv.ui.TrackSelectorAdapter
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
 
@@ -80,25 +82,44 @@ internal class TvPlayerActivity : BasePlayerActivity() {
             onBackPressed()
         }
 
+        bindAudioControl()
         bindSubtitleControl()
+    }
+
+    private fun bindAudioControl() {
+        val audioBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
+
+        audioBtn.setOnClickListener {
+            val items = viewModel.currentSubtitleTracks.toUiTrack()
+            audioBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
+        }
     }
 
     private fun bindSubtitleControl() {
         val subtitleBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
 
         subtitleBtn.setOnClickListener {
-            val items = viewModel.currentSubtitleTracks.map { track ->
-                Track(track.title, track.lang, track.codec, track.selected)
-            }
-            subtitleBtn.showPopupWindowAbove(items)
+            val items = viewModel.currentSubtitleTracks.toUiTrack()
+            subtitleBtn.showPopupWindowAbove(items, TrackType.SUBTITLE)
         }
     }
 
-    private fun View.showPopupWindowAbove(items: List<Track>) {
+    private fun List<MPVPlayer.Companion.Track>.toUiTrack() = map { track ->
+        TrackSelectorAdapter.Track(
+            title = track.title,
+            language = track.lang,
+            codec = track.codec,
+            selected = track.selected,
+            playerTrack = track
+        )
+    }
+
+    private fun View.showPopupWindowAbove(items: List<TrackSelectorAdapter.Track>, type: String) {
         val popup = PopupWindow(this.context)
         popup.contentView = LayoutInflater.from(context).inflate(R.layout.track_selector, null)
         val recyclerView = popup.contentView.findViewById<RecyclerView>(R.id.track_selector)
-        recyclerView.adapter = TrackSelectorAdapter(items)
+
+        recyclerView.adapter = TrackSelectorAdapter(items, viewModel, type) { popup.dismiss() }
 
         val startViewCoords = IntArray(2)
         getLocationInWindow(startViewCoords)
@@ -108,46 +129,9 @@ internal class TvPlayerActivity : BasePlayerActivity() {
 
         popup.showAsDropDown(
             binding.root,
-            startViewCoords[0],
-            startViewCoords[1] - totalHeight,
+            startViewCoords.first(),
+            startViewCoords.last() - totalHeight,
             Gravity.TOP
         )
-    }
-
-    data class Track(
-        val title: String,
-        val language: String,
-        val codec: String,
-        val selected: Boolean
-    )
-
-    class TrackSelectorAdapter(
-        private val items: List<Track>
-    ) : RecyclerView.Adapter<TrackSelectorAdapter.TrackSelectorViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackSelectorViewHolder {
-            return TrackSelectorViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
-            )
-        }
-
-        override fun onBindViewHolder(holder: TrackSelectorViewHolder, position: Int) {
-            holder.bind(items[position])
-        }
-
-        override fun getItemCount(): Int = items.size
-
-        class TrackSelectorViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-            fun bind(item: Track) {
-                view.findViewById<TextView>(R.id.track_name).text = String.format(
-                    view.resources.getString(R.string.track_selection),
-                    item.language,
-                    item.title,
-                    item.codec
-                )
-                if (item.selected) view.requestFocus()
-            }
-        }
     }
 }
