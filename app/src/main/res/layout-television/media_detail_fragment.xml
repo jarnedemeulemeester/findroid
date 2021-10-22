@@ -35,15 +35,28 @@
                 android:layout_height="wrap_content"
                 >
 
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/transparent_circle_background"
+                    android:contentDescription="@string/player_controls_exit"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_arrow_left"
+                    android:focusable="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginStart="@dimen/horizontal_margin"
-                    android:layout_marginTop="@dimen/vertical_margin"
+                    android:layout_marginTop="8dp"
+                    android:paddingBottom="16dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/back_button"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Alita: Battle Angel"
                     />

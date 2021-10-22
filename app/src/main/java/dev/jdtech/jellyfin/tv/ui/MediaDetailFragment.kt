@@ -148,6 +148,8 @@ internal class MediaDetailFragment : Fragment() {
                 setOnClickListener { viewModel.markAsFavorite(args.itemId) }
             }
         }
+
+        binding.backButton.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 
     private fun playTrailer(url: String) {
