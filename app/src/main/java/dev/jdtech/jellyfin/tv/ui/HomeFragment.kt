@@ -73,11 +73,7 @@ internal class HomeFragment : BrowseSupportFragment() {
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToMediaDetailFragment(
-                if (item.type == "Movie" || item.type == "Episode") {
-                    item.id
-                } else {
-                    item.seriesId!!
-                },
+                item.id,
                 item.seriesName ?: item.name,
                 item.type ?: "Unknown"
             )
