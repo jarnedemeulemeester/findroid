@@ -34,7 +34,7 @@ internal class MainActivityTv : FragmentActivity() {
         viewModel.doneLoading.observe(this, {
             if (it) {
                 if (navController.currentDestination!!.id == R.id.initializingFragment) {
-                    navController.navigate(R.id.homeFragment)
+                    navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
                 }
             }
         })
