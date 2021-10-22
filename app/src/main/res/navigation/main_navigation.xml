@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/initializingFragment">
+    app:startDestination="@+id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -34,6 +34,11 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_addServerFragment"
+            app:destination="@id/addServerFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -219,23 +224,7 @@
         <action
             android:id="@+id/action_loginFragment2_to_navigation_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/initializingFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/initializingFragment"
-        android:name="dev.jdtech.jellyfin.fragments.InitializingFragment"
-        android:label="@string/initializing"
-        tools:layout="@layout/fragment_initializing">
-        <action
-            android:id="@+id/action_initializingFragment_to_navigation_home"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/initializingFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_initializingFragment_to_addServerFragment3"
-            app:destination="@id/addServerFragment"
-            app:popUpTo="@id/initializingFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

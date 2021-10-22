@@ -58,7 +58,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:seasonPoster="@{seasonId}"
-                app:shapeAppearanceOverlay="@style/roundedImageView" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
             <TextView
                 android:id="@+id/series_name"
