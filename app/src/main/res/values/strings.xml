@@ -70,4 +70,5 @@
     <string name="player_controls_pause">Pause</string>
     <string name="player_controls_skip">Skip</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="add_server_empty_error">Empty server address</string>
 </resources>

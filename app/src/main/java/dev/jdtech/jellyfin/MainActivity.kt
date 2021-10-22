@@ -3,13 +3,13 @@ package dev.jdtech.jellyfin
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
 import dev.jdtech.jellyfin.fragments.InitializingFragmentDirections
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment3())
+                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
             }
         })

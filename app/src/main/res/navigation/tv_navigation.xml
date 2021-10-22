@@ -51,8 +51,30 @@
             app:popUpTo="@id/initializingFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_initializingFragment_to_addServerFragment3"
-            app:destination="@id/addServerFragment"
+            android:id="@+id/action_initializingFragment_to_addServerFragment"
+            app:destination="@id/addServerTvFragment"
+            app:popUpTo="@id/initializingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addServerTvFragment"
+        android:name="dev.jdtech.jellyfin.tv.ui.TvAddServerFragment"
+        android:label="@string/add_server"
+        tools:layout="@layout/fragment_add_server">
+        <action
+            android:id="@+id/action_addServerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dev.jdtech.jellyfin.tv.ui.TvLoginFragment"
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_navigation_home"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/initializingFragment"
             app:popUpToInclusive="true" />
     </fragment>

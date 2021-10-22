@@ -26,7 +26,7 @@ internal class MainActivityTv : FragmentActivity() {
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment3())
+                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
             }
         })
