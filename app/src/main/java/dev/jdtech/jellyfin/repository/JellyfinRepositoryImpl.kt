@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.repository
 
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.*
@@ -29,17 +30,18 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         parentId: UUID?,
         includeTypes: List<String>?,
         recursive: Boolean,
-        sortBy: String,
+        sortBy: SortBy,
         sortOrder: SortOrder
     ): List<BaseItemDto> {
         val items: List<BaseItemDto>
+        Timber.d("$sortBy $sortOrder")
         withContext(Dispatchers.IO) {
             items = jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
                 parentId = parentId,
                 includeItemTypes = includeTypes,
                 recursive = recursive,
-                sortBy = listOf(sortBy),
+                sortBy = listOf(sortBy.SortString),
                 sortOrder = listOf(sortOrder)
             ).content.items ?: listOf()
         }
