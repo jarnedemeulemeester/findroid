@@ -28,7 +28,9 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getItems(
         parentId: UUID?,
         includeTypes: List<String>?,
-        recursive: Boolean
+        recursive: Boolean,
+        sortBy: String,
+        sortOrder: SortOrder
     ): List<BaseItemDto> {
         val items: List<BaseItemDto>
         withContext(Dispatchers.IO) {
@@ -36,7 +38,9 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.userId!!,
                 parentId = parentId,
                 includeItemTypes = includeTypes,
-                recursive = recursive
+                recursive = recursive,
+                sortBy = listOf(sortBy),
+                sortOrder = listOf(sortOrder)
             ).content.items ?: listOf()
         }
         return items

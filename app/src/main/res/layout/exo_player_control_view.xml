@@ -64,7 +64,8 @@
                 android:background="@drawable/transparent_circle_background"
                 android:contentDescription="@string/select_audio_track"
                 android:padding="16dp"
-                android:src="@drawable/ic_speaker" />
+                android:src="@drawable/ic_speaker"
+                app:tint="@color/white" />
 
             <Space
                 android:layout_width="16dp"
@@ -78,7 +79,8 @@
                 android:background="@drawable/transparent_circle_background"
                 android:contentDescription="@string/select_subtile_track"
                 android:padding="16dp"
-                android:src="@drawable/ic_closed_caption" />
+                android:src="@drawable/ic_closed_caption"
+                app:tint="@color/white" />
 
         </LinearLayout>
 
@@ -198,7 +200,7 @@
             android:id="@+id/exo_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:played_color="@color/primary" />
+            app:played_color="?attr/colorPrimary" />
 
     </LinearLayout>
 

@@ -16,7 +16,7 @@
         android:banner="@null"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Jellyfin"
+        android:theme="@style/Theme.Findroid"
         android:usesCleartextTraffic="true">
 
         <activity
@@ -30,7 +30,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.JellyfinSplashScreen"
+            android:theme="@style/Theme.FindroidSplashScreen"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter>
