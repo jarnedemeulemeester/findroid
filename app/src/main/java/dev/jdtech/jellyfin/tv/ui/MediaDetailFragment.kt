@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.adapters.PersonListAdapter
+import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.MediaDetailFragmentBinding
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -53,17 +55,40 @@ internal class MediaDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.viewModel = viewModel
         binding.item = detailViewModel.transformData(viewModel.item, resources) {
             bindActions(it)
             bindState(it)
         }
+
+        val seasonsAdapter = ViewItemListAdapter(
+            fixedWidth = true,
+            onClickListener = ViewItemListAdapter.OnClickListener {})
+
+        viewModel.seasons.observe(viewLifecycleOwner) {
+            seasonsAdapter.submitList(it)
+            binding.seasonTitle.isVisible = true
+        }
+
+        binding.seasonsRow.gridView.adapter = seasonsAdapter
+        binding.seasonsRow.gridView.verticalSpacing = 25
+
+        val castAdapter = PersonListAdapter()
+
+        viewModel.actors.observe(viewLifecycleOwner) {
+            castAdapter.submitList(it)
+            binding.castTitle.isVisible = true
+        }
+
+        binding.castRow.gridView.adapter = castAdapter
+        binding.castRow.gridView.verticalSpacing = 25
     }
 
     private fun bindState(state: MediaDetailViewModel.State) {
         detailViewModel.resumableItems()
 
         playerViewModel.playerItems().observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(state)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(state)
             }
