@@ -56,11 +56,25 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="app_info">App info</string>
     <string name="unknown_error">Unknown error</string>
-  	<string name="search_hint">Search movies, shows, episodes...</string>
+  	<string name="search_hint">Search movies, shows, episodes…</string>
     <string name="select_audio_track">Select audio track</string>
     <string name="select_subtile_track">Select subtitle track</string>
     <string name="mpv_player">MPV Player</string>
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_order">Sort order</string>
+    <string-array name="sort_by_options">
+        <item>Name</item>
+        <item>IMDB Rating</item>
+        <item>Parental Rating</item>
+        <item>Date Added</item>
+        <item>Date Played</item>
+        <item>Release Date</item>
+    </string-array>
+    <string-array name="sort_order_options">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
 </resources>
