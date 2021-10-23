@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
@@ -25,7 +26,7 @@ class TrackSelectionDialogFragment(
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
-                    builder.setTitle("Select audio track")
+                    builder.setTitle(getString(R.string.select_audio_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
                             viewModel.currentAudioTracks.indexOfFirst { it.selected }) { dialog, which ->
@@ -48,7 +49,7 @@ class TrackSelectionDialogFragment(
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
-                    builder.setTitle("Select subtitle track")
+                    builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
                             viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { dialog, which ->
@@ -62,13 +63,7 @@ class TrackSelectionDialogFragment(
                 } ?: throw IllegalStateException("Activity cannot be null")
             }
             else -> {
-                trackNames = listOf()
-                return activity?.let {
-                    val builder = MaterialAlertDialogBuilder(it)
-                    builder.setTitle("Select ? track")
-                        .setMessage("Unknown track type")
-                    builder.create()
-                } ?: throw IllegalStateException("Activity cannot be null")
+                throw IllegalStateException("TrackType must be AUDIO or SUBTITLE")
             }
         }
     }

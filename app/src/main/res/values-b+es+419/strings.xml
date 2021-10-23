@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Findroid</string>
     <string name="app_description">Aplicación nativa de terceros para Jellyfin</string>
     <string name="jellyfin_banner">Emblema Jellyfin</string>
     <string name="add_server">Agregar servidor</string>
@@ -55,7 +54,7 @@
     <string name="privacy_policy">Política de privacidad</string>
     <string name="app_info">Información de la App</string>
     <string name="unknown_error">Error desconocido</string>
-	<string name="search_hint">Buscar películas, series, episodios...</string>
+	<string name="search_hint">Buscar películas, series, episodios…</string>
     <string name="latest_library">Reciente en %1$s</string>
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor MPV parar reproducir contenidos. MPV soporta mas codecs de video, audio y subtitulos.</string>

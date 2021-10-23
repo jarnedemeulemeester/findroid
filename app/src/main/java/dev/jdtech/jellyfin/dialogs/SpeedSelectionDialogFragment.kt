@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
 
@@ -14,10 +15,9 @@ class SpeedSelectionDialogFragment(
         val speedTexts = listOf("0.5x", "0.75x", "1x", "1.25x", "1.5x", "1.75x", "2x")
         val speedNumbers = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
 
-
         return activity?.let { activity ->
             val builder = MaterialAlertDialogBuilder(activity)
-            builder.setTitle("Select playback speed")
+            builder.setTitle(getString(R.string.select_playback_speed))
                 .setSingleChoiceItems(
                     speedTexts.toTypedArray(),
                     speedNumbers.indexOf(viewModel.playbackSpeed)

@@ -40,7 +40,7 @@ class SortDialogFragment(
                     val sortByOptions = resources.getStringArray(R.array.sort_by_options)
                     val sortByValues = SortBy.values()
                     builder
-                        .setTitle(resources.getString(R.string.sort_by))
+                        .setTitle(getString(R.string.sort_by))
                         .setSingleChoiceItems(
                             sortByOptions, currentSortBy.ordinal
                         ) { dialog, which ->
@@ -59,7 +59,7 @@ class SortDialogFragment(
                     val sortOrderValues = SortOrder.values()
 
                     builder
-                        .setTitle(resources.getString(R.string.sort_order))
+                        .setTitle(getString(R.string.sort_order))
                         .setSingleChoiceItems(
                             sortByOptions, currentSortOrder.ordinal
                         ) { dialog, which ->
