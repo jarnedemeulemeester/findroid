@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import java.lang.IllegalStateException
 
@@ -14,7 +15,7 @@ class VideoVersionDialogFragment(
         val items = viewModel.item.value?.mediaSources?.map { it.name }
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
-            builder.setTitle("Select a version")
+            builder.setTitle(getString(R.string.select_a_version))
                 .setItems(items?.toTypedArray()) { _, which ->
                     viewModel.preparePlayerItems(which)
                 }

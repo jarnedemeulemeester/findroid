@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Findroid</string>
     <string name="app_description">Aplicación nativa de terceros para Jellyfin</string>
     <string name="jellyfin_banner">Emblema Jellyfin</string>
     <string name="add_server">Agregar servidor</string>
@@ -33,10 +32,10 @@
     <string name="favorite_button_description">Favorito</string>
     <string name="episode_watched_indicator">Indicador de episodio visto</string>
     <string name="episode_name">%1$d. %2$s</string>
-    <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
+    <string name="episode_name_extended">T%1$d:E%2$d - %3$s</string>
     <string name="next_up">Siguiente</string>
     <string name="continue_watching">Continar viendo</string>
-    <string name="latest_library">Últimos %1$s</string>
+    <string name="latest_library">Reciente en %1$s</string>
     <string name="series_poster">Poster serie</string>
     <string name="no_favorites">No tienes favoritos</string>
     <string name="search">Buscar</string>
@@ -56,4 +55,11 @@
     <string name="privacy_policy">Política de privacidad</string>
     <string name="app_info">Información de aplicación</string>
     <string name="unknown_error">Error desconocido</string>
+	<string name="search_hint">Buscar películas, series, episodios…</string>
+    <string name="mpv_player">Reproductor MPV</string>
+    <string name="select_audio_track">Elegir pista de audio</string>
+    <string name="select_subtile_track">Elegir pista de subtitulo</string>
+    <string name="mpv_player_summary">Usar el reproductor MPV parar reproducir contenidos. MPV soporta mas codecs de video, audio y subtitulos.</string>
+    <string name="force_software_decoding">Forzar la decodificación por software</string>
+    <string name="force_software_decoding_summary">Deshabilita la decodificación por hardtware y usa solo software. Puede ser útil sí la decodificación por hardware genera artefactos visuales.</string>
 </resources>

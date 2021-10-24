@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.trackselection.MappingTrackSelector
 import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
+import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
@@ -65,12 +66,16 @@ class PlayerActivity : AppCompatActivity() {
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
+        val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
 
         audioButton.isEnabled = false
         audioButton.imageAlpha = 75
 
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
+
+        speedButton.isEnabled = false
+        speedButton.imageAlpha = 75
 
         audioButton.setOnClickListener {
             when (viewModel.player) {
@@ -134,12 +139,21 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        speedButton.setOnClickListener {
+            SpeedSelectionDialogFragment(viewModel).show(
+                supportFragmentManager,
+                "speedselectiondialog"
+            )
+        }
+
         viewModel.fileLoaded.observe(this, {
             if (it) {
                 audioButton.isEnabled = true
                 audioButton.imageAlpha = 255
                 subtitleButton.isEnabled = true
                 subtitleButton.imageAlpha = 255
+                speedButton.isEnabled = true
+                speedButton.imageAlpha = 255
             }
         })
 
