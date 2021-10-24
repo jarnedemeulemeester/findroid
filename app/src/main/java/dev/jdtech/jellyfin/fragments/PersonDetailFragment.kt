@@ -16,6 +16,8 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
+import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -52,7 +54,32 @@ internal class PersonDetailFragment : Fragment() {
             setupOverviewExpansion()
 
             bindItemImage(binding.personImage, data.dto)
-            binding.loadingIndicator.isVisible = false
+        }
+
+        viewModel.finishedLoading.observe(viewLifecycleOwner, {
+            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            if (error != null) {
+                checkIfLoginRequired(error)
+                binding.errorLayout.errorPanel.visibility = View.VISIBLE
+                binding.fragmentContent.visibility = View.GONE
+            } else {
+                binding.errorLayout.errorPanel.visibility = View.GONE
+                binding.fragmentContent.visibility = View.VISIBLE
+            }
+        })
+
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData(args.personId)
+        }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         viewModel.loadData(args.personId)
