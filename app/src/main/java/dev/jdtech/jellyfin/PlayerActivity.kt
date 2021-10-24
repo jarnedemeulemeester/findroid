@@ -20,14 +20,19 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.utils.AudioController
+import dev.jdtech.jellyfin.utils.VerticalSwipeListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
+import kotlin.math.max
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityPlayerBinding
     private val viewModel: PlayerActivityViewModel by viewModels()
     private val args: PlayerActivityArgs by navArgs()
+    private val audioController by lazy { AudioController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +44,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.playerView.player = viewModel.player
 
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
+        setupVolumeControl()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             binding.playerView.findViewById<View>(R.id.player_controls)
@@ -179,12 +185,26 @@ class PlayerActivity : AppCompatActivity() {
         hideSystemUI()
     }
 
+    private fun setupVolumeControl() {
+        val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            windowManager.currentWindowMetrics.bounds.height()
+        } else {
+            windowManager.defaultDisplay.height
+        }
+        binding.playerView.setOnTouchListener(VerticalSwipeListener(
+            onUp = { audioController.volumeUp() },
+            onDown = { audioController.volumeDown() },
+            onTouch = { audioController.showVolumeSlider() },
+            threshold = max(height / 8, 100)
+        ))
+    }
+
     @Suppress("DEPRECATION")
     private fun hideSystemUI() {
         // These methods are deprecated but we still use them because the new WindowInsetsControllerCompat has a bug which makes the action bar reappear
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+            View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
