@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -63,16 +64,16 @@ internal class PersonDetailFragment : Fragment() {
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {
-        binding.readAll.isVisible = binding.overview.isCollapsed()
-
         binding.readAll.setOnClickListener {
             with(binding.overview) {
-                if (maxLines > 5) {
-                    maxLines = 5
+                if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT) {
+                    updateLayoutParams { height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT }
                     binding.readAll.text = getString(R.string.view_all)
+                    binding.overviewGradient.isVisible = true
                 } else {
-                    maxLines = Int.MAX_VALUE
+                    updateLayoutParams { height = ConstraintLayout.LayoutParams.WRAP_CONTENT }
                     binding.readAll.text = getString(R.string.hide)
+                    binding.overviewGradient.isVisible = false
                 }
             }
 
@@ -88,6 +89,4 @@ internal class PersonDetailFragment : Fragment() {
             )
         )
     }
-
-    private fun TextView.isCollapsed(): Boolean = layout.getEllipsisCount(layout.lineCount - 1) > 0
 }

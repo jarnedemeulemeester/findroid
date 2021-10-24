@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.ContentType.MOVIE
 import dev.jdtech.jellyfin.models.ContentType.TVSHOW
-import dev.jdtech.jellyfin.models.contentType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.contentType
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
