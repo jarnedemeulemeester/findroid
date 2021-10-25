@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -46,10 +47,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-        playerViewModel.playerItems().observe(viewLifecycleOwner) { state ->
-            when(state) {
-                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(state)
-                is PlayerViewModel.PlayerItems -> bindPlayerItems(state)
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
         }
 

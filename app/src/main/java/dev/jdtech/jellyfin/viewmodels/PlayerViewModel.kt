@@ -1,12 +1,14 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
@@ -19,9 +21,11 @@ class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository
 ) : ViewModel() {
 
-    private val playerItems = MutableLiveData<PlayerItemState>()
+    private val playerItems = MutableSharedFlow<PlayerItemState>(replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    fun playerItems(): LiveData<PlayerItemState> = playerItems
+    fun onPlaybackRequested(scope: LifecycleCoroutineScope, collector: (PlayerItemState) -> Unit) {
+        scope.launch { playerItems.collect { collector(it) } }
+    }
 
     fun loadPlayerItems(
         item: BaseItemDto,
@@ -42,7 +46,7 @@ class PlayerViewModel @Inject internal constructor(
                 PlayerItemError(e.message.orEmpty())
             }
 
-            playerItems.postValue(items)
+            playerItems.tryEmit(items)
         }
     }
 

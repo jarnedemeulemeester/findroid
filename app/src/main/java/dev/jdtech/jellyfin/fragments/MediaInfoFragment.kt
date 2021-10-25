@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,7 +88,7 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
-        playerViewModel.playerItems().observe(viewLifecycleOwner) { playerItems ->
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
             when (playerItems) {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
