@@ -4,14 +4,10 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,14 +46,6 @@ internal class MediaDetailViewModel @Inject internal constructor(
                     )
                 }
             ).also(transformed)
-        }
-    }
-
-    fun resumableItems() {
-        viewModelScope.launch(Dispatchers.IO) {
-            jellyfinRepository
-                .getResumeItems()
-                .map { Timber.d(it.episodeTitle) }
         }
     }
 

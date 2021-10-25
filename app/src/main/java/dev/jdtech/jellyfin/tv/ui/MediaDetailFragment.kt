@@ -85,8 +85,6 @@ internal class MediaDetailFragment : Fragment() {
     }
 
     private fun bindState(state: MediaDetailViewModel.State) {
-        detailViewModel.resumableItems()
-
         playerViewModel.playerItems().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(state)
