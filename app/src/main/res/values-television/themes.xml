@@ -1,14 +1,10 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.Jellyfin.Tv" parent="Theme.AppCompat.Leanback">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_variant</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryVariant">@color/secondary_variant</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorPrimary">@color/blue_600</item>
+        <item name="colorPrimaryVariant">@color/blue_800</item>
+        <item name="colorSecondary">@color/green_500</item>
+        <item name="colorSecondaryVariant">@color/green_800</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/neutral_900</item>
         <!-- Customize your theme here. -->
@@ -22,7 +18,6 @@
     <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="windowSplashScreenBackground">@color/neutral_100</item>
-        <item name="postSplashScreenTheme">@style/Theme.Jellyfin</item>
     </style>
 
     <string-array name="themes">

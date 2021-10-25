@@ -157,15 +157,6 @@
             android:id="@+id/action_episodeBottomSheetFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
     </dialog>
-    <activity
-        android:id="@+id/playerActivity"
-        android:name="dev.jdtech.jellyfin.PlayerActivity"
-        android:label="activity_player"
-        tools:layout="@layout/activity_player">
-        <argument
-            android:name="items"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
-    </activity>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"

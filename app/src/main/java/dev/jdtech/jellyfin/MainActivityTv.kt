@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainTvBinding
-import dev.jdtech.jellyfin.fragments.InitializingFragmentDirections
+import dev.jdtech.jellyfin.tv.ui.HomeFragmentDirections
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
@@ -26,16 +26,8 @@ internal class MainActivityTv : FragmentActivity() {
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment())
+                navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
-            }
-        })
-
-        viewModel.doneLoading.observe(this, {
-            if (it) {
-                if (navController.currentDestination!!.id == R.id.initializingFragment) {
-                    navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
-                }
             }
         })
     }

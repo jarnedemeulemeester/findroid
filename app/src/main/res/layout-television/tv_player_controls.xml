@@ -74,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:focusable="true"
-        app:played_color="@color/primary"
+        app:played_color="?colorPrimary"
         />
 
     <ImageButton
@@ -95,15 +95,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/tv_controls_margin_start"
-        android:background="@drawable/circle_background"
-        android:backgroundTint="@color/white"
+        android:background="@drawable/transparent_circle_background"
         android:contentDescription="@string/play_button_description"
         android:padding="@dimen/tv_controls_padding"
-        android:src="@drawable/ic_play"
+        android:src="@drawable/ic_pause"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/exo_rew"
-        app:tint="@color/black"
         android:focusedByDefault="true"
         />
 

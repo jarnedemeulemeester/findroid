@@ -75,7 +75,7 @@
 
             <Button
                 android:id="@+id/button_connect"
-                style="@style/setup_button"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:drawableStart="@drawable/ic_launcher_foreground"
                 android:text="@string/button_connect"
