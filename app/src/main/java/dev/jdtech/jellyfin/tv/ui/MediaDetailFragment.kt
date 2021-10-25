@@ -75,9 +75,9 @@ internal class MediaDetailFragment : Fragment() {
 
         val castAdapter = PersonListAdapter()
 
-        viewModel.actors.observe(viewLifecycleOwner) {
-            castAdapter.submitList(it)
-            binding.castTitle.isVisible = true
+        viewModel.actors.observe(viewLifecycleOwner) { cast ->
+            castAdapter.submitList(cast)
+            binding.castTitle.isVisible = cast.isNotEmpty()
         }
 
         binding.castRow.gridView.adapter = castAdapter
