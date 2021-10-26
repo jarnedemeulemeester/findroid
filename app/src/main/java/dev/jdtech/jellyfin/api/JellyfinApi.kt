@@ -1,11 +1,26 @@
 package dev.jdtech.jellyfin.api
 
 import android.content.Context
+import android.os.Build
+import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.BuildConfig
-import org.jellyfin.sdk.api.client.extensions.*
-import org.jellyfin.sdk.createJellyfin
+import org.jellyfin.sdk.Jellyfin
+import org.jellyfin.sdk.JellyfinOptions
+import org.jellyfin.sdk.api.client.KtorClient
+import org.jellyfin.sdk.api.client.extensions.itemsApi
+import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
+import org.jellyfin.sdk.api.client.extensions.playStateApi
+import org.jellyfin.sdk.api.client.extensions.sessionApi
+import org.jellyfin.sdk.api.client.extensions.systemApi
+import org.jellyfin.sdk.api.client.extensions.tvShowsApi
+import org.jellyfin.sdk.api.client.extensions.userApi
+import org.jellyfin.sdk.api.client.extensions.userLibraryApi
+import org.jellyfin.sdk.api.client.extensions.userViewsApi
+import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.model.ClientInfo
-import java.util.*
+import org.jellyfin.sdk.model.DeviceInfo
+import org.jellyfin.sdk.util.ApiClientFactory
+import java.util.UUID
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
@@ -15,11 +30,20 @@ import java.util.*
  * @constructor Creates a new [JellyfinApi] instance
  */
 class JellyfinApi(androidContext: Context, baseUrl: String) {
-    val jellyfin = createJellyfin {
-        clientInfo =
-            ClientInfo(name = androidContext.applicationInfo.loadLabel(androidContext.packageManager).toString(), version = BuildConfig.VERSION_NAME)
-        context = androidContext
-    }
+
+    val jellyfin = Jellyfin(
+        JellyfinOptions(
+            context = androidContext,
+            clientInfo = ClientInfo(
+                name = androidContext.applicationInfo.loadLabel(androidContext.packageManager)
+                    .toString(),
+                version = BuildConfig.VERSION_NAME
+            ),
+            deviceInfo = DeviceInfo(UUID.randomUUID().toString(), deviceName(androidContext)),
+            apiClientFactory = ApiClientFactory(::KtorClient)
+        )
+    )
+
     val api = jellyfin.createApi(baseUrl = baseUrl)
     var userId: UUID? = null
 
@@ -33,6 +57,10 @@ class JellyfinApi(androidContext: Context, baseUrl: String) {
     val videosApi = api.videosApi
     val mediaInfoApi = api.mediaInfoApi
     val playStateApi = api.playStateApi
+
+    private fun deviceName(context: Context) = PreferenceManager
+        .getDefaultSharedPreferences(context)
+        .getString("device_name", null) ?: Build.MODEL
 
     companion object {
         @Volatile

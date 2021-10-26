@@ -55,6 +55,13 @@
             app:summary="@string/force_software_decoding_summary"/>
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_category_device">
+        <EditTextPreference
+            app:key="device_name"
+            app:title="@string/custom_device_name_title"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/about">
 
         <Preference
