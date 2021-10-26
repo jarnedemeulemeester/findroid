@@ -23,9 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
     application: Application,
@@ -40,7 +38,6 @@ class HomeViewModel @Inject internal constructor(
     )
 
     init {
-        Timber.d("xxxxxx init")
         loadData(updateCapabilities = true)
     }
 
