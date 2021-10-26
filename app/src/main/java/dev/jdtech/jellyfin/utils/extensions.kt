@@ -19,6 +19,7 @@ fun BaseItemDto.toView(): View {
 fun BaseItemDto.contentType() = when (type) {
     "Movie" -> ContentType.MOVIE
     "Series" -> ContentType.TVSHOW
+    "Episode" -> ContentType.EPISODE
     else -> ContentType.UNKNOWN
 }
 
