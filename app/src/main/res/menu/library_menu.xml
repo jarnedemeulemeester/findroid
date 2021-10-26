@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--Icon is currently not used but maybe in the future?-->
+    <item
+        android:id="@+id/action_sort_by"
+        android:title="@string/sort_by"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/action_sort_order"
+        android:title="@string/sort_order"
+        app:showAsAction="collapseActionView" />
+</menu>

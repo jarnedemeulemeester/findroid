@@ -1,5 +1,8 @@
 package dev.jdtech.jellyfin.repository
 
+
+import dev.jdtech.jellyfin.models.ContentType
+import dev.jdtech.jellyfin.utils.SortBy
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaSourceInfo
@@ -15,8 +18,14 @@ interface JellyfinRepository {
         parentId: UUID? = null,
         includeTypes: List<String>? = null,
         recursive: Boolean = false,
-        sortBy: String = "SortName",
+        sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
+    ): List<BaseItemDto>
+
+    suspend fun getPersonItems(
+        personIds: List<UUID>,
+        includeTypes: List<ContentType>? = null,
+        recursive: Boolean = true
     ): List<BaseItemDto>
 
     suspend fun getFavoriteItems(): List<BaseItemDto>

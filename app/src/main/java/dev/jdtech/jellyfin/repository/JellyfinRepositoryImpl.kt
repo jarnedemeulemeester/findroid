@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.repository
 
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.ContentType
+import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.*
@@ -12,7 +14,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         val views: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             views =
-                jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items ?: listOf()
+                jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items ?: emptyList()
         }
         return views
     }
@@ -29,19 +31,37 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         parentId: UUID?,
         includeTypes: List<String>?,
         recursive: Boolean,
-        sortBy: String,
+        sortBy: SortBy,
         sortOrder: SortOrder
     ): List<BaseItemDto> {
         val items: List<BaseItemDto>
+        Timber.d("$sortBy $sortOrder")
         withContext(Dispatchers.IO) {
             items = jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
                 parentId = parentId,
                 includeItemTypes = includeTypes,
                 recursive = recursive,
-                sortBy = listOf(sortBy),
+                sortBy = listOf(sortBy.SortString),
                 sortOrder = listOf(sortOrder)
-            ).content.items ?: listOf()
+            ).content.items ?: emptyList()
+        }
+        return items
+    }
+
+    override suspend fun getPersonItems(
+        personIds: List<UUID>,
+        includeTypes: List<ContentType>?,
+        recursive: Boolean
+    ): List<BaseItemDto> {
+        val items: List<BaseItemDto>
+        withContext(Dispatchers.IO) {
+            items = jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+                personIds = personIds,
+                includeItemTypes = includeTypes?.map { it.type },
+                recursive = recursive
+            ).content.items ?: emptyList()
         }
         return items
     }
@@ -54,7 +74,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 filters = listOf(ItemFilter.IS_FAVORITE),
                 includeItemTypes = listOf("Movie", "Series", "Episode"),
                 recursive = true
-            ).content.items ?: listOf()
+            ).content.items ?: emptyList()
         }
         return items
     }
@@ -67,7 +87,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 searchTerm = searchQuery,
                 includeItemTypes = listOf("Movie", "Series", "Episode"),
                 recursive = true
-            ).content.items ?: listOf()
+            ).content.items ?: emptyList()
         }
         return items
     }
@@ -79,7 +99,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.itemsApi.getResumeItems(
                     jellyfinApi.userId!!,
                     includeItemTypes = listOf("Movie", "Episode"),
-                ).content.items ?: listOf()
+                ).content.items ?: emptyList()
         }
         return items
     }
@@ -99,7 +119,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         val seasons: List<BaseItemDto>
         withContext(Dispatchers.IO) {
             seasons = jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
-                ?: listOf()
+                ?: emptyList()
         }
         return seasons
     }
@@ -110,7 +130,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             nextUpItems = jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
                 seriesId = seriesId?.toString(),
-            ).content.items ?: listOf()
+            ).content.items ?: emptyList()
         }
         return nextUpItems
     }
@@ -129,7 +149,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 seasonId = seasonId,
                 fields = fields,
                 startItemId = startItemId
-            ).content.items ?: listOf()
+            ).content.items ?: emptyList()
         }
         return episodes
     }
@@ -143,15 +163,15 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                     name = "Direct play all",
                     maxStaticBitrate = 1_000_000_000,
                     maxStreamingBitrate = 1_000_000_000,
-                    codecProfiles = listOf(),
-                    containerProfiles = listOf(),
+                    codecProfiles = emptyList(),
+                    containerProfiles = emptyList(),
                     directPlayProfiles = listOf(
                         DirectPlayProfile(
                             type = DlnaProfileType.VIDEO
                         ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
                     ),
-                    transcodingProfiles = listOf(),
-                    responseProfiles = listOf(),
+                    transcodingProfiles = emptyList(),
+                    responseProfiles = emptyList(),
                     enableAlbumArtInDidl = false,
                     enableMsMediaReceiverRegistrar = false,
                     enableSingleAlbumArtLimit = false,
@@ -169,7 +189,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 maxStreamingBitrate = 1_000_000_000,
             )
         )
-        mediaSourceInfoList = mediaInfo.mediaSources ?: listOf()
+        mediaSourceInfoList = mediaInfo.mediaSources ?: emptyList()
         return mediaSourceInfoList
     }
 
@@ -276,7 +296,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         withContext(Dispatchers.IO) {
             intros =
                 jellyfinApi.userLibraryApi.getIntros(jellyfinApi.userId!!, itemId).content.items
-                    ?: listOf()
+                    ?: emptyList()
         }
         return intros
     }

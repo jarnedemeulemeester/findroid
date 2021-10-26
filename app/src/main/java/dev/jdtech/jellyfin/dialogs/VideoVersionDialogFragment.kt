@@ -7,6 +7,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import java.lang.IllegalStateException
 
 class VideoVersionDialogFragment(
     private val item: BaseItemDto,
@@ -17,7 +19,7 @@ class VideoVersionDialogFragment(
         val items = item.mediaSources?.map { it.name }?.toTypedArray()
         return activity?.let { activity ->
             MaterialAlertDialogBuilder(activity)
-                .setTitle(R.string.select_video_version_title)
+                .setTitle(R.string.select_a_version)
                 .setItems(items) { _, which ->
                     viewModel.loadPlayerItems(item, which)
                 }.create()

@@ -54,6 +54,8 @@ constructor(
     private var currentWindow = 0
     private var playbackPosition: Long = 0
 
+    var playbackSpeed: Float = 1f
+
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
@@ -228,5 +230,10 @@ constructor(
         if (player is MPVPlayer) {
             player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
         }
+    }
+
+    fun selectSpeed(speed: Float) {
+        player.setPlaybackSpeed(speed)
+        playbackSpeed = speed
     }
 }
