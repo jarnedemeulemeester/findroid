@@ -13,15 +13,15 @@ class VideoVersionDialogFragment(
     private val item: BaseItemDto,
     private val viewModel: PlayerViewModel
 ) : DialogFragment() {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val items = item.mediaSources?.map { it.name }?.toTypedArray()
-        return activity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
-            builder.setTitle(getString(R.string.select_a_version))
+        return activity?.let { activity ->
+            MaterialAlertDialogBuilder(activity)
+                .setTitle(R.string.select_a_version)
                 .setItems(items) { _, which ->
                     viewModel.loadPlayerItems(item, which)
-                }
-            builder.create()
+                }.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

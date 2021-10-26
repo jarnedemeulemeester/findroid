@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.models.ContentType.MOVIE
 import org.jellyfin.sdk.model.api.BaseItemDto
 import javax.inject.Inject
 
@@ -32,7 +33,7 @@ internal class MediaDetailViewModel @Inject internal constructor() : ViewModel()
                 trailerUrl = baseItemDto.remoteTrailers?.firstOrNull()?.url,
                 isPlayed = baseItemDto.userData?.played == true,
                 isFavorite = baseItemDto.userData?.isFavorite == true,
-                media = if (baseItemDto.type == "Movie") {
+                media = if (baseItemDto.type == MOVIE.type) {
                     State.Movie(
                         title = baseItemDto.name.orEmpty()
                     )

@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +25,9 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.serializer.toUUID
 import timber.log.Timber
+import java.util.UUID
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -87,7 +91,7 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
-        playerViewModel.playerItems().observe(viewLifecycleOwner) { playerItems ->
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
             when (playerItems) {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
@@ -129,11 +133,19 @@ class MediaInfoFragment : Fragment() {
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { season ->
                 navigateToSeasonFragment(season)
             }, fixedWidth = true)
-        binding.peopleRecyclerView.adapter = PersonListAdapter()
+        binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
+            val uuid = person.id?.toUUID()
+            if (uuid != null) {
+                navigateToPersonDetail(uuid)
+            } else {
+                Toast.makeText(requireContext(), R.string.error_getting_person_id, Toast.LENGTH_SHORT).show()
+            }
+        }
 
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
+
             viewModel.item.value?.let { item ->
                 playerViewModel.loadPlayerItems(item) {
                     VideoVersionDialogFragment(item, playerViewModel).show(
@@ -214,6 +226,12 @@ class MediaInfoFragment : Fragment() {
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
                 playerItems
             )
+        )
+    }
+
+    private fun navigateToPersonDetail(personId: UUID) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToPersonDetailFragment(personId)
         )
     }
 }

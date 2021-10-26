@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,8 @@ import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.Movie
 import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.TvShow
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel.PlayerItemError
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel.PlayerItems
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -73,7 +77,9 @@ internal class MediaDetailFragment : Fragment() {
         binding.seasonsRow.gridView.adapter = seasonsAdapter
         binding.seasonsRow.gridView.verticalSpacing = 25
 
-        val castAdapter = PersonListAdapter()
+        val castAdapter = PersonListAdapter { person ->
+            Toast.makeText(requireContext(), "Not yet implemented", Toast.LENGTH_SHORT).show()
+        }
 
         viewModel.actors.observe(viewLifecycleOwner) { cast ->
             castAdapter.submitList(cast)
@@ -85,10 +91,10 @@ internal class MediaDetailFragment : Fragment() {
     }
 
     private fun bindState(state: MediaDetailViewModel.State) {
-        playerViewModel.playerItems().observe(viewLifecycleOwner) { state ->
+        playerViewModel.onPlaybackRequested(lifecycleScope) { state ->
             when (state) {
-                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(state)
-                is PlayerViewModel.PlayerItems -> bindPlayerItems(state)
+                is PlayerItemError -> bindPlayerItemsError(state)
+                is PlayerItems -> bindPlayerItems(state)
             }
         }
 
@@ -102,7 +108,7 @@ internal class MediaDetailFragment : Fragment() {
         }
     }
 
-    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+    private fun bindPlayerItems(items: PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
@@ -113,7 +119,7 @@ internal class MediaDetailFragment : Fragment() {
         binding.progressCircular.visibility = View.INVISIBLE
     }
 
-    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+    private fun bindPlayerItemsError(error: PlayerItemError) {
         Timber.e(error.message)
 
         binding.errorLayout.errorPanel.isVisible = true

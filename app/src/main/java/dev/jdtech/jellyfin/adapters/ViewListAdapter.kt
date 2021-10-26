@@ -20,6 +20,7 @@ class ViewListAdapter(
     private val onItemClickListener: ViewItemListAdapter.OnClickListener,
     private val onNextUpClickListener: HomeEpisodeListAdapter.OnClickListener
 ) : ListAdapter<HomeItem, RecyclerView.ViewHolder>(DiffCallback) {
+
     class ViewViewHolder(private var binding: ViewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(

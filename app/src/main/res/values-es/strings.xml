@@ -9,7 +9,6 @@
     <string name="edit_text_password_hint">Contraseña</string>
     <string name="button_connect">Conectar</string>
     <string name="button_login">Acceder</string>
-    <string name="server_icon">Icono del servidor</string>
     <string name="remove_server">Quitar servidor</string>
     <string name="remove_server_dialog_text">¿Está seguro de quitar el servidor %1$s</string>
     <string name="remove">Quitar</string>
