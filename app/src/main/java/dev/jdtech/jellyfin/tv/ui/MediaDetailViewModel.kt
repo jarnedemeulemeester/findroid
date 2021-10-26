@@ -6,14 +6,11 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import javax.inject.Inject
 
 @HiltViewModel
-internal class MediaDetailViewModel @Inject internal constructor(
-    private val jellyfinRepository: JellyfinRepository
-) : ViewModel() {
+internal class MediaDetailViewModel @Inject internal constructor() : ViewModel() {
 
     fun transformData(
         data: LiveData<BaseItemDto>,
