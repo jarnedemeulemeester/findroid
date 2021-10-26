@@ -57,7 +57,7 @@
 
     <PreferenceCategory app:title="@string/settings_category_device">
         <EditTextPreference
-            app:key="device_name"
+            app:key="deviceName"
             app:title="@string/custom_device_name_title"
             app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>

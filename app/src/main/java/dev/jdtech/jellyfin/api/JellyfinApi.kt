@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.BuildConfig
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.JellyfinOptions
 import org.jellyfin.sdk.api.client.KtorClient
+import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
 import org.jellyfin.sdk.api.client.extensions.playStateApi
@@ -47,6 +48,7 @@ class JellyfinApi(androidContext: Context, baseUrl: String) {
     val api = jellyfin.createApi(baseUrl = baseUrl)
     var userId: UUID? = null
 
+    val deviceApi = api.devicesApi
     val systemApi = api.systemApi
     val userApi = api.userApi
     val viewsApi = api.userViewsApi
@@ -60,7 +62,7 @@ class JellyfinApi(androidContext: Context, baseUrl: String) {
 
     private fun deviceName(context: Context) = PreferenceManager
         .getDefaultSharedPreferences(context)
-        .getString("device_name", null) ?: Build.MODEL
+        .getString("deviceName", null) ?: Build.MODEL
 
     companion object {
         @Volatile
