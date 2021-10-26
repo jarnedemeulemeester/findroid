@@ -5,21 +5,24 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import org.jellyfin.sdk.model.api.BaseItemDto
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import java.lang.IllegalStateException
 
 class VideoVersionDialogFragment(
-    private val viewModel: MediaInfoViewModel
+    private val item: BaseItemDto,
+    private val viewModel: PlayerViewModel
 ) : DialogFragment() {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val items = viewModel.item.value?.mediaSources?.map { it.name }
-        return activity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
-            builder.setTitle(getString(R.string.select_a_version))
-                .setItems(items?.toTypedArray()) { _, which ->
-                    viewModel.preparePlayerItems(which)
-                }
-            builder.create()
+        val items = item.mediaSources?.map { it.name }?.toTypedArray()
+        return activity?.let { activity ->
+            MaterialAlertDialogBuilder(activity)
+                .setTitle(R.string.select_a_version)
+                .setItems(items) { _, which ->
+                    viewModel.loadPlayerItems(item, which)
+                }.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
