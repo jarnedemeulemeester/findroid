@@ -15,11 +15,6 @@
         <item name="browseTitleViewLayout">@layout/browse_support_fragment_title_view</item>
     </style>
 
-    <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/neutral_100</item>
-    </style>
-
     <string-array name="themes">
         <item>Follow system</item>
         <item>Light</item>
