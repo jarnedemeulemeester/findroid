@@ -9,7 +9,8 @@
             app:entryValues="@array/languages_values"
             app:key="audio_language"
             app:title="@string/settings_preferred_audio_language"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/ic_speaker"/>
 
         <ListPreference
             app:defaultValue="null"
@@ -17,7 +18,8 @@
             app:entryValues="@array/languages_values"
             app:key="subtitle_language"
             app:title="@string/settings_preferred_subtitle_language"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/ic_closed_caption"/>
 
     </PreferenceCategory>
 
@@ -25,7 +27,8 @@
 
         <Preference
             app:key="switchServer"
-            app:title="@string/manage_servers" />
+            app:title="@string/manage_servers"
+            app:icon="@drawable/ic_server"/>
 
     </PreferenceCategory>
 
@@ -36,7 +39,8 @@
             app:entryValues="@array/themes_value"
             app:key="theme"
             app:title="@string/theme"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/ic_palette"/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Player">

@@ -8,7 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.BasePlayer
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -18,7 +23,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +53,8 @@ constructor(
     var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
+
+    var playbackSpeed: Float = 1f
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
@@ -112,9 +119,8 @@ constructor(
             player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
             player.prepare()
             player.play()
+            pollPosition(player)
         }
-
-        pollPosition(player)
     }
 
     private fun releasePlayer() {
@@ -224,5 +230,10 @@ constructor(
         if (player is MPVPlayer) {
             player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
         }
+    }
+
+    fun selectSpeed(speed: Float) {
+        player.setPlaybackSpeed(speed)
+        playbackSpeed = speed
     }
 }

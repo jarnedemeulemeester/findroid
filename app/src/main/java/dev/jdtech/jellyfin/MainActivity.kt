@@ -12,7 +12,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
-import dev.jdtech.jellyfin.fragments.InitializingFragmentDirections
+import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
@@ -59,16 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment3())
+                navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
-            }
-        })
-
-        viewModel.doneLoading.observe(this, {
-            if (it) {
-                if (navController.currentDestination!!.id == R.id.initializingFragment) {
-                    navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
-                }
             }
         })
     }
