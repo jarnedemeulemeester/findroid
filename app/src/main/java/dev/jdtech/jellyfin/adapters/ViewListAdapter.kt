@@ -51,7 +51,8 @@ class ViewListAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<HomeItem>() {
         override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
-            return oldItem.ids.size == newItem.ids.size && oldItem.ids.containsAll(newItem.ids)
+            return oldItem.ids.size == newItem.ids.size
+                && oldItem.ids.mapIndexed { i, old -> old == newItem.ids[i] }.all { it }
         }
 
         override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
