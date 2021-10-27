@@ -1,6 +1,9 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.SortBy
@@ -8,7 +11,7 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +40,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         val itemType = when (libraryType) {
             "movies" -> "Movie"
             "tvshows" -> "Series"
+            "boxsets" -> "BoxSet"
             else -> null
         }
         viewModelScope.launch {

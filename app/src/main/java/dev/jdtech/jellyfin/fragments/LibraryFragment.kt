@@ -2,23 +2,27 @@ package dev.jdtech.jellyfin.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.utils.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -105,7 +109,11 @@ class LibraryFragment : Fragment() {
 
         binding.itemsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
+                if (args.libraryType == "boxsets") {
+                    navigateToLibraryFragment(item)
+                } else {
+                    navigateToMediaInfoFragment(item)
+                }
             })
 
         // Sorting options
@@ -122,6 +130,16 @@ class LibraryFragment : Fragment() {
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
         findNavController().navigate(
             LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
+                item.id,
+                item.name,
+                item.type ?: "Unknown"
+            )
+        )
+    }
+
+    private fun navigateToLibraryFragment(item: BaseItemDto) {
+        findNavController().navigate(
+            LibraryFragmentDirections.actionLibraryFragmentToLibraryFragment(
                 item.id,
                 item.name,
                 item.type ?: "Unknown"
