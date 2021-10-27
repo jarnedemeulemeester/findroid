@@ -63,20 +63,13 @@ class HomeViewModel @Inject internal constructor(
                 if (updateCapabilities) repository.postCapabilities()
 
                 val updated = loadDynamicItems() + loadViews()
-                if (viewNeedsUpdate(updated)) views.postValue(updated)
+                views.postValue(updated)
             } catch (e: Exception) {
                 Timber.e(e)
                 state.tryEmit(LoadingError(e.toString()))
             }
             state.tryEmit(Loading(inProgress = false))
         }
-    }
-
-    private fun viewNeedsUpdate(newItems: List<HomeItem>): Boolean {
-        return views
-            .value
-            ?.let { (it.containsAll(newItems) == newItems.containsAll(it)).not() }
-            ?: true
     }
 
     private suspend fun loadDynamicItems() = withContext(Dispatchers.IO) {
