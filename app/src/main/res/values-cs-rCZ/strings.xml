@@ -47,6 +47,11 @@
     <string name="settings_category_servers">Servery</string>
     <string name="manage_servers">Spravovat servery</string>
     <string name="settings_category_appearance">Vzhled</string>
+    <string name="settings_category_device">Zařízení</string>
+    <string name="settings_category_use_cache_title">Cachovat obrázky</string>
+    <string name="settings_category_use_cache_summary">Cachování obrázků urychluje načítání obsahu. Projeví se po restartu aplikace.</string>
+    <string name="settings_category_cache_size">Nastavit velikost cache v MB</string>
+    <string name="settings_category_cache_message">Aplikace použije tuto velikost v MB k uložení obrázků z Jellyfin serveru. Větší hodnota může být prospěšná na pomalejším připojení.</string>
     <string name="theme">Téma</string>
     <string name="error_preparing_player_items">Chyba při načítání přehrávání.</string>
     <string name="view_details">Zobrazit detaily</string>
@@ -61,4 +66,6 @@
     <string name="mpv_player_summary">Použít experimentální MPV přehrávač k přehrávání videí. MPV má podporu pro více video a audio kodeků a formátů titulků.</string>
     <string name="force_software_decoding">Vynutit softwarové dekódování</string>
     <string name="force_software_decoding_summary">Vypnout hardwarové dekódování a vynutit softwarové dekódování. Může být užitečné pokud hardwarové dekódování produkuje artefakty.</string>
+    <string name="image_description_poster">%1$s plakát</string>
+    <string name="image_description_backdrop">%1$s pozadí</string>
 </resources>

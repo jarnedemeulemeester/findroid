@@ -47,6 +47,11 @@
     <string name="settings_category_servers">Servers</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_device">Device</string>
+    <string name="settings_category_use_cache_title">Cache images</string>
+    <string name="settings_category_use_cache_summary">Cache images on disk to speed up loading times. Will take effect after app restart.</string>
+    <string name="settings_category_cache_size">Set cache size in MB</string>
+    <string name="settings_category_cache_message">App will use this amount of MB of your disk space to store images from Jellyfin server. Larger values might be beneficial on slower networks.</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
@@ -73,6 +78,9 @@
     <string name="sort_order">Sort order</string>
     <string name="close">Close</string>
     <string name="share">Share</string>
+    <string name="image_description_poster">%1$s poster</string>
+    <string name="image_description_backdrop">%1$s backdrop</string>
+
     <string-array name="sort_by_options">
         <item>Name</item>
         <item>IMDB Rating</item>
