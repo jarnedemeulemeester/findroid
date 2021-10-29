@@ -69,6 +69,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     lateinit var downloadRequestItem: DownloadRequestItem
 
+    lateinit var playerItem: PlayerItem
+
     fun loadData(itemId: UUID, itemType: String) {
         _error.value = null
         viewModelScope.launch {
@@ -96,6 +98,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     }
 
     fun loadData(playerItem: PlayerItem) {
+        this.playerItem = playerItem
         _item.value = downloadMetadataToBaseItemDto(playerItem.metadata!!)
     }
 
@@ -193,7 +196,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     }
 
     fun deleteItem() {
-        deleteDownloadedEpisode(_item.value!!.mediaSources!![0].id!!)
+        deleteDownloadedEpisode(playerItem.mediaSourceUri)
     }
 
     fun doneDownloadMedia() {
