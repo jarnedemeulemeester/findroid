@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.DownloadViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.*
 
 @AndroidEntryPoint
 class DownloadFragment : Fragment() {
@@ -78,10 +79,11 @@ class DownloadFragment : Fragment() {
     private fun navigateToMediaInfoFragment(item: PlayerItem) {
         findNavController().navigate(
             DownloadFragmentDirections.actionDownloadFragmentToMediaInfoFragment(
-                null,
+                UUID.randomUUID(),
                 item.name,
                 item.metadata?.type ?: "Unknown",
-                item
+                item,
+                isOffline = true
             )
         )
     }
@@ -89,8 +91,9 @@ class DownloadFragment : Fragment() {
     private fun navigateToEpisodeBottomSheetFragment(episode: PlayerItem) {
         findNavController().navigate(
             DownloadFragmentDirections.actionDownloadFragmentToEpisodeBottomSheetFragment(
-                null,
-                episode
+                UUID.randomUUID(),
+                episode,
+                isOffline = true
             )
         )
     }

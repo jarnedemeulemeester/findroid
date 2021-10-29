@@ -92,8 +92,8 @@
 
                 <Button
                     android:id="@+id/button_login"
-                    style="@style/setup_button"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/button_login" />
 
                 <ProgressBar

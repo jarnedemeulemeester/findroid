@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Jellyfin"
+        android:theme="@style/Theme.Findroid"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".PlayerActivity"
@@ -20,7 +20,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.JellyfinSplashScreen"
+            android:theme="@style/Theme.FindroidSplashScreen"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

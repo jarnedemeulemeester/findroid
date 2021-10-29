@@ -20,9 +20,9 @@ import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
-import java.util.*
+import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
-
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel
@@ -46,9 +46,6 @@ constructor(
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
-    private val _navigateToPlayer = MutableLiveData<Boolean>()
-    val navigateToPlayer: LiveData<Boolean> = _navigateToPlayer
-
     private val _downloadEpisode = MutableLiveData<Boolean>()
     val downloadEpisode: LiveData<Boolean> = _downloadEpisode
 
@@ -56,8 +53,6 @@ constructor(
 
     lateinit var downloadRequestItem: DownloadRequestItem
 
-    private val _playerItemsError = MutableLiveData<String>()
-    val playerItemsError: LiveData<String> = _playerItemsError
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             try {
@@ -76,61 +71,6 @@ constructor(
     fun loadEpisode(playerItem : PlayerItem){
         playerItems.add(playerItem)
         _item.value = downloadMetadataToBaseItemDto(playerItem.metadata!!)
-    }
-
-    fun preparePlayerItems() {
-        _playerItemsError.value = null
-        viewModelScope.launch {
-            if(playerItems.isEmpty()){
-                try {
-                    createPlayerItems(_item.value!!)
-                    _navigateToPlayer.value = true
-                } catch (e: Exception) {
-                    _playerItemsError.value = e.toString()
-                }
-            }else {
-                _navigateToPlayer.value = true
-            }
-
-        }
-    }
-
-    private suspend fun createPlayerItems(startEpisode: BaseItemDto) {
-        playerItems.clear()
-
-        val playbackPosition = startEpisode.userData?.playbackPositionTicks?.div(10000) ?: 0
-        // Intros
-        var introsCount = 0
-
-        if (playbackPosition <= 0) {
-            val intros = jellyfinRepository.getIntros(startEpisode.id)
-            for (intro in intros) {
-                if (intro.mediaSources.isNullOrEmpty()) continue
-                playerItems.add(PlayerItem(intro.name, intro.id, intro.mediaSources?.get(0)?.id!!, 0))
-                introsCount += 1
-            }
-        }
-
-        val episodes = jellyfinRepository.getEpisodes(
-            startEpisode.seriesId!!,
-            startEpisode.seasonId!!,
-            startItemId = startEpisode.id,
-            fields = listOf(ItemFields.MEDIA_SOURCES)
-        )
-        for (episode in episodes) {
-            if (episode.mediaSources.isNullOrEmpty()) continue
-            if (episode.locationType == LocationType.VIRTUAL) continue
-            playerItems.add(
-                PlayerItem(
-                    episode.name,
-                    episode.id,
-                    episode.mediaSources?.get(0)?.id!!,
-                    playbackPosition
-                )
-            )
-        }
-
-        if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
     }
 
     fun markAsPlayed(itemId: UUID) {
@@ -185,10 +125,6 @@ constructor(
             // TODO: Implement a way to get the year from LocalDateTime in Android < O
             item.premiereDate.toString()
         }
-    }
-
-    fun doneNavigateToPlayer() {
-        _navigateToPlayer.value = false
     }
 
     fun doneDownloadEpisode() {

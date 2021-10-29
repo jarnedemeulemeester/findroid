@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,6 +20,8 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.requestDownload
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -26,6 +30,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: EpisodeBottomSheetBinding
     private val viewModel: EpisodeBottomSheetViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +45,20 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            viewModel.preparePlayerItems()
+            viewModel.item.value?.let {
+                if (!args.isOffline) {
+                    playerViewModel.loadPlayerItems(it)
+                } else {
+                    playerViewModel.loadOfflinePlayerItems(viewModel.playerItems[0])
+                }
+            }
+        }
+
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
         }
 
         viewModel.item.observe(viewLifecycleOwner, { episode ->
@@ -76,22 +94,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.favoriteButton.setImageResource(drawable)
         })
 
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner, {
-            if (it) {
-                navigateToPlayerActivity(
-                    viewModel.playerItems.toTypedArray(),
-                )
-                viewModel.doneNavigateToPlayer()
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            }
-        })
-
         viewModel.downloadEpisode.observe(viewLifecycleOwner, {
             if (it) {
                 requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)
@@ -99,29 +101,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         })
 
-        viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage != null) {
-                binding.playerItemsError.visibility = View.VISIBLE
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            } else {
-                binding.playerItemsError.visibility = View.GONE
-            }
-        })
-
-        binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(
-                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
-            ).show(parentFragmentManager, "errordialog")
-        }
-
-        if(args.episodeId != null){
-            val episodeId: UUID = args.episodeId!!
+        if(!args.isOffline){
+            val episodeId: UUID = args.episodeId
             binding.checkButton.setOnClickListener {
                 when (viewModel.played.value) {
                     true -> viewModel.markAsUnplayed(episodeId)
@@ -159,6 +140,33 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         return binding.root
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.message)
+
+        binding.playerItemsError.isVisible = true
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+        binding.playerItemsErrorDetails.setOnClickListener {
+            ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
+        }
     }
 
     private fun navigateToPlayerActivity(

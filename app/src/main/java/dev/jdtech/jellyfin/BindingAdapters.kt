@@ -13,7 +13,7 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.*
+import java.util.UUID
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -96,6 +96,7 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
         .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
+        .error(R.drawable.person_placeholder)
         .into(imageView)
 
     imageView.contentDescription = "${person.name} poster"
