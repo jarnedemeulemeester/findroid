@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.adapters.HomeItem.ViewItem
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.unsupportedCollections
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
-    application: Application,
+    private val application: Application,
     private val repository: JellyfinRepository
 ) : ViewModel() {
 
@@ -64,6 +65,10 @@ class HomeViewModel @Inject internal constructor(
 
                 val updated = loadDynamicItems() + loadViews()
                 views.postValue(updated)
+
+                withContext(Dispatchers.Default) {
+                    syncPlaybackProgress(repository, application)
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 state.tryEmit(LoadingError(e.toString()))
