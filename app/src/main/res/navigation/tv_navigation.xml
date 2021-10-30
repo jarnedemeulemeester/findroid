@@ -23,7 +23,7 @@
 
         <action
             android:id="@+id/action_homeFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment"
+            app:destination="@id/addServerTvFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
 
