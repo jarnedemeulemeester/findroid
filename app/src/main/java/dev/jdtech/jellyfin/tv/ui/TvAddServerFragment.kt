@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.fragments
+package dev.jdtech.jellyfin.tv.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,31 +9,31 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
+import dev.jdtech.jellyfin.databinding.TvAddServerFragmentBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
 @AndroidEntryPoint
-class AddServerFragment : Fragment() {
+internal class TvAddServerFragment: Fragment() {
 
-    private lateinit var binding: FragmentAddServerBinding
+    private lateinit var binding: TvAddServerFragmentBinding
     private val viewModel: AddServerViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAddServerBinding.inflate(inflater)
-
+        binding = TvAddServerFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         binding.buttonConnect.setOnClickListener {
-            val serverAddress = binding.editTextServerAddress.text.toString()
+            val serverAddress = binding.serverAddress.text.toString()
             if (serverAddress.isNotBlank()) {
                 viewModel.checkServer(serverAddress)
                 binding.progressCircular.visibility = View.VISIBLE
             } else {
-                binding.editTextServerAddressLayout.error = resources.getString(R.string.add_server_empty_error)
+                binding.serverAddress.error = resources.getString(R.string.add_server_empty_error)
             }
         }
 
@@ -45,14 +45,14 @@ class AddServerFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, {
-            binding.editTextServerAddressLayout.error = it
+            binding.serverAddress.error = it
         })
 
         return binding.root
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragment3ToLoginFragment2())
+        findNavController().navigate(TvAddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
         viewModel.onNavigateToLoginDone()
     }
 }

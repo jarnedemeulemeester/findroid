@@ -26,8 +26,8 @@ import dev.jdtech.jellyfin.utils.requestDownload
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 import org.jellyfin.sdk.model.serializer.toUUID
+import timber.log.Timber
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -263,7 +263,7 @@ class MediaInfoFragment : Fragment() {
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
-                playerItems,
+                playerItems
             )
         )
     }
