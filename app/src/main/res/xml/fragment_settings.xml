@@ -43,7 +43,7 @@
             app:icon="@drawable/ic_palette"/>
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Player">
+    <PreferenceCategory app:title="@string/settings_category_player">
         <SwitchPreference
             app:key="mpv_player"
             app:title="@string/mpv_player"
