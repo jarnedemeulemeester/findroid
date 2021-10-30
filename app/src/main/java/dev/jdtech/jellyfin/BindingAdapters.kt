@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
+import dev.jdtech.jellyfin.adapters.DownloadsListAdapter
 import dev.jdtech.jellyfin.adapters.EpisodeItem
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
@@ -18,6 +19,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.DownloadSection
 import dev.jdtech.jellyfin.models.FavoriteSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
@@ -104,7 +106,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     var imageItemId = episode.id
     var imageType = ImageType.PRIMARY
 
-    if (!episode.imageTags.isNullOrEmpty()) {
+    if (!episode.imageTags.isNullOrEmpty()) { //TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
         when (episode.type) {
             "Movie" -> {
                 if (!episode.backdropImageTags.isNullOrEmpty()) {
@@ -137,6 +139,12 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
 @BindingAdapter("favoriteSections")
 fun bindFavoriteSections(recyclerView: RecyclerView, data: List<FavoriteSection>?) {
     val adapter = recyclerView.adapter as FavoritesListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("downloadSections")
+fun bindDownloadSections(recyclerView: RecyclerView, data: List<DownloadSection>?) {
+    val adapter = recyclerView.adapter as DownloadsListAdapter
     adapter.submitList(data)
 }
 
