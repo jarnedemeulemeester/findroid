@@ -21,7 +21,11 @@ class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository
 ) : ViewModel() {
 
-    private val playerItems = MutableSharedFlow<PlayerItemState>(replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val playerItems = MutableSharedFlow<PlayerItemState>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     fun onPlaybackRequested(scope: LifecycleCoroutineScope, collector: (PlayerItemState) -> Unit) {
         scope.launch { playerItems.collect { collector(it) } }
@@ -43,11 +47,18 @@ class PlayerViewModel @Inject internal constructor(
             val items = try {
                 createItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
             } catch (e: Exception) {
-                PlayerItemError(e.message.orEmpty())
+                Timber.d(e)
+                PlayerItemError(e.toString())
             }
 
             playerItems.tryEmit(items)
         }
+    }
+
+    fun loadOfflinePlayerItems(
+        playerItem: PlayerItem
+    ) {
+        playerItems.tryEmit(PlayerItems(listOf(playerItem)))
     }
 
     private suspend fun createItems(
@@ -84,8 +95,8 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int
     ): List<PlayerItem> = when (item.type) {
         "Movie" -> itemToMoviePlayerItems(item, playbackPosition, mediaSourceIndex)
-        "Series" -> itemToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        "Episode" -> itemToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        "Series" -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        "Episode" -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
 
@@ -102,23 +113,47 @@ class PlayerViewModel @Inject internal constructor(
         )
     )
 
-    private suspend fun itemToPlayerItems(
+    private suspend fun seriesToPlayerItems(
         item: BaseItemDto,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
-        val nextUp = repository.getNextUp(item.seriesId)
+        val nextUp = repository.getNextUp(item.id)
 
         return if (nextUp.isEmpty()) {
             repository
-                .getSeasons(item.seriesId!!)
-                .flatMap { episodesToPlayerItems(item, playbackPosition, mediaSourceIndex) }
+                .getSeasons(item.id)
+                .flatMap { seasonToPlayerItems(it, playbackPosition, mediaSourceIndex) }
         } else {
-            episodesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+            episodeToPlayerItems(nextUp.first(), playbackPosition, mediaSourceIndex)
         }
     }
 
-    private suspend fun episodesToPlayerItems(
+    private suspend fun seasonToPlayerItems(
+        item: BaseItemDto,
+        playbackPosition: Long,
+        mediaSourceIndex: Int
+    ): List<PlayerItem> {
+        val episodes = repository.getEpisodes(
+            seriesId = item.seriesId!!,
+            seasonId = item.id,
+            fields = listOf(ItemFields.MEDIA_SOURCES)
+        )
+
+        return episodes
+            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
+            .filter { it.locationType != VIRTUAL }
+            .map { episode ->
+                PlayerItem(
+                    episode.name,
+                    episode.id,
+                    episode.mediaSources?.get(mediaSourceIndex)?.id!!,
+                    playbackPosition
+                )
+            }
+    }
+
+    private suspend fun episodeToPlayerItems(
         item: BaseItemDto,
         playbackPosition: Long,
         mediaSourceIndex: Int
@@ -145,6 +180,6 @@ class PlayerViewModel @Inject internal constructor(
 
     sealed class PlayerItemState
 
-    data class PlayerItemError(val message: String): PlayerItemState()
-    data class PlayerItems(val items: List<PlayerItem>): PlayerItemState()
+    data class PlayerItemError(val message: String) : PlayerItemState()
+    data class PlayerItems(val items: List<PlayerItem>) : PlayerItemState()
 }
