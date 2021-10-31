@@ -9,5 +9,7 @@ data class PlayerItem(
     val name: String?,
     val itemId: UUID,
     val mediaSourceId: String,
-    val playbackPosition: Long
+    val playbackPosition: Long,
+    val mediaSourceUri: String = "",
+    val metadata: DownloadMetadata? = null
 ) : Parcelable

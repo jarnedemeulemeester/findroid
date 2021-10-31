@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject
 constructor(
-    application: Application,
+    private val application: Application,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
 
@@ -52,8 +53,6 @@ constructor(
         _finishedLoading.value = false
         viewModelScope.launch {
             try {
-
-
                 jellyfinRepository.postCapabilities()
 
                 val items = mutableListOf<HomeItem>()
@@ -76,8 +75,6 @@ constructor(
                     }
                 }
 
-                _views.value = items
-
                 val views: MutableList<View> = mutableListOf()
 
                 withContext(Dispatchers.Default) {
@@ -97,6 +94,10 @@ constructor(
                         v.items = latestItems
                         views.add(v)
                     }
+                }
+
+                withContext(Dispatchers.Default) {
+                    syncPlaybackProgress(jellyfinRepository, application)
                 }
 
                 _views.value = items + views.map { HomeItem.ViewItem(it) }

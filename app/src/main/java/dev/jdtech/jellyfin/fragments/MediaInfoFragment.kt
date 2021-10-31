@@ -22,11 +22,12 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.requestDownload
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 import org.jellyfin.sdk.model.serializer.toUUID
+import timber.log.Timber
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -65,9 +66,20 @@ class MediaInfoFragment : Fragment() {
             }
         })
 
+        if(args.itemType != "Movie") {
+            binding.downloadButton.visibility = View.GONE
+        }
+
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadData(args.itemId, args.itemType)
         }
+
+        viewModel.downloadMedia.observe(viewLifecycleOwner, {
+            if (it) {
+                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)
+                viewModel.doneDownloadMedia()
+            }
+        })
 
         viewModel.item.observe(viewLifecycleOwner, { item ->
             if (item.originalTitle != item.name) {
@@ -82,6 +94,7 @@ class MediaInfoFragment : Fragment() {
                 true -> View.VISIBLE
                 false -> View.GONE
             }
+            Timber.d(item.seasonId.toString())
         })
 
         viewModel.actors.observe(viewLifecycleOwner, { actors ->
@@ -147,30 +160,57 @@ class MediaInfoFragment : Fragment() {
             binding.progressCircular.visibility = View.VISIBLE
 
             viewModel.item.value?.let { item ->
-                playerViewModel.loadPlayerItems(item) {
-                    VideoVersionDialogFragment(item, playerViewModel).show(
-                        parentFragmentManager,
-                        "videoversiondialog"
-                    )
+                if (!args.isOffline) {
+                    playerViewModel.loadPlayerItems(item) {
+                        VideoVersionDialogFragment(item, playerViewModel).show(
+                            parentFragmentManager,
+                            "videoversiondialog"
+                        )
+                    }
+                } else {
+                    playerViewModel.loadOfflinePlayerItems(args.playerItem!!)
                 }
             }
         }
 
-        binding.checkButton.setOnClickListener {
-            when (viewModel.played.value) {
-                true -> viewModel.markAsUnplayed(args.itemId)
-                false -> viewModel.markAsPlayed(args.itemId)
+        if (!args.isOffline) {
+            binding.errorLayout.errorRetryButton.setOnClickListener {
+                viewModel.loadData(args.itemId, args.itemType)
             }
-        }
 
-        binding.favoriteButton.setOnClickListener {
-            when (viewModel.favorite.value) {
-                true -> viewModel.unmarkAsFavorite(args.itemId)
-                false -> viewModel.markAsFavorite(args.itemId)
+            binding.checkButton.setOnClickListener {
+                when (viewModel.played.value) {
+                    true -> viewModel.markAsUnplayed(args.itemId)
+                    false -> viewModel.markAsPlayed(args.itemId)
+                }
             }
-        }
 
-        viewModel.loadData(args.itemId, args.itemType)
+            binding.favoriteButton.setOnClickListener {
+                when (viewModel.favorite.value) {
+                    true -> viewModel.unmarkAsFavorite(args.itemId)
+                    false -> viewModel.markAsFavorite(args.itemId)
+                }
+            }
+
+            binding.downloadButton.setOnClickListener {
+                viewModel.loadDownloadRequestItem(args.itemId)
+            }
+
+            binding.deleteButton.visibility = View.GONE
+
+            viewModel.loadData(args.itemId, args.itemType)
+        } else {
+            binding.favoriteButton.visibility = View.GONE
+            binding.checkButton.visibility = View.GONE
+            binding.downloadButton.visibility = View.GONE
+
+            binding.deleteButton.setOnClickListener {
+                viewModel.deleteItem()
+                findNavController().navigate(R.id.downloadFragment)
+            }
+
+            viewModel.loadData(args.playerItem!!)
+        }
     }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
@@ -186,7 +226,6 @@ class MediaInfoFragment : Fragment() {
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
         Timber.e(error.message)
-
         binding.playerItemsError.visibility = View.VISIBLE
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
@@ -195,7 +234,7 @@ class MediaInfoFragment : Fragment() {
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
+        binding.playerItemsErrorDetails.setOnClickListener {
             ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
         }
     }
@@ -224,7 +263,7 @@ class MediaInfoFragment : Fragment() {
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
-                playerItems,
+                playerItems
             )
         )
     }

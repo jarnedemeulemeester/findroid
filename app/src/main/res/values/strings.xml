@@ -25,6 +25,7 @@
     <string name="title_media">My media</string>
     <string name="title_favorite">Favorites</string>
     <string name="title_settings">Settings</string>
+    <string name="title_download">Downloads</string>
     <string name="view_all">View all</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
@@ -45,6 +46,7 @@
     <string name="latest_library">Latest %1$s</string>
     <string name="series_poster">Series poster</string>
     <string name="no_favorites">You have no favorites</string>
+    <string name="no_downloads">You have nothing downloaded</string>
     <string name="search">Search</string>
     <string name="no_search_results">No search results</string>
     <string name="settings_category_language">Language</string>
@@ -52,8 +54,11 @@
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
+    <string name="settings_category_player">Player</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_device">Device</string>
+    <string name="device_name">Device name</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
@@ -71,6 +76,9 @@
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
+    <string name="download_button_description">Download</string>
+    <string name="download_no_storage_permission">Cannot download files without storage permissions</string>
+    <string name="delete_button_description">Delete</string>
     <string name="person_detail_title">Person Detail</string>
     <string name="error_getting_person_id">Detail unavailable</string>
     <string name="movies_label">Movies</string>
@@ -92,4 +100,13 @@
         <item>Ascending</item>
         <item>Descending</item>
     </string-array>
+    <string name="runtime_minutes">%1$d mins</string>
+    <string name="select_video_version_title">Select version</string>
+    <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_rewind">Rewind</string>
+    <string name="player_controls_fast_forward">Fast forward</string>
+    <string name="player_controls_pause">Pause</string>
+    <string name="player_controls_skip">Skip</string>
+    <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="add_server_empty_error">Empty server address</string>
 </resources>

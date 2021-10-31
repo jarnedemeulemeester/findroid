@@ -45,12 +45,14 @@
                 android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:paddingTop="16dp"
+                app:favoriteSections="@{viewModel.favoriteSections}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:favoriteSections="@{viewModel.favoriteSections}"
+                app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="4"
                 tools:listitem="@layout/favorite_section" />
 
