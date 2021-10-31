@@ -1,12 +1,7 @@
 package dev.jdtech.jellyfin.api
 
 import android.content.Context
-import android.os.Build
-import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.BuildConfig
-import org.jellyfin.sdk.Jellyfin
-import org.jellyfin.sdk.JellyfinOptions
-import org.jellyfin.sdk.api.client.KtorClient
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
@@ -18,9 +13,8 @@ import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.api.client.extensions.userLibraryApi
 import org.jellyfin.sdk.api.client.extensions.userViewsApi
 import org.jellyfin.sdk.api.client.extensions.videosApi
+import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
-import org.jellyfin.sdk.model.DeviceInfo
-import org.jellyfin.sdk.util.ApiClientFactory
 import java.util.UUID
 
 /**
@@ -32,23 +26,19 @@ import java.util.UUID
  */
 class JellyfinApi(androidContext: Context, baseUrl: String) {
 
-    val jellyfin = Jellyfin(
-        JellyfinOptions(
-            context = androidContext,
-            clientInfo = ClientInfo(
-                name = androidContext.applicationInfo.loadLabel(androidContext.packageManager)
-                    .toString(),
-                version = BuildConfig.VERSION_NAME
-            ),
-            deviceInfo = DeviceInfo(UUID.randomUUID().toString(), deviceName(androidContext)),
-            apiClientFactory = ApiClientFactory(::KtorClient)
+    val jellyfin = createJellyfin {
+        clientInfo = ClientInfo(
+            name = androidContext.applicationInfo.loadLabel(androidContext.packageManager)
+                .toString(),
+            version = BuildConfig.VERSION_NAME
         )
-    )
+        context = androidContext
+    }
 
     val api = jellyfin.createApi(baseUrl = baseUrl)
     var userId: UUID? = null
 
-    val deviceApi = api.devicesApi
+    val devicesApi = api.devicesApi
     val systemApi = api.systemApi
     val userApi = api.userApi
     val viewsApi = api.userViewsApi
@@ -59,10 +49,6 @@ class JellyfinApi(androidContext: Context, baseUrl: String) {
     val videosApi = api.videosApi
     val mediaInfoApi = api.mediaInfoApi
     val playStateApi = api.playStateApi
-
-    private fun deviceName(context: Context) = PreferenceManager
-        .getDefaultSharedPreferences(context)
-        .getString("deviceName", null) ?: Build.MODEL
 
     companion object {
         @Volatile

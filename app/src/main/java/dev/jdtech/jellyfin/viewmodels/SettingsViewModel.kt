@@ -17,7 +17,7 @@ internal class SettingsViewModel @Inject internal constructor(
     fun updateDeviceName(name: String) {
         api.jellyfin.deviceInfo?.id?.let { id ->
             viewModelScope.launch(IO) {
-                api.deviceApi.updateDeviceOptions(id, DeviceOptions(name))
+                api.devicesApi.updateDeviceOptions(id, DeviceOptions(name))
             }
         }
     }

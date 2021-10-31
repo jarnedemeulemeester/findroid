@@ -48,7 +48,7 @@
     <string name="manage_servers">Spravovat servery</string>
     <string name="settings_category_appearance">Vzhled</string>
     <string name="settings_category_device">Zařízení</string>
-    <string name="custom_device_name_title">Zvolte si název zařízení</string>
+    <string name="device_name">Název zařízení</string>
     <string name="theme">Téma</string>
     <string name="error_preparing_player_items">Chyba při načítání přehrávání.</string>
     <string name="view_details">Zobrazit detaily</string>
