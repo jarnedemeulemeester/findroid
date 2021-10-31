@@ -50,6 +50,8 @@
     <string name="settings_category_player">Player</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_device">Device</string>
+    <string name="device_name">Device name</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
