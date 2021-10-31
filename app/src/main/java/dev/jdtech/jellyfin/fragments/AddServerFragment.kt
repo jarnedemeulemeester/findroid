@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
@@ -27,15 +27,18 @@ class AddServerFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        binding.buttonConnect.setOnClickListener {
-            val serverAddress = binding.editTextServerAddress.text.toString()
-            if (serverAddress.isNotBlank()) {
-                viewModel.checkServer(serverAddress, resources)
-                binding.progressCircular.visibility = View.VISIBLE
-                binding.editTextServerAddressLayout.error = ""
-            } else {
-                binding.editTextServerAddressLayout.error = resources.getString(R.string.add_server_error_empty_address)
+        binding.editTextServerAddress.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_GO -> {
+                    connectToServer()
+                    true
+                }
+                else -> false
             }
+        }
+
+        binding.buttonConnect.setOnClickListener {
+            connectToServer()
         }
 
         viewModel.navigateToLogin.observe(viewLifecycleOwner, {
@@ -46,10 +49,21 @@ class AddServerFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, {
+            if (it.isNullOrBlank()) {
+                return@observe
+            }
             binding.editTextServerAddressLayout.error = it
+            binding.progressCircular.visibility = View.GONE
         })
 
         return binding.root
+    }
+
+    private fun connectToServer() {
+        val serverAddress = binding.editTextServerAddress.text.toString()
+        binding.progressCircular.visibility = View.VISIBLE
+        binding.editTextServerAddressLayout.error = ""
+        viewModel.checkServer(serverAddress)
     }
 
     private fun navigateToLoginFragment() {

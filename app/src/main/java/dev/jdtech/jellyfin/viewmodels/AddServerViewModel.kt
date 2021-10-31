@@ -39,17 +39,26 @@ constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private val resources: Resources = application.resources
+
     /**
      * Run multiple check on the server before continuing:
      *
      * - Connect to server and check if it is a Jellyfin server
      * - Check if server is not already in Database
+     *
+     * @param inputValue Can be an ip address or hostname
      */
-    fun checkServer(inputValue: String, resources: Resources) {
+    fun checkServer(inputValue: String) {
         _error.value = null
 
         viewModelScope.launch {
             try {
+                // Check if input value is not empty
+                if (inputValue.isBlank()) {
+                    throw Exception(resources.getString(R.string.add_server_error_empty_address))
+                }
+
                 val candidates = jellyfinApi.jellyfin.discovery.getAddressCandidates(inputValue)
                 val recommended = jellyfinApi.jellyfin.discovery.getRecommendedServers(
                     candidates,
@@ -71,7 +80,7 @@ constructor(
                 val recommendedServer = if (greatServers.toList().isNotEmpty()) {
                     greatServers.first()
                 } else if (goodServers.toList().isNotEmpty()) {
-                    val issuesString = createIssuesString(goodServers.first(), resources)
+                    val issuesString = createIssuesString(goodServers.first())
                     Toast.makeText(
                         application,
                         issuesString,
@@ -80,8 +89,17 @@ constructor(
                     goodServers.first()
                 } else {
                     val okServer = okServers.first()
-                    val issuesString = createIssuesString(okServer, resources)
+                    val issuesString = createIssuesString(okServer)
                     throw Exception(issuesString)
+                }
+
+                val serverId = recommendedServer.systemInfo.getOrNull()?.id
+                    ?: throw Exception(resources.getString(R.string.add_server_error_no_id))
+
+                Timber.d("Remote server: $serverId")
+
+                if (serverAlreadyInDatabase(serverId)) {
+                    throw Exception(resources.getString(R.string.add_server_error_already_added))
                 }
 
                 jellyfinApi.apply {
@@ -89,19 +107,10 @@ constructor(
                     api.accessToken = null
                 }
 
-                Timber.d("Remote server: ${recommendedServer.systemInfo.getOrNull()?.id}")
-
-                if (serverAlreadyInDatabase(recommendedServer.systemInfo.getOrNull()?.id)) {
-                    _error.value = resources.getString(R.string.add_server_error_already_added)
-                    _navigateToLogin.value = false
-                } else {
-                    _error.value = null
-                    _navigateToLogin.value = true
-                }
+                _navigateToLogin.value = true
             } catch (e: Exception) {
                 Timber.e(e)
                 _error.value = e.message
-                _navigateToLogin.value = false
             }
         }
     }
@@ -112,20 +121,32 @@ constructor(
      * @param server The server with issues
      * @return A presentable string of issues separated with \n
      */
-    private fun createIssuesString(server: RecommendedServerInfo, resources: Resources): String {
+    private fun createIssuesString(server: RecommendedServerInfo): String {
         return server.issues.joinToString("\n") {
             when (it) {
                 is RecommendedServerIssue.OutdatedServerVersion -> {
-                    String.format(resources.getString(R.string.add_server_error_outdated), it.version)
+                    String.format(
+                        resources.getString(R.string.add_server_error_outdated),
+                        it.version
+                    )
                 }
                 is RecommendedServerIssue.InvalidProductName -> {
-                    String.format(resources.getString(R.string.add_server_error_not_jellyfin), it.productName)
+                    String.format(
+                        resources.getString(R.string.add_server_error_not_jellyfin),
+                        it.productName
+                    )
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
-                    String.format(resources.getString(R.string.add_server_error_version), it.version)
+                    String.format(
+                        resources.getString(R.string.add_server_error_version),
+                        it.version
+                    )
                 }
                 is RecommendedServerIssue.SlowResponse -> {
-                    String.format(resources.getString(R.string.add_server_error_slow), it.responseTime)
+                    String.format(
+                        resources.getString(R.string.add_server_error_slow),
+                        it.responseTime
+                    )
                 }
                 else -> {
                     resources.getString(R.string.unknown_error)
@@ -140,7 +161,7 @@ constructor(
      * @param id Server ID
      * @return True if server is already in database
      */
-    private suspend fun serverAlreadyInDatabase(id: String?): Boolean {
+    private suspend fun serverAlreadyInDatabase(id: String): Boolean {
         val servers: List<Server>
         withContext(Dispatchers.IO) {
             servers = database.getAllServersSync()
