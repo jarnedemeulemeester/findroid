@@ -122,7 +122,7 @@ constructor(
                     String.format(resources.getString(R.string.add_server_error_not_jellyfin), it.productName)
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
-                    String.format(resources.getString(R.string.version), it.version)
+                    String.format(resources.getString(R.string.add_server_error_version), it.version)
                 }
                 is RecommendedServerIssue.SlowResponse -> {
                     String.format(resources.getString(R.string.add_server_error_slow), it.responseTime)
