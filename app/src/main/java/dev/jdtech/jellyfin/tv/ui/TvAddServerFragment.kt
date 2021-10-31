@@ -30,7 +30,7 @@ internal class TvAddServerFragment: Fragment() {
         binding.buttonConnect.setOnClickListener {
             val serverAddress = binding.serverAddress.text.toString()
             if (serverAddress.isNotBlank()) {
-                viewModel.checkServer(serverAddress)
+                viewModel.checkServer(serverAddress, resources)
                 binding.progressCircular.visibility = View.VISIBLE
             } else {
                 binding.serverAddress.error = resources.getString(R.string.add_server_empty_error)
