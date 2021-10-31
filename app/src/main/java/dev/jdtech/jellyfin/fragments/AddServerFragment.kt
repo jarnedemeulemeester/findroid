@@ -30,10 +30,11 @@ class AddServerFragment : Fragment() {
         binding.buttonConnect.setOnClickListener {
             val serverAddress = binding.editTextServerAddress.text.toString()
             if (serverAddress.isNotBlank()) {
-                viewModel.checkServer(serverAddress)
+                viewModel.checkServer(serverAddress, resources)
                 binding.progressCircular.visibility = View.VISIBLE
+                binding.editTextServerAddressLayout.error = ""
             } else {
-                binding.editTextServerAddressLayout.error = resources.getString(R.string.add_server_empty_error)
+                binding.editTextServerAddressLayout.error = resources.getString(R.string.add_server_error_empty_address)
             }
         }
 

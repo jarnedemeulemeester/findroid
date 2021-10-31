@@ -3,6 +3,13 @@
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
+    <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
+    <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
+    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
+    <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
+    <string name="add_server_error_already_added">Server already added</string>
+    <string name="add_server_error_empty_address">Empty server address</string>
+    <string name="add_server_error_not_found">Server not found</string>
     <string name="login">Login</string>
     <string name="select_server">Select server</string>
     <string name="edit_text_server_address_hint">Server address</string>
