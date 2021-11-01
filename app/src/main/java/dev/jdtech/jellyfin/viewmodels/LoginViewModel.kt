@@ -37,6 +37,8 @@ constructor(
      * @param password Password
      */
     fun login(username: String, password: String) {
+        _error.value = null
+
         viewModelScope.launch {
             try {
                 val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
@@ -45,8 +47,9 @@ constructor(
                         pw = password
                     )
                 )
-                _error.value = null
+
                 val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
+
                 val server = Server(
                     serverInfo.id!!,
                     serverInfo.serverName!!,
@@ -55,18 +58,22 @@ constructor(
                     authenticationResult.user?.name!!,
                     authenticationResult.accessToken!!
                 )
+
                 insert(server)
+
                 val spEdit = sharedPreferences.edit()
                 spEdit.putString("selectedServer", server.id)
                 spEdit.apply()
+
                 jellyfinApi.apply {
                     api.accessToken = authenticationResult.accessToken
                     userId = authenticationResult.user?.id
                 }
+
                 _navigateToMain.value = true
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.toString()
+                _error.value = e.message
             }
         }
     }

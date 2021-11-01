@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,36 +15,55 @@ import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
+    private lateinit var binding: FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentLoginBinding.inflate(inflater)
+        binding = FragmentLoginBinding.inflate(inflater)
+
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        binding.buttonLogin.setOnClickListener {
-            val username = binding.editTextUsername.text.toString()
-            val password = binding.editTextPassword.text.toString()
-
-            binding.progressCircular.visibility = View.VISIBLE
-            viewModel.login(username, password)
+        binding.editTextPassword.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_GO -> {
+                    login()
+                    true
+                }
+                else -> false
+            }
         }
 
-        viewModel.error.observe(viewLifecycleOwner, {
-            binding.progressCircular.visibility = View.GONE
-            binding.editTextUsernameLayout.error = it
-        })
+        binding.buttonLogin.setOnClickListener {
+            login()
+        }
 
         viewModel.navigateToMain.observe(viewLifecycleOwner, {
             if (it) {
                 navigateToMainActivity()
             }
+            binding.progressCircular.visibility = View.GONE
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, {
+            binding.editTextUsernameLayout.error = it
+            if (it.isNullOrBlank()) {
+                return@observe
+            }
+            binding.progressCircular.visibility = View.GONE
         })
 
         return binding.root
+    }
+
+    private fun login() {
+        val username = binding.editTextUsername.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        binding.progressCircular.visibility = View.VISIBLE
+        viewModel.login(username, password)
     }
 
     private fun navigateToMainActivity() {

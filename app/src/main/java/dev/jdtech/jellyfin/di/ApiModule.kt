@@ -26,7 +26,7 @@ object ApiModule {
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {
-            val server = serverDatabase.get(serverId)
+            val server = serverDatabase.get(serverId) ?: return jellyfinApi
             jellyfinApi.apply {
                 api.baseUrl = server.address
                 api.accessToken = server.accessToken

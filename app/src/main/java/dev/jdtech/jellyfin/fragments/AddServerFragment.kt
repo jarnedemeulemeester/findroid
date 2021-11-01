@@ -27,7 +27,7 @@ class AddServerFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        binding.editTextServerAddress.setOnEditorActionListener { v, actionId, event ->
+        binding.editTextServerAddress.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_GO -> {
                     connectToServer()
@@ -49,10 +49,10 @@ class AddServerFragment : Fragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, {
+            binding.editTextServerAddressLayout.error = it
             if (it.isNullOrBlank()) {
                 return@observe
             }
-            binding.editTextServerAddressLayout.error = it
             binding.progressCircular.visibility = View.GONE
         })
 
@@ -62,7 +62,6 @@ class AddServerFragment : Fragment() {
     private fun connectToServer() {
         val serverAddress = binding.editTextServerAddress.text.toString()
         binding.progressCircular.visibility = View.VISIBLE
-        binding.editTextServerAddressLayout.error = ""
         viewModel.checkServer(serverAddress)
     }
 
