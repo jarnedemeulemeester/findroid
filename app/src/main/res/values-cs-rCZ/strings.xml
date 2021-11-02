@@ -3,6 +3,13 @@
     <string name="app_description">Neoficiální nativní Jellyfin aplikace</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
     <string name="add_server">Přidat server</string>
+    <string name="add_server_error_outdated">Zastaralá verze serveru: %1$s. Prosím aktualizujte Váš server</string>
+    <string name="add_server_error_not_jellyfin">Nejedná se o Jellyfin server: %1$s</string>
+    <string name="add_server_error_version">Nepodporovaná verze serveru: %1$s. Prosím aktualizujte Váš server</string>
+    <string name="add_server_error_slow">Serveru trvalo příliš dlouho odpovědět: %1$s</string>
+    <string name="add_server_error_already_added">Tento server už je přidán</string>
+    <string name="add_server_error_empty_address">Prázdná adresa serveru</string>
+    <string name="add_server_error_not_found">Server not found</string>
     <string name="login">Přihlásit</string>
     <string name="select_server">Vybrat server</string>
     <string name="edit_text_server_address_hint">Adresa serveru</string>
@@ -45,8 +52,10 @@
     <string name="settings_preferred_subtitle_language">Preferovaný jazyk titulků</string>
     <string name="initializing">Inicializace…</string>
     <string name="settings_category_servers">Servery</string>
+    <string name="settings_category_player">Přehrávač</string>
     <string name="manage_servers">Spravovat servery</string>
     <string name="settings_category_appearance">Vzhled</string>
+    <string name="device_name">Název zařízení</string>
     <string name="settings_category_device">Zařízení</string>
     <string name="settings_category_use_cache_title">Cachovat obrázky</string>
     <string name="settings_category_use_cache_summary">Cachování obrázků urychluje načítání obsahu. Projeví se po restartu aplikace.</string>

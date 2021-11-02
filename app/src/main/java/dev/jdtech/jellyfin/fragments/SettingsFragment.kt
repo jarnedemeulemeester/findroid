@@ -8,14 +8,21 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
 
-class SettingsFragment : PreferenceFragmentCompat() {
+@AndroidEntryPoint
+class SettingsFragment: PreferenceFragmentCompat() {
+
+    private val viewModel: SettingsViewModel by viewModels()
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
 
@@ -49,6 +56,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<EditTextPreference>("image_cache_size")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
+        }
+
+        findPreference<EditTextPreference>("deviceName")?.setOnPreferenceChangeListener { _, name ->
+            viewModel.updateDeviceName(name.toString())
+            true
         }
     }
 }

@@ -43,7 +43,7 @@
             app:icon="@drawable/ic_palette"/>
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Player">
+    <PreferenceCategory app:title="@string/settings_category_player">
         <SwitchPreference
             app:key="mpv_player"
             app:title="@string/mpv_player"
@@ -56,6 +56,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/settings_category_device">
+        <EditTextPreference
+            app:key="deviceName"
+            app:title="@string/device_name"
+            app:useSimpleSummaryProvider="true"/>
         <SwitchPreference
             app:key="use_image_cache"
             app:title="@string/settings_category_use_cache_title"

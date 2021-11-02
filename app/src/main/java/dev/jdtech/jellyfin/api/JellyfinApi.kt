@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.api
 
 import android.content.Context
 import dev.jdtech.jellyfin.BuildConfig
+import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
 import org.jellyfin.sdk.api.client.extensions.playStateApi
@@ -32,6 +33,7 @@ class JellyfinApi(androidContext: Context) {
     val api = jellyfin.createApi()
     var userId: UUID? = null
 
+    val devicesApi = api.devicesApi
     val systemApi = api.systemApi
     val userApi = api.userApi
     val viewsApi = api.userViewsApi
