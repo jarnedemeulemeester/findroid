@@ -6,7 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.DownloadRequestItem
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,6 +64,13 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private val _downloadMedia = MutableLiveData<Boolean>()
+    val downloadMedia: LiveData<Boolean> = _downloadMedia
+
+    lateinit var downloadRequestItem: DownloadRequestItem
+
+    lateinit var playerItem: PlayerItem
+
     fun loadData(itemId: UUID, itemType: String) {
         _error.value = null
         viewModelScope.launch {
@@ -74,7 +86,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 _dateString.value = getDateString(_item.value!!)
                 _played.value = _item.value?.userData?.played
                 _favorite.value = _item.value?.userData?.isFavorite
-                if (itemType == "Series") {
+                if (itemType == "Series" || itemType == "Episode") {
                     _nextUp.value = getNextUp(itemId)
                     _seasons.value = jellyfinRepository.getSeasons(itemId)
                 }
@@ -83,6 +95,11 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                 _error.value = e.toString()
             }
         }
+    }
+
+    fun loadData(playerItem: PlayerItem) {
+        this.playerItem = playerItem
+        _item.value = downloadMetadataToBaseItemDto(playerItem.metadata!!)
     }
 
     private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson>? {
@@ -165,5 +182,24 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             }
             else -> dateString
         }
+    }
+
+    fun loadDownloadRequestItem(itemId: UUID) {
+        viewModelScope.launch {
+            val downloadItem = _item.value
+            val uri =
+                jellyfinRepository.getStreamUrl(itemId, downloadItem?.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(downloadItem)
+            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
+            _downloadMedia.value = true
+        }
+    }
+
+    fun deleteItem() {
+        deleteDownloadedEpisode(playerItem.mediaSourceUri)
+    }
+
+    fun doneDownloadMedia() {
+        _downloadMedia.value = false
     }
 }

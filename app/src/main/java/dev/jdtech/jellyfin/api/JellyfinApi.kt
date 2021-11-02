@@ -2,10 +2,20 @@ package dev.jdtech.jellyfin.api
 
 import android.content.Context
 import dev.jdtech.jellyfin.BuildConfig
-import org.jellyfin.sdk.api.client.extensions.*
+import org.jellyfin.sdk.api.client.extensions.devicesApi
+import org.jellyfin.sdk.api.client.extensions.itemsApi
+import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
+import org.jellyfin.sdk.api.client.extensions.playStateApi
+import org.jellyfin.sdk.api.client.extensions.sessionApi
+import org.jellyfin.sdk.api.client.extensions.systemApi
+import org.jellyfin.sdk.api.client.extensions.tvShowsApi
+import org.jellyfin.sdk.api.client.extensions.userApi
+import org.jellyfin.sdk.api.client.extensions.userLibraryApi
+import org.jellyfin.sdk.api.client.extensions.userViewsApi
+import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
-import java.util.*
+import java.util.UUID
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
@@ -15,14 +25,20 @@ import java.util.*
  * @constructor Creates a new [JellyfinApi] instance
  */
 class JellyfinApi(androidContext: Context, baseUrl: String) {
+
     val jellyfin = createJellyfin {
-        clientInfo =
-            ClientInfo(name = androidContext.applicationInfo.loadLabel(androidContext.packageManager).toString(), version = BuildConfig.VERSION_NAME)
+        clientInfo = ClientInfo(
+            name = androidContext.applicationInfo.loadLabel(androidContext.packageManager)
+                .toString(),
+            version = BuildConfig.VERSION_NAME
+        )
         context = androidContext
     }
+
     val api = jellyfin.createApi(baseUrl = baseUrl)
     var userId: UUID? = null
 
+    val devicesApi = api.devicesApi
     val systemApi = api.systemApi
     val userApi = api.userApi
     val viewsApi = api.userViewsApi

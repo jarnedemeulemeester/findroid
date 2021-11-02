@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_navigation"
+    android:id="@+id/app_navigation"
     app:startDestination="@+id/homeFragment">
 
     <fragment
@@ -114,6 +114,14 @@
             android:defaultValue="Media Info"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="itemType"
+            app:argType="string" />
+        <argument
+            android:name="playerItem"
+            android:defaultValue="@null"
+            app:argType="dev.jdtech.jellyfin.models.PlayerItem"
+            app:nullable="true" />
         <action
             android:id="@+id/action_mediaInfoFragment_to_seasonFragment"
             app:destination="@id/seasonFragment" />
@@ -125,11 +133,11 @@
             app:destination="@id/playerActivity" />
         <action
             android:id="@+id/action_mediaInfoFragment_to_personDetailFragment"
-            app:destination="@id/personDetailFragment"
-            />
+            app:destination="@id/personDetailFragment" />
         <argument
-            android:name="itemType"
-            app:argType="string" />
+            android:name="isOffline"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/seasonFragment"
@@ -164,19 +172,19 @@
         <argument
             android:name="episodeId"
             app:argType="java.util.UUID" />
+        <argument
+            android:name="playerItem"
+            android:defaultValue="@null"
+            app:argType="dev.jdtech.jellyfin.models.PlayerItem"
+            app:nullable="true" />
         <action
             android:id="@+id/action_episodeBottomSheetFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
-    </dialog>
-    <activity
-        android:id="@+id/playerActivity"
-        android:name="dev.jdtech.jellyfin.PlayerActivity"
-        android:label="activity_player"
-        tools:layout="@layout/activity_player">
         <argument
-            android:name="items"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
-    </activity>
+            android:name="isOffline"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </dialog>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"
@@ -187,6 +195,18 @@
             app:destination="@id/episodeBottomSheetFragment" />
         <action
             android:id="@+id/action_favoriteFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="dev.jdtech.jellyfin.fragments.DownloadFragment"
+        android:label="@string/title_download"
+        tools:layout="@layout/fragment_download">
+        <action
+            android:id="@+id/action_downloadFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_downloadFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
     </fragment>
     <fragment
@@ -253,6 +273,16 @@
             android:id="@+id/action_personDetailFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
     </fragment>
+
+    <activity
+        android:id="@+id/playerActivity"
+        android:name="dev.jdtech.jellyfin.PlayerActivity"
+        android:label="activity_player"
+        tools:layout="@layout/activity_player">
+        <argument
+            android:name="items"
+            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
+    </activity>
 
     <include app:graph="@navigation/aboutlibs_navigation" />
     <action
