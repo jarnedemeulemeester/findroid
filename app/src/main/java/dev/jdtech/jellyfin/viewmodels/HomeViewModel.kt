@@ -69,11 +69,11 @@ class HomeViewModel @Inject internal constructor(
                 withContext(Dispatchers.Default) {
                     syncPlaybackProgress(repository, application)
                 }
+                state.tryEmit(Loading(inProgress = false))
             } catch (e: Exception) {
                 Timber.e(e)
                 state.tryEmit(LoadingError(e.toString()))
             }
-            state.tryEmit(Loading(inProgress = false))
         }
     }
 
