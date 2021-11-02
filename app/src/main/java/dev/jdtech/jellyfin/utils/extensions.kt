@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import dev.jdtech.jellyfin.MainNavigationDirections
+import dev.jdtech.jellyfin.AppNavigationDirections
 import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.View
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -29,7 +29,7 @@ fun BaseItemDto.contentType() = when (type) {
 fun Fragment.checkIfLoginRequired(error: String) {
     if (error.contains("401"))  {
         Timber.d("Login required!")
-        findNavController().navigate(MainNavigationDirections.actionGlobalLoginFragment())
+        findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
     }
 }
 

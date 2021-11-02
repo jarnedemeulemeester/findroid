@@ -21,7 +21,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
-            android:layout_width="0dp"
+            android:layout_width="240dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:baseItemImage="@{episode}"

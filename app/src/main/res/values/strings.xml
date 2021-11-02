@@ -3,6 +3,13 @@
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
+    <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
+    <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
+    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
+    <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
+    <string name="add_server_error_already_added">Server already added</string>
+    <string name="add_server_error_empty_address">Empty server address</string>
+    <string name="add_server_error_not_found">Server not found</string>
     <string name="login">Login</string>
     <string name="select_server">Select server</string>
     <string name="edit_text_server_address_hint">Server address</string>
@@ -47,8 +54,11 @@
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
+    <string name="settings_category_player">Player</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_device">Device</string>
+    <string name="device_name">Device name</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
@@ -90,4 +100,13 @@
         <item>Ascending</item>
         <item>Descending</item>
     </string-array>
+    <string name="runtime_minutes">%1$d mins</string>
+    <string name="select_video_version_title">Select version</string>
+    <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_rewind">Rewind</string>
+    <string name="player_controls_fast_forward">Fast forward</string>
+    <string name="player_controls_pause">Pause</string>
+    <string name="player_controls_skip">Skip</string>
+    <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="add_server_empty_error">Empty server address</string>
 </resources>

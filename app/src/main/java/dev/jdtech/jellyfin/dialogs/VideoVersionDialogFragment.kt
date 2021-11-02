@@ -4,11 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.lang.IllegalStateException
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
-import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
-import java.lang.IllegalStateException
 
 class VideoVersionDialogFragment(
     private val item: BaseItemDto,
