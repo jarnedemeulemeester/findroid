@@ -2,8 +2,6 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.res.Resources
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,9 +11,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -32,14 +28,19 @@ constructor(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
-
-    private val _navigateToLogin = MutableLiveData<Boolean>()
-    val navigateToLogin: LiveData<Boolean> = _navigateToLogin
-
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
-
     private val resources: Resources = application.resources
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
+    val uiState = _uiState.asStateFlow()
+
+    private val _navigateToLogin = MutableSharedFlow<Boolean>()
+    val navigateToLogin = _navigateToLogin.asSharedFlow()
+
+    sealed class UiState {
+        object Normal: UiState()
+        object Loading : UiState()
+        data class Error(val message: String) : UiState()
+    }
 
     /**
      * Run multiple check on the server before continuing:
@@ -50,9 +51,10 @@ constructor(
      * @param inputValue Can be an ip address or hostname
      */
     fun checkServer(inputValue: String) {
-        _error.value = null
 
         viewModelScope.launch {
+            _uiState.emit(UiState.Loading)
+
             try {
                 // Check if input value is not empty
                 if (inputValue.isBlank()) {
@@ -107,10 +109,11 @@ constructor(
                     api.accessToken = null
                 }
 
-                _navigateToLogin.value = true
+                _uiState.emit(UiState.Normal)
+                _navigateToLogin.emit(true)
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.message
+                // Timber.e(e)
+                _uiState.emit(UiState.Error(e.message ?: resources.getString(R.string.unknown_error)))
             }
         }
     }
@@ -162,21 +165,11 @@ constructor(
      * @return True if server is already in database
      */
     private suspend fun serverAlreadyInDatabase(id: String): Boolean {
-        val servers: List<Server>
+        val server: Server?
         withContext(Dispatchers.IO) {
-            servers = database.getAllServersSync()
+            server = database.get(id)
         }
-        for (server in servers) {
-            Timber.d("Database server: ${server.id}")
-            if (server.id == id) {
-                Timber.w("Server already in the database")
-                return true
-            }
-        }
+        if (server != null) return true
         return false
-    }
-
-    fun onNavigateToLoginDone() {
-        _navigateToLogin.value = false
     }
 }
