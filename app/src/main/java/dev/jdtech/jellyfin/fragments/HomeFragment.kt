@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +27,6 @@ import dev.jdtech.jellyfin.models.ContentType.MOVIE
 import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.contentType
-import dev.jdtech.jellyfin.utils.toggleVisibility
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel.Loading
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel.LoadingError
@@ -112,8 +112,10 @@ class HomeFragment : Fragment() {
 
     private fun bindError(state: LoadingError) {
         checkIfLoginRequired(state.message)
-        binding.errorLayout.errorPanel.toggleVisibility()
-        binding.viewsRecyclerView.toggleVisibility()
+        binding.errorLayout.errorPanel.isVisible = true
+        binding.viewsRecyclerView.isVisible = false
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             ErrorDialogFragment(state.message).show(
@@ -128,8 +130,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindLoading(state: Loading) {
-        binding.errorLayout.errorPanel.visibility = View.GONE
-        binding.viewsRecyclerView.visibility = View.VISIBLE
+        binding.errorLayout.errorPanel.isVisible = false
+        binding.viewsRecyclerView.isVisible = true
 
         binding.loadingIndicator.visibility = when {
             state.inProgress && binding.refreshLayout.isRefreshing -> View.GONE
