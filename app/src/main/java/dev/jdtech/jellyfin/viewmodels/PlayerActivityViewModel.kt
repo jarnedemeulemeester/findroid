@@ -158,17 +158,17 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null) {
-                            try {
-                                jellyfinRepository.postPlaybackProgress(
-                                    UUID.fromString(player.currentMediaItem!!.mediaId),
-                                    player.currentPosition.times(10000),
-                                    !player.isPlaying
-                                )
-                            } catch (e: Exception) {
-                                Timber.e(e)
-                            }
                         if(playFromDownloads){
-                            postDownloadPlaybackProgress(items[0].mediaSourceUri, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automaticcaly use the correct item
+                            postDownloadPlaybackProgress(items[0].mediaSourceUri, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automatically use the correct item
+                        }
+                        try {
+                            jellyfinRepository.postPlaybackProgress(
+                                UUID.fromString(player.currentMediaItem!!.mediaId),
+                                player.currentPosition.times(10000),
+                                !player.isPlaying
+                            )
+                        } catch (e: Exception) {
+                            Timber.e(e)
                         }
                     }
                 }

@@ -79,6 +79,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context
             out.println(metadata.playbackPosition.toString())
             out.println(metadata.playedPercentage.toString())
             out.println(metadata.seriesId.toString())
+            out.println(metadata.played.toString())
         }
     } else if (metadata.type == "Movie") {
         metadataFile.printWriter().use { out ->
@@ -87,6 +88,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context
             out.println(metadata.name.toString())
             out.println(metadata.playbackPosition.toString())
             out.println(metadata.playedPercentage.toString())
+            out.println(metadata.played.toString())
         }
     }
 
@@ -145,7 +147,7 @@ fun postDownloadPlaybackProgress(uri: String, playbackPosition: Long, playedPerc
             metadataArray[3] = playbackPosition.toString()
             metadataArray[4] = playedPercentage.toString()
         }
-
+        Timber.d("PLAYEDPERCENTAGE $playedPercentage")
         metadataFile.writeText("") //This might be necessary to make sure that the metadata file is empty
         metadataFile.printWriter().use { out ->
             metadataArray.forEach {
@@ -181,7 +183,8 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto) : DownloadMetadata {
         indexNumber = item.indexNumber,
         playbackPosition = item.userData?.playbackPositionTicks ?: 0,
         playedPercentage = item.userData?.playedPercentage,
-        seriesId = item.seriesId
+        seriesId = item.seriesId,
+        played = item.userData?.played
     )
 }
 
@@ -195,7 +198,8 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             indexNumber = metadataFile[5].toInt(),
             playbackPosition = metadataFile[6].toLong(),
             playedPercentage = if(metadataFile[7] == "null") {null} else {metadataFile[7].toDouble()},
-            seriesId = UUID.fromString(metadataFile[8])
+            seriesId = UUID.fromString(metadataFile[8]),
+            played = metadataFile[9].toBoolean()
         )
     } else {
         return DownloadMetadata(id = UUID.fromString(metadataFile[0]),
@@ -203,6 +207,7 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             name = metadataFile[2],
             playbackPosition = metadataFile[3].toLong(),
             playedPercentage = if(metadataFile[4] == "null") {null} else {metadataFile[4].toDouble()},
+            played = metadataFile[5].toBoolean()
         )
     }
 }
@@ -221,6 +226,10 @@ suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context
             var playbackProgress: Long = 0
             var playedPercentage = 0.0
 
+            if (it.metadata?.played == true || item.userData?.played == true){
+                return@forEach
+            }
+
             if (localPlaybackProgress != null) {
                 if (localPlaybackProgress > playbackProgress){
                     playbackProgress = localPlaybackProgress
@@ -237,7 +246,6 @@ suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context
             if (playbackProgress != 0.toLong()) {
                 postDownloadPlaybackProgress(it.mediaSourceUri, playbackProgress, playedPercentage)
                 jellyfinRepository.postPlaybackProgress(it.itemId, playbackProgress.times(10000), true)
-                Timber.d("Percentage: $playedPercentage")
             }
         } catch (e: Exception) {
             Timber.e(e)
