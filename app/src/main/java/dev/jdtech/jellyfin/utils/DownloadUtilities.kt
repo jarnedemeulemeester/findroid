@@ -25,31 +25,6 @@ import java.io.File
 import java.util.*
 
 fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Fragment) {
-    // Storage permission for downloads isn't necessary from Android 10 onwards
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-        @Suppress("MagicNumber")
-        Timber.d("REQUESTING PERMISSION")
-
-        if (ContextCompat.checkSelfPermission(context.requireActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context.requireActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(context.requireActivity(),
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-            } else {
-                ActivityCompat.requestPermissions(context.requireActivity(),
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-            }
-        }
-
-        val granted = ContextCompat.checkSelfPermission(context.requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-        if (!granted) {
-            context.requireContext().toast(R.string.download_no_storage_permission)
-            return
-        }
-    }
     val defaultStorage = getDownloadLocation(context.requireContext())
     Timber.d(defaultStorage.toString())
     val downloadRequest = DownloadManager.Request(uri)
