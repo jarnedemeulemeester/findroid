@@ -24,8 +24,9 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
+var defaultStorage: File? = null
+
 fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Fragment) {
-    val defaultStorage = getDownloadLocation(context.requireContext())
     Timber.d(defaultStorage.toString())
     val downloadRequest = DownloadManager.Request(uri)
         .setTitle(downloadRequestItem.metadata.name)
@@ -34,11 +35,10 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     if(!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
         downloadFile(downloadRequest, context.requireContext())
-    createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId, context.requireContext())
+    createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId)
 }
 
-private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context: Context) {
-    val defaultStorage = getDownloadLocation(context)
+private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID) {
     val metadataFile = File(defaultStorage, "${itemId}.metadata")
 
     metadataFile.writeText("") //This might be necessary to make sure that the metadata file is empty
@@ -79,13 +79,12 @@ private fun downloadFile(request: DownloadManager.Request, context: Context) {
     context.getSystemService<DownloadManager>()?.enqueue(request)
 }
 
-private fun getDownloadLocation(context: Context): File? {
-    return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+fun loadDownloadLocation(context: Context) {
+    defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
 }
 
 fun loadDownloadedEpisodes(context: Context): List<PlayerItem> {
     val items = mutableListOf<PlayerItem>()
-    val defaultStorage = getDownloadLocation(context)
     defaultStorage?.walk()?.forEach {
         if (it.isFile && it.extension == "") {
             try{
@@ -100,6 +99,16 @@ fun loadDownloadedEpisodes(context: Context): List<PlayerItem> {
         }
     }
     return items.toList()
+}
+
+fun itemIsDownloaded(itemId: UUID): Boolean {
+    val file = File(defaultStorage!!, itemId.toString())
+    if (file.isFile && file.extension == "") {
+        if (File(defaultStorage, "${itemId}.metadata").exists()){
+            return true
+        }
+    }
+    return false
 }
 
 fun deleteDownloadedEpisode(uri: String) {

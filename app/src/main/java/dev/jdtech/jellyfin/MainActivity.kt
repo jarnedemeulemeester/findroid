@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
 import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
+import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
             }
             if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title = getString(R.string.app_info)
         }
+
+        loadDownloadLocation(applicationContext)
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
