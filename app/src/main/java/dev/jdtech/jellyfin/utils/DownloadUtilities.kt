@@ -33,7 +33,7 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
         .setDestinationUri(Uri.fromFile(File(defaultStorage, downloadRequestItem.itemId.toString())))
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     if(!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
-        downloadFile(downloadRequest, 1, context.requireContext())
+        downloadFile(downloadRequest, context.requireContext())
     createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId, context.requireContext())
 }
 
@@ -55,6 +55,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context
             out.println(metadata.playedPercentage.toString())
             out.println(metadata.seriesId.toString())
             out.println(metadata.played.toString())
+            out.println(metadata.overview?.replace("\n", "\\n"))
         }
     } else if (metadata.type == "Movie") {
         metadataFile.printWriter().use { out ->
@@ -64,13 +65,13 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context
             out.println(metadata.playbackPosition.toString())
             out.println(metadata.playedPercentage.toString())
             out.println(metadata.played.toString())
+            out.println(metadata.overview?.replace("\n", "\\n"))
         }
     }
 
 }
 
-private fun downloadFile(request: DownloadManager.Request, downloadMethod: Int, context: Context) {
-    require(downloadMethod >= 0) { "Download method hasn't been set" }
+private fun downloadFile(request: DownloadManager.Request, context: Context) {
     request.apply {
         setAllowedOverMetered(false)
         setAllowedOverRoaming(false)
@@ -136,7 +137,7 @@ fun postDownloadPlaybackProgress(uri: String, playbackPosition: Long, playedPerc
 
 fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata) : BaseItemDto {
     val userData = UserItemDataDto(playbackPositionTicks = metadata.playbackPosition ?: 0,
-        playedPercentage = metadata.playedPercentage, isFavorite = false, playCount = 0, played = false)
+        playedPercentage = metadata.playedPercentage, isFavorite = false, playCount = 0, played = metadata.played==true)
 
     return BaseItemDto(id = metadata.id,
         type = metadata.type,
@@ -145,7 +146,8 @@ fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata) : BaseItemDto {
         parentIndexNumber = metadata.parentIndexNumber,
         indexNumber = metadata.indexNumber,
         userData = userData,
-        seriesId = metadata.seriesId
+        seriesId = metadata.seriesId,
+        overview = metadata.overview?.replace("\\n", "\n")
     )
 }
 
@@ -159,7 +161,8 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto) : DownloadMetadata {
         playbackPosition = item.userData?.playbackPositionTicks ?: 0,
         playedPercentage = item.userData?.playedPercentage,
         seriesId = item.seriesId,
-        played = item.userData?.played
+        played = item.userData?.played,
+        overview = item.overview?.replace("\\n", "\n")
     )
 }
 
@@ -174,7 +177,8 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             playbackPosition = metadataFile[6].toLong(),
             playedPercentage = if(metadataFile[7] == "null") {null} else {metadataFile[7].toDouble()},
             seriesId = UUID.fromString(metadataFile[8]),
-            played = metadataFile[9].toBoolean()
+            played = metadataFile[9].toBoolean(),
+            overview = metadataFile[10]
         )
     } else {
         return DownloadMetadata(id = UUID.fromString(metadataFile[0]),
@@ -182,7 +186,8 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             name = metadataFile[2],
             playbackPosition = metadataFile[3].toLong(),
             playedPercentage = if(metadataFile[4] == "null") {null} else {metadataFile[4].toDouble()},
-            played = metadataFile[5].toBoolean()
+            played = metadataFile[5].toBoolean(),
+            overview = metadataFile[6]
         )
     }
 }
