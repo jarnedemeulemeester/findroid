@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.TvAddServerFragmentBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -40,36 +39,38 @@ internal class TvAddServerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.uiState.collect { uiState ->
-                        Timber.d("$uiState")
-                        when (uiState) {
-                            is AddServerViewModel.UiState.Normal -> {
-                                binding.progressCircular.isVisible = false
-                            }
-                            is AddServerViewModel.UiState.Error -> {
-                                binding.progressCircular.isVisible = false
-                                binding.serverAddress.error = uiState.message
-                            }
-                            is AddServerViewModel.UiState.Loading -> {
-                                binding.progressCircular.isVisible = true
-                                binding.serverAddress.error = null
-                            }
-                        }
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is AddServerViewModel.UiState.Normal -> bindUiStateNormal()
+                        is AddServerViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is AddServerViewModel.UiState.Loading -> bindUiStateLoading()
                     }
                 }
-                launch {
-                    viewModel.navigateToLogin.collect {
-                        Timber.d("Navigate to login: $it")
-                        if (it) {
-                            navigateToLoginFragment()
-                        }
+                viewModel.onNavigateToLogin(viewLifecycleOwner.lifecycleScope) {
+                    Timber.d("Navigate to login: $it")
+                    if (it) {
+                        navigateToLoginFragment()
                     }
                 }
             }
         }
 
         return binding.root
+    }
+
+    private fun bindUiStateNormal() {
+        binding.progressCircular.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
+        binding.progressCircular.isVisible = false
+        binding.serverAddress.error = uiState.message
+    }
+
+    private fun bindUiStateLoading() {
+        binding.progressCircular.isVisible = true
+        binding.serverAddress.error = null
     }
 
     private fun navigateToLoginFragment() {

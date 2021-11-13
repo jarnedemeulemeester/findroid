@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.res.Resources
 import android.widget.Toast
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,16 +31,22 @@ constructor(
 ) : ViewModel() {
     private val resources: Resources = application.resources
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
-    val uiState = _uiState.asStateFlow()
+    private val uiState = MutableStateFlow<UiState>(UiState.Normal)
 
-    private val _navigateToLogin = MutableSharedFlow<Boolean>()
-    val navigateToLogin = _navigateToLogin.asSharedFlow()
+    private val navigateToLogin = MutableSharedFlow<Boolean>()
 
     sealed class UiState {
         object Normal: UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
+    }
+
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
+
+    fun onNavigateToLogin(scope: LifecycleCoroutineScope, collector: (Boolean) -> Unit) {
+        scope.launch { navigateToLogin.collect { collector(it) } }
     }
 
     /**
@@ -53,7 +60,7 @@ constructor(
     fun checkServer(inputValue: String) {
 
         viewModelScope.launch {
-            _uiState.emit(UiState.Loading)
+            uiState.emit(UiState.Loading)
 
             try {
                 // Check if input value is not empty
@@ -109,11 +116,11 @@ constructor(
                     api.accessToken = null
                 }
 
-                _uiState.emit(UiState.Normal)
-                _navigateToLogin.emit(true)
+                uiState.emit(UiState.Normal)
+                navigateToLogin.emit(true)
             } catch (e: Exception) {
                 // Timber.e(e)
-                _uiState.emit(UiState.Error(e.message ?: resources.getString(R.string.unknown_error)))
+                uiState.emit(UiState.Error(e.message ?: resources.getString(R.string.unknown_error)))
             }
         }
     }
