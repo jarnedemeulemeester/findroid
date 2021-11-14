@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import com.google.android.exoplayer2.Player
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.DownloadMetadata
 import dev.jdtech.jellyfin.models.DownloadRequestItem
@@ -109,6 +110,19 @@ fun itemIsDownloaded(itemId: UUID): Boolean {
         }
     }
     return false
+}
+
+fun getDownloadPlayerItem(itemId: UUID): PlayerItem? {
+    val file = File(defaultStorage!!, itemId.toString())
+    try{
+        val metadataFile = File(defaultStorage, "${file.name}.metadata").readLines()
+        val metadata = parseMetadataFile(metadataFile)
+        return PlayerItem(metadata.name, UUID.fromString(file.name), "", metadata.playbackPosition!!, file.absolutePath, metadata)
+    } catch (e: Exception) {
+        file.delete()
+        Timber.e(e)
+    }
+    return null
 }
 
 fun deleteDownloadedEpisode(uri: String) {
