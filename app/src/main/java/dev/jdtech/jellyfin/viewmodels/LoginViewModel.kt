@@ -36,7 +36,7 @@ constructor(
     private val navigateToMain = MutableSharedFlow<Boolean>()
 
     sealed class UiState {
-        object Normal: UiState()
+        object Normal : UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
     }
@@ -93,7 +93,11 @@ constructor(
                 navigateToMain.emit(true)
             } catch (e: Exception) {
                 Timber.e(e)
-                uiState.emit(UiState.Error(e.message ?: resources.getString(R.string.unknown_error)))
+                val message =
+                    if (e.cause?.message?.contains("401") == true) resources.getString(R.string.login_error_wrong_username_password) else resources.getString(
+                        R.string.unknown_error
+                    )
+                uiState.emit(UiState.Error(message))
             }
         }
     }
