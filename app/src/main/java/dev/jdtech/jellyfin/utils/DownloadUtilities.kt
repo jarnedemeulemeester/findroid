@@ -16,13 +16,11 @@ import dev.jdtech.jellyfin.models.DownloadMetadata
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.UserItemDataDto
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Fragment) {
     // Storage permission for downloads isn't necessary from Android 10 onwards
@@ -209,7 +207,7 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
 
 suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context: Context) {
     val items = loadDownloadedEpisodes(context)
-    items.forEach(){
+    items.forEach{
         try {
             val localPlaybackProgress = it.metadata?.playbackPosition
             val localPlayedPercentage = it.metadata?.playedPercentage

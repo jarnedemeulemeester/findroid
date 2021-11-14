@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.View
-import java.util.*
+import java.util.UUID
 
 private const val ITEM_VIEW_TYPE_NEXT_UP = 0
 private const val ITEM_VIEW_TYPE_VIEW = 1
@@ -51,7 +51,8 @@ class ViewListAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<HomeItem>() {
         override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.ids.size == newItem.ids.size
+                && oldItem.ids.mapIndexed { i, old -> old == newItem.ids[i] }.all { it }
         }
 
         override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
@@ -106,12 +107,12 @@ class ViewListAdapter(
 
 sealed class HomeItem {
     data class Section(val homeSection: HomeSection) : HomeItem() {
-        override val id = homeSection.id
+        override val ids = homeSection.items.map { it.id }
     }
 
     data class ViewItem(val view: View) : HomeItem() {
-        override val id = view.id
+        override val ids = view.items?.map { it.id }.orEmpty()
     }
 
-    abstract val id: UUID
+    abstract val ids: List<UUID>
 }
