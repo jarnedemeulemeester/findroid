@@ -56,7 +56,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID) {
             out.println(metadata.playedPercentage.toString())
             out.println(metadata.seriesId.toString())
             out.println(metadata.played.toString())
-            out.println(metadata.overview?.replace("\n", "\\n"))
+            out.println(if (metadata.overview != null) metadata.overview.replace("\n", "\\n") else "")
         }
     } else if (metadata.type == "Movie") {
         metadataFile.printWriter().use { out ->
@@ -66,7 +66,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID) {
             out.println(metadata.playbackPosition.toString())
             out.println(metadata.playedPercentage.toString())
             out.println(metadata.played.toString())
-            out.println(metadata.overview?.replace("\n", "\\n"))
+            out.println(if (metadata.overview != null) metadata.overview.replace("\n", "\\n") else "")
         }
     }
 
@@ -170,7 +170,7 @@ fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata) : BaseItemDto {
         indexNumber = metadata.indexNumber,
         userData = userData,
         seriesId = metadata.seriesId,
-        overview = metadata.overview?.replace("\\n", "\n")
+        overview = metadata.overview
     )
 }
 
@@ -185,7 +185,7 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto) : DownloadMetadata {
         playedPercentage = item.userData?.playedPercentage,
         seriesId = item.seriesId,
         played = item.userData?.played,
-        overview = item.overview?.replace("\\n", "\n")
+        overview = item.overview
     )
 }
 
@@ -201,7 +201,7 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             playedPercentage = if(metadataFile[7] == "null") {null} else {metadataFile[7].toDouble()},
             seriesId = UUID.fromString(metadataFile[8]),
             played = metadataFile[9].toBoolean(),
-            overview = metadataFile[10]
+            overview = metadataFile[10].replace("\\n", "\n")
         )
     } else {
         return DownloadMetadata(id = UUID.fromString(metadataFile[0]),
@@ -210,7 +210,7 @@ fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
             playbackPosition = metadataFile[3].toLong(),
             playedPercentage = if(metadataFile[4] == "null") {null} else {metadataFile[4].toDouble()},
             played = metadataFile[5].toBoolean(),
-            overview = metadataFile[6]
+            overview = metadataFile[6].replace("\\n", "\n")
         )
     }
 }
