@@ -36,7 +36,7 @@ constructor(
     private val navigateToLogin = MutableSharedFlow<Boolean>()
 
     sealed class UiState {
-        object Normal: UiState()
+        object Normal : UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
     }
@@ -74,55 +74,65 @@ constructor(
                     RecommendedServerInfoScore.OK
                 )
 
-                // Check if any servers have been found
-                if (recommended.toList().isNullOrEmpty()) {
-                    throw Exception(resources.getString(R.string.add_server_error_not_found))
-                }
+                val greatServers = mutableListOf<RecommendedServerInfo>()
+                val goodServers = mutableListOf<RecommendedServerInfo>()
+                val okServers = mutableListOf<RecommendedServerInfo>()
 
-                // Create separate flow of great, good and ok servers.
-                val greatServers =
-                    recommended.filter { it.score == RecommendedServerInfoScore.GREAT }
-                val goodServers = recommended.filter { it.score == RecommendedServerInfoScore.GOOD }
-                val okServers = recommended.filter { it.score == RecommendedServerInfoScore.OK }
-
-                // Only allow connecting to great and good servers. Show toast of issues if good server
-                val recommendedServer = if (greatServers.toList().isNotEmpty()) {
-                    greatServers.first()
-                } else if (goodServers.toList().isNotEmpty()) {
-                    val issuesString = createIssuesString(goodServers.first())
-                    Toast.makeText(
-                        application,
-                        issuesString,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    goodServers.first()
-                } else {
-                    val okServer = okServers.first()
-                    val issuesString = createIssuesString(okServer)
-                    throw Exception(issuesString)
-                }
-
-                val serverId = recommendedServer.systemInfo.getOrNull()?.id
-                    ?: throw Exception(resources.getString(R.string.add_server_error_no_id))
-
-                Timber.d("Remote server: $serverId")
-
-                if (serverAlreadyInDatabase(serverId)) {
-                    throw Exception(resources.getString(R.string.add_server_error_already_added))
-                }
-
-                jellyfinApi.apply {
-                    api.baseUrl = recommendedServer.address
-                    api.accessToken = null
-                }
-
-                uiState.emit(UiState.Normal)
-                navigateToLogin.emit(true)
+                recommended
+                    .onCompletion {
+                        if (greatServers.isNotEmpty()) {
+                            connectToServer(greatServers.first())
+                        } else if (goodServers.isNotEmpty()) {
+                            val issuesString = createIssuesString(goodServers.first())
+                            Toast.makeText(
+                                application,
+                                issuesString,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            connectToServer(goodServers.first())
+                        } else if (okServers.isNotEmpty()) {
+                            val okServer = okServers.first()
+                            val issuesString = createIssuesString(okServer)
+                            throw Exception(issuesString)
+                        } else {
+                            throw Exception(resources.getString(R.string.add_server_error_not_found))
+                        }
+                    }
+                    .collect { recommendedServerInfo ->
+                        when (recommendedServerInfo.score) {
+                            RecommendedServerInfoScore.GREAT -> greatServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.BAD -> Unit
+                        }
+                    }
             } catch (e: Exception) {
-                // Timber.e(e)
-                uiState.emit(UiState.Error(e.message ?: resources.getString(R.string.unknown_error)))
+                uiState.emit(
+                    UiState.Error(
+                        e.message ?: resources.getString(R.string.unknown_error)
+                    )
+                )
             }
         }
+    }
+
+    private suspend fun connectToServer(recommendedServerInfo: RecommendedServerInfo) {
+        val serverId = recommendedServerInfo.systemInfo.getOrNull()?.id
+            ?: throw Exception(resources.getString(R.string.add_server_error_no_id))
+
+        Timber.d("Connecting to server: $serverId")
+
+        if (serverAlreadyInDatabase(serverId)) {
+            throw Exception(resources.getString(R.string.add_server_error_already_added))
+        }
+
+        jellyfinApi.apply {
+            api.baseUrl = recommendedServerInfo.address
+            api.accessToken = null
+        }
+
+        uiState.emit(UiState.Normal)
+        navigateToLogin.emit(true)
     }
 
     /**
