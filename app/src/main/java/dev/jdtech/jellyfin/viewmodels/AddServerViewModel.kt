@@ -2,8 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.res.Resources
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,9 +12,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -32,78 +29,110 @@ constructor(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
+    private val resources: Resources = application.resources
 
-    private val _navigateToLogin = MutableLiveData<Boolean>()
-    val navigateToLogin: LiveData<Boolean> = _navigateToLogin
+    private val uiState = MutableStateFlow<UiState>(UiState.Normal)
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val navigateToLogin = MutableSharedFlow<Boolean>()
+
+    sealed class UiState {
+        object Normal : UiState()
+        object Loading : UiState()
+        data class Error(val message: String) : UiState()
+    }
+
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
+
+    fun onNavigateToLogin(scope: LifecycleCoroutineScope, collector: (Boolean) -> Unit) {
+        scope.launch { navigateToLogin.collect { collector(it) } }
+    }
 
     /**
      * Run multiple check on the server before continuing:
      *
      * - Connect to server and check if it is a Jellyfin server
      * - Check if server is not already in Database
+     *
+     * @param inputValue Can be an ip address or hostname
      */
-    fun checkServer(inputValue: String, resources: Resources) {
-        _error.value = null
+    fun checkServer(inputValue: String) {
 
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
+
             try {
+                // Check if input value is not empty
+                if (inputValue.isBlank()) {
+                    throw Exception(resources.getString(R.string.add_server_error_empty_address))
+                }
+
                 val candidates = jellyfinApi.jellyfin.discovery.getAddressCandidates(inputValue)
                 val recommended = jellyfinApi.jellyfin.discovery.getRecommendedServers(
                     candidates,
                     RecommendedServerInfoScore.OK
                 )
 
-                // Check if any servers have been found
-                if (recommended.toList().isNullOrEmpty()) {
-                    throw Exception(resources.getString(R.string.add_server_error_not_found))
-                }
+                val greatServers = mutableListOf<RecommendedServerInfo>()
+                val goodServers = mutableListOf<RecommendedServerInfo>()
+                val okServers = mutableListOf<RecommendedServerInfo>()
 
-                // Create separate flow of great, good and ok servers.
-                val greatServers =
-                    recommended.filter { it.score == RecommendedServerInfoScore.GREAT }
-                val goodServers = recommended.filter { it.score == RecommendedServerInfoScore.GOOD }
-                val okServers = recommended.filter { it.score == RecommendedServerInfoScore.OK }
-
-                // Only allow connecting to great and good servers. Show toast of issues if good server
-                val recommendedServer = if (greatServers.toList().isNotEmpty()) {
-                    greatServers.first()
-                } else if (goodServers.toList().isNotEmpty()) {
-                    val issuesString = createIssuesString(goodServers.first(), resources)
-                    Toast.makeText(
-                        application,
-                        issuesString,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    goodServers.first()
-                } else {
-                    val okServer = okServers.first()
-                    val issuesString = createIssuesString(okServer, resources)
-                    throw Exception(issuesString)
-                }
-
-                jellyfinApi.apply {
-                    api.baseUrl = recommendedServer.address
-                    api.accessToken = null
-                }
-
-                Timber.d("Remote server: ${recommendedServer.systemInfo.getOrNull()?.id}")
-
-                if (serverAlreadyInDatabase(recommendedServer.systemInfo.getOrNull()?.id)) {
-                    _error.value = resources.getString(R.string.add_server_error_already_added)
-                    _navigateToLogin.value = false
-                } else {
-                    _error.value = null
-                    _navigateToLogin.value = true
-                }
+                recommended
+                    .onCompletion {
+                        if (greatServers.isNotEmpty()) {
+                            connectToServer(greatServers.first())
+                        } else if (goodServers.isNotEmpty()) {
+                            val issuesString = createIssuesString(goodServers.first())
+                            Toast.makeText(
+                                application,
+                                issuesString,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            connectToServer(goodServers.first())
+                        } else if (okServers.isNotEmpty()) {
+                            val okServer = okServers.first()
+                            val issuesString = createIssuesString(okServer)
+                            throw Exception(issuesString)
+                        } else {
+                            throw Exception(resources.getString(R.string.add_server_error_not_found))
+                        }
+                    }
+                    .collect { recommendedServerInfo ->
+                        when (recommendedServerInfo.score) {
+                            RecommendedServerInfoScore.GREAT -> greatServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.BAD -> Unit
+                        }
+                    }
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.message
-                _navigateToLogin.value = false
+                uiState.emit(
+                    UiState.Error(
+                        e.message ?: resources.getString(R.string.unknown_error)
+                    )
+                )
             }
         }
+    }
+
+    private suspend fun connectToServer(recommendedServerInfo: RecommendedServerInfo) {
+        val serverId = recommendedServerInfo.systemInfo.getOrNull()?.id
+            ?: throw Exception(resources.getString(R.string.add_server_error_no_id))
+
+        Timber.d("Connecting to server: $serverId")
+
+        if (serverAlreadyInDatabase(serverId)) {
+            throw Exception(resources.getString(R.string.add_server_error_already_added))
+        }
+
+        jellyfinApi.apply {
+            api.baseUrl = recommendedServerInfo.address
+            api.accessToken = null
+        }
+
+        uiState.emit(UiState.Normal)
+        navigateToLogin.emit(true)
     }
 
     /**
@@ -112,20 +141,32 @@ constructor(
      * @param server The server with issues
      * @return A presentable string of issues separated with \n
      */
-    private fun createIssuesString(server: RecommendedServerInfo, resources: Resources): String {
+    private fun createIssuesString(server: RecommendedServerInfo): String {
         return server.issues.joinToString("\n") {
             when (it) {
                 is RecommendedServerIssue.OutdatedServerVersion -> {
-                    String.format(resources.getString(R.string.add_server_error_outdated), it.version)
+                    String.format(
+                        resources.getString(R.string.add_server_error_outdated),
+                        it.version
+                    )
                 }
                 is RecommendedServerIssue.InvalidProductName -> {
-                    String.format(resources.getString(R.string.add_server_error_not_jellyfin), it.productName)
+                    String.format(
+                        resources.getString(R.string.add_server_error_not_jellyfin),
+                        it.productName
+                    )
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
-                    String.format(resources.getString(R.string.add_server_error_version), it.version)
+                    String.format(
+                        resources.getString(R.string.add_server_error_version),
+                        it.version
+                    )
                 }
                 is RecommendedServerIssue.SlowResponse -> {
-                    String.format(resources.getString(R.string.add_server_error_slow), it.responseTime)
+                    String.format(
+                        resources.getString(R.string.add_server_error_slow),
+                        it.responseTime
+                    )
                 }
                 else -> {
                     resources.getString(R.string.unknown_error)
@@ -140,22 +181,12 @@ constructor(
      * @param id Server ID
      * @return True if server is already in database
      */
-    private suspend fun serverAlreadyInDatabase(id: String?): Boolean {
-        val servers: List<Server>
+    private suspend fun serverAlreadyInDatabase(id: String): Boolean {
+        val server: Server?
         withContext(Dispatchers.IO) {
-            servers = database.getAllServersSync()
+            server = database.get(id)
         }
-        for (server in servers) {
-            Timber.d("Database server: ${server.id}")
-            if (server.id == id) {
-                Timber.w("Server already in the database")
-                return true
-            }
-        }
+        if (server != null) return true
         return false
-    }
-
-    fun onNavigateToLoginDone() {
-        _navigateToLogin.value = false
     }
 }

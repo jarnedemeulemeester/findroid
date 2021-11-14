@@ -22,6 +22,7 @@ fun BaseItemDto.toView(): View {
 fun BaseItemDto.contentType() = when (type) {
     "Movie" -> ContentType.MOVIE
     "Series" -> ContentType.TVSHOW
+    "Episode" -> ContentType.EPISODE
     else -> ContentType.UNKNOWN
 }
 
@@ -31,6 +32,7 @@ fun Fragment.checkIfLoginRequired(error: String) {
         findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
     }
 }
+
 
 inline fun Context.toast(@StringRes text: Int, duration: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(this, text, duration).show()

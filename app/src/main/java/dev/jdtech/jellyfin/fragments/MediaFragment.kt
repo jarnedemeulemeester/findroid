@@ -21,6 +21,8 @@ class MediaFragment : Fragment() {
     private lateinit var binding: FragmentMediaBinding
     private val viewModel: MediaViewModel by viewModels()
 
+    private var originalSoftInputMode: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -33,7 +35,7 @@ class MediaFragment : Fragment() {
         val searchView = search.actionView as SearchView
         searchView.queryHint = getString(R.string.search_hint)
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (p0 != null) {
                     navigateToSearchResultFragment(p0)
@@ -81,10 +83,26 @@ class MediaFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.let {
+            originalSoftInputMode = it.attributes?.softInputMode
+            it.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        originalSoftInputMode?.let { activity?.window?.setSoftInputMode(it) }
     }
 
     private fun navigateToLibraryFragment(library: BaseItemDto) {
