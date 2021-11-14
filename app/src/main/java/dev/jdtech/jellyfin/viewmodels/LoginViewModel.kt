@@ -1,12 +1,18 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.BaseApplication
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
@@ -18,17 +24,30 @@ import javax.inject.Inject
 class LoginViewModel
 @Inject
 constructor(
+    application: BaseApplication,
     private val sharedPreferences: SharedPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
+    private val resources: Resources = application.resources
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val uiState = MutableStateFlow<UiState>(UiState.Normal)
 
+    private val navigateToMain = MutableSharedFlow<Boolean>()
 
-    private val _navigateToMain = MutableLiveData<Boolean>()
-    val navigateToMain: LiveData<Boolean> = _navigateToMain
+    sealed class UiState {
+        object Normal : UiState()
+        object Loading : UiState()
+        data class Error(val message: String) : UiState()
+    }
+
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
+
+    fun onNavigateToMain(scope: LifecycleCoroutineScope, collector: (Boolean) -> Unit) {
+        scope.launch { navigateToMain.collect { collector(it) } }
+    }
 
     /**
      * Send a authentication request to the Jellyfin server
@@ -38,6 +57,8 @@ constructor(
      */
     fun login(username: String, password: String) {
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
+
             try {
                 val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
                     data = AuthenticateUserByName(
@@ -45,8 +66,9 @@ constructor(
                         pw = password
                     )
                 )
-                _error.value = null
+
                 val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
+
                 val server = Server(
                     serverInfo.id!!,
                     serverInfo.serverName!!,
@@ -55,18 +77,27 @@ constructor(
                     authenticationResult.user?.name!!,
                     authenticationResult.accessToken!!
                 )
+
                 insert(server)
+
                 val spEdit = sharedPreferences.edit()
                 spEdit.putString("selectedServer", server.id)
                 spEdit.apply()
+
                 jellyfinApi.apply {
                     api.accessToken = authenticationResult.accessToken
                     userId = authenticationResult.user?.id
                 }
-                _navigateToMain.value = true
+
+                uiState.emit(UiState.Normal)
+                navigateToMain.emit(true)
             } catch (e: Exception) {
                 Timber.e(e)
-                _error.value = e.toString()
+                val message =
+                    if (e.cause?.message?.contains("401") == true) resources.getString(R.string.login_error_wrong_username_password) else resources.getString(
+                        R.string.unknown_error
+                    )
+                uiState.emit(UiState.Error(message))
             }
         }
     }
@@ -80,9 +111,5 @@ constructor(
         withContext(Dispatchers.IO) {
             database.insert(server)
         }
-    }
-
-    fun doneNavigatingToMain() {
-        _navigateToMain.value = false
     }
 }

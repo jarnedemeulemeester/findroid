@@ -10,7 +10,9 @@
     <string name="add_server_error_already_added">Server already added</string>
     <string name="add_server_error_empty_address">Empty server address</string>
     <string name="add_server_error_not_found">Server not found</string>
+    <string name="add_server_error_no_id">Server has no id, something seems to be wrong with the server</string>
     <string name="login">Login</string>
+    <string name="login_error_wrong_username_password">Wrong username or password</string>
     <string name="select_server">Select server</string>
     <string name="edit_text_server_address_hint">Server address</string>
     <string name="edit_text_username_hint">Username</string>
