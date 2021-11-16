@@ -28,20 +28,32 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
         @Suppress("MagicNumber")
         Timber.d("REQUESTING PERMISSION")
 
-        if (ContextCompat.checkSelfPermission(context.requireActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                context.requireActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context.requireActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(context.requireActivity(),
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    context.requireActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
+                ActivityCompat.requestPermissions(
+                    context.requireActivity(),
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1
+                )
             } else {
-                ActivityCompat.requestPermissions(context.requireActivity(),
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                ActivityCompat.requestPermissions(
+                    context.requireActivity(),
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1
+                )
             }
         }
 
-        val granted = ContextCompat.checkSelfPermission(context.requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val granted = ContextCompat.checkSelfPermission(
+            context.requireActivity(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
 
         if (!granted) {
             context.requireContext().toast(R.string.download_no_storage_permission)
@@ -53,11 +65,22 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
     val downloadRequest = DownloadManager.Request(uri)
         .setTitle(downloadRequestItem.metadata.name)
         .setDescription("Downloading")
-        .setDestinationUri(Uri.fromFile(File(defaultStorage, downloadRequestItem.itemId.toString())))
+        .setDestinationUri(
+            Uri.fromFile(
+                File(
+                    defaultStorage,
+                    downloadRequestItem.itemId.toString()
+                )
+            )
+        )
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-    if(!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
+    if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
         downloadFile(downloadRequest, 1, context.requireContext())
-    createMetadataFile(downloadRequestItem.metadata, downloadRequestItem.itemId, context.requireContext())
+    createMetadataFile(
+        downloadRequestItem.metadata,
+        downloadRequestItem.itemId,
+        context.requireContext()
+    )
 }
 
 private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context: Context) {
@@ -66,7 +89,7 @@ private fun createMetadataFile(metadata: DownloadMetadata, itemId: UUID, context
 
     metadataFile.writeText("") //This might be necessary to make sure that the metadata file is empty
 
-    if(metadata.type == "Episode") {
+    if (metadata.type == "Episode") {
         metadataFile.printWriter().use { out ->
             out.println(metadata.id)
             out.println(metadata.type.toString())
@@ -108,10 +131,19 @@ fun loadDownloadedEpisodes(context: Context): List<PlayerItem> {
     val defaultStorage = getDownloadLocation(context)
     defaultStorage?.walk()?.forEach {
         if (it.isFile && it.extension == "") {
-            try{
+            try {
                 val metadataFile = File(defaultStorage, "${it.name}.metadata").readLines()
                 val metadata = parseMetadataFile(metadataFile)
-                items.add(PlayerItem(metadata.name, UUID.fromString(it.name), "", metadata.playbackPosition!!, it.absolutePath, metadata))
+                items.add(
+                    PlayerItem(
+                        name = metadata.name,
+                        itemId = UUID.fromString(it.name),
+                        mediaSourceId = "",
+                        playbackPosition = metadata.playbackPosition!!,
+                        mediaSourceUri = it.absolutePath,
+                        metadata = metadata
+                    )
+                )
             } catch (e: Exception) {
                 it.delete()
                 Timber.e(e)
@@ -136,7 +168,7 @@ fun postDownloadPlaybackProgress(uri: String, playbackPosition: Long, playedPerc
     try {
         val metadataFile = File("${uri}.metadata")
         val metadataArray = metadataFile.readLines().toMutableList()
-        if(metadataArray[1] == "Episode"){
+        if (metadataArray[1] == "Episode") {
             metadataArray[6] = playbackPosition.toString()
             metadataArray[7] = playedPercentage.toString()
         } else if (metadataArray[1] == "Movie") {
@@ -155,11 +187,17 @@ fun postDownloadPlaybackProgress(uri: String, playbackPosition: Long, playedPerc
     }
 }
 
-fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata) : BaseItemDto {
-    val userData = UserItemDataDto(playbackPositionTicks = metadata.playbackPosition ?: 0,
-        playedPercentage = metadata.playedPercentage, isFavorite = false, playCount = 0, played = false)
+fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata): BaseItemDto {
+    val userData = UserItemDataDto(
+        playbackPositionTicks = metadata.playbackPosition ?: 0,
+        playedPercentage = metadata.playedPercentage,
+        isFavorite = false,
+        playCount = 0,
+        played = false
+    )
 
-    return BaseItemDto(id = metadata.id,
+    return BaseItemDto(
+        id = metadata.id,
         type = metadata.type,
         seriesName = metadata.seriesName,
         name = metadata.name,
@@ -170,8 +208,9 @@ fun downloadMetadataToBaseItemDto(metadata: DownloadMetadata) : BaseItemDto {
     )
 }
 
-fun baseItemDtoToDownloadMetadata(item: BaseItemDto) : DownloadMetadata {
-    return DownloadMetadata(id = item.id,
+fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadMetadata {
+    return DownloadMetadata(
+        id = item.id,
         type = item.type,
         seriesName = item.seriesName,
         name = item.name,
@@ -183,31 +222,41 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto) : DownloadMetadata {
     )
 }
 
-fun parseMetadataFile(metadataFile: List<String>) : DownloadMetadata {
+fun parseMetadataFile(metadataFile: List<String>): DownloadMetadata {
     if (metadataFile[1] == "Episode") {
-        return DownloadMetadata(id = UUID.fromString(metadataFile[0]),
+        return DownloadMetadata(
+            id = UUID.fromString(metadataFile[0]),
             type = metadataFile[1],
             seriesName = metadataFile[2],
             name = metadataFile[3],
             parentIndexNumber = metadataFile[4].toInt(),
             indexNumber = metadataFile[5].toInt(),
             playbackPosition = metadataFile[6].toLong(),
-            playedPercentage = if(metadataFile[7] == "null") {null} else {metadataFile[7].toDouble()},
+            playedPercentage = if (metadataFile[7] == "null") {
+                null
+            } else {
+                metadataFile[7].toDouble()
+            },
             seriesId = UUID.fromString(metadataFile[8])
         )
     } else {
-        return DownloadMetadata(id = UUID.fromString(metadataFile[0]),
+        return DownloadMetadata(
+            id = UUID.fromString(metadataFile[0]),
             type = metadataFile[1],
             name = metadataFile[2],
             playbackPosition = metadataFile[3].toLong(),
-            playedPercentage = if(metadataFile[4] == "null") {null} else {metadataFile[4].toDouble()},
+            playedPercentage = if (metadataFile[4] == "null") {
+                null
+            } else {
+                metadataFile[4].toDouble()
+            },
         )
     }
 }
 
 suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context: Context) {
     val items = loadDownloadedEpisodes(context)
-    items.forEach{
+    items.forEach() {
         try {
             val localPlaybackProgress = it.metadata?.playbackPosition
             val localPlayedPercentage = it.metadata?.playedPercentage
@@ -220,13 +269,13 @@ suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context
             var playedPercentage = 0.0
 
             if (localPlaybackProgress != null) {
-                if (localPlaybackProgress > playbackProgress){
+                if (localPlaybackProgress > playbackProgress) {
                     playbackProgress = localPlaybackProgress
                     playedPercentage = localPlayedPercentage!!
                 }
             }
             if (remotePlaybackProgress != null) {
-                if (remotePlaybackProgress > playbackProgress){
+                if (remotePlaybackProgress > playbackProgress) {
                     playbackProgress = remotePlaybackProgress
                     playedPercentage = remotePlayedPercentage!!
                 }
@@ -234,7 +283,11 @@ suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context
 
             if (playbackProgress != 0.toLong()) {
                 postDownloadPlaybackProgress(it.mediaSourceUri, playbackProgress, playedPercentage)
-                jellyfinRepository.postPlaybackProgress(it.itemId, playbackProgress.times(10000), true)
+                jellyfinRepository.postPlaybackProgress(
+                    it.itemId,
+                    playbackProgress.times(10000),
+                    true
+                )
                 Timber.d("Percentage: $playedPercentage")
             }
         } catch (e: Exception) {
