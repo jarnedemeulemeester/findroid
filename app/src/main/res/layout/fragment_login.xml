@@ -11,102 +11,111 @@
             type="dev.jdtech.jellyfin.viewmodels.LoginViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context=".fragments.LoginFragment">
 
-        <ImageView
-            android:id="@+id/image_banner"
-            android:layout_width="268dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="64dp"
-            android:contentDescription="@string/jellyfin_banner"
-            android:src="@drawable/ic_banner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="@dimen/setup_container_width"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_banner"
-            app:layout_constraintVertical_bias="0.36">
+            <ImageView
+                android:id="@+id/image_banner"
+                android:layout_width="268dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="64dp"
+                android:contentDescription="@string/jellyfin_banner"
+                android:src="@drawable/ic_banner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/text_login"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="@dimen/setup_container_width"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/login"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                android:textColor="?android:textColorPrimary" />
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_banner"
+                app:layout_constraintVertical_bias="0.36">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edit_text_username_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="@string/edit_text_username_hint"
-                app:startIconDrawable="@drawable/ic_user">
+                <TextView
+                    android:id="@+id/text_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:text="@string/login"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?android:textColorPrimary" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_username"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edit_text_username_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autofillHints="username"
-                    android:inputType="text" />
+                    android:layout_marginBottom="12dp"
+                    android:hint="@string/edit_text_username_hint"
+                    app:startIconDrawable="@drawable/ic_user">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_text_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="username"
+                        android:inputType="text" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edit_text_password_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:hint="@string/edit_text_password_hint"
-                app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/ic_lock">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_password"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edit_text_password_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autofillHints="password"
-                    android:inputType="textPassword" />
+                    android:layout_marginBottom="24dp"
+                    android:hint="@string/edit_text_password_hint"
+                    app:passwordToggleEnabled="true"
+                    app:startIconDrawable="@drawable/ic_lock">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_text_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:imeOptions="actionGo"
+                        android:inputType="textPassword" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/button_login"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_login" />
+                    android:layout_height="wrap_content">
 
-                <ProgressBar
-                    android:id="@+id/progress_circular"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:elevation="8dp"
-                    android:indeterminateTint="@color/white"
-                    android:padding="8dp"
-                    android:visibility="invisible" />
-            </RelativeLayout>
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/button_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_login" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ProgressBar
+                        android:id="@+id/progress_circular"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:elevation="8dp"
+                        android:indeterminateTint="@color/white"
+                        android:padding="8dp"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>

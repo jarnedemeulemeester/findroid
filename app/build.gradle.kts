@@ -56,15 +56,22 @@ android {
 dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha01")
 
-    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
     implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 
     // Material
     implementation("com.google.android.material:material:1.4.0")
 
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+
+    // Lifecycle
+    val lifecycleVersion = "2.4.0"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
     // Navigation
     val navigationVersion = "2.3.5"

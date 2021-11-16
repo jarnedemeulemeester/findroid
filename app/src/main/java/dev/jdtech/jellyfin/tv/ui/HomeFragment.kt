@@ -48,7 +48,7 @@ internal class HomeFragment : BrowseSupportFragment() {
             setOnClickListener { navigateToSettingsFragment() }
         }
 
-        viewModel.views.observe(viewLifecycleOwner) { homeItems ->
+        viewModel.views().observe(viewLifecycleOwner) { homeItems ->
             rowsAdapter.clear()
             homeItems.map { section -> rowsAdapter.add(section.toListRow()) }
         }
