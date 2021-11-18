@@ -103,11 +103,9 @@ constructor(
             val mediaItems: MutableList<MediaItem> = mutableListOf()
             try {
                 for (item in items) {
-                    playFromDownloads = item.mediaSourceUri.isNotEmpty()
-                    val streamUrl = if(!playFromDownloads){
-                        jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
-                    }else{
-                        item.mediaSourceUri
+                    val streamUrl = when {
+                        item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
+                        else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
                     }
 
                     Timber.d("Stream url: $streamUrl")

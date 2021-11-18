@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
+import org.jellyfin.sdk.model.api.MediaProtocol
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -88,14 +89,7 @@ class PlayerViewModel @Inject internal constructor(
         return repository
             .getIntros(item.id)
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .map { intro ->
-                PlayerItem(
-                    intro.name,
-                    intro.id,
-                    intro.mediaSources?.get(0)?.id!!,
-                    0
-                )
-            }
+            .map { intro -> intro.toPlayerItem(mediaSourceIndex = 0, playbackPosition = 0) }
     }
 
     private suspend fun prepareMediaPlayerItems(
@@ -113,14 +107,7 @@ class PlayerViewModel @Inject internal constructor(
         item: BaseItemDto,
         playbackPosition: Long,
         mediaSourceIndex: Int
-    ) = listOf(
-        PlayerItem(
-            item.name,
-            item.id,
-            item.mediaSources?.get(mediaSourceIndex)?.id!!,
-            playbackPosition
-        )
-    )
+    ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
         item: BaseItemDto,
@@ -143,23 +130,15 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
-        val episodes = repository.getEpisodes(
-            seriesId = item.seriesId!!,
-            seasonId = item.id,
-            fields = listOf(ItemFields.MEDIA_SOURCES)
-        )
-
-        return episodes
+        return repository
+            .getEpisodes(
+                seriesId = item.seriesId!!,
+                seasonId = item.id,
+                fields = listOf(ItemFields.MEDIA_SOURCES)
+            )
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
             .filter { it.locationType != VIRTUAL }
-            .map { episode ->
-                PlayerItem(
-                    episode.name,
-                    episode.id,
-                    episode.mediaSources?.get(mediaSourceIndex)?.id!!,
-                    playbackPosition
-                )
-            }
+            .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
     private suspend fun episodeToPlayerItems(
@@ -167,24 +146,44 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
-        val episodes = repository.getEpisodes(
-            seriesId = item.seriesId!!,
-            seasonId = item.seasonId!!,
-            fields = listOf(ItemFields.MEDIA_SOURCES),
-            startItemId = item.id
-        )
-
-        return episodes
+        return repository
+            .getEpisodes(
+                seriesId = item.seriesId!!,
+                seasonId = item.seasonId!!,
+                fields = listOf(ItemFields.MEDIA_SOURCES),
+                startItemId = item.id
+            )
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
             .filter { it.locationType != VIRTUAL }
-            .map { episode ->
-                PlayerItem(
-                    episode.name,
-                    episode.id,
-                    episode.mediaSources?.get(mediaSourceIndex)?.id!!,
-                    playbackPosition
-                )
-            }
+            .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
+    }
+
+    private fun BaseItemDto.toPlayerItem(
+        mediaSourceIndex: Int,
+        playbackPosition: Long
+    ): PlayerItem {
+        val mediaSource = mediaSources!![mediaSourceIndex]
+        return when (mediaSource.protocol) {
+            MediaProtocol.FILE -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id!!,
+                playbackPosition = playbackPosition
+            )
+            MediaProtocol.HTTP -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id!!,
+                mediaSourceUri = mediaSource.path!!,
+                playbackPosition = playbackPosition
+            )
+            else -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id!!,
+                playbackPosition = playbackPosition
+            )
+        }
     }
 
     sealed class PlayerItemState
