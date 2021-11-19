@@ -107,6 +107,7 @@ constructor(
                         item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
                         else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
                     }
+                    playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
