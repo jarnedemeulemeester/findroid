@@ -1,24 +1,29 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.Jellyfin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_variant</item>
+    <style name="Theme.Findroid" parent="Base.Theme.Findroid">
+        <!-- Main colors -->
+        <item name="colorPrimary">@color/blue_600</item>
+        <item name="colorPrimaryVariant">@color/blue_800</item>
+        <item name="colorSecondary">@color/green_300</item>
+        <item name="colorSecondaryVariant">@color/green_800</item>
+
+        <!-- Background colors and error state color -->
+        <item name="android:colorBackground">@color/black</item>
+        <item name="colorSurface">@color/neutral_900</item>
+        <item name="colorError">@color/red</item>
+
+        <!-- Text, icons and strokes in relation to the surface -->
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryVariant">@color/secondary_variant</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/neutral_900</item>
-        <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/neutral_900</item>
-        <item name="android:colorBackgroundFloating">@color/neutral_900</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnError">@color/white</item>
+
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
-    <style name="Theme.JellyfinSplashScreen" parent="Theme.SplashScreen">
+    <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/neutral_900</item>
-        <item name="postSplashScreenTheme">@style/Theme.Jellyfin</item>
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="postSplashScreenTheme">@style/Theme.Findroid</item>
     </style>
 </resources>

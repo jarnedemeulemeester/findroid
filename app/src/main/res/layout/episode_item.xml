@@ -19,7 +19,9 @@
         android:layout_height="100dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="24dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_background">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
@@ -30,7 +32,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <ImageView
             android:id="@+id/played_icon"
@@ -53,7 +55,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="?attr/colorError"
             android:visibility="@{episode.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@id/played_icon"
             app:layout_constraintTop_toTopOf="@id/episode_image">

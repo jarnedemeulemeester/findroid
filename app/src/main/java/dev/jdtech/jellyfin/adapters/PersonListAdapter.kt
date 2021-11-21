@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.PersonItemBinding
 import org.jellyfin.sdk.model.api.BaseItemPerson
 
-class PersonListAdapter :ListAdapter<BaseItemPerson, PersonListAdapter.PersonViewHolder>(DiffCallback) {
+class PersonListAdapter(private val clickListener: (item: BaseItemPerson) -> Unit) :ListAdapter<BaseItemPerson, PersonListAdapter.PersonViewHolder>(DiffCallback) {
+
     class PersonViewHolder(private var binding: PersonItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(person: BaseItemPerson) {
@@ -40,5 +41,6 @@ class PersonListAdapter :ListAdapter<BaseItemPerson, PersonListAdapter.PersonVie
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+        holder.itemView.setOnClickListener { clickListener(item) }
     }
 }

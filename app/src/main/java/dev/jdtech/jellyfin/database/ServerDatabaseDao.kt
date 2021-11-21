@@ -12,7 +12,7 @@ interface ServerDatabaseDao {
     fun update(server: Server)
 
     @Query("select * from servers where id = :id")
-    fun get(id: String): Server
+    fun get(id: String): Server?
 
     @Query("delete from servers")
     fun clear()

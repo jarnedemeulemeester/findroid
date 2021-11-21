@@ -8,17 +8,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.BasePlayer
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,14 +52,16 @@ constructor(
 
     val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
+    private var playFromDownloads = false
     private var currentWindow = 0
     private var playbackPosition: Long = 0
+
+    var playbackSpeed: Float = 1f
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-
         val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
         val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
 
@@ -93,10 +101,13 @@ constructor(
 
         viewModelScope.launch {
             val mediaItems: MutableList<MediaItem> = mutableListOf()
-
             try {
                 for (item in items) {
-                    val streamUrl = jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                    val streamUrl = when {
+                        item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
+                        else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                    }
+
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
                         MediaItem.Builder()
@@ -110,11 +121,12 @@ constructor(
             }
 
             player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
-            player.prepare()
+            val useMpv = sp.getBoolean("mpv_player", false)
+            if(!useMpv || !playFromDownloads)
+                player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
             player.play()
+            pollPosition(player)
         }
-
-        pollPosition(player)
     }
 
     private fun releasePlayer() {
@@ -144,14 +156,17 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null) {
-                        try {
-                            jellyfinRepository.postPlaybackProgress(
-                                UUID.fromString(player.currentMediaItem!!.mediaId),
-                                player.currentPosition.times(10000),
-                                !player.isPlaying
-                            )
-                        } catch (e: Exception) {
-                            Timber.e(e)
+                            try {
+                                jellyfinRepository.postPlaybackProgress(
+                                    UUID.fromString(player.currentMediaItem!!.mediaId),
+                                    player.currentPosition.times(10000),
+                                    !player.isPlaying
+                                )
+                            } catch (e: Exception) {
+                                Timber.e(e)
+                            }
+                        if(playFromDownloads){
+                            postDownloadPlaybackProgress(items[0].mediaSourceUri, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automaticcaly use the correct item
                         }
                     }
                 }
@@ -224,5 +239,10 @@ constructor(
         if (player is MPVPlayer) {
             player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
         }
+    }
+
+    fun selectSpeed(speed: Float) {
+        player.setPlaybackSpeed(speed)
+        playbackSpeed = speed
     }
 }

@@ -14,12 +14,14 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_background"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
-            android:layout_width="0dp"
+            android:layout_width="240dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:baseItemImage="@{episode}"
@@ -27,7 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <TextView
             android:id="@+id/primary_name"

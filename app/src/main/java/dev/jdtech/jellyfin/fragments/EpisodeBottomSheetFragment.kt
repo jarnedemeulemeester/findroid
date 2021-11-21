@@ -1,12 +1,15 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -15,7 +18,11 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.requestDownload
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import timber.log.Timber
+import java.util.*
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -23,6 +30,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: EpisodeBottomSheetBinding
     private val viewModel: EpisodeBottomSheetViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,20 +45,19 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.visibility = View.VISIBLE
-            viewModel.preparePlayerItems()
-        }
-
-        binding.checkButton.setOnClickListener {
-            when (viewModel.played.value) {
-                true -> viewModel.markAsUnplayed(args.episodeId)
-                false -> viewModel.markAsPlayed(args.episodeId)
+            viewModel.item.value?.let {
+                if (!args.isOffline) {
+                    playerViewModel.loadPlayerItems(it)
+                } else {
+                    playerViewModel.loadOfflinePlayerItems(viewModel.playerItems[0])
+                }
             }
         }
 
-        binding.favoriteButton.setOnClickListener {
-            when (viewModel.favorite.value) {
-                true -> viewModel.unmarkAsFavorite(args.episodeId)
-                false -> viewModel.markAsFavorite(args.episodeId)
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
         }
 
@@ -87,46 +94,79 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.favoriteButton.setImageResource(drawable)
         })
 
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner, {
+        viewModel.downloadEpisode.observe(viewLifecycleOwner, {
             if (it) {
-                navigateToPlayerActivity(
-                    viewModel.playerItems.toTypedArray(),
-                )
-                viewModel.doneNavigateToPlayer()
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
+                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)
+                viewModel.doneDownloadEpisode()
             }
         })
 
-        viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage != null) {
-                binding.playerItemsError.visibility = View.VISIBLE
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            } else {
-                binding.playerItemsError.visibility = View.GONE
+        if(!args.isOffline){
+            val episodeId: UUID = args.episodeId
+            binding.checkButton.setOnClickListener {
+                when (viewModel.played.value) {
+                    true -> viewModel.markAsUnplayed(episodeId)
+                    false -> viewModel.markAsPlayed(episodeId)
+                }
             }
-        })
 
-        binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(
-                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
-            ).show(parentFragmentManager, "errordialog")
+            binding.favoriteButton.setOnClickListener {
+                when (viewModel.favorite.value) {
+                    true -> viewModel.unmarkAsFavorite(episodeId)
+                    false -> viewModel.markAsFavorite(episodeId)
+                }
+            }
+
+            binding.downloadButton.setOnClickListener {
+                viewModel.loadDownloadRequestItem(episodeId)
+            }
+
+            binding.deleteButton.visibility = View.GONE
+
+            viewModel.loadEpisode(episodeId)
+        }else {
+            val playerItem = args.playerItem!!
+            viewModel.loadEpisode(playerItem)
+
+            binding.deleteButton.setOnClickListener {
+                viewModel.deleteEpisode()
+                dismiss()
+                findNavController().navigate(R.id.downloadFragment)
+            }
+
+            binding.checkButton.visibility = View.GONE
+            binding.favoriteButton.visibility = View.GONE
+            binding.downloadButton.visibility = View.GONE
         }
 
-        viewModel.loadEpisode(args.episodeId)
-
         return binding.root
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.message)
+
+        binding.playerItemsError.isVisible = true
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+        binding.playerItemsErrorDetails.setOnClickListener {
+            ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
+        }
     }
 
     private fun navigateToPlayerActivity(

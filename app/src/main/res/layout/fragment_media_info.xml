@@ -24,10 +24,10 @@
             android:id="@+id/media_info_scrollview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -147,6 +147,7 @@
                             android:layout_height="48dp"
                             android:background="@drawable/button_setup_background"
                             android:contentDescription="@string/play_button_description"
+                            android:foreground="@drawable/ripple_background"
                             android:paddingHorizontal="24dp"
                             android:paddingVertical="12dp"
                             android:src="@drawable/ic_play" />
@@ -186,10 +187,31 @@
                         android:id="@+id/favorite_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
                         android:background="@drawable/button_accent_background"
-                        android:contentDescription="@string/favorite_button_description"
+                        android:contentDescription="@string/download_button_description"
                         android:padding="12dp"
                         android:src="@drawable/ic_heart" />
+
+                    <ImageButton
+                        android:id="@+id/download_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/download_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_download" />
+
+                    <ImageButton
+                        android:id="@+id/delete_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/delete_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_trash" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,7 +232,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="@string/error_preparing_player_items"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/red" />
+                        android:textColor="?attr/colorError" />
 
                     <TextView
                         android:id="@+id/player_items_error_details"
@@ -218,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/view_details_underlined"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/red" />
+                        android:textColor="?attr/colorError" />
                 </LinearLayout>
 
 
@@ -350,7 +372,9 @@
                         android:layout_width="@dimen/nextup_media_width"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
-                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="@drawable/ripple_background"
                         android:orientation="vertical">
 
                         <com.google.android.material.imageview.ShapeableImageView
@@ -363,7 +387,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:shapeAppearance="@style/roundedImageView" />
+                            app:shapeAppearance="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -413,6 +437,7 @@
                     android:id="@+id/actors"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:orientation="vertical">
 
                     <TextView

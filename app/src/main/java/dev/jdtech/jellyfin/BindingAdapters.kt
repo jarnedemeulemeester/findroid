@@ -8,11 +8,12 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.DownloadSection
 import dev.jdtech.jellyfin.models.FavoriteSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.*
+import java.util.UUID
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -95,6 +96,7 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
         .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/${ImageType.PRIMARY}"))
         .transition(DrawableTransitionOptions.withCrossFade())
         .placeholder(R.color.neutral_800)
+        .error(R.drawable.person_placeholder)
         .into(imageView)
 
     imageView.contentDescription = "${person.name} poster"
@@ -121,7 +123,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     var imageItemId = episode.id
     var imageType = ImageType.PRIMARY
 
-    if (!episode.imageTags.isNullOrEmpty()) {
+    if (!episode.imageTags.isNullOrEmpty()) { //TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
         when (episode.type) {
             "Movie" -> {
                 if (!episode.backdropImageTags.isNullOrEmpty()) {
@@ -166,5 +168,11 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
 @BindingAdapter("favoriteSections")
 fun bindFavoriteSections(recyclerView: RecyclerView, data: List<FavoriteSection>?) {
     val adapter = recyclerView.adapter as FavoritesListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("downloadSections")
+fun bindDownloadSections(recyclerView: RecyclerView, data: List<DownloadSection>?) {
+    val adapter = recyclerView.adapter as DownloadsListAdapter
     adapter.submitList(data)
 }

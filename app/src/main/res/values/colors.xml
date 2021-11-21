@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#2B82D9</color>
-    <color name="primary_variant">#1B5692</color>
-    <color name="secondary">#24B364</color>
-    <color name="secondary_variant">#126839</color>
+    <color name="blue_300">#67b0ed</color>
+    <color name="blue_600">#2B82D9</color>
+    <color name="blue_800">#2060b4</color>
+    <color name="green_300">#71ca92</color>
+    <color name="green_500">#24B364</color>
+    <color name="green_800">#038043</color>
     <color name="neutral_900">#121A21</color>
     <color name="neutral_800">#243342</color>
     <color name="neutral_700">#374F67</color>

@@ -26,6 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/player_controls_exit"
                 android:padding="16dp"
                 android:src="@drawable/ic_arrow_left" />
 
@@ -56,13 +57,29 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
-                android:id="@+id/btn_audio_track"
+                android:id="@+id/btn_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_speaker" />
+                android:src="@drawable/ic_gauge"
+                app:tint="@color/white" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="0dp" />
+
+            <ImageButton
+                android:id="@+id/btn_audio_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/select_audio_track"
+                android:padding="16dp"
+                android:src="@drawable/ic_speaker"
+                app:tint="@color/white" />
 
             <Space
                 android:layout_width="16dp"
@@ -74,8 +91,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/select_subtile_track"
                 android:padding="16dp"
-                android:src="@drawable/ic_closed_caption" />
+                android:src="@drawable/ic_closed_caption"
+                app:tint="@color/white" />
 
         </LinearLayout>
 
@@ -195,7 +214,7 @@
             android:id="@+id/exo_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:played_color="@color/primary" />
+            app:played_color="?attr/colorPrimary" />
 
     </LinearLayout>
 

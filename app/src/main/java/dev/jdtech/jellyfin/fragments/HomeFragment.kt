@@ -1,9 +1,18 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
@@ -12,8 +21,15 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.ContentType
+import dev.jdtech.jellyfin.models.ContentType.EPISODE
+import dev.jdtech.jellyfin.models.ContentType.MOVIE
+import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.contentType
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import dev.jdtech.jellyfin.viewmodels.HomeViewModel.Loading
+import dev.jdtech.jellyfin.viewmodels.HomeViewModel.LoadingError
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 @AndroidEntryPoint
@@ -52,49 +68,79 @@ class HomeFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
-            navigateToLibraryFragment(it)
-        }, ViewItemListAdapter.OnClickListener {
-            navigateToMediaInfoFragment(it)
-        }, HomeEpisodeListAdapter.OnClickListener { item ->
-            when (item.type) {
-                "Episode" -> {
-                    navigateToEpisodeBottomSheetFragment(item)
-                }
-                "Movie" -> {
-                    navigateToMediaInfoFragment(item)
-                }
-            }
 
-        })
+        setupView()
+        bindState()
 
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
+        return binding.root
+    }
 
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.viewsRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.viewsRecyclerView.visibility = View.VISIBLE
-            }
-        })
+    override fun onResume() {
+        super.onResume()
 
-        binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadData()
+        viewModel.refreshData()
+    }
+
+    private fun setupView() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.refreshData()
         }
 
+        binding.viewsRecyclerView.adapter = ViewListAdapter(
+            onClickListener = ViewListAdapter.OnClickListener { navigateToLibraryFragment(it) },
+            onItemClickListener = ViewItemListAdapter.OnClickListener {
+                navigateToMediaInfoFragment(it)
+            },
+            onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
+                when (item.contentType()) {
+                    EPISODE -> navigateToEpisodeBottomSheetFragment(item)
+                    MOVIE -> navigateToMediaInfoFragment(item)
+                    else -> Toast.makeText(requireContext(), R.string.unknown_error, LENGTH_LONG)
+                        .show()
+                }
+            })
+    }
+
+    private fun bindState() {
+        viewModel.onStateUpdate(lifecycleScope) { state ->
+            when (state) {
+                is Loading -> bindLoading(state)
+                is LoadingError -> bindError(state)
+            }
+        }
+    }
+
+    private fun bindError(state: LoadingError) {
+        checkIfLoginRequired(state.message)
+        binding.errorLayout.errorPanel.isVisible = true
+        binding.viewsRecyclerView.isVisible = false
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
+
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+            ErrorDialogFragment(state.message).show(
                 parentFragmentManager,
                 "errordialog"
             )
         }
 
-        return binding.root
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.refreshData()
+        }
+    }
+
+    private fun bindLoading(state: Loading) {
+        binding.errorLayout.errorPanel.isVisible = false
+        binding.viewsRecyclerView.isVisible = true
+
+        binding.loadingIndicator.visibility = when {
+            state.inProgress && binding.refreshLayout.isRefreshing -> View.GONE
+            state.inProgress -> View.VISIBLE
+            else -> {
+                binding.refreshLayout.isRefreshing = false
+                View.GONE
+            }
+        }
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
@@ -108,12 +154,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        if (item.type == "Episode") {
+        if (item.contentType() == EPISODE) {
             findNavController().navigate(
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.seriesId!!,
                     item.seriesName,
-                    "Series"
+                    TVSHOW.type
                 )
             )
         } else {
@@ -121,7 +167,7 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.id,
                     item.name,
-                    item.type ?: "Unknown"
+                    item.type ?: ContentType.UNKNOWN.type
                 )
             )
         }
