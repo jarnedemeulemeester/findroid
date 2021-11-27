@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import java.util.*
+import java.util.UUID
 import javax.inject.Singleton
 
 @Module
@@ -22,7 +22,7 @@ object ApiModule {
         sharedPreferences: SharedPreferences,
         serverDatabase: ServerDatabaseDao
     ): JellyfinApi {
-        val jellyfinApi = JellyfinApi.getInstance(application, "")
+        val jellyfinApi = JellyfinApi.getInstance(application)
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {

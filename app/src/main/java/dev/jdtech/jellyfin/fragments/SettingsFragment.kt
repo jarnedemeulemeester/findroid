@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.fragments
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
@@ -51,6 +52,10 @@ class SettingsFragment: PreferenceFragmentCompat() {
         findPreference<Preference>("appInfo")?.setOnPreferenceClickListener {
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAboutLibraries())
             true
+        }
+
+        findPreference<EditTextPreference>("image_cache_size")?.setOnBindEditTextListener { editText ->
+            editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
 
         findPreference<EditTextPreference>("deviceName")?.setOnPreferenceChangeListener { _, name ->

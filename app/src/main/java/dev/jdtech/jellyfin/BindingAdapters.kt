@@ -1,11 +1,22 @@
 package dev.jdtech.jellyfin
 
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import dev.jdtech.jellyfin.adapters.*
+import dev.jdtech.jellyfin.adapters.CollectionListAdapter
+import dev.jdtech.jellyfin.adapters.DownloadsListAdapter
+import dev.jdtech.jellyfin.adapters.EpisodeItem
+import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
+import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
+import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
+import dev.jdtech.jellyfin.adapters.HomeItem
+import dev.jdtech.jellyfin.adapters.PersonListAdapter
+import dev.jdtech.jellyfin.adapters.ServerGridAdapter
+import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.models.DownloadSection
@@ -35,44 +46,26 @@ fun bindItems(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
 
 @BindingAdapter("itemImage")
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
     val itemId =
         if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
 
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/${ImageType.PRIMARY}"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
-        .into(imageView)
-
-    imageView.contentDescription = "${item.name} poster"
+    imageView
+        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}")
+        .posterDescription(item.name)
 }
 
 @BindingAdapter("itemBackdropImage")
 fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
     if (item == null) return
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${item.id}/Images/${ImageType.BACKDROP}"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .into(imageView)
-
-    imageView.contentDescription = "${item.name} backdrop"
+    imageView
+        .loadImage("/items/${item.id}/Images/${ImageType.BACKDROP}")
+        .backdropDescription(item.name)
 }
 
 @BindingAdapter("itemBackdropById")
 fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${itemId}/Images/${ImageType.BACKDROP}"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .into(imageView)
+    imageView.loadImage("/items/$itemId/ MediaStore.Images /${ImageType.BACKDROP}")
 }
 
 @BindingAdapter("collections")
@@ -89,17 +82,9 @@ fun bindPeople(recyclerView: RecyclerView, data: List<BaseItemPerson>?) {
 
 @BindingAdapter("personImage")
 fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${person.id}/Images/${ImageType.PRIMARY}"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
-        .error(R.drawable.person_placeholder)
-        .into(imageView)
-
-    imageView.contentDescription = "${person.name} poster"
+    imageView
+        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}")
+        .posterDescription(person.name)
 }
 
 @BindingAdapter("episodes")
@@ -117,8 +102,6 @@ fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
 @BindingAdapter("baseItemImage")
 fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     if (episode == null) return
-
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
 
     var imageItemId = episode.id
     var imageType = ImageType.PRIMARY
@@ -143,26 +126,14 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
         }
     }
 
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${imageItemId}/Images/$imageType"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
-        .into(imageView)
-
-    imageView.contentDescription = "${episode.name} poster"
+    imageView
+        .loadImage("/items/${imageItemId}/Images/$imageType")
+        .posterDescription(episode.name)
 }
 
 @BindingAdapter("seasonPoster")
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
-    val jellyfinApi = JellyfinApi.getInstance(imageView.context.applicationContext, "")
-
-    Glide
-        .with(imageView.context)
-        .load(jellyfinApi.api.baseUrl.plus("/items/${seasonId}/Images/${ImageType.PRIMARY}"))
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
-        .into(imageView)
+    imageView.loadImage("/items/${seasonId}/Images/${ImageType.PRIMARY}")
 }
 
 @BindingAdapter("favoriteSections")
@@ -175,4 +146,25 @@ fun bindFavoriteSections(recyclerView: RecyclerView, data: List<FavoriteSection>
 fun bindDownloadSections(recyclerView: RecyclerView, data: List<DownloadSection>?) {
     val adapter = recyclerView.adapter as DownloadsListAdapter
     adapter.submitList(data)
+}
+
+private fun ImageView.loadImage(url: String, errorPlaceHolderId: Int? = null): View {
+    val api = JellyfinApi.getInstance(context.applicationContext)
+
+    return Glide
+        .with(context)
+        .load("${api.api.baseUrl}$url")
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .placeholder(R.color.neutral_800)
+        .also { if (errorPlaceHolderId != null) error(errorPlaceHolderId) }
+        .into(this)
+        .view
+}
+
+private fun View.posterDescription(name: String?) {
+    contentDescription = String.format(context.resources.getString(R.string.image_description_poster), name)
+}
+
+private fun View.backdropDescription(name: String?) {
+    contentDescription = String.format(context.resources.getString(R.string.image_description_backdrop), name)
 }
