@@ -65,7 +65,7 @@ fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
 
 @BindingAdapter("itemBackdropById")
 fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
-    imageView.loadImage("/items/$itemId/ MediaStore.Images /${ImageType.BACKDROP}")
+    imageView.loadImage("/items/$itemId/Images/${ImageType.BACKDROP}")
 }
 
 @BindingAdapter("collections")
