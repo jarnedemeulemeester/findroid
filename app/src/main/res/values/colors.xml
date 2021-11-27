@@ -13,6 +13,8 @@
     <color name="neutral_300">#A9BDD1</color>
     <color name="neutral_200">#D7E0E9</color>
     <color name="neutral_100">#EEF2F6</color>
+    <color name="transparent_white_300">#4DFFFFFF</color>
+    <color name="transparent_black_300">#4D000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#EB5757</color>
