@@ -37,7 +37,7 @@ class PlayerViewModel @Inject internal constructor(
     fun loadPlayerItems(
         item: BaseItemDto,
         mediaSourceIndex: Int = 0,
-        onVersionSelectRequired: () -> Unit = { Unit }
+        onVersionSelectRequired: () -> Unit = { }
     ) {
         if (itemIsDownloaded(item.id)) {
             val playerItem = getDownloadPlayerItem(item.id)

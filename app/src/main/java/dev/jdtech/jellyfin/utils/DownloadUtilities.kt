@@ -1,18 +1,11 @@
 package dev.jdtech.jellyfin.utils
 
-import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
-import com.google.android.exoplayer2.Player
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.DownloadMetadata
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -90,7 +83,7 @@ fun loadDownloadLocation(context: Context) {
     defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
 }
 
-fun loadDownloadedEpisodes(context: Context): List<PlayerItem> {
+fun loadDownloadedEpisodes(): List<PlayerItem> {
     val items = mutableListOf<PlayerItem>()
     defaultStorage?.walk()?.forEach {
         if (it.isFile && it.extension == "") {
@@ -247,8 +240,8 @@ fun parseMetadataFile(metadataFile: List<String>): DownloadMetadata {
     }
 }
 
-suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository, context: Context) {
-    val items = loadDownloadedEpisodes(context)
+suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository) {
+    val items = loadDownloadedEpisodes()
     items.forEach() {
         try {
             val localPlaybackProgress = it.metadata?.playbackPosition
