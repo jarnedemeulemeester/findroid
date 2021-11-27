@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
 import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.utils.itemIsDownloaded
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,6 +62,9 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
+    private val _downloaded = MutableLiveData<Boolean>()
+    val downloaded: LiveData<Boolean> = _downloaded
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
@@ -75,6 +79,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         _error.value = null
         viewModelScope.launch {
             try {
+                _downloaded.value = itemIsDownloaded(itemId)
                 _item.value = jellyfinRepository.getItem(itemId)
                 _actors.value = getActors(_item.value!!)
                 _director.value = getDirector(_item.value!!)
@@ -201,5 +206,6 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     fun doneDownloadMedia() {
         _downloadMedia.value = false
+        _downloaded.value = true
     }
 }

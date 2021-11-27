@@ -94,6 +94,15 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.favoriteButton.setImageResource(drawable)
         })
 
+        viewModel.downloaded.observe(viewLifecycleOwner, {
+            val drawable = when (it) {
+                true -> R.drawable.ic_download_filled
+                false -> R.drawable.ic_download
+            }
+
+            binding.downloadButton.setImageResource(drawable)
+        })
+
         viewModel.downloadEpisode.observe(viewLifecycleOwner, {
             if (it) {
                 requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)

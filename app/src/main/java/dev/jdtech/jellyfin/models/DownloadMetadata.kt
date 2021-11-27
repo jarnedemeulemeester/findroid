@@ -14,5 +14,7 @@ data class DownloadMetadata(
     val indexNumber: Int? = null,
     val playbackPosition: Long? = null,
     val playedPercentage: Double? = null,
-    val seriesId: UUID? = null
+    val seriesId: UUID? = null,
+    val played: Boolean? = null,
+    val overview: String? = null
 ) : Parcelable

@@ -79,7 +79,6 @@
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="download_button_description">Download</string>
-    <string name="download_no_storage_permission">Cannot download files without storage permissions</string>
     <string name="delete_button_description">Delete</string>
     <string name="person_detail_title">Person Detail</string>
     <string name="error_getting_person_id">Detail unavailable</string>

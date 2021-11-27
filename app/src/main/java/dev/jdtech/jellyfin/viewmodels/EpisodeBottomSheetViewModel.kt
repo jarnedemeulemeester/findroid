@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
 import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.utils.itemIsDownloaded
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
@@ -46,6 +47,9 @@ constructor(
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
+    private val _downloaded = MutableLiveData<Boolean>()
+    val downloaded: LiveData<Boolean> = _downloaded
+
     private val _downloadEpisode = MutableLiveData<Boolean>()
     val downloadEpisode: LiveData<Boolean> = _downloadEpisode
 
@@ -56,6 +60,7 @@ constructor(
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             try {
+                _downloaded.value = itemIsDownloaded(episodeId)
                 val item = jellyfinRepository.getItem(episodeId)
                 _item.value = item
                 _runTime.value = "${item.runTimeTicks?.div(600000000)} min"
@@ -129,5 +134,6 @@ constructor(
 
     fun doneDownloadEpisode() {
         _downloadEpisode.value = false
+        _downloaded.value = true
     }
 }
