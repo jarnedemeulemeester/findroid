@@ -57,10 +57,10 @@
     <string name="settings_category_appearance">Vzhled</string>
     <string name="device_name">Název zařízení</string>
     <string name="settings_category_device">Zařízení</string>
-    <string name="settings_category_use_cache_title">Cachovat obrázky</string>
-    <string name="settings_category_use_cache_summary">Cachování obrázků urychluje načítání obsahu. Projeví se po restartu aplikace.</string>
-    <string name="settings_category_cache_size">Nastavit velikost cache v MB</string>
-    <string name="settings_category_cache_message">Aplikace použije tuto velikost v MB k uložení obrázků z Jellyfin serveru. Větší hodnota může být prospěšná na pomalejším připojení.</string>
+    <string name="settings_use_cache_title">Cachovat obrázky</string>
+    <string name="settings_use_cache_summary">Cachování obrázků urychluje načítání obsahu. Projeví se po restartu aplikace.</string>
+    <string name="settings_cache_size">Nastavit velikost cache v MB</string>
+    <string name="settings_cache_size_message">Aplikace použije tuto velikost v MB k uložení obrázků z Jellyfin serveru. Větší hodnota může být prospěšná na pomalejším připojení.</string>
     <string name="theme">Téma</string>
     <string name="error_preparing_player_items">Chyba při načítání přehrávání.</string>
     <string name="view_details">Zobrazit detaily</string>
