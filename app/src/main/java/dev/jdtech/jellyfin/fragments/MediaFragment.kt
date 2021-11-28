@@ -3,8 +3,12 @@ package dev.jdtech.jellyfin.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
@@ -13,7 +17,9 @@ import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MediaFragment : Fragment() {
@@ -22,6 +28,8 @@ class MediaFragment : Fragment() {
     private val viewModel: MediaViewModel by viewModels()
 
     private var originalSoftInputMode: Int? = null
+
+    private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,37 +64,30 @@ class MediaFragment : Fragment() {
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
         binding.viewsRecyclerView.adapter =
             CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->
                 navigateToLibraryFragment(library)
             })
 
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
-
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.viewsRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.viewsRecyclerView.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is MediaViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is MediaViewModel.UiState.Loading -> bindUiStateLoading()
+                        is MediaViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
             }
-        })
+        }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadData()
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
-                parentFragmentManager,
-                "errordialog"
-            )
+            errorDialog.show(parentFragmentManager, "errordialog")
         }
 
         return binding.root
@@ -103,6 +104,29 @@ class MediaFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         originalSoftInputMode?.let { activity?.window?.setSoftInputMode(it) }
+    }
+
+    private fun bindUiStateNormal(uiState: MediaViewModel.UiState.Normal) {
+        binding.loadingIndicator.isVisible = false
+        binding.viewsRecyclerView.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+        val adapter = binding.viewsRecyclerView.adapter as CollectionListAdapter
+        adapter.submitList(uiState.collections)
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: MediaViewModel.UiState.Error) {
+        val error = uiState.message ?: resources.getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.viewsRecyclerView.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
+
     }
 
     private fun navigateToLibraryFragment(library: BaseItemDto) {

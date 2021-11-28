@@ -68,12 +68,6 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
     imageView.loadImage("/items/$itemId/Images/${ImageType.BACKDROP}")
 }
 
-@BindingAdapter("collections")
-fun bindCollections(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
-    val adapter = recyclerView.adapter as CollectionListAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("people")
 fun bindPeople(recyclerView: RecyclerView, data: List<BaseItemPerson>?) {
     val adapter = recyclerView.adapter as PersonListAdapter

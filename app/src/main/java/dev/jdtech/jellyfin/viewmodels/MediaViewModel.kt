@@ -2,10 +2,12 @@ package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.unsupportedCollections
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,38 +17,35 @@ constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
 
-    private val _collections = MutableLiveData<List<BaseItemDto>>()
-    val collections: LiveData<List<BaseItemDto>> = _collections
+    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
-    private val _finishedLoading = MutableLiveData<Boolean>()
-    val finishedLoading: LiveData<Boolean> = _finishedLoading
+    sealed class UiState {
+        data class Normal(val collections: List<BaseItemDto>) : UiState()
+        object Loading : UiState()
+        data class Error(val message: String?) : UiState()
+    }
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
 
     init {
         loadData()
     }
 
     fun loadData() {
-        _finishedLoading.value = false
-        _error.value = null
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
             try {
                 val items = jellyfinRepository.getItems()
-                _collections.value =
-                    items.filter {
-                        it.collectionType != "homevideos" &&
-                                it.collectionType != "music" &&
-                                it.collectionType != "playlists" &&
-                                it.collectionType != "boxsets" &&
-                                it.collectionType != "books"
-                    }
+                val collections =
+                    items.filter { collection -> unsupportedCollections().none { it.type == collection.collectionType } }
+                uiState.emit(UiState.Normal(collections))
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.toString()
+                uiState.emit(
+                    UiState.Error(e.message)
+                )
             }
-            _finishedLoading.value = true
         }
     }
 }
