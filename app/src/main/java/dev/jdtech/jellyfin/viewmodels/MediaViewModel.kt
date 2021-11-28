@@ -1,6 +1,9 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
@@ -39,7 +42,6 @@ constructor(
                         it.collectionType != "homevideos" &&
                                 it.collectionType != "music" &&
                                 it.collectionType != "playlists" &&
-                                it.collectionType != "boxsets" &&
                                 it.collectionType != "books"
                     }
             } catch (e: Exception) {
