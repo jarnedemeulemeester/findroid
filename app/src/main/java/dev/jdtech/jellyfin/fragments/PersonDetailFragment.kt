@@ -9,6 +9,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +22,9 @@ import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 internal class PersonDetailFragment : Fragment() {
@@ -29,15 +34,14 @@ internal class PersonDetailFragment : Fragment() {
 
     private val args: PersonDetailFragmentArgs by navArgs()
 
+    private lateinit var errorDialog: ErrorDialogFragment
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPersonDetailBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-
         return binding.root
     }
 
@@ -47,42 +51,64 @@ internal class PersonDetailFragment : Fragment() {
         binding.moviesList.adapter = adapter()
         binding.showList.adapter = adapter()
 
-        viewModel.data.observe(viewLifecycleOwner) { data ->
-            binding.name.text = data.name
-            binding.overview.text = data.overview
-
-            setupOverviewExpansion()
-
-            bindItemImage(binding.personImage, data.dto)
-        }
-
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
-
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.fragmentContent.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.fragmentContent.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is PersonDetailViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is PersonDetailViewModel.UiState.Loading -> bindUiStateLoading()
+                        is PersonDetailViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
             }
-        })
+        }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadData(args.personId)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
-                parentFragmentManager,
-                "errordialog"
-            )
+            errorDialog.show(parentFragmentManager, "errordialog")
+        }
+    }
+
+    private fun bindUiStateNormal(uiState: PersonDetailViewModel.UiState.Normal) {
+        uiState.apply {
+            binding.name.text = data.name
+            binding.overview.text = data.overview
+            setupOverviewExpansion()
+            bindItemImage(binding.personImage, data.dto)
+
+            if (starredIn.movies.isNotEmpty()) {
+                binding.movieLabel.isVisible = true
+                val moviesAdapter = binding.moviesList.adapter as ViewItemListAdapter
+                moviesAdapter.submitList(starredIn.movies)
+            }
+            if (starredIn.shows.isNotEmpty()) {
+                binding.showLabel.isVisible = true
+                val showsAdapter = binding.showList.adapter as ViewItemListAdapter
+                showsAdapter.submitList(starredIn.shows)
+            }
         }
 
-        viewModel.loadData(args.personId)
+        binding.loadingIndicator.isVisible = false
+        binding.fragmentContent.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: PersonDetailViewModel.UiState.Error) {
+        val error = uiState.message ?: resources.getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.fragmentContent.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
     }
 
     private fun adapter() = ViewItemListAdapter(
@@ -103,7 +129,6 @@ internal class PersonDetailFragment : Fragment() {
                     binding.overviewGradient.isVisible = false
                 }
             }
-
         }
     }
 
