@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class PersonDetailViewModel @Inject internal constructor(
-    private val jellyfinRepository: JellyfinRepository,
-    state: SavedStateHandle
+    private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
 
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -33,11 +31,6 @@ internal class PersonDetailViewModel @Inject internal constructor(
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
         scope.launch { uiState.collect { collector(it) } }
-    }
-
-    init {
-        val personId = state.get<UUID>("personId")!!
-        loadData(personId)
     }
 
     fun loadData(personId: UUID) {

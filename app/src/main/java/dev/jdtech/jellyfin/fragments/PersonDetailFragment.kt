@@ -61,6 +61,7 @@ internal class PersonDetailFragment : Fragment() {
                         is PersonDetailViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+                viewModel.loadData(args.personId)
             }
         }
 
