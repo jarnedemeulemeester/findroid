@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.getSystemService
-import androidx.fragment.app.Fragment
 import dev.jdtech.jellyfin.models.DownloadMetadata
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -18,7 +17,7 @@ import java.util.UUID
 
 var defaultStorage: File? = null
 
-fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Fragment) {
+fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context: Context) {
     val downloadRequest = DownloadManager.Request(uri)
         .setTitle(downloadRequestItem.metadata.name)
         .setDescription("Downloading")
@@ -32,7 +31,7 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
         )
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
-        downloadFile(downloadRequest, context.requireContext())
+        downloadFile(downloadRequest, context)
     createMetadataFile(
         downloadRequestItem.metadata,
         downloadRequestItem.itemId)

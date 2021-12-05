@@ -1,259 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp">
 
-    <data>
+    <ImageView
+        android:id="@+id/holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_minus_fat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
-        <import type="android.view.View" />
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/episode_image"
+        android:layout_width="142dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="24dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/holder"
+        app:shapeAppearance="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
-        <import type="org.jellyfin.sdk.model.api.LocationType" />
-
-        <variable
-            name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="24dp">
-
-        <ImageView
-            android:id="@+id/holder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_minus_fat"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/episode_image"
-            android:layout_width="142dp"
-            android:layout_height="85dp"
-            android:layout_marginStart="24dp"
-            android:scaleType="centerCrop"
-            app:baseItemImage="@{viewModel.item}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/holder"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.Findroid.Image" />
-
-        <FrameLayout
-            android:id="@+id/missing_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_background"
-            android:backgroundTint="?attr/colorError"
-            android:visibility="@{viewModel.item.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="M"
-                android:textColor="@color/white"
-                tools:ignore="HardcodedText" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="4dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_setup_background"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/episode_image"
-            app:layout_constraintStart_toStartOf="@id/episode_image"
-            tools:layout_width="50dp"
-            tools:visibility="visible" />
+    <FrameLayout
+        android:id="@+id/missing_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_background"
+        android:backgroundTint="?attr/colorError"
+        app:layout_constraintEnd_toEndOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image">
 
         <TextView
-            android:id="@+id/episode_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="M"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_setup_background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/episode_image"
+        app:layout_constraintStart_toStartOf="@id/episode_image"
+        tools:layout_width="50dp"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/episode_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="24dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image"
+        tools:text="1. To You, in 2000 Years: The Fall of Shiganshina, Part 1" />
+
+    <LinearLayout
+        android:id="@+id/episode_metadata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/episode_image"
+        app:layout_constraintTop_toBottomOf="@id/episode_image">
+
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="@{String.format(@string/episode_name_extended, viewModel.item.parentIndexNumber, viewModel.item.indexNumber, viewModel.item.name)}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image"
-            tools:text="1. To You, in 2000 Years: The Fall of Shiganshina, Part 1" />
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="4/6/2013" />
 
-        <LinearLayout
-            android:id="@+id/episode_metadata"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/playtime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/episode_image"
-            app:layout_constraintTop_toBottomOf="@id/episode_image">
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="26 min" />
 
-
-            <TextView
-                android:id="@+id/year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@{viewModel.dateString}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                tools:text="4/6/2013" />
-
-            <TextView
-                android:id="@+id/playtime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@{viewModel.runTime}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                tools:text="26 min" />
-
-            <TextView
-                android:id="@+id/community_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="4dp"
-                android:gravity="bottom"
-                android:text="@{viewModel.item.communityRating.toString()}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:drawableStartCompat="@drawable/ic_star"
-                app:drawableTint="@color/yellow"
-                tools:text="8.8" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/community_rating"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/episode_metadata">
+            android:drawablePadding="4dp"
+            android:gravity="bottom"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:drawableStartCompat="@drawable/ic_star"
+            app:drawableTint="@color/yellow"
+            tools:text="8.8" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp">
+    </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/play_button"
-                    android:layout_width="72dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/button_setup_background"
-                    android:contentDescription="@string/play_button_description"
-                    android:foreground="@drawable/ripple_background"
-                    android:paddingHorizontal="24dp"
-                    android:paddingVertical="12dp"
-                    android:src="@drawable/ic_play" />
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/episode_metadata">
 
-                <ProgressBar
-                    android:id="@+id/progress_circular"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerHorizontal="true"
-                    android:elevation="8dp"
-                    android:indeterminateTint="@color/white"
-                    android:padding="8dp"
-                    android:visibility="invisible" />
-            </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp">
 
             <ImageButton
-                android:id="@+id/check_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/button_accent_background"
-                android:contentDescription="@string/check_button_description"
-                android:padding="12dp"
-                android:src="@drawable/ic_check" />
+                android:id="@+id/play_button"
+                android:layout_width="72dp"
+                android:layout_height="48dp"
+                android:background="@drawable/button_setup_background"
+                android:contentDescription="@string/play_button_description"
+                android:foreground="@drawable/ripple_background"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_play" />
 
-            <ImageButton
-                android:id="@+id/favorite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/button_accent_background"
-                android:contentDescription="@string/favorite_button_description"
-                android:padding="12dp"
-                android:src="@drawable/ic_heart" />
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:elevation="8dp"
+                android:indeterminateTint="@color/white"
+                android:padding="8dp"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/check_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/button_accent_background"
+            android:contentDescription="@string/check_button_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_check" />
+
+        <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/button_accent_background"
+            android:contentDescription="@string/favorite_button_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_heart" />
+
+        <RelativeLayout
+            android:id="@+id/download_button_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp">
 
             <ImageButton
                 android:id="@+id/download_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/button_accent_background"
                 android:contentDescription="@string/download_button_description"
                 android:padding="12dp"
                 android:src="@drawable/ic_download" />
 
-            <ImageButton
-                android:id="@+id/delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/button_accent_background"
-                android:contentDescription="@string/delete_button_description"
-                android:padding="12dp"
-                android:src="@drawable/ic_trash" />
-        </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progress_download"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:elevation="8dp"
+                android:indeterminateTint="@color/white"
+                android:padding="8dp"
+                android:visibility="invisible" />
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/player_items_error"
-            android:layout_width="0dp"
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttons"
-            tools:visibility="visible">
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/button_accent_background"
+            android:contentDescription="@string/delete_button_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_trash" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/player_items_error_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/error_preparing_player_items"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="?attr/colorError" />
-
-            <TextView
-                android:id="@+id/player_items_error_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/view_details_underlined"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="?attr/colorError" />
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/player_items_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttons"
+        tools:visibility="visible">
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/player_items_error_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="12dp"
-            android:text="@{viewModel.item.overview}"
+            android:layout_marginEnd="8dp"
+            android:text="@string/error_preparing_player_items"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/player_items_error"
-            tools:text="After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy." />
+            android:textColor="?attr/colorError" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/player_items_error_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_details_underlined"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="?attr/colorError" />
+    </LinearLayout>
 
-</layout>
+    <TextView
+        android:id="@+id/overview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/player_items_error"
+        tools:text="After one hundred years of peace, humanity is suddenly reminded of the terror of being at the Titans' mercy." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

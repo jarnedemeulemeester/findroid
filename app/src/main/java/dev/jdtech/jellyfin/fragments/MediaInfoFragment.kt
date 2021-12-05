@@ -76,7 +76,7 @@ class MediaInfoFragment : Fragment() {
 
         viewModel.downloadMedia.observe(viewLifecycleOwner, {
             if (it) {
-                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this)
+                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, requireContext())
                 viewModel.doneDownloadMedia()
             }
         })
