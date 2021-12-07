@@ -119,12 +119,6 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
     imageView.loadImage("/items/${seasonId}/Images/${ImageType.PRIMARY}")
 }
 
-@BindingAdapter("downloadSections")
-fun bindDownloadSections(recyclerView: RecyclerView, data: List<DownloadSection>?) {
-    val adapter = recyclerView.adapter as DownloadsListAdapter
-    adapter.submitList(data)
-}
-
 private fun ImageView.loadImage(url: String, errorPlaceHolderId: Int? = null): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
