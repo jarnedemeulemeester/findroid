@@ -74,19 +74,32 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-        if(!args.isOffline){
+        if(!args.isOffline) {
             val episodeId: UUID = args.episodeId
+
             binding.checkButton.setOnClickListener {
                 when (viewModel.played) {
-                    true -> viewModel.markAsUnplayed(episodeId)
-                    false -> viewModel.markAsPlayed(episodeId)
+                    true -> {
+                        viewModel.markAsUnplayed(episodeId)
+                        binding.checkButton.setImageResource(R.drawable.ic_check)
+                    }
+                    false -> {
+                        viewModel.markAsPlayed(episodeId)
+                        binding.checkButton.setImageResource(R.drawable.ic_check_filled)
+                    }
                 }
             }
 
             binding.favoriteButton.setOnClickListener {
                 when (viewModel.favorite) {
-                    true -> viewModel.unmarkAsFavorite(episodeId)
-                    false -> viewModel.markAsFavorite(episodeId)
+                    true -> {
+                        viewModel.unmarkAsFavorite(episodeId)
+                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
+                    }
+                    false -> {
+                        viewModel.markAsFavorite(episodeId)
+                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
+                    }
                 }
             }
 
@@ -100,7 +113,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.deleteButton.isVisible = false
 
             viewModel.loadEpisode(episodeId)
-        }else {
+        } else {
             val playerItem = args.playerItem!!
             viewModel.loadEpisode(playerItem)
 
@@ -150,11 +163,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
             binding.downloadButton.setImageResource(downloadDrawable)
 
-            /*if (downloadEpisode) {
-                requestDownload(Uri.parse(viewModel.downloadRequestItem.uri), viewModel.downloadRequestItem, this@EpisodeBottomSheetFragment)
-                viewModel.doneDownloadEpisode()
-            }*/
-
             binding.episodeName.text = String.format(getString(R.string.episode_name_extended), episode.parentIndexNumber, episode.indexNumber, episode.name)
             binding.overview.text = episode.overview
             binding.year.text = dateString
@@ -164,11 +172,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.missingIcon.isVisible = episode.locationType == LocationType.VIRTUAL
             bindBaseItemImage(binding.episodeImage, episode)
         }
+        binding.loadingIndicator.isVisible = false
     }
 
-    private fun bindUiStateLoading() {}
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+    }
 
-    private fun bindUiStateError(uiState: EpisodeBottomSheetViewModel.UiState.Error) {}
+    private fun bindUiStateError(uiState: EpisodeBottomSheetViewModel.UiState.Error) {
+        binding.loadingIndicator.isVisible = false
+        binding.overview.text = uiState.message
+    }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())

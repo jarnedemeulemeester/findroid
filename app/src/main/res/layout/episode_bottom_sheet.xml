@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:paddingBottom="24dp">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loading_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/holder"
         android:layout_width="wrap_content"
@@ -36,7 +45,9 @@
         android:background="@drawable/circle_background"
         android:backgroundTint="?attr/colorError"
         app:layout_constraintEnd_toEndOf="@id/episode_image"
-        app:layout_constraintTop_toTopOf="@id/episode_image">
+        app:layout_constraintTop_toTopOf="@id/episode_image"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
