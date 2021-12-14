@@ -27,12 +27,6 @@ fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
     adapter.submitList(data)
 }
 
-@BindingAdapter("views")
-fun bindViews(recyclerView: RecyclerView, data: List<HomeItem>?) {
-    val adapter = recyclerView.adapter as ViewListAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("items")
 fun bindItems(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as ViewItemListAdapter

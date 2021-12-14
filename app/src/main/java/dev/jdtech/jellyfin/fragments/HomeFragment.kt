@@ -12,7 +12,9 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
@@ -28,15 +30,17 @@ import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.contentType
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
-import dev.jdtech.jellyfin.viewmodels.HomeViewModel.Loading
-import dev.jdtech.jellyfin.viewmodels.HomeViewModel.LoadingError
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +70,6 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-
         setupView()
         bindState()
 
@@ -84,6 +85,7 @@ class HomeFragment : Fragment() {
     private fun setupView() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.refreshData()
+            // binding.refreshLayout.isRefreshing = false
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
@@ -99,48 +101,54 @@ class HomeFragment : Fragment() {
                         .show()
                 }
             })
-    }
-
-    private fun bindState() {
-        viewModel.onStateUpdate(lifecycleScope) { state ->
-            when (state) {
-                is Loading -> bindLoading(state)
-                is LoadingError -> bindError(state)
-            }
-        }
-    }
-
-    private fun bindError(state: LoadingError) {
-        checkIfLoginRequired(state.message)
-        binding.errorLayout.errorPanel.isVisible = true
-        binding.viewsRecyclerView.isVisible = false
-        binding.loadingIndicator.isVisible = false
-        binding.refreshLayout.isRefreshing = false
-
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(state.message).show(
-                parentFragmentManager,
-                "errordialog"
-            )
-        }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.refreshData()
         }
+
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            errorDialog.show(parentFragmentManager, "errordialog")
+        }
     }
 
-    private fun bindLoading(state: Loading) {
-        binding.errorLayout.errorPanel.isVisible = false
-        binding.viewsRecyclerView.isVisible = true
-
-        binding.loadingIndicator.visibility = when {
-            state.inProgress && binding.refreshLayout.isRefreshing -> View.GONE
-            state.inProgress -> View.VISIBLE
-            else -> {
-                binding.refreshLayout.isRefreshing = false
-                View.GONE
+    private fun bindState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is HomeViewModel.UiState.Loading -> bindUiStateLoading()
+                        is HomeViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
             }
         }
+    }
+
+    private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {
+        uiState.apply {
+            val adapter = binding.viewsRecyclerView.adapter as ViewListAdapter
+            adapter.submitList(uiState.homeItems)
+        }
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
+        binding.viewsRecyclerView.isVisible = true
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: HomeViewModel.UiState.Error) {
+        val error = uiState.message ?: getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
+        binding.viewsRecyclerView.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
