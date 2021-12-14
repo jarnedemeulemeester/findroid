@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,12 +23,11 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.MediaDetailFragmentBinding
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.Movie
-import dev.jdtech.jellyfin.tv.ui.MediaDetailViewModel.State.TvShow
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel.PlayerItemError
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel.PlayerItems
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -60,19 +61,23 @@ internal class MediaDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
-        binding.item = detailViewModel.transformData(viewModel.item, resources) {
-            bindActions(it)
-            bindState(it)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is MediaInfoViewModel.UiState.Normal -> Unit
+                        is MediaInfoViewModel.UiState.Loading -> Unit
+                        is MediaInfoViewModel.UiState.Error -> Unit
+                    }
+                }
+            }
         }
 
         val seasonsAdapter = ViewItemListAdapter(
             fixedWidth = true,
             onClickListener = ViewItemListAdapter.OnClickListener {})
-
-        viewModel.seasons.observe(viewLifecycleOwner) {
-            seasonsAdapter.submitList(it)
-            binding.seasonTitle.isVisible = true
-        }
 
         binding.seasonsRow.gridView.adapter = seasonsAdapter
         binding.seasonsRow.gridView.verticalSpacing = 25
@@ -81,16 +86,11 @@ internal class MediaDetailFragment : Fragment() {
             Toast.makeText(requireContext(), "Not yet implemented", Toast.LENGTH_SHORT).show()
         }
 
-        viewModel.actors.observe(viewLifecycleOwner) { cast ->
-            castAdapter.submitList(cast)
-            binding.castTitle.isVisible = cast.isNotEmpty()
-        }
-
         binding.castRow.gridView.adapter = castAdapter
         binding.castRow.gridView.verticalSpacing = 25
     }
 
-    private fun bindState(state: MediaDetailViewModel.State) {
+    /*private fun bindState(state: MediaDetailViewModel.State) {
         playerViewModel.onPlaybackRequested(lifecycleScope) { state ->
             when (state) {
                 is PlayerItemError -> bindPlayerItemsError(state)
@@ -106,7 +106,22 @@ internal class MediaDetailFragment : Fragment() {
                 isVisible = true
             }
         }
+    }*/
+
+    private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
+        uiState.apply {
+            binding.seasonTitle.isVisible = seasons.isNotEmpty()
+            val seasonsAdapter = binding.seasonsRow.gridView.adapter as ViewItemListAdapter
+            seasonsAdapter.submitList(seasons)
+            binding.castTitle.isVisible = actors.isNotEmpty()
+            val actorsAdapter = binding.castRow.gridView.adapter as PersonListAdapter
+            actorsAdapter.submitList(actors)
+        }
     }
+
+    private fun bindUiStateLoading() {}
+
+    private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {}
 
     private fun bindPlayerItems(items: PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
@@ -135,7 +150,7 @@ internal class MediaDetailFragment : Fragment() {
     private fun bindActions(state: MediaDetailViewModel.State) {
         binding.playButton.setOnClickListener {
             binding.progressCircular.isVisible = true
-            viewModel.item.value?.let { item ->
+            viewModel.item?.let { item ->
                 playerViewModel.loadPlayerItems(item) {
                     VideoVersionDialogFragment(item, playerViewModel).show(
                         parentFragmentManager,
@@ -156,24 +171,24 @@ internal class MediaDetailFragment : Fragment() {
 
         if (state.isPlayed) {
             with(binding.checkButton) {
-                setImageDrawable(resources.getDrawable(R.drawable.ic_check_filled))
+                setImageResource(R.drawable.ic_check_filled)
                 setOnClickListener { viewModel.markAsUnplayed(args.itemId) }
             }
         } else {
             with(binding.checkButton) {
-                setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                setImageResource(R.drawable.ic_check)
                 setOnClickListener { viewModel.markAsPlayed(args.itemId) }
             }
         }
 
         if (state.isFavorite) {
             with(binding.favoriteButton) {
-                setImageDrawable(resources.getDrawable(R.drawable.ic_heart_filled))
+                setImageResource(R.drawable.ic_heart_filled)
                 setOnClickListener { viewModel.unmarkAsFavorite(args.itemId) }
             }
         } else {
             with(binding.favoriteButton) {
-                setImageDrawable(resources.getDrawable(R.drawable.ic_heart))
+                setImageResource(R.drawable.ic_heart)
                 setOnClickListener { viewModel.markAsFavorite(args.itemId) }
             }
         }
