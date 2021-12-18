@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
@@ -93,7 +94,7 @@ constructor(
                 played = tempItem.userData?.played ?: false
                 favorite = tempItem.userData?.isFavorite ?: false
                 downloaded = itemIsDownloaded(itemId)
-                if (itemType == "Series" || itemType == "Episode") {
+                if (itemType == "Series") {
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
                 }
@@ -113,6 +114,8 @@ constructor(
                     downloaded
                 ))
             } catch (e: Exception) {
+                Timber.d(e)
+                Timber.d(itemId.toString())
                 uiState.emit(UiState.Error(e.message))
             }
         }

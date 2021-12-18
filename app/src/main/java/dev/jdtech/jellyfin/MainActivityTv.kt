@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainTvBinding
 import dev.jdtech.jellyfin.tv.ui.HomeFragmentDirections
+import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
@@ -23,6 +24,8 @@ internal class MainActivityTv : FragmentActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.tv_nav_host) as NavHostFragment
         val navController = navHostFragment.navController
+
+        loadDownloadLocation(applicationContext)
 
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
