@@ -212,8 +212,16 @@ class MediaInfoFragment : Fragment() {
             binding.downloadButton.setImageResource(downloadDrawable)
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle
-            binding.year.text = dateString
-            binding.playtime.text = runTime
+            if (dateString.isEmpty()) {
+                binding.year.isVisible = false
+            } else {
+                binding.year.text = dateString
+            }
+            if (runTime.isEmpty()) {
+                binding.playtime.isVisible = false
+            } else {
+                binding.playtime.text = runTime
+            }
             binding.officialRating.text = item.officialRating
             binding.communityRating.text = item.communityRating.toString()
             binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false

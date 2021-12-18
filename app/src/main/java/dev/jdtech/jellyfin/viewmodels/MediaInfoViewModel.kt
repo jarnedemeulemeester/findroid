@@ -60,21 +60,21 @@ constructor(
     }
 
     var item: BaseItemDto? = null
-    var actors: List<BaseItemPerson> = emptyList()
-    var director: BaseItemPerson? = null
-    var writers: List<BaseItemPerson> = emptyList()
-    var writersString: String = ""
-    var genresString: String = ""
-    var runTime: String = ""
-    var dateString: String = ""
+    private var actors: List<BaseItemPerson> = emptyList()
+    private var director: BaseItemPerson? = null
+    private var writers: List<BaseItemPerson> = emptyList()
+    private var writersString: String = ""
+    private var genresString: String = ""
+    private var runTime: String = ""
+    private var dateString: String = ""
     var nextUp: BaseItemDto? = null
     var seasons: List<BaseItemDto> = emptyList()
     var played: Boolean = false
     var favorite: Boolean = false
-    var downloaded: Boolean = false
-    var downloadMedia: Boolean = false
+    private var downloaded: Boolean = false
+    private var downloadMedia: Boolean = false
 
-    lateinit var downloadRequestItem: DownloadRequestItem
+    private lateinit var downloadRequestItem: DownloadRequestItem
 
     lateinit var playerItem: PlayerItem
 
@@ -121,9 +121,36 @@ constructor(
         }
     }
 
-    fun loadData(playerItem: PlayerItem) {
-        this.playerItem = playerItem
-        item = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+    fun loadData(pItem: PlayerItem) {
+        viewModelScope.launch {
+            playerItem = pItem
+            val tempItem = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+            item = tempItem
+            actors = getActors(tempItem)
+            director = getDirector(tempItem)
+            writers = getWriters(tempItem)
+            writersString = writers.joinToString(separator = ", ") { it.name.toString() }
+            genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+            runTime = ""
+            dateString = ""
+            played = tempItem.userData?.played ?: false
+            favorite = tempItem.userData?.isFavorite ?: false
+            uiState.emit(UiState.Normal(
+                tempItem,
+                actors,
+                director,
+                writers,
+                writersString,
+                genresString,
+                runTime,
+                dateString,
+                nextUp,
+                seasons,
+                played,
+                favorite,
+                downloaded
+            ))
+        }
     }
 
     private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson> {
@@ -222,10 +249,5 @@ constructor(
 
     fun deleteItem() {
         deleteDownloadedEpisode(playerItem.mediaSourceUri)
-    }
-
-    fun doneDownloadMedia() {
-        downloadMedia = false
-        downloaded = true
     }
 }
