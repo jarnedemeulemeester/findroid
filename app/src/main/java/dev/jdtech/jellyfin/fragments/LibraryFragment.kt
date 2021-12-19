@@ -3,8 +3,12 @@ package dev.jdtech.jellyfin.fragments
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +20,7 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.utils.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
 import java.lang.IllegalArgumentException
@@ -26,8 +31,9 @@ class LibraryFragment : Fragment() {
 
     private lateinit var binding: FragmentLibraryBinding
     private val viewModel: LibraryViewModel by viewModels()
-
     private val args: LibraryFragmentArgs by navArgs()
+
+    private lateinit var errorDialog: ErrorDialogFragment
 
     @Inject
     lateinit var sp: SharedPreferences
@@ -67,56 +73,71 @@ class LibraryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
-
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.itemsRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.itemsRecyclerView.visibility = View.VISIBLE
-            }
-        })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadItems(args.libraryId, args.libraryType)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+            errorDialog.show(
                 parentFragmentManager,
                 "errordialog"
             )
         }
-
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
 
         binding.itemsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
             })
 
-        // Sorting options
-        val sortBy = SortBy.fromString(sp.getString("sortBy", SortBy.defaultValue.name)!!)
-        val sortOrder = try {
-            SortOrder.valueOf(sp.getString("sortOrder", SortOrder.ASCENDING.name)!!)
-        } catch (e: IllegalArgumentException) {
-            SortOrder.ASCENDING
-        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    when (uiState) {
+                        is LibraryViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is LibraryViewModel.UiState.Loading -> bindUiStateLoading()
+                        is LibraryViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
 
-        viewModel.loadItems(args.libraryId, args.libraryType, sortBy = sortBy, sortOrder = sortOrder)
+                // Sorting options
+                val sortBy = SortBy.fromString(sp.getString("sortBy", SortBy.defaultValue.name)!!)
+                val sortOrder = try {
+                    SortOrder.valueOf(sp.getString("sortOrder", SortOrder.ASCENDING.name)!!)
+                } catch (e: IllegalArgumentException) {
+                    SortOrder.ASCENDING
+                }
+
+                viewModel.loadItems(args.libraryId, args.libraryType, sortBy = sortBy, sortOrder = sortOrder)
+            }
+        }
+    }
+
+    private fun bindUiStateNormal(uiState: LibraryViewModel.UiState.Normal) {
+        val adapter = binding.itemsRecyclerView.adapter as ViewItemListAdapter
+        adapter.submitList(uiState.items)
+        binding.loadingIndicator.isVisible = false
+        binding.itemsRecyclerView.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: LibraryViewModel.UiState.Error) {
+        val error = uiState.message ?: getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.itemsRecyclerView.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {

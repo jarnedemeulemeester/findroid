@@ -11,12 +11,17 @@ import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 internal class HomeFragment : BrowseSupportFragment() {
@@ -48,7 +53,22 @@ internal class HomeFragment : BrowseSupportFragment() {
             setOnClickListener { navigateToSettingsFragment() }
         }
 
-        viewModel.views().observe(viewLifecycleOwner) { homeItems ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is HomeViewModel.UiState.Loading -> Unit
+                        is HomeViewModel.UiState.Error -> Unit
+                    }
+                }
+            }
+        }
+    }
+
+    private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {
+        uiState.apply {
             rowsAdapter.clear()
             homeItems.map { section -> rowsAdapter.add(section.toListRow()) }
         }

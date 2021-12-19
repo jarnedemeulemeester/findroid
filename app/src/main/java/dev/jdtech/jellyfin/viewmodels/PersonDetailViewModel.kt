@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,9 +8,10 @@ import dev.jdtech.jellyfin.models.ContentType.MOVIE
 import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.contentType
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 import java.lang.Exception
 import java.util.UUID
 import javax.inject.Inject
@@ -21,29 +21,30 @@ internal class PersonDetailViewModel @Inject internal constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
 
-    val data = MutableLiveData<PersonOverview>()
-    val starredIn = MutableLiveData<StarredIn>()
+    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
-    private val _finishedLoading = MutableLiveData<Boolean>()
-    val finishedLoading: LiveData<Boolean> = _finishedLoading
+    sealed class UiState {
+        data class Normal(val data: PersonOverview, val starredIn: StarredIn) : UiState()
+        object Loading : UiState()
+        data class Error(val message: String?) : UiState()
+    }
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
 
     fun loadData(personId: UUID) {
-        _error.value = null
-        _finishedLoading.value = false
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
             try {
                 val personDetail = jellyfinRepository.getItem(personId)
 
-                data.postValue(
-                    PersonOverview(
-                        name = personDetail.name.orEmpty(),
-                        overview = personDetail.overview.orEmpty(),
-                        dto = personDetail
-                    )
+                val data = PersonOverview(
+                    name = personDetail.name.orEmpty(),
+                    overview = personDetail.overview.orEmpty(),
+                    dto = personDetail
                 )
+
                 val items = jellyfinRepository.getPersonItems(
                     personIds = listOf(personId),
                     includeTypes = listOf(MOVIE, TVSHOW),
@@ -53,13 +54,12 @@ internal class PersonDetailViewModel @Inject internal constructor(
                 val movies = items.filter { it.contentType() == MOVIE }
                 val shows = items.filter { it.contentType() == TVSHOW }
 
-                starredIn.postValue(StarredIn(movies, shows))
+                val starredIn = StarredIn(movies, shows)
 
+                uiState.emit(UiState.Normal(data, starredIn))
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.toString()
+                uiState.emit(UiState.Error(e.message))
             }
-            _finishedLoading.value = true
         }
     }
 

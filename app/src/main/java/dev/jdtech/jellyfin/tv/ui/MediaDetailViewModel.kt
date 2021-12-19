@@ -1,8 +1,6 @@
 package dev.jdtech.jellyfin.tv.ui
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
@@ -14,37 +12,35 @@ import javax.inject.Inject
 internal class MediaDetailViewModel @Inject internal constructor() : ViewModel() {
 
     fun transformData(
-        data: LiveData<BaseItemDto>,
+        data: BaseItemDto,
         resources: Resources,
         transformed: (State) -> Unit
-    ): LiveData<State> {
-        return Transformations.map(data) { baseItemDto ->
-            State(
-                dto = baseItemDto,
-                description = baseItemDto.overview.orEmpty(),
-                year = baseItemDto.productionYear.toString(),
-                officialRating = baseItemDto.officialRating.orEmpty(),
-                communityRating = baseItemDto.communityRating.toString(),
+    ): State {
+        return State(
+                dto = data,
+                description = data.overview.orEmpty(),
+                year = data.productionYear.toString(),
+                officialRating = data.officialRating.orEmpty(),
+                communityRating = data.communityRating.toString(),
                 runtimeMinutes = String.format(
                     resources.getString(R.string.runtime_minutes),
-                    baseItemDto.runTimeTicks?.div(600_000_000)
+                    data.runTimeTicks?.div(600_000_000)
                 ),
-                genres = baseItemDto.genres?.joinToString(" / ").orEmpty(),
-                trailerUrl = baseItemDto.remoteTrailers?.firstOrNull()?.url,
-                isPlayed = baseItemDto.userData?.played == true,
-                isFavorite = baseItemDto.userData?.isFavorite == true,
-                media = if (baseItemDto.type == MOVIE.type) {
+                genres = data.genres?.joinToString(" / ").orEmpty(),
+                trailerUrl = data.remoteTrailers?.firstOrNull()?.url,
+                isPlayed = data.userData?.played == true,
+                isFavorite = data.userData?.isFavorite == true,
+                media = if (data.type == MOVIE.type) {
                     State.Movie(
-                        title = baseItemDto.name.orEmpty()
+                        title = data.name.orEmpty()
                     )
                 } else {
                     State.TvShow(
-                        episode = baseItemDto.episodeTitle ?: baseItemDto.name.orEmpty(),
-                        show = baseItemDto.seriesName.orEmpty()
+                        episode = data.episodeTitle ?: data.name.orEmpty(),
+                        show = data.seriesName.orEmpty()
                     )
                 }
             ).also(transformed)
-        }
     }
 
     data class State(

@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
@@ -44,11 +48,15 @@ class ServerSelectFragment : Fragment() {
             navigateToAddServerFragment()
         }
 
-        viewModel.navigateToMain.observe(viewLifecycleOwner, {
-            if (it) {
-                navigateToMainActivity()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onNavigateToMain(viewLifecycleOwner.lifecycleScope) {
+                    if (it) {
+                        navigateToMainActivity()
+                    }
+                }
             }
-        })
+        }
 
         return binding.root
     }
@@ -61,6 +69,5 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToMainActivity() {
         findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
-        viewModel.doneNavigatingToMain()
     }
 }

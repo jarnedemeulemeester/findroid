@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,58 +19,81 @@ import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SeasonFragment : Fragment() {
 
     private lateinit var binding: FragmentSeasonBinding
     private val viewModel: SeasonViewModel by viewModels()
-
     private val args: SeasonFragmentArgs by navArgs()
+
+    private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSeasonBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
 
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.episodesRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.episodesRecyclerView.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
+                        is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
+                viewModel.loadEpisodes(args.seriesId, args.seasonId)
             }
-        })
+        }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadEpisodes(args.seriesId, args.seasonId)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, "errordialog")
         }
-
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
 
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(EpisodeListAdapter.OnClickListener { episode ->
                 navigateToEpisodeBottomSheetFragment(episode)
             }, args.seriesId, args.seriesName, args.seasonId, args.seasonName)
 
-        viewModel.loadEpisodes(args.seriesId, args.seasonId)
+    }
+
+    private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal) {
+        uiState.apply {
+            val adapter = binding.episodesRecyclerView.adapter as EpisodeListAdapter
+            adapter.submitList(uiState.episodes)
+        }
+        binding.loadingIndicator.isVisible = false
+        binding.episodesRecyclerView.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: SeasonViewModel.UiState.Error) {
+        val error = uiState.message ?: getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.episodesRecyclerView.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
