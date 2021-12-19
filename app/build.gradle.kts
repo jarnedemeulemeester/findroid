@@ -54,15 +54,24 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.core:core-splashscreen:1.0.0-alpha01")
-    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.leanback:leanback:1.2.0-alpha02")
+
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
+    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 
     // Material
     implementation("com.google.android.material:material:1.4.0")
 
     // ConstraintLayout
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+
+    // Lifecycle
+    val lifecycleVersion = "2.4.0"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
     // Navigation
     val navigationVersion = "2.3.5"
@@ -84,8 +93,8 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.0.3"
-    implementation("org.jellyfin.sdk:jellyfin-platform-android:$jellyfinVersion")
+    val jellyfinVersion = "1.1.1"
+    implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
     val glideVersion = "4.12.0"
@@ -93,12 +102,12 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     // Hilt
-    val hiltVersion = "2.38.1"
+    val hiltVersion = "2.40.2"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
     // ExoPlayer
-    val exoplayerVersion = "2.15.0"
+    val exoplayerVersion = "2.15.1"
     implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion")
     implementation(files("libs/extension-ffmpeg-release.aar"))
@@ -110,7 +119,7 @@ dependencies {
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
-    val aboutLibrariesVersion = "8.9.1"
+    val aboutLibrariesVersion = "8.9.4"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
 

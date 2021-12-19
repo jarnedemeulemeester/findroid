@@ -1,9 +1,20 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
@@ -12,15 +23,24 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.ContentType
+import dev.jdtech.jellyfin.models.ContentType.EPISODE
+import dev.jdtech.jellyfin.models.ContentType.MOVIE
+import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.contentType
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,51 +70,85 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-        binding.viewsRecyclerView.adapter = ViewListAdapter(ViewListAdapter.OnClickListener {
-            navigateToLibraryFragment(it)
-        }, ViewItemListAdapter.OnClickListener {
-            navigateToMediaInfoFragment(it)
-        }, HomeEpisodeListAdapter.OnClickListener { item ->
-            when (item.type) {
-                "Episode" -> {
-                    navigateToEpisodeBottomSheetFragment(item)
+        setupView()
+        bindState()
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.refreshData()
+    }
+
+    private fun setupView() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.refreshData()
+            // binding.refreshLayout.isRefreshing = false
+        }
+
+        binding.viewsRecyclerView.adapter = ViewListAdapter(
+            onClickListener = ViewListAdapter.OnClickListener { navigateToLibraryFragment(it) },
+            onItemClickListener = ViewItemListAdapter.OnClickListener {
+                navigateToMediaInfoFragment(it)
+            },
+            onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
+                when (item.contentType()) {
+                    EPISODE -> navigateToEpisodeBottomSheetFragment(item)
+                    MOVIE -> navigateToMediaInfoFragment(item)
+                    else -> Toast.makeText(requireContext(), R.string.unknown_error, LENGTH_LONG)
+                        .show()
                 }
-                "Movie" -> {
-                    navigateToMediaInfoFragment(item)
-                }
-            }
-
-        })
-
-        viewModel.finishedLoading.observe(viewLifecycleOwner, {
-            binding.loadingIndicator.visibility = if (it) View.GONE else View.VISIBLE
-        })
-
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.viewsRecyclerView.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.viewsRecyclerView.visibility = View.VISIBLE
-            }
-        })
+            })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadData()
+            viewModel.refreshData()
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
-                parentFragmentManager,
-                "errordialog"
-            )
+            errorDialog.show(parentFragmentManager, "errordialog")
         }
+    }
 
-        return binding.root
+    private fun bindState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is HomeViewModel.UiState.Loading -> bindUiStateLoading()
+                        is HomeViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {
+        uiState.apply {
+            val adapter = binding.viewsRecyclerView.adapter as ViewListAdapter
+            adapter.submitList(uiState.homeItems)
+        }
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
+        binding.viewsRecyclerView.isVisible = true
+    }
+
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
+
+    private fun bindUiStateError(uiState: HomeViewModel.UiState.Error) {
+        val error = uiState.message ?: getString(R.string.unknown_error)
+        errorDialog = ErrorDialogFragment(error)
+        binding.loadingIndicator.isVisible = false
+        binding.refreshLayout.isRefreshing = false
+        binding.viewsRecyclerView.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
@@ -108,12 +162,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        if (item.type == "Episode") {
+        if (item.contentType() == EPISODE) {
             findNavController().navigate(
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.seriesId!!,
                     item.seriesName,
-                    "Series"
+                    TVSHOW.type
                 )
             )
         } else {
@@ -121,7 +175,7 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.id,
                     item.name,
-                    item.type ?: "Unknown"
+                    item.type ?: ContentType.UNKNOWN.type
                 )
             )
         }

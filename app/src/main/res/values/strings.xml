@@ -1,16 +1,24 @@
 <resources>
-    <string name="app_name">Findroid</string>
+    <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="add_server">Add server</string>
+    <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
+    <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
+    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
+    <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
+    <string name="add_server_error_already_added">Server already added</string>
+    <string name="add_server_error_empty_address">Empty server address</string>
+    <string name="add_server_error_not_found">Server not found</string>
+    <string name="add_server_error_no_id">Server has no id, something seems to be wrong with the server</string>
     <string name="login">Login</string>
+    <string name="login_error_wrong_username_password">Wrong username or password</string>
     <string name="select_server">Select server</string>
     <string name="edit_text_server_address_hint">Server address</string>
     <string name="edit_text_username_hint">Username</string>
     <string name="edit_text_password_hint">Password</string>
     <string name="button_connect">Connect</string>
     <string name="button_login">Login</string>
-    <string name="server_icon">Server icon</string>
     <string name="remove_server">Remove server</string>
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove">Remove</string>
@@ -19,6 +27,7 @@
     <string name="title_media">My media</string>
     <string name="title_favorite">Favorites</string>
     <string name="title_settings">Settings</string>
+    <string name="title_download">Downloads</string>
     <string name="view_all">View all</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
@@ -39,6 +48,7 @@
     <string name="latest_library">Latest %1$s</string>
     <string name="series_poster">Series poster</string>
     <string name="no_favorites">You have no favorites</string>
+    <string name="no_downloads">You have nothing downloaded</string>
     <string name="search">Search</string>
     <string name="no_search_results">No search results</string>
     <string name="settings_category_language">Language</string>
@@ -46,8 +56,16 @@
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
+    <string name="settings_category_player">Player</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="device_name">Device name</string>
+    <string name="settings_category_device">Device</string>
+    <string name="settings_category_cache">Cache</string>
+    <string name="settings_use_cache_title">Cache images</string>
+    <string name="settings_use_cache_summary">Cache images on disk to speed up loading times. Will take effect after app restart.</string>
+    <string name="settings_cache_size">Cache size (MB)</string>
+    <string name="settings_cache_size_message">App will use this amount of MB of your disk space to store images from Jellyfin server. Larger values might be beneficial on slower networks.</string>
     <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
@@ -56,10 +74,48 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="app_info">App info</string>
     <string name="unknown_error">Unknown error</string>
+  	<string name="search_hint">Search movies, shows, episodes…</string>
+    <string name="select_a_version">"Select a version"</string>
     <string name="select_audio_track">Select audio track</string>
     <string name="select_subtile_track">Select subtitle track</string>
+    <string name="select_playback_speed">Select playback speed</string>
     <string name="mpv_player">MPV Player</string>
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
+    <string name="download_button_description">Download</string>
+    <string name="delete_button_description">Delete</string>
+    <string name="person_detail_title">Person Detail</string>
+    <string name="error_getting_person_id">Detail unavailable</string>
+    <string name="movies_label">Movies</string>
+    <string name="shows_label">TV Shows</string>
+    <string name="hide">Hide</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_order">Sort order</string>
+    <string name="close">Close</string>
+    <string name="share">Share</string>
+    <string name="image_description_poster">%1$s poster</string>
+    <string name="image_description_backdrop">%1$s backdrop</string>
+
+    <string-array name="sort_by_options">
+        <item>Name</item>
+        <item>IMDB Rating</item>
+        <item>Parental Rating</item>
+        <item>Date Added</item>
+        <item>Date Played</item>
+        <item>Release Date</item>
+    </string-array>
+    <string-array name="sort_order_options">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+    <string name="runtime_minutes">%1$d mins</string>
+    <string name="select_video_version_title">Select version</string>
+    <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_rewind">Rewind</string>
+    <string name="player_controls_fast_forward">Fast forward</string>
+    <string name="player_controls_pause">Pause</string>
+    <string name="player_controls_skip">Skip</string>
+    <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="add_server_empty_error">Empty server address</string>
 </resources>

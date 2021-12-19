@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.AddServerViewModel" />
-    </data>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragments.AddServerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.AddServerFragment">
-
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/image_banner"
@@ -27,7 +21,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -65,6 +58,7 @@
                     android:id="@+id/edit_text_server_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
                     android:inputType="textUri"
                     android:singleLine="true" />
 
@@ -76,8 +70,8 @@
 
                 <Button
                     android:id="@+id/button_connect"
-                    style="@style/setup_button"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_launcher_foreground"
                     android:text="@string/button_connect" />
 
@@ -93,5 +87,7 @@
             </RelativeLayout>
 
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+
+</ScrollView>

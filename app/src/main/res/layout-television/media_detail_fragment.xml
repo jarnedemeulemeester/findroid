@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <include
+        android:id="@+id/error_layout"
+        layout="@layout/error_panel"
+        tools:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/player_controls_exit"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:paddingBottom="16dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                app:layout_constraintStart_toEndOf="@id/back_button"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Alita: Battle Angel" />
+
+            <TextClock
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginEnd="24dp"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="12:00" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/poster"
+                android:layout_width="320dp"
+                android:layout_height="180dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="Subtitle" />
+
+            <TextView
+                android:id="@+id/genres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/subtitle"
+                tools:text="Action, Science Fiction, Adventure" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/genres"
+                tools:text="2019" />
+
+            <TextView
+                android:id="@+id/playtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@id/year"
+                app:layout_constraintTop_toBottomOf="@id/genres"
+                tools:text="122 min" />
+
+            <TextView
+                android:id="@+id/official_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@id/playtime"
+                app:layout_constraintTop_toBottomOf="@id/genres"
+                tools:text="PG-13" />
+
+            <TextView
+                android:id="@+id/community_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:drawablePadding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:drawableStartCompat="@drawable/ic_star"
+                app:drawableTint="@color/yellow"
+                app:layout_constraintStart_toEndOf="@id/official_rating"
+                app:layout_constraintTop_toBottomOf="@id/genres"
+                tools:text="7.3" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginBottom="24dp"
+                android:ellipsize="end"
+                android:maxLines="5"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/year"
+                tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
+
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:elevation="8dp"
+                android:indeterminateTint="@color/white"
+                android:padding="8dp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <ImageButton
+                android:id="@+id/play_button"
+                android:layout_width="72dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:contentDescription="@string/play_button_description"
+                android:focusable="true"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_play"
+                app:layout_constraintStart_toEndOf="@id/poster"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <ImageButton
+                android:id="@+id/trailer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/trailer_button_description"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_film"
+                app:layout_constraintStart_toEndOf="@id/play_button"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <ImageButton
+                android:id="@+id/check_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/check_button_description"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_check"
+                app:layout_constraintStart_toEndOf="@id/trailer_button"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <ImageButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/favorite_button_description"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_heart"
+                app:layout_constraintStart_toEndOf="@id/check_button"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <TextView
+                android:id="@+id/season_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="32dp"
+                android:text="@string/seasons"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/play_button" />
+
+            <androidx.leanback.widget.ListRowView
+                android:id="@+id/seasons_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/season_title" />
+
+            <TextView
+                android:id="@+id/cast_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="16dp"
+                android:text="@string/cast_amp_crew"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/seasons_row" />
+
+            <androidx.leanback.widget.ListRowView
+                android:id="@+id/cast_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cast_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</FrameLayout>

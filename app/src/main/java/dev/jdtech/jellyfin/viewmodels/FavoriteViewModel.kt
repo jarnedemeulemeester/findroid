@@ -1,16 +1,16 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -20,40 +20,41 @@ class FavoriteViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
-    private val _favoriteSections = MutableLiveData<List<FavoriteSection>>()
-    val favoriteSections: LiveData<List<FavoriteSection>> = _favoriteSections
+    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
-    private val _finishedLoading = MutableLiveData<Boolean>()
-    val finishedLoading: LiveData<Boolean> = _finishedLoading
+    sealed class UiState {
+        data class Normal(val favoriteSections: List<FavoriteSection>) : UiState()
+        object Loading : UiState()
+        data class Error(val message: String?) : UiState()
+    }
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
 
     init {
         loadData()
     }
 
     fun loadData() {
-        _error.value = null
-        _finishedLoading.value = false
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
             try {
                 val items = jellyfinRepository.getFavoriteItems()
 
                 if (items.isEmpty()) {
-                    _favoriteSections.value = listOf()
-                    _finishedLoading.value = true
+                    uiState.emit(UiState.Normal(emptyList()))
                     return@launch
                 }
 
-                val tempFavoriteSections = mutableListOf<FavoriteSection>()
+                val favoriteSections = mutableListOf<FavoriteSection>()
 
                 withContext(Dispatchers.Default) {
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Movies",
                         items.filter { it.type == "Movie" }).let {
-                        if (it.items.isNotEmpty()) tempFavoriteSections.add(
+                        if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
                     }
@@ -61,7 +62,7 @@ constructor(
                         UUID.randomUUID(),
                         "Shows",
                         items.filter { it.type == "Series" }).let {
-                        if (it.items.isNotEmpty()) tempFavoriteSections.add(
+                        if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
                     }
@@ -69,18 +70,16 @@ constructor(
                         UUID.randomUUID(),
                         "Episodes",
                         items.filter { it.type == "Episode" }).let {
-                        if (it.items.isNotEmpty()) tempFavoriteSections.add(
+                        if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
                     }
                 }
 
-                _favoriteSections.value = tempFavoriteSections
+                uiState.emit(UiState.Normal(favoriteSections))
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.toString()
+                uiState.emit(UiState.Error(e.message))
             }
-            _finishedLoading.value = true
         }
     }
 }

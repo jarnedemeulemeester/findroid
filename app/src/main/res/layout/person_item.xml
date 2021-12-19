@@ -15,7 +15,9 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_background"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -25,7 +27,7 @@
             android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
             app:personImage="@{person}"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
         <TextView
             android:id="@+id/person_name"

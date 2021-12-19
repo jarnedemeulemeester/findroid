@@ -6,30 +6,44 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.serializer.toUUID
+import timber.log.Timber
+import java.util.UUID
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaInfoBinding
     private val viewModel: MediaInfoViewModel by viewModels()
-
+    private val playerViewModel: PlayerViewModel by viewModels()
     private val args: MediaInfoFragmentArgs by navArgs()
+
+    lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,168 +51,231 @@ class MediaInfoFragment : Fragment() {
     ): View {
         binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
-
-        viewModel.error.observe(viewLifecycleOwner, { error ->
-            if (error != null) {
-                checkIfLoginRequired(error)
-                binding.errorLayout.errorPanel.visibility = View.VISIBLE
-                binding.mediaInfoScrollview.visibility = View.GONE
-            } else {
-                binding.errorLayout.errorPanel.visibility = View.GONE
-                binding.mediaInfoScrollview.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                    Timber.d("$uiState")
+                    when (uiState) {
+                        is MediaInfoViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is MediaInfoViewModel.UiState.Loading -> bindUiStateLoading()
+                        is MediaInfoViewModel.UiState.Error -> bindUiStateError(uiState)
+                    }
+                }
+                if (!args.isOffline) {
+                    viewModel.loadData(args.itemId, args.itemType)
+                } else {
+                    viewModel.loadData(args.playerItem!!)
+                }
             }
-        })
+        }
+
+        if(args.itemType != "Movie") {
+            binding.downloadButton.visibility = View.GONE
+        }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadData(args.itemId, args.itemType)
         }
 
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
-                parentFragmentManager,
-                "errordialog"
-            )
-        }
-
-        viewModel.item.observe(viewLifecycleOwner, { item ->
-            if (item.originalTitle != item.name) {
-                binding.originalTitle.visibility = View.VISIBLE
-            } else {
-                binding.originalTitle.visibility = View.GONE
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
-            if (item.remoteTrailers.isNullOrEmpty()) {
-                binding.trailerButton.visibility = View.GONE
-            }
-            binding.communityRating.visibility = when (item.communityRating != null) {
-                true -> View.VISIBLE
-                false -> View.GONE
-            }
-        })
-
-        viewModel.actors.observe(viewLifecycleOwner, { actors ->
-            when (actors.isNullOrEmpty()) {
-                false -> binding.actors.visibility = View.VISIBLE
-                true -> binding.actors.visibility = View.GONE
-            }
-        })
-
-        viewModel.navigateToPlayer.observe(viewLifecycleOwner, { playerItems ->
-            if (playerItems != null) {
-                navigateToPlayerActivity(
-                    playerItems
-                )
-                viewModel.doneNavigatingToPlayer()
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            }
-        })
-
-        viewModel.played.observe(viewLifecycleOwner, {
-            val drawable = when (it) {
-                true -> R.drawable.ic_check_filled
-                false -> R.drawable.ic_check
-            }
-
-            binding.checkButton.setImageResource(drawable)
-        })
-
-        viewModel.favorite.observe(viewLifecycleOwner, {
-            val drawable = when (it) {
-                true -> R.drawable.ic_heart_filled
-                false -> R.drawable.ic_heart
-            }
-
-            binding.favoriteButton.setImageResource(drawable)
-        })
-
-        viewModel.playerItemsError.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage != null) {
-                binding.playerItemsError.visibility = View.VISIBLE
-                binding.playButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.ic_play
-                    )
-                )
-                binding.progressCircular.visibility = View.INVISIBLE
-            } else {
-                binding.playerItemsError.visibility = View.GONE
-            }
-        })
-
-        binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(
-                viewModel.playerItemsError.value ?: getString(R.string.unknown_error)
-            ).show(parentFragmentManager, "errordialog")
         }
 
         binding.trailerButton.setOnClickListener {
-            if (viewModel.item.value?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
+            if (viewModel.item?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(viewModel.item.value?.remoteTrailers?.get(0)?.url)
+                Uri.parse(viewModel.item?.remoteTrailers?.get(0)?.url)
             )
             startActivity(intent)
         }
 
         binding.nextUp.setOnClickListener {
-            navigateToEpisodeBottomSheetFragment(viewModel.nextUp.value!!)
+            navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
         }
 
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { season ->
                 navigateToSeasonFragment(season)
             }, fixedWidth = true)
-        binding.peopleRecyclerView.adapter = PersonListAdapter()
+        binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
+            val uuid = person.id?.toUUID()
+            if (uuid != null) {
+                navigateToPersonDetail(uuid)
+            } else {
+                Toast.makeText(requireContext(), R.string.error_getting_person_id, Toast.LENGTH_SHORT).show()
+            }
+        }
 
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
-            binding.progressCircular.visibility = View.VISIBLE
-            if (args.itemType == "Movie") {
-                if (viewModel.item.value?.mediaSources != null) {
-                    if (viewModel.item.value?.mediaSources?.size!! > 1) {
-                        VideoVersionDialogFragment(viewModel).show(
+            binding.progressCircular.isVisible = true
+            viewModel.item?.let { item ->
+                if (!args.isOffline) {
+                    playerViewModel.loadPlayerItems(item) {
+                        VideoVersionDialogFragment(item, playerViewModel).show(
                             parentFragmentManager,
                             "videoversiondialog"
                         )
-                    } else {
-                        viewModel.preparePlayerItems()
+                    }
+                } else {
+                    playerViewModel.loadOfflinePlayerItems(args.playerItem!!)
+                }
+            }
+        }
+
+        if (!args.isOffline) {
+            binding.errorLayout.errorRetryButton.setOnClickListener {
+                viewModel.loadData(args.itemId, args.itemType)
+            }
+
+            binding.checkButton.setOnClickListener {
+                when (viewModel.played) {
+                    true -> {
+                        viewModel.markAsUnplayed(args.itemId)
+                        binding.checkButton.setImageResource(R.drawable.ic_check)
+                    }
+                    false -> {
+                        viewModel.markAsPlayed(args.itemId)
+                        binding.checkButton.setImageResource(R.drawable.ic_check_filled)
                     }
                 }
-            } else if (args.itemType == "Series") {
-                viewModel.preparePlayerItems()
+            }
+
+            binding.favoriteButton.setOnClickListener {
+                when (viewModel.favorite) {
+                    true -> {
+                        viewModel.unmarkAsFavorite(args.itemId)
+                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
+                    }
+                    false -> {
+                        viewModel.markAsFavorite(args.itemId)
+                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
+                    }
+                }
+            }
+
+            binding.downloadButton.setOnClickListener {
+                viewModel.loadDownloadRequestItem(args.itemId)
+            }
+
+            binding.deleteButton.isVisible = false
+        } else {
+            binding.favoriteButton.isVisible = false
+            binding.checkButton.isVisible = false
+            binding.downloadButton.isVisible = false
+
+            binding.deleteButton.setOnClickListener {
+                viewModel.deleteItem()
+                findNavController().navigate(R.id.downloadFragment)
             }
         }
+    }
 
-        binding.checkButton.setOnClickListener {
-            when (viewModel.played.value) {
-                true -> viewModel.markAsUnplayed(args.itemId)
-                false -> viewModel.markAsPlayed(args.itemId)
+    private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
+        uiState.apply {
+            binding.originalTitle.isVisible = item.originalTitle != item.name
+            if (item.remoteTrailers.isNullOrEmpty()) {
+                binding.trailerButton.isVisible = false
             }
-        }
+            binding.communityRating.isVisible = item.communityRating != null
+            binding.actors.isVisible = actors.isNotEmpty()
 
-        binding.favoriteButton.setOnClickListener {
-            when (viewModel.favorite.value) {
-                true -> viewModel.unmarkAsFavorite(args.itemId)
-                false -> viewModel.markAsFavorite(args.itemId)
+            // Check icon
+            val checkDrawable = when (played) {
+                true -> R.drawable.ic_check_filled
+                false -> R.drawable.ic_check
             }
-        }
+            binding.checkButton.setImageResource(checkDrawable)
 
-        viewModel.loadData(args.itemId, args.itemType)
+            // Favorite icon
+            val favoriteDrawable = when (favorite) {
+                true -> R.drawable.ic_heart_filled
+                false -> R.drawable.ic_heart
+            }
+            binding.favoriteButton.setImageResource(favoriteDrawable)
+
+            // Download icon
+            val downloadDrawable = when (downloaded) {
+                true -> R.drawable.ic_download_filled
+                false -> R.drawable.ic_download
+            }
+            binding.downloadButton.setImageResource(downloadDrawable)
+            binding.name.text = item.name
+            binding.originalTitle.text = item.originalTitle
+            if (dateString.isEmpty()) {
+                binding.year.isVisible = false
+            } else {
+                binding.year.text = dateString
+            }
+            if (runTime.isEmpty()) {
+                binding.playtime.isVisible = false
+            } else {
+                binding.playtime.text = runTime
+            }
+            binding.officialRating.text = item.officialRating
+            binding.communityRating.text = item.communityRating.toString()
+            binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false
+            binding.genres.text = genresString
+            binding.directorLayout.isVisible = director != null
+            binding.director.text = director?.name
+            binding.writersLayout.isVisible = writers.isNotEmpty()
+            binding.writers.text = writersString
+            binding.description.text = item.overview
+            binding.nextUpLayout.isVisible = nextUp != null
+            binding.nextUpName.text = String.format(getString(R.string.episode_name_extended), nextUp?.parentIndexNumber, nextUp?.indexNumber, nextUp?.name)
+            binding.seasonsLayout.isVisible = seasons.isNotEmpty()
+            val seasonsAdapter = binding.seasonsRecyclerView.adapter as ViewItemListAdapter
+            seasonsAdapter.submitList(seasons)
+            val actorsAdapter = binding.peopleRecyclerView.adapter as PersonListAdapter
+            actorsAdapter.submitList(actors)
+            bindItemBackdropImage(binding.itemBanner, item)
+            bindBaseItemImage(binding.nextUpImage, nextUp)
+        }
+    }
+
+    private fun bindUiStateLoading() {}
+
+    private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {
+        val error = uiState.message ?: getString(R.string.unknown_error)
+        binding.mediaInfoScrollview.isVisible = false
+        binding.errorLayout.errorPanel.isVisible = true
+        checkIfLoginRequired(error)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.message)
+        binding.playerItemsError.visibility = View.VISIBLE
+        binding.playButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireActivity(),
+                R.drawable.ic_play
+            )
+        )
+        binding.progressCircular.visibility = View.INVISIBLE
+        binding.playerItemsErrorDetails.setOnClickListener {
+            ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
+        }
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
@@ -225,8 +302,14 @@ class MediaInfoFragment : Fragment() {
     ) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
-                playerItems,
+                playerItems
             )
+        )
+    }
+
+    private fun navigateToPersonDetail(personId: UUID) {
+        findNavController().navigate(
+            MediaInfoFragmentDirections.actionMediaInfoFragmentToPersonDetailFragment(personId)
         )
     }
 }

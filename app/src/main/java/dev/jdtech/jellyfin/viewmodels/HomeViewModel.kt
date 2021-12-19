@@ -1,113 +1,91 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
+import dev.jdtech.jellyfin.adapters.HomeItem.Section
+import dev.jdtech.jellyfin.adapters.HomeItem.ViewItem
 import dev.jdtech.jellyfin.models.HomeSection
-import dev.jdtech.jellyfin.models.View
+import dev.jdtech.jellyfin.models.unsupportedCollections
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel
-@Inject
-constructor(
-    application: Application,
-    private val jellyfinRepository: JellyfinRepository
+class HomeViewModel @Inject internal constructor(
+    private val application: Application,
+    private val repository: JellyfinRepository
 ) : ViewModel() {
+    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
-    private val continueWatchingString = application.resources.getString(R.string.continue_watching)
-    private val nextUpString = application.resources.getString(R.string.next_up)
-
-    private val _views = MutableLiveData<List<HomeItem>>()
-    val views: LiveData<List<HomeItem>> = _views
-
-    private val _items = MutableLiveData<List<BaseItemDto>>()
-    val items: LiveData<List<BaseItemDto>> = _items
-
-    private val _finishedLoading = MutableLiveData<Boolean>()
-    val finishedLoading: LiveData<Boolean> = _finishedLoading
-
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
-
-    init {
-        loadData()
+    sealed class UiState {
+        data class Normal(val homeItems: List<HomeItem>) : UiState()
+        object Loading : UiState()
+        data class Error(val message: String?) : UiState()
     }
 
-    fun loadData() {
-        _error.value = null
-        _finishedLoading.value = false
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
+
+    init {
+        loadData(updateCapabilities = true)
+    }
+
+    fun refreshData() = loadData(updateCapabilities = false)
+
+    private fun loadData(updateCapabilities: Boolean) {
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
             try {
+                if (updateCapabilities) repository.postCapabilities()
 
-
-                jellyfinRepository.postCapabilities()
-
-                val items = mutableListOf<HomeItem>()
+                val updated = loadDynamicItems() + loadViews()
 
                 withContext(Dispatchers.Default) {
-
-                    val resumeItems = jellyfinRepository.getResumeItems()
-                    val resumeSection =
-                        HomeSection(UUID.randomUUID(), continueWatchingString, resumeItems)
-
-                    if (!resumeItems.isNullOrEmpty()) {
-                        items.add(HomeItem.Section(resumeSection))
-                    }
-
-                    val nextUpItems = jellyfinRepository.getNextUp()
-                    val nextUpSection = HomeSection(UUID.randomUUID(), nextUpString, nextUpItems)
-
-                    if (!nextUpItems.isNullOrEmpty()) {
-                        items.add(HomeItem.Section(nextUpSection))
-                    }
+                    syncPlaybackProgress(repository)
                 }
-
-                _views.value = items
-
-                val views: MutableList<View> = mutableListOf()
-
-                withContext(Dispatchers.Default) {
-                    val userViews = jellyfinRepository.getUserViews()
-
-                    for (view in userViews) {
-                        Timber.d("Collection type: ${view.collectionType}")
-                        if (view.collectionType == "homevideos" ||
-                            view.collectionType == "music" ||
-                            view.collectionType == "playlists" ||
-                            view.collectionType == "books" ||
-                            view.collectionType == "livetv"
-                        ) continue
-                        val latestItems = jellyfinRepository.getLatestMedia(view.id)
-                        if (latestItems.isEmpty()) continue
-                        val v = view.toView()
-                        v.items = latestItems
-                        views.add(v)
-                    }
-                }
-
-                _views.value = items + views.map { HomeItem.ViewItem(it) }
-
-
+                uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.toString()
+                uiState.emit(UiState.Error(e.message))
             }
-            _finishedLoading.value = true
         }
+    }
+
+    private suspend fun loadDynamicItems() = withContext(Dispatchers.IO) {
+        val resumeItems = repository.getResumeItems()
+        val nextUpItems = repository.getNextUp()
+
+        val items = mutableListOf<HomeSection>()
+        if (resumeItems.isNotEmpty()) {
+            items.add(HomeSection(application.resources.getString(R.string.continue_watching), resumeItems))
+        }
+
+        if (nextUpItems.isNotEmpty()) {
+            items.add(HomeSection(application.resources.getString(R.string.next_up), nextUpItems))
+        }
+
+        items.map { Section(it) }
+    }
+
+    private suspend fun loadViews() = withContext(Dispatchers.IO) {
+        repository
+            .getUserViews()
+            .filter { view -> unsupportedCollections().none { it.type == view.collectionType } }
+            .map { view -> view to repository.getLatestMedia(view.id) }
+            .filter { (_, latest) -> latest.isNotEmpty() }
+            .map { (view, latest) -> view.toView().apply { items = latest } }
+            .map { ViewItem(it) }
     }
 }
 

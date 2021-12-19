@@ -14,9 +14,9 @@ class ErrorDialogFragment(private val errorMessage: String) : DialogFragment() {
             val builder = MaterialAlertDialogBuilder(it, R.style.ErrorDialogStyle)
             builder
                 .setMessage(errorMessage)
-                .setPositiveButton("close") { _, _ ->
+                .setPositiveButton(getString(R.string.close)) { _, _ ->
                 }
-                .setNeutralButton("share") { _, _ ->
+                .setNeutralButton(getString(R.string.share)) { _, _ ->
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
                         putExtra(Intent.EXTRA_TEXT, errorMessage)

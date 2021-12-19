@@ -3,29 +3,30 @@ package dev.jdtech.jellyfin
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.databinding.ActivityMainBinding
-import dev.jdtech.jellyfin.fragments.InitializingFragmentDirections
+import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
+import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
+import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainAppBinding
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainAppBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment, R.id.mediaFragment, R.id.favoriteFragment
+                R.id.homeFragment, R.id.mediaFragment, R.id.favoriteFragment, R.id.downloadFragment
             )
         )
 
@@ -57,18 +58,12 @@ class MainActivity : AppCompatActivity() {
             if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title = getString(R.string.app_info)
         }
 
+        loadDownloadLocation(applicationContext)
+
         viewModel.navigateToAddServer.observe(this, {
             if (it) {
-                navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToAddServerFragment3())
+                navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
-            }
-        })
-
-        viewModel.doneLoading.observe(this, {
-            if (it) {
-                if (navController.currentDestination!!.id == R.id.initializingFragment) {
-                    navController.navigate(InitializingFragmentDirections.actionInitializingFragmentToNavigationHome())
-                }
             }
         })
     }

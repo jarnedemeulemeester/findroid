@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.LoginViewModel" />
-    </data>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragments.LoginFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.LoginFragment">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/image_banner"
@@ -82,6 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="password"
+                    android:imeOptions="actionGo"
                     android:inputType="textPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -92,8 +88,8 @@
 
                 <Button
                     android:id="@+id/button_login"
-                    style="@style/setup_button"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/button_login" />
 
                 <ProgressBar
@@ -105,8 +101,9 @@
                     android:padding="8dp"
                     android:visibility="invisible" />
             </RelativeLayout>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</layout>
+</ScrollView>

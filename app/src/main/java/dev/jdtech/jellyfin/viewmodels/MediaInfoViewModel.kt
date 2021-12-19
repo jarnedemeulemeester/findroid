@@ -1,105 +1,162 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.Application
+import android.net.Uri
 import android.os.Build
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.utils.itemIsDownloaded
+import dev.jdtech.jellyfin.utils.requestDownload
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class MediaInfoViewModel
 @Inject
-constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
+constructor(
+    private val application: Application,
+    private val jellyfinRepository: JellyfinRepository
+    ) : ViewModel() {
+    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
-    private val _item = MutableLiveData<BaseItemDto>()
-    val item: LiveData<BaseItemDto> = _item
+    sealed class UiState {
+        data class Normal(
+            val item: BaseItemDto,
+            val actors: List<BaseItemPerson>,
+            val director: BaseItemPerson?,
+            val writers: List<BaseItemPerson>,
+            val writersString: String,
+            val genresString: String,
+            val runTime: String,
+            val dateString: String,
+            val nextUp: BaseItemDto?,
+            val seasons: List<BaseItemDto>,
+            val played: Boolean,
+            val favorite: Boolean,
+            val downloaded: Boolean,
+            ) : UiState()
+        object Loading : UiState()
+        data class Error(val message: String?) : UiState()
+    }
 
-    private val _actors = MutableLiveData<List<BaseItemPerson>>()
-    val actors: LiveData<List<BaseItemPerson>> = _actors
+    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
+        scope.launch { uiState.collect { collector(it) } }
+    }
 
-    private val _director = MutableLiveData<BaseItemPerson>()
-    val director: LiveData<BaseItemPerson> = _director
+    var item: BaseItemDto? = null
+    private var actors: List<BaseItemPerson> = emptyList()
+    private var director: BaseItemPerson? = null
+    private var writers: List<BaseItemPerson> = emptyList()
+    private var writersString: String = ""
+    private var genresString: String = ""
+    private var runTime: String = ""
+    private var dateString: String = ""
+    var nextUp: BaseItemDto? = null
+    var seasons: List<BaseItemDto> = emptyList()
+    var played: Boolean = false
+    var favorite: Boolean = false
+    private var downloaded: Boolean = false
+    private var downloadMedia: Boolean = false
 
-    private val _writers = MutableLiveData<List<BaseItemPerson>>()
-    val writers: LiveData<List<BaseItemPerson>> = _writers
-    private val _writersString = MutableLiveData<String>()
-    val writersString: LiveData<String> = _writersString
+    private lateinit var downloadRequestItem: DownloadRequestItem
 
-    private val _genresString = MutableLiveData<String>()
-    val genresString: LiveData<String> = _genresString
-
-    private val _runTime = MutableLiveData<String>()
-    val runTime: LiveData<String> = _runTime
-
-    private val _dateString = MutableLiveData<String>()
-    val dateString: LiveData<String> = _dateString
-
-    private val _nextUp = MutableLiveData<BaseItemDto>()
-    val nextUp: LiveData<BaseItemDto> = _nextUp
-
-    private val _seasons = MutableLiveData<List<BaseItemDto>>()
-    val seasons: LiveData<List<BaseItemDto>> = _seasons
-
-    private val _navigateToPlayer = MutableLiveData<Array<PlayerItem>>()
-    val navigateToPlayer: LiveData<Array<PlayerItem>> = _navigateToPlayer
-
-    private val _played = MutableLiveData<Boolean>()
-    val played: LiveData<Boolean> = _played
-
-    private val _favorite = MutableLiveData<Boolean>()
-    val favorite: LiveData<Boolean> = _favorite
-
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
-
-    var playerItems: MutableList<PlayerItem> = mutableListOf()
-
-    private val _playerItemsError = MutableLiveData<String>()
-    val playerItemsError: LiveData<String> = _playerItemsError
+    lateinit var playerItem: PlayerItem
 
     fun loadData(itemId: UUID, itemType: String) {
-        _error.value = null
         viewModelScope.launch {
+            uiState.emit(UiState.Loading)
             try {
-                _item.value = jellyfinRepository.getItem(itemId)
-                _actors.value = getActors(_item.value!!)
-                _director.value = getDirector(_item.value!!)
-                _writers.value = getWriters(_item.value!!)
-                _writersString.value =
-                    _writers.value?.joinToString(separator = ", ") { it.name.toString() }
-                _genresString.value = _item.value?.genres?.joinToString(separator = ", ")
-                _runTime.value = "${_item.value?.runTimeTicks?.div(600000000)} min"
-                _dateString.value = getDateString(_item.value!!)
-                _played.value = _item.value?.userData?.played
-                _favorite.value = _item.value?.userData?.isFavorite
+                val tempItem = jellyfinRepository.getItem(itemId)
+                item = tempItem
+                actors = getActors(tempItem)
+                director = getDirector(tempItem)
+                writers = getWriters(tempItem)
+                writersString = writers.joinToString(separator = ", ") { it.name.toString() }
+                genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+                runTime = "${tempItem.runTimeTicks?.div(600000000)} min"
+                dateString = getDateString(tempItem)
+                played = tempItem.userData?.played ?: false
+                favorite = tempItem.userData?.isFavorite ?: false
+                downloaded = itemIsDownloaded(itemId)
                 if (itemType == "Series") {
-                    _nextUp.value = getNextUp(itemId)
-                    _seasons.value = jellyfinRepository.getSeasons(itemId)
+                    nextUp = getNextUp(itemId)
+                    seasons = jellyfinRepository.getSeasons(itemId)
                 }
+                uiState.emit(UiState.Normal(
+                    tempItem,
+                    actors,
+                    director,
+                    writers,
+                    writersString,
+                    genresString,
+                    runTime,
+                    dateString,
+                    nextUp,
+                    seasons,
+                    played,
+                    favorite,
+                    downloaded
+                ))
             } catch (e: Exception) {
-                Timber.e(e)
-                _error.value = e.toString()
+                Timber.d(e)
+                Timber.d(itemId.toString())
+                uiState.emit(UiState.Error(e.message))
             }
         }
     }
 
-    private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson>? {
-        val actors: List<BaseItemPerson>?
+    fun loadData(pItem: PlayerItem) {
+        viewModelScope.launch {
+            playerItem = pItem
+            val tempItem = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+            item = tempItem
+            actors = getActors(tempItem)
+            director = getDirector(tempItem)
+            writers = getWriters(tempItem)
+            writersString = writers.joinToString(separator = ", ") { it.name.toString() }
+            genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+            runTime = ""
+            dateString = ""
+            played = tempItem.userData?.played ?: false
+            favorite = tempItem.userData?.isFavorite ?: false
+            uiState.emit(UiState.Normal(
+                tempItem,
+                actors,
+                director,
+                writers,
+                writersString,
+                genresString,
+                runTime,
+                dateString,
+                nextUp,
+                seasons,
+                played,
+                favorite,
+                downloaded
+            ))
+        }
+    }
+
+    private suspend fun getActors(item: BaseItemDto): List<BaseItemPerson> {
+        val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            actors = item.people?.filter { it.type == "Actor" }
+            actors = item.people?.filter { it.type == "Actor" } ?: emptyList()
         }
         return actors
     }
@@ -112,10 +169,10 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         return director
     }
 
-    private suspend fun getWriters(item: BaseItemDto): List<BaseItemPerson>? {
-        val writers: List<BaseItemPerson>?
+    private suspend fun getWriters(item: BaseItemDto): List<BaseItemPerson> {
+        val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            writers = item.people?.filter { it.type == "Writer" }
+            writers = item.people?.filter { it.type == "Writer" } ?: emptyList()
         }
         return writers
     }
@@ -133,28 +190,28 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         viewModelScope.launch {
             jellyfinRepository.markAsPlayed(itemId)
         }
-        _played.value = true
+        played = true
     }
 
     fun markAsUnplayed(itemId: UUID) {
         viewModelScope.launch {
             jellyfinRepository.markAsUnplayed(itemId)
         }
-        _played.value = false
+        played = false
     }
 
     fun markAsFavorite(itemId: UUID) {
         viewModelScope.launch {
             jellyfinRepository.markAsFavorite(itemId)
         }
-        _favorite.value = true
+        favorite = true
     }
 
     fun unmarkAsFavorite(itemId: UUID) {
         viewModelScope.launch {
             jellyfinRepository.unmarkAsFavorite(itemId)
         }
-        _favorite.value = false
+        favorite = false
     }
 
     private fun getDateString(item: BaseItemDto): String {
@@ -178,96 +235,19 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
     }
 
-    fun preparePlayerItems(mediaSourceIndex: Int? = null) {
-        _playerItemsError.value = null
+    fun loadDownloadRequestItem(itemId: UUID) {
         viewModelScope.launch {
-            try {
-                createPlayerItems(_item.value!!, mediaSourceIndex)
-                _navigateToPlayer.value = playerItems.toTypedArray()
-            } catch (e: Exception) {
-                _playerItemsError.value = e.message
-            }
+            val downloadItem = item
+            val uri =
+                jellyfinRepository.getStreamUrl(itemId, downloadItem?.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(downloadItem)
+            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
+            downloadMedia = true
+            requestDownload(Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
         }
     }
 
-    private suspend fun createPlayerItems(series: BaseItemDto, mediaSourceIndex: Int? = null) {
-        playerItems.clear()
-
-        val playbackPosition = item.value?.userData?.playbackPositionTicks?.div(10000) ?: 0
-
-        // Intros
-        var introsCount = 0
-
-        if (playbackPosition <= 0) {
-            val intros = jellyfinRepository.getIntros(series.id)
-            for (intro in intros) {
-                if (intro.mediaSources.isNullOrEmpty()) continue
-                playerItems.add(PlayerItem(intro.name, intro.id, intro.mediaSources?.get(0)?.id!!, 0))
-                introsCount += 1
-            }
-        }
-
-        when (series.type) {
-            "Movie" -> {
-                playerItems.add(
-                    PlayerItem(
-                        series.name,
-                        series.id,
-                        series.mediaSources?.get(mediaSourceIndex ?: 0)?.id!!,
-                        playbackPosition
-                    )
-                )
-            }
-            "Series" -> {
-                if (nextUp.value != null) {
-                    val startEpisode = nextUp.value!!
-                    val episodes = jellyfinRepository.getEpisodes(
-                        startEpisode.seriesId!!,
-                        startEpisode.seasonId!!,
-                        startItemId = startEpisode.id,
-                        fields = listOf(ItemFields.MEDIA_SOURCES)
-                    )
-                    for (episode in episodes) {
-                        if (episode.mediaSources.isNullOrEmpty()) continue
-                        if (episode.locationType == LocationType.VIRTUAL) continue
-                        playerItems.add(
-                            PlayerItem(
-                                episode.name,
-                                episode.id,
-                                episode.mediaSources?.get(0)?.id!!,
-                                0
-                            )
-                        )
-                    }
-                } else {
-                    for (season in seasons.value!!) {
-                        if (season.indexNumber == 0) continue
-                        val episodes = jellyfinRepository.getEpisodes(
-                            series.id,
-                            season.id,
-                            fields = listOf(ItemFields.MEDIA_SOURCES)
-                        )
-                        for (episode in episodes) {
-                            if (episode.mediaSources.isNullOrEmpty()) continue
-                            if (episode.locationType == LocationType.VIRTUAL) continue
-                            playerItems.add(
-                                PlayerItem(
-                                    episode.name,
-                                    episode.id,
-                                    episode.mediaSources?.get(0)?.id!!,
-                                    0
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
-    }
-
-    fun doneNavigatingToPlayer() {
-        _navigateToPlayer.value = null
+    fun deleteItem() {
+        deleteDownloadedEpisode(playerItem.mediaSourceUri)
     }
 }
