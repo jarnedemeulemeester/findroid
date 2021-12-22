@@ -42,6 +42,16 @@ Home | Library | Movie | Season | Episode
 - Picture in picture mode
 - Chromecast support
 
+## Translating
+Please do not create pull requests for translations.
+A translation platform is coming soon...
+
+## Questions?
+We have a Discord server to discuss future development or ask general questions.
+Click [here](https://discord.gg/tg5VvTFwTV) to join.
+
+
+## License
 This project is licensed under [GPLv3](LICENSE).
 
 The logo is a combination of the Jellyfin logo and the Android robot.
