@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Findroid</string>
     <string name="app_description">Neoficiální nativní Jellyfin aplikace</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
     <string name="add_server">Přidat server</string>
