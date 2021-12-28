@@ -21,7 +21,6 @@ import java.util.UUID
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
  *
  * @param androidContext The context
- * @param baseUrl The url of the server
  * @constructor Creates a new [JellyfinApi] instance
  */
 class JellyfinApi(androidContext: Context) {

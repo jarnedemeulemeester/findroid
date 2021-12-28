@@ -815,11 +815,11 @@ class MPVPlayer(
     override fun seekTo(windowIndex: Int, positionMs: Long) {
         if (windowIndex == 0) {
             val seekTo = if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
-            if (isPlayerReady) {
+            initialSeekTo = if (isPlayerReady) {
                 MPVLib.command(arrayOf("seek", "$seekTo", "absolute"))
-                initialSeekTo = 0L
+                0L
             } else {
-                initialSeekTo = seekTo
+                seekTo
             }
         }
     }

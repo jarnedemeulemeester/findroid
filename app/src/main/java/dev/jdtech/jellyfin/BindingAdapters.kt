@@ -6,16 +6,11 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import dev.jdtech.jellyfin.adapters.DownloadsListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.HomeItem
-import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
-import dev.jdtech.jellyfin.models.DownloadSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
@@ -55,12 +50,6 @@ fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
 @BindingAdapter("itemBackdropById")
 fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
     imageView.loadImage("/items/$itemId/Images/${ImageType.BACKDROP}")
-}
-
-@BindingAdapter("people")
-fun bindPeople(recyclerView: RecyclerView, data: List<BaseItemPerson>?) {
-    val adapter = recyclerView.adapter as PersonListAdapter
-    adapter.submitList(data)
 }
 
 @BindingAdapter("personImage")

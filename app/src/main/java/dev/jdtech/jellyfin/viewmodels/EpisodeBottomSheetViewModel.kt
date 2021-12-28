@@ -49,15 +49,15 @@ constructor(
     }
 
     var item: BaseItemDto? = null
-    var runTime: String = ""
-    var dateString: String = ""
+    private var runTime: String = ""
+    private var dateString: String = ""
     var played: Boolean = false
     var favorite: Boolean = false
-    var downloaded: Boolean = false
-    var downloadEpisode: Boolean = false
+    private var downloaded: Boolean = false
+    private var downloadEpisode: Boolean = false
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    lateinit var downloadRequestItem: DownloadRequestItem
+    private lateinit var downloadRequestItem: DownloadRequestItem
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
@@ -160,10 +160,5 @@ constructor(
             // TODO: Implement a way to get the year from LocalDateTime in Android < O
             item.premiereDate.toString()
         }
-    }
-
-    fun doneDownloadEpisode() {
-        downloadEpisode = false
-        downloaded = true
     }
 }

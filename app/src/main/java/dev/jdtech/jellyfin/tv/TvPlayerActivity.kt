@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,12 +70,14 @@ internal class TvPlayerActivity : BasePlayerActivity() {
                 when {
                     viewModel.player.isPlaying -> {
                         viewModel.player.pause()
-                        setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
+                        )
                     }
                     viewModel.player.isLoading -> Unit
                     else -> {
                         viewModel.player.play()
-                        setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
+                        )
                     }
                 }
             }
@@ -91,7 +94,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
     private fun bindAudioControl() {
         val audioBtn = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
 
-        audioBtn.setOnFocusChangeListener { v, hasFocus ->
+        audioBtn.setOnFocusChangeListener { _, hasFocus ->
             displayedPopup = if (hasFocus) {
                 val items = viewModel.currentSubtitleTracks.toUiTrack()
                 audioBtn.showPopupWindowAbove(items, AUDIO)
