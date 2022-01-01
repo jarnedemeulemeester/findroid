@@ -9,8 +9,8 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.adapters.HomeItem.Section
 import dev.jdtech.jellyfin.adapters.HomeItem.ViewItem
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.HomeSection
-import dev.jdtech.jellyfin.models.unsupportedCollections
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
@@ -93,7 +93,7 @@ class HomeViewModel @Inject internal constructor(
 
     private suspend fun loadViews() = repository
         .getUserViews()
-        .filter { view -> unsupportedCollections().none { it.type == view.collectionType } }
+        .filter { view -> CollectionType.unsupportedCollections.none { it.type == view.collectionType } }
         .map { view -> view to repository.getLatestMedia(view.id) }
         .filter { (_, latest) -> latest.isNotEmpty() }
         .map { (view, latest) -> view.toView().apply { items = latest } }

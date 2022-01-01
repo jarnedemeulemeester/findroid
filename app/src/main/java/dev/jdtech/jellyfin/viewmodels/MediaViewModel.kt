@@ -2,7 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.unsupportedCollections
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -39,7 +39,7 @@ constructor(
             try {
                 val items = jellyfinRepository.getItems()
                 val collections =
-                    items.filter { collection -> unsupportedCollections().none { it.type == collection.collectionType } }
+                    items.filter { collection -> CollectionType.unsupportedCollections.none { it.type == collection.collectionType } }
                 uiState.emit(UiState.Normal(collections))
             } catch (e: Exception) {
                 uiState.emit(

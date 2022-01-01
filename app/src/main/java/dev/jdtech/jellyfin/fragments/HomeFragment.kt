@@ -85,7 +85,6 @@ class HomeFragment : Fragment() {
     private fun setupView() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.refreshData()
-            // binding.refreshLayout.isRefreshing = false
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
