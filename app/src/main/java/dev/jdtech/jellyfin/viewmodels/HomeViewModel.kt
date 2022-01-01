@@ -63,7 +63,7 @@ class HomeViewModel @Inject internal constructor(
         }
     }
 
-    private suspend fun loadDynamicItems() = withContext(Dispatchers.IO) {
+    private suspend fun loadDynamicItems(): List<Section> {
         val resumeItems = repository.getResumeItems()
         val nextUpItems = repository.getNextUp()
 
@@ -88,18 +88,16 @@ class HomeViewModel @Inject internal constructor(
             )
         }
 
-        items.map { Section(it) }
+        return items.map { Section(it) }
     }
 
-    private suspend fun loadViews() = withContext(Dispatchers.IO) {
-        repository
-            .getUserViews()
-            .filter { view -> unsupportedCollections().none { it.type == view.collectionType } }
-            .map { view -> view to repository.getLatestMedia(view.id) }
-            .filter { (_, latest) -> latest.isNotEmpty() }
-            .map { (view, latest) -> view.toView().apply { items = latest } }
-            .map { ViewItem(it) }
-    }
+    private suspend fun loadViews() = repository
+        .getUserViews()
+        .filter { view -> unsupportedCollections().none { it.type == view.collectionType } }
+        .map { view -> view to repository.getLatestMedia(view.id) }
+        .filter { (_, latest) -> latest.isNotEmpty() }
+        .map { (view, latest) -> view.toView().apply { items = latest } }
+        .map { ViewItem(it) }
 }
 
 
