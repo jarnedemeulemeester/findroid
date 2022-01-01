@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import timber.log.Timber
@@ -32,7 +33,7 @@ class MediaInfoViewModel
 constructor(
     private val application: Application,
     private val jellyfinRepository: JellyfinRepository
-    ) : ViewModel() {
+) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
     sealed class UiState {
@@ -50,7 +51,8 @@ constructor(
             val played: Boolean,
             val favorite: Boolean,
             val downloaded: Boolean,
-            ) : UiState()
+        ) : UiState()
+
         object Loading : UiState()
         data class Error(val message: String?) : UiState()
     }
@@ -98,21 +100,23 @@ constructor(
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
                 }
-                uiState.emit(UiState.Normal(
-                    tempItem,
-                    actors,
-                    director,
-                    writers,
-                    writersString,
-                    genresString,
-                    runTime,
-                    dateString,
-                    nextUp,
-                    seasons,
-                    played,
-                    favorite,
-                    downloaded
-                ))
+                uiState.emit(
+                    UiState.Normal(
+                        tempItem,
+                        actors,
+                        director,
+                        writers,
+                        writersString,
+                        genresString,
+                        runTime,
+                        dateString,
+                        nextUp,
+                        seasons,
+                        played,
+                        favorite,
+                        downloaded
+                    )
+                )
             } catch (e: Exception) {
                 Timber.d(e)
                 Timber.d(itemId.toString())
@@ -135,21 +139,23 @@ constructor(
             dateString = ""
             played = tempItem.userData?.played ?: false
             favorite = tempItem.userData?.isFavorite ?: false
-            uiState.emit(UiState.Normal(
-                tempItem,
-                actors,
-                director,
-                writers,
-                writersString,
-                genresString,
-                runTime,
-                dateString,
-                nextUp,
-                seasons,
-                played,
-                favorite,
-                downloaded
-            ))
+            uiState.emit(
+                UiState.Normal(
+                    tempItem,
+                    actors,
+                    director,
+                    writers,
+                    writersString,
+                    genresString,
+                    runTime,
+                    dateString,
+                    nextUp,
+                    seasons,
+                    played,
+                    favorite,
+                    downloaded
+                )
+            )
         }
     }
 
@@ -188,28 +194,44 @@ constructor(
 
     fun markAsPlayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsPlayed(itemId)
+            try {
+                jellyfinRepository.markAsPlayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = true
     }
 
     fun markAsUnplayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsUnplayed(itemId)
+            try {
+                jellyfinRepository.markAsUnplayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = false
     }
 
     fun markAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsFavorite(itemId)
+            try {
+                jellyfinRepository.markAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = true
     }
 
     fun unmarkAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.unmarkAsFavorite(itemId)
+            try {
+                jellyfinRepository.unmarkAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = false
     }

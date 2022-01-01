@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 import java.text.DateFormat
@@ -108,28 +109,44 @@ constructor(
 
     fun markAsPlayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsPlayed(itemId)
+            try {
+                jellyfinRepository.markAsPlayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = true
     }
 
     fun markAsUnplayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsUnplayed(itemId)
+            try {
+                jellyfinRepository.markAsUnplayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = false
     }
 
     fun markAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsFavorite(itemId)
+            try {
+                jellyfinRepository.markAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = true
     }
 
     fun unmarkAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.unmarkAsFavorite(itemId)
+            try {
+                jellyfinRepository.unmarkAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = false
     }
