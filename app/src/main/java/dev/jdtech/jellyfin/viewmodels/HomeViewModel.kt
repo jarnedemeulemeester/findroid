@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,11 +69,23 @@ class HomeViewModel @Inject internal constructor(
 
         val items = mutableListOf<HomeSection>()
         if (resumeItems.isNotEmpty()) {
-            items.add(HomeSection(application.resources.getString(R.string.continue_watching), resumeItems))
+            items.add(
+                HomeSection(
+                    UUID.fromString("44845958-8326-4e83-beb4-c4f42e9eeb95"),
+                    application.resources.getString(R.string.continue_watching),
+                    resumeItems
+                )
+            )
         }
 
         if (nextUpItems.isNotEmpty()) {
-            items.add(HomeSection(application.resources.getString(R.string.next_up), nextUpItems))
+            items.add(
+                HomeSection(
+                    UUID.fromString("18bfced5-f237-4d42-aa72-d9d7fed19279"),
+                    application.resources.getString(R.string.next_up),
+                    nextUpItems
+                )
+            )
         }
 
         items.map { Section(it) }

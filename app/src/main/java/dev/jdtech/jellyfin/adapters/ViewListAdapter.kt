@@ -51,8 +51,7 @@ class ViewListAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<HomeItem>() {
         override fun areItemsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
-            return oldItem.ids.size == newItem.ids.size
-                && oldItem.ids.mapIndexed { i, old -> old == newItem.ids[i] }.all { it }
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: HomeItem, newItem: HomeItem): Boolean {
@@ -107,12 +106,12 @@ class ViewListAdapter(
 
 sealed class HomeItem {
     data class Section(val homeSection: HomeSection) : HomeItem() {
-        override val ids = homeSection.items.map { it.id }
+        override val id = homeSection.id
     }
 
     data class ViewItem(val view: View) : HomeItem() {
-        override val ids = view.items?.map { it.id }.orEmpty()
+        override val id = view.id
     }
 
-    abstract val ids: List<UUID>
+    abstract val id: UUID
 }
