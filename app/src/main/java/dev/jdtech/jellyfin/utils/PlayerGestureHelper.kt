@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.utils
 
+import android.content.SharedPreferences
 import android.media.AudioManager
 import android.provider.Settings
 import android.provider.SyncStateContract
@@ -8,21 +9,28 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
+import androidx.preference.PreferenceManager
 import com.google.android.exoplayer2.ui.PlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.math.abs
 
 class PlayerGestureHelper(
+    private val appPreferences: AppPreferences,
     private val activity: PlayerActivity,
     private val playerView: PlayerView,
     private val audioManager: AudioManager
-) {
+)  {
+    init {
+        activity.window.attributes.screenBrightness = appPreferences.playerBrightness
+    }
     /**
      * Tracks a value during a swipe gesture (between multiple onScroll calls).
      * When the gesture starts it's reset to an initial value and gets increased or decreased
      * (depending on the direction) as the gesture progresses.
      */
+
     private var swipeGestureValueTrackerVolume = -1f
     private var swipeGestureValueTrackerBrightness = -1f
 
@@ -88,6 +96,8 @@ class PlayerGestureHelper(
                 val lp = window.attributes
                 lp.screenBrightness = swipeGestureValueTrackerBrightness
                 window.attributes = lp
+
+                appPreferences.playerBrightness = swipeGestureValueTrackerBrightness
 
                 activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
                 activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()

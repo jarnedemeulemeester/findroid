@@ -18,12 +18,17 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     lateinit var binding: ActivityPlayerBinding
     private lateinit var playerGestureHelper: PlayerGestureHelper
@@ -44,7 +49,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         configureInsets(playerControls)
 
-        playerGestureHelper = PlayerGestureHelper(this, binding.playerView, getSystemService(Context.AUDIO_SERVICE) as AudioManager)
+        playerGestureHelper = PlayerGestureHelper(appPreferences,this, binding.playerView, getSystemService(Context.AUDIO_SERVICE) as AudioManager)
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
             onBackPressed()
