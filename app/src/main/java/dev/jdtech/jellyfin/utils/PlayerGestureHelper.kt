@@ -4,24 +4,36 @@ import android.media.AudioManager
 import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import timber.log.Timber
 import kotlin.math.abs
 
 class PlayerGestureHelper(
+    private val appPreferences: AppPreferences,
     private val activity: PlayerActivity,
     private val playerView: PlayerView,
     private val audioManager: AudioManager
-) {
+)  {
+
+
+    /**
+     * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
+     * Useful on wide-screen phones to remove black bars from some movies.
+     */
+    private var isZoomEnabled = false
+
     /**
      * Tracks a value during a swipe gesture (between multiple onScroll calls).
      * When the gesture starts it's reset to an initial value and gets increased or decreased
      * (depending on the direction) as the gesture progresses.
      */
+
     private var swipeGestureValueTrackerVolume = -1f
     private var swipeGestureValueTrackerBrightness = -1f
 
@@ -42,10 +54,14 @@ class PlayerGestureHelper(
             if (abs(distanceY / distanceX) < 2)
                 return false
 
+            if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
+                return false
+
+
             val viewCenterX = playerView.measuredWidth / 2
 
             // Distance to swipe to go from min to max
-            val distanceFull = playerView.measuredHeight
+            val distanceFull = playerView.measuredHeight * Constants.FULL_SWIPE_RANGE_SCREEN_RATIO
             val ratioChange = distanceY / distanceFull
 
             if (firstEvent.x.toInt() > viewCenterX) {
@@ -99,14 +115,39 @@ class PlayerGestureHelper(
 
     private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
+        appPreferences.playerBrightness = activity.window.attributes.screenBrightness
+    }
+
+    /**
+     * Handles scale/zoom gesture
+     */
+    private val zoomGestureDetector = ScaleGestureDetector(playerView.context, object : ScaleGestureDetector.OnScaleGestureListener {
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
+
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val scaleFactor = detector.scaleFactor
+            if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
+                isZoomEnabled = scaleFactor > 1
+                updateZoomMode(isZoomEnabled)
+            }
+            return true
+        }
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) = Unit
+    }).apply { isQuickScaleEnabled = false }
+
+    private fun updateZoomMode(enabled: Boolean) {
+        playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 
     init {
+        activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
             if (playerView.useController) {
                 when (event.pointerCount) {
                     1 -> gestureDetector.onTouchEvent(event)
+                    2 -> zoomGestureDetector.onTouchEvent(event)
                 }
             }
             if(event.action == MotionEvent.ACTION_UP) {
