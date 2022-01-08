@@ -1,22 +1,17 @@
 package dev.jdtech.jellyfin.utils
 
-import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.media.AudioManager
 import android.provider.Settings
-import android.provider.SyncStateContract
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
-import androidx.preference.PreferenceManager
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.math.abs
 
 class PlayerGestureHelper(
@@ -105,8 +100,6 @@ class PlayerGestureHelper(
                 lp.screenBrightness = swipeGestureValueTrackerBrightness
                 window.attributes = lp
 
-                appPreferences.playerBrightness = swipeGestureValueTrackerBrightness
-
                 activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
                 activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
                 activity.binding.gestureBrightnessProgressBar.progress = lp.screenBrightness.times(100).toInt()
@@ -122,6 +115,7 @@ class PlayerGestureHelper(
 
     private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
+        appPreferences.playerBrightness = activity.window.attributes.screenBrightness
     }
 
     /**
