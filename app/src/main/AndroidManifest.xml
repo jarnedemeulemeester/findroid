@@ -21,7 +21,8 @@
 
         <activity
             android:name=".PlayerActivity"
-            android:screenOrientation="userLandscape" />
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|uiMode"
+            android:screenOrientation="sensorLandscape" />
 
         <activity
             android:name=".tv.TvPlayerActivity"

@@ -1,15 +1,18 @@
 package dev.jdtech.jellyfin.utils
 
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.media.AudioManager
 import android.provider.Settings
 import android.provider.SyncStateContract
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
 import androidx.preference.PreferenceManager
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import timber.log.Timber
@@ -22,9 +25,14 @@ class PlayerGestureHelper(
     private val playerView: PlayerView,
     private val audioManager: AudioManager
 )  {
-    init {
-        activity.window.attributes.screenBrightness = appPreferences.playerBrightness
-    }
+
+
+    /**
+     * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
+     * Useful on wide-screen phones to remove black bars from some movies.
+     */
+    private var isZoomEnabled = false
+
     /**
      * Tracks a value during a swipe gesture (between multiple onScroll calls).
      * When the gesture starts it's reset to an initial value and gets increased or decreased
@@ -116,12 +124,36 @@ class PlayerGestureHelper(
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
     }
 
+    /**
+     * Handles scale/zoom gesture
+     */
+    private val zoomGestureDetector = ScaleGestureDetector(playerView.context, object : ScaleGestureDetector.OnScaleGestureListener {
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
+
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val scaleFactor = detector.scaleFactor
+            if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
+                isZoomEnabled = scaleFactor > 1
+                updateZoomMode(isZoomEnabled)
+            }
+            return true
+        }
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) = Unit
+    }).apply { isQuickScaleEnabled = false }
+
+    private fun updateZoomMode(enabled: Boolean) {
+        playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
+    }
+
     init {
+        activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
             if (playerView.useController) {
                 when (event.pointerCount) {
                     1 -> gestureDetector.onTouchEvent(event)
+                    2 -> zoomGestureDetector.onTouchEvent(event)
                 }
             }
             if(event.action == MotionEvent.ACTION_UP) {
