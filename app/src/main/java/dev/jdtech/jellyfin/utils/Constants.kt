@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.utils
 
-object Constants  {
+object Constants {
 
     //player
     const val GESTURE_EXCLUSION_AREA_TOP = 48

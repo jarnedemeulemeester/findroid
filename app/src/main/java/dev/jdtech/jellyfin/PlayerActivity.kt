@@ -49,7 +49,12 @@ class PlayerActivity : BasePlayerActivity() {
 
         configureInsets(playerControls)
 
-        playerGestureHelper = PlayerGestureHelper(appPreferences,this, binding.playerView, getSystemService(Context.AUDIO_SERVICE) as AudioManager)
+        playerGestureHelper = PlayerGestureHelper(
+            appPreferences,
+            this,
+            binding.playerView,
+            getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        )
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
             onBackPressed()
