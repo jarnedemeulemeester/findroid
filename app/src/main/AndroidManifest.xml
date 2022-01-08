@@ -21,7 +21,6 @@
 
         <activity
             android:name=".PlayerActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|uiMode"
             android:screenOrientation="sensorLandscape" />
 
         <activity
