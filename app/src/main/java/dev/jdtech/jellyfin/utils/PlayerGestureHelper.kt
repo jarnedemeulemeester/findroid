@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.utils
 
 import android.media.AudioManager
 import android.provider.Settings
+import android.provider.SyncStateContract
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -42,10 +43,14 @@ class PlayerGestureHelper(
             if (abs(distanceY / distanceX) < 2)
                 return false
 
+            if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
+                return false
+
+
             val viewCenterX = playerView.measuredWidth / 2
 
             // Distance to swipe to go from min to max
-            val distanceFull = playerView.measuredHeight
+            val distanceFull = playerView.measuredHeight * Constants.FULL_SWIPE_RANGE_SCREEN_RATIO
             val ratioChange = distanceY / distanceFull
 
             if (firstEvent.x.toInt() > viewCenterX) {
