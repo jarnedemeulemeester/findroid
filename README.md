@@ -34,8 +34,6 @@ Home | Library | Movie | Season | Episode
   - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
-  - Issues:
-    - Can only play one item at a time, doesn't transistion to the next episode
 
 
 ## Planned features

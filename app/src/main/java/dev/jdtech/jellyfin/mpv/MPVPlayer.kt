@@ -15,6 +15,7 @@ import android.view.SurfaceView
 import android.view.TextureView
 import androidx.core.content.getSystemService
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.Player.Commands
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.device.DeviceInfo
 import com.google.android.exoplayer2.metadata.Metadata
@@ -34,7 +35,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.IllegalArgumentException
 import java.util.concurrent.CopyOnWriteArraySet
 
 @Suppress("SpellCheckingInspection")
@@ -47,6 +47,7 @@ class MPVPlayer(
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
+    private var currentIndex = 0
     private var audioFocusRequest = AudioManager.AUDIOFOCUS_REQUEST_FAILED
     private val handler = Handler(context.mainLooper)
 
@@ -209,12 +210,18 @@ class MPVPlayer(
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
-                        setPlayerStateAndNotifyIfChanged(
-                            playWhenReady = false,
-                            playWhenReadyChangeReason = Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM,
-                            playbackState = Player.STATE_ENDED
-                        )
-                        resetInternalState()
+                        if (currentIndex < internalMediaItems?.size ?: 0) {
+                            currentIndex += 1
+                            prepareMediaItem(currentIndex)
+                            play()
+                        } else {
+                            setPlayerStateAndNotifyIfChanged(
+                                playWhenReady = false,
+                                playWhenReadyChangeReason = Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM,
+                                playbackState = Player.STATE_ENDED
+                            )
+                            resetInternalState()
+                        }
                     }
                 }
                 "paused-for-cache" -> {
@@ -386,7 +393,7 @@ class MPVPlayer(
          * Returns the number of windows in the timeline.
          */
         override fun getWindowCount(): Int {
-            return 1
+            return internalMediaItems?.size ?: 0
         }
 
         /**
@@ -399,9 +406,10 @@ class MPVPlayer(
          * @return The populated [com.google.android.exoplayer2.Timeline.Window], for convenience.
          */
         override fun getWindow(windowIndex: Int, window: Window, defaultPositionProjectionUs: Long): Window {
-            val currentMediaItem = internalMediaItem ?: MediaItem.Builder().build()
-            return if (windowIndex == 0) window.set(
-                /* uid= */ 0,
+            val currentMediaItem =
+                internalMediaItems?.get(windowIndex) ?: MediaItem.Builder().build()
+            return window.set(
+                /* uid= */ windowIndex,
                 /* mediaItem= */ currentMediaItem,
                 /* manifest= */ null,
                 /* presentationStartTimeMs= */ C.TIME_UNSET,
@@ -415,14 +423,14 @@ class MPVPlayer(
                 /* firstPeriodIndex= */ windowIndex,
                 /* lastPeriodIndex= */ windowIndex,
                 /* positionInFirstPeriodUs= */ C.TIME_UNSET
-            ) else window
+            )
         }
 
         /**
          * Returns the number of periods in the timeline.
          */
         override fun getPeriodCount(): Int {
-            return 1
+            return internalMediaItems?.size ?: 0
         }
 
         /**
@@ -436,13 +444,13 @@ class MPVPlayer(
          * @return The populated [com.google.android.exoplayer2.Timeline.Period], for convenience.
          */
         override fun getPeriod(periodIndex: Int, period: Period, setIds: Boolean): Period {
-            return if (periodIndex == 0) period.set(
-                /* id= */ 0,
-                /* uid= */ 0,
+            return period.set(
+                /* id= */ periodIndex,
+                /* uid= */ periodIndex,
                 /* windowIndex= */ periodIndex,
                 /* durationUs= */ C.msToUs(currentDurationMs ?: C.TIME_UNSET),
                 /* positionInWindowUs= */ 0
-            ) else period
+            )
         }
 
         /**
@@ -452,7 +460,7 @@ class MPVPlayer(
          * @return The index of the period, or [C.INDEX_UNSET] if the period was not found.
          */
         override fun getIndexOfPeriod(uid: Any): Int {
-            return if (uid == 0) 0 else C.INDEX_UNSET
+            return uid as Int
         }
 
         /**
@@ -462,7 +470,7 @@ class MPVPlayer(
          * @return The unique id of the period.
          */
         override fun getUidOfPeriod(periodIndex: Int): Any {
-            return if (periodIndex == 0) 0 else C.INDEX_UNSET
+            return periodIndex
         }
     }
 
@@ -589,6 +597,7 @@ class MPVPlayer(
      */
     override fun setMediaItems(mediaItems: MutableList<MediaItem>, startWindowIndex: Int, startPositionMs: Long) {
         internalMediaItems = mediaItems
+        currentIndex = startWindowIndex
         initialSeekTo = startPositionMs / 1000
     }
 
@@ -646,9 +655,29 @@ class MPVPlayer(
      * @see com.google.android.exoplayer2.Player.Listener.onAvailableCommandsChanged
      */
     override fun getAvailableCommands(): Player.Commands {
-        return permanentAvailableCommands
+        return Commands.Builder()
+            .addAll(permanentAvailableCommands)
+            .addIf(COMMAND_SEEK_TO_DEFAULT_POSITION, !isPlayingAd)
+            .addIf(COMMAND_SEEK_IN_CURRENT_WINDOW, isCurrentWindowSeekable && !isPlayingAd)
+            .addIf(COMMAND_SEEK_TO_PREVIOUS_WINDOW, hasPreviousWindow() && !isPlayingAd)
+            .addIf(
+                COMMAND_SEEK_TO_PREVIOUS,
+                !currentTimeline.isEmpty
+                        && (hasPreviousWindow() || !isCurrentWindowLive || isCurrentWindowSeekable)
+                        && !isPlayingAd
+            )
+            .addIf(COMMAND_SEEK_TO_NEXT_WINDOW, hasNextWindow() && !isPlayingAd)
+            .addIf(
+                COMMAND_SEEK_TO_NEXT,
+                !currentTimeline.isEmpty()
+                        && (hasNextWindow() || (isCurrentWindowLive && isCurrentWindowDynamic()))
+                        && !isPlayingAd
+            )
+            .addIf(COMMAND_SEEK_TO_WINDOW, !isPlayingAd)
+            .addIf(COMMAND_SEEK_BACK, isCurrentWindowSeekable && !isPlayingAd)
+            .addIf(COMMAND_SEEK_FORWARD, isCurrentWindowSeekable && !isPlayingAd)
+            .build()
     }
-
     private fun resetInternalState() {
         isPlayerReady = false
         isSeekable = false
@@ -666,28 +695,16 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems?.firstOrNull { it.playbackProperties?.uri != null }?.let { mediaItem ->
-            internalMediaItem = mediaItem
-            resetInternalState()
-            mediaItem.playbackProperties?.subtitles?.forEach { subtitle ->
-                initialCommands.add(arrayOf(
-                    /* command= */ "sub-add",
-                    /* url= */ "${subtitle.uri}",
-                    /* flags= */ "auto",
-                    /* title= */ "${subtitle.label}",
-                    /* lang= */ "${subtitle.language}"
-                ))
-            }
-            MPVLib.command(arrayOf("loadfile", "${mediaItem.playbackProperties?.uri}"))
-            MPVLib.setPropertyBoolean("pause", true)
-            listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
-                listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
-            }
-            listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
-                listener.onMediaItemTransition(mediaItem, Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED)
-            }
-            setPlayerStateAndNotifyIfChanged(playbackState = Player.STATE_BUFFERING)
+        internalMediaItems?.forEach { mediaItem ->
+            MPVLib.command(
+                arrayOf(
+                    "loadfile",
+                    "${mediaItem.playbackProperties?.uri}",
+                    "append"
+                )
+            )
         }
+        prepareMediaItem(currentIndex)
     }
 
     /**
@@ -813,14 +830,49 @@ class MPVPlayer(
      * `windowIndex` is not within the bounds of the current timeline.
      */
     override fun seekTo(windowIndex: Int, positionMs: Long) {
-        if (windowIndex == 0) {
-            val seekTo = if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
+        if (windowIndex == currentWindowIndex) {
+            val seekTo =
+                if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
             initialSeekTo = if (isPlayerReady) {
                 MPVLib.command(arrayOf("seek", "$seekTo", "absolute"))
                 0L
             } else {
                 seekTo
             }
+        } else {
+            prepareMediaItem(windowIndex)
+            play()
+        }
+    }
+
+    private fun prepareMediaItem(index: Int) {
+        internalMediaItems?.get(index)?.let { mediaItem ->
+            internalMediaItem = mediaItem
+            resetInternalState()
+            mediaItem.playbackProperties?.subtitles?.forEach { subtitle ->
+                initialCommands.add(
+                    arrayOf(
+                        /* command= */ "sub-add",
+                        /* url= */ "${subtitle.uri}",
+                        /* flags= */ "auto",
+                        /* title= */ "${subtitle.label}",
+                        /* lang= */ "${subtitle.language}"
+                    )
+                )
+            }
+            currentIndex = index
+            MPVLib.command(arrayOf("playlist-play-index", "$index"))
+            MPVLib.setPropertyBoolean("pause", true)
+            listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
+                listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
+            }
+            listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
+                listener.onMediaItemTransition(
+                    mediaItem,
+                    Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED
+                )
+            }
+            setPlayerStateAndNotifyIfChanged(playbackState = Player.STATE_BUFFERING)
         }
     }
 
@@ -833,7 +885,7 @@ class MPVPlayer(
     }
 
     override fun getMaxSeekToPreviousPosition(): Int {
-        TODO("Not yet implemented")
+        return C.DEFAULT_MAX_SEEK_TO_PREVIOUS_POSITION_MS
     }
 
     /**
@@ -876,6 +928,7 @@ class MPVPlayer(
         }
         resetInternalState()
         MPVLib.destroy()
+        currentIndex = 0
     }
 
     /**
@@ -959,7 +1012,8 @@ class MPVPlayer(
      * Returns the index of the current [window][Timeline.Window] in the [ ][.getCurrentTimeline], or the prospective window index if the [ ][.getCurrentTimeline] is empty.
      */
     override fun getCurrentWindowIndex(): Int {
-        return timeline.getFirstWindowIndex(shuffleModeEnabled)
+
+        return currentIndex
     }
 
     /**
@@ -1299,15 +1353,12 @@ class MPVPlayer(
         private val permanentAvailableCommands: Player.Commands = Player.Commands.Builder()
             .addAll(
                 COMMAND_PLAY_PAUSE,
-                COMMAND_SEEK_IN_CURRENT_WINDOW,
                 COMMAND_PREPARE_STOP,
                 COMMAND_SET_SPEED_AND_PITCH,
                 COMMAND_GET_CURRENT_MEDIA_ITEM,
                 COMMAND_GET_MEDIA_ITEMS_METADATA,
                 COMMAND_CHANGE_MEDIA_ITEMS,
-                COMMAND_SET_VIDEO_SURFACE,
-                COMMAND_SEEK_FORWARD,
-                COMMAND_SEEK_BACK
+                COMMAND_SET_VIDEO_SURFACE
             )
             .build()
 
