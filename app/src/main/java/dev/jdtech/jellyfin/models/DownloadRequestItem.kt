@@ -8,5 +8,5 @@ import java.util.*
 data class DownloadRequestItem(
     val uri: String,
     val itemId: UUID,
-    val metadata: DownloadMetadata
+    val item: DownloadItem
 ) : Parcelable

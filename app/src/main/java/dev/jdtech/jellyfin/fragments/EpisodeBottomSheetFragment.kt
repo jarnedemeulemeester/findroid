@@ -163,6 +163,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
             binding.downloadButton.setImageResource(downloadDrawable)
 
+            binding.downloadButton.isEnabled = !downloaded
+
             binding.episodeName.text = String.format(getString(R.string.episode_name_extended), episode.parentIndexNumber, episode.indexNumber, episode.name)
             binding.overview.text = episode.overview
             binding.year.text = dateString

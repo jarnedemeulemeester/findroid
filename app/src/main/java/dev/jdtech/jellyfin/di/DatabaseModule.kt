@@ -7,6 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.jdtech.jellyfin.database.DownloadDatabase
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import javax.inject.Singleton
@@ -26,5 +28,19 @@ object DatabaseModule {
             .allowMainThreadQueries()
             .build()
             .serverDatabaseDao
+    }
+
+    @Singleton
+    @Provides
+    fun provideDownloadDatabaseDao(@ApplicationContext app: Context): DownloadDatabaseDao {
+        return Room.databaseBuilder(
+            app.applicationContext,
+            DownloadDatabase::class.java,
+            "downloads"
+        )
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+            .downloadDatabaseDao
     }
 }

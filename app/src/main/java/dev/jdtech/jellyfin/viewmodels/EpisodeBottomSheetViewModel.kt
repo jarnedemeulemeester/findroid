@@ -3,8 +3,11 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -26,7 +29,8 @@ class EpisodeBottomSheetViewModel
 @Inject
 constructor(
     private val application: Application,
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
@@ -70,7 +74,7 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played == true
                 favorite = tempItem.userData?.isFavorite == true
-                downloaded = itemIsDownloaded(episodeId)
+                downloaded = isItemDownloaded(downloadDatabase, episodeId)
                 uiState.emit(
                     UiState.Normal(
                         tempItem,
@@ -92,7 +96,7 @@ constructor(
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             playerItems.add(playerItem)
-            item = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+            item = downloadMetadataToBaseItemDto(playerItem.item!!)
             uiState.emit(
                 UiState.Normal(
                     item!!,
@@ -153,19 +157,41 @@ constructor(
 
     fun loadDownloadRequestItem(itemId: UUID) {
         viewModelScope.launch {
-            //loadEpisode(itemId)
             val episode = item
             val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
             Timber.d(uri)
             val metadata = baseItemDtoToDownloadMetadata(episode)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadEpisode = true
-            requestDownload(Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
+            requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
+            pollDownloadProgress(episode)
         }
     }
 
+    private fun pollDownloadProgress(episode: BaseItemDto) {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                viewModelScope.launch {
+                    val downloadId = downloadDatabase.loadItem(episode.id)?.downloadId
+                    Timber.d("$downloadId")
+                    if (downloadId != null) {
+                        try {
+                            val progress = getDownloadProgress(application, downloadId)
+                            Timber.d("Download progress: $progress")
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
+                    }
+                }
+                handler.postDelayed(this, 2000)
+            }
+        }
+        handler.post(runnable)
+    }
+
     fun deleteEpisode() {
-        deleteDownloadedEpisode(playerItems[0].mediaSourceUri)
+        deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)
     }
 
     private fun getDateString(item: BaseItemDto): String {

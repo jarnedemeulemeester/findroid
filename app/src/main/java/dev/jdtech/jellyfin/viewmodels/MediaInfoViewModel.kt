@@ -7,14 +7,11 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.baseItemDtoToDownloadMetadata
-import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
-import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
-import dev.jdtech.jellyfin.utils.itemIsDownloaded
-import dev.jdtech.jellyfin.utils.requestDownload
+import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -32,7 +29,8 @@ class MediaInfoViewModel
 @Inject
 constructor(
     private val application: Application,
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
@@ -95,7 +93,7 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played ?: false
                 favorite = tempItem.userData?.isFavorite ?: false
-                downloaded = itemIsDownloaded(itemId)
+                downloaded = isItemDownloaded(downloadDatabase, itemId)
                 if (itemType == "Series") {
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
@@ -128,7 +126,7 @@ constructor(
     fun loadData(pItem: PlayerItem) {
         viewModelScope.launch {
             playerItem = pItem
-            val tempItem = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+            val tempItem = downloadMetadataToBaseItemDto(playerItem.item!!)
             item = tempItem
             actors = getActors(tempItem)
             director = getDirector(tempItem)
@@ -265,11 +263,11 @@ constructor(
             val metadata = baseItemDtoToDownloadMetadata(downloadItem)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadMedia = true
-            requestDownload(Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
+            requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
         }
     }
 
     fun deleteItem() {
-        deleteDownloadedEpisode(playerItem.mediaSourceUri)
+        deleteDownloadedEpisode(downloadDatabase, playerItem.itemId)
     }
 }
