@@ -165,6 +165,7 @@ class MediaInfoFragment : Fragment() {
             }
 
             binding.downloadButton.setOnClickListener {
+                binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(args.itemId)
             }
 
@@ -203,6 +204,8 @@ class MediaInfoFragment : Fragment() {
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
+
+            binding.downloadButton.isEnabled = !downloaded
 
             // Download icon
             val downloadDrawable = when (downloaded) {

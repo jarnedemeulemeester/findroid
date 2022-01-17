@@ -3,8 +3,6 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -164,11 +162,12 @@ constructor(
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadEpisode = true
             requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
-            pollDownloadProgress(episode)
+            // pollDownloadProgress(episode)
         }
     }
 
-    private fun pollDownloadProgress(episode: BaseItemDto) {
+    // Download progress is not working well yet. Disabled for now.
+    /*private fun pollDownloadProgress(episode: BaseItemDto) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
@@ -188,7 +187,7 @@ constructor(
             }
         }
         handler.post(runnable)
-    }
+    }*/
 
     fun deleteEpisode() {
         deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)

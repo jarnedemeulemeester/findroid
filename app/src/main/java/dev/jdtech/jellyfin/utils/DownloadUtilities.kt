@@ -5,8 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.getSystemService
-import androidx.core.database.getIntOrNull
-import androidx.core.database.getLongOrNull
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadRequestItem
@@ -59,7 +57,8 @@ private fun downloadFile(request: DownloadManager.Request, context: Context): Lo
     return context.getSystemService<DownloadManager>()!!.enqueue(request)
 }
 
-fun getDownloadProgress(context: Context, downloadId: Long): Int {
+// This was not working well yet, so I won't use this for now
+/*fun getDownloadProgress(context: Context, downloadId: Long): Int {
     val downloadManager = context.getSystemService<DownloadManager>()!!
     val query = DownloadManager.Query().setFilterById(downloadId)
     val cursor = downloadManager.query(query)
@@ -77,7 +76,7 @@ fun getDownloadProgress(context: Context, downloadId: Long): Int {
 //        }
 //    }
     return -1
-}
+}*/
 
 fun loadDownloadLocation(context: Context) {
     defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
