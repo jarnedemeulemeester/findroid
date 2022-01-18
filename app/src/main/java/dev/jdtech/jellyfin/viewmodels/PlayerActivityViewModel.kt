@@ -183,7 +183,15 @@ constructor(
             try {
                 for (item in items) {
                     if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
-                        _currentItemTitle.value = item.name
+                        if (sp.getBoolean(
+                                "display_extended_title",
+                                false
+                            ) && item.parentIndexNumber != null && item.indexNumber != null
+                        )
+                            _currentItemTitle.value =
+                                "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                        else
+                            _currentItemTitle.value = item.name
                     }
                 }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))

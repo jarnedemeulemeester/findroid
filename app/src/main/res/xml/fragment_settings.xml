@@ -41,6 +41,10 @@
             app:key="theme"
             app:title="@string/theme"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="display_extended_title"
+            app:summary="@string/display_extended_title_summary"
+            app:title="@string/display_extended_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/settings_category_player">

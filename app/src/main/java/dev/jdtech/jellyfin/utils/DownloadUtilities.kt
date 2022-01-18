@@ -96,6 +96,8 @@ fun loadDownloadedEpisodes(): List<PlayerItem> {
                         mediaSourceId = "",
                         playbackPosition = metadata.playbackPosition!!,
                         mediaSourceUri = it.absolutePath,
+                        parentIndexNumber = metadata.parentIndexNumber,
+                        indexNumber = metadata.indexNumber,
                         metadata = metadata
                     )
                 )
@@ -124,7 +126,16 @@ fun getDownloadPlayerItem(itemId: UUID): PlayerItem? {
     try{
         val metadataFile = File(defaultStorage, "${file.name}.metadata").readLines()
         val metadata = parseMetadataFile(metadataFile)
-        return PlayerItem(metadata.name, UUID.fromString(file.name), "", metadata.playbackPosition!!, file.absolutePath, metadata)
+        return PlayerItem(
+            metadata.name,
+            UUID.fromString(file.name),
+            "",
+            metadata.playbackPosition!!,
+            file.absolutePath,
+            metadata.parentIndexNumber,
+            metadata.indexNumber,
+            metadata
+        )
     } catch (e: Exception) {
         file.delete()
         Timber.e(e)
