@@ -241,12 +241,19 @@ class MediaInfoFragment : Fragment() {
             bindItemBackdropImage(binding.itemBanner, item)
             bindBaseItemImage(binding.nextUpImage, nextUp)
         }
+        binding.loadingIndicator.isVisible = false
+        binding.mediaInfoScrollview.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {}
+    private fun bindUiStateLoading() {
+        binding.loadingIndicator.isVisible = true
+        binding.errorLayout.errorPanel.isVisible = false
+    }
 
     private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {
         val error = uiState.message ?: getString(R.string.unknown_error)
+        binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
         checkIfLoginRequired(error)

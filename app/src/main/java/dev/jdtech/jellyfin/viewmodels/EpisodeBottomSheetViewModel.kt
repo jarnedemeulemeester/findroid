@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 import java.text.DateFormat
@@ -49,15 +50,15 @@ constructor(
     }
 
     var item: BaseItemDto? = null
-    var runTime: String = ""
-    var dateString: String = ""
+    private var runTime: String = ""
+    private var dateString: String = ""
     var played: Boolean = false
     var favorite: Boolean = false
-    var downloaded: Boolean = false
-    var downloadEpisode: Boolean = false
+    private var downloaded: Boolean = false
+    private var downloadEpisode: Boolean = false
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    lateinit var downloadRequestItem: DownloadRequestItem
+    private lateinit var downloadRequestItem: DownloadRequestItem
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
@@ -108,28 +109,44 @@ constructor(
 
     fun markAsPlayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsPlayed(itemId)
+            try {
+                jellyfinRepository.markAsPlayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = true
     }
 
     fun markAsUnplayed(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsUnplayed(itemId)
+            try {
+                jellyfinRepository.markAsUnplayed(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         played = false
     }
 
     fun markAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.markAsFavorite(itemId)
+            try {
+                jellyfinRepository.markAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = true
     }
 
     fun unmarkAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            jellyfinRepository.unmarkAsFavorite(itemId)
+            try {
+                jellyfinRepository.unmarkAsFavorite(itemId)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
         }
         favorite = false
     }
@@ -160,10 +177,5 @@ constructor(
             // TODO: Implement a way to get the year from LocalDateTime in Android < O
             item.premiereDate.toString()
         }
-    }
-
-    fun doneDownloadEpisode() {
-        downloadEpisode = false
-        downloaded = true
     }
 }

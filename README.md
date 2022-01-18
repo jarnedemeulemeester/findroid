@@ -22,26 +22,38 @@ Home | Library | Movie | Season | Episode
 - Supported media items: movies, series, seasons, episodes 
   - Direct play only, (no transcoding)
 - ExoPlayer
-  - Video codes: H.263, H.264, H.265, VP8, VP9, AV1 
+  - Video codecs: H.263, H.264, H.265, VP8, VP9, AV1 
     - Support depends on Android device
-  - Audio codes: Vorbis, Opus, FLAC, ALAC, PCM µ-law, PCM A-law, MP1, MP2, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
+  - Audio codecs: Vorbis, Opus, FLAC, ALAC, PCM µ-law, PCM A-law, MP1, MP2, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
     - Support provided by ExoPlayer FFmpeg extension
   - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
     - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
 - **NEW** MPV Player
-  - Should play everything, including SSA/ASS subs with proper styling!
+  - Container formats: mkv, mov, mp4
+  - Video codecs: H.264, H.265, VP8, VP9, AV1
+  - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
+  - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
   - Issues:
     - Can only play one item at a time, doesn't transistion to the next episode
 
 
 ## Planned features
+- Android TV
 - Websocket connection (Syncplay)
-- Caching
-- Offline playback / downloads
 - Picture in picture mode
 - Chromecast support
 
+## Translating
+Please do not create pull requests for translations.
+A translation platform is coming soon...
+
+## Questions?
+We have a Discord server to discuss future development or ask general questions.
+Click [here](https://discord.gg/tg5VvTFwTV) to join.
+
+
+## License
 This project is licensed under [GPLv3](LICENSE).
 
 The logo is a combination of the Jellyfin logo and the Android robot.

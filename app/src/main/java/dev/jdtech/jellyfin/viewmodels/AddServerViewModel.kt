@@ -80,22 +80,27 @@ constructor(
 
                 recommended
                     .onCompletion {
-                        if (greatServers.isNotEmpty()) {
-                            connectToServer(greatServers.first())
-                        } else if (goodServers.isNotEmpty()) {
-                            val issuesString = createIssuesString(goodServers.first())
-                            Toast.makeText(
-                                application,
-                                issuesString,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            connectToServer(goodServers.first())
-                        } else if (okServers.isNotEmpty()) {
-                            val okServer = okServers.first()
-                            val issuesString = createIssuesString(okServer)
-                            throw Exception(issuesString)
-                        } else {
-                            throw Exception(resources.getString(R.string.add_server_error_not_found))
+                        when {
+                            greatServers.isNotEmpty() -> {
+                                connectToServer(greatServers.first())
+                            }
+                            goodServers.isNotEmpty() -> {
+                                val issuesString = createIssuesString(goodServers.first())
+                                Toast.makeText(
+                                    application,
+                                    issuesString,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                connectToServer(goodServers.first())
+                            }
+                            okServers.isNotEmpty() -> {
+                                val okServer = okServers.first()
+                                val issuesString = createIssuesString(okServer)
+                                throw Exception(issuesString)
+                            }
+                            else -> {
+                                throw Exception(resources.getString(R.string.add_server_error_not_found))
+                            }
                         }
                     }
                     .collect { recommendedServerInfo ->

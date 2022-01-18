@@ -261,7 +261,7 @@ fun parseMetadataFile(metadataFile: List<String>): DownloadMetadata {
 
 suspend fun syncPlaybackProgress(jellyfinRepository: JellyfinRepository) {
     val items = loadDownloadedEpisodes()
-    items.forEach() {
+    items.forEach {
         try {
             val localPlaybackProgress = it.metadata?.playbackPosition
             val localPlayedPercentage = it.metadata?.playedPercentage
