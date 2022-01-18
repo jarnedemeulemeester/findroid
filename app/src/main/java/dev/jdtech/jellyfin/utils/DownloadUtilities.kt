@@ -29,6 +29,7 @@ fun requestDownload(uri: Uri, downloadRequestItem: DownloadRequestItem, context:
                 )
             )
         )
+        .setVisibleInDownloadsUi(true)
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists())
         downloadFile(downloadRequest, context)
