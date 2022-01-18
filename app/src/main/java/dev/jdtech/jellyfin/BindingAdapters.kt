@@ -6,20 +6,13 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import dev.jdtech.jellyfin.adapters.DownloadsListAdapter
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.HomeItem
-import dev.jdtech.jellyfin.adapters.PersonListAdapter
-import dev.jdtech.jellyfin.adapters.ServerGridAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.adapters.ViewListAdapter
+import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
-import dev.jdtech.jellyfin.models.DownloadSection
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.UUID
+import java.util.*
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -68,6 +61,18 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
         .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}")
         .posterDescription(person.name)
+}
+
+@BindingAdapter("episodes")
+fun bindEpisodes(recyclerView: RecyclerView, data: List<EpisodeItem>?) {
+    val adapter = recyclerView.adapter as EpisodeListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("downloadEpisodes")
+fun bindDownloadEpisodes(recyclerView: RecyclerView, data: List<DownloadEpisodeItem>?) {
+    val adapter = recyclerView.adapter as DownloadEpisodeListAdapter
+    adapter.submitList(data)
 }
 
 @BindingAdapter("homeEpisodes")

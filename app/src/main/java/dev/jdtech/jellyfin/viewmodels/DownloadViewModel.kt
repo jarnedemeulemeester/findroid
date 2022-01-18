@@ -2,6 +2,8 @@ package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.*
 import dev.jdtech.jellyfin.models.DownloadSection
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,25 +37,43 @@ class DownloadViewModel : ViewModel() {
                     uiState.emit(UiState.Normal(emptyList()))
                     return@launch
                 }
+
+                val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
+                items.filter { it.metadata?.type == "Episode" }.forEach {
+                    showsMap.computeIfAbsent(it.metadata!!.seriesId!!) { mutableListOf() } += it
+                }
+                val shows = showsMap.map { DownloadSeriesMetadata(it.key, it.value[0].metadata!!.seriesName, it.value) }
+
                 val downloadSections = mutableListOf<DownloadSection>()
-                withContext(Dispatchers.Default) {
-                    DownloadSection(
-                        UUID.randomUUID(),
-                        "Episodes",
-                        items.filter { it.metadata?.type == "Episode" }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
-                            it
-                        )
+                    withContext(Dispatchers.Default) {
+                        DownloadSection(
+                            UUID.randomUUID(),
+                            "Movies",
+                            items.filter { it.metadata?.type == "Movie" }).let {
+                            if (it.items!!.isNotEmpty()) downloadSections.add(
+                                it
+                            )
+                        }
+                        DownloadSection(
+                            UUID.randomUUID(),
+                            "Shows",
+                            null,
+                            shows
+                        ).let {
+                            if (it.series!!.isNotEmpty()) downloadSections.add(
+                                it
+                            )
+                        }
                     }
                     DownloadSection(
                         UUID.randomUUID(),
                         "Movies",
                         items.filter { it.metadata?.type == "Movie" }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
+                        if (it.items!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }
-                }
+
                 uiState.emit(UiState.Normal(downloadSections))
             } catch (e: Exception) {
                 uiState.emit(UiState.Error(e.message))

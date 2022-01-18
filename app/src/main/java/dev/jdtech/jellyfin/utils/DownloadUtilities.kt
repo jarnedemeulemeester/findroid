@@ -7,6 +7,7 @@ import android.os.Environment
 import androidx.core.content.getSystemService
 import dev.jdtech.jellyfin.models.DownloadMetadata
 import dev.jdtech.jellyfin.models.DownloadRequestItem
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -75,7 +76,7 @@ private fun downloadFile(request: DownloadManager.Request, context: Context) {
         setAllowedOverMetered(false)
         setAllowedOverRoaming(false)
     }
-    context.getSystemService<DownloadManager>()?.enqueue(request)
+    val downloadId = context.getSystemService<DownloadManager>()?.enqueue(request)
 }
 
 fun loadDownloadLocation(context: Context) {
@@ -100,6 +101,7 @@ fun loadDownloadedEpisodes(): List<PlayerItem> {
                     )
                 )
             } catch (e: Exception) {
+                throw java.lang.Exception("Deleting episode, probably unintended, loaddownloadedepisodes")
                 it.delete()
                 Timber.e(e)
             }
@@ -200,6 +202,24 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadMetadata {
         seriesId = item.seriesId,
         played = item.userData?.played,
         overview = item.overview
+    )
+}
+
+fun downloadSeriesMetadataToBaseItemDto(metadata: DownloadSeriesMetadata): BaseItemDto {
+    val userData = UserItemDataDto(
+        playbackPositionTicks = 0,
+        playedPercentage = 0.0,
+        isFavorite = false,
+        playCount = 0,
+        played = false,
+        unplayedItemCount = metadata.episodes.size
+    )
+
+    return BaseItemDto(
+        id = metadata.itemId,
+        type = "Series",
+        name = metadata.name,
+        userData = userData
     )
 }
 

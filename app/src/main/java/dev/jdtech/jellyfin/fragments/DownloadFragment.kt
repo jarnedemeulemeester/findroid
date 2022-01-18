@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.databinding.FragmentDownloadBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.DownloadViewModel
@@ -40,9 +41,12 @@ class DownloadFragment : Fragment() {
         binding.downloadsRecyclerView.adapter = DownloadsListAdapter(
             DownloadViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
-            }, DownloadEpisodeListAdapter.OnClickListener { item ->
+            }, DownloadHomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToEpisodeBottomSheetFragment(item)
-            })
+            }, DownloadSeriesListAdapter.OnClickListener { item ->
+                navigateToDownloadSeriesFragment(item)
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -112,6 +116,15 @@ class DownloadFragment : Fragment() {
                 UUID.randomUUID(),
                 episode,
                 isOffline = true
+            )
+        )
+    }
+
+    private fun navigateToDownloadSeriesFragment(series: DownloadSeriesMetadata) {
+        findNavController().navigate(
+            DownloadFragmentDirections.actionDownloadFragmentToDownloadSeriesFragment(
+                seriesMetadata = series,
+                seriesName = series.name
             )
         )
     }

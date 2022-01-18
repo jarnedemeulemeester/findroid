@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
@@ -46,17 +47,26 @@ class TrackSelectionDialogFragment(
                     } else {
                         "${track.title} - ${track.lang} - ${track.codec}"
                     }
-                }
+                }.toMutableList()
+                trackNames.add( "Disable")
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
                     builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
                             viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { dialog, which ->
-                            viewModel.switchToTrack(
-                                TrackType.SUBTITLE,
-                                viewModel.currentSubtitleTracks[which]
-                            )
+                            if(which != viewModel.currentSubtitleTracks.size) {
+                                viewModel.switchToTrack(
+                                    TrackType.SUBTITLE,
+                                    viewModel.currentSubtitleTracks[which]
+                                )
+                            }else {
+                                viewModel.switchToTrack(
+                                    TrackType.SUBTITLE,
+                                    MPVPlayer.Companion.Track(-1, TrackType.SUBTITLE, "", "Disabled", "Disabled", false, false, null, -1, "", null, null) //This simply a dummy track, which is only used for setting the ffIndex to zero
+                                )
+                            }
+
                             dialog.dismiss()
                         }
                     builder.create()
