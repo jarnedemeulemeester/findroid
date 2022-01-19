@@ -76,7 +76,7 @@ private fun downloadFile(request: DownloadManager.Request, context: Context) {
         setAllowedOverMetered(false)
         setAllowedOverRoaming(false)
     }
-    val downloadId = context.getSystemService<DownloadManager>()?.enqueue(request)
+    context.getSystemService<DownloadManager>()?.enqueue(request)
 }
 
 fun loadDownloadLocation(context: Context) {
@@ -101,7 +101,6 @@ fun loadDownloadedEpisodes(): List<PlayerItem> {
                     )
                 )
             } catch (e: Exception) {
-                throw java.lang.Exception("Deleting episode, probably unintended, loaddownloadedepisodes")
                 it.delete()
                 Timber.e(e)
             }
