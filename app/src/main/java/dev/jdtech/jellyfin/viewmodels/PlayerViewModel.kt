@@ -8,6 +8,7 @@ import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
+import dev.jdtech.jellyfin.utils.isItemAvailable
 import dev.jdtech.jellyfin.utils.isItemDownloaded
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,7 +42,7 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int = 0,
         onVersionSelectRequired: () -> Unit = { }
     ) {
-        if (isItemDownloaded(downloadDatabase, item.id)) {
+        if (isItemAvailable(item.id)) {
             val playerItem = getDownloadPlayerItem(downloadDatabase, item.id)
             if (playerItem != null) {
                 loadOfflinePlayerItems(playerItem)

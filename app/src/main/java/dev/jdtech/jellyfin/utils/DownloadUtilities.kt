@@ -57,27 +57,6 @@ private fun downloadFile(request: DownloadManager.Request, context: Context): Lo
     return context.getSystemService<DownloadManager>()!!.enqueue(request)
 }
 
-// This was not working well yet, so I won't use this for now
-/*fun getDownloadProgress(context: Context, downloadId: Long): Int {
-    val downloadManager = context.getSystemService<DownloadManager>()!!
-    val query = DownloadManager.Query().setFilterById(downloadId)
-    val cursor = downloadManager.query(query)
-    val downloadStatusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
-    Timber.d("$downloadStatusIndex")
-    if (downloadStatusIndex > 0) {
-        Timber.d(cursor.getInt(downloadStatusIndex).toString())
-    }
-//    val downloadStatus = cursor.getIntOrNull(downloadStatusIndex)!!
-//    if (downloadStatus == DownloadManager.STATUS_RUNNING) {
-//        val totalBytes = cursor.getLongOrNull(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))!!
-//        if (totalBytes > 0) {
-//            val downloadedBytes = cursor.getLongOrNull(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))!!
-//            return (downloadedBytes * 100 / totalBytes).toInt()
-//        }
-//    }
-    return -1
-}*/
-
 fun loadDownloadLocation(context: Context) {
     defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
 }
@@ -94,6 +73,10 @@ fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerIt
             item = it
         )
     }
+}
+
+fun isItemAvailable(itemId: UUID): Boolean {
+    return File(defaultStorage, itemId.toString()).exists()
 }
 
 fun isItemDownloaded(downloadDatabaseDao: DownloadDatabaseDao, itemId: UUID): Boolean {

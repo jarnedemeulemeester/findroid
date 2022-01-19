@@ -167,6 +167,7 @@ class MediaInfoFragment : Fragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(args.itemId)
+                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
             }
 
             binding.deleteButton.isVisible = false
@@ -190,6 +191,9 @@ class MediaInfoFragment : Fragment() {
             }
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
+
+            binding.playButton.isEnabled = available
+            binding.playButton.alpha = if (!available) 0.5F else 1.0F
 
             // Check icon
             val checkDrawable = when (played) {

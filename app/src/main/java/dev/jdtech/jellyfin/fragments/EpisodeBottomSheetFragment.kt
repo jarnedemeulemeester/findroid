@@ -106,6 +106,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(episodeId)
+                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
                 //binding.downloadButton.setImageResource(android.R.color.transparent)
                 //binding.progressDownload.isVisible = true
             }
@@ -141,6 +142,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 ).toInt()
                 binding.progressBar.isVisible = true
             }
+
+            binding.playButton.isEnabled = available
+            binding.playButton.alpha = if (!available) 0.5F else 1.0F
 
             // Check icon
             val checkDrawable = when (played) {

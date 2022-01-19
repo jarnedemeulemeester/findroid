@@ -41,6 +41,7 @@ constructor(
             val favorite: Boolean,
             val downloaded: Boolean,
             val downloadEpisode: Boolean,
+            val available: Boolean,
         ) : UiState()
 
         object Loading : UiState()
@@ -58,6 +59,7 @@ constructor(
     var favorite: Boolean = false
     private var downloaded: Boolean = false
     private var downloadEpisode: Boolean = false
+    private var available: Boolean = true
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     private lateinit var downloadRequestItem: DownloadRequestItem
@@ -81,7 +83,8 @@ constructor(
                         played,
                         favorite,
                         downloaded,
-                        downloadEpisode
+                        downloadEpisode,
+                        available,
                     )
                 )
             } catch (e: Exception) {
@@ -95,6 +98,8 @@ constructor(
             uiState.emit(UiState.Loading)
             playerItems.add(playerItem)
             item = downloadMetadataToBaseItemDto(playerItem.item!!)
+            available = isItemAvailable(playerItem.itemId)
+            Timber.d("Available: $available")
             uiState.emit(
                 UiState.Normal(
                     item!!,
@@ -103,7 +108,8 @@ constructor(
                     played,
                     favorite,
                     downloaded,
-                    downloadEpisode
+                    downloadEpisode,
+                    available,
                 )
             )
         }
@@ -157,37 +163,12 @@ constructor(
         viewModelScope.launch {
             val episode = item
             val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
-            Timber.d(uri)
             val metadata = baseItemDtoToDownloadMetadata(episode)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadEpisode = true
             requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
-            // pollDownloadProgress(episode)
         }
     }
-
-    // Download progress is not working well yet. Disabled for now.
-    /*private fun pollDownloadProgress(episode: BaseItemDto) {
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-            override fun run() {
-                viewModelScope.launch {
-                    val downloadId = downloadDatabase.loadItem(episode.id)?.downloadId
-                    Timber.d("$downloadId")
-                    if (downloadId != null) {
-                        try {
-                            val progress = getDownloadProgress(application, downloadId)
-                            Timber.d("Download progress: $progress")
-                        } catch (e: Exception) {
-                            Timber.e(e)
-                        }
-                    }
-                }
-                handler.postDelayed(this, 2000)
-            }
-        }
-        handler.post(runnable)
-    }*/
 
     fun deleteEpisode() {
         deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)

@@ -49,6 +49,7 @@ constructor(
             val played: Boolean,
             val favorite: Boolean,
             val downloaded: Boolean,
+            val available: Boolean,
         ) : UiState()
 
         object Loading : UiState()
@@ -73,6 +74,7 @@ constructor(
     var favorite: Boolean = false
     private var downloaded: Boolean = false
     private var downloadMedia: Boolean = false
+    private var available: Boolean = true
 
     private lateinit var downloadRequestItem: DownloadRequestItem
 
@@ -112,7 +114,8 @@ constructor(
                         seasons,
                         played,
                         favorite,
-                        downloaded
+                        downloaded,
+                        available
                     )
                 )
             } catch (e: Exception) {
@@ -137,6 +140,7 @@ constructor(
             dateString = ""
             played = tempItem.userData?.played ?: false
             favorite = tempItem.userData?.isFavorite ?: false
+            available = isItemAvailable(tempItem.id)
             uiState.emit(
                 UiState.Normal(
                     tempItem,
@@ -151,7 +155,8 @@ constructor(
                     seasons,
                     played,
                     favorite,
-                    downloaded
+                    downloaded,
+                    available
                 )
             )
         }
