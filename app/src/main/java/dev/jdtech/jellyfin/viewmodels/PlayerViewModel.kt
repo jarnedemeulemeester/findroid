@@ -4,10 +4,12 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
-import dev.jdtech.jellyfin.utils.itemIsDownloaded
+import dev.jdtech.jellyfin.utils.isItemAvailable
+import dev.jdtech.jellyfin.utils.isItemDownloaded
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -21,7 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
-    private val repository: JellyfinRepository
+    private val repository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -39,8 +42,8 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int = 0,
         onVersionSelectRequired: () -> Unit = { }
     ) {
-        if (itemIsDownloaded(item.id)) {
-            val playerItem = getDownloadPlayerItem(item.id)
+        if (isItemAvailable(item.id)) {
+            val playerItem = getDownloadPlayerItem(downloadDatabase, item.id)
             if (playerItem != null) {
                 loadOfflinePlayerItems(playerItem)
                 return
