@@ -48,6 +48,7 @@ constructor(
             val seasons: List<BaseItemDto>,
             val played: Boolean,
             val favorite: Boolean,
+            val canDownload: Boolean,
             val downloaded: Boolean,
             val available: Boolean,
         ) : UiState()
@@ -72,6 +73,7 @@ constructor(
     var seasons: List<BaseItemDto> = emptyList()
     var played: Boolean = false
     var favorite: Boolean = false
+    private var canDownload: Boolean = false
     private var downloaded: Boolean = false
     private var downloadMedia: Boolean = false
     private var available: Boolean = true
@@ -95,6 +97,7 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played ?: false
                 favorite = tempItem.userData?.isFavorite ?: false
+                canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, itemId)
                 if (itemType == "Series") {
                     nextUp = getNextUp(itemId)
@@ -114,6 +117,7 @@ constructor(
                         seasons,
                         played,
                         favorite,
+                        canDownload,
                         downloaded,
                         available
                     )
@@ -155,6 +159,7 @@ constructor(
                     seasons,
                     played,
                     favorite,
+                    canDownload,
                     downloaded,
                     available
                 )

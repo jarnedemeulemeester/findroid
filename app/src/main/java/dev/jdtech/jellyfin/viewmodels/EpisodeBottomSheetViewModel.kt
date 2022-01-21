@@ -39,6 +39,7 @@ constructor(
             val dateString: String,
             val played: Boolean,
             val favorite: Boolean,
+            val canDownload: Boolean,
             val downloaded: Boolean,
             val downloadEpisode: Boolean,
             val available: Boolean,
@@ -57,6 +58,7 @@ constructor(
     private var dateString: String = ""
     var played: Boolean = false
     var favorite: Boolean = false
+    private var canDownload = false
     private var downloaded: Boolean = false
     private var downloadEpisode: Boolean = false
     private var available: Boolean = true
@@ -74,6 +76,7 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played == true
                 favorite = tempItem.userData?.isFavorite == true
+                canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, episodeId)
                 uiState.emit(
                     UiState.Normal(
@@ -82,6 +85,7 @@ constructor(
                         dateString,
                         played,
                         favorite,
+                        canDownload,
                         downloaded,
                         downloadEpisode,
                         available,
@@ -107,6 +111,7 @@ constructor(
                     dateString,
                     played,
                     favorite,
+                    canDownload,
                     downloaded,
                     downloadEpisode,
                     available,

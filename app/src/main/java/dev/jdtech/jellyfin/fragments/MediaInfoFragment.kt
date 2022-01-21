@@ -211,12 +211,24 @@ class MediaInfoFragment : Fragment() {
 
             binding.downloadButton.isEnabled = !downloaded
 
-            // Download icon
-            val downloadDrawable = when (downloaded) {
-                true -> R.drawable.ic_download_filled
-                false -> R.drawable.ic_download
+            when (canDownload) {
+                true -> {
+                    binding.downloadButton.isVisible = true
+                    binding.downloadButton.isEnabled = !downloaded
+
+                    // Download icon
+                    val downloadDrawable = when (downloaded) {
+                        true -> R.drawable.ic_download_filled
+                        false -> R.drawable.ic_download
+                    }
+                    binding.downloadButton.setImageResource(downloadDrawable)
+                }
+                false -> {
+                    binding.downloadButton.isVisible = false
+                }
             }
-            binding.downloadButton.setImageResource(downloadDrawable)
+
+
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle
             if (dateString.isEmpty()) {
