@@ -111,12 +111,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 //binding.progressDownload.isVisible = true
             }
 
-            binding.deleteButton.isVisible = false
-
             viewModel.loadEpisode(episodeId)
         } else {
             val playerItem = args.playerItem!!
             viewModel.loadEpisode(playerItem)
+
+            binding.deleteButton.isVisible = true
 
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteEpisode()

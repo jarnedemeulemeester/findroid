@@ -170,11 +170,11 @@ class MediaInfoFragment : Fragment() {
                 binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
             }
 
-            binding.deleteButton.isVisible = false
         } else {
             binding.favoriteButton.isVisible = false
             binding.checkButton.isVisible = false
             binding.downloadButton.isVisible = false
+            binding.deleteButton.isVisible = true
 
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteItem()
