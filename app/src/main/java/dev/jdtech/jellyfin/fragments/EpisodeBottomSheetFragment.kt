@@ -160,14 +160,23 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
 
-            // Download icon
-            val downloadDrawable = when (downloaded) {
-                true -> R.drawable.ic_download_filled
-                false -> R.drawable.ic_download
-            }
-            binding.downloadButton.setImageResource(downloadDrawable)
+            when (canDownload) {
+                true -> {
+                    binding.downloadButtonWrapper.isVisible = true
+                    binding.downloadButton.isEnabled = !downloaded
 
-            binding.downloadButton.isEnabled = !downloaded
+                    // Download icon
+                    val downloadDrawable = when (downloaded) {
+                        true -> R.drawable.ic_download_filled
+                        false -> R.drawable.ic_download
+                    }
+                    binding.downloadButton.setImageResource(downloadDrawable)
+                }
+                false -> {
+                    binding.downloadButtonWrapper.isVisible = false
+                }
+            }
+
 
             binding.episodeName.text = String.format(
                 getString(R.string.episode_name_extended),
