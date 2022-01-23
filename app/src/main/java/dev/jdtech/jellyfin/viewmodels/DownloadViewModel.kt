@@ -65,14 +65,6 @@ class DownloadViewModel : ViewModel() {
                             )
                         }
                     }
-                    DownloadSection(
-                        UUID.randomUUID(),
-                        "Movies",
-                        items.filter { it.metadata?.type == "Movie" }).let {
-                        if (it.items!!.isNotEmpty()) downloadSections.add(
-                            it
-                        )
-                    }
 
                 uiState.emit(UiState.Normal(downloadSections))
             } catch (e: Exception) {
