@@ -165,14 +165,16 @@ class MediaInfoFragment : Fragment() {
             }
 
             binding.downloadButton.setOnClickListener {
+                binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(args.itemId)
+                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
             }
 
-            binding.deleteButton.isVisible = false
         } else {
             binding.favoriteButton.isVisible = false
             binding.checkButton.isVisible = false
             binding.downloadButton.isVisible = false
+            binding.deleteButton.isVisible = true
 
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteItem()
@@ -190,6 +192,9 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
+            binding.playButton.isEnabled = available
+            binding.playButton.alpha = if (!available) 0.5F else 1.0F
+
             // Check icon
             val checkDrawable = when (played) {
                 true -> R.drawable.ic_check_filled
@@ -204,12 +209,26 @@ class MediaInfoFragment : Fragment() {
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
 
-            // Download icon
-            val downloadDrawable = when (downloaded) {
-                true -> R.drawable.ic_download_filled
-                false -> R.drawable.ic_download
+            binding.downloadButton.isEnabled = !downloaded
+
+            when (canDownload) {
+                true -> {
+                    binding.downloadButton.isVisible = true
+                    binding.downloadButton.isEnabled = !downloaded
+
+                    // Download icon
+                    val downloadDrawable = when (downloaded) {
+                        true -> R.drawable.ic_download_filled
+                        false -> R.drawable.ic_download
+                    }
+                    binding.downloadButton.setImageResource(downloadDrawable)
+                }
+                false -> {
+                    binding.downloadButton.isVisible = false
+                }
             }
-            binding.downloadButton.setImageResource(downloadDrawable)
+
+
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle
             if (dateString.isEmpty()) {

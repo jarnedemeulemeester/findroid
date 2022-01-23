@@ -183,7 +183,8 @@
                     android:background="@drawable/button_accent_background"
                     android:contentDescription="@string/download_button_description"
                     android:padding="12dp"
-                    android:src="@drawable/ic_download" />
+                    android:src="@drawable/ic_download"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/delete_button"
@@ -193,7 +194,8 @@
                     android:background="@drawable/button_accent_background"
                     android:contentDescription="@string/delete_button_description"
                     android:padding="12dp"
-                    android:src="@drawable/ic_trash" />
+                    android:src="@drawable/ic_trash"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
