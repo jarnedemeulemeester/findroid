@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -26,7 +27,8 @@ class EpisodeBottomSheetViewModel
 @Inject
 constructor(
     private val application: Application,
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
@@ -37,8 +39,10 @@ constructor(
             val dateString: String,
             val played: Boolean,
             val favorite: Boolean,
+            val canDownload: Boolean,
             val downloaded: Boolean,
             val downloadEpisode: Boolean,
+            val available: Boolean,
         ) : UiState()
 
         object Loading : UiState()
@@ -54,8 +58,10 @@ constructor(
     private var dateString: String = ""
     var played: Boolean = false
     var favorite: Boolean = false
+    private var canDownload = false
     private var downloaded: Boolean = false
     private var downloadEpisode: Boolean = false
+    private var available: Boolean = true
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     private lateinit var downloadRequestItem: DownloadRequestItem
@@ -70,7 +76,8 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played == true
                 favorite = tempItem.userData?.isFavorite == true
-                downloaded = itemIsDownloaded(episodeId)
+                canDownload = tempItem.canDownload == true
+                downloaded = isItemDownloaded(downloadDatabase, episodeId)
                 uiState.emit(
                     UiState.Normal(
                         tempItem,
@@ -78,8 +85,10 @@ constructor(
                         dateString,
                         played,
                         favorite,
+                        canDownload,
                         downloaded,
-                        downloadEpisode
+                        downloadEpisode,
+                        available,
                     )
                 )
             } catch (e: Exception) {
@@ -92,7 +101,9 @@ constructor(
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             playerItems.add(playerItem)
-            item = downloadMetadataToBaseItemDto(playerItem.metadata!!)
+            item = downloadMetadataToBaseItemDto(playerItem.item!!)
+            available = isItemAvailable(playerItem.itemId)
+            Timber.d("Available: $available")
             uiState.emit(
                 UiState.Normal(
                     item!!,
@@ -100,8 +111,10 @@ constructor(
                     dateString,
                     played,
                     favorite,
+                    canDownload,
                     downloaded,
-                    downloadEpisode
+                    downloadEpisode,
+                    available,
                 )
             )
         }
@@ -153,19 +166,17 @@ constructor(
 
     fun loadDownloadRequestItem(itemId: UUID) {
         viewModelScope.launch {
-            //loadEpisode(itemId)
             val episode = item
             val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
-            Timber.d(uri)
             val metadata = baseItemDtoToDownloadMetadata(episode)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadEpisode = true
-            requestDownload(Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
+            requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
         }
     }
 
     fun deleteEpisode() {
-        deleteDownloadedEpisode(playerItems[0].mediaSourceUri)
+        deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)
     }
 
     private fun getDateString(item: BaseItemDto): String {

@@ -74,7 +74,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-        if(!args.isOffline) {
+        if (!args.isOffline) {
             val episodeId: UUID = args.episodeId
 
             binding.checkButton.setOnClickListener {
@@ -106,16 +106,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(episodeId)
-                binding.downloadButton.setImageResource(android.R.color.transparent)
-                binding.progressDownload.isVisible = true
+                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
+                //binding.downloadButton.setImageResource(android.R.color.transparent)
+                //binding.progressDownload.isVisible = true
             }
-
-            binding.deleteButton.isVisible = false
 
             viewModel.loadEpisode(episodeId)
         } else {
             val playerItem = args.playerItem!!
             viewModel.loadEpisode(playerItem)
+
+            binding.deleteButton.isVisible = true
 
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteEpisode()
@@ -142,6 +143,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.isVisible = true
             }
 
+            binding.playButton.isEnabled = available
+            binding.playButton.alpha = if (!available) 0.5F else 1.0F
+
             // Check icon
             val checkDrawable = when (played) {
                 true -> R.drawable.ic_check_filled
@@ -156,14 +160,30 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
 
-            // Download icon
-            val downloadDrawable = when (downloaded) {
-                true -> R.drawable.ic_download_filled
-                false -> R.drawable.ic_download
-            }
-            binding.downloadButton.setImageResource(downloadDrawable)
+            when (canDownload) {
+                true -> {
+                    binding.downloadButtonWrapper.isVisible = true
+                    binding.downloadButton.isEnabled = !downloaded
 
-            binding.episodeName.text = String.format(getString(R.string.episode_name_extended), episode.parentIndexNumber, episode.indexNumber, episode.name)
+                    // Download icon
+                    val downloadDrawable = when (downloaded) {
+                        true -> R.drawable.ic_download_filled
+                        false -> R.drawable.ic_download
+                    }
+                    binding.downloadButton.setImageResource(downloadDrawable)
+                }
+                false -> {
+                    binding.downloadButtonWrapper.isVisible = false
+                }
+            }
+
+
+            binding.episodeName.text = String.format(
+                getString(R.string.episode_name_extended),
+                episode.parentIndexNumber,
+                episode.indexNumber,
+                episode.name
+            )
             binding.overview.text = episode.overview
             binding.year.text = dateString
             binding.playtime.text = runTime

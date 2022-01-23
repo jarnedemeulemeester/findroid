@@ -16,8 +16,8 @@ android {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 24
         targetSdk = 31
-        versionCode = 6
-        versionName = "0.3.0"
+        versionCode = 7
+        versionName = "0.3.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,8 +66,8 @@ dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha02")
 
     implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
-    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.core:core-splashscreen:1.0.0-beta01")
+    implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 
@@ -75,7 +75,7 @@ dependencies {
     implementation("com.google.android.material:material:1.4.0")
 
     // ConstraintLayout
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
     // Lifecycle
     val lifecycleVersion = "2.4.0"
