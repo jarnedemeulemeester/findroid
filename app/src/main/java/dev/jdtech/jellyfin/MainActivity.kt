@@ -60,12 +60,12 @@ class MainActivity : AppCompatActivity() {
 
         loadDownloadLocation(applicationContext)
 
-        viewModel.navigateToAddServer.observe(this, {
+        viewModel.navigateToAddServer.observe(this) {
             if (it) {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
             }
-        })
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

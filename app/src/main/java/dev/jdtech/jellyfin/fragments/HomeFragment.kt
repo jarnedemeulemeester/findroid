@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        findNavController().graph.startDestination = R.id.homeFragment
+        findNavController().graph.setStartDestination(R.id.homeFragment)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

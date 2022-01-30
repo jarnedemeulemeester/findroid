@@ -10,7 +10,7 @@ plugins {
 
 android {
     compileSdk = 31
-    buildToolsVersion = "31.0.0"
+    buildToolsVersion = "32.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
@@ -72,7 +72,7 @@ dependencies {
 
 
     // Material
-    implementation("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.material:material:1.5.0")
 
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
@@ -83,7 +83,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
     // Navigation
-    val navigationVersion = "2.3.5"
+    val navigationVersion = "2.4.0"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
@@ -92,13 +92,13 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 
     // Room
-    val roomVersion = "2.4.0"
+    val roomVersion = "2.4.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
     // Preference
-    val preferenceVersion = "1.1.1"
+    val preferenceVersion = "1.2.0"
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
