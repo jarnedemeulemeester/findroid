@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.getSystemService
+import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadRequestItem
@@ -50,9 +51,12 @@ fun requestDownload(
 }
 
 private fun downloadFile(request: DownloadManager.Request, context: Context): Long {
+    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val downloadOverData = !preferences.getBoolean("enable_wifi_only_download", true)
+
     request.apply {
-        setAllowedOverMetered(false)
-        setAllowedOverRoaming(false)
+        setAllowedOverMetered(downloadOverData)
+        setAllowedOverRoaming(downloadOverData)
     }
     return context.getSystemService<DownloadManager>()!!.enqueue(request)
 }
