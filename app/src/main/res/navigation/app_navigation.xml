@@ -91,6 +91,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="libraryType"
+            android:defaultValue="unknown"
             app:argType="string"
             app:nullable="true" />
     </fragment>
@@ -109,6 +110,7 @@
             app:nullable="true" />
         <argument
             android:name="itemType"
+            android:defaultValue="unknown"
             app:argType="string" />
         <argument
             android:name="playerItem"

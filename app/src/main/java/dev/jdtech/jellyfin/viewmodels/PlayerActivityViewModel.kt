@@ -193,7 +193,7 @@ constructor(
                             _currentItemTitle.value =
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
                         else
-                            _currentItemTitle.value = item.name
+                            _currentItemTitle.value = item.name.orEmpty()
                     }
                 }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))

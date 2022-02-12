@@ -29,7 +29,7 @@ Home | Library | Movie | Season | Episode
   - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
     - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
 - **NEW** MPV Player
-  - Container formats: mkv, mov, mp4
+  - Container formats: mkv, mov, mp4, avi
   - Video codecs: H.264, H.265, VP8, VP9, AV1
   - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
