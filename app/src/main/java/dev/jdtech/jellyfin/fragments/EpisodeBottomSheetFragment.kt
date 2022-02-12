@@ -13,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
@@ -130,6 +132,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialog?.let {
+            val sheet = it as BottomSheetDialog
+            sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
