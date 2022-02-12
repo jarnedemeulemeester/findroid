@@ -78,12 +78,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
     // Lifecycle
-    val lifecycleVersion = "2.4.0"
+    val lifecycleVersion = "2.4.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
     // Navigation
-    val navigationVersion = "2.4.0"
+    val navigationVersion = "2.4.1"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
@@ -106,7 +106,7 @@ dependencies {
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
-    val glideVersion = "4.12.0"
+    val glideVersion = "4.13.0"
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
