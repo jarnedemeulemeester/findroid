@@ -70,6 +70,8 @@ fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerIt
             mediaSourceId = "",
             playbackPosition = it.playbackPosition ?: 0,
             mediaSourceUri = File(defaultStorage, it.id.toString()).absolutePath,
+            parentIndexNumber = it.parentIndexNumber,
+            indexNumber = it.indexNumber,
             item = it
         )
     }
@@ -95,6 +97,8 @@ fun getDownloadPlayerItem(downloadDatabase: DownloadDatabaseDao, itemId: UUID): 
                 "",
                 metadata.playbackPosition!!,
                 file.absolutePath,
+                metadata.parentIndexNumber,
+                metadata.indexNumber,
                 metadata
             )
         }

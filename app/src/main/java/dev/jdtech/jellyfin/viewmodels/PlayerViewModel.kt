@@ -171,20 +171,26 @@ class PlayerViewModel @Inject internal constructor(
                 name = name,
                 itemId = id,
                 mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition
+                playbackPosition = playbackPosition,
+                parentIndexNumber = parentIndexNumber,
+                indexNumber = indexNumber
             )
             MediaProtocol.HTTP -> PlayerItem(
                 name = name,
                 itemId = id,
                 mediaSourceId = mediaSource.id!!,
                 mediaSourceUri = mediaSource.path!!,
-                playbackPosition = playbackPosition
+                playbackPosition = playbackPosition,
+                parentIndexNumber = parentIndexNumber,
+                indexNumber = indexNumber
             )
             else -> PlayerItem(
                 name = name,
                 itemId = id,
                 mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition
+                playbackPosition = playbackPosition,
+                parentIndexNumber = parentIndexNumber,
+                indexNumber = indexNumber
             )
         }
     }
