@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Findroid" parent="Base.Theme.Findroid" />
 
-    <style name="Base.Theme.Findroid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Base.Theme.Findroid" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Main colors -->
         <item name="colorPrimary">@color/blue_600</item>
         <item name="colorPrimaryVariant">@color/blue_800</item>

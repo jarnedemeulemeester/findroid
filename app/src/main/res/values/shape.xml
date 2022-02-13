@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ShapeAppearance.Findroid.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+    <style name="ShapeAppearance.Findroid.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerSize">10dp</item>
     </style>
 
-    <style name="ShapeAppearance.Findroid.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+    <style name="ShapeAppearance.Findroid.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerSize">10dp</item>
     </style>
 
-    <style name="ShapeAppearance.Findroid.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+    <style name="ShapeAppearance.Findroid.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerSize">10dp</item>
     </style>
 
