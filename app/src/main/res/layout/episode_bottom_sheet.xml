@@ -148,7 +148,8 @@
                 android:foreground="@drawable/ripple_background"
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="12dp"
-                android:src="@drawable/ic_play" />
+                android:src="@drawable/ic_play"
+                app:tint="@android:color/white" />
 
             <ProgressBar
                 android:id="@+id/progress_circular"

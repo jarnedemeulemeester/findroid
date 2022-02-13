@@ -1,84 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/settings_category_language">
+    <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsLanguageFragment"
+        app:title="@string/settings_category_language"
+        app:icon="@drawable/ic_languages"/>
 
-        <ListPreference
-            app:defaultValue="null"
-            app:entries="@array/languages"
-            app:entryValues="@array/languages_values"
-            app:icon="@drawable/ic_speaker"
-            app:key="audio_language"
-            app:title="@string/settings_preferred_audio_language"
-            app:useSimpleSummaryProvider="true" />
+    <Preference
+        app:icon="@drawable/ic_server"
+        app:key="switchServer"
+        app:title="@string/manage_servers" />
 
-        <ListPreference
-            app:defaultValue="null"
-            app:entries="@array/languages"
-            app:entryValues="@array/languages_values"
-            app:icon="@drawable/ic_closed_caption"
-            app:key="subtitle_language"
-            app:title="@string/settings_preferred_subtitle_language"
-            app:useSimpleSummaryProvider="true" />
+    <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
+        app:icon="@drawable/ic_palette"
+        app:title="@string/settings_category_appearance" />
 
-    </PreferenceCategory>
+    <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsPlayerFragment"
+        app:icon="@drawable/ic_play"
+        app:title="@string/settings_category_player" />
 
-    <PreferenceCategory app:title="@string/settings_category_servers">
+    <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsDeviceFragment"
+        app:title="@string/settings_category_device"
+        app:icon="@drawable/ic_smartphone" />
 
-        <Preference
-            app:icon="@drawable/ic_server"
-            app:key="switchServer"
-            app:title="@string/manage_servers" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/settings_category_appearance">
-        <ListPreference
-            app:defaultValue="system"
-            app:entries="@array/themes"
-            app:entryValues="@array/themes_value"
-            app:icon="@drawable/ic_palette"
-            app:key="theme"
-            app:title="@string/theme"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/settings_category_player">
-        <SwitchPreference
-            app:key="mpv_player"
-            app:summary="@string/mpv_player_summary"
-            app:title="@string/mpv_player" />
-        <SwitchPreference
-            app:dependency="mpv_player"
-            app:key="mpv_disable_hwdec"
-            app:summary="@string/force_software_decoding_summary"
-            app:title="@string/force_software_decoding" />
-        <SwitchPreference
-            app:key="display_extended_title"
-            app:summary="@string/display_extended_title_summary"
-            app:title="@string/display_extended_title" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/settings_category_device">
-        <EditTextPreference
-            app:key="deviceName"
-            app:title="@string/device_name"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/settings_category_cache">
-        <SwitchPreference
-            app:key="use_image_cache"
-            app:summary="@string/settings_use_cache_summary"
-            app:title="@string/settings_use_cache_title" />
-        <EditTextPreference
-            app:defaultValue="250"
-            app:dependency="use_image_cache"
-            app:dialogMessage="@string/settings_cache_size_message"
-            app:key="image_cache_size"
-            app:title="@string/settings_cache_size"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
+    <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
+        app:title="@string/settings_category_cache" />
 
     <PreferenceCategory app:title="@string/about">
 

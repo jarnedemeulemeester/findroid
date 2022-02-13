@@ -29,7 +29,7 @@
             app:destination="@id/episodeBottomSheetFragment" />
         <action
             android:id="@+id/action_navigation_home_to_navigation_settings"
-            app:destination="@id/settingsFragment"
+            app:destination="@id/twoPaneSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -59,15 +59,19 @@
     </fragment>
 
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
+        android:id="@+id/twoPaneSettingsFragment"
+        android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
         android:label="@string/title_settings">
         <action
-            android:id="@+id/action_navigation_settings_to_serverSelectFragment2"
+            android:id="@+id/action_navigation_settings_to_serverSelectFragment"
             app:destination="@id/serverSelectFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment">
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"

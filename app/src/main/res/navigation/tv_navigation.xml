@@ -15,7 +15,7 @@
             app:destination="@id/mediaDetailFragment" />
         <action
             android:id="@+id/action_navigation_home_to_settings"
-            app:destination="@id/settingsFragment"
+            app:destination="@id/twoPaneSettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -76,7 +76,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/twoPaneSettingsFragment"
         android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
         android:label="@string/title_settings">
     </fragment>
