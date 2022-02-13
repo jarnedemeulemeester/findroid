@@ -52,11 +52,12 @@ fun requestDownload(
 
 private fun downloadFile(request: DownloadManager.Request, context: Context): Long {
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val downloadOverData = !preferences.getBoolean("enable_wifi_only_download", true)
+    val downloadOverData = preferences.getBoolean("download_mobile_data", false)
+    val downloadWhenRoaming = preferences.getBoolean("download_roaming", false)
 
     request.apply {
         setAllowedOverMetered(downloadOverData)
-        setAllowedOverRoaming(downloadOverData)
+        setAllowedOverRoaming(downloadWhenRoaming)
     }
     return context.getSystemService<DownloadManager>()!!.enqueue(request)
 }

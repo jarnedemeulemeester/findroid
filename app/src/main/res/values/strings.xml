@@ -81,7 +81,8 @@
     <string name="select_subtile_track">Select subtitle track</string>
     <string name="select_playback_speed">Select playback speed</string>
     <string name="mpv_player">MPV Player</string>
-    <string name="download_wifi">Download over Wi-Fi only</string>
+    <string name="download_mobile_data">Download using mobile data</string>
+    <string name="download_roaming">Download when roaming</string>
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>

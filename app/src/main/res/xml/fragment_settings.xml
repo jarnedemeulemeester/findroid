@@ -46,9 +46,13 @@
 
     <PreferenceCategory app:title="@string/settings_category_download">
         <SwitchPreference
-            app:key="enable_wifi_only_download"
-            app:title="@string/download_wifi"
-            android:defaultValue="true" />
+            app:key="download_mobile_data"
+            app:title="@string/download_mobile_data"
+            android:defaultValue="false" />
+        <SwitchPreference
+            app:key="download_roaming"
+            app:title="@string/download_roaming"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/settings_category_player">
