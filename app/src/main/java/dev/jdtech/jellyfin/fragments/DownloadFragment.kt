@@ -103,7 +103,7 @@ class DownloadFragment : Fragment() {
             DownloadFragmentDirections.actionDownloadFragmentToMediaInfoFragment(
                 UUID.randomUUID(),
                 item.name,
-                item.metadata?.type ?: "Unknown",
+                item.item?.type?.type ?: "Unkown",
                 item,
                 isOffline = true
             )

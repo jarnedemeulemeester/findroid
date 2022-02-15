@@ -45,6 +45,7 @@
             app:nullable="true" />
         <argument
             android:name="itemType"
+            android:defaultValue="unknown"
             app:argType="string" />
 
         <action

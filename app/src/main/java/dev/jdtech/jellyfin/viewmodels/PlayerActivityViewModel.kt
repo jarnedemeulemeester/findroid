@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
@@ -32,7 +33,8 @@ class PlayerActivityViewModel
 @Inject
 constructor(
     application: Application,
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel(), Player.Listener {
     val player: BasePlayer
 
@@ -156,9 +158,9 @@ constructor(
         val runnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
-                    if (player.currentMediaItem != null) {
+                    if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                         if(playFromDownloads){
-                            postDownloadPlaybackProgress(items[0].mediaSourceUri, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automatically use the correct item
+                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automatically use the correct item
                         }
                         try {
                             jellyfinRepository.postPlaybackProgress(
@@ -183,7 +185,15 @@ constructor(
             try {
                 for (item in items) {
                     if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
-                        _currentItemTitle.value = item.name
+                        if (sp.getBoolean(
+                                "display_extended_title",
+                                false
+                            ) && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
+                        )
+                            _currentItemTitle.value =
+                                "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                        else
+                            _currentItemTitle.value = item.name.orEmpty()
                     }
                 }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))

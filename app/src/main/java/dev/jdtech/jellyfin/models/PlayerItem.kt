@@ -11,5 +11,7 @@ data class PlayerItem(
     val mediaSourceId: String,
     val playbackPosition: Long,
     val mediaSourceUri: String = "",
-    val metadata: DownloadMetadata? = null
+    val parentIndexNumber: Int? = null,
+    val indexNumber: Int? = null,
+    val item: DownloadItem? = null
 ) : Parcelable

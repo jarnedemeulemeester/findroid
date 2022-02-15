@@ -44,9 +44,9 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/circle_background"
         android:backgroundTint="?attr/colorError"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/episode_image"
         app:layout_constraintTop_toTopOf="@id/episode_image"
-        android:visibility="gone"
         tools:visibility="visible">
 
         <TextView
@@ -185,7 +185,8 @@
             android:id="@+id/download_button_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp">
+            android:layout_marginEnd="12dp"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/download_button"
@@ -215,7 +216,8 @@
             android:background="@drawable/button_accent_background"
             android:contentDescription="@string/delete_button_description"
             android:padding="12dp"
-            android:src="@drawable/ic_trash" />
+            android:src="@drawable/ic_trash"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

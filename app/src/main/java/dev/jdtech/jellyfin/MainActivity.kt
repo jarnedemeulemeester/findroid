@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        // navView.setupWithNavController(navController)
+        // Don't save the state of other main navigation items, only this experimental function allows turning off this behavior
+        NavigationUI.setupWithNavController(navView, navController, false)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.navView.visibility = when (destination.id) {
@@ -60,12 +62,12 @@ class MainActivity : AppCompatActivity() {
 
         loadDownloadLocation(applicationContext)
 
-        viewModel.navigateToAddServer.observe(this, {
+        viewModel.navigateToAddServer.observe(this) {
             if (it) {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
             }
-        })
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -9,6 +9,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
 import dev.jdtech.jellyfin.adapters.HomeItem.Section
 import dev.jdtech.jellyfin.adapters.HomeItem.ViewItem
+import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
     private val application: Application,
-    private val repository: JellyfinRepository
+    private val repository: JellyfinRepository,
+    private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
@@ -54,7 +56,7 @@ class HomeViewModel @Inject internal constructor(
                 val updated = loadDynamicItems() + loadViews()
 
                 withContext(Dispatchers.Default) {
-                    syncPlaybackProgress(repository)
+                    syncPlaybackProgress(downloadDatabase, repository)
                 }
                 uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
