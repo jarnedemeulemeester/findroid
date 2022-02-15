@@ -36,7 +36,7 @@ fun requestDownload(
                 )
             )
         )
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
 
     try {
         downloadDatabase.insertItem(downloadRequestItem.item)

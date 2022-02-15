@@ -57,17 +57,19 @@ constructor(
                 withContext(Dispatchers.Default) {
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Episodes",
-                        items.filter { it.item?.type == ContentType.EPISODE }).let {
+                        "Movies",
+                        items.filter { it.item?.type == ContentType.MOVIE }).let {
                         if (it.items!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Movies",
-                        items.filter { it.item?.type == ContentType.MOVIE }).let {
-                        if (it.items!!.isNotEmpty()) downloadSections.add(
+                        "Shows",
+                        null,
+                        shows
+                    ).let {
+                        if (it.series!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }

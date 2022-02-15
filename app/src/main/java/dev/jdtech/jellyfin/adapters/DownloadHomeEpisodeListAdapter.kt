@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
+import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 import timber.log.Timber
@@ -16,18 +17,18 @@ class DownloadHomeEpisodeListAdapter(private val onClickListener: OnClickListene
     class EpisodeViewHolder(private var binding: HomeEpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: PlayerItem) {
-            val metadata = episode.metadata!!
-            binding.episode = downloadMetadataToBaseItemDto(episode.metadata)
+            val metadata = episode.item!!
+            binding.episode = downloadMetadataToBaseItemDto(episode.item)
             if (metadata.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                     (metadata.playedPercentage.times(2.24)).toFloat(), binding.progressBar.context.resources.displayMetrics).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
-            if (metadata.type == "Movie") {
+            if (metadata.type == ContentType.MOVIE) {
                 binding.primaryName.text = metadata.name
                 Timber.d(metadata.name)
                 binding.secondaryName.visibility = View.GONE
-            } else if (metadata.type == "Episode") {
+            } else if (metadata.type == ContentType.EPISODE) {
                 binding.primaryName.text = metadata.seriesName
             }
             binding.executePendingBindings()

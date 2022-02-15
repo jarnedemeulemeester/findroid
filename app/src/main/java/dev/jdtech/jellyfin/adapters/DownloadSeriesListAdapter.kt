@@ -9,7 +9,6 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.utils.downloadSeriesMetadataToBaseItemDto
-import timber.log.Timber
 
 class DownloadSeriesListAdapter(
     private val onClickListener: OnClickListener,
