@@ -10,7 +10,7 @@ import org.jellyfin.sdk.model.api.DeviceOptions
 import javax.inject.Inject
 
 @HiltViewModel
-internal class SettingsViewModel @Inject internal constructor(
+internal class SettingsDeviceViewModel @Inject internal constructor(
     private val api: JellyfinApi
 ) : ViewModel() {
 

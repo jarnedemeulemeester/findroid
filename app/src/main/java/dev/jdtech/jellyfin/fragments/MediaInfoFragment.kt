@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -75,7 +76,7 @@ class MediaInfoFragment : Fragment() {
             }
         }
 
-        if(args.itemType != "Movie") {
+        if (args.itemType != "Movie") {
             binding.downloadButton.visibility = View.GONE
         }
 
@@ -112,7 +113,11 @@ class MediaInfoFragment : Fragment() {
             if (uuid != null) {
                 navigateToPersonDetail(uuid)
             } else {
-                Toast.makeText(requireContext(), R.string.error_getting_person_id, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_getting_person_id,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -167,7 +172,12 @@ class MediaInfoFragment : Fragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(args.itemId)
-                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
+                binding.downloadButton.imageTintList = ColorStateList.valueOf(
+                    resources.getColor(
+                        R.color.red,
+                        requireActivity().theme
+                    )
+                )
             }
 
         } else {
@@ -216,12 +226,12 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    // Download icon
-                    val downloadDrawable = when (downloaded) {
-                        true -> R.drawable.ic_download_filled
-                        false -> R.drawable.ic_download
-                    }
-                    binding.downloadButton.setImageResource(downloadDrawable)
+                    if (downloaded) binding.downloadButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            R.color.red,
+                            requireActivity().theme
+                        )
+                    )
                 }
                 false -> {
                     binding.downloadButton.isVisible = false
@@ -251,7 +261,12 @@ class MediaInfoFragment : Fragment() {
             binding.writers.text = writersString
             binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
-            binding.nextUpName.text = String.format(getString(R.string.episode_name_extended), nextUp?.parentIndexNumber, nextUp?.indexNumber, nextUp?.name)
+            binding.nextUpName.text = String.format(
+                getString(R.string.episode_name_extended),
+                nextUp?.parentIndexNumber,
+                nextUp?.indexNumber,
+                nextUp?.name
+            )
             binding.seasonsLayout.isVisible = seasons.isNotEmpty()
             val seasonsAdapter = binding.seasonsRecyclerView.adapter as ViewItemListAdapter
             seasonsAdapter.submitList(seasons)
