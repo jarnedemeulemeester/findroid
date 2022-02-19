@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -108,9 +109,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(episodeId)
-                binding.downloadButton.setImageResource(R.drawable.ic_download_filled)
-                //binding.downloadButton.setImageResource(android.R.color.transparent)
-                //binding.progressDownload.isVisible = true
+                binding.downloadButton.imageTintList = ColorStateList.valueOf(
+                    resources.getColor(
+                        R.color.red,
+                        requireActivity().theme
+                    )
+                )
             }
 
             viewModel.loadEpisode(episodeId)
@@ -174,12 +178,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     binding.downloadButtonWrapper.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    // Download icon
-                    val downloadDrawable = when (downloaded) {
-                        true -> R.drawable.ic_download_filled
-                        false -> R.drawable.ic_download
-                    }
-                    binding.downloadButton.setImageResource(downloadDrawable)
+                    if (downloaded) binding.downloadButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            R.color.red,
+                            requireActivity().theme
+                        )
+                    )
                 }
                 false -> {
                     binding.downloadButtonWrapper.isVisible = false

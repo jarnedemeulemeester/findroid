@@ -185,7 +185,8 @@
                     android:contentDescription="@string/download_button_description"
                     android:padding="12dp"
                     android:src="@drawable/ic_download"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:tint="@android:color/white" />
 
                 <ImageButton
                     android:id="@+id/delete_button"

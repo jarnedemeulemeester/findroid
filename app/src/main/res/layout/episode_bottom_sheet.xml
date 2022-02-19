@@ -196,7 +196,8 @@
                 android:background="@drawable/button_accent_background"
                 android:contentDescription="@string/download_button_description"
                 android:padding="12dp"
-                android:src="@drawable/ic_download" />
+                android:src="@drawable/ic_download"
+                app:tint="@android:color/white" />
 
             <ProgressBar
                 android:id="@+id/progress_download"
