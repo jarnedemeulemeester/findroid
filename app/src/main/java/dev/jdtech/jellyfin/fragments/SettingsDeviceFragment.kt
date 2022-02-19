@@ -9,6 +9,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.SettingsDeviceViewModel
 
 @AndroidEntryPoint
+@Suppress("unused")
 class SettingsDeviceFragment : PreferenceFragmentCompat() {
 
     private val viewModel: SettingsDeviceViewModel by viewModels()
