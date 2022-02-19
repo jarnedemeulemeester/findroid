@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        app:key="mpv_player"
+        app:summary="@string/mpv_player_summary"
+        app:title="@string/mpv_player" />
+    <SwitchPreference
+        app:dependency="mpv_player"
+        app:key="mpv_disable_hwdec"
+        app:summary="@string/force_software_decoding_summary"
+        app:title="@string/force_software_decoding" />
+    <SwitchPreference
+        app:key="display_extended_title"
+        app:summary="@string/display_extended_title_summary"
+        app:title="@string/display_extended_title" />
+</PreferenceScreen>
