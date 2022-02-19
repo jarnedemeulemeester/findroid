@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsLanguageFragment"
@@ -15,6 +16,17 @@
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
         app:icon="@drawable/ic_palette"
         app:title="@string/settings_category_appearance" />
+
+    <PreferenceCategory app:title="@string/settings_category_download">
+        <SwitchPreference
+            app:key="download_mobile_data"
+            app:title="@string/download_mobile_data"
+            android:defaultValue="false" />
+        <SwitchPreference
+            app:key="download_roaming"
+            app:title="@string/download_roaming"
+            android:defaultValue="false" />
+    </PreferenceCategory>
 
     <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsPlayerFragment"
