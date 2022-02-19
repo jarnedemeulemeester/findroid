@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/settings_category_language">
 
@@ -41,6 +42,17 @@
             app:key="theme"
             app:title="@string/theme"
             app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_category_download">
+        <SwitchPreference
+            app:key="download_mobile_data"
+            app:title="@string/download_mobile_data"
+            android:defaultValue="false" />
+        <SwitchPreference
+            app:key="download_roaming"
+            app:title="@string/download_roaming"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/settings_category_player">
