@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import android.os.Build
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -249,17 +248,11 @@ constructor(
         return when (item.status) {
             "Continuing" -> dateString.plus(" - Present")
             "Ended" -> {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return if (item.productionYear == item.endDate?.year) {
-                        dateString
-                    } else {
-                        dateString.plus(" - ${item.endDate?.year}")
-                    }
-                } else {
-                    // TODO: Implement a way to get the year from LocalDateTime in Android < O
+                return if (item.productionYear == item.endDate?.year) {
                     dateString
+                } else {
+                    dateString.plus(" - ${item.endDate?.year}")
                 }
-
             }
             else -> dateString
         }
