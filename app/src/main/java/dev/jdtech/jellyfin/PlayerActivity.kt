@@ -135,6 +135,8 @@ class PlayerActivity : BasePlayerActivity() {
                         this, resources.getString(R.string.select_subtile_track),
                         viewModel.trackSelector, subtitleRenderer
                     )
+                    trackSelectionDialogBuilder.setShowDisableOption(true)
+
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
                     trackSelectionDialog.show()
                 }
