@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:text="@{server.name}"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

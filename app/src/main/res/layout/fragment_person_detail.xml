@@ -45,7 +45,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/person_image"
                     app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="8dp"
                     android:ellipsize="end"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:layout_constraintBottom_toTopOf="@id/read_all"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/person_image"
@@ -75,7 +75,7 @@
 
                 <Button
                     android:id="@+id/read_all"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
@@ -99,7 +99,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/movies_label"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -121,7 +121,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/shows_label"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView

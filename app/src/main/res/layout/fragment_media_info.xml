@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     app:layout_constraintBottom_toTopOf="@id/original_title"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:text="Alita: Battle Angel" />
@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="2019" />
 
                 <TextView
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="122 min" />
 
                 <TextView
@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="PG-13" />
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="4dp"
                     android:gravity="bottom"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:drawableStartCompat="@drawable/ic_star"
                     app:drawableTint="@color/yellow"
                     tools:text="7.3" />
@@ -217,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="@string/error_preparing_player_items"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="?attr/colorError" />
 
                 <TextView
@@ -225,7 +225,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/view_details_underlined"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="?attr/colorError" />
             </LinearLayout>
 
@@ -249,7 +249,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/genres"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -258,7 +258,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="64dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -276,7 +276,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/director"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -285,7 +285,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="64dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -303,7 +303,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/writers"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -312,7 +312,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="64dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -327,7 +327,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="24dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
 
             <LinearLayout
@@ -343,7 +343,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/next_up"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:textSize="18sp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -372,7 +372,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/next_up_image"
@@ -394,7 +394,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/seasons"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:textSize="18sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -423,7 +423,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/cast_amp_crew"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:textSize="18sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
