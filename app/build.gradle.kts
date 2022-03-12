@@ -18,8 +18,6 @@ android {
         targetSdk = 32
         versionCode = 8
         versionName = "0.3.2"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -47,7 +45,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -131,11 +128,4 @@ dependencies {
     val aboutLibrariesVersion = "10.0.0"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
-
-    // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
