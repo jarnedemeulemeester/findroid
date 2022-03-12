@@ -57,6 +57,7 @@
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Player</string>
+    <string name="settings_category_download">Downloads</string>
     <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
     <string name="device_name">Device name</string>
@@ -80,6 +81,8 @@
     <string name="select_subtile_track">Select subtitle track</string>
     <string name="select_playback_speed">Select playback speed</string>
     <string name="mpv_player">MPV Player</string>
+    <string name="download_mobile_data">Download using mobile data</string>
+    <string name="download_roaming">Download when roaming</string>
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>

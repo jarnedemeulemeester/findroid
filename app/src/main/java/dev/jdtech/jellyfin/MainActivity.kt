@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.navView.visibility = when (destination.id) {
-                R.id.settingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, R.id.about_libraries_dest -> View.GONE
+                R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, R.id.about_libraries_dest -> View.GONE
                 else -> View.VISIBLE
             }
             if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title = getString(R.string.app_info)

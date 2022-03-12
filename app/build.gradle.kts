@@ -9,17 +9,15 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
     buildToolsVersion = "32.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 24
-        targetSdk = 31
+        minSdk = 26
+        targetSdk = 32
         versionCode = 8
         versionName = "0.3.2"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -47,7 +45,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -92,7 +89,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 
     // Room
-    val roomVersion = "2.4.1"
+    val roomVersion = "2.4.2"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
@@ -106,12 +103,12 @@ dependencies {
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
-    val glideVersion = "4.13.0"
+    val glideVersion = "4.13.1"
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     // Hilt
-    val hiltVersion = "2.40.5"
+    val hiltVersion = "2.41"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
@@ -128,14 +125,7 @@ dependencies {
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
-    val aboutLibrariesVersion = "8.9.4"
+    val aboutLibrariesVersion = "10.0.0"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
-
-    // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
