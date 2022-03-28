@@ -63,7 +63,7 @@ dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha02")
 
     implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.core:core-splashscreen:1.0.0-beta01")
+    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
@@ -125,7 +125,7 @@ dependencies {
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
-    val aboutLibrariesVersion = "10.0.0"
+    val aboutLibrariesVersion = "10.0.1"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
 }
