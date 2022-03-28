@@ -55,10 +55,10 @@
     <string name="app_info">Información de aplicación</string>
     <string name="unknown_error">Error desconocido</string>
 	<string name="search_hint">Buscar películas, series, episodios…</string>
-    <string name="mpv_player">Reproductor MPV</string>
+    <string name="mpv_player">Reproductor mpv</string>
     <string name="select_audio_track">Elegir pista de audio</string>
     <string name="select_subtile_track">Elegir pista de subtitulo</string>
-    <string name="mpv_player_summary">Usar el reproductor MPV parar reproducir contenidos. MPV soporta mas codecs de video, audio y subtitulos.</string>
+    <string name="mpv_player_summary">Usar el reproductor mpv parar reproducir contenidos. mpv soporta mas codecs de video, audio y subtitulos.</string>
     <string name="force_software_decoding">Forzar la decodificación por software</string>
     <string name="force_software_decoding_summary">Deshabilita la decodificación por hardtware y usa solo software. Puede ser útil sí la decodificación por hardware genera artefactos visuales.</string>
 </resources>
