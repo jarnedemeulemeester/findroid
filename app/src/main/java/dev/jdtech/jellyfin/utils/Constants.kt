@@ -11,4 +11,9 @@ object Constants {
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_BRIGHTNESS_REMEMBER = "pref_player_brightness_remember"
     const val PREF_PLAYER_BRIGHTNESS = "pref_player_brightness"
+    const val PREF_IMAGE_CACHE = "pref_image_cache"
+    const val PREF_IMAGE_CACHE_SIZE = "pref_image_cache_size"
+
+    // caching
+    const val DEFAULT_CACHE_SIZE = 20
 }

@@ -9,21 +9,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy.RESOURCE
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import dev.jdtech.jellyfin.utils.Constants
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val cacheDefaultSize = 250
-
 @GlideModule
 class GlideModule : AppGlideModule() {
-
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val use = preferences.getBoolean("use_image_cache", false)
+        val use = preferences.getBoolean(Constants.PREF_IMAGE_CACHE, true)
 
         if (use) {
-            val sizeMb = preferences.getString("image_cache_size", "$cacheDefaultSize")?.toInt()!!
+            val sizeMb = preferences.getString(Constants.PREF_IMAGE_CACHE_SIZE, "${Constants.DEFAULT_CACHE_SIZE}")?.toInt()!!
             val sizeB = 1024L * 1024 * sizeMb
             Timber.d("Setting image cache to use $sizeMb MB of disk space")
 
