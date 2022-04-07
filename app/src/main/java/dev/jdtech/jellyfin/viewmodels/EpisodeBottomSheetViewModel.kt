@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import android.os.Build
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -11,9 +10,9 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.api.client.exception.ApiClientException
+import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 import java.text.DateFormat
@@ -73,7 +72,7 @@ constructor(
                 val tempItem = jellyfinRepository.getItem(episodeId)
                 item = tempItem
                 runTime = "${tempItem.runTimeTicks?.div(600000000)} min"
-                dateString = getDateString(tempItem)
+                dateString = getDateString(tempItem.premiereDate)
                 played = tempItem.userData?.played == true
                 favorite = tempItem.userData?.isFavorite == true
                 canDownload = tempItem.canDownload == true
@@ -179,14 +178,10 @@ constructor(
         deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)
     }
 
-    private fun getDateString(item: BaseItemDto): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val instant = item.premiereDate?.toInstant(ZoneOffset.UTC)
-            val date = Date.from(instant)
-            DateFormat.getDateInstance(DateFormat.SHORT).format(date)
-        } else {
-            // TODO: Implement a way to get the year from LocalDateTime in Android < O
-            item.premiereDate.toString()
-        }
+    private fun getDateString(datetime: DateTime?): String {
+        if (datetime == null) return ""
+        val instant = datetime.toInstant(ZoneOffset.UTC)
+        val date = Date.from(instant)
+        return DateFormat.getDateInstance(DateFormat.SHORT).format(date)
     }
 }
