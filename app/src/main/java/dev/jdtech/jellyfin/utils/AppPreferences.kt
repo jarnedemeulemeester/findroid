@@ -10,6 +10,11 @@ class AppPreferences
 constructor(
     private val sharedPreferences: SharedPreferences
 ) {
+    val playerGestures = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
+
+    val playerBrightnessRemember =
+        sharedPreferences.getBoolean(Constants.PREF_PLAYER_BRIGHTNESS_REMEMBER, false)
+
     var playerBrightness: Float
         get() = sharedPreferences.getFloat(
             Constants.PREF_PLAYER_BRIGHTNESS,
@@ -20,5 +25,4 @@ constructor(
                 putFloat(Constants.PREF_PLAYER_BRIGHTNESS, value)
             }
         }
-
 }

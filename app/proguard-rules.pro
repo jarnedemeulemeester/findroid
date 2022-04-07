@@ -26,3 +26,11 @@
 -keep class is.xyz.libmpv.MPVLib {
   *;
 }
+
+# ProGuard thinks all SettingsFragments are unused
+-keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsDownloadsFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsPlayerFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsDeviceFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsCacheFragment
