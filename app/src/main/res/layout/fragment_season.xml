@@ -21,7 +21,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="4"
-        tools:listitem="@layout/episode_item" />
+        tools:listitem="@layout/episode_item"
+        android:clipChildren="false"/>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/loading_indicator"
