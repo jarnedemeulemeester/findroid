@@ -23,7 +23,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginBottom="12dp"
             android:text="@{section.name}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:textSize="18sp"
             tools:text="Next Up" />
 

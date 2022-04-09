@@ -46,7 +46,8 @@
             android:src="@drawable/ic_check"
             android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image" />
+            app:layout_constraintTop_toTopOf="@id/episode_image"
+            app:tint="?attr/colorOnPrimary" />
 
         <FrameLayout
             android:id="@+id/missing_icon"
@@ -88,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@{String.format(@string/episode_name, episode.indexNumber, episode.name)}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintBottom_toTopOf="@id/episode_desc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/episode_image"
@@ -101,7 +102,7 @@
             android:layout_height="0dp"
             android:scrollbars="none"
             android:text="@{episode.overview}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/episode_title"

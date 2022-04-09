@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{collection.name}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/collection_image"

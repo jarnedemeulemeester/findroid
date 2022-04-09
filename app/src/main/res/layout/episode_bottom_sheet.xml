@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="24dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/episode_image"
         app:layout_constraintTop_toTopOf="@id/episode_image"
@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             tools:text="4/6/2013" />
 
         <TextView
@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             tools:text="26 min" />
 
         <TextView
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
             android:gravity="bottom"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:drawableStartCompat="@drawable/ic_star"
             app:drawableTint="@color/yellow"
             tools:text="8.8" />
@@ -149,7 +149,7 @@
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="12dp"
                 android:src="@drawable/ic_play"
-                app:tint="@android:color/white" />
+                app:tint="?attr/colorOnPrimary" />
 
             <ProgressBar
                 android:id="@+id/progress_circular"
@@ -157,7 +157,7 @@
                 android:layout_height="48dp"
                 android:layout_centerHorizontal="true"
                 android:elevation="8dp"
-                android:indeterminateTint="@color/white"
+                android:indeterminateTint="?attr/colorOnPrimary"
                 android:padding="8dp"
                 android:visibility="invisible" />
         </RelativeLayout>
@@ -170,7 +170,8 @@
             android:background="@drawable/button_accent_background"
             android:contentDescription="@string/check_button_description"
             android:padding="12dp"
-            android:src="@drawable/ic_check" />
+            android:src="@drawable/ic_check"
+            app:tint="?attr/colorOnSecondaryContainer" />
 
         <ImageButton
             android:id="@+id/favorite_button"
@@ -180,7 +181,8 @@
             android:background="@drawable/button_accent_background"
             android:contentDescription="@string/favorite_button_description"
             android:padding="12dp"
-            android:src="@drawable/ic_heart" />
+            android:src="@drawable/ic_heart"
+            app:tint="?attr/colorOnSecondaryContainer" />
 
         <RelativeLayout
             android:id="@+id/download_button_wrapper"
@@ -197,7 +199,7 @@
                 android:contentDescription="@string/download_button_description"
                 android:padding="12dp"
                 android:src="@drawable/ic_download"
-                app:tint="@android:color/white" />
+                app:tint="?attr/colorOnSecondaryContainer" />
 
             <ProgressBar
                 android:id="@+id/progress_download"
@@ -242,7 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/error_preparing_player_items"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:textColor="?attr/colorError" />
 
         <TextView
@@ -250,7 +252,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_details_underlined"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:textColor="?attr/colorError" />
     </LinearLayout>
 
@@ -260,7 +262,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="12dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/player_items_error"

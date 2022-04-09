@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -147,11 +148,23 @@ class MediaInfoFragment : Fragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(args.itemId)
-                        binding.checkButton.setImageResource(R.drawable.ic_check)
+                        val typedValue = TypedValue()
+                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                        binding.checkButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                typedValue.resourceId,
+                                requireActivity().theme
+                            )
+                        )
                     }
                     false -> {
                         viewModel.markAsPlayed(args.itemId)
-                        binding.checkButton.setImageResource(R.drawable.ic_check_filled)
+                        binding.checkButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                R.color.red,
+                                requireActivity().theme
+                            )
+                        )
                     }
                 }
             }
@@ -161,10 +174,24 @@ class MediaInfoFragment : Fragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
+                        val typedValue = TypedValue()
+                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                typedValue.resourceId,
+                                requireActivity().theme
+                            )
+                        )
                     }
                     false -> {
                         viewModel.markAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
+                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                R.color.red,
+                                requireActivity().theme
+                            )
+                        )
                     }
                 }
             }
@@ -206,11 +233,27 @@ class MediaInfoFragment : Fragment() {
             binding.playButton.alpha = if (!available) 0.5F else 1.0F
 
             // Check icon
-            val checkDrawable = when (played) {
-                true -> R.drawable.ic_check_filled
-                false -> R.drawable.ic_check
+            when (played) {
+                true -> {
+                    if (played) binding.checkButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            R.color.red,
+                            requireActivity().theme
+                        )
+                    )
+                }
+                false -> {
+                    val typedValue = TypedValue()
+                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                    binding.checkButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            typedValue.resourceId,
+                            requireActivity().theme
+                        )
+                    )
+                }
             }
-            binding.checkButton.setImageResource(checkDrawable)
+
 
             // Favorite icon
             val favoriteDrawable = when (favorite) {
@@ -218,6 +261,12 @@ class MediaInfoFragment : Fragment() {
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
+            if (favorite) binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                resources.getColor(
+                    R.color.red,
+                    requireActivity().theme
+                )
+            )
 
             binding.downloadButton.isEnabled = !downloaded
 

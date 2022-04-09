@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ErrorDialogStyle" parent="MaterialAlertDialog.MaterialComponents">
+    <style name="ErrorDialogStyle" parent="MaterialAlertDialog.Material3">
         <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogBodyText</item>
     </style>
 
-    <style name="AlertDialogBodyText" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+    <style name="AlertDialogBodyText" parent="MaterialAlertDialog.Material3.Body.Text">
         <item name="android:fontFamily">monospace</item>
     </style>
 
