@@ -154,7 +154,8 @@
                     android:background="@drawable/button_accent_background"
                     android:contentDescription="@string/trailer_button_description"
                     android:padding="12dp"
-                    android:src="@drawable/ic_film" />
+                    android:src="@drawable/ic_film"
+                    app:tint="?attr/colorOnSecondaryContainer" />
 
                 <ImageButton
                     android:id="@+id/check_button"
@@ -164,7 +165,8 @@
                     android:background="@drawable/button_accent_background"
                     android:contentDescription="@string/check_button_description"
                     android:padding="12dp"
-                    android:src="@drawable/ic_check" />
+                    android:src="@drawable/ic_check"
+                    app:tint="?attr/colorOnSecondaryContainer" />
 
                 <ImageButton
                     android:id="@+id/favorite_button"
@@ -174,7 +176,8 @@
                     android:background="@drawable/button_accent_background"
                     android:contentDescription="@string/download_button_description"
                     android:padding="12dp"
-                    android:src="@drawable/ic_heart" />
+                    android:src="@drawable/ic_heart"
+                    app:tint="?attr/colorOnSecondaryContainer" />
 
                 <ImageButton
                     android:id="@+id/download_button"
@@ -186,7 +189,7 @@
                     android:padding="12dp"
                     android:src="@drawable/ic_download"
                     android:visibility="gone"
-                    app:tint="@android:color/white" />
+                    app:tint="?attr/colorOnSecondaryContainer" />
 
                 <ImageButton
                     android:id="@+id/delete_button"
@@ -197,7 +200,8 @@
                     android:contentDescription="@string/delete_button_description"
                     android:padding="12dp"
                     android:src="@drawable/ic_trash"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:tint="?attr/colorOnSecondaryContainer" />
             </LinearLayout>
 
             <LinearLayout
