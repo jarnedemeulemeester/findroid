@@ -157,7 +157,7 @@
                 android:layout_height="48dp"
                 android:layout_centerHorizontal="true"
                 android:elevation="8dp"
-                android:indeterminateTint="@color/white"
+                android:indeterminateTint="?attr/colorOnPrimary"
                 android:padding="8dp"
                 android:visibility="invisible" />
         </RelativeLayout>
