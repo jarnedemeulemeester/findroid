@@ -36,7 +36,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{person.name}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             tools:text="Rosa Salazar" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{person.role}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            tools:text="as Alita" />
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            tools:text="Alita" />
     </LinearLayout>
 </layout>
