@@ -1,24 +1,20 @@
 <resources>
     <style name="Theme.Findroid" parent="Base.Theme.Findroid">
-        <!-- Main colors -->
-        <item name="colorPrimary">@color/blue_600</item>
-        <item name="colorPrimaryVariant">@color/blue_800</item>
-        <item name="colorSecondary">@color/green_300</item>
-        <item name="colorSecondaryVariant">@color/green_800</item>
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/on_primary_dark</item>
+        <item name="colorPrimaryContainer">@color/primary_container_dark</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_dark</item>
 
-        <!-- Background colors and error state color -->
-        <item name="android:colorBackground">@color/black</item>
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/on_secondary_dark</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_dark</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_dark</item>
+
+        <!-- Surface -->
+        <item name="android:colorBackground">@color/neutral_1000</item>
         <item name="colorSurface">@color/neutral_900</item>
-        <item name="colorError">@color/red</item>
-
-        <!-- Text, icons and strokes in relation to the surface -->
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">@color/white</item>
-        <item name="colorOnSurface">@color/white</item>
-        <item name="colorOnError">@color/white</item>
-
-        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">

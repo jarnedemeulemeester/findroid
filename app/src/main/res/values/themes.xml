@@ -3,22 +3,24 @@
     <style name="Theme.Findroid" parent="Base.Theme.Findroid" />
 
     <style name="Base.Theme.Findroid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Main colors -->
-        <item name="colorPrimary">@color/blue_600</item>
-        <item name="colorPrimaryVariant">@color/blue_800</item>
-        <item name="colorSecondary">@color/green_500</item>
-        <item name="colorSecondaryVariant">@color/green_800</item>
-
-        <!-- Background colors and error state color -->
-        <item name="android:colorBackground">@color/white</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorError">@color/red</item>
-
-        <!-- Text, icons and strokes in relation to the surface -->
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary_light</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">@color/black</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorPrimaryContainer">@color/primary_container_light</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_light</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary_light</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_light</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_light</item>
+
+        <!-- Surface -->
+        <item name="android:colorBackground">@color/neutral_50</item>
+        <item name="colorSurface">@color/neutral_100</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/red</item>
         <item name="colorOnError">@color/white</item>
 
         <!-- Status bar -->
@@ -31,7 +33,10 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Findroid.LargeComponent</item>
 
         <!-- Toolbar -->
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
+        <item name="toolbarStyle">@style/Widget.Material3.Toolbar.Surface</item>
+
+        <!-- Extra -->
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">
