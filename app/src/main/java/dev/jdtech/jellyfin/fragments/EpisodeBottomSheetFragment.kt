@@ -84,11 +84,23 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(episodeId)
-                        binding.checkButton.setImageResource(R.drawable.ic_check)
+                        val typedValue = TypedValue()
+                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                        binding.checkButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                typedValue.resourceId,
+                                requireActivity().theme
+                            )
+                        )
                     }
                     false -> {
                         viewModel.markAsPlayed(episodeId)
-                        binding.checkButton.setImageResource(R.drawable.ic_check_filled)
+                        binding.checkButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                R.color.red,
+                                requireActivity().theme
+                            )
+                        )
                     }
                 }
             }
@@ -98,10 +110,24 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(episodeId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
+                        val typedValue = TypedValue()
+                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                typedValue.resourceId,
+                                requireActivity().theme
+                            )
+                        )
                     }
                     false -> {
                         viewModel.markAsFavorite(episodeId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
+                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                            resources.getColor(
+                                R.color.red,
+                                requireActivity().theme
+                            )
+                        )
                     }
                 }
             }
@@ -160,11 +186,26 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.playButton.alpha = if (!available) 0.5F else 1.0F
 
             // Check icon
-            val checkDrawable = when (played) {
-                true -> R.drawable.ic_check_filled
-                false -> R.drawable.ic_check
+            when (played) {
+                true -> {
+                    binding.checkButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            R.color.red,
+                            requireActivity().theme
+                        )
+                    )
+                }
+                false -> {
+                    val typedValue = TypedValue()
+                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
+                    binding.checkButton.imageTintList = ColorStateList.valueOf(
+                        resources.getColor(
+                            typedValue.resourceId,
+                            requireActivity().theme
+                        )
+                    )
+                }
             }
-            binding.checkButton.setImageResource(checkDrawable)
 
             // Favorite icon
             val favoriteDrawable = when (favorite) {
@@ -172,6 +213,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
+            if (favorite) binding.favoriteButton.imageTintList = ColorStateList.valueOf(
+                resources.getColor(
+                    R.color.red,
+                    requireActivity().theme
+                )
+            )
 
             when (canDownload) {
                 true -> {
