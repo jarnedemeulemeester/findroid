@@ -31,7 +31,7 @@ class PlayerActivity : BasePlayerActivity() {
     lateinit var appPreferences: AppPreferences
 
     lateinit var binding: ActivityPlayerBinding
-    private lateinit var playerGestureHelper: PlayerGestureHelper
+    private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
     private val args: PlayerActivityArgs by navArgs()
 
@@ -49,12 +49,14 @@ class PlayerActivity : BasePlayerActivity() {
 
         configureInsets(playerControls)
 
-        playerGestureHelper = PlayerGestureHelper(
-            appPreferences,
-            this,
-            binding.playerView,
-            getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        )
+        if (appPreferences.playerGestures) {
+            playerGestureHelper = PlayerGestureHelper(
+                appPreferences,
+                this,
+                binding.playerView,
+                getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            )
+        }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
             onBackPressed()

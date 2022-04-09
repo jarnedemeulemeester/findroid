@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
-        app:key="mpv_player"
-        app:summary="@string/mpv_player_summary"
-        app:title="@string/mpv_player" />
-    <SwitchPreference
-        app:dependency="mpv_player"
-        app:key="mpv_disable_hwdec"
-        app:summary="@string/force_software_decoding_summary"
-        app:title="@string/force_software_decoding" />
-    <SwitchPreference
         app:key="display_extended_title"
         app:summary="@string/display_extended_title_summary"
         app:title="@string/display_extended_title" />
+
+    <PreferenceCategory app:title="@string/mpv_player">
+        <SwitchPreference
+            app:key="mpv_player"
+            app:summary="@string/mpv_player_summary"
+            app:title="@string/mpv_player" />
+        <SwitchPreference
+            app:dependency="mpv_player"
+            app:key="mpv_disable_hwdec"
+            app:summary="@string/force_software_decoding_summary"
+            app:title="@string/force_software_decoding" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/gestures">
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="pref_player_gestures"
+            app:summary="@string/player_gestures_summary"
+            app:title="@string/player_gestures" />
+        <SwitchPreference
+            app:dependency="pref_player_gestures"
+            app:key="pref_player_brightness_remember"
+            app:title="@string/player_brightness_remember" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

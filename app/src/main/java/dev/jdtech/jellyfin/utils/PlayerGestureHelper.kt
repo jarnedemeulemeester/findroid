@@ -115,7 +115,9 @@ class PlayerGestureHelper(
 
     private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
-        appPreferences.playerBrightness = activity.window.attributes.screenBrightness
+        if (appPreferences.playerBrightnessRemember) {
+            appPreferences.playerBrightness = activity.window.attributes.screenBrightness
+        }
     }
 
     /**
@@ -141,7 +143,9 @@ class PlayerGestureHelper(
     }
 
     init {
-        activity.window.attributes.screenBrightness = appPreferences.playerBrightness
+        if (appPreferences.playerBrightnessRemember) {
+            activity.window.attributes.screenBrightness = appPreferences.playerBrightness
+        }
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
             if (playerView.useController) {

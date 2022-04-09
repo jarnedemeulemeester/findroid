@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
-        app:key="use_image_cache"
+        app:defaultValue="true"
+        app:key="pref_image_cache"
         app:summary="@string/settings_use_cache_summary"
         app:title="@string/settings_use_cache_title" />
     <EditTextPreference
-        app:defaultValue="250"
-        app:dependency="use_image_cache"
+        app:defaultValue="20"
+        app:dependency="pref_image_cache"
         app:dialogMessage="@string/settings_cache_size_message"
-        app:key="image_cache_size"
+        app:key="pref_image_cache_size"
         app:title="@string/settings_cache_size"
         app:useSimpleSummaryProvider="true" />
 </PreferenceScreen>
