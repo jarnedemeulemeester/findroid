@@ -39,7 +39,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 app:srcCompat="@drawable/ic_server"
-                app:tint="@color/white" />
+                app:tint="?attr/colorOnPrimary" />
 
         </FrameLayout>
 

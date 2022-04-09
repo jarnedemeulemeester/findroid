@@ -46,7 +46,8 @@
             android:src="@drawable/ic_check"
             android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image" />
+            app:layout_constraintTop_toTopOf="@id/episode_image"
+            app:tint="?attr/colorOnPrimary" />
 
         <FrameLayout
             android:id="@+id/missing_icon"

@@ -56,8 +56,8 @@
             android:background="@drawable/circle_background"
             android:gravity="center"
             android:text="@{item.userData.unplayedItemCount.toString()}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="@color/white"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="?attr/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="9" />
@@ -74,6 +74,7 @@
             android:src="@drawable/ic_check"
             android:visibility="@{item.userData.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/item_image"
-            app:layout_constraintTop_toTopOf="@id/item_image" />
+            app:layout_constraintTop_toTopOf="@id/item_image"
+            app:tint="?attr/colorOnPrimary" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
