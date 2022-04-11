@@ -13,7 +13,6 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
@@ -244,18 +243,18 @@ constructor(
     }
 
     private fun getDateString(item: BaseItemDto): String {
-        val dateString: String = item.productionYear.toString()
-        return when (item.status) {
-            "Continuing" -> dateString.plus(" - Present")
-            "Ended" -> {
-                return if (item.productionYear == item.endDate?.year) {
-                    dateString
-                } else {
-                    dateString.plus(" - ${item.endDate?.year}")
-                }
+        val dateRange: MutableList<String> = mutableListOf()
+        item.productionYear?.let { dateRange.add(it.toString()) }
+        when (item.status) {
+            "Continuing" -> {
+                dateRange.add("Present")
             }
-            else -> dateString
+            "Ended" -> {
+                item.endDate?.let { dateRange.add(it.year.toString()) }
+            }
         }
+        if (dateRange.count() > 1 && dateRange[0] == dateRange[1]) return dateRange[0]
+        return dateRange.joinToString(separator = " - ")
     }
 
     fun loadDownloadRequestItem(itemId: UUID) {
@@ -266,7 +265,12 @@ constructor(
             val metadata = baseItemDtoToDownloadMetadata(downloadItem)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             downloadMedia = true
-            requestDownload(downloadDatabase, Uri.parse(downloadRequestItem.uri), downloadRequestItem, application)
+            requestDownload(
+                downloadDatabase,
+                Uri.parse(downloadRequestItem.uri),
+                downloadRequestItem,
+                application
+            )
         }
     }
 
