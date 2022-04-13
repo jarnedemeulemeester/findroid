@@ -1,8 +1,18 @@
 <resources>
+    <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Aplicación nativa de terceros para Jellyfin</string>
     <string name="jellyfin_banner">Emblema Jellyfin</string>
     <string name="add_server">Agregar servidor</string>
+    <string name="add_server_error_outdated">Versión de servidor no actualizaao: %1$s. Por favor actualice su servidor</string>
+    <string name="add_server_error_not_jellyfin">No es un servidor Jellyfin: %1$s</string>
+    <string name="add_server_error_version">Versión del servidor sin soporte: %1$s. Por favor actualice su servidor</string>
+    <string name="add_server_error_slow">Servidor muy lento al responder: %1$s</string>
+    <string name="add_server_error_already_added">Servidor ya presente</string>
+    <string name="add_server_error_empty_address">Dirección del servidor vacia</string>
+    <string name="add_server_error_not_found">Servidor no encontrado</string>
+    <string name="add_server_error_no_id">El servidor no tiene identificador, ocurrió un error en el servidor</string>
     <string name="login">Acceso</string>
+    <string name="login_error_wrong_username_password">Usuario o contraseña erroneos</string>
     <string name="select_server">Seleccionar servidor</string>
     <string name="edit_text_server_address_hint">Dirección del servidor</string>
     <string name="edit_text_username_hint">Usuario</string>
@@ -17,13 +27,14 @@
     <string name="title_media">Mis medios</string>
     <string name="title_favorite">Favoritos</string>
     <string name="title_settings">Ajustes</string>
+    <string name="title_download">Descargas</string>
     <string name="view_all">Ver todo</string>
     <string name="error_loading_data">Error al cargar datos</string>
     <string name="retry">Reintentar</string>
     <string name="genres">Géneros</string>
     <string name="director">Director</string>
     <string name="writers">Escritores</string>
-    <string name="cast_amp_crew">Reparto y equipo</string>
+    <string name="cast_amp_crew"><![CDATA[Reparto y equipo]]></string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproducir contenido</string>
     <string name="trailer_button_description">Ver el adelanto</string>
@@ -34,9 +45,10 @@
     <string name="episode_name_extended">T%1$d:E%2$d - %3$s</string>
     <string name="next_up">Siguiente</string>
     <string name="continue_watching">Continar viendo</string>
-    <string name="latest_library">Reciente en %1$s</string>
-    <string name="series_poster">Poster serie</string>
+    <string name="latest_library">Reciente en %1$ss</string>
+    <string name="series_poster">Póster de la serie</string>
     <string name="no_favorites">No tienes favoritos</string>
+    <string name="no_downloads">No tienes descargas</string>
     <string name="search">Buscar</string>
     <string name="no_search_results">Búsqueda sin resultados</string>
     <string name="settings_category_language">Idioma</string>
@@ -44,8 +56,16 @@
     <string name="settings_preferred_subtitle_language">Idioma de subtitulo preferido</string>
     <string name="initializing">Iniciando…</string>
     <string name="settings_category_servers">Servidores</string>
+    <string name="settings_category_player">Reproductor</string>
     <string name="manage_servers">Administrar servidores</string>
     <string name="settings_category_appearance">Apariencia</string>
+    <string name="device_name">Nombre del dispositivo</string>
+    <string name="settings_category_device">Dispositivo</string>
+    <string name="settings_category_cache">Cache</string>
+    <string name="settings_use_cache_title">Cache de imágenes</string>
+    <string name="settings_use_cache_summary">Almacenar imágenes localmente accelera los tiempos de carga. Tomará efecto al reiniciar la app.</string>
+    <string name="settings_cache_size">Tamaño de caché (MB)</string>
+    <string name="settings_cache_size_message">La app usará esta cantidad de MB del almacenamiento interno para las imágenes. Valores grandes pueden ayudar en redes lentas.</string>
     <string name="theme">Tema</string>
     <string name="error_preparing_player_items">Error preparando elementos.</string>
     <string name="view_details">Ver detalles</string>
@@ -54,11 +74,53 @@
     <string name="privacy_policy">Política de privacidad</string>
     <string name="app_info">Información de aplicación</string>
     <string name="unknown_error">Error desconocido</string>
-	<string name="search_hint">Buscar películas, series, episodios…</string>
-    <string name="mpv_player">Reproductor mpv</string>
-    <string name="select_audio_track">Elegir pista de audio</string>
-    <string name="select_subtile_track">Elegir pista de subtitulo</string>
-    <string name="mpv_player_summary">Usar el reproductor mpv parar reproducir contenidos. mpv soporta mas codecs de video, audio y subtitulos.</string>
+  	<string name="search_hint">Buscar películas, series, episodios…</string>
+    <string name="select_a_version">Selecciona una versión</string>
+    <string name="select_audio_track">Selecciona la pista de audio</string>
+    <string name="select_subtile_track">Selecciona la pista de subtitulo</string>
+    <string name="select_playback_speed">Select playback speed</string>
+    <string name="mpv_player">Reproductor MPV</string>
+    <string name="mpv_player_summary">Usar el reproductor experimental MPV parar reproducir contenidos. MPV soporta mas codecs de video, audio y subtitulos.</string>
     <string name="force_software_decoding">Forzar la decodificación por software</string>
     <string name="force_software_decoding_summary">Deshabilita la decodificación por hardtware y usa solo software. Puede ser útil sí la decodificación por hardware genera artefactos visuales.</string>
+    <string name="download_button_description">Descarga</string>
+    <string name="delete_button_description">Borrar</string>
+    <string name="person_detail_title">Detalle de persona</string>
+    <string name="error_getting_person_id">Detalle no disponible</string>
+    <string name="movies_label">Películas</string>
+    <string name="shows_label">Series</string>
+    <string name="hide">Ocultar</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="sort_order">Criterio de ordenación</string>
+    <string name="close">Cerrar</string>
+    <string name="share">Compartir</string>
+    <string name="image_description_poster">Poster de %1$s</string>
+    <string name="image_description_backdrop">Fondo de %1$s</string>
+
+    <string-array name="sort_by_options">
+        <item>Nombre</item>
+        <item>Calificación IMDB</item>
+        <item>Calificación de edad</item>
+        <item>Fecha de adición</item>
+        <item>Fecha de reproducción</item>
+        <item>Fecha de estreno</item>
+    </string-array>
+    <string-array name="sort_order_options">
+        <item>Ascendente</item>
+        <item>Descendente</item>
+    </string-array>
+    <string name="runtime_minutes">%1$d mins</string>
+    <string name="select_video_version_title">Selecciona versón</string>
+    <string name="player_controls_exit">Salir de reproductor</string>
+    <string name="player_controls_rewind">Atrasar</string>
+    <string name="player_controls_fast_forward">Avanzar</string>
+    <string name="player_controls_pause">Pausar</string>
+    <string name="player_controls_skip">Saltar</string>
+    <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="add_server_empty_error">Dirección del servidor vacía</string>
+    <string name="settings_category_download">Descargas</string>
+    <string name="download_mobile_data">Descargar usando datos móviles</string>
+    <string name="download_roaming">Descargar en itinerancia</string>
+    <string name="display_extended_title">Mostrar título extendido</string>
+    <string name="display_extended_title_summary">Mostrar títulos extendidos de episodios incluyendo temporada y episodio (TXX-EXX - NombreEpisodio).</string>
 </resources>
