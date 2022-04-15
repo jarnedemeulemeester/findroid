@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -23,6 +22,8 @@ import dev.jdtech.jellyfin.bindBaseItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.setTintColor
+import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
@@ -84,23 +85,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(episodeId)
-                        val typedValue = TypedValue()
-                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                        binding.checkButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                typedValue.resourceId,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsPlayed(episodeId)
-                        binding.checkButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                R.color.red,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -110,24 +99,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(episodeId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        val typedValue = TypedValue()
-                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                typedValue.resourceId,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsFavorite(episodeId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                R.color.red,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -135,12 +112,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.loadDownloadRequestItem(episodeId)
-                binding.downloadButton.imageTintList = ColorStateList.valueOf(
-                    resources.getColor(
-                        R.color.red,
-                        requireActivity().theme
-                    )
-                )
+                binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
             }
 
             viewModel.loadEpisode(episodeId)
@@ -187,24 +159,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
             // Check icon
             when (played) {
-                true -> {
-                    binding.checkButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            R.color.red,
-                            requireActivity().theme
-                        )
-                    )
-                }
-                false -> {
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                    binding.checkButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            typedValue.resourceId,
-                            requireActivity().theme
-                        )
-                    )
-                }
+                true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
             // Favorite icon
@@ -213,24 +169,14 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                resources.getColor(
-                    R.color.red,
-                    requireActivity().theme
-                )
-            )
+            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
 
             when (canDownload) {
                 true -> {
                     binding.downloadButtonWrapper.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            R.color.red,
-                            requireActivity().theme
-                        )
-                    )
+                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
                 }
                 false -> {
                     binding.downloadButtonWrapper.isVisible = false

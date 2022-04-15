@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,8 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.setTintColor
+import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
@@ -148,23 +149,11 @@ class MediaInfoFragment : Fragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(args.itemId)
-                        val typedValue = TypedValue()
-                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                        binding.checkButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                typedValue.resourceId,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsPlayed(args.itemId)
-                        binding.checkButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                R.color.red,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -174,24 +163,12 @@ class MediaInfoFragment : Fragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        val typedValue = TypedValue()
-                        requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                typedValue.resourceId,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                            resources.getColor(
-                                R.color.red,
-                                requireActivity().theme
-                            )
-                        )
+                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -234,24 +211,8 @@ class MediaInfoFragment : Fragment() {
 
             // Check icon
             when (played) {
-                true -> {
-                    if (played) binding.checkButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            R.color.red,
-                            requireActivity().theme
-                        )
-                    )
-                }
-                false -> {
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                    binding.checkButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            typedValue.resourceId,
-                            requireActivity().theme
-                        )
-                    )
-                }
+                true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
 
@@ -261,12 +222,7 @@ class MediaInfoFragment : Fragment() {
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.imageTintList = ColorStateList.valueOf(
-                resources.getColor(
-                    R.color.red,
-                    requireActivity().theme
-                )
-            )
+            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
 
             binding.downloadButton.isEnabled = !downloaded
 
@@ -275,12 +231,7 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.imageTintList = ColorStateList.valueOf(
-                        resources.getColor(
-                            R.color.red,
-                            requireActivity().theme
-                        )
-                    )
+                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
                 }
                 false -> {
                     binding.downloadButton.isVisible = false
