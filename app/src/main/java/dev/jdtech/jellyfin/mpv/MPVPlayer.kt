@@ -1488,7 +1488,7 @@ class MPVPlayer(
                     title = "None",
                     lang = "",
                     external = false,
-                    selected = MPVLib.getPropertyString(TrackType.SUBTITLE).equals("no"),
+                    selected = MPVLib.getPropertyInt(TrackType.SUBTITLE).equals(C.INDEX_UNSET),
                     externalFilename = null,
                     ffIndex = -1,
                     codec = "",
