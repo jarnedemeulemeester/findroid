@@ -380,8 +380,19 @@ class MPVPlayer(
                 }
             }
         } else {
-            if (currentTracks.indexOfFirst { it.type == trackType && it.selected } != C.INDEX_UNSET) {
-                MPVLib.setPropertyString(trackType, "no")
+            if (currentTracks.first { it.type == trackType && it.selected }.ffIndex != C.INDEX_UNSET) {
+                currentTracks.firstOrNull {
+                    it.type == trackType && it.ffIndex == index
+                }.let { track ->
+                    if (track != null) {
+                        Log.i("mpv", "selected track ${track.ffIndex} ${track.type}")
+                        if (!track.selected) {
+                            MPVLib.setPropertyString(trackType, "no")
+                        }
+                    } else {
+                        return false
+                    }
+                }
             }
         }
         return true
@@ -1477,7 +1488,7 @@ class MPVPlayer(
                     title = "None",
                     lang = "",
                     external = false,
-                    selected = false,
+                    selected = MPVLib.getPropertyString(TrackType.SUBTITLE).equals("no"),
                     externalFilename = null,
                     ffIndex = -1,
                     codec = "",
