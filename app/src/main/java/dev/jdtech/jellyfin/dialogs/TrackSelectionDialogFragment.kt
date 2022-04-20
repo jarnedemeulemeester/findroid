@@ -29,7 +29,7 @@ class TrackSelectionDialogFragment(
                     builder.setTitle(getString(R.string.select_audio_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
-                            viewModel.currentAudioTracks.indexOfFirst { it.selected }) { dialog, which ->
+                            viewModel.currentAudioTracks.indexOfFirst { if (viewModel.noSubtitle) it.ffIndex == -1 else it.selected }) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.AUDIO,
                                 viewModel.currentAudioTracks[which]

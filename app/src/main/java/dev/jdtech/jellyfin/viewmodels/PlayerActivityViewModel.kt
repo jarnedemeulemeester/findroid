@@ -59,6 +59,7 @@ constructor(
     private var playbackPosition: Long = 0
 
     var playbackSpeed: Float = 1f
+    var noSubtitle: Boolean = false
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
@@ -249,6 +250,7 @@ constructor(
     fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
         if (player is MPVPlayer) {
             player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
+            noSubtitle = track.ffIndex == -1
         }
     }
 
