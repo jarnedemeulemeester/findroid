@@ -43,6 +43,8 @@ class TrackSelectionDialogFragment(
                 trackNames = viewModel.currentSubtitleTracks.map { track ->
                     if (track.title.isEmpty()) {
                         "${track.lang} - ${track.codec}"
+                    } else if (track.title.isNotEmpty() && track.lang.isEmpty() && track.codec.isEmpty()) {
+                        track.title
                     } else {
                         "${track.title} - ${track.lang} - ${track.codec}"
                     }
