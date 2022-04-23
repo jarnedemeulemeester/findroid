@@ -43,6 +43,8 @@ class TrackSelectionDialogFragment(
                 trackNames = viewModel.currentSubtitleTracks.map { track ->
                     if (track.title.isEmpty()) {
                         "${track.lang} - ${track.codec}"
+                    } else if (track.title.isNotEmpty() && track.lang.isEmpty() && track.codec.isEmpty()) {
+                        track.title
                     } else {
                         "${track.title} - ${track.lang} - ${track.codec}"
                     }
@@ -52,7 +54,7 @@ class TrackSelectionDialogFragment(
                     builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
-                            viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { dialog, which ->
+                            viewModel.currentSubtitleTracks.indexOfFirst { if (viewModel.disableSubtitle) it.ffIndex == -1 else it.selected }) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.SUBTITLE,
                                 viewModel.currentSubtitleTracks[which]

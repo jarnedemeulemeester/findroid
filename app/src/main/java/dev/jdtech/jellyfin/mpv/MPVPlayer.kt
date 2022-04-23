@@ -1470,6 +1470,22 @@ class MPVPlayer(
             var indexCurrentAudio: Int = C.INDEX_UNSET
             var indexCurrentText: Int = C.INDEX_UNSET
             try {
+                val emptyTrack = Track(
+                    id = -1,
+                    type = TrackType.SUBTITLE,
+                    mimeType = MimeTypes.BASE_TYPE_TEXT,
+                    title = "None",
+                    lang = "",
+                    external = false,
+                    selected = false,
+                    externalFilename = null,
+                    ffIndex = -1,
+                    codec = "",
+                    width = null,
+                    height = null
+                )
+                tracks.add(emptyTrack)
+                trackListText.add(emptyTrack.toFormat())
                 val currentTrackList = JSONArray(trackList)
                 for (index in 0 until currentTrackList.length()) {
                     val currentTrack = Track.fromJSON(currentTrackList.getJSONObject(index))
@@ -1498,6 +1514,10 @@ class MPVPlayer(
                         }
                         else -> continue
                     }
+                }
+                if (trackListText.size == 1 && trackListText[0].id == emptyTrack.id.toString()) {
+                    tracks.remove(emptyTrack)
+                    trackListText.removeFirst()
                 }
                 val trackGroups = mutableListOf<TrackGroup>()
                 val trackSelections = mutableListOf<TrackSelection>()
