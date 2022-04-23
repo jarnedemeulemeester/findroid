@@ -96,19 +96,14 @@
     <string name="share">Compartir</string>
     <string name="image_description_poster">Poster de %1$s</string>
     <string name="image_description_backdrop">Fondo de %1$s</string>
-
-    <string-array name="sort_by_options">
-        <item>Nombre</item>
-        <item>Calificación IMDB</item>
-        <item>Calificación de edad</item>
-        <item>Fecha de adición</item>
-        <item>Fecha de reproducción</item>
-        <item>Fecha de estreno</item>
-    </string-array>
-    <string-array name="sort_order_options">
-        <item>Ascendente</item>
-        <item>Descendente</item>
-    </string-array>
+    <string name="sort_by_options_0">Nombre</string>
+    <string name="sort_by_options_1">Calificación IMDB</string>
+    <string name="sort_by_options_2">Calificación de edad</string>
+    <string name="sort_by_options_3">Fecha de adición</string>
+    <string name="sort_by_options_4">Fecha de reproducción</string>
+    <string name="sort_by_options_5">Fecha de estreno</string>
+    <string name="ascending">Ascendente</string>
+    <string name="descending">Descendente</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Selecciona versón</string>
     <string name="player_controls_exit">Salir de reproductor</string>
