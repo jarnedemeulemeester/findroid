@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="add_server_error_not_jellyfin">Geen Jellyfin server: %1$s</string>
+    <string name="add_server_error_version">Niet ondersteunde server versie: %1$s. Werk uw server bij</string>
+    <string name="add_server_error_slow">Server reageert te traag: %1$s</string>
+    <string name="add_server">Server toevoegen</string>
+    <string name="add_server_error_outdated">Server verouderd: %1$s. Werk uw server bij</string>
+</resources>
