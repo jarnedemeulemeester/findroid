@@ -1515,6 +1515,10 @@ class MPVPlayer(
                         else -> continue
                     }
                 }
+                if (trackListText.size == 1 && trackListText[0].id == emptyTrack.id.toString()) {
+                    tracks.remove(emptyTrack)
+                    trackListText.removeFirst()
+                }
                 val trackGroups = mutableListOf<TrackGroup>()
                 val trackSelections = mutableListOf<TrackSelection>()
                 if (trackListVideo.isNotEmpty()) {
