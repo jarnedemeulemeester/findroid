@@ -103,19 +103,14 @@
     <string name="player_gestures">Player gestures</string>
     <string name="player_gestures_summary">Swipe up and down on the right side of the screen to change the volume and on the left side to change the brightness</string>
     <string name="player_brightness_remember">Remember brightness level</string>
-
-    <string-array name="sort_by_options">
-        <item>Name</item>
-        <item>IMDB Rating</item>
-        <item>Parental Rating</item>
-        <item>Date Added</item>
-        <item>Date Played</item>
-        <item>Release Date</item>
-    </string-array>
-    <string-array name="sort_order_options">
-        <item>Ascending</item>
-        <item>Descending</item>
-    </string-array>
+    <string name="sort_by_options_0">Name</string>
+    <string name="sort_by_options_1">IMDB Rating</string>
+    <string name="sort_by_options_2">Parental Rating</string>
+    <string name="sort_by_options_3">Date Added</string>
+    <string name="sort_by_options_4">Date Played</string>
+    <string name="sort_by_options_5">Release Date</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
     <string name="player_controls_exit">Exit player</string>
