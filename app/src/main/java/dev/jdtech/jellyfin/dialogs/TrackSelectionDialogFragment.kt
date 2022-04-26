@@ -18,11 +18,11 @@ class TrackSelectionDialogFragment(
         when (type) {
             TrackType.AUDIO -> {
                 trackNames = viewModel.currentAudioTracks.map { track ->
-                    if (track.title.isEmpty()) {
-                        "${track.lang} - ${track.codec}"
-                    } else {
-                        "${track.title} - ${track.lang} - ${track.codec}"
-                    }
+                    val nameParts: MutableList<String> = mutableListOf()
+                    if (track.title.isNotEmpty()) nameParts.add(track.title)
+                    if (track.lang.isNotEmpty()) nameParts.add(track.lang)
+                    if (track.codec.isNotEmpty()) nameParts.add(track.codec)
+                    nameParts.joinToString(separator = " - ")
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
@@ -41,13 +41,11 @@ class TrackSelectionDialogFragment(
             }
             TrackType.SUBTITLE -> {
                 trackNames = viewModel.currentSubtitleTracks.map { track ->
-                    if (track.title.isEmpty()) {
-                        "${track.lang} - ${track.codec}"
-                    } else if (track.title.isNotEmpty() && track.lang.isEmpty() && track.codec.isEmpty()) {
-                        track.title
-                    } else {
-                        "${track.title} - ${track.lang} - ${track.codec}"
-                    }
+                    val nameParts: MutableList<String> = mutableListOf()
+                    if (track.title.isNotEmpty()) nameParts.add(track.title)
+                    if (track.lang.isNotEmpty()) nameParts.add(track.lang)
+                    if (track.codec.isNotEmpty()) nameParts.add(track.codec)
+                    nameParts.joinToString(separator = " - ")
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
