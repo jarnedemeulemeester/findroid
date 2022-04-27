@@ -82,7 +82,7 @@ class AddServerFragment : Fragment() {
 
     private fun connectToServer() {
         val serverAddress = binding.editTextServerAddress.text.toString()
-        viewModel.checkServer(serverAddress)
+        viewModel.checkServer(serverAddress.removeSuffix("/"))
     }
 
     private fun navigateToLoginFragment() {
