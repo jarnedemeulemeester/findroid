@@ -106,7 +106,7 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
 private fun ImageView.loadImage(url: String, @DrawableRes errorPlaceHolderId: Int? = null): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
-    return Glide
+    Glide
         .with(context)
         .load("${api.api.baseUrl}$url")
         .transition(DrawableTransitionOptions.withCrossFade())
@@ -114,6 +114,8 @@ private fun ImageView.loadImage(url: String, @DrawableRes errorPlaceHolderId: In
         .error(errorPlaceHolderId)
         .into(this)
         .view
+
+    return this
 }
 
 private fun View.posterDescription(name: String?) {
