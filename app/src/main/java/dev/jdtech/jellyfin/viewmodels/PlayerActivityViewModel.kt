@@ -80,7 +80,7 @@ constructor(
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                 )
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
