@@ -8,12 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.BasePlayer
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -36,7 +34,7 @@ constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel(), Player.Listener {
-    val player: BasePlayer
+    val player: Player
 
     private val _navigateBack = MutableLiveData<Boolean>()
     val navigateBack: LiveData<Boolean> = _navigateBack
@@ -55,7 +53,7 @@ constructor(
     val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
     private var playFromDownloads = false
-    private var currentWindow = 0
+    private var currentMediaItemIndex = 0
     private var playbackPosition: Long = 0
 
     var playbackSpeed: Float = 1f
@@ -82,7 +80,7 @@ constructor(
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF
                 )
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
@@ -90,7 +88,7 @@ constructor(
                     .setPreferredAudioLanguage(preferredAudioLanguage)
                     .setPreferredTextLanguage(preferredSubtitleLanguage)
             )
-            player = SimpleExoPlayer.Builder(application, renderersFactory)
+            player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
                 .build()
         }
@@ -124,7 +122,7 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentWindow, items[0].playbackPosition)
+            player.setMediaItems(mediaItems, currentMediaItemIndex, items[0].playbackPosition)
             val useMpv = sp.getBoolean("mpv_player", false)
             if(!useMpv || !playFromDownloads)
                 player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
@@ -149,12 +147,12 @@ constructor(
 
         playWhenReady = player.playWhenReady
         playbackPosition = player.currentPosition
-        currentWindow = player.currentWindowIndex
+        currentMediaItemIndex = player.currentMediaItemIndex
         player.removeListener(this)
         player.release()
     }
 
-    private fun pollPosition(player: BasePlayer) {
+    private fun pollPosition(player: Player) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
