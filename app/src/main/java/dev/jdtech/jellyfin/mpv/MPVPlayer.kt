@@ -17,15 +17,13 @@ import androidx.core.content.getSystemService
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.Commands
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.device.DeviceInfo
-import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroup
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.text.Cue
-import com.google.android.exoplayer2.trackselection.TrackSelection
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.*
 import com.google.android.exoplayer2.video.VideoSize
@@ -61,7 +59,8 @@ class MPVPlayer(
             val file = File(mpvDir, fileName)
             Log.i("mpv", "File ${file.absolutePath}")
             if (!file.exists()) {
-                context.assets.open(fileName, AssetManager.ACCESS_STREAMING).copyTo(FileOutputStream(file))
+                context.assets.open(fileName, AssetManager.ACCESS_STREAMING)
+                    .copyTo(FileOutputStream(file))
             }
         }
         MPVLib.create(context)
@@ -144,26 +143,26 @@ class MPVPlayer(
     }
 
     // Listeners and notification.
-    @Suppress("DEPRECATION")
-    private val listeners: ListenerSet<Player.EventListener> = ListenerSet(
+    private val listeners: ListenerSet<Player.Listener> = ListenerSet(
         context.mainLooper,
         Clock.DEFAULT
-    ) { listener: Player.EventListener, flags: FlagSet ->
+    ) { listener: Player.Listener, flags: FlagSet ->
         listener.onEvents( /* player= */this, Player.Events(flags))
     }
-    @Suppress("DEPRECATION")
-    private val videoListeners = CopyOnWriteArraySet<com.google.android.exoplayer2.video.VideoListener>()
+    private val videoListeners =
+        CopyOnWriteArraySet<Player.Listener>()
 
     // Internal state.
     private var internalMediaItems: List<MediaItem>? = null
     private var internalMediaItem: MediaItem? = null
+
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
     private var currentPlayWhenReady: Boolean = false
+
     @Player.RepeatMode
     private val repeatMode: Int = REPEAT_MODE_OFF
-    private var trackGroupArray: TrackGroupArray = TrackGroupArray.EMPTY
-    private var trackSelectionArray: TrackSelectionArray = TrackSelectionArray()
+    private var tracksInfo: TracksInfo = TracksInfo.EMPTY
     private var playbackParameters: PlaybackParameters = PlaybackParameters.DEFAULT
 
     // MPV Custom
@@ -185,20 +184,18 @@ class MPVPlayer(
         handler.post {
             when (property) {
                 "track-list" -> {
-                    val (tracks, newTrackGroupArray, newTrackSelectionArray) = getMPVTracks(value)
+                    val (tracks, newTracksInfo) = getMPVTracks(value)
                     tracks.forEach { Log.i("mpv", "${it.ffIndex} ${it.type} ${it.codec}") }
                     currentTracks = tracks
                     if (isPlayerReady) {
-                        if (newTrackGroupArray != trackGroupArray || newTrackSelectionArray != trackSelectionArray) {
-                            trackGroupArray = newTrackGroupArray
-                            trackSelectionArray = newTrackSelectionArray
+                        if (newTracksInfo != tracksInfo) {
+                            tracksInfo = newTracksInfo
                             listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                                listener.onTracksChanged(currentTrackGroups, currentTrackSelections)
+                                listener.onTracksInfoChanged(currentTracksInfo)
                             }
                         }
                     } else {
-                        trackGroupArray = newTrackGroupArray
-                        trackSelectionArray = newTrackSelectionArray
+                        tracksInfo = newTracksInfo
                     }
                 }
             }
@@ -237,7 +234,10 @@ class MPVPlayer(
                     if (isSeekable != value) {
                         isSeekable = value
                         listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
-                            listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_SOURCE_UPDATE)
+                            listener.onTimelineChanged(
+                                timeline,
+                                Player.TIMELINE_CHANGE_REASON_SOURCE_UPDATE
+                            )
                         }
                     }
                 }
@@ -253,7 +253,10 @@ class MPVPlayer(
                     if (currentDurationMs != value * C.MILLIS_PER_SECOND) {
                         currentDurationMs = value * C.MILLIS_PER_SECOND
                         listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
-                            listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_SOURCE_UPDATE)
+                            listener.onTimelineChanged(
+                                timeline,
+                                Player.TIMELINE_CHANGE_REASON_SOURCE_UPDATE
+                            )
                         }
                     }
                 }
@@ -267,7 +270,7 @@ class MPVPlayer(
             when (property) {
                 "speed" -> {
                     playbackParameters = getPlaybackParameters().withSpeed(value.toFloat())
-                    listeners.sendEvent(Player.EVENT_PLAYBACK_PARAMETERS_CHANGED) {listener ->
+                    listeners.sendEvent(Player.EVENT_PLAYBACK_PARAMETERS_CHANGED) { listener ->
                         listener.onPlaybackParametersChanged(getPlaybackParameters())
                     }
                 }
@@ -297,7 +300,8 @@ class MPVPlayer(
                     if (!isPlayerReady) {
                         isPlayerReady = true
                         listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                            listener.onTracksChanged(currentTrackGroups, currentTrackSelections)
+                            //listener.onTracksChanged(currentTrackGroups, currentTrackSelections)
+                            listener.onTracksInfoChanged(currentTracksInfo)
                         }
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
@@ -364,7 +368,11 @@ class MPVPlayer(
      * @param index Index to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
-    fun selectTrack(@TrackType trackType: String, isExternal: Boolean = false, index: Int): Boolean {
+    fun selectTrack(
+        @TrackType trackType: String,
+        isExternal: Boolean = false,
+        index: Int
+    ): Boolean {
         if (index != C.INDEX_UNSET) {
             Log.i("mpv", "${currentTracks.size}")
             currentTracks.firstOrNull {
@@ -405,7 +413,11 @@ class MPVPlayer(
          * default start position should be projected.
          * @return The populated [com.google.android.exoplayer2.Timeline.Window], for convenience.
          */
-        override fun getWindow(windowIndex: Int, window: Window, defaultPositionProjectionUs: Long): Window {
+        override fun getWindow(
+            windowIndex: Int,
+            window: Window,
+            defaultPositionProjectionUs: Long
+        ): Window {
             val currentMediaItem =
                 internalMediaItems?.get(windowIndex) ?: MediaItem.Builder().build()
             return window.set(
@@ -419,7 +431,7 @@ class MPVPlayer(
                 /* isDynamic= */ !isSeekable,
                 /* liveConfiguration= */ currentMediaItem.liveConfiguration,
                 /* defaultPositionUs= */ C.TIME_UNSET,
-                /* durationUs= */ C.msToUs(currentDurationMs ?: C.TIME_UNSET),
+                /* durationUs= */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
                 /* firstPeriodIndex= */ windowIndex,
                 /* lastPeriodIndex= */ windowIndex,
                 /* positionInFirstPeriodUs= */ C.TIME_UNSET
@@ -448,7 +460,7 @@ class MPVPlayer(
                 /* id= */ periodIndex,
                 /* uid= */ periodIndex,
                 /* windowIndex= */ periodIndex,
-                /* durationUs= */ C.msToUs(currentDurationMs ?: C.TIME_UNSET),
+                /* durationUs= */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
                 /* positionInWindowUs= */ 0
             )
         }
@@ -507,7 +519,7 @@ class MPVPlayer(
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                 MPVLib.command(arrayOf("multiply", "volume", "$AUDIO_FOCUS_DUCKING"))
                 audioFocusCallback = {
-                    MPVLib.command(arrayOf("multiply", "volume", "${1f/AUDIO_FOCUS_DUCKING}"))
+                    MPVLib.command(arrayOf("multiply", "volume", "${1f / AUDIO_FOCUS_DUCKING}"))
                 }
             }
             AudioManager.AUDIOFOCUS_GAIN -> {
@@ -528,18 +540,6 @@ class MPVPlayer(
     }
 
     /**
-     * Registers a listener to receive events from the player. The listener's methods will be called
-     * on the thread that was used to construct the player. However, if the thread used to construct
-     * the player does not have a [Looper], then the listener will be called on the main thread.
-     *
-     * @param listener The listener to register.
-     */
-    @Suppress("DEPRECATION")
-    override fun addListener(listener: Player.EventListener) {
-        listeners.add(listener)
-    }
-
-    /**
      * Registers a listener to receive all events from the player.
      *
      * @param listener The listener to register.
@@ -547,17 +547,6 @@ class MPVPlayer(
     override fun addListener(listener: Player.Listener) {
         listeners.add(listener)
         videoListeners.add(listener)
-    }
-
-    /**
-     * Unregister a listener registered through [.addListener]. The listener will
-     * no longer receive events from the player.
-     *
-     * @param listener The listener to unregister.
-     */
-    @Suppress("DEPRECATION")
-    override fun removeListener(listener: Player.EventListener) {
-        listeners.remove(listener)
     }
 
     /**
@@ -595,7 +584,11 @@ class MPVPlayer(
      * @throws com.google.android.exoplayer2.IllegalSeekPositionException If the provided `startWindowIndex` is not within the
      * bounds of the list of media items.
      */
-    override fun setMediaItems(mediaItems: MutableList<MediaItem>, startWindowIndex: Int, startPositionMs: Long) {
+    override fun setMediaItems(
+        mediaItems: MutableList<MediaItem>,
+        startWindowIndex: Int,
+        startPositionMs: Long
+    ) {
         internalMediaItems = mediaItems
         currentIndex = startWindowIndex
         initialSeekTo = startPositionMs / 1000
@@ -654,30 +647,31 @@ class MPVPlayer(
      * @return The currently available [com.google.android.exoplayer2.Player.Commands].
      * @see com.google.android.exoplayer2.Player.Listener.onAvailableCommandsChanged
      */
-    override fun getAvailableCommands(): Player.Commands {
+    override fun getAvailableCommands(): Commands {
         return Commands.Builder()
             .addAll(permanentAvailableCommands)
             .addIf(COMMAND_SEEK_TO_DEFAULT_POSITION, !isPlayingAd)
-            .addIf(COMMAND_SEEK_IN_CURRENT_WINDOW, isCurrentWindowSeekable && !isPlayingAd)
-            .addIf(COMMAND_SEEK_TO_PREVIOUS_WINDOW, hasPreviousWindow() && !isPlayingAd)
+            .addIf(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM, isCurrentMediaItemSeekable && !isPlayingAd)
+            .addIf(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM, hasPreviousMediaItem() && !isPlayingAd)
             .addIf(
                 COMMAND_SEEK_TO_PREVIOUS,
                 !currentTimeline.isEmpty
-                        && (hasPreviousWindow() || !isCurrentWindowLive || isCurrentWindowSeekable)
+                        && (hasPreviousMediaItem() || !isCurrentMediaItemLive || isCurrentMediaItemSeekable)
                         && !isPlayingAd
             )
-            .addIf(COMMAND_SEEK_TO_NEXT_WINDOW, hasNextWindow() && !isPlayingAd)
+            .addIf(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM, hasNextMediaItem() && !isPlayingAd)
             .addIf(
                 COMMAND_SEEK_TO_NEXT,
-                !currentTimeline.isEmpty()
-                        && (hasNextWindow() || (isCurrentWindowLive && isCurrentWindowDynamic()))
+                !currentTimeline.isEmpty
+                        && (hasNextMediaItem() || (isCurrentMediaItemLive && isCurrentMediaItemDynamic))
                         && !isPlayingAd
             )
-            .addIf(COMMAND_SEEK_TO_WINDOW, !isPlayingAd)
-            .addIf(COMMAND_SEEK_BACK, isCurrentWindowSeekable && !isPlayingAd)
-            .addIf(COMMAND_SEEK_FORWARD, isCurrentWindowSeekable && !isPlayingAd)
+            .addIf(COMMAND_SEEK_TO_MEDIA_ITEM, !isPlayingAd)
+            .addIf(COMMAND_SEEK_BACK, isCurrentMediaItemSeekable && !isPlayingAd)
+            .addIf(COMMAND_SEEK_FORWARD, isCurrentMediaItemSeekable && !isPlayingAd)
             .build()
     }
+
     private fun resetInternalState() {
         isPlayerReady = false
         isSeekable = false
@@ -686,8 +680,7 @@ class MPVPlayer(
         currentPositionMs = null
         currentDurationMs = null
         currentCacheDurationMs = null
-        trackGroupArray = TrackGroupArray.EMPTY
-        trackSelectionArray = TrackSelectionArray()
+        tracksInfo = TracksInfo.EMPTY
         playbackParameters = PlaybackParameters.DEFAULT
         initialCommands.clear()
         //initialSeekTo = 0L
@@ -699,7 +692,7 @@ class MPVPlayer(
             MPVLib.command(
                 arrayOf(
                     "loadfile",
-                    "${mediaItem.playbackProperties?.uri}",
+                    "${mediaItem.localConfiguration?.uri}",
                     "append"
                 )
             )
@@ -830,7 +823,7 @@ class MPVPlayer(
      * `windowIndex` is not within the bounds of the current timeline.
      */
     override fun seekTo(windowIndex: Int, positionMs: Long) {
-        if (windowIndex == currentWindowIndex) {
+        if (windowIndex == currentMediaItemIndex) {
             val seekTo =
                 if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
             initialSeekTo = if (isPlayerReady) {
@@ -849,7 +842,7 @@ class MPVPlayer(
         internalMediaItems?.get(index)?.let { mediaItem ->
             internalMediaItem = mediaItem
             resetInternalState()
-            mediaItem.playbackProperties?.subtitles?.forEach { subtitle ->
+            mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
                 initialCommands.add(
                     arrayOf(
                         /* command= */ "sub-add",
@@ -877,14 +870,14 @@ class MPVPlayer(
     }
 
     override fun getSeekBackIncrement(): Long {
-        return 5000
+        return C.DEFAULT_SEEK_BACK_INCREMENT_MS
     }
 
     override fun getSeekForwardIncrement(): Long {
-        return 15000
+        return C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
     }
 
-    override fun getMaxSeekToPreviousPosition(): Int {
+    override fun getMaxSeekToPreviousPosition(): Long {
         return C.DEFAULT_MAX_SEEK_TO_PREVIOUS_POSITION_MS
     }
 
@@ -913,6 +906,11 @@ class MPVPlayer(
         return playbackParameters
     }
 
+    override fun stop() {
+        MPVLib.command(arrayOf("stop", "keep-playlist"))
+    }
+
+    @Deprecated("Deprecated in Java")
     override fun stop(reset: Boolean) {
         MPVLib.command(arrayOf("stop", "keep-playlist"))
     }
@@ -936,8 +934,9 @@ class MPVPlayer(
      *
      * @see com.google.android.exoplayer2.Player.Listener.onTracksChanged
      */
+    @Deprecated("Deprecated in Java")
     override fun getCurrentTrackGroups(): TrackGroupArray {
-        return trackGroupArray
+        return TrackGroupArray.EMPTY
     }
 
     /**
@@ -950,27 +949,21 @@ class MPVPlayer(
      *
      * @see com.google.android.exoplayer2.Player.Listener.onTracksChanged
      */
+    @Deprecated("Deprecated in Java")
     override fun getCurrentTrackSelections(): TrackSelectionArray {
-        return trackSelectionArray
+        return TrackSelectionArray()
     }
 
-    /**
-     * Returns the current static metadata for the track selections.
-     *
-     *
-     * The returned `metadataList` is an immutable list of [Metadata] instances, where
-     * the elements correspond to the [current track selections][.getCurrentTrackSelections],
-     * or an empty list if there are no track selections or the selected tracks contain no static
-     * metadata.
-     *
-     *
-     * This metadata is considered static in that it comes from the tracks' declared Formats,
-     * rather than being timed (or dynamic) metadata, which is represented within a metadata track.
-     *
-     * @see com.google.android.exoplayer2.Player.Listener.onStaticMetadataChanged
-     */
-    override fun getCurrentStaticMetadata(): List<Metadata> {
-        return emptyList()
+    override fun getCurrentTracksInfo(): TracksInfo {
+        return tracksInfo
+    }
+
+    override fun getTrackSelectionParameters(): TrackSelectionParameters {
+        TODO("Not yet implemented")
+    }
+
+    override fun setTrackSelectionParameters(parameters: TrackSelectionParameters) {
+        TODO("Not yet implemented")
     }
 
     /**
@@ -979,7 +972,7 @@ class MPVPlayer(
      *
      *
      * This [MediaMetadata] is a combination of the [MediaItem.mediaMetadata] and the
-     * static and dynamic metadata sourced from [com.google.android.exoplayer2.Player.Listener.onStaticMetadataChanged] and
+     * static and dynamic metadata sourced from [com.google.android.exoplayer2.Player.Listener.onMediaMetadataChanged] and
      * [com.google.android.exoplayer2.metadata.MetadataOutput.onMetadata].
      */
     override fun getMediaMetadata(): MediaMetadata {
@@ -1005,14 +998,10 @@ class MPVPlayer(
 
     /** Returns the index of the period currently being played.  */
     override fun getCurrentPeriodIndex(): Int {
-        return currentWindowIndex
+        return currentMediaItemIndex
     }
 
-    /**
-     * Returns the index of the current [window][Timeline.Window] in the [ ][.getCurrentTimeline], or the prospective window index if the [ ][.getCurrentTimeline] is empty.
-     */
-    override fun getCurrentWindowIndex(): Int {
-
+    override fun getCurrentMediaItemIndex(): Int {
         return currentIndex
     }
 
@@ -1020,7 +1009,7 @@ class MPVPlayer(
      * Returns the duration of the current content window or ad in milliseconds, or [ ][com.google.android.exoplayer2.C.TIME_UNSET] if the duration is not known.
      */
     override fun getDuration(): Long {
-        return timeline.getWindow(currentWindowIndex, window).durationMs
+        return timeline.getWindow(currentMediaItemIndex, window).durationMs
     }
 
     /**
@@ -1272,7 +1261,7 @@ class MPVPlayer(
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
-    private class CurrentTrackSelection(
+    /*private class CurrentTrackSelection(
         private val currentTrackGroup: TrackGroup,
         private val index: Int
     ) : TrackSelection {
@@ -1342,7 +1331,7 @@ class MPVPlayer(
         override fun indexOf(indexInTrackGroup: Int): Int {
             return indexInTrackGroup
         }
-    }
+    }*/
 
     companion object {
         /**
@@ -1350,10 +1339,9 @@ class MPVPlayer(
          */
         private const val AUDIO_FOCUS_DUCKING = 0.5f
 
-        private val permanentAvailableCommands: Player.Commands = Player.Commands.Builder()
+        private val permanentAvailableCommands: Commands = Commands.Builder()
             .addAll(
                 COMMAND_PLAY_PAUSE,
-                COMMAND_PREPARE_STOP,
                 COMMAND_SET_SPEED_AND_PITCH,
                 COMMAND_GET_CURRENT_MEDIA_ITEM,
                 COMMAND_GET_MEDIA_ITEMS_METADATA,
@@ -1389,7 +1377,12 @@ class MPVPlayer(
              * @param width The new width of the surface.
              * @param height The new height of the surface.
              */
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            override fun surfaceChanged(
+                holder: SurfaceHolder,
+                format: Int,
+                width: Int,
+                height: Int
+            ) {
                 MPVLib.setPropertyString("android-surface-size", "${width}x$height")
             }
 
@@ -1429,7 +1422,7 @@ class MPVPlayer(
             val width: Int?,
             val height: Int?
         ) : Parcelable {
-            fun toFormat() : Format {
+            fun toFormat(): Format {
                 return Format.Builder()
                     .setId(id)
                     .setContainerMimeType("$mimeType/$codec")
@@ -1439,6 +1432,7 @@ class MPVPlayer(
                     .setHeight(height ?: Format.NO_VALUE)
                     .build()
             }
+
             companion object {
                 fun fromJSON(json: JSONObject): Track {
                     return Track(
@@ -1458,10 +1452,10 @@ class MPVPlayer(
             }
         }
 
-        private fun getMPVTracks(trackList: String) : Triple<List<Track> ,TrackGroupArray, TrackSelectionArray> {
+        private fun getMPVTracks(trackList: String): Pair<List<Track>, TracksInfo> {
             val tracks = mutableListOf<Track>()
-            var trackGroupArray = TrackGroupArray.EMPTY
-            var trackSelectionArray = TrackSelectionArray()
+            var tracksInfo = TracksInfo.EMPTY
+            val trackGroupInfos = mutableListOf<TracksInfo.TrackGroupInfo>()
 
             val trackListVideo = mutableListOf<Format>()
             val trackListAudio = mutableListOf<Format>()
@@ -1519,32 +1513,42 @@ class MPVPlayer(
                     tracks.remove(emptyTrack)
                     trackListText.removeFirst()
                 }
-                val trackGroups = mutableListOf<TrackGroup>()
-                val trackSelections = mutableListOf<TrackSelection>()
                 if (trackListVideo.isNotEmpty()) {
                     with(TrackGroup(*trackListVideo.toTypedArray())) {
-                        trackGroups.add(this)
-                        trackSelections.add(CurrentTrackSelection(this, indexCurrentVideo))
+                        TracksInfo.TrackGroupInfo(
+                            this,
+                            intArrayOf(C.FORMAT_HANDLED),
+                            C.TRACK_TYPE_VIDEO,
+                            BooleanArray(this.length) { it == indexCurrentVideo }
+                        )
                     }
                 }
                 if (trackListAudio.isNotEmpty()) {
                     with(TrackGroup(*trackListAudio.toTypedArray())) {
-                        trackGroups.add(this)
-                        trackSelections.add(CurrentTrackSelection(this, indexCurrentAudio))
+                        TracksInfo.TrackGroupInfo(
+                            this,
+                            IntArray(this.length) { C.FORMAT_HANDLED },
+                            C.TRACK_TYPE_AUDIO,
+                            BooleanArray(this.length) { it == indexCurrentAudio }
+                        )
                     }
                 }
                 if (trackListText.isNotEmpty()) {
                     with(TrackGroup(*trackListText.toTypedArray())) {
-                        trackGroups.add(this)
-                        trackSelections.add(CurrentTrackSelection(this, indexCurrentText))
+                        TracksInfo.TrackGroupInfo(
+                            this,
+                            IntArray(this.length) { C.FORMAT_HANDLED },
+                            C.TRACK_TYPE_TEXT,
+                            BooleanArray(this.length) { it == indexCurrentText }
+                        )
                     }
                 }
-                if (trackGroups.isNotEmpty()) {
-                    trackGroupArray = TrackGroupArray(*trackGroups.toTypedArray())
-                    trackSelectionArray = TrackSelectionArray(*trackSelections.toTypedArray())
+                if (trackGroupInfos.isNotEmpty()) {
+                    tracksInfo = TracksInfo(trackGroupInfos)
                 }
-            } catch (e: JSONException) {}
-            return Triple(tracks, trackGroupArray, trackSelectionArray)
+            } catch (e: JSONException) {
+            }
+            return Pair(tracks, tracksInfo)
         }
 
         /**
@@ -1558,16 +1562,16 @@ class MPVPlayer(
             return when {
                 subtitleSources.isEmpty() -> videoSource
                 else -> {
-                    val subtitles = mutableListOf<MediaItem.Subtitle>()
+                    val subtitleConfigurations = mutableListOf<MediaItem.SubtitleConfiguration>()
                     subtitleSources.forEach { subtitleSource ->
-                        subtitleSource.mediaItem.playbackProperties?.subtitles?.forEach { subtitle ->
-                            subtitles.add(subtitle)
+                        subtitleSource.mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
+                            subtitleConfigurations.add(subtitle)
                         }
                     }
                     ProgressiveMediaSource.Factory(dataSource)
                         .createMediaSource(
                             videoSource.mediaItem.buildUpon()
-                                .setSubtitles(subtitles).build()
+                                .setSubtitleConfigurations(subtitleConfigurations).build()
                         )
                 }
             }
