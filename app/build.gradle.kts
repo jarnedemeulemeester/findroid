@@ -69,7 +69,7 @@ dependencies {
 
 
     // Material
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.6.0")
 
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
@@ -99,11 +99,11 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.1.2"
+    val jellyfinVersion = "1.2.0"
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
-    val glideVersion = "4.13.1"
+    val glideVersion = "4.13.2"
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
