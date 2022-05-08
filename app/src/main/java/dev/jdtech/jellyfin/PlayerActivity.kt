@@ -68,8 +68,8 @@ class PlayerActivity : BasePlayerActivity() {
             videoNameTextView.text = title
         })
 
-        val audioButton = binding.playerView.findViewById<ImageButton>(R.id.exo_audio_track)
-        val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.exo_subtitle)
+        val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
+        val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
 
         audioButton.isEnabled = false
