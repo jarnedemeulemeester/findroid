@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/select_playback_speed"
                 android:padding="16dp"
                 android:src="@drawable/ic_gauge"
                 app:tint="@color/white" />
@@ -177,7 +178,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="8dp">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:id="@+id/exo_position"

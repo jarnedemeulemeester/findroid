@@ -64,9 +64,9 @@ class PlayerActivity : BasePlayerActivity() {
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
-        viewModel.currentItemTitle.observe(this, { title ->
+        viewModel.currentItemTitle.observe(this) { title ->
             videoNameTextView.text = title
-        })
+        }
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
@@ -152,7 +152,7 @@ class PlayerActivity : BasePlayerActivity() {
             )
         }
 
-        viewModel.fileLoaded.observe(this, {
+        viewModel.fileLoaded.observe(this) {
             if (it) {
                 audioButton.isEnabled = true
                 audioButton.imageAlpha = 255
@@ -161,13 +161,13 @@ class PlayerActivity : BasePlayerActivity() {
                 speedButton.isEnabled = true
                 speedButton.imageAlpha = 255
             }
-        })
+        }
 
-        viewModel.navigateBack.observe(this, {
+        viewModel.navigateBack.observe(this) {
             if (it) {
                 onBackPressed()
             }
-        })
+        }
 
         viewModel.initializePlayer(args.items)
         hideSystemUI()
