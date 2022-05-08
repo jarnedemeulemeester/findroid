@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
@@ -68,8 +68,8 @@ class PlayerActivity : BasePlayerActivity() {
             videoNameTextView.text = title
         })
 
-        val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
-        val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
+        val audioButton = binding.playerView.findViewById<ImageButton>(R.id.exo_audio_track)
+        val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.exo_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
 
         audioButton.isEnabled = false
@@ -89,7 +89,7 @@ class PlayerActivity : BasePlayerActivity() {
                         "trackselectiondialog"
                     )
                 }
-                is SimpleExoPlayer -> {
+                is ExoPlayer -> {
                     val mappedTrackInfo =
                         viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
 
@@ -120,7 +120,7 @@ class PlayerActivity : BasePlayerActivity() {
                         "trackselectiondialog"
                     )
                 }
-                is SimpleExoPlayer -> {
+                is ExoPlayer -> {
                     val mappedTrackInfo =
                         viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
 

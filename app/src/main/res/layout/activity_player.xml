@@ -6,24 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".PlayerActivity">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        app:show_buffering="always" />
+        app:animation_enabled="false"
+        app:show_buffering="always"
+        app:show_subtitle_button="true" />
 
     <LinearLayout
         android:id="@+id/gesture_volume_layout"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
+        android:layout_margin="16dp"
+        android:background="@drawable/overlay_background"
         android:clickable="false"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:background="@drawable/overlay_background">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/gesture_volume_text"
@@ -31,15 +33,15 @@
             android:layout_height="24dp"
             android:layout_marginVertical="16dp"
             android:gravity="center"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <ProgressBar
             android:id="@+id/gesture_volume_progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="8dp"
             android:layout_height="125dp"
-            android:progressDrawable="@drawable/progress_scale_drawable"
-            android:progress="58"/>
+            android:progress="58"
+            android:progressDrawable="@drawable/progress_scale_drawable" />
 
         <ImageView
             android:id="@+id/gesture_volume_image"
@@ -55,12 +57,12 @@
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/overlay_background"
         android:clickable="false"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:background="@drawable/overlay_background">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/gesture_brightness_text"
@@ -68,15 +70,15 @@
             android:layout_height="24dp"
             android:layout_marginVertical="16dp"
             android:gravity="center"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <ProgressBar
             android:id="@+id/gesture_brightness_progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="8dp"
             android:layout_height="125dp"
-            android:progressDrawable="@drawable/progress_scale_drawable"
-            android:progress="58"/>
+            android:progress="58"
+            android:progressDrawable="@drawable/progress_scale_drawable" />
 
         <ImageView
             android:id="@+id/gesture_brightness_image"

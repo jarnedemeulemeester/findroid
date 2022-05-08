@@ -9,7 +9,7 @@ import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import timber.log.Timber
 import kotlin.math.abs
@@ -17,7 +17,7 @@ import kotlin.math.abs
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
     private val activity: PlayerActivity,
-    private val playerView: PlayerView,
+    private val playerView: StyledPlayerView,
     private val audioManager: AudioManager
 )  {
 
@@ -44,7 +44,7 @@ class PlayerGestureHelper(
 
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             playerView.apply {
-                if (!isControllerVisible) showController() else hideController()
+                if (!isControllerFullyVisible) showController() else hideController()
             }
             return true
         }
