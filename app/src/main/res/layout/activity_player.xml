@@ -24,7 +24,8 @@
         android:clickable="false"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/gesture_volume_text"
@@ -39,8 +40,8 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="8dp"
             android:layout_height="125dp"
-            android:progress="58"
-            android:progressDrawable="@drawable/progress_scale_drawable" />
+            android:progressDrawable="@drawable/progress_scale_drawable"
+            tools:progress="58" />
 
         <ImageView
             android:id="@+id/gesture_volume_image"
@@ -61,7 +62,8 @@
         android:clickable="false"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/gesture_brightness_text"
@@ -76,8 +78,8 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="8dp"
             android:layout_height="125dp"
-            android:progress="58"
-            android:progressDrawable="@drawable/progress_scale_drawable" />
+            android:progressDrawable="@drawable/progress_scale_drawable"
+            tools:progress="58" />
 
         <ImageView
             android:id="@+id/gesture_brightness_image"
