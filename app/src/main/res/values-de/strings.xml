@@ -76,7 +76,7 @@
     <string name="add_server_error_slow">Server braucht zu lange, um zu antworten: %1$s</string>
     <string name="button_login">Anmelden</string>
     <string name="play_button_description">Abspielen</string>
-    <string name="episode_watched_indicator">Indikator einer geschauten Episode</string>
+    <string name="episode_watched_indicator">Folge-Angesehen Indikator</string>
     <string name="series_poster">Serienposter</string>
     <string name="settings_category_appearance">Aussehen</string>
     <string name="about">Über</string>
