@@ -125,7 +125,7 @@ dependencies {
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
-    val aboutLibrariesVersion = "10.1.0"
+    val aboutLibrariesVersion = "10.2.0"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
 }

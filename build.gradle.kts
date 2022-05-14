@@ -21,7 +21,7 @@ buildscript {
         val hiltVersion = "2.42"
         classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
 
-        val aboutLibrariesVersion = "10.1.0"
+        val aboutLibrariesVersion = "10.2.0"
         classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$aboutLibrariesVersion")
     }
 }
