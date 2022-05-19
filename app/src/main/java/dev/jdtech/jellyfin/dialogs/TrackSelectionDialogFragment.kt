@@ -18,11 +18,11 @@ class TrackSelectionDialogFragment(
         when (type) {
             TrackType.AUDIO -> {
                 trackNames = viewModel.currentAudioTracks.map { track ->
-                    if (track.title.isEmpty()) {
-                        "${track.lang} - ${track.codec}"
-                    } else {
-                        "${track.title} - ${track.lang} - ${track.codec}"
-                    }
+                    val nameParts: MutableList<String> = mutableListOf()
+                    if (track.title.isNotEmpty()) nameParts.add(track.title)
+                    if (track.lang.isNotEmpty()) nameParts.add(track.lang)
+                    if (track.codec.isNotEmpty()) nameParts.add(track.codec)
+                    nameParts.joinToString(separator = " - ")
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
@@ -41,18 +41,18 @@ class TrackSelectionDialogFragment(
             }
             TrackType.SUBTITLE -> {
                 trackNames = viewModel.currentSubtitleTracks.map { track ->
-                    if (track.title.isEmpty()) {
-                        "${track.lang} - ${track.codec}"
-                    } else {
-                        "${track.title} - ${track.lang} - ${track.codec}"
-                    }
+                    val nameParts: MutableList<String> = mutableListOf()
+                    if (track.title.isNotEmpty()) nameParts.add(track.title)
+                    if (track.lang.isNotEmpty()) nameParts.add(track.lang)
+                    if (track.codec.isNotEmpty()) nameParts.add(track.codec)
+                    nameParts.joinToString(separator = " - ")
                 }
                 return activity?.let { activity ->
                     val builder = MaterialAlertDialogBuilder(activity)
                     builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
                             trackNames.toTypedArray(),
-                            viewModel.currentSubtitleTracks.indexOfFirst { it.selected }) { dialog, which ->
+                            viewModel.currentSubtitleTracks.indexOfFirst { if (viewModel.disableSubtitle) it.ffIndex == -1 else it.selected }) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.SUBTITLE,
                                 viewModel.currentSubtitleTracks[which]

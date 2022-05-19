@@ -9,10 +9,8 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
 import dev.jdtech.jellyfin.utils.isItemAvailable
-import dev.jdtech.jellyfin.utils.isItemDownloaded
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields

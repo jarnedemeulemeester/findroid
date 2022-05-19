@@ -69,7 +69,7 @@ dependencies {
 
 
     // Material
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.6.0")
 
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
@@ -99,21 +99,21 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.1.2"
+    val jellyfinVersion = "1.2.0"
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
-    val glideVersion = "4.13.1"
+    val glideVersion = "4.13.2"
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     // Hilt
-    val hiltVersion = "2.41"
+    val hiltVersion = "2.42"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
     // ExoPlayer
-    val exoplayerVersion = "2.15.1"
+    val exoplayerVersion = "2.17.1"
     implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion")
     implementation(files("libs/extension-ffmpeg-release.aar"))
@@ -125,7 +125,7 @@ dependencies {
     val timberVersion = "5.0.1"
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
-    val aboutLibrariesVersion = "10.1.0"
+    val aboutLibrariesVersion = "10.2.0"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
 }

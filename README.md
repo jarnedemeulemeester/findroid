@@ -44,8 +44,7 @@ Home | Library | Movie | Season | Episode
 - Chromecast support
 
 ## Translating
-Please do not create pull requests for translations.
-A translation platform is coming soon...
+[JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
 We have a Discord server to discuss future development or ask general questions.
