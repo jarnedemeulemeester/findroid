@@ -108,6 +108,13 @@ constructor(
                         item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
                         else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
                     }
+                    val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
+                        MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                            .setLabel(externalSubtitle.title)
+                            .setMimeType(externalSubtitle.mimeType)
+                            .setLanguage(externalSubtitle.language)
+                            .build()
+                    }
                     playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
                     Timber.d("Stream url: $streamUrl")
@@ -115,6 +122,7 @@ constructor(
                         MediaItem.Builder()
                             .setMediaId(item.itemId.toString())
                             .setUri(streamUrl)
+                            .setSubtitleConfigurations(mediaSubtitles)
                             .build()
                     mediaItems.add(mediaItem)
                 }
@@ -183,7 +191,7 @@ constructor(
         viewModelScope.launch {
             try {
                 for (item in items) {
-                    if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
+                    if (item.itemId.toString() == (player.currentMediaItem?.mediaId ?: "")) {
                         if (sp.getBoolean(
                                 "display_extended_title",
                                 false

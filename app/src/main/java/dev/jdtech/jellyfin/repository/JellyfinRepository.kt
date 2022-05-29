@@ -68,4 +68,6 @@ interface JellyfinRepository {
     suspend fun markAsUnplayed(itemId: UUID)
 
     suspend fun getIntros(itemId: UUID): List<BaseItemDto>
+
+    fun getBaseUrl(): String
 }
