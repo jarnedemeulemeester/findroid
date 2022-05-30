@@ -52,7 +52,7 @@ constructor(
         ) : UiState()
 
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val title: String?, val message: String?) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -123,7 +123,7 @@ constructor(
             } catch (e: Exception) {
                 Timber.d(e)
                 Timber.d(itemId.toString())
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
             }
         }
     }

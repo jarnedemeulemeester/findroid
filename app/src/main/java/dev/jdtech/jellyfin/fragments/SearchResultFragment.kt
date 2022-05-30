@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -91,12 +90,11 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: SearchResultViewModel.UiState.Error) {
-        val error = uiState.message ?: getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.title, uiState.message)
         binding.loadingIndicator.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.title.orEmpty())
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {

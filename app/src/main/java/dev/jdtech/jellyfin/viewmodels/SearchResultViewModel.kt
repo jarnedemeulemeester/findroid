@@ -8,7 +8,6 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -25,7 +24,7 @@ constructor(
     sealed class UiState {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val title: String?, val message: String?) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -74,7 +73,7 @@ constructor(
 
                 uiState.emit(UiState.Normal(sections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
             }
         }
     }

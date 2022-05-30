@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -88,12 +87,11 @@ class SeasonFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: SeasonViewModel.UiState.Error) {
-        val error = uiState.message ?: getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.title, uiState.message)
         binding.loadingIndicator.isVisible = false
         binding.episodesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.title.orEmpty())
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {

@@ -8,18 +8,22 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.R
 import java.lang.IllegalStateException
 
-class ErrorDialogFragment(private val errorMessage: String) : DialogFragment() {
+class ErrorDialogFragment(
+    private val errorTitle: String?,
+    private val errorMessage: String?
+    ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it, R.style.ErrorDialogStyle)
             builder
+                .setTitle(errorTitle ?: getString(R.string.unknown_error))
                 .setMessage(errorMessage)
                 .setPositiveButton(getString(R.string.close)) { _, _ ->
                 }
                 .setNeutralButton(getString(R.string.share)) { _, _ ->
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, errorMessage)
+                        putExtra(Intent.EXTRA_TEXT, "$errorTitle\n $errorMessage")
                         type = "text/plain"
                     }
 

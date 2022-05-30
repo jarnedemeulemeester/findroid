@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.adapters.EpisodeItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import java.util.*
@@ -22,7 +21,7 @@ constructor(
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val title: String?, val message: String?) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -36,7 +35,7 @@ constructor(
                 val episodes = getEpisodes(seriesId, seasonId)
                 uiState.emit(UiState.Normal(episodes))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
             }
         }
     }

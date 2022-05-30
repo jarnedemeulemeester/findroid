@@ -59,7 +59,7 @@ class PlayerViewModel @Inject internal constructor(
                 createItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
             } catch (e: Exception) {
                 Timber.d(e)
-                PlayerItemError(e.toString())
+                PlayerItemError(e.message, e.stackTraceToString())
             }
 
             playerItems.tryEmit(items)
@@ -195,6 +195,6 @@ class PlayerViewModel @Inject internal constructor(
 
     sealed class PlayerItemState
 
-    data class PlayerItemError(val message: String) : PlayerItemState()
+    data class PlayerItemError(val title: String?, val message: String) : PlayerItemState()
     data class PlayerItems(val items: List<PlayerItem>) : PlayerItemState()
 }

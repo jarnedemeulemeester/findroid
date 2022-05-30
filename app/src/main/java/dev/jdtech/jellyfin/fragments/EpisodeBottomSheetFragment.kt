@@ -207,7 +207,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateError(uiState: EpisodeBottomSheetViewModel.UiState.Error) {
         binding.loadingIndicator.isVisible = false
-        binding.overview.text = uiState.message
+        binding.overview.text = uiState.title
     }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
@@ -233,7 +233,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(error.message).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(error.title, error.message).show(parentFragmentManager, "errordialog")
         }
     }
 
