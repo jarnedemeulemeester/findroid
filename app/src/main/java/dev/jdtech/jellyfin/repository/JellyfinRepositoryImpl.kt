@@ -128,7 +128,8 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                         transcodingProfiles = emptyList(),
                         responseProfiles = emptyList(),
                         subtitleProfiles = listOf(
-                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL)
+                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
                         ),
                         enableAlbumArtInDidl = false,
                         enableMsMediaReceiverRegistrar = false,

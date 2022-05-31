@@ -181,7 +181,7 @@ class PlayerViewModel @Inject internal constructor(
                             "srt" -> MimeTypes.APPLICATION_SUBRIP
                             "vtt" -> MimeTypes.TEXT_VTT
                             "ttml" -> MimeTypes.APPLICATION_TTML
-                            "ssa" -> MimeTypes.TEXT_SSA
+                            "ass" -> MimeTypes.TEXT_SSA
                             else -> MimeTypes.TEXT_UNKNOWN
                         }
                     )
