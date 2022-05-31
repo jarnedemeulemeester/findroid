@@ -129,6 +129,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                         responseProfiles = emptyList(),
                         subtitleProfiles = listOf(
                             SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
                             SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
                         ),
                         enableAlbumArtInDidl = false,
