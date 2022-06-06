@@ -9,21 +9,20 @@ import dev.jdtech.jellyfin.R
 import java.lang.IllegalStateException
 
 class ErrorDialogFragment(
-    private val errorTitle: String?,
-    private val errorMessage: String?
+    private val error: Exception
     ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it, R.style.ErrorDialogStyle)
             builder
-                .setTitle(errorTitle ?: getString(R.string.unknown_error))
-                .setMessage(errorMessage)
+                .setTitle(error.message ?: getString(R.string.unknown_error))
+                .setMessage(error.stackTraceToString())
                 .setPositiveButton(getString(R.string.close)) { _, _ ->
                 }
                 .setNeutralButton(getString(R.string.share)) { _, _ ->
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "$errorTitle\n $errorMessage")
+                        putExtra(Intent.EXTRA_TEXT, "${error.message}\n ${error.stackTraceToString()}")
                         type = "text/plain"
                     }
 

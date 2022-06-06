@@ -33,7 +33,7 @@ class HomeViewModel @Inject internal constructor(
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
         object Loading : UiState()
-        data class Error(val title: String?, val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -59,7 +59,7 @@ class HomeViewModel @Inject internal constructor(
                 }
                 uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

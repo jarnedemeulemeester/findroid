@@ -248,7 +248,7 @@ internal class MediaDetailFragment : Fragment() {
     }
 
     private fun bindPlayerItemsError(error: PlayerItemError) {
-        Timber.e(error.message)
+        Timber.e(error.error.message)
 
         binding.errorLayout.errorPanel.isVisible = true
         binding.playButton.setImageDrawable(

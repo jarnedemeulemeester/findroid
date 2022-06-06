@@ -23,7 +23,7 @@ constructor(
     sealed class UiState {
         data class Normal(val items: List<BaseItemDto>) : UiState()
         object Loading : UiState()
-        data class Error(val title: String?, val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -54,7 +54,7 @@ constructor(
                 )
                 uiState.emit(UiState.Normal(items))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

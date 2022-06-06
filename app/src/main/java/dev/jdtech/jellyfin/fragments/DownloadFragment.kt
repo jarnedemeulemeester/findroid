@@ -85,11 +85,11 @@ class DownloadFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: DownloadViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.title, uiState.message)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.downloadsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(uiState.title.orEmpty())
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun navigateToMediaInfoFragment(item: PlayerItem) {

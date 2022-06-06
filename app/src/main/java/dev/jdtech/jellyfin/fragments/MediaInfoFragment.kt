@@ -290,11 +290,11 @@ class MediaInfoFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.title, uiState.message)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(uiState.title.orEmpty())
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
@@ -309,7 +309,7 @@ class MediaInfoFragment : Fragment() {
     }
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
-        Timber.e(error.title)
+        Timber.e(error.error.message)
         binding.playerItemsError.visibility = View.VISIBLE
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
@@ -319,7 +319,7 @@ class MediaInfoFragment : Fragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(error.title, error.message).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(error.error).show(parentFragmentManager, "errordialog")
         }
     }
 

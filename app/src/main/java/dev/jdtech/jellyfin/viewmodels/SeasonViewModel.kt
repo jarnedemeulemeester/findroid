@@ -21,7 +21,7 @@ constructor(
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
         object Loading : UiState()
-        data class Error(val title: String?, val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -35,7 +35,7 @@ constructor(
                 val episodes = getEpisodes(seriesId, seasonId)
                 uiState.emit(UiState.Normal(episodes))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

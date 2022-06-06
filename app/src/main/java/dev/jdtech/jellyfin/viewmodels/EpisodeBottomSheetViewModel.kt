@@ -45,7 +45,7 @@ constructor(
         ) : UiState()
 
         object Loading : UiState()
-        data class Error(val title: String?, val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -91,7 +91,7 @@ constructor(
                     )
                 )
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message, e.stackTraceToString()))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

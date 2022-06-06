@@ -139,12 +139,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: HomeViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.title, uiState.message)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.refreshLayout.isRefreshing = false
         binding.viewsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(uiState.title.orEmpty())
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {

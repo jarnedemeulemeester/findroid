@@ -207,7 +207,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateError(uiState: EpisodeBottomSheetViewModel.UiState.Error) {
         binding.loadingIndicator.isVisible = false
-        binding.overview.text = uiState.title
+        binding.overview.text = uiState.error.message
     }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
@@ -222,7 +222,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
-        Timber.e(error.message)
+        Timber.e(error.error.message)
 
         binding.playerItemsError.isVisible = true
         binding.playButton.setImageDrawable(
@@ -233,7 +233,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(error.title, error.message).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(error.error).show(parentFragmentManager, "errordialog")
         }
     }
 
