@@ -221,7 +221,9 @@
             android:contentDescription="@string/delete_button_description"
             android:padding="12dp"
             android:src="@drawable/ic_trash"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:tint="?attr/colorOnSecondaryContainer"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <LinearLayout
