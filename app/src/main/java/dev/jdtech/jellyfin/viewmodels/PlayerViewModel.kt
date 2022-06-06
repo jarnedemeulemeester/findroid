@@ -171,7 +171,6 @@ class PlayerViewModel @Inject internal constructor(
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
         for (mediaStream in mediaSource.mediaStreams!!) {
             if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
-                Timber.d(mediaStream.codec.toString())
                 externalSubtitles.add(
                     ExternalSubtitle(
                         mediaStream.title.orEmpty(),
@@ -180,7 +179,6 @@ class PlayerViewModel @Inject internal constructor(
                         when (mediaStream.codec) {
                             "srt" -> MimeTypes.APPLICATION_SUBRIP
                             "vtt" -> MimeTypes.TEXT_VTT
-                            "ttml" -> MimeTypes.APPLICATION_TTML
                             "ass" -> MimeTypes.TEXT_SSA
                             else -> MimeTypes.TEXT_UNKNOWN
                         }
