@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
@@ -24,7 +23,7 @@ constructor(
     sealed class UiState {
         data class Normal(val items: List<BaseItemDto>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -55,7 +54,7 @@ constructor(
                 )
                 uiState.emit(UiState.Normal(items))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

@@ -17,7 +17,6 @@ import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -34,7 +33,7 @@ class HomeViewModel @Inject internal constructor(
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -60,7 +59,7 @@ class HomeViewModel @Inject internal constructor(
                 }
                 uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

@@ -120,12 +120,11 @@ class MediaFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: MediaViewModel.UiState.Error) {
-        val error = uiState.message ?: resources.getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.viewsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.error.message)
 
     }
 
