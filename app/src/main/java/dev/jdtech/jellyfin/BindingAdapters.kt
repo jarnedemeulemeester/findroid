@@ -58,12 +58,6 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
         .posterDescription(person.name)
 }
 
-@BindingAdapter("downloadEpisodes")
-fun bindDownloadEpisodes(recyclerView: RecyclerView, data: List<DownloadEpisodeItem>?) {
-    val adapter = recyclerView.adapter as DownloadEpisodeListAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("homeEpisodes")
 fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
     val adapter = recyclerView.adapter as HomeEpisodeListAdapter
