@@ -32,10 +32,12 @@ fun BaseItemDto.contentType() = when (type) {
     else -> ContentType.UNKNOWN
 }
 
-fun Fragment.checkIfLoginRequired(error: String) {
-    if (error.contains("401"))  {
-        Timber.d("Login required!")
-        findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
+fun Fragment.checkIfLoginRequired(error: String?) {
+    if (error != null) {
+        if (error.contains("401"))  {
+            Timber.d("Login required!")
+            findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
+        }
     }
 }
 

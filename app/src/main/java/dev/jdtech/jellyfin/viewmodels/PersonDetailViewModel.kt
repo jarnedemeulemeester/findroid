@@ -9,10 +9,8 @@ import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.contentType
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import java.lang.Exception
 import java.util.UUID
 import javax.inject.Inject
 
@@ -26,7 +24,7 @@ internal class PersonDetailViewModel @Inject internal constructor(
     sealed class UiState {
         data class Normal(val data: PersonOverview, val starredIn: StarredIn) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -58,7 +56,7 @@ internal class PersonDetailViewModel @Inject internal constructor(
 
                 uiState.emit(UiState.Normal(data, starredIn))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

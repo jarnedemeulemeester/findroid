@@ -104,12 +104,11 @@ internal class PersonDetailFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: PersonDetailViewModel.UiState.Error) {
-        val error = uiState.message ?: resources.getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.fragmentContent.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun adapter() = ViewItemListAdapter(

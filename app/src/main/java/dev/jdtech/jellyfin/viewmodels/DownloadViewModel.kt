@@ -10,7 +10,6 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +25,7 @@ constructor(
     sealed class UiState {
         data class Normal(val downloadSections: List<DownloadSection>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -42,10 +41,6 @@ constructor(
             uiState.emit(UiState.Loading)
             try {
                 val items = loadDownloadedEpisodes(downloadDatabase)
-                if (items.isEmpty()) {
-                    uiState.emit(UiState.Normal(emptyList()))
-                    //return@launch
-                }
 
                 val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
                 items.filter { it.item?.type == ContentType.EPISODE }.forEach {
@@ -76,7 +71,7 @@ constructor(
                 }
                 uiState.emit(UiState.Normal(downloadSections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }
