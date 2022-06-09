@@ -20,8 +20,6 @@ class PlayerGestureHelper(
     private val playerView: StyledPlayerView,
     private val audioManager: AudioManager
 )  {
-
-
     /**
      * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
      * Useful on wide-screen phones to remove black bars from some movies.
@@ -37,12 +35,17 @@ class PlayerGestureHelper(
     private var swipeGestureValueTrackerVolume = -1f
     private var swipeGestureValueTrackerBrightness = -1f
 
-    private val gestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent): Boolean {
+    private val tapGestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            playerView.apply {
+                if (!isControllerFullyVisible) showController() else hideController()
+            }
             return true
         }
+    })
 
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+    private val gestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
             }
@@ -142,33 +145,63 @@ class PlayerGestureHelper(
         playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 
+    private fun releaseAction(event: MotionEvent) {
+        if (event.action == MotionEvent.ACTION_UP) {
+            activity.binding.gestureVolumeLayout.apply {
+                if (visibility == View.VISIBLE) {
+                    removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
+                    postDelayed(hideGestureVolumeIndicatorOverlayAction, 1000)
+                }
+            }
+            activity.binding.gestureBrightnessLayout.apply {
+                if (visibility == View.VISIBLE) {
+                    removeCallbacks(hideGestureBrightnessIndicatorOverlayAction)
+                    postDelayed(hideGestureBrightnessIndicatorOverlayAction, 1000)
+                }
+            }
+        }
+    }
+
     init {
         if (appPreferences.playerBrightnessRemember) {
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         }
-        @Suppress("ClickableViewAccessibility")
-        playerView.setOnTouchListener { _, event ->
-            if (playerView.useController) {
-                when (event.pointerCount) {
-                    1 -> gestureDetector.onTouchEvent(event)
-                    2 -> zoomGestureDetector.onTouchEvent(event)
-                }
-            }
-            if(event.action == MotionEvent.ACTION_UP) {
-                activity.binding.gestureVolumeLayout.apply {
-                    if (visibility == View.VISIBLE) {
-                        removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
-                        postDelayed(hideGestureVolumeIndicatorOverlayAction, 1000)
+
+        if (appPreferences.playerGesturesVB && !appPreferences.playerGesturesZoom) {
+            @Suppress("ClickableViewAccessibility")
+            playerView.setOnTouchListener { _, event ->
+                if (playerView.useController) {
+                    if (event.pointerCount == 1) {
+                        gestureDetector.onTouchEvent(event)
                     }
                 }
-                activity.binding.gestureBrightnessLayout.apply {
-                    if (visibility == View.VISIBLE) {
-                        removeCallbacks(hideGestureBrightnessIndicatorOverlayAction)
-                        postDelayed(hideGestureBrightnessIndicatorOverlayAction, 1000)
+                releaseAction(event)
+                true
+            }
+        } else if (!appPreferences.playerGesturesVB && appPreferences.playerGesturesZoom) {
+            @Suppress("ClickableViewAccessibility")
+            playerView.setOnTouchListener { _, event ->
+                if (playerView.useController) {
+                    when (event.pointerCount) {
+                        1 -> tapGestureDetector.onTouchEvent(event)
+                        2 -> zoomGestureDetector.onTouchEvent(event)
                     }
                 }
+                releaseAction(event)
+                true
             }
-            true
+        } else if (appPreferences.playerGesturesVB && appPreferences.playerGesturesZoom) {
+            @Suppress("ClickableViewAccessibility")
+            playerView.setOnTouchListener { _, event ->
+                if (playerView.useController) {
+                    when (event.pointerCount) {
+                        1 -> gestureDetector.onTouchEvent(event)
+                        2 -> zoomGestureDetector.onTouchEvent(event)
+                    }
+                }
+                releaseAction(event)
+                true
+            }
         }
     }
 }
