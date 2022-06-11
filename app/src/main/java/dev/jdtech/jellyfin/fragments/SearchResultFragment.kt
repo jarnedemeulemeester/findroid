@@ -102,7 +102,7 @@ class SearchResultFragment : Fragment() {
             FavoriteFragmentDirections.actionFavoriteFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
-                item.type ?: "Unknown"
+                item.type
             )
         )
     }

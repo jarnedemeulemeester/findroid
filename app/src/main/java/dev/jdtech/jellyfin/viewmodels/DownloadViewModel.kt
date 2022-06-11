@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.DownloadSection
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -11,6 +10,7 @@ import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ constructor(
                 val items = loadDownloadedEpisodes(downloadDatabase)
 
                 val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
-                items.filter { it.item?.type == ContentType.EPISODE }.forEach {
+                items.filter { it.item?.type == BaseItemKind.EPISODE }.forEach {
                     showsMap.computeIfAbsent(it.item!!.seriesId!!) { mutableListOf() } += it
                 }
                 val shows = showsMap.map { DownloadSeriesMetadata(it.key, it.value[0].item!!.seriesName, it.value) }
@@ -53,7 +53,7 @@ constructor(
                     DownloadSection(
                         UUID.randomUUID(),
                         "Movies",
-                        items.filter { it.item?.type == ContentType.MOVIE }
+                        items.filter { it.item?.type == BaseItemKind.MOVIE }
                     ).let {
                         if (it.items!!.isNotEmpty()) downloadSections.add(
                             it

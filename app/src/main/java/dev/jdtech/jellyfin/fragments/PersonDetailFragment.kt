@@ -137,7 +137,7 @@ internal class PersonDetailFragment : Fragment() {
             PersonDetailFragmentDirections.actionPersonDetailFragmentToMediaInfoFragment(
                 itemId = item.id,
                 itemName = item.name,
-                itemType = item.type ?: "Unknown"
+                itemType = item.type
             )
         )
     }

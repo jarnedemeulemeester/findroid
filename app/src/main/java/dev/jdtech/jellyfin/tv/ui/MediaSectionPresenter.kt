@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 
@@ -27,7 +28,7 @@ class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter
         if (item is BaseItemDto) {
             DataBindingUtil.getBinding<BaseItemBinding>(viewHolder.view)?.apply {
                 this.item = item
-                this.itemName.text = if (item.type == "Episode") item.seriesName else item.name
+                this.itemName.text = if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
                 this.itemCount.visibility =
                     if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
                 this.itemLayout.layoutParams.width =
@@ -62,10 +63,10 @@ class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Pr
                     progressBar.isVisible = true
                 }
 
-                if (item.type == "Movie") {
+                if (item.type == BaseItemKind.MOVIE) {
                     primaryName.text = item.name
                     secondaryName.visibility = View.GONE
-                } else if (item.type == "Episode") {
+                } else if (item.type == BaseItemKind.EPISODE) {
                     primaryName.text = item.seriesName
                 }
 

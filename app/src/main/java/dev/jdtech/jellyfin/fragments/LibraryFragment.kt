@@ -144,7 +144,7 @@ class LibraryFragment : Fragment() {
             LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
-                item.type ?: "Unknown"
+                item.type
             )
         )
     }
