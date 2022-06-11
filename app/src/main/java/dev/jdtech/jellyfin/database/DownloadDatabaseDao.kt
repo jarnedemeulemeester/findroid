@@ -8,7 +8,7 @@ import java.util.*
 
 @Dao
 interface DownloadDatabaseDao {
-    @Insert()
+    @Insert
     fun insertItem(downloadItem: DownloadItem)
 
     @Query("select * from downloads where id = :id limit 1")

@@ -61,9 +61,9 @@ internal class TvPlayerActivity : BasePlayerActivity() {
 
     private fun bind() = with(binding.playerView) {
         val videoNameTextView = findViewById<TextView>(R.id.video_name)
-        viewModel.currentItemTitle.observe(this@TvPlayerActivity, { title ->
+        viewModel.currentItemTitle.observe(this@TvPlayerActivity) { title ->
             videoNameTextView.text = title
-        })
+        }
 
         findViewById<ImageButton>(R.id.exo_play_pause).apply {
             setOnClickListener {

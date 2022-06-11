@@ -183,7 +183,7 @@ constructor(
         viewModelScope.launch {
             try {
                 for (item in items) {
-                    if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
+                    if (item.itemId.toString() == (player.currentMediaItem?.mediaId ?: "")) {
                         if (sp.getBoolean(
                                 "display_extended_title",
                                 false

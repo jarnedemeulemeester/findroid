@@ -27,11 +27,11 @@ internal class MainActivityTv : FragmentActivity() {
 
         loadDownloadLocation(applicationContext)
 
-        viewModel.navigateToAddServer.observe(this, {
+        viewModel.navigateToAddServer.observe(this) {
             if (it) {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
                 viewModel.doneNavigateToAddServer()
             }
-        })
+        }
     }
 }

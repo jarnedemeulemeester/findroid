@@ -1,14 +1,11 @@
 package dev.jdtech.jellyfin.utils
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.util.TypedValue
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import dev.jdtech.jellyfin.AppNavigationDirections
@@ -33,11 +30,7 @@ fun Fragment.checkIfLoginRequired(error: String?) {
     }
 }
 
-inline fun Context.toast(@StringRes text: Int, duration: Int = Toast.LENGTH_SHORT) =
-    Toast.makeText(this, text, duration).show()
-
-
-inline fun Resources.dip(px: Int) = (px * displayMetrics.density).toInt()
+fun Resources.dip(px: Int) = (px * displayMetrics.density).toInt()
 
 fun ImageButton.setTintColor(@ColorRes colorId: Int, theme: Resources.Theme) {
     this.imageTintList = ColorStateList.valueOf(
