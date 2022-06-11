@@ -107,7 +107,7 @@
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="gestures">Gestes</string>
     <string name="player_gestures">Gestes du lecteur</string>
-    <string name="player_gestures_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
+    <string name="player_gestures_vb_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
     <string name="select_video_version_title">Choisissez une version</string>
     <string name="display_extended_title_summary">Afficher le titre étendu inclut la numérotation de la saison et de l\'épisode (SXX:EXX - NomEpisode).</string>
     <string name="add_server_empty_error">Adresse du serveur vide</string>

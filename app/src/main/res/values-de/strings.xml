@@ -121,5 +121,5 @@
     <string name="display_extended_title_summary">Zeige erweiterten Episodentitel inklusiver der Staffel und Episodeninformationen (SXX:EXX - Episodenname).</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
-    <string name="player_gestures_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen und auf der linken Seite, um gleiches mit der Helligkeit zu machen</string>
+    <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen und auf der linken Seite, um gleiches mit der Helligkeit zu machen</string>
 </resources>
