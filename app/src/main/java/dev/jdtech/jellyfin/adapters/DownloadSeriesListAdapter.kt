@@ -1,43 +1,42 @@
 package dev.jdtech.jellyfin.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+import dev.jdtech.jellyfin.utils.downloadSeriesMetadataToBaseItemDto
 
-class DownloadViewItemListAdapter(
+class DownloadSeriesListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
     ) :
-    ListAdapter<PlayerItem, DownloadViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+    ListAdapter<DownloadSeriesMetadata, DownloadSeriesListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: PlayerItem, fixedWidth: Boolean) {
-            val metadata = item.item!!
-            binding.item = downloadMetadataToBaseItemDto(metadata)
+        fun bind(item: DownloadSeriesMetadata, fixedWidth: Boolean) {
+            binding.item = downloadSeriesMetadataToBaseItemDto(item)
             binding.itemName.text = item.name
-            binding.itemCount.visibility = View.GONE
+            binding.itemCount.text = item.episodes.size.toString()
             if (fixedWidth) {
-                binding.itemLayout.layoutParams.width = parent.resources.getDimension(R.dimen.overview_media_width).toInt()
+                binding.itemLayout.layoutParams.width =
+                    parent.resources.getDimension(R.dimen.overview_media_width).toInt()
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
             binding.executePendingBindings()
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<PlayerItem>() {
-        override fun areItemsTheSame(oldItem: PlayerItem, newItem: PlayerItem): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<DownloadSeriesMetadata>() {
+        override fun areItemsTheSame(oldItem: DownloadSeriesMetadata, newItem: DownloadSeriesMetadata): Boolean {
             return oldItem.itemId == newItem.itemId
         }
 
-        override fun areContentsTheSame(oldItem: PlayerItem, newItem: PlayerItem): Boolean {
+        override fun areContentsTheSame(oldItem: DownloadSeriesMetadata, newItem: DownloadSeriesMetadata): Boolean {
             return oldItem == newItem
         }
     }
@@ -60,7 +59,7 @@ class DownloadViewItemListAdapter(
         holder.bind(item, fixedWidth)
     }
 
-    class OnClickListener(val clickListener: (item: PlayerItem) -> Unit) {
-        fun onClick(item: PlayerItem) = clickListener(item)
+    class OnClickListener(val clickListener: (item: DownloadSeriesMetadata) -> Unit) {
+        fun onClick(item: DownloadSeriesMetadata) = clickListener(item)
     }
 }

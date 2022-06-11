@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadRequestItem
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -172,6 +173,24 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadItem {
         playbackPosition = item.userData?.playbackPositionTicks ?: 0,
         playedPercentage = item.userData?.playedPercentage,
         overview = item.overview
+    )
+}
+
+fun downloadSeriesMetadataToBaseItemDto(metadata: DownloadSeriesMetadata): BaseItemDto {
+    val userData = UserItemDataDto(
+        playbackPositionTicks = 0,
+        playedPercentage = 0.0,
+        isFavorite = false,
+        playCount = 0,
+        played = false,
+        unplayedItemCount = metadata.episodes.size
+    )
+
+    return BaseItemDto(
+        id = metadata.itemId,
+        type = "Series",
+        name = metadata.name,
+        userData = userData
     )
 }
 

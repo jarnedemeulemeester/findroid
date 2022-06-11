@@ -5,6 +5,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.DownloadSection
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,21 +41,31 @@ constructor(
             uiState.emit(UiState.Loading)
             try {
                 val items = loadDownloadedEpisodes(downloadDatabase)
+
+                val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
+                items.filter { it.item?.type == ContentType.EPISODE }.forEach {
+                    showsMap.computeIfAbsent(it.item!!.seriesId!!) { mutableListOf() } += it
+                }
+                val shows = showsMap.map { DownloadSeriesMetadata(it.key, it.value[0].item!!.seriesName, it.value) }
+
                 val downloadSections = mutableListOf<DownloadSection>()
                 withContext(Dispatchers.Default) {
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Episodes",
-                        items.filter { it.item?.type == ContentType.EPISODE }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
+                        "Movies",
+                        items.filter { it.item?.type == ContentType.MOVIE }
+                    ).let {
+                        if (it.items!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Movies",
-                        items.filter { it.item?.type == ContentType.MOVIE }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
+                        "Shows",
+                        null,
+                        shows
+                    ).let {
+                        if (it.series!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }

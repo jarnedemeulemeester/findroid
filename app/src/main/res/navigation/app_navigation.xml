@@ -163,6 +163,23 @@
             android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/downloadSeriesFragment"
+        android:name="dev.jdtech.jellyfin.fragments.DownloadSeriesFragment"
+        android:label="{seriesName}"
+        tools:layout="@layout/fragment_season">
+        <argument
+            android:name="seriesMetadata"
+            app:argType="dev.jdtech.jellyfin.models.DownloadSeriesMetadata"/>
+        <argument
+            android:name="seriesName"
+            android:defaultValue="Series"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_downloadSeriesFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
+    </fragment>
     <dialog
         android:id="@+id/episodeBottomSheetFragment"
         android:name="dev.jdtech.jellyfin.fragments.EpisodeBottomSheetFragment"
@@ -207,6 +224,9 @@
         <action
             android:id="@+id/action_downloadFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
+        <action
+            android:id="@+id/action_downloadFragment_to_downloadSeriesFragment"
+            app:destination="@id/downloadSeriesFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
