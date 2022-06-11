@@ -10,7 +10,6 @@ import dev.jdtech.jellyfin.models.DownloadSection
 
 class DownloadsListAdapter(
     private val onClickListener: DownloadViewItemListAdapter.OnClickListener,
-    private val onHomeEpisodeClickListener: DownloadHomeEpisodeListAdapter.OnClickListener,
     private val onSeriesClickListener: DownloadSeriesListAdapter.OnClickListener
 ) : ListAdapter<DownloadSection, DownloadsListAdapter.SectionViewHolder>(DiffCallback) {
     class SectionViewHolder(private var binding: DownloadSectionBinding) :
@@ -18,22 +17,18 @@ class DownloadsListAdapter(
         fun bind(
             section: DownloadSection,
             onClickListener: DownloadViewItemListAdapter.OnClickListener,
-            onHomeEpisodeClickListener: DownloadHomeEpisodeListAdapter.OnClickListener,
             onSeriesClickListener: DownloadSeriesListAdapter.OnClickListener
         ) {
             binding.section = section
-            if (section.name == "Movies") {
-                binding.itemsRecyclerView.adapter =
-                    DownloadViewItemListAdapter(onClickListener, fixedWidth = true)
-                (binding.itemsRecyclerView.adapter as DownloadViewItemListAdapter).submitList(section.items)
-            } else if (section.name == "Episodes") {
-                binding.itemsRecyclerView.adapter =
-                    DownloadHomeEpisodeListAdapter(onHomeEpisodeClickListener)
-                (binding.itemsRecyclerView.adapter as DownloadHomeEpisodeListAdapter).submitList(section.items)
-            } else if (section.name == "Shows") {
-                binding.itemsRecyclerView.adapter =
-                    DownloadSeriesListAdapter(onSeriesClickListener, fixedWidth = true)
-                (binding.itemsRecyclerView.adapter as DownloadSeriesListAdapter).submitList(section.series)
+            when (section.name) {
+                "Movies" -> {
+                    binding.itemsRecyclerView.adapter = DownloadViewItemListAdapter(onClickListener, fixedWidth = true)
+                    (binding.itemsRecyclerView.adapter as DownloadViewItemListAdapter).submitList(section.items)
+                }
+                "Shows" -> {
+                    binding.itemsRecyclerView.adapter = DownloadSeriesListAdapter(onSeriesClickListener, fixedWidth = true)
+                    (binding.itemsRecyclerView.adapter as DownloadSeriesListAdapter).submitList(section.series)
+                }
             }
             binding.executePendingBindings()
         }
@@ -64,6 +59,6 @@ class DownloadsListAdapter(
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
         val collection = getItem(position)
-        holder.bind(collection, onClickListener, onHomeEpisodeClickListener, onSeriesClickListener)
+        holder.bind(collection, onClickListener, onSeriesClickListener)
     }
 }

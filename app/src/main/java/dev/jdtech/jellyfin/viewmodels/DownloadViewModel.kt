@@ -53,7 +53,8 @@ constructor(
                     DownloadSection(
                         UUID.randomUUID(),
                         "Movies",
-                        items.filter { it.item?.type == ContentType.MOVIE }).let {
+                        items.filter { it.item?.type == ContentType.MOVIE }
+                    ).let {
                         if (it.items!!.isNotEmpty()) downloadSections.add(
                             it
                         )

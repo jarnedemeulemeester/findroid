@@ -9,13 +9,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
-import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.utils.contentType
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemDto
-import java.util.*
+import java.util.UUID
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
@@ -52,15 +50,6 @@ class DownloadEpisodeListAdapter(
             } else {
                 binding.progressBar.visibility = View.GONE
             }
-            //TODO Look at if this can be safely deleted
-            /*
-            if (episode.contentType() == ContentType.MOVIE) {
-                binding.primaryName.text = metadata.name
-                Timber.d(metadata.name)
-                binding.secondaryName.visibility = View.GONE
-            } else if (metadata.type == ContentType.EPISODE) {
-                binding.primaryName.text = metadata.seriesName
-            }*/
             binding.executePendingBindings()
         }
     }

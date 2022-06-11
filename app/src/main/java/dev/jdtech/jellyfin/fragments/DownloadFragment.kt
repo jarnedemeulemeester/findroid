@@ -40,8 +40,6 @@ class DownloadFragment : Fragment() {
         binding.downloadsRecyclerView.adapter = DownloadsListAdapter(
             DownloadViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
-            }, DownloadHomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToEpisodeBottomSheetFragment(item)
             }, DownloadSeriesListAdapter.OnClickListener { item ->
                 navigateToDownloadSeriesFragment(item)
             }
@@ -103,16 +101,6 @@ class DownloadFragment : Fragment() {
                 item.name,
                 item.item?.type?.type ?: "Unkown",
                 item,
-                isOffline = true
-            )
-        )
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: PlayerItem) {
-        findNavController().navigate(
-            DownloadFragmentDirections.actionDownloadFragmentToEpisodeBottomSheetFragment(
-                UUID.randomUUID(),
-                episode,
                 isOffline = true
             )
         )

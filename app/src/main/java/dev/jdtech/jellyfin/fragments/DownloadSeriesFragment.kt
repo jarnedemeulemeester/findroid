@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.DownloadEpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadSeriesBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -83,8 +82,7 @@ class DownloadSeriesFragment : Fragment() {
     private fun bindUiStateLoading(uiState: DownloadSeriesViewModel.UiState.Loading) {}
 
     private fun bindUiStateError(uiState: DownloadSeriesViewModel.UiState.Error) {
-        val error = uiState.error.message ?: resources.getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.episodesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
     }

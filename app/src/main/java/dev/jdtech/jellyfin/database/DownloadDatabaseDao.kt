@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.database
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.jdtech.jellyfin.models.DownloadItem
 import java.util.*
