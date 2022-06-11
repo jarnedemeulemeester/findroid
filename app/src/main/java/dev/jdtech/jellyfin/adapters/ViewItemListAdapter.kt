@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 class ViewItemListAdapter(
     private val onClickListener: OnClickListener,
@@ -20,7 +21,7 @@ class ViewItemListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: BaseItemDto, fixedWidth: Boolean) {
             binding.item = item
-            binding.itemName.text = if (item.type == "Episode") item.seriesName else item.name
+            binding.itemName.text = if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {

@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 import timber.log.Timber
 import java.util.*
@@ -38,8 +39,8 @@ constructor(
     ) {
         Timber.d("$libraryType")
         val itemType = when (libraryType) {
-            "movies" -> "Movie"
-            "tvshows" -> "Series"
+            "movies" -> BaseItemKind.MOVIE
+            "tvshows" -> BaseItemKind.SERIES
             else -> null
         }
         viewModelScope.launch {

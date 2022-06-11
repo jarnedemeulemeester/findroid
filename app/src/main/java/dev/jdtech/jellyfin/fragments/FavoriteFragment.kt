@@ -98,7 +98,7 @@ class FavoriteFragment : Fragment() {
             FavoriteFragmentDirections.actionFavoriteFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
-                item.type ?: "Unknown"
+                item.type
             )
         )
     }

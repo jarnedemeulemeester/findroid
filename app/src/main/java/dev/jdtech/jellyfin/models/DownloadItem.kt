@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
 
 @Parcelize
@@ -11,7 +12,7 @@ import java.util.*
 data class DownloadItem(
     @PrimaryKey
     val id: UUID,
-    val type: ContentType,
+    val type: BaseItemKind,
     val name: String,
     val played: Boolean,
     val overview: String? = null,

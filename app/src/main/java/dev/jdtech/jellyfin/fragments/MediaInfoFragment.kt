@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -34,7 +33,7 @@ import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.serializer.toUUID
+import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 import java.util.UUID
 
@@ -78,7 +77,7 @@ class MediaInfoFragment : Fragment() {
             }
         }
 
-        if (args.itemType != "Movie") {
+        if (args.itemType != BaseItemKind.MOVIE) {
             binding.downloadButton.visibility = View.GONE
         }
 
@@ -111,16 +110,7 @@ class MediaInfoFragment : Fragment() {
                 navigateToSeasonFragment(season)
             }, fixedWidth = true)
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
-            val uuid = person.id?.toUUID()
-            if (uuid != null) {
-                navigateToPersonDetail(uuid)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.error_getting_person_id,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            navigateToPersonDetail(person.id)
         }
 
         binding.playButton.setOnClickListener {

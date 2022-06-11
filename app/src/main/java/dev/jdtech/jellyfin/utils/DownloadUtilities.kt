@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.UserItemDataDto
 import timber.log.Timber
 import java.io.File
@@ -149,7 +150,7 @@ fun downloadMetadataToBaseItemDto(item: DownloadItem): BaseItemDto {
 
     return BaseItemDto(
         id = item.id,
-        type = item.type.type,
+        type = item.type,
         seriesName = item.seriesName,
         name = item.name,
         parentIndexNumber = item.parentIndexNumber,
@@ -163,7 +164,7 @@ fun downloadMetadataToBaseItemDto(item: DownloadItem): BaseItemDto {
 fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadItem {
     return DownloadItem(
         id = item.id,
-        type = item.contentType(),
+        type = item.type,
         name = item.name.orEmpty(),
         played = item.userData?.played ?: false,
         seriesId = item.seriesId,
@@ -188,7 +189,7 @@ fun downloadSeriesMetadataToBaseItemDto(metadata: DownloadSeriesMetadata): BaseI
 
     return BaseItemDto(
         id = metadata.itemId,
-        type = "Series",
+        type = BaseItemKind.SERIES,
         name = metadata.name,
         userData = userData
     )

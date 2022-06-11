@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<BaseItemDto, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(private var binding: HomeEpisodeItemBinding) :
@@ -21,10 +22,10 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 binding.progressBar.visibility = View.VISIBLE
             }
 
-            if (episode.type == "Movie") {
+            if (episode.type == BaseItemKind.MOVIE) {
                 binding.primaryName.text = episode.name
                 binding.secondaryName.visibility = View.GONE
-            } else if (episode.type == "Episode") {
+            } else if (episode.type == BaseItemKind.EPISODE) {
                 binding.primaryName.text = episode.seriesName
             }
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import timber.log.Timber
 import java.util.UUID
@@ -80,7 +81,7 @@ constructor(
 
     lateinit var playerItem: PlayerItem
 
-    fun loadData(itemId: UUID, itemType: String) {
+    fun loadData(itemId: UUID, itemType: BaseItemKind) {
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             try {
@@ -97,7 +98,7 @@ constructor(
                 favorite = tempItem.userData?.isFavorite ?: false
                 canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, itemId)
-                if (itemType == "Series") {
+                if (itemType == BaseItemKind.SERIES) {
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
                 }

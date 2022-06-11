@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
 import javax.inject.Inject
 
@@ -52,7 +53,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Movies",
-                        items.filter { it.type == "Movie" }).let {
+                        items.filter { it.type == BaseItemKind.MOVIE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
@@ -60,7 +61,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Shows",
-                        items.filter { it.type == "Series" }).let {
+                        items.filter { it.type == BaseItemKind.SERIES }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
@@ -68,7 +69,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Episodes",
-                        items.filter { it.type == "Episode" }).let {
+                        items.filter { it.type == BaseItemKind.EPISODE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )

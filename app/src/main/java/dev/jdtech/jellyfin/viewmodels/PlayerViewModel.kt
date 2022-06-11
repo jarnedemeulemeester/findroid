@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
 import org.jellyfin.sdk.model.api.MediaProtocol
@@ -98,9 +99,9 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> = when (item.type) {
-        "Movie" -> itemToMoviePlayerItems(item, playbackPosition, mediaSourceIndex)
-        "Series" -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        "Episode" -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        BaseItemKind.MOVIE -> itemToMoviePlayerItems(item, playbackPosition, mediaSourceIndex)
+        BaseItemKind.SERIES -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        BaseItemKind.EPISODE -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
 

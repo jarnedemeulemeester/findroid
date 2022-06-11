@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
@@ -32,7 +33,7 @@ fun bindItems(recyclerView: RecyclerView, data: List<BaseItemDto>?) {
 @BindingAdapter("itemImage")
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
     val itemId =
-        if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
+        if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
 
     imageView
         .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}")
@@ -75,7 +76,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
 
     if (!episode.imageTags.isNullOrEmpty()) { //TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
         when (episode.type) {
-            "Movie" -> {
+            BaseItemKind.MOVIE -> {
                 if (!episode.backdropImageTags.isNullOrEmpty()) {
                     imageType = ImageType.BACKDROP
                 }
@@ -87,7 +88,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
             }
         }
     } else {
-        if (episode.type == "Episode") {
+        if (episode.type == BaseItemKind.EPISODE) {
             imageItemId = episode.seriesId!!
             imageType = ImageType.BACKDROP
         }
