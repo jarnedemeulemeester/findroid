@@ -1,9 +1,11 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.*
+import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.SortBy
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -22,7 +24,7 @@ constructor(
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
 
     sealed class UiState {
-        data class Normal(val items: List<BaseItemDto>) : UiState()
+        data class Normal(val items: Flow<PagingData<BaseItemDto>>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
@@ -46,8 +48,9 @@ constructor(
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             try {
-                val items = jellyfinRepository.getItems(
-                    parentId,
+
+                val items = jellyfinRepository.getItemsPaging(
+                    parentId = parentId,
                     includeTypes = if (itemType != null) listOf(itemType) else null,
                     recursive = true,
                     sortBy = sortBy,

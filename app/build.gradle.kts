@@ -124,4 +124,7 @@ dependencies {
     val aboutLibrariesVersion = "10.3.0"
     implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
+
+    val pagingVersion = "3.1.1"
+    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
 }
