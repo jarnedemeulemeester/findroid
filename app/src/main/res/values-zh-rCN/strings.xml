@@ -122,4 +122,7 @@
     <string name="add_server_error_already_added">服务器已经添加过了</string>
     <string name="title_home">首页</string>
     <string name="settings_cache_size_message">应用程序将会利用这些MB的磁盘空间来存储Jellyfin服务器的图片。在较慢的网络下，更大的数值可能会更好。</string>
+    <string name="player_gestures_vb">音量和亮度手势</string>
+    <string name="player_gestures_zoom">缩放手势</string>
+    <string name="player_gestures_zoom_summary">捏合以用视频填满屏幕</string>
 </resources>
