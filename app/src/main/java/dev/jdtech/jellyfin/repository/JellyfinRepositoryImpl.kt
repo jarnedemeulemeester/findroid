@@ -1,8 +1,12 @@
 package dev.jdtech.jellyfin.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.*
 import timber.log.Timber
@@ -34,6 +38,32 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         ).content.items.orEmpty()
     }
 
+    override suspend fun getItemsPaging(
+        parentId: UUID?,
+        includeTypes: List<BaseItemKind>?,
+        recursive: Boolean,
+        sortBy: SortBy,
+        sortOrder: SortOrder
+    ): Flow<PagingData<BaseItemDto>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                maxSize = 100,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ItemsPagingSource(
+                    jellyfinApi,
+                    parentId,
+                    includeTypes,
+                    recursive,
+                    sortBy,
+                    sortOrder
+                )
+            }
+        ).flow
+    }
+
     override suspend fun getPersonItems(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>?,
@@ -51,7 +81,11 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         jellyfinApi.itemsApi.getItems(
             jellyfinApi.userId!!,
             filters = listOf(ItemFilter.IS_FAVORITE),
-            includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES, BaseItemKind.EPISODE),
+            includeItemTypes = listOf(
+                BaseItemKind.MOVIE,
+                BaseItemKind.SERIES,
+                BaseItemKind.EPISODE
+            ),
             recursive = true
         ).content.items.orEmpty()
     }
@@ -61,7 +95,11 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
                 searchTerm = searchQuery,
-                includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES, BaseItemKind.EPISODE),
+                includeItemTypes = listOf(
+                    BaseItemKind.MOVIE,
+                    BaseItemKind.SERIES,
+                    BaseItemKind.EPISODE
+                ),
                 recursive = true
             ).content.items.orEmpty()
         }
