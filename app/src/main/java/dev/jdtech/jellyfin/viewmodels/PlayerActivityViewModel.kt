@@ -217,7 +217,7 @@ constructor(
                 currentSubtitleTracks.clear()
                 when (player) {
                     is MPVPlayer -> {
-                        player.currentTracks.forEach {
+                        player.currentMpvTracks.forEach {
                             when (it.type) {
                                 TrackType.AUDIO -> {
                                     currentAudioTracks.add(it)
