@@ -123,4 +123,7 @@
     <string name="player_brightness_remember">Recordar el nivel de brillo</string>
     <string name="player_gestures">Gestos del reproductor</string>
     <string name="player_gestures_vb_summary">Desliza hacia arriba y hacia abajo en el lado derecho de la pantalla para cambiar el volumen y en el lado izquierdo para cambiar el brillo</string>
+    <string name="player_gestures_vb">Gesto de volumen y brillo</string>
+    <string name="player_gestures_zoom">Gesto para ampliar</string>
+    <string name="player_gestures_zoom_summary">Pellizcar para rellenar pantalla con el video</string>
 </resources>
