@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import timber.log.Timber
 import java.util.UUID
@@ -52,7 +53,7 @@ constructor(
         ) : UiState()
 
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -80,7 +81,7 @@ constructor(
 
     lateinit var playerItem: PlayerItem
 
-    fun loadData(itemId: UUID, itemType: String) {
+    fun loadData(itemId: UUID, itemType: BaseItemKind) {
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             try {
@@ -97,7 +98,7 @@ constructor(
                 favorite = tempItem.userData?.isFavorite ?: false
                 canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, itemId)
-                if (itemType == "Series") {
+                if (itemType == BaseItemKind.SERIES) {
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
                 }
@@ -121,9 +122,7 @@ constructor(
                     )
                 )
             } catch (e: Exception) {
-                Timber.d(e)
-                Timber.d(itemId.toString())
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

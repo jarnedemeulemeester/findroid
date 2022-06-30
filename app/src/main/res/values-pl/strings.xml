@@ -7,7 +7,7 @@
     <string name="select_a_version">Wybierz wersję</string>
     <string name="download_mobile_data">Pobieraj używając danych komórkowych</string>
     <string name="mpv_player_summary">Używaj eksperymentalnego odtwarzacza MPV do odtwarzania wideo. MPV wspiera więcej kodeków wideo, audio i napisów.</string>
-    <string name="player_gestures_summary">Przesuń w górę lub w dół po prawej stronie ekrany by zmienić głośność, po lewej stronie by zmienić jasność</string>
+    <string name="player_gestures_vb_summary">Przesuń w górę lub w dół po prawej stronie ekrany by zmienić głośność, po lewej stronie by zmienić jasność</string>
     <string name="display_extended_title_summary">Wyświetlaj rozszerzoną nazwę odcinka, razem z informacją o sezonie i odcinku (SXX:EXX - NazwaOdcinka).</string>
     <string name="add_server_error_slow">Zbyt wolna odpowiedź serwera: %1$s</string>
     <string name="add_server_error_already_added">Serwer już dodany</string>
@@ -122,4 +122,7 @@
     <string name="remove_server">Usuń serwer</string>
     <string name="error_loading_data">Błąd ładowania danych</string>
     <string name="check_button_description">Oznacz jako obejrzane lub nieobejrzane</string>
+    <string name="player_gestures_vb">Gesty kontroli głośności i jasności ekranu</string>
+    <string name="player_gestures_zoom">Gest przybliżenia</string>
+    <string name="player_gestures_zoom_summary">Uszczypnij by wypełnić ekran</string>
 </resources>

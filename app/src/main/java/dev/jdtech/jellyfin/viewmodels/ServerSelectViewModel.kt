@@ -11,9 +11,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -43,10 +41,8 @@ constructor(
      * @param server The server
      */
     fun deleteServer(server: Server) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                database.delete(server.id)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            database.delete(server.id)
         }
     }
 

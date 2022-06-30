@@ -21,10 +21,21 @@
         <SwitchPreference
             app:defaultValue="true"
             app:key="pref_player_gestures"
-            app:summary="@string/player_gestures_summary"
             app:title="@string/player_gestures" />
         <SwitchPreference
+            app:defaultValue="true"
             app:dependency="pref_player_gestures"
+            app:key="pref_player_gestures_vb"
+            app:summary="@string/player_gestures_vb_summary"
+            app:title="@string/player_gestures_vb" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:dependency="pref_player_gestures"
+            app:key="pref_player_gestures_zoom"
+            app:summary="@string/player_gestures_zoom_summary"
+            app:title="@string/player_gestures_zoom" />
+        <SwitchPreference
+            app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
     </PreferenceCategory>

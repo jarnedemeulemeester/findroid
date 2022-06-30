@@ -3,25 +3,25 @@ package dev.jdtech.jellyfin.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 
-class ViewItemListAdapter(
+class ViewItemPagingAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-    ) :
-    ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+) : PagingDataAdapter<BaseItemDto, ViewItemPagingAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: BaseItemDto, fixedWidth: Boolean) {
             binding.item = item
-            binding.itemName.text = if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
+            binding.itemName.text =
+                if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {
@@ -55,10 +55,12 @@ class ViewItemListAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+        if (item != null) {
+            holder.itemView.setOnClickListener {
+                onClickListener.onClick(item)
+            }
+            holder.bind(item, fixedWidth)
         }
-        holder.bind(item, fixedWidth)
     }
 
     class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {

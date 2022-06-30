@@ -107,7 +107,7 @@
     <string name="app_description">第三方原生Jellyfin app</string>
     <string name="login_error_wrong_username_password">用户名或密码错误</string>
     <string name="latest_library">最新%1$s</string>
-    <string name="player_gestures_summary">在屏幕右侧上下划动来调整音量，在屏幕左侧上下划动来调整亮度</string>
+    <string name="player_gestures_vb_summary">在屏幕右侧上下划动来调整音量，在屏幕左侧上下划动来调整亮度</string>
     <string name="add_server_error_outdated">服务器版本过旧：%1$s。请更新您的服务器</string>
     <string name="edit_text_server_address_hint">服务器地址</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
@@ -122,4 +122,7 @@
     <string name="add_server_error_already_added">服务器已经添加过了</string>
     <string name="title_home">首页</string>
     <string name="settings_cache_size_message">应用程序将会利用这些MB的磁盘空间来存储Jellyfin服务器的图片。在较慢的网络下，更大的数值可能会更好。</string>
+    <string name="player_gestures_vb">音量和亮度手势</string>
+    <string name="player_gestures_zoom">缩放手势</string>
+    <string name="player_gestures_zoom_summary">捏合以用视频填满屏幕</string>
 </resources>

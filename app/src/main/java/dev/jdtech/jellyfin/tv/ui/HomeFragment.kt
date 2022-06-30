@@ -109,7 +109,7 @@ internal class HomeFragment : BrowseSupportFragment() {
             HomeFragmentDirections.actionHomeFragmentToMediaDetailFragment(
                 item.id,
                 item.seriesName ?: item.name,
-                item.type ?: "Unknown"
+                item.type
             )
         )
     }

@@ -2,14 +2,13 @@ package dev.jdtech.jellyfin.database
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.jdtech.jellyfin.models.DownloadItem
 import java.util.*
 
 @Dao
 interface DownloadDatabaseDao {
-    @Insert()
+    @Insert
     fun insertItem(downloadItem: DownloadItem)
 
     @Query("select * from downloads where id = :id limit 1")

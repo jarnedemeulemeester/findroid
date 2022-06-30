@@ -23,15 +23,11 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.ContentType
-import dev.jdtech.jellyfin.models.ContentType.EPISODE
-import dev.jdtech.jellyfin.models.ContentType.MOVIE
-import dev.jdtech.jellyfin.models.ContentType.TVSHOW
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.utils.contentType
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -91,9 +87,9 @@ class HomeFragment : Fragment() {
                 navigateToMediaInfoFragment(it)
             },
             onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
-                when (item.contentType()) {
-                    EPISODE -> navigateToEpisodeBottomSheetFragment(item)
-                    MOVIE -> navigateToMediaInfoFragment(item)
+                when (item.type) {
+                    BaseItemKind.EPISODE -> navigateToEpisodeBottomSheetFragment(item)
+                    BaseItemKind.MOVIE -> navigateToMediaInfoFragment(item)
                     else -> Toast.makeText(requireContext(), R.string.unknown_error, LENGTH_LONG)
                         .show()
                 }
@@ -139,13 +135,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: HomeViewModel.UiState.Error) {
-        val error = uiState.message ?: getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.refreshLayout.isRefreshing = false
         binding.viewsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
@@ -159,12 +154,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        if (item.contentType() == EPISODE) {
+        if (item.type == BaseItemKind.EPISODE) {
             findNavController().navigate(
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.seriesId!!,
                     item.seriesName,
-                    TVSHOW.type
+                    BaseItemKind.SERIES
                 )
             )
         } else {
@@ -172,7 +167,7 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
                     item.id,
                     item.name,
-                    item.type ?: ContentType.UNKNOWN.type
+                    item.type
                 )
             )
         }

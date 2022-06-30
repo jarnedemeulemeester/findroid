@@ -11,6 +11,8 @@ constructor(
     private val sharedPreferences: SharedPreferences
 ) {
     val playerGestures = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
+    val playerGesturesVB = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
+    val playerGesturesZoom = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
 
     val playerBrightnessRemember =
         sharedPreferences.getBoolean(Constants.PREF_PLAYER_BRIGHTNESS_REMEMBER, false)

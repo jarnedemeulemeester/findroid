@@ -12,10 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.databinding.FragmentDownloadBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.DownloadViewModel
@@ -40,9 +40,10 @@ class DownloadFragment : Fragment() {
         binding.downloadsRecyclerView.adapter = DownloadsListAdapter(
             DownloadViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
-            }, DownloadEpisodeListAdapter.OnClickListener { item ->
-                navigateToEpisodeBottomSheetFragment(item)
-            })
+            }, DownloadSeriesListAdapter.OnClickListener { item ->
+                navigateToDownloadSeriesFragment(item)
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -86,12 +87,11 @@ class DownloadFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: DownloadViewModel.UiState.Error) {
-        val error = uiState.message ?: resources.getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.downloadsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun navigateToMediaInfoFragment(item: PlayerItem) {
@@ -99,19 +99,18 @@ class DownloadFragment : Fragment() {
             DownloadFragmentDirections.actionDownloadFragmentToMediaInfoFragment(
                 UUID.randomUUID(),
                 item.name,
-                item.item?.type?.type ?: "Unkown",
+                item.item!!.type,
                 item,
                 isOffline = true
             )
         )
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: PlayerItem) {
+    private fun navigateToDownloadSeriesFragment(series: DownloadSeriesMetadata) {
         findNavController().navigate(
-            DownloadFragmentDirections.actionDownloadFragmentToEpisodeBottomSheetFragment(
-                UUID.randomUUID(),
-                episode,
-                isOffline = true
+            DownloadFragmentDirections.actionDownloadFragmentToDownloadSeriesFragment(
+                seriesMetadata = series,
+                seriesName = series.name
             )
         )
     }

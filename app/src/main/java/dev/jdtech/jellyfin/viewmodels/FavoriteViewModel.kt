@@ -8,9 +8,9 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ constructor(
     sealed class UiState {
         data class Normal(val favoriteSections: List<FavoriteSection>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -53,7 +53,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Movies",
-                        items.filter { it.type == "Movie" }).let {
+                        items.filter { it.type == BaseItemKind.MOVIE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
@@ -61,7 +61,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Shows",
-                        items.filter { it.type == "Series" }).let {
+                        items.filter { it.type == BaseItemKind.SERIES }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
@@ -69,7 +69,7 @@ constructor(
                     FavoriteSection(
                         UUID.randomUUID(),
                         "Episodes",
-                        items.filter { it.type == "Episode" }).let {
+                        items.filter { it.type == BaseItemKind.EPISODE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
@@ -78,7 +78,7 @@ constructor(
 
                 uiState.emit(UiState.Normal(favoriteSections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

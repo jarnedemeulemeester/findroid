@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
                     Timber.d("$uiState")
                     when(uiState) {

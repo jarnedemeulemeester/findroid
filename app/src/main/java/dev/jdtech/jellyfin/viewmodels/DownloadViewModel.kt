@@ -3,13 +3,14 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.ContentType
 import dev.jdtech.jellyfin.models.DownloadSection
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ constructor(
     sealed class UiState {
         data class Normal(val downloadSections: List<DownloadSection>) : UiState()
         object Loading : UiState()
-        data class Error(val message: String?) : UiState()
+        data class Error(val error: Exception) : UiState()
     }
 
     fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
@@ -40,32 +41,38 @@ constructor(
             uiState.emit(UiState.Loading)
             try {
                 val items = loadDownloadedEpisodes(downloadDatabase)
-                if (items.isEmpty()) {
-                    uiState.emit(UiState.Normal(emptyList()))
-                    //return@launch
+
+                val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
+                items.filter { it.item?.type == BaseItemKind.EPISODE }.forEach {
+                    showsMap.computeIfAbsent(it.item!!.seriesId!!) { mutableListOf() } += it
                 }
+                val shows = showsMap.map { DownloadSeriesMetadata(it.key, it.value[0].item!!.seriesName, it.value) }
+
                 val downloadSections = mutableListOf<DownloadSection>()
                 withContext(Dispatchers.Default) {
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Episodes",
-                        items.filter { it.item?.type == ContentType.EPISODE }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
+                        "Movies",
+                        items.filter { it.item?.type == BaseItemKind.MOVIE }
+                    ).let {
+                        if (it.items!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }
                     DownloadSection(
                         UUID.randomUUID(),
-                        "Movies",
-                        items.filter { it.item?.type == ContentType.MOVIE }).let {
-                        if (it.items.isNotEmpty()) downloadSections.add(
+                        "Shows",
+                        null,
+                        shows
+                    ).let {
+                        if (it.series!!.isNotEmpty()) downloadSections.add(
                             it
                         )
                     }
                 }
                 uiState.emit(UiState.Normal(downloadSections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e.message))
+                uiState.emit(UiState.Error(e))
             }
         }
     }

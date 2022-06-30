@@ -95,8 +95,7 @@ constructor(
                             }
                             okServers.isNotEmpty() -> {
                                 val okServer = okServers.first()
-                                val issuesString = createIssuesString(okServer)
-                                throw Exception(issuesString)
+                                throw Exception(createIssuesString(okServer))
                             }
                             else -> {
                                 throw Exception(resources.getString(R.string.add_server_error_not_found))

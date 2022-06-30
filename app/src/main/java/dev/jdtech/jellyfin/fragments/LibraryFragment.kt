@@ -11,10 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
@@ -91,9 +92,24 @@ class LibraryFragment : Fragment() {
         }
 
         binding.itemsRecyclerView.adapter =
-            ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
+            ViewItemPagingAdapter(ViewItemPagingAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
             })
+
+        (binding.itemsRecyclerView.adapter as ViewItemPagingAdapter).addLoadStateListener {
+            when (it.refresh) {
+                is LoadState.Error -> {
+                    val error = Exception((it.refresh as LoadState.Error).error)
+                    bindUiStateError(LibraryViewModel.UiState.Error(error))
+                }
+                is LoadState.Loading -> {
+                    bindUiStateLoading()
+                }
+                is LoadState.NotLoading -> {
+                    binding.loadingIndicator.isVisible = false
+                }
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -119,8 +135,14 @@ class LibraryFragment : Fragment() {
     }
 
     private fun bindUiStateNormal(uiState: LibraryViewModel.UiState.Normal) {
-        val adapter = binding.itemsRecyclerView.adapter as ViewItemListAdapter
-        adapter.submitList(uiState.items)
+        val adapter = binding.itemsRecyclerView.adapter as ViewItemPagingAdapter
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                uiState.items.collect {
+                    adapter.submitData(it)
+                }
+            }
+        }
         binding.loadingIndicator.isVisible = false
         binding.itemsRecyclerView.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
@@ -132,12 +154,11 @@ class LibraryFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: LibraryViewModel.UiState.Error) {
-        val error = uiState.message ?: getString(R.string.unknown_error)
-        errorDialog = ErrorDialogFragment(error)
+        errorDialog = ErrorDialogFragment(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.itemsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
-        checkIfLoginRequired(error)
+        checkIfLoginRequired(uiState.error.message)
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
@@ -145,7 +166,7 @@ class LibraryFragment : Fragment() {
             LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
-                item.type ?: "Unknown"
+                item.type
             )
         )
     }

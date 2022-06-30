@@ -45,8 +45,8 @@
             app:nullable="true" />
         <argument
             android:name="itemType"
-            android:defaultValue="unknown"
-            app:argType="string" />
+            app:argType="org.jellyfin.sdk.model.api.BaseItemKind"
+            android:defaultValue="MOVIE" />
 
         <action
             android:id="@+id/action_mediaDetailFragment_to_playerActivity"

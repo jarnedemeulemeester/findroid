@@ -9,9 +9,11 @@ import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadRequestItem
+import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.UserItemDataDto
 import timber.log.Timber
 import java.io.File
@@ -148,7 +150,7 @@ fun downloadMetadataToBaseItemDto(item: DownloadItem): BaseItemDto {
 
     return BaseItemDto(
         id = item.id,
-        type = item.type.type,
+        type = item.type,
         seriesName = item.seriesName,
         name = item.name,
         parentIndexNumber = item.parentIndexNumber,
@@ -162,7 +164,7 @@ fun downloadMetadataToBaseItemDto(item: DownloadItem): BaseItemDto {
 fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadItem {
     return DownloadItem(
         id = item.id,
-        type = item.contentType(),
+        type = item.type,
         name = item.name.orEmpty(),
         played = item.userData?.played ?: false,
         seriesId = item.seriesId,
@@ -172,6 +174,24 @@ fun baseItemDtoToDownloadMetadata(item: BaseItemDto): DownloadItem {
         playbackPosition = item.userData?.playbackPositionTicks ?: 0,
         playedPercentage = item.userData?.playedPercentage,
         overview = item.overview
+    )
+}
+
+fun downloadSeriesMetadataToBaseItemDto(metadata: DownloadSeriesMetadata): BaseItemDto {
+    val userData = UserItemDataDto(
+        playbackPositionTicks = 0,
+        playedPercentage = 0.0,
+        isFavorite = false,
+        playCount = 0,
+        played = false,
+        unplayedItemCount = metadata.episodes.size
+    )
+
+    return BaseItemDto(
+        id = metadata.itemId,
+        type = BaseItemKind.SERIES,
+        name = metadata.name,
+        userData = userData
     )
 }
 

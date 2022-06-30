@@ -54,7 +54,7 @@
     <string name="display_extended_title">Afficher le titre étendu</string>
     <string name="player_controls_skip">Suivant</string>
     <string name="next_up">À suivre</string>
-    <string name="continue_watching">Reprendre le visionnage</string>
+    <string name="continue_watching">Reprendre la lecture</string>
     <string name="no_favorites">Vous n\'avez aucun favoris</string>
     <string name="search">Rechercher</string>
     <string name="no_search_results">Aucun résultat</string>
@@ -107,7 +107,7 @@
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="gestures">Gestes</string>
     <string name="player_gestures">Gestes du lecteur</string>
-    <string name="player_gestures_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
+    <string name="player_gestures_vb_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
     <string name="select_video_version_title">Choisissez une version</string>
     <string name="display_extended_title_summary">Afficher le titre étendu inclut la numérotation de la saison et de l\'épisode (SXX:EXX - NomEpisode).</string>
     <string name="add_server_empty_error">Adresse du serveur vide</string>
@@ -122,4 +122,7 @@
     <string name="download_roaming">Télécharger en itinérance</string>
     <string name="person_detail_title">Détails sur la personne</string>
     <string name="error_getting_person_id">Détails indisponibles</string>
+    <string name="player_gestures_vb">Gestes de volume et de luminosité</string>
+    <string name="player_gestures_zoom">Geste de zoom</string>
+    <string name="player_gestures_zoom_summary">Pincez pour remplir l\'écran avec la vidéo</string>
 </resources>
