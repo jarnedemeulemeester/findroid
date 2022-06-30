@@ -178,8 +178,8 @@ class PlayerViewModel @Inject internal constructor(
                         mediaStream.language.orEmpty(),
                         Uri.parse(repository.getBaseUrl() + mediaStream.deliveryUrl!!),
                         when (mediaStream.codec) {
-                            "srt" -> MimeTypes.APPLICATION_SUBRIP
-                            "vtt" -> MimeTypes.TEXT_VTT
+                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                            "webvtt" -> MimeTypes.TEXT_VTT
                             "ass" -> MimeTypes.TEXT_SSA
                             else -> MimeTypes.TEXT_UNKNOWN
                         }
