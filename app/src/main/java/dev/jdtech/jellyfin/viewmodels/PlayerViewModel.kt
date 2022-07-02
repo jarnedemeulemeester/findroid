@@ -172,11 +172,19 @@ class PlayerViewModel @Inject internal constructor(
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
         for (mediaStream in mediaSource.mediaStreams!!) {
             if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+
+                // Temp fix for vtt
+                // Jellyfin returns a srt stream when it should return vtt stream.
+                var deliveryUrl = mediaStream.deliveryUrl!!
+                if (mediaStream.codec == "webvtt") {
+                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
+                }
+
                 externalSubtitles.add(
                     ExternalSubtitle(
                         mediaStream.title.orEmpty(),
                         mediaStream.language.orEmpty(),
-                        Uri.parse(repository.getBaseUrl() + mediaStream.deliveryUrl!!),
+                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
                         when (mediaStream.codec) {
                             "subrip" -> MimeTypes.APPLICATION_SUBRIP
                             "webvtt" -> MimeTypes.TEXT_VTT
