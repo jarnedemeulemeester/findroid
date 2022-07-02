@@ -154,7 +154,6 @@ class MPVPlayer(
 
     // Internal state.
     private var internalMediaItems: List<MediaItem>? = null
-    private var internalMediaItem: MediaItem? = null
 
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
@@ -300,7 +299,6 @@ class MPVPlayer(
                     if (!isPlayerReady) {
                         isPlayerReady = true
                         listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                            //listener.onTracksChanged(currentTrackGroups, currentTrackSelections)
                             listener.onTracksInfoChanged(currentTracksInfo)
                         }
                         seekTo(C.TIME_UNSET)
@@ -840,7 +838,6 @@ class MPVPlayer(
 
     private fun prepareMediaItem(index: Int) {
         internalMediaItems?.get(index)?.let { mediaItem ->
-            internalMediaItem = mediaItem
             resetInternalState()
             mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
                 initialCommands.add(
