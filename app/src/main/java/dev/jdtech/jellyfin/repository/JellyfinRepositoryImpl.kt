@@ -159,13 +159,16 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                         codecProfiles = emptyList(),
                         containerProfiles = emptyList(),
                         directPlayProfiles = listOf(
-                            DirectPlayProfile(
-                                type = DlnaProfileType.VIDEO
-                            ), DirectPlayProfile(type = DlnaProfileType.AUDIO)
+                            DirectPlayProfile(type = DlnaProfileType.VIDEO),
+                            DirectPlayProfile(type = DlnaProfileType.AUDIO)
                         ),
                         transcodingProfiles = emptyList(),
                         responseProfiles = emptyList(),
-                        subtitleProfiles = emptyList(),
+                        subtitleProfiles = listOf(
+                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                        ),
                         xmlRootAttributes = emptyList(),
                         supportedMediaTypes = "",
                         enableAlbumArtInDidl = false,
@@ -179,9 +182,6 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                         requiresPlainVideoItems = false,
                         timelineOffsetSeconds = 0
                     ),
-                    startTimeTicks = null,
-                    audioStreamIndex = null,
-                    subtitleStreamIndex = null,
                     maxStreamingBitrate = 1_000_000_000,
                 )
             ).content.mediaSources
@@ -286,4 +286,6 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getIntros(itemId: UUID): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.userLibraryApi.getIntros(jellyfinApi.userId!!, itemId).content.items.orEmpty()
     }
+
+    override fun getBaseUrl() = jellyfinApi.api.baseUrl.orEmpty()
 }

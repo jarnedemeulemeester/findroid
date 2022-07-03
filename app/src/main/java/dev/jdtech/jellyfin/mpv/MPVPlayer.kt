@@ -150,7 +150,6 @@ class MPVPlayer(
 
     // Internal state.
     private var internalMediaItems: List<MediaItem>? = null
-    private var internalMediaItem: MediaItem? = null
 
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
@@ -835,7 +834,6 @@ class MPVPlayer(
 
     private fun prepareMediaItem(index: Int) {
         internalMediaItems?.get(index)?.let { mediaItem ->
-            internalMediaItem = mediaItem
             resetInternalState()
             mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
                 initialCommands.add(
