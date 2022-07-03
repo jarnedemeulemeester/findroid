@@ -34,7 +34,7 @@ fun requestDownload(
             Uri.fromFile(
                 File(
                     defaultStorage,
-                    downloadRequestItem.itemId.toString()
+                    downloadRequestItem.itemId.toString() + ".downloading"
                 )
             )
         )
@@ -42,7 +42,7 @@ fun requestDownload(
 
     try {
         downloadDatabase.insertItem(downloadRequestItem.item)
-        if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists()) {
+        if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists() && !File(defaultStorage, "${downloadRequestItem.itemId}.downloading").exists()) {
             val downloadId = downloadFile(downloadRequest, context)
             Timber.d("$downloadId")
             downloadDatabase.updateDownloadId(downloadRequestItem.itemId, downloadId)
@@ -66,6 +66,22 @@ private fun downloadFile(request: DownloadManager.Request, context: Context): Lo
 
 fun loadDownloadLocation(context: Context) {
     defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+}
+
+fun checkDownloadStatus(downloadDatabase: DownloadDatabaseDao, context: Context) {
+    val items = downloadDatabase.loadItems()
+    for (item in items) {
+        try{
+            val query = DownloadManager.Query()
+                .setFilterById(item.downloadId!!)
+            val result = context.getSystemService<DownloadManager>()!!.query(query)
+            result.moveToFirst()
+            if (result.getInt(7) == 8) {
+                File(defaultStorage, "${item.id}.downloading").renameTo(File(defaultStorage, item.id.toString()))
+            }
+        } catch (e: Exception){
+        }
+    }
 }
 
 fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerItem> {

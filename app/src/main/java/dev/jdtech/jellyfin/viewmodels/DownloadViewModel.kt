@@ -1,11 +1,13 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadSection
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.checkDownloadStatus
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class DownloadViewModel
 @Inject
 constructor(
+    private val application: Application,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
     private val uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -40,6 +43,7 @@ constructor(
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
             try {
+                checkDownloadStatus(downloadDatabase, application)
                 val items = loadDownloadedEpisodes(downloadDatabase)
 
                 val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()
