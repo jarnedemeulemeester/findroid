@@ -149,7 +149,7 @@ class MPVPlayer(
         CopyOnWriteArraySet<Player.Listener>()
 
     // Internal state.
-    private var internalMediaItems: List<MediaItem>? = null
+    private var internalMediaItems: List<MediaItem> = emptyList()
 
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
@@ -202,7 +202,7 @@ class MPVPlayer(
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
-                        if (currentIndex < (internalMediaItems?.size ?: 0)) {
+                        if (currentIndex < (internalMediaItems.size)) {
                             currentIndex += 1
                             prepareMediaItem(currentIndex)
                             play()
@@ -395,7 +395,7 @@ class MPVPlayer(
          * Returns the number of windows in the timeline.
          */
         override fun getWindowCount(): Int {
-            return internalMediaItems?.size ?: 0
+            return internalMediaItems.size
         }
 
         /**
@@ -413,7 +413,7 @@ class MPVPlayer(
             defaultPositionProjectionUs: Long
         ): Window {
             val currentMediaItem =
-                internalMediaItems?.get(windowIndex) ?: MediaItem.Builder().build()
+                internalMediaItems.getOrNull(windowIndex) ?: MediaItem.Builder().build()
             return window.set(
                 /* uid= */ windowIndex,
                 /* mediaItem= */ currentMediaItem,
@@ -436,7 +436,7 @@ class MPVPlayer(
          * Returns the number of periods in the timeline.
          */
         override fun getPeriodCount(): Int {
-            return internalMediaItems?.size ?: 0
+            return internalMediaItems.size
         }
 
         /**
@@ -682,7 +682,7 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems?.forEach { mediaItem ->
+        internalMediaItems.forEach { mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
@@ -833,7 +833,7 @@ class MPVPlayer(
     }
 
     private fun prepareMediaItem(index: Int) {
-        internalMediaItems?.get(index)?.let { mediaItem ->
+        internalMediaItems.getOrNull(index)?.let { mediaItem ->
             resetInternalState()
             mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
                 initialCommands.add(
