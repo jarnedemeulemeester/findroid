@@ -63,8 +63,8 @@ constructor(
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
-        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+        val preferredAudioLanguage = sp.getString("audio_language", "")!!
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
 
         if (useMpv) {
             val preferredLanguages = mapOf(
