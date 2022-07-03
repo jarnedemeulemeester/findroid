@@ -5,6 +5,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -15,6 +18,7 @@ import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
 import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -62,10 +66,13 @@ class MainActivity : AppCompatActivity() {
 
         loadDownloadLocation(applicationContext)
 
-        viewModel.navigateToAddServer.observe(this) {
-            if (it) {
-                navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
-                viewModel.doneNavigateToAddServer()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onNavigateToAddServer(lifecycleScope) {
+                    if (it) {
+                        navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
+                    }
+                }
             }
         }
     }
