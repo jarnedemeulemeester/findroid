@@ -67,15 +67,18 @@ class AddServerFragment : Fragment() {
     }
 
     private fun bindUiStateNormal() {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
         binding.editTextServerAddressLayout.error = uiState.message
     }
 
     private fun bindUiStateLoading() {
+        binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
         binding.editTextServerAddressLayout.error = null
     }
@@ -86,6 +89,6 @@ class AddServerFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragment3ToLoginFragment2())
+        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
     }
 }

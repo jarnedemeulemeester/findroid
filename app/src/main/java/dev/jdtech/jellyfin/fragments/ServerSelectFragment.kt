@@ -63,7 +63,7 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToAddServerFragment() {
         findNavController().navigate(
-            ServerSelectFragmentDirections.actionServerSelectFragment2ToAddServerFragment3()
+            ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment()
         )
     }
 
