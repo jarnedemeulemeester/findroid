@@ -63,8 +63,8 @@ constructor(
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
-        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+        val preferredAudioLanguage = sp.getString("audio_language", "")!!
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
 
         if (useMpv) {
             val preferredLanguages = mapOf(
@@ -180,7 +180,7 @@ constructor(
                         }
                     }
                 }
-                handler.postDelayed(this, 2000)
+                handler.postDelayed(this, 5000)
             }
         }
         handler.post(runnable)
@@ -225,7 +225,7 @@ constructor(
                 currentSubtitleTracks.clear()
                 when (player) {
                     is MPVPlayer -> {
-                        player.currentTracks.forEach {
+                        player.currentMpvTracks.forEach {
                             when (it.type) {
                                 TrackType.AUDIO -> {
                                     currentAudioTracks.add(it)

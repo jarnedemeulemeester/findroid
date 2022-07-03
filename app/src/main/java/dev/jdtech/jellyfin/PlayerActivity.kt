@@ -103,8 +103,10 @@ class PlayerActivity : BasePlayerActivity() {
                     if (audioRenderer == null) return@setOnClickListener
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this, resources.getString(R.string.select_audio_track),
-                        viewModel.trackSelector, audioRenderer
+                        this,
+                        resources.getString(R.string.select_audio_track),
+                        viewModel.player,
+                        C.TRACK_TYPE_AUDIO
                     )
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
                     trackSelectionDialog.show()
@@ -134,8 +136,10 @@ class PlayerActivity : BasePlayerActivity() {
                     if (subtitleRenderer == null) return@setOnClickListener
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this, resources.getString(R.string.select_subtile_track),
-                        viewModel.trackSelector, subtitleRenderer
+                        this,
+                        resources.getString(R.string.select_subtile_track),
+                        viewModel.player,
+                        C.TRACK_TYPE_TEXT
                     )
                     trackSelectionDialogBuilder.setShowDisableOption(true)
 
