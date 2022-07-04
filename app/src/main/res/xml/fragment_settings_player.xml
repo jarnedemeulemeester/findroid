@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
         app:key="display_extended_title"
         app:summary="@string/display_extended_title_summary"
@@ -38,6 +39,20 @@
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/seeking">
+        <EditTextPreference
+            app:defaultValue="5000"
+            app:key="pref_player_seek_back_inc"
+            app:title="@string/seek_back_increment"
+            app:useSimpleSummaryProvider="true"
+            android:inputType="number"/>
+        <EditTextPreference
+            app:defaultValue="15000"
+            app:key="pref_player_seek_forward_inc"
+            app:title="@string/seek_forward_increment"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>
