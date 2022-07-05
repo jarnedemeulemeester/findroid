@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.text.CueGroup
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
 import com.google.android.exoplayer2.util.*
 import com.google.android.exoplayer2.video.VideoSize
+import dev.jdtech.jellyfin.utils.AppPreferences
 import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
@@ -36,7 +37,7 @@ class MPVPlayer(
     context: Context,
     requestAudioFocus: Boolean,
     preferredLanguages: Map<String, String>,
-    disableHardwareDecoding: Boolean
+    private val appPreferences: AppPreferences
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -68,7 +69,7 @@ class MPVPlayer(
         MPVLib.setOptionString("ao", "audiotrack,opensles")
 
         // Hardware video decoding
-        if (disableHardwareDecoding) {
+        if (appPreferences.mpvDisableHwDec) {
             MPVLib.setOptionString("hwdec", "no")
         } else {
             MPVLib.setOptionString("hwdec", "mediacodec-copy")
@@ -863,11 +864,11 @@ class MPVPlayer(
     }
 
     override fun getSeekBackIncrement(): Long {
-        return C.DEFAULT_SEEK_BACK_INCREMENT_MS
+        return appPreferences.playerSeekBackIncrement
     }
 
     override fun getSeekForwardIncrement(): Long {
-        return C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
+        return appPreferences.playerSeekForwardIncrement
     }
 
     override fun getMaxSeekToPreviousPosition(): Long {
