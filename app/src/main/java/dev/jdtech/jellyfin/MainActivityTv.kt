@@ -3,12 +3,16 @@ package dev.jdtech.jellyfin
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainTvBinding
 import dev.jdtech.jellyfin.tv.ui.HomeFragmentDirections
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 internal class MainActivityTv : FragmentActivity() {
@@ -27,10 +31,13 @@ internal class MainActivityTv : FragmentActivity() {
 
         loadDownloadLocation(applicationContext)
 
-        viewModel.navigateToAddServer.observe(this) {
-            if (it) {
-                navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
-                viewModel.doneNavigateToAddServer()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onNavigateToAddServer(lifecycleScope) {
+                    if (it) {
+                        navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
+                    }
+                }
             }
         }
     }

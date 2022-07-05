@@ -249,7 +249,7 @@
         android:label="@string/add_server"
         tools:layout="@layout/fragment_add_server">
         <action
-            android:id="@+id/action_addServerFragment3_to_loginFragment2"
+            android:id="@+id/action_addServerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
     <fragment
@@ -258,7 +258,7 @@
         android:label="@string/select_server"
         tools:layout="@layout/fragment_server_select">
         <action
-            android:id="@+id/action_serverSelectFragment2_to_addServerFragment3"
+            android:id="@+id/action_serverSelectFragment_to_addServerFragment"
             app:destination="@id/addServerFragment" />
         <action
             android:id="@+id/action_serverSelectFragment_to_homeFragment"
@@ -272,7 +272,7 @@
         android:label="@string/login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment2_to_navigation_home"
+            android:id="@+id/action_loginFragment_to_navigation_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />

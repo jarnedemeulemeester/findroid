@@ -32,7 +32,6 @@ constructor(
     private val resources: Resources = application.resources
 
     private val uiState = MutableStateFlow<UiState>(UiState.Normal)
-
     private val navigateToLogin = MutableSharedFlow<Boolean>()
 
     sealed class UiState {
@@ -58,7 +57,6 @@ constructor(
      * @param inputValue Can be an ip address or hostname
      */
     fun checkServer(inputValue: String) {
-
         viewModelScope.launch {
             uiState.emit(UiState.Loading)
 

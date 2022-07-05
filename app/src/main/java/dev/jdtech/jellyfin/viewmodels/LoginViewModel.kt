@@ -31,7 +31,6 @@ constructor(
     private val resources: Resources = application.resources
 
     private val uiState = MutableStateFlow<UiState>(UiState.Normal)
-
     private val navigateToMain = MutableSharedFlow<Boolean>()
 
     sealed class UiState {

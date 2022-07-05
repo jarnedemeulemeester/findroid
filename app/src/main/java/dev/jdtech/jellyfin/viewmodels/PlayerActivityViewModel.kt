@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -32,7 +33,8 @@ class PlayerActivityViewModel
 constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
+    private val downloadDatabase: DownloadDatabaseDao,
+    appPreferences: AppPreferences,
 ) : ViewModel(), Player.Listener {
     val player: Player
 
@@ -63,8 +65,8 @@ constructor(
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
-        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+        val preferredAudioLanguage = sp.getString("audio_language", "")!!
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
 
         if (useMpv) {
             val preferredLanguages = mapOf(
@@ -75,7 +77,7 @@ constructor(
                 application,
                 false,
                 preferredLanguages,
-                sp.getBoolean("mpv_disable_hwdec", false)
+                appPreferences
             )
         } else {
             val renderersFactory =
@@ -90,6 +92,8 @@ constructor(
             )
             player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
+                .setSeekBackIncrementMs(appPreferences.playerSeekBackIncrement)
+                .setSeekForwardIncrementMs(appPreferences.playerSeekForwardIncrement)
                 .build()
         }
     }
@@ -180,7 +184,7 @@ constructor(
                         }
                     }
                 }
-                handler.postDelayed(this, 2000)
+                handler.postDelayed(this, 5000)
             }
         }
         handler.post(runnable)
@@ -225,7 +229,7 @@ constructor(
                 currentSubtitleTracks.clear()
                 when (player) {
                     is MPVPlayer -> {
-                        player.currentTracks.forEach {
+                        player.currentMpvTracks.forEach {
                             when (it.type) {
                                 TrackType.AUDIO -> {
                                     currentAudioTracks.add(it)

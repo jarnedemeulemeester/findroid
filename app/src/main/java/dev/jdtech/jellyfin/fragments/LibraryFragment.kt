@@ -3,6 +3,8 @@ package dev.jdtech.jellyfin.fragments
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -39,36 +41,6 @@ class LibraryFragment : Fragment() {
     @Inject
     lateinit var sp: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.library_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_sort_by -> {
-                SortDialogFragment(args.libraryId, args.libraryType, viewModel, "sortBy").show(
-                    parentFragmentManager,
-                    "sortdialog"
-                )
-                true
-            }
-            R.id.action_sort_order -> {
-                SortDialogFragment(args.libraryId, args.libraryType, viewModel, "sortOrder").show(
-                    parentFragmentManager,
-                    "sortdialog"
-                )
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,6 +51,45 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.library_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.action_sort_by -> {
+                            SortDialogFragment(
+                                args.libraryId,
+                                args.libraryType,
+                                viewModel,
+                                "sortBy"
+                            ).show(
+                                parentFragmentManager,
+                                "sortdialog"
+                            )
+                            true
+                        }
+                        R.id.action_sort_order -> {
+                            SortDialogFragment(
+                                args.libraryId,
+                                args.libraryType,
+                                viewModel,
+                                "sortOrder"
+                            ).show(
+                                parentFragmentManager,
+                                "sortdialog"
+                            )
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            }, viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadItems(args.libraryId, args.libraryType)
@@ -129,7 +140,12 @@ class LibraryFragment : Fragment() {
                     SortOrder.ASCENDING
                 }
 
-                viewModel.loadItems(args.libraryId, args.libraryType, sortBy = sortBy, sortOrder = sortOrder)
+                viewModel.loadItems(
+                    args.libraryId,
+                    args.libraryType,
+                    sortBy = sortBy,
+                    sortOrder = sortOrder
+                )
             }
         }
     }
