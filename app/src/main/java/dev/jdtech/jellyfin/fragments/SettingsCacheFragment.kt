@@ -11,7 +11,7 @@ class SettingsCacheFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings_cache, rootKey)
 
-        findPreference<EditTextPreference>("image_cache_size")?.setOnBindEditTextListener { editText ->
+        findPreference<EditTextPreference>("pref_image_cache_size")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
     }
