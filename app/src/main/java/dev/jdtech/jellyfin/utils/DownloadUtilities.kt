@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.utils
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
@@ -41,6 +42,8 @@ fun requestDownload(
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
     try {
+        if (downloadDatabase.exists(downloadRequestItem.itemId))
+            downloadDatabase.deleteItem(downloadRequestItem.itemId)
         downloadDatabase.insertItem(downloadRequestItem.item)
         if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists() && !File(defaultStorage, "${downloadRequestItem.itemId}.downloading").exists()) {
             val downloadId = downloadFile(downloadRequest, context)
@@ -102,6 +105,19 @@ fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerIt
 
 fun isItemAvailable(itemId: UUID): Boolean {
     return File(defaultStorage, itemId.toString()).exists()
+}
+
+fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, context: Context): Boolean {
+    if (isItemAvailable(itemId))
+        return false
+    val downloadId = downloadDatabaseDao.loadItem(itemId)?.downloadId ?: return false
+    val query = DownloadManager.Query().setFilterById(downloadId)
+    val result = context.getSystemService<DownloadManager>()!!.query(query)
+    result.moveToFirst()
+    if (result.count == 0)
+        return true
+    val status = result.getInt(result.getColumnIndex(DownloadManager.COLUMN_STATUS))
+    return status == 16
 }
 
 fun isItemDownloaded(downloadDatabaseDao: DownloadDatabaseDao, itemId: UUID): Boolean {

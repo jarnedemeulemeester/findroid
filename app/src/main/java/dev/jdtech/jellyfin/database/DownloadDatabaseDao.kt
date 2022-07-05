@@ -25,4 +25,8 @@ interface DownloadDatabaseDao {
 
     @Query("update downloads set downloadId = :downloadId where id = :id")
     fun updateDownloadId(id: UUID, downloadId: Long)
+
+    @Query("SELECT EXISTS (SELECT 1 FROM downloads WHERE id = :id)")
+    fun exists(id: UUID): Boolean
+
 }

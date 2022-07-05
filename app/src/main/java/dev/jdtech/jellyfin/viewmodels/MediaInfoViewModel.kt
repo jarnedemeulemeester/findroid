@@ -49,6 +49,7 @@ constructor(
             val favorite: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
+            var canRetry: Boolean = false,
             val available: Boolean,
         ) : UiState()
 
@@ -74,7 +75,7 @@ constructor(
     var favorite: Boolean = false
     private var canDownload: Boolean = false
     private var downloaded: Boolean = false
-    private var downloadMedia: Boolean = false
+    var canRetry: Boolean = false
     private var available: Boolean = true
 
     private lateinit var downloadRequestItem: DownloadRequestItem
@@ -118,6 +119,7 @@ constructor(
                         favorite,
                         canDownload,
                         downloaded,
+                        canRetry,
                         available
                     )
                 )
@@ -142,6 +144,7 @@ constructor(
             played = tempItem.userData?.played ?: false
             favorite = tempItem.userData?.isFavorite ?: false
             available = isItemAvailable(tempItem.id)
+            canRetry = canRetryDownload(tempItem.id, downloadDatabase, application)
             uiState.emit(
                 UiState.Normal(
                     tempItem,
@@ -158,6 +161,7 @@ constructor(
                     favorite,
                     canDownload,
                     downloaded,
+                    canRetry,
                     available
                 )
             )
@@ -263,7 +267,21 @@ constructor(
                 jellyfinRepository.getStreamUrl(itemId, downloadItem?.mediaSources?.get(0)?.id!!)
             val metadata = baseItemDtoToDownloadMetadata(downloadItem)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
-            downloadMedia = true
+            requestDownload(
+                downloadDatabase,
+                Uri.parse(downloadRequestItem.uri),
+                downloadRequestItem,
+                application
+            )
+        }
+    }
+
+    fun retryDownload() {
+        viewModelScope.launch {
+            val episode = jellyfinRepository.getItem(item!!.id)
+            val uri = jellyfinRepository.getStreamUrl(episode.id, episode.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(episode)
+            downloadRequestItem = DownloadRequestItem(uri, episode.id, metadata)
             requestDownload(
                 downloadDatabase,
                 Uri.parse(downloadRequestItem.uri),

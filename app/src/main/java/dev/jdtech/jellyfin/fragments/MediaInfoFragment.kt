@@ -116,6 +116,10 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
+            if (viewModel.canRetry){
+                viewModel.retryDownload()
+                return@setOnClickListener
+            }
             viewModel.item?.let { item ->
                 if (!args.isOffline) {
                     playerViewModel.loadPlayerItems(item) {
@@ -200,8 +204,10 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
-            binding.playButton.isEnabled = available
-            binding.playButton.alpha = if (!available) 0.5F else 1.0F
+            val clickable = available || canRetry
+            binding.playButton.isEnabled = clickable
+            binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
+            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
 
             // Check icon
             when (played) {

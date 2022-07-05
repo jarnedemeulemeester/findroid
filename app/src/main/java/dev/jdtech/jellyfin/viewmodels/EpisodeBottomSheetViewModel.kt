@@ -40,8 +40,8 @@ constructor(
             val favorite: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
-            val downloadEpisode: Boolean,
             val available: Boolean,
+            val canRetry: Boolean
         ) : UiState()
 
         object Loading : UiState()
@@ -59,8 +59,8 @@ constructor(
     var favorite: Boolean = false
     private var canDownload = false
     private var downloaded: Boolean = false
-    private var downloadEpisode: Boolean = false
     private var available: Boolean = true
+    var canRetry: Boolean = false
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     private lateinit var downloadRequestItem: DownloadRequestItem
@@ -86,8 +86,8 @@ constructor(
                         favorite,
                         canDownload,
                         downloaded,
-                        downloadEpisode,
                         available,
+                        canRetry,
                     )
                 )
             } catch (e: Exception) {
@@ -102,7 +102,7 @@ constructor(
             playerItems.add(playerItem)
             item = downloadMetadataToBaseItemDto(playerItem.item!!)
             available = isItemAvailable(playerItem.itemId)
-            Timber.d("Available: $available")
+            canRetry = canRetryDownload(playerItem.itemId, downloadDatabase, application)
             uiState.emit(
                 UiState.Normal(
                     item!!,
@@ -112,8 +112,8 @@ constructor(
                     favorite,
                     canDownload,
                     downloaded,
-                    downloadEpisode,
                     available,
+                    canRetry,
                 )
             )
         }
@@ -169,7 +169,21 @@ constructor(
             val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
             val metadata = baseItemDtoToDownloadMetadata(episode)
             downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
-            downloadEpisode = true
+            requestDownload(
+                downloadDatabase,
+                Uri.parse(downloadRequestItem.uri),
+                downloadRequestItem,
+                application
+            )
+        }
+    }
+
+    fun retryDownload() {
+        viewModelScope.launch {
+            val episode = jellyfinRepository.getItem(item!!.id)
+            val uri = jellyfinRepository.getStreamUrl(episode.id, episode.mediaSources?.get(0)?.id!!)
+            val metadata = baseItemDtoToDownloadMetadata(episode)
+            downloadRequestItem = DownloadRequestItem(uri, episode.id, metadata)
             requestDownload(
                 downloadDatabase,
                 Uri.parse(downloadRequestItem.uri),
