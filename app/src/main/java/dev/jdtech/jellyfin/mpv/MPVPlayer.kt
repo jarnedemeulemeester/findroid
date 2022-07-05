@@ -1415,7 +1415,7 @@ class MPVPlayer(
                         Tracks.Group(
                             this,
                             true,
-                            intArrayOf(C.FORMAT_HANDLED),
+                            IntArray(this.length) { C.FORMAT_HANDLED },
                             BooleanArray(this.length) { it == indexCurrentVideo }
                         )
                     }
