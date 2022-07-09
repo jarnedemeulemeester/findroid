@@ -36,7 +36,7 @@ class PlayerGestureHelper(
     private var swipeGestureValueTrackerBrightness = -1f
 
     private val tapGestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
             }

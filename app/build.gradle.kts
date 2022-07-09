@@ -9,13 +9,13 @@ plugins {
 }
 
 android {
-    compileSdk = 32
-    buildToolsVersion = "32.0.0"
+    compileSdk = 33
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 9
         versionName = "0.4.0"
     }
