@@ -288,4 +288,12 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     }
 
     override fun getBaseUrl() = jellyfinApi.api.baseUrl.orEmpty()
+
+    override suspend fun updateDeviceName(name: String) {
+        jellyfinApi.jellyfin.deviceInfo?.id?.let { id ->
+            withContext(Dispatchers.IO) {
+                jellyfinApi.devicesApi.updateDeviceOptions(id, DeviceOptionsDto(0, customName = name))
+            }
+        }
+    }
 }
