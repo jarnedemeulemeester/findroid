@@ -125,4 +125,5 @@
     <string name="player_gestures_vb">音量和亮度手势</string>
     <string name="player_gestures_zoom">缩放手势</string>
     <string name="player_gestures_zoom_summary">捏合以用视频填满屏幕</string>
+    <string name="seeking">搜寻</string>
 </resources>
