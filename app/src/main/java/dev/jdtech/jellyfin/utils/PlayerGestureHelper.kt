@@ -36,18 +36,46 @@ class PlayerGestureHelper(
     private var swipeGestureValueTrackerBrightness = -1f
 
     private val tapGestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
+            }
+
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            val viewCenterX = playerView.measuredWidth / 2
+            val currentPos = playerView.player?.currentPosition ?: 0
+
+            if (e.x.toInt() > viewCenterX) {
+                playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
+            }
+            else {
+                playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
             }
             return true
         }
     })
 
     private val gestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
+            }
+
+            return true
+        }
+        
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            val viewCenterX = playerView.measuredWidth / 2
+            val currentPos = playerView.player?.currentPosition ?: 0
+
+            if (e.x.toInt() > viewCenterX) {
+                playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
+            }
+            else {
+                playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
             }
             return true
         }
