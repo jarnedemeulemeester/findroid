@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,15 +29,19 @@ class TvLoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = TvLoginFragmentBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+
+        binding.editTextPassword.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_GO -> {
+                    login()
+                    true
+                }
+                else -> false
+            }
+        }
 
         binding.buttonLogin.setOnClickListener {
-            val username = binding.username.text.toString()
-            val password = binding.password.text.toString()
-
-            binding.progressCircular.visibility = View.VISIBLE
-            viewModel.login(username, password)
+            login()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -62,17 +67,26 @@ class TvLoginFragment : Fragment() {
     }
 
     private fun bindUiStateNormal() {
+        binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
+        binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
-        binding.username.error = uiState.message
+        binding.editTextUsername.error = uiState.message
     }
 
     private fun bindUiStateLoading() {
+        binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
-        binding.username.error = null
+        binding.editTextUsername.error = null
+    }
+
+    private fun login() {
+        val username = binding.editTextUsername.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        viewModel.login(username, password)
     }
 
     private fun navigateToMainActivity() {
