@@ -12,7 +12,32 @@
         android:layout_height="match_parent"
         android:background="@color/black"
         app:animation_enabled="false"
-        app:show_buffering="always" />
+        app:show_buffering="always">
+
+    </com.google.android.exoplayer2.ui.StyledPlayerView>
+
+    <LinearLayout
+        android:id="@+id/progress_scrubber_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|center"
+        android:background="@drawable/overlay_background"
+        android:clickable="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/progress_scrubber_text"
+            android:layout_width="262dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="180dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/gesture_volume_layout"
