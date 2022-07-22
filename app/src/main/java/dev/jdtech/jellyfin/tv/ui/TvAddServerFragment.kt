@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,12 +30,19 @@ internal class TvAddServerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = TvAddServerFragmentBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+
+        binding.editTextServerAddress.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_GO -> {
+                    connectToServer()
+                    true
+                }
+                else -> false
+            }
+        }
 
         binding.buttonConnect.setOnClickListener {
-            val serverAddress = binding.serverAddress.text.toString()
-            viewModel.checkServer(serverAddress)
+            connectToServer()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -60,17 +68,25 @@ internal class TvAddServerFragment : Fragment() {
     }
 
     private fun bindUiStateNormal() {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
-        binding.serverAddress.error = uiState.message
+        binding.editTextServerAddress.error = uiState.message
     }
 
     private fun bindUiStateLoading() {
+        binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
-        binding.serverAddress.error = null
+        binding.editTextServerAddress.error = null
+    }
+
+    private fun connectToServer() {
+        val serverAddress = binding.editTextServerAddress.text.toString()
+        viewModel.checkServer(serverAddress.removeSuffix("/"))
     }
 
     private fun navigateToLoginFragment() {

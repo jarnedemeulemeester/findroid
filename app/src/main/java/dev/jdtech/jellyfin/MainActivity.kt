@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityMainAppBinding
 import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        val navView: BottomNavigationView = binding.navView
+        val navView: NavigationBarView = binding.navView as NavigationBarView
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment

@@ -86,7 +86,6 @@ class LoginFragment : Fragment() {
     private fun login() {
         val username = binding.editTextUsername.text.toString()
         val password = binding.editTextPassword.text.toString()
-        binding.progressCircular.visibility = View.VISIBLE
         viewModel.login(username, password)
     }
 

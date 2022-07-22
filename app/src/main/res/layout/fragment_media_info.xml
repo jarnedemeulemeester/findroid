@@ -352,7 +352,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/next_up"
-                    android:layout_width="@dimen/nextup_media_width"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:clickable="true"

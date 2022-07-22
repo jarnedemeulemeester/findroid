@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.AddServerFragment"
     tools:ignore="MissingDefaultResource">
-
-    <data>
-
-        <variable
-            name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.AddServerViewModel"
-            />
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.AddServerFragment"
-        >
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/image_banner"
@@ -29,8 +19,7 @@
             android:src="@drawable/ic_banner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -43,8 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_banner"
-            app:layout_constraintVertical_bias="0.36"
-            >
+            app:layout_constraintVertical_bias="0.36">
 
             <TextView
                 android:id="@+id/text_add_server"
@@ -53,45 +41,39 @@
                 android:layout_marginBottom="32dp"
                 android:text="@string/add_server"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                android:textColor="?android:textColorPrimary"
-                />
+                android:textColor="?android:textColorPrimary" />
 
             <EditText
-                android:id="@+id/server_address"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/edit_text_server_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:autofillHints=""
                 android:hint="@string/edit_text_server_address_hint"
-                app:errorEnabled="true"
-                app:startIconDrawable="@drawable/ic_server"
-                android:inputType="textUri"
-                />
+                android:imeOptions="actionGo"
+                android:inputType="textUri" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <Button
-                android:id="@+id/button_connect"
-                android:layout_height="wrap_content"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:drawableStart="@drawable/ic_launcher_foreground"
-                android:text="@string/button_connect"
-                />
+                android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/progress_circular"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:elevation="8dp"
-                android:indeterminateTint="@color/white"
-                android:padding="8dp"
-                android:visibility="invisible"
-                />
+                <Button
+                    android:id="@+id/button_connect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_connect" />
 
-        </RelativeLayout>
+                <ProgressBar
+                    android:id="@+id/progress_circular"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:elevation="8dp"
+                    android:indeterminateTint="@color/white"
+                    android:padding="8dp"
+                    android:visibility="invisible" />
 
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout></layout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
