@@ -45,8 +45,8 @@ class AddServerFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is AddServerViewModel.UiState.Normal -> bindUiStateNormal()
@@ -54,8 +54,11 @@ class AddServerFragment : Fragment() {
                         is AddServerViewModel.UiState.Loading -> bindUiStateLoading()
                     }
                 }
-                viewModel.onNavigateToLogin(viewLifecycleOwner.lifecycleScope) {
-                    Timber.d("Navigate to login: $it")
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToLogin.collect {
                     if (it) {
                         navigateToLoginFragment()
                     }

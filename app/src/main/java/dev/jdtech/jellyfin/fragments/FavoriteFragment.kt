@@ -46,7 +46,7 @@ class FavoriteFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is FavoriteViewModel.UiState.Normal -> bindUiStateNormal(uiState)

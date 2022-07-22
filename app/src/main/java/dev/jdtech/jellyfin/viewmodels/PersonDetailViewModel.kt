@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -17,7 +17,8 @@ internal class PersonDetailViewModel @Inject internal constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
 
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val data: PersonOverview, val starredIn: StarredIn) : UiState()
@@ -25,13 +26,9 @@ internal class PersonDetailViewModel @Inject internal constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
     fun loadData(personId: UUID) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 val personDetail = jellyfinRepository.getItem(personId)
 
@@ -52,9 +49,9 @@ internal class PersonDetailViewModel @Inject internal constructor(
 
                 val starredIn = StarredIn(movies, shows)
 
-                uiState.emit(UiState.Normal(data, starredIn))
+                _uiState.emit(UiState.Normal(data, starredIn))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

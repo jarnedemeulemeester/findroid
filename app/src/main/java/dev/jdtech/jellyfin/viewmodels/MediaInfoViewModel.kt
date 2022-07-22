@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +12,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
@@ -31,7 +31,8 @@ constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(
@@ -54,10 +55,6 @@ constructor(
 
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
     }
 
     var item: BaseItemDto? = null
@@ -83,7 +80,7 @@ constructor(
 
     fun loadData(itemId: UUID, itemType: BaseItemKind) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 val tempItem = jellyfinRepository.getItem(itemId)
                 item = tempItem
@@ -102,7 +99,7 @@ constructor(
                     nextUp = getNextUp(itemId)
                     seasons = jellyfinRepository.getSeasons(itemId)
                 }
-                uiState.emit(
+                _uiState.emit(
                     UiState.Normal(
                         tempItem,
                         actors,
@@ -122,7 +119,7 @@ constructor(
                     )
                 )
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }
@@ -142,7 +139,7 @@ constructor(
             played = tempItem.userData?.played ?: false
             favorite = tempItem.userData?.isFavorite ?: false
             available = isItemAvailable(tempItem.id)
-            uiState.emit(
+            _uiState.emit(
                 UiState.Normal(
                     tempItem,
                     actors,

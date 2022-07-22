@@ -61,7 +61,7 @@ class MediaInfoFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is MediaInfoViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -69,6 +69,11 @@ class MediaInfoFragment : Fragment() {
                         is MediaInfoViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 if (!args.isOffline) {
                     viewModel.loadData(args.itemId, args.itemType)
                 } else {
