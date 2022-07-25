@@ -95,7 +95,7 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.3.1"
+    val jellyfinVersion = "1.3.2"
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
