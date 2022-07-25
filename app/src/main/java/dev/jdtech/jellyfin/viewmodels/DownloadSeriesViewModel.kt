@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.adapters.DownloadEpisodeItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class DownloadSeriesViewModel
 @Inject
 constructor() : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val downloadEpisodes: List<DownloadEpisodeItem>) : UiState()
@@ -22,17 +24,13 @@ constructor() : ViewModel() {
         data class Error(val error: Exception) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
     fun loadEpisodes(seriesMetadata: DownloadSeriesMetadata) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
-                uiState.emit(UiState.Normal(getEpisodes((seriesMetadata))))
+                _uiState.emit(UiState.Normal(getEpisodes((seriesMetadata))))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

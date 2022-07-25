@@ -63,7 +63,7 @@ internal class MediaDetailFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is MediaInfoViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -194,12 +194,12 @@ internal class MediaDetailFragment : Fragment() {
                 false -> {
                     val typedValue = TypedValue()
                     requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
-                    binding.checkButton.imageTintList = ColorStateList.valueOf(
+                    /*binding.checkButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
                             typedValue.resourceId,
                             requireActivity().theme
                         )
-                    )
+                    )*/
                 }
             }
 
