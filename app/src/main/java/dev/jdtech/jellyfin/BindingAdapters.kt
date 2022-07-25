@@ -114,7 +114,6 @@ private fun ImageView.loadImage(url: String, @DrawableRes errorPlaceHolderId: In
         .placeholder(R.color.neutral_800)
         .error(errorPlaceHolderId)
         .into(this)
-        .view
 
     return this
 }
