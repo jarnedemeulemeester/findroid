@@ -91,7 +91,7 @@ class PlayerGestureHelper(
 
             // Check whether swipe was oriented vertically
             if (abs(distanceY / distanceX) < 2) {
-                if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
+                return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
                     (!swipeGestureBrightnessOpen && !swipeGestureVolumeOpen)) {
                     val currentPos = playerView.player?.currentPosition ?: 0
                     val vidDuration = playerView.player?.duration ?: 0
@@ -103,9 +103,8 @@ class PlayerGestureHelper(
                     activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                     swipeGestureValueTrackerProgress = newPos
                     swipeGestureProgressOpen = true
-                    return true
-                }
-                else return false
+                    true
+                } else false
             }
 
             if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen)
@@ -236,7 +235,7 @@ class PlayerGestureHelper(
 
     private fun longToTimestamp(duration: Long, noSign: Boolean = false): String {
         val sign = if (noSign) "" else if (duration < 0) "-" else "+"
-        val seconds = Math.round((abs(duration)/1000).toFloat())
+        val seconds = abs(duration).div(1000)
 
         return String.format("%s%02d:%02d:%02d", sign, seconds / 3600, (seconds / 60) % 60, seconds % 60)
     }
