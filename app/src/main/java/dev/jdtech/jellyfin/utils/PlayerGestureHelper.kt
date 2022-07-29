@@ -34,32 +34,81 @@ class PlayerGestureHelper(
 
     private var swipeGestureValueTrackerVolume = -1f
     private var swipeGestureValueTrackerBrightness = -1f
+    private var swipeGestureValueTrackerProgress = -1L
+
+    private var swipeGestureVolumeOpen = false
+    private var swipeGestureBrightnessOpen = false
+    private var swipeGestureProgressOpen = false
 
     private val tapGestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
+            }
+
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            val viewCenterX = playerView.measuredWidth / 2
+            val currentPos = playerView.player?.currentPosition ?: 0
+
+            if (e.x.toInt() > viewCenterX) {
+                playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
+            }
+            else {
+                playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
             }
             return true
         }
     })
 
     private val gestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             playerView.apply {
                 if (!isControllerFullyVisible) showController() else hideController()
+            }
+
+            return true
+        }
+        
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            val viewCenterX = playerView.measuredWidth / 2
+            val currentPos = playerView.player?.currentPosition ?: 0
+
+            if (e.x.toInt() > viewCenterX) {
+                playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
+            }
+            else {
+                playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
             }
             return true
         }
 
         override fun onScroll(firstEvent: MotionEvent, currentEvent: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-            // Check whether swipe was oriented vertically
-            if (abs(distanceY / distanceX) < 2)
-                return false
-
             if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
                 return false
 
+            // Check whether swipe was oriented vertically
+            if (abs(distanceY / distanceX) < 2) {
+                return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
+                    (!swipeGestureBrightnessOpen && !swipeGestureVolumeOpen)) {
+                    val currentPos = playerView.player?.currentPosition ?: 0
+                    val vidDuration = playerView.player?.duration ?: 0
+
+                    val difference = ((currentEvent.x - firstEvent.x) * 90).toLong()
+                    val newPos = (currentPos + difference).coerceIn(0, vidDuration)
+
+                    activity.binding.progressScrubberLayout.visibility = View.VISIBLE
+                    activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
+                    swipeGestureValueTrackerProgress = newPos
+                    swipeGestureProgressOpen = true
+                    true
+                } else false
+            }
+
+            if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen)
+                return false
 
             val viewCenterX = playerView.measuredWidth / 2
 
@@ -84,6 +133,8 @@ class PlayerGestureHelper(
                 activity.binding.gestureVolumeProgressBar.max = maxVolume
                 activity.binding.gestureVolumeProgressBar.progress = toSet
                 activity.binding.gestureVolumeText.text = "${(toSet.toFloat()/maxVolume.toFloat()).times(100).toInt()}%"
+
+                swipeGestureVolumeOpen = true
             } else {
                 // Swiping on the left, change brightness
                 val window = activity.window
@@ -107,6 +158,8 @@ class PlayerGestureHelper(
                 activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
                 activity.binding.gestureBrightnessProgressBar.progress = lp.screenBrightness.times(100).toInt()
                 activity.binding.gestureBrightnessText.text = "${(lp.screenBrightness/BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()}%"
+
+                swipeGestureBrightnessOpen = true
             }
             return true
         }
@@ -121,6 +174,10 @@ class PlayerGestureHelper(
         if (appPreferences.playerBrightnessRemember) {
             appPreferences.playerBrightness = activity.window.attributes.screenBrightness
         }
+    }
+
+    private val hideGestureProgressOverlayAction = Runnable {
+        activity.binding.progressScrubberLayout.visibility = View.GONE
     }
 
     /**
@@ -151,15 +208,36 @@ class PlayerGestureHelper(
                 if (visibility == View.VISIBLE) {
                     removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
                     postDelayed(hideGestureVolumeIndicatorOverlayAction, 1000)
+                    swipeGestureVolumeOpen = false
                 }
             }
             activity.binding.gestureBrightnessLayout.apply {
                 if (visibility == View.VISIBLE) {
                     removeCallbacks(hideGestureBrightnessIndicatorOverlayAction)
                     postDelayed(hideGestureBrightnessIndicatorOverlayAction, 1000)
+                    swipeGestureBrightnessOpen = false
+                }
+            }
+            activity.binding.progressScrubberLayout.apply {
+                if (visibility == View.VISIBLE) {
+                    if (swipeGestureValueTrackerProgress > -1) {
+                        playerView.player?.seekTo(swipeGestureValueTrackerProgress)
+                    }
+                    removeCallbacks(hideGestureProgressOverlayAction)
+                    postDelayed(hideGestureProgressOverlayAction, 1000)
+                    swipeGestureProgressOpen = false
+
+                    swipeGestureValueTrackerProgress = -1L
                 }
             }
         }
+    }
+
+    private fun longToTimestamp(duration: Long, noSign: Boolean = false): String {
+        val sign = if (noSign) "" else if (duration < 0) "-" else "+"
+        val seconds = abs(duration).div(1000)
+
+        return String.format("%s%02d:%02d:%02d", sign, seconds / 3600, (seconds / 60) % 60, seconds % 60)
     }
 
     init {
