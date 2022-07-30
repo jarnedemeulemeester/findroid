@@ -55,9 +55,9 @@
 
     <fragment
         android:id="@+id/addServerTvFragment"
-        android:name="dev.jdtech.jellyfin.tv.ui.TvAddServerFragment"
+        android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
         android:label="@string/add_server"
-        tools:layout="@layout/tv_add_server_fragment">
+        tools:layout="@layout/fragment_add_server">
         <action
             android:id="@+id/action_addServerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
