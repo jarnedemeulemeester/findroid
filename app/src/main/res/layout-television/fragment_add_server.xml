@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:autofillHints=""
+                android:focusedByDefault="true"
                 android:hint="@string/edit_text_server_address_hint"
                 android:imeOptions="actionGo"
                 android:inputType="textUri" />

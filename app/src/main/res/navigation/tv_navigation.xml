@@ -65,7 +65,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="dev.jdtech.jellyfin.tv.ui.TvLoginFragment"
+        android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login">
         <action
