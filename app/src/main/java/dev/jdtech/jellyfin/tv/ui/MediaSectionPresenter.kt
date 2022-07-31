@@ -17,18 +17,21 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val mediaView =
-            BaseItemBinding
-                .inflate(parent.context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-                .root
-        return ViewHolder(mediaView)
+        return ViewHolder(
+            BaseItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ).root
+        )
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         if (item is BaseItemDto) {
             DataBindingUtil.getBinding<BaseItemBinding>(viewHolder.view)?.apply {
                 this.item = item
-                this.itemName.text = if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
+                this.itemName.text =
+                    if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
                 this.itemCount.visibility =
                     if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
                 this.itemLayout.layoutParams.width =
@@ -45,11 +48,13 @@ class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter
 class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val mediaView =
-            HomeEpisodeItemBinding
-                .inflate(parent.context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-                .root
-        return ViewHolder(mediaView)
+        return ViewHolder(
+            HomeEpisodeItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ).root
+        )
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
@@ -59,7 +64,8 @@ class DynamicMediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Pr
                 item.userData?.playedPercentage?.toInt()?.let {
                     progressBar.layoutParams.width = TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
-                        (it.times(2.24)).toFloat(), progressBar.context.resources.displayMetrics).toInt()
+                        (it.times(2.24)).toFloat(), progressBar.context.resources.displayMetrics
+                    ).toInt()
                     progressBar.isVisible = true
                 }
 

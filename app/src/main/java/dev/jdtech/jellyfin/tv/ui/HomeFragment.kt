@@ -33,8 +33,11 @@ internal class HomeFragment : BrowseSupportFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val rowPresenter = ListRowPresenter()
+        rowPresenter.selectEffectEnabled = false
+
         headersState = HEADERS_ENABLED
-        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        rowsAdapter = ArrayObjectAdapter(rowPresenter)
         adapter = rowsAdapter
     }
 
