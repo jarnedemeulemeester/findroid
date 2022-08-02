@@ -17,6 +17,8 @@ object Constants {
     const val PREF_PLAYER_SEEK_FORWARD_INC = "pref_player_seek_forward_inc"
     const val PREF_IMAGE_CACHE = "pref_image_cache"
     const val PREF_IMAGE_CACHE_SIZE = "pref_image_cache_size"
+    const val PREF_THEME = "theme"
+    const val PREF_DYNAMIC_COLORS = "dynamic_colors"
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20
