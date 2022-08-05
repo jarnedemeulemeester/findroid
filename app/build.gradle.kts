@@ -59,7 +59,6 @@ dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha02")
 
     implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
@@ -95,7 +94,7 @@ dependencies {
     implementation("androidx.preference:preference-ktx:$preferenceVersion")
 
     // Jellyfin
-    val jellyfinVersion = "1.3.3"
+    val jellyfinVersion = "1.3.4"
     implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
 
     // Glide
@@ -104,7 +103,7 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     // Hilt
-    val hiltVersion = "2.43.1"
+    val hiltVersion = "2.43.2"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 

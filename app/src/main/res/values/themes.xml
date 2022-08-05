@@ -39,12 +39,6 @@
         <item name="elevationOverlayEnabled">false</item>
     </style>
 
-    <style name="Theme.FindroidSplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="postSplashScreenTheme">@style/Theme.Findroid</item>
-    </style>
-
     <string-array name="themes">
         <item>Follow system</item>
         <item>Light</item>

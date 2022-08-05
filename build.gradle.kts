@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.1")
+        classpath("com.android.tools.build:gradle:7.2.2")
 
         val kotlinVersion = "1.7.10"
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
@@ -18,7 +18,7 @@ buildscript {
         val navVersion = "2.5.1"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
 
-        val hiltVersion = "2.43.1"
+        val hiltVersion = "2.43.2"
         classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
 
         val aboutLibrariesVersion = "10.3.1"
