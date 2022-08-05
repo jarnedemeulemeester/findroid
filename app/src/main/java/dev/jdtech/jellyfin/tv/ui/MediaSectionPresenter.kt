@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.tv.ui
 
-import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,33 @@ import androidx.databinding.DataBindingUtil
 import androidx.leanback.widget.Presenter
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
+import dev.jdtech.jellyfin.databinding.CollectionItemBinding
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+
+class LibaryItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        return ViewHolder(
+            CollectionItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ).root
+        )
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
+        if (item is BaseItemDto) {
+            DataBindingUtil.getBinding<CollectionItemBinding>(viewHolder.view)?.apply {
+                this.collection = item
+                viewHolder.view.setOnClickListener { onClick(item) }
+            }
+        }
+    }
+
+    override fun onUnbindViewHolder(viewHolder: ViewHolder) = Unit
+}
 
 class MediaItemPresenter(private val onClick: (BaseItemDto) -> Unit) : Presenter() {
 

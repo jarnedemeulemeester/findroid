@@ -68,6 +68,8 @@ internal class HomeFragment : BrowseSupportFragment() {
                 }
             }
         }
+
+        viewModel.loadData(updateCapabilities = true, includeLibraries = true)
     }
 
     private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {
@@ -86,6 +88,7 @@ internal class HomeFragment : BrowseSupportFragment() {
 
     private fun HomeItem.toHeader(): HeaderItem {
         return when (this) {
+            is HomeItem.Libraries -> HeaderItem(section.name)
             is HomeItem.Section -> HeaderItem(homeSection.name)
             is HomeItem.ViewItem -> HeaderItem(
                 String.format(
@@ -98,6 +101,9 @@ internal class HomeFragment : BrowseSupportFragment() {
 
     private fun HomeItem.toItems(): ArrayObjectAdapter {
         return when (this) {
+            is HomeItem.Libraries -> ArrayObjectAdapter(LibaryItemPresenter { item ->
+
+            }).apply { addAll(0, section.items) }
             is HomeItem.Section -> ArrayObjectAdapter(DynamicMediaItemPresenter { item ->
                 navigateToMediaDetailFragment(item)
             }).apply { addAll(0, homeSection.items) }

@@ -37,19 +37,21 @@ class HomeViewModel @Inject internal constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    init {
-        loadData(updateCapabilities = true)
-    }
-
     fun refreshData() = loadData(updateCapabilities = false)
 
-    private fun loadData(updateCapabilities: Boolean) {
+    fun loadData(updateCapabilities: Boolean, includeLibraries: Boolean = false) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 if (updateCapabilities) repository.postCapabilities()
 
-                val updated = loadDynamicItems() + loadViews()
+                val items = mutableListOf<HomeItem>()
+
+                if (includeLibraries) {
+                    items.add(loadLibraries())
+                }
+
+                val updated = items + loadDynamicItems() + loadViews()
 
                 withContext(Dispatchers.Default) {
                     syncPlaybackProgress(downloadDatabase, repository)
@@ -59,6 +61,19 @@ class HomeViewModel @Inject internal constructor(
                 _uiState.emit(UiState.Error(e))
             }
         }
+    }
+
+    private suspend fun loadLibraries(): HomeItem {
+        val items = repository.getItems()
+        val collections =
+            items.filter { collection -> CollectionType.unsupportedCollections.none { it.type == collection.collectionType } }
+        return HomeItem.Libraries(
+            HomeSection(
+                UUID.fromString("38f5ca96-9e4b-4c0e-a8e4-02225ed07e02"),
+                application.resources.getString(R.string.libraries),
+                collections
+            )
+        )
     }
 
     private suspend fun loadDynamicItems(): List<Section> {

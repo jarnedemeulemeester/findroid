@@ -72,6 +72,8 @@ class HomeFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        viewModel.loadData(updateCapabilities = true)
     }
 
     override fun onResume() {
