@@ -62,7 +62,7 @@ internal class HomeFragment : BrowseSupportFragment() {
                     Timber.d("$uiState")
                     when (uiState) {
                         is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is HomeViewModel.UiState.Loading -> Unit
+                        is HomeViewModel.UiState.Loading -> bindUiStateLoading()
                         is HomeViewModel.UiState.Error -> Unit
                     }
                 }
@@ -77,10 +77,15 @@ internal class HomeFragment : BrowseSupportFragment() {
     }
 
     private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {
+        progressBarManager.hide()
         uiState.apply {
             rowsAdapter.clear()
             homeItems.map { section -> rowsAdapter.add(section.toListRow()) }
         }
+    }
+
+    private fun bindUiStateLoading() {
+        progressBarManager.show()
     }
 
     private fun HomeItem.toListRow(): ListRow {
