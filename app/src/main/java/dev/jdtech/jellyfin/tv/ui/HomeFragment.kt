@@ -69,7 +69,11 @@ internal class HomeFragment : BrowseSupportFragment() {
             }
         }
 
-        viewModel.loadData(updateCapabilities = true, includeLibraries = true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadData(includeLibraries = true)
+            }
+        }
     }
 
     private fun bindUiStateNormal(uiState: HomeViewModel.UiState.Normal) {

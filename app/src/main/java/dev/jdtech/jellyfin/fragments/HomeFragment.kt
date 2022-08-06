@@ -72,19 +72,17 @@ class HomeFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        viewModel.loadData(updateCapabilities = true)
     }
 
     override fun onResume() {
         super.onResume()
 
-        viewModel.refreshData()
+        viewModel.loadData()
     }
 
     private fun setupView() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.refreshData()
+            viewModel.loadData()
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
@@ -102,7 +100,7 @@ class HomeFragment : Fragment() {
             })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.refreshData()
+            viewModel.loadData()
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {

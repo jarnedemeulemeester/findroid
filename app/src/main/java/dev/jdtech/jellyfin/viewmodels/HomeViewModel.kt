@@ -37,14 +37,16 @@ class HomeViewModel @Inject internal constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    fun refreshData() = loadData(updateCapabilities = false)
+    init {
+        viewModelScope.launch {
+            repository.postCapabilities()
+        }
+    }
 
-    fun loadData(updateCapabilities: Boolean, includeLibraries: Boolean = false) {
+    fun loadData(includeLibraries: Boolean = false) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
-                if (updateCapabilities) repository.postCapabilities()
-
                 val items = mutableListOf<HomeItem>()
 
                 if (includeLibraries) {
