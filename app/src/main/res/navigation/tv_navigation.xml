@@ -26,6 +26,9 @@
             app:destination="@id/addServerTvFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_libraryFragment"
+            app:destination="@id/libraryFragment" />
 
     </fragment>
 
@@ -90,5 +93,24 @@
             android:name="items"
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
     </activity>
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="dev.jdtech.jellyfin.tv.ui.LibraryFragment"
+        android:label="LibraryFragment"
+        tools:layout="@layout/fragment_library">
+        <argument
+            android:name="libraryId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="libraryName"
+            android:defaultValue="Library"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="libraryType"
+            android:defaultValue="unknown"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 
 </navigation>
