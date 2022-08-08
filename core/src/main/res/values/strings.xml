@@ -163,4 +163,5 @@
     <string name="dolby_logo_desc">Dolby Logo</string>
     <string name="extra_info">Display Extra Info</string>
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
+    <string name="media_route_menu_title">Cast Thing</string>
 </resources>

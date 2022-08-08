@@ -10,7 +10,11 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView"
         tools:ignore="AlwaysShowAction" />
-
+    <item
+        android:id="@+id/media_route_menu_item"
+        android:title="@string/media_route_menu_title"
+        app:actionProviderClass="androidx.mediarouter.app.MediaRouteActionProvider"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"

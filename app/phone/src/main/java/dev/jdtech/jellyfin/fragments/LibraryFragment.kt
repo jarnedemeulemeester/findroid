@@ -18,6 +18,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.LinearSnapHelper
+import com.google.android.gms.cast.framework.CastButtonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
@@ -64,6 +66,11 @@ class LibraryFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(R.menu.library_menu, menu)
+                    CastButtonFactory.setUpMediaRouteButton(
+                        context!!,
+                        menu,
+                        R.id.media_route_menu_item
+                    )
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

@@ -106,6 +106,8 @@ dependencies {
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
+    implementation(libs.mediarouter)
+    implementation(libs.playServicesCastFramework)
     implementation(libs.timber)
 
     implementation(rootProject.files("libs/lib-decoder-ffmpeg-release.aar"))

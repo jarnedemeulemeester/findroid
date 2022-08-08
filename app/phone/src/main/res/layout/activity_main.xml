@@ -4,6 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <fragment
+        android:id="@+id/cast_mini_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:castShowImageThumbnail="true"
+	app:layout_constraintBottom_toTopOf="@+id/nav_view"
+	app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment" />	
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"
@@ -21,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintBottom_toTopOf="@id/cast_mini_controller"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_toolbar_layout"
