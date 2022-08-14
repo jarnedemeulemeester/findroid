@@ -168,16 +168,14 @@ internal class MediaDetailFragment : Fragment() {
                 }
             }
         }
-
-        binding.backButton.setOnClickListener { activity?.onBackPressed() }
     }
 
     private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
         uiState.apply {
-            binding.seasonTitle.isVisible = seasons.isNotEmpty()
+            binding.seasonsLayout.isVisible = seasons.isNotEmpty()
             val seasonsAdapter = binding.seasonsRow.gridView.adapter as ViewItemListAdapter
             seasonsAdapter.submitList(seasons)
-            binding.castTitle.isVisible = actors.isNotEmpty()
+            binding.castLayout.isVisible = actors.isNotEmpty()
             val actorsAdapter = binding.castRow.gridView.adapter as PersonListAdapter
             actorsAdapter.submitList(actors)
 
@@ -217,11 +215,6 @@ internal class MediaDetailFragment : Fragment() {
             )
 
             binding.title.text = item.name
-            binding.subtitle.text = item.seriesName
-            item.seriesName.let {
-                binding.subtitle.text = it
-                binding.subtitle.isVisible = true
-            }
             binding.genres.text = genresString
             binding.year.text = dateString
             binding.playtime.text = runTime
