@@ -17,7 +17,8 @@
         android:layout_marginHorizontal="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@drawable/ripple_background"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/focus_border"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
