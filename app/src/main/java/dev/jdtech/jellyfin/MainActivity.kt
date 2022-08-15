@@ -21,6 +21,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var uiModeManager: UiModeManager
 
     @Inject
     lateinit var database: ServerDatabaseDao
@@ -30,35 +31,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+        uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
 
         setContentView(binding.root)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
+        val inflater = navController.navInflater
+        val graph = inflater.inflate(R.navigation.app_navigation)
 
-        val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                val inflater = navController.navInflater
-                val graph = inflater.inflate(R.navigation.tv_navigation)
-                graph.setStartDestination(R.id.addServerTvFragment)
-                navController.setGraph(graph, intent.extras)
-            }
-        } else {
+            graph.setStartDestination(R.id.homeFragmentTv)
+        }
+
+        val nServers = database.getServersCount()
+        if (nServers < 1) {
+            graph.setStartDestination(R.id.addServerFragment)
+        }
+
+        navController.setGraph(graph, intent.extras)
+
+        if (uiModeManager.currentModeType != Configuration.UI_MODE_TYPE_TELEVISION) {
             val navView: NavigationBarView = binding.navView as NavigationBarView
 
             setSupportActionBar(binding.mainToolbar)
-
-
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                val inflater = navController.navInflater
-                val graph = inflater.inflate(R.navigation.app_navigation)
-                graph.setStartDestination(R.id.addServerFragment)
-                navController.setGraph(graph, intent.extras)
-            }
 
             // Passing each menu ID as a set of Ids because each
             // menu should be considered as top level destinations.

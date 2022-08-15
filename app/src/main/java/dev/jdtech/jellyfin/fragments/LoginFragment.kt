@@ -68,7 +68,7 @@ class LoginFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.navigateToMain.collect {
                     if (it) {
-                        navigateToMainActivity()
+                        navigateToHomeFragment()
                     }
                 }
             }
@@ -108,7 +108,11 @@ class LoginFragment : Fragment() {
         viewModel.login(username, password)
     }
 
-    private fun navigateToMainActivity() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNavigationHome())
+    private fun navigateToHomeFragment() {
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragmentTv())
+        } else {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
+        }
     }
 }

@@ -14,6 +14,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
-        app:navGraph="@navigation/tv_navigation" />
+        app:navGraph="@navigation/app_navigation" />
 
 </FrameLayout>

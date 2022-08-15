@@ -1,8 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.UiModeManager
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -14,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.LinearSnapHelper
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -33,6 +37,7 @@ import javax.inject.Inject
 class LibraryFragment : Fragment() {
 
     private lateinit var binding: FragmentLibraryBinding
+    private lateinit var uiModeManager: UiModeManager
     private val viewModel: LibraryViewModel by viewModels()
     private val args: LibraryFragmentArgs by navArgs()
 
@@ -46,6 +51,8 @@ class LibraryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
         return binding.root
     }
 
@@ -91,6 +98,8 @@ class LibraryFragment : Fragment() {
             }, viewLifecycleOwner, Lifecycle.State.RESUMED
         )
 
+        binding.title?.text = args.libraryName
+
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadItems(args.libraryId, args.libraryType)
         }
@@ -100,6 +109,11 @@ class LibraryFragment : Fragment() {
                 parentFragmentManager,
                 "errordialog"
             )
+        }
+
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            val snapHelper = LinearSnapHelper()
+            snapHelper.attachToRecyclerView(binding.itemsRecyclerView)
         }
 
         binding.itemsRecyclerView.adapter =
@@ -182,12 +196,22 @@ class LibraryFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(
+                LibraryFragmentDirections.actionLibraryFragmentToMediaDetailFragment(
+                    item.id,
+                    item.name,
+                    item.type
+                )
             )
-        )
+        } else {
+            findNavController().navigate(
+                LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
+                    item.id,
+                    item.name,
+                    item.type
+                )
+            )
+        }
     }
 }

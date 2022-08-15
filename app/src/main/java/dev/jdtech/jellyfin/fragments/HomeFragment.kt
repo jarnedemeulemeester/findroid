@@ -187,7 +187,7 @@ class HomeFragment : Fragment() {
 
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToNavigationSettings()
+            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
         )
     }
 }

@@ -1,10 +1,13 @@
 package dev.jdtech.jellyfin.tv.ui
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent.KEYCODE_DPAD_DOWN
 import android.view.KeyEvent.KEYCODE_DPAD_DOWN_LEFT
 import android.view.View
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
@@ -15,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeItem
+import dev.jdtech.jellyfin.fragments.HomeFragmentDirections
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -26,11 +30,15 @@ internal class HomeFragment : BrowseSupportFragment() {
     private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var rowsAdapter: ArrayObjectAdapter
+    private lateinit var uiModeManager: UiModeManager
 
     private val adapterMap = mutableMapOf<String, ArrayObjectAdapter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
         val rowPresenter = ListRowPresenter()
         rowPresenter.selectEffectEnabled = false
@@ -154,13 +162,23 @@ internal class HomeFragment : BrowseSupportFragment() {
     }
 
     private fun navigateToLibraryFragment(library: BaseItemDto) {
-        findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToLibraryFragment(
-                library.id,
-                library.name,
-                library.collectionType
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(
+                dev.jdtech.jellyfin.tv.ui.HomeFragmentDirections.actionHomeFragmentToLibraryFragment(
+                    library.id,
+                    library.name,
+                    library.collectionType
+                )
             )
-        )
+        } else {
+            findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
+                    library.id,
+                    library.name,
+                    library.collectionType
+                )
+            )
+        }
     }
 
     private fun navigateToMediaDetailFragment(item: BaseItemDto) {
@@ -175,7 +193,7 @@ internal class HomeFragment : BrowseSupportFragment() {
 
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToSettings()
+            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
         )
     }
 }
