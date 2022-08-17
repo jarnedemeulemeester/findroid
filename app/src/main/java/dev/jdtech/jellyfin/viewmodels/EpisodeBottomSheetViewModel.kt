@@ -163,32 +163,13 @@ constructor(
         favorite = false
     }
 
-    fun loadDownloadRequestItem(itemId: UUID) {
+    fun download() {
         viewModelScope.launch {
-            val episode = item
-            val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
-            val metadata = baseItemDtoToDownloadMetadata(episode)
-            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
             requestDownload(
+                jellyfinRepository,
                 downloadDatabase,
-                Uri.parse(downloadRequestItem.uri),
-                downloadRequestItem,
-                application
-            )
-        }
-    }
-
-    fun retryDownload() {
-        viewModelScope.launch {
-            val episode = jellyfinRepository.getItem(item!!.id)
-            val uri = jellyfinRepository.getStreamUrl(episode.id, episode.mediaSources?.get(0)?.id!!)
-            val metadata = baseItemDtoToDownloadMetadata(episode)
-            downloadRequestItem = DownloadRequestItem(uri, episode.id, metadata)
-            requestDownload(
-                downloadDatabase,
-                Uri.parse(downloadRequestItem.uri),
-                downloadRequestItem,
-                application
+                application,
+                item!!.id
             )
         }
     }

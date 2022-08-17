@@ -22,33 +22,37 @@ import java.util.UUID
 
 var defaultStorage: File? = null
 
-fun requestDownload(
+suspend fun requestDownload(
+    jellyfinRepository: JellyfinRepository,
     downloadDatabase: DownloadDatabaseDao,
-    uri: Uri,
-    downloadRequestItem: DownloadRequestItem,
-    context: Context
+    context: Context,
+    itemId: UUID
 ) {
-    val downloadRequest = DownloadManager.Request(uri)
-        .setTitle(downloadRequestItem.item.name)
+    val episode = jellyfinRepository.getItem(itemId)
+    val uri = jellyfinRepository.getStreamUrl(itemId, episode.mediaSources?.get(0)?.id!!)
+    val metadata = baseItemDtoToDownloadMetadata(episode)
+
+    val downloadRequest = DownloadManager.Request(Uri.parse(uri))
+        .setTitle(metadata.name)
         .setDescription("Downloading")
         .setDestinationUri(
             Uri.fromFile(
                 File(
                     defaultStorage,
-                    downloadRequestItem.itemId.toString() + ".downloading"
+                    metadata.id.toString() + ".downloading"
                 )
             )
         )
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
     try {
-        if (downloadDatabase.exists(downloadRequestItem.itemId))
-            downloadDatabase.deleteItem(downloadRequestItem.itemId)
-        downloadDatabase.insertItem(downloadRequestItem.item)
-        if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists() && !File(defaultStorage, "${downloadRequestItem.itemId}.downloading").exists()) {
+        if (downloadDatabase.exists(metadata.id))
+            downloadDatabase.deleteItem(metadata.id)
+        downloadDatabase.insertItem(metadata)
+        if (!File(defaultStorage, metadata.id.toString()).exists() && !File(defaultStorage, "${metadata.id}.downloading").exists()) {
             val downloadId = downloadFile(downloadRequest, context)
             Timber.d("$downloadId")
-            downloadDatabase.updateDownloadId(downloadRequestItem.itemId, downloadId)
+            downloadDatabase.updateDownloadId(metadata.id, downloadId)
         }
     } catch (e: Exception) {
         Timber.e(e)

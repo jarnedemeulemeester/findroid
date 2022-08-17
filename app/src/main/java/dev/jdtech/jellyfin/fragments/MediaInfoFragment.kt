@@ -117,7 +117,7 @@ class MediaInfoFragment : Fragment() {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
             if (viewModel.canRetry){
-                viewModel.retryDownload()
+                viewModel.download()
                 return@setOnClickListener
             }
             viewModel.item?.let { item ->
@@ -173,7 +173,7 @@ class MediaInfoFragment : Fragment() {
 
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
-                viewModel.loadDownloadRequestItem(args.itemId)
+                viewModel.download()
                 binding.downloadButton.imageTintList = ColorStateList.valueOf(
                     resources.getColor(
                         R.color.red,

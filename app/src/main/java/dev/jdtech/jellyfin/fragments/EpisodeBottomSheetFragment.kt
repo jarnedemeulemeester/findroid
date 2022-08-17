@@ -50,7 +50,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
             if (viewModel.canRetry){
-                viewModel.retryDownload()
+                viewModel.download()
                 return@setOnClickListener
             }
             viewModel.item?.let {
@@ -115,7 +115,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
-                viewModel.loadDownloadRequestItem(episodeId)
+                viewModel.download()
                 binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
             }
 
