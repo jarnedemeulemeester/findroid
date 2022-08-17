@@ -208,6 +208,10 @@ class MediaInfoFragment : Fragment() {
             binding.playButton.isEnabled = clickable
             binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
             binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
+            if (!clickable) {
+                binding.playButton.setImageResource(android.R.color.transparent)
+                binding.progressCircular.isVisible = true
+            }
 
             // Check icon
             when (played) {
