@@ -46,7 +46,7 @@ class LoginFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when(uiState) {
                         is LoginViewModel.UiState.Normal -> bindUiStateNormal()
@@ -54,8 +54,12 @@ class LoginFragment : Fragment() {
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
                     }
                 }
-                viewModel.onNavigateToMain(viewLifecycleOwner.lifecycleScope) {
-                    Timber.d("Navigate to MainActivity: $it")
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToMain.collect {
                     if (it) {
                         navigateToMainActivity()
                     }
@@ -86,7 +90,6 @@ class LoginFragment : Fragment() {
     private fun login() {
         val username = binding.editTextUsername.text.toString()
         val password = binding.editTextPassword.text.toString()
-        binding.progressCircular.visibility = View.VISIBLE
         viewModel.login(username, password)
     }
 

@@ -48,7 +48,7 @@ class SearchResultFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is SearchResultViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -56,6 +56,11 @@ class SearchResultFragment : Fragment() {
                         is SearchResultViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loadData(args.query)
             }
         }

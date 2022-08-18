@@ -70,7 +70,7 @@
     <string name="force_software_decoding_summary">禁用硬件解码，使用软件解码。在硬件解码显示异常时可能会起作用。</string>
     <string name="download_button_description">下载</string>
     <string name="delete_button_description">删除</string>
-    <string name="person_detail_title">人员详情</string>
+    <string name="person_detail_title">详情</string>
     <string name="error_getting_person_id">详情不可用</string>
     <string name="movies_label">电影</string>
     <string name="shows_label">节目</string>
@@ -84,7 +84,7 @@
     <string name="gestures">手势</string>
     <string name="player_gestures">播放器手势</string>
     <string name="player_brightness_remember">记住亮度</string>
-    <string name="sort_by_options_0">名称</string>
+    <string name="sort_by_options_0">标题</string>
     <string name="sort_by_options_1">IMDB 评分</string>
     <string name="sort_by_options_2">家长分级</string>
     <string name="sort_by_options_3">加入日期</string>
@@ -125,4 +125,7 @@
     <string name="player_gestures_vb">音量和亮度手势</string>
     <string name="player_gestures_zoom">缩放手势</string>
     <string name="player_gestures_zoom_summary">捏合以用视频填满屏幕</string>
+    <string name="seeking">快进快退</string>
+    <string name="seek_back_increment">快退步进 (毫秒)</string>
+    <string name="seek_forward_increment">快进步进 (毫秒)</string>
 </resources>

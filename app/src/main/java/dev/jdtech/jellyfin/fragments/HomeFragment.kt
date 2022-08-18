@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
     private fun bindState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)

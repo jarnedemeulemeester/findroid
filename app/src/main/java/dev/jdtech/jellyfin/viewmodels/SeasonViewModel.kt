@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.adapters.EpisodeItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import java.util.*
@@ -16,7 +17,8 @@ class SeasonViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
@@ -24,18 +26,14 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
     fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 val episodes = getEpisodes(seriesId, seasonId)
-                uiState.emit(UiState.Normal(episodes))
+                _uiState.emit(UiState.Normal(episodes))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

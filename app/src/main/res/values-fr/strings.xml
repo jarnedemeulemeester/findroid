@@ -125,4 +125,7 @@
     <string name="player_gestures_vb">Gestes de volume et de luminosité</string>
     <string name="player_gestures_zoom">Geste de zoom</string>
     <string name="player_gestures_zoom_summary">Pincez pour remplir l\'écran avec la vidéo</string>
+    <string name="seeking">Chercher</string>
+    <string name="seek_forward_increment">Incrément de la recherche vers l\'avant (ms)</string>
+    <string name="seek_back_increment">Incrément de retour de recherche (ms)</string>
 </resources>

@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +16,7 @@ import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -28,16 +28,13 @@ class HomeViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
     }
 
     init {
@@ -48,7 +45,7 @@ class HomeViewModel @Inject internal constructor(
 
     private fun loadData(updateCapabilities: Boolean) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 if (updateCapabilities) repository.postCapabilities()
 
@@ -57,9 +54,9 @@ class HomeViewModel @Inject internal constructor(
                 withContext(Dispatchers.Default) {
                     syncPlaybackProgress(downloadDatabase, repository)
                 }
-                uiState.emit(UiState.Normal(updated))
+                _uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

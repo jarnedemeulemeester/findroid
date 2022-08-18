@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,6 +7,7 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -20,16 +20,13 @@ class FavoriteViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val favoriteSections: List<FavoriteSection>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
     }
 
     init {
@@ -38,12 +35,12 @@ constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 val items = jellyfinRepository.getFavoriteItems()
 
                 if (items.isEmpty()) {
-                    uiState.emit(UiState.Normal(emptyList()))
+                    _uiState.emit(UiState.Normal(emptyList()))
                     return@launch
                 }
 
@@ -76,9 +73,9 @@ constructor(
                     }
                 }
 
-                uiState.emit(UiState.Normal(favoriteSections))
+                _uiState.emit(UiState.Normal(favoriteSections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

@@ -50,7 +50,7 @@ class ServerSelectFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onNavigateToMain(viewLifecycleOwner.lifecycleScope) {
+                viewModel.navigateToMain.collect {
                     if (it) {
                         navigateToMainActivity()
                     }
