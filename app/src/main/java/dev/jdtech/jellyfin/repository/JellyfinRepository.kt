@@ -76,4 +76,6 @@ interface JellyfinRepository {
     suspend fun getIntros(itemId: UUID): List<BaseItemDto>
 
     fun getBaseUrl(): String
+
+    suspend fun updateDeviceName(name: String)
 }

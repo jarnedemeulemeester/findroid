@@ -1,24 +1,20 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainTvBinding
-import dev.jdtech.jellyfin.tv.ui.HomeFragmentDirections
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
-import dev.jdtech.jellyfin.viewmodels.MainViewModel
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class MainActivityTv : FragmentActivity() {
 
     private lateinit var binding: ActivityMainTvBinding
-    private val viewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var database: ServerDatabaseDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,17 +24,14 @@ internal class MainActivityTv : FragmentActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.tv_nav_host) as NavHostFragment
         val navController = navHostFragment.navController
+        val nServers = database.getServersCount()
+        if (nServers < 1) {
+            val inflater = navController.navInflater
+            val graph = inflater.inflate(R.navigation.tv_navigation)
+            graph.setStartDestination(R.id.addServerTvFragment)
+            navController.setGraph(graph, intent.extras)
+        }
 
         loadDownloadLocation(applicationContext)
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onNavigateToAddServer(lifecycleScope) {
-                    if (it) {
-                        navController.navigate(HomeFragmentDirections.actionHomeFragmentToAddServerFragment())
-                    }
-                }
-            }
-        }
     }
 }

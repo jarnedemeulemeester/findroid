@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.SortBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -21,16 +22,13 @@ class LibraryViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val items: Flow<PagingData<BaseItemDto>>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
     }
 
     fun loadItems(
@@ -46,7 +44,7 @@ constructor(
             else -> null
         }
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
 
                 val items = jellyfinRepository.getItemsPaging(
@@ -56,9 +54,9 @@ constructor(
                     sortBy = sortBy,
                     sortOrder = sortOrder
                 )
-                uiState.emit(UiState.Normal(items))
+                _uiState.emit(UiState.Normal(items))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

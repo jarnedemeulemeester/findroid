@@ -12,6 +12,8 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
@@ -30,21 +32,15 @@ constructor(
 ) : ViewModel() {
     private val resources: Resources = application.resources
 
-    private val uiState = MutableStateFlow<UiState>(UiState.Normal)
-    private val navigateToMain = MutableSharedFlow<Boolean>()
+    private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
+    val uiState = _uiState.asStateFlow()
+    private val _navigateToMain = MutableSharedFlow<Boolean>()
+    val navigateToMain = _navigateToMain.asSharedFlow()
 
     sealed class UiState {
         object Normal : UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
-    fun onNavigateToMain(scope: LifecycleCoroutineScope, collector: (Boolean) -> Unit) {
-        scope.launch { navigateToMain.collect { collector(it) } }
     }
 
     /**
@@ -55,7 +51,7 @@ constructor(
      */
     fun login(username: String, password: String) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
 
             try {
                 val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
@@ -87,15 +83,15 @@ constructor(
                     userId = authenticationResult.user?.id
                 }
 
-                uiState.emit(UiState.Normal)
-                navigateToMain.emit(true)
+                _uiState.emit(UiState.Normal)
+                _navigateToMain.emit(true)
             } catch (e: Exception) {
                 Timber.e(e)
                 val message =
                     if (e.cause?.message?.contains("401") == true) resources.getString(R.string.login_error_wrong_username_password) else resources.getString(
                         R.string.unknown_error
                     )
-                uiState.emit(UiState.Error(message))
+                _uiState.emit(UiState.Error(message))
             }
         }
     }

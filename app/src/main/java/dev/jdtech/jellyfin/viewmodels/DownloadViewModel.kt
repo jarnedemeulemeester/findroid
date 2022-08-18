@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.utils.checkDownloadStatus
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.*
@@ -23,16 +24,13 @@ constructor(
     private val application: Application,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val downloadSections: List<DownloadSection>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
-    }
-
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
     }
 
     init {
@@ -41,7 +39,7 @@ constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 checkDownloadStatus(downloadDatabase, application)
                 val items = loadDownloadedEpisodes(downloadDatabase)
@@ -74,9 +72,9 @@ constructor(
                         )
                     }
                 }
-                uiState.emit(UiState.Normal(downloadSections))
+                _uiState.emit(UiState.Normal(downloadSections))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }

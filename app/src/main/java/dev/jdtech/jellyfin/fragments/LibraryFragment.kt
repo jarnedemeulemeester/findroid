@@ -124,14 +124,18 @@ class LibraryFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     when (uiState) {
                         is LibraryViewModel.UiState.Normal -> bindUiStateNormal(uiState)
                         is LibraryViewModel.UiState.Loading -> bindUiStateLoading()
                         is LibraryViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+            }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 // Sorting options
                 val sortBy = SortBy.fromString(sp.getString("sortBy", SortBy.defaultValue.name)!!)
                 val sortOrder = try {

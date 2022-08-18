@@ -53,7 +53,7 @@ internal class PersonDetailFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is PersonDetailViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -61,6 +61,11 @@ internal class PersonDetailFragment : Fragment() {
                         is PersonDetailViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loadData(args.personId)
             }
         }

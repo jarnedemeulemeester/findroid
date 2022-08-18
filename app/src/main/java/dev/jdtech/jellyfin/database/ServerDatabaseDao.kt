@@ -23,6 +23,9 @@ interface ServerDatabaseDao {
     @Query("select * from servers")
     fun getAllServersSync(): List<Server>
 
+    @Query("select count(*) from servers")
+    fun getServersCount(): Int
+
     @Query("delete from servers where id = :id")
     fun delete(id: String)
 }
