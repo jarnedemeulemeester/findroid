@@ -15,10 +15,10 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
+        android:background="@drawable/focus_border"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="@drawable/focus_border"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -28,7 +28,8 @@
             android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
             app:personImage="@{person}"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image"
+            app:strokeColor="@null" />
 
         <TextView
             android:id="@+id/person_name"

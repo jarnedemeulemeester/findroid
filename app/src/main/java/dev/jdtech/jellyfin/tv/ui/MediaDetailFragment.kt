@@ -121,11 +121,9 @@ internal class MediaDetailFragment : Fragment() {
             when (viewModel.played) {
                 true -> {
                     viewModel.markAsUnplayed(args.itemId)
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
                     binding.checkButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
-                            typedValue.resourceId,
+                            R.color.white,
                             requireActivity().theme
                         )
                     )
@@ -147,11 +145,9 @@ internal class MediaDetailFragment : Fragment() {
                 true -> {
                     viewModel.unmarkAsFavorite(args.itemId)
                     binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
                     binding.favoriteButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
-                            typedValue.resourceId,
+                            R.color.white,
                             requireActivity().theme
                         )
                     )
