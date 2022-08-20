@@ -10,11 +10,8 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
@@ -68,7 +65,6 @@ constructor(
                     RecommendedServerInfoScore.OK
                 )
 
-                val greatServers = mutableListOf<RecommendedServerInfo>()
                 val goodServers = mutableListOf<RecommendedServerInfo>()
                 val okServers = mutableListOf<RecommendedServerInfo>()
 
@@ -76,9 +72,6 @@ constructor(
                     .onCompletion {
                         if (serverFound) return@onCompletion
                         when {
-                            greatServers.isNotEmpty() -> {
-                                connectToServer(greatServers.first())
-                            }
                             goodServers.isNotEmpty() -> {
                                 val issuesString = createIssuesString(goodServers.first())
                                 Toast.makeText(
@@ -109,6 +102,8 @@ constructor(
                             RecommendedServerInfoScore.BAD -> Unit
                         }
                     }
+            } catch (e: CancellationException) {
+
             } catch (e: Exception) {
                 _uiState.emit(
                     UiState.Error(

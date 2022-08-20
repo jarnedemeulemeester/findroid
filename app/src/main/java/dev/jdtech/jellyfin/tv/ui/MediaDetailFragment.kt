@@ -121,11 +121,9 @@ internal class MediaDetailFragment : Fragment() {
             when (viewModel.played) {
                 true -> {
                     viewModel.markAsUnplayed(args.itemId)
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
                     binding.checkButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
-                            typedValue.resourceId,
+                            R.color.white,
                             requireActivity().theme
                         )
                     )
@@ -147,11 +145,9 @@ internal class MediaDetailFragment : Fragment() {
                 true -> {
                     viewModel.unmarkAsFavorite(args.itemId)
                     binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                    val typedValue = TypedValue()
-                    requireActivity().theme.resolveAttribute(R.attr.colorOnSecondaryContainer, typedValue, true)
                     binding.favoriteButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
-                            typedValue.resourceId,
+                            R.color.white,
                             requireActivity().theme
                         )
                     )
@@ -168,16 +164,14 @@ internal class MediaDetailFragment : Fragment() {
                 }
             }
         }
-
-        binding.backButton.setOnClickListener { activity?.onBackPressed() }
     }
 
     private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
         uiState.apply {
-            binding.seasonTitle.isVisible = seasons.isNotEmpty()
+            binding.seasonsLayout.isVisible = seasons.isNotEmpty()
             val seasonsAdapter = binding.seasonsRow.gridView.adapter as ViewItemListAdapter
             seasonsAdapter.submitList(seasons)
-            binding.castTitle.isVisible = actors.isNotEmpty()
+            binding.castLayout.isVisible = actors.isNotEmpty()
             val actorsAdapter = binding.castRow.gridView.adapter as PersonListAdapter
             actorsAdapter.submitList(actors)
 
@@ -217,11 +211,6 @@ internal class MediaDetailFragment : Fragment() {
             )
 
             binding.title.text = item.name
-            binding.subtitle.text = item.seriesName
-            item.seriesName.let {
-                binding.subtitle.text = it
-                binding.subtitle.isVisible = true
-            }
             binding.genres.text = genresString
             binding.year.text = dateString
             binding.playtime.text = runTime

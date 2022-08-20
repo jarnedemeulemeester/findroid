@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Jellyfin.Tv" parent="Theme.AppCompat.Leanback">
+    <style name="Theme.Findroid" parent="Theme.AppCompat.Leanback">
         <item name="colorPrimary">@color/blue_600</item>
         <item name="colorPrimaryVariant">@color/blue_800</item>
         <item name="colorSecondary">@color/green_500</item>
