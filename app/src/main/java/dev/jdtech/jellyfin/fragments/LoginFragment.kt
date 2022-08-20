@@ -121,7 +121,12 @@ class LoginFragment : Fragment() {
 
     private fun bindUsersStateUsers(usersState: LoginViewModel.UsersState.Users) {
         val users = usersState.users
-        (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
+        if (users.isEmpty()) {
+            binding.usersRecyclerView.isVisible = false
+        } else {
+            binding.usersRecyclerView.isVisible = true
+            (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
+        }
     }
 
     private fun login() {

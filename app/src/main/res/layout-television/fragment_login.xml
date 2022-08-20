@@ -51,9 +51,11 @@
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="2"
-                tools:listitem="@layout/user_item" />
+                tools:listitem="@layout/user_item"
+                tools:visibility="visible" />
 
             <EditText
                 android:id="@+id/edit_text_username"

@@ -18,28 +18,21 @@
         android:focusable="true"
         android:foreground="@drawable/ripple_background">
 
-        <FrameLayout
-            android:id="@+id/server_icon"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/user_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/button_setup_background"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                app:srcCompat="@drawable/ic_user"
-                app:tint="?attr/colorOnPrimary" />
-
-        </FrameLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image"
+            app:userImage="@{user}" />
 
         <TextView
-            android:id="@+id/server_name"
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -50,7 +43,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/server_icon"
+            app:layout_constraintTop_toBottomOf="@id/user_image"
             tools:text="username" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
