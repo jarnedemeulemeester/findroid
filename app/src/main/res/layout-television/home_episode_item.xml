@@ -14,9 +14,10 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
+        android:background="@drawable/focus_border"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@drawable/ripple_background"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -29,7 +30,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image"
+            app:strokeColor="@null" />
 
         <TextView
             android:id="@+id/primary_name"

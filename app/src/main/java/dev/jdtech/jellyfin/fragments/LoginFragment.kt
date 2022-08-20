@@ -1,10 +1,14 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +26,7 @@ import timber.log.Timber
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var uiModeManager: UiModeManager
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
@@ -29,8 +34,10 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater)
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
-        binding.editTextPassword.setOnEditorActionListener { _, actionId, _ ->
+        (binding.editTextPassword as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_GO -> {
                     login()
@@ -61,7 +68,7 @@ class LoginFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.navigateToMain.collect {
                     if (it) {
-                        navigateToMainActivity()
+                        navigateToHomeFragment()
                     }
                 }
             }
@@ -78,22 +85,34 @@ class LoginFragment : Fragment() {
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
-        binding.editTextUsernameLayout.error = uiState.message
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).error = uiState.message
+        } else {
+            binding.editTextUsernameLayout!!.error = uiState.message
+        }
     }
 
     private fun bindUiStateLoading() {
         binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
-        binding.editTextUsernameLayout.error = null
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).error = null
+        } else {
+            binding.editTextUsernameLayout!!.error = null
+        }
     }
 
     private fun login() {
-        val username = binding.editTextUsername.text.toString()
-        val password = binding.editTextPassword.text.toString()
+        val username = (binding.editTextUsername as AppCompatEditText).text.toString()
+        val password = (binding.editTextPassword as AppCompatEditText).text.toString()
         viewModel.login(username, password)
     }
 
-    private fun navigateToMainActivity() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNavigationHome())
+    private fun navigateToHomeFragment() {
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragmentTv())
+        } else {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
+        }
     }
 }

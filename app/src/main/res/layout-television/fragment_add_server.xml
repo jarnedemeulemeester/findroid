@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.AddServerFragment"
-    tools:ignore="MissingDefaultResource">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragments.AddServerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/image_banner"
@@ -49,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:autofillHints=""
+                android:focusedByDefault="true"
                 android:hint="@string/edit_text_server_address_hint"
                 android:imeOptions="actionGo"
                 android:inputType="textUri" />
@@ -76,4 +78,4 @@
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</ScrollView>
