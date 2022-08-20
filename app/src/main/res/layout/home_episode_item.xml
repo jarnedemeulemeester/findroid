@@ -16,8 +16,7 @@
         android:layout_marginHorizontal="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@drawable/ripple_background"
-        android:orientation="vertical">
+        android:foreground="@drawable/ripple_background">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"

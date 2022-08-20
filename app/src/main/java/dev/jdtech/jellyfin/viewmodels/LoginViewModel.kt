@@ -9,6 +9,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 
 @HiltViewModel
 class LoginViewModel
@@ -34,6 +35,8 @@ constructor(
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
     val uiState = _uiState.asStateFlow()
+    private val _usersState = MutableStateFlow<UsersState>(UsersState.Loading)
+    val usersState = _usersState.asStateFlow()
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
 
@@ -41,6 +44,28 @@ constructor(
         object Normal : UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
+    }
+
+    sealed class UsersState {
+        object Loading : UsersState()
+        data class Users(val users: List<User>) : UsersState()
+    }
+
+    init {
+        loadPublicUsers()
+    }
+
+    private fun loadPublicUsers() {
+        viewModelScope.launch {
+            _usersState.emit(UsersState.Loading)
+            try {
+                val publicUsers by jellyfinApi.userApi.getPublicUsers()
+                val users = publicUsers.map { User(it.id, it.name.orEmpty()) }
+                _usersState.emit(UsersState.Users(users))
+            } catch (e: Exception) {
+                _usersState.emit(UsersState.Users(emptyList()))
+            }
+        }
     }
 
     /**
