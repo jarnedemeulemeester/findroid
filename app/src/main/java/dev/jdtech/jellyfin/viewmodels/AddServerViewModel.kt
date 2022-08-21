@@ -95,7 +95,10 @@ constructor(
 
                 recommended
                     .onCompletion {
-                        if (serverFound) return@onCompletion
+                        if (serverFound) {
+                            serverFound = false
+                            return@onCompletion
+                        }
                         when {
                             goodServers.isNotEmpty() -> {
                                 val issuesString = createIssuesString(goodServers.first())

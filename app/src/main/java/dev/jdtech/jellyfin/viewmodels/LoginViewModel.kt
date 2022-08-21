@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.Exception
 
@@ -111,9 +110,8 @@ constructor(
                 _uiState.emit(UiState.Normal)
                 _navigateToMain.emit(true)
             } catch (e: Exception) {
-                Timber.e(e)
                 val message =
-                    if (e.cause?.message?.contains("401") == true) resources.getString(R.string.login_error_wrong_username_password) else resources.getString(
+                    if (e.message?.contains("401") == true) resources.getString(R.string.login_error_wrong_username_password) else resources.getString(
                         R.string.unknown_error
                     )
                 _uiState.emit(UiState.Error(message))

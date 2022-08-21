@@ -97,15 +97,26 @@ class AddServerFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextServerAddress as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextServerAddressLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).error = uiState.message
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
         } else {
-            binding.editTextServerAddressLayout!!.error = uiState.message
+            binding.editTextServerAddressLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
         }
     }
 
@@ -113,9 +124,15 @@ class AddServerFragment : Fragment() {
         binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).error = null
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
         } else {
-            binding.editTextServerAddressLayout!!.error = null
+            binding.editTextServerAddressLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
         }
     }
 

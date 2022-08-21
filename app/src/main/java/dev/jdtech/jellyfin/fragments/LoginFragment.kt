@@ -97,15 +97,30 @@ class LoginFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).isEnabled = true
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextUsernameLayout!!.isEnabled = true
+            binding.editTextPasswordLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).error = uiState.message
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
         } else {
-            binding.editTextUsernameLayout!!.error = uiState.message
+            binding.editTextUsernameLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            binding.editTextPasswordLayout!!.isEnabled = true
         }
     }
 
@@ -113,9 +128,17 @@ class LoginFragment : Fragment() {
         binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).error = null
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = false
         } else {
-            binding.editTextUsernameLayout!!.error = null
+            binding.editTextUsernameLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
+            binding.editTextPasswordLayout!!.isEnabled = false
         }
     }
 
