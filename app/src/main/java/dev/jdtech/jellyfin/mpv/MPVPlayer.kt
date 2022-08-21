@@ -1230,6 +1230,11 @@ class MPVPlayer(
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
+    fun updateZoomMode(enabled: Boolean) {
+        val level = if (enabled) "1" else "0"
+        MPVLib.setOptionString("panscan", level)
+    }
+
     companion object {
         /**
          * Fraction to which audio volume is ducked on loss of audio focus

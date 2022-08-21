@@ -11,6 +11,7 @@ import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.mpv.MPVPlayer
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -199,7 +200,12 @@ class PlayerGestureHelper(
     }).apply { isQuickScaleEnabled = false }
 
     private fun updateZoomMode(enabled: Boolean) {
-        playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
+        if (playerView.player is MPVPlayer) {
+            (playerView.player as MPVPlayer).updateZoomMode(enabled)
+        }
+        else {
+            playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
     }
 
     private fun releaseAction(event: MotionEvent) {
