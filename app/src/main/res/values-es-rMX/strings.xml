@@ -126,4 +126,10 @@
     <string name="player_gestures_vb">Gestos de volumen y brillo</string>
     <string name="player_gestures_zoom">Gesto de ampliar</string>
     <string name="player_gestures_zoom_summary">Pellizcar para rellenar la pantalla con el video</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="seeking">Buscando</string>
+    <string name="seek_back_increment">Incremento del retroceso (ms)</string>
+    <string name="seek_forward_increment">Incremento del adelanto (ms)</string>
+    <string name="dynamic_colors">Colores dinámicos</string>
+    <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (sólo disponible en Android 12+)</string>
 </resources>
