@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.DiscoveredServerListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +52,11 @@ class AddServerFragment : Fragment() {
             connectToServer()
         }
 
+        binding.serversRecyclerView.adapter = DiscoveredServerListAdapter { server ->
+            (binding.editTextServerAddress as AppCompatEditText).setText(server.address)
+            connectToServer()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -59,6 +65,17 @@ class AddServerFragment : Fragment() {
                         is AddServerViewModel.UiState.Normal -> bindUiStateNormal()
                         is AddServerViewModel.UiState.Error -> bindUiStateError(uiState)
                         is AddServerViewModel.UiState.Loading -> bindUiStateLoading()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.discoveredServersState.collect { serversState ->
+                    when (serversState) {
+                        is AddServerViewModel.DiscoveredServersState.Loading -> Unit
+                        is AddServerViewModel.DiscoveredServersState.Servers -> bindDiscoveredServersStateServers(serversState)
                     }
                 }
             }
@@ -99,6 +116,16 @@ class AddServerFragment : Fragment() {
             (binding.editTextServerAddress as AppCompatEditText).error = null
         } else {
             binding.editTextServerAddressLayout!!.error = null
+        }
+    }
+
+    private fun bindDiscoveredServersStateServers(serversState: AddServerViewModel.DiscoveredServersState.Servers) {
+        val servers = serversState.servers
+        if (servers.isEmpty()) {
+            binding.serversRecyclerView.isVisible = false
+        } else {
+            binding.serversRecyclerView.isVisible = true
+            (binding.serversRecyclerView.adapter as DiscoveredServerListAdapter).submitList(servers)
         }
     }
 
