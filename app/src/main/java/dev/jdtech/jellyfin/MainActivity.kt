@@ -4,6 +4,7 @@ import android.app.UiModeManager
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
+import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var uiModeManager: UiModeManager
+
+    private val viewModel : MainViewModel by viewModels()
 
     @Inject
     lateinit var database: ServerDatabaseDao
@@ -43,14 +47,18 @@ class MainActivity : AppCompatActivity() {
 
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
             graph.setStartDestination(R.id.homeFragmentTv)
+            navController.setGraph(graph, intent.extras)
         }
 
         val nServers = database.getServersCount()
         if (nServers < 1) {
-            graph.setStartDestination(R.id.addServerFragment)
+            if (!viewModel.startDestinationChanged) {
+                graph.setStartDestination(R.id.addServerFragment)
+                navController.setGraph(graph, intent.extras)
+                viewModel.startDestinationChanged = true
+            }
         }
 
-        navController.setGraph(graph, intent.extras)
 
         if (uiModeManager.currentModeType != Configuration.UI_MODE_TYPE_TELEVISION) {
             val navView: NavigationBarView = binding.navView as NavigationBarView
