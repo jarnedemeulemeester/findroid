@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.UserListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -51,14 +52,30 @@ class LoginFragment : Fragment() {
             login()
         }
 
+        binding.usersRecyclerView.adapter = UserListAdapter { user ->
+            (binding.editTextUsername as AppCompatEditText).setText(user.name)
+            (binding.editTextPassword as AppCompatEditText).requestFocus()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when(uiState) {
+                    when (uiState) {
                         is LoginViewModel.UiState.Normal -> bindUiStateNormal()
                         is LoginViewModel.UiState.Error -> bindUiStateError(uiState)
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.usersState.collect { usersState ->
+                    when (usersState) {
+                        is LoginViewModel.UsersState.Loading -> Unit
+                        is LoginViewModel.UsersState.Users -> bindUsersStateUsers(usersState)
                     }
                 }
             }
@@ -99,6 +116,16 @@ class LoginFragment : Fragment() {
             (binding.editTextUsername as AppCompatEditText).error = null
         } else {
             binding.editTextUsernameLayout!!.error = null
+        }
+    }
+
+    private fun bindUsersStateUsers(usersState: LoginViewModel.UsersState.Users) {
+        val users = usersState.users
+        if (users.isEmpty()) {
+            binding.usersRecyclerView.isVisible = false
+        } else {
+            binding.usersRecyclerView.isVisible = true
+            (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
         }
     }
 
