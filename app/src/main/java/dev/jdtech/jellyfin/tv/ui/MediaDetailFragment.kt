@@ -67,8 +67,8 @@ internal class MediaDetailFragment : Fragment() {
                     Timber.d("$uiState")
                     when (uiState) {
                         is MediaInfoViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is MediaInfoViewModel.UiState.Loading -> bindUiStateLoading()
-                        is MediaInfoViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is MediaInfoViewModel.UiState.Loading -> Unit
+                        is MediaInfoViewModel.UiState.Error -> Unit
                     }
                 }
             }
@@ -81,7 +81,7 @@ internal class MediaDetailFragment : Fragment() {
         binding.seasonsRow.gridView.adapter = seasonsAdapter
         binding.seasonsRow.gridView.verticalSpacing = 25
 
-        val castAdapter = PersonListAdapter { person ->
+        val castAdapter = PersonListAdapter {
             Toast.makeText(requireContext(), "Not yet implemented", Toast.LENGTH_SHORT).show()
         }
 
@@ -220,10 +220,6 @@ internal class MediaDetailFragment : Fragment() {
             bindBaseItemImage(binding.poster, item)
         }
     }
-
-    private fun bindUiStateLoading() {}
-
-    private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {}
 
     private fun bindPlayerItems(items: PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
