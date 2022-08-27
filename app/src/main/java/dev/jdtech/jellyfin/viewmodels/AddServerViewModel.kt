@@ -60,7 +60,7 @@ constructor(
                     serverDiscoveryInfo.address
                 ))
                 _discoveredServersState.emit(
-                    DiscoveredServersState.Servers(discoveredServers)
+                    DiscoveredServersState.Servers(ArrayList(discoveredServers))
                 )
             }
         }
