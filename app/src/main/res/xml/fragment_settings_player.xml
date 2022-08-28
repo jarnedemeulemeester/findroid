@@ -5,6 +5,11 @@
         app:summary="@string/display_extended_title_summary"
         app:title="@string/display_extended_title" />
 
+    <Preference
+        app:key="pref_player_subtitles"
+        app:title="@string/subtitles"
+        app:summary="@string/subtitles_summary"/>
+
     <PreferenceCategory app:title="@string/mpv_player">
         <SwitchPreference
             app:key="mpv_player"
