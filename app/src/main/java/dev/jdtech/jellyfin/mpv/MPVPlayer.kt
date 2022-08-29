@@ -28,6 +28,7 @@ import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
@@ -49,20 +50,18 @@ class MPVPlayer(
     init {
         require(context is Application)
         val mpvDir = File(context.getExternalFilesDir(null) ?: context.filesDir, "mpv")
-        if (!mpvDir.exists()) {
-            mpvDir.mkdirs()
-        }
+        Timber.i("mpv config dir: $mpvDir")
+        if (!mpvDir.exists()) mpvDir.mkdirs()
         arrayOf("mpv.conf", "subfont.ttf").forEach { fileName ->
             val file = File(mpvDir, fileName)
-            Log.i("mpv", "File ${file.absolutePath}")
-            if (!file.exists()) {
-                context.assets.open(fileName, AssetManager.ACCESS_STREAMING)
-                    .copyTo(FileOutputStream(file))
-            }
+            if (file.exists()) return@forEach
+            context.assets.open(fileName, AssetManager.ACCESS_STREAMING)
+                .copyTo(FileOutputStream(file))
         }
         MPVLib.create(context)
 
         // General
+        MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
         MPVLib.setOptionString("vo", "gpu")
         MPVLib.setOptionString("gpu-context", "android")
@@ -86,7 +85,7 @@ class MPVPlayer(
         MPVLib.setOptionString("demuxer-max-back-bytes", "32MiB")
 
         // Subs
-        MPVLib.setOptionString("sub-scale-with-window", "no")
+        MPVLib.setOptionString("sub-scale-with-window", "yes")
         MPVLib.setOptionString("sub-use-margins", "no")
 
         // Other options
@@ -181,7 +180,7 @@ class MPVPlayer(
             when (property) {
                 "track-list" -> {
                     val (mpvTracks, newTracks) = getMPVTracks(value)
-                    mpvTracks.forEach { Log.i("mpv", "${it.ffIndex} ${it.type} ${it.codec}") }
+                    mpvTracks.forEach { Timber.i("${it.ffIndex} ${it.type} ${it.codec}") }
                     currentMpvTracks = mpvTracks
                     if (isPlayerReady) {
                         if (newTracks != tracks) {
@@ -300,7 +299,7 @@ class MPVPlayer(
                         }
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
-                            Log.d("mpv", "Starting playback...")
+                            Timber.d("Starting playback...")
                             MPVLib.setPropertyBoolean("pause", false)
                         }
                         for (videoListener in videoListeners) {
@@ -369,12 +368,12 @@ class MPVPlayer(
         index: Int
     ): Boolean {
         if (index != C.INDEX_UNSET) {
-            Log.i("mpv", "${currentMpvTracks.size}")
+            Timber.i("${currentMpvTracks.size}")
             currentMpvTracks.firstOrNull {
                 it.type == trackType && (if (isExternal) it.title else "${it.ffIndex}") == "$index"
             }.let { track ->
                 if (track != null) {
-                    Log.i("mpv", "selected track ${track.ffIndex} ${track.type}")
+                    Timber.i("selected track ${track.ffIndex} ${track.type}")
                     if (!track.selected) {
                         MPVLib.setPropertyInt(trackType, track.id)
                     }
@@ -1228,6 +1227,11 @@ class MPVPlayer(
     /** Sets the mute state of the device.  */
     override fun setDeviceMuted(muted: Boolean) {
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
+    }
+
+    fun updateZoomMode(enabled: Boolean) {
+        val level = if (enabled) "1" else "0"
+        MPVLib.setOptionString("panscan", level)
     }
 
     companion object {

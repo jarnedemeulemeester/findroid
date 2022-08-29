@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.DiscoveredServerListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +52,11 @@ class AddServerFragment : Fragment() {
             connectToServer()
         }
 
+        binding.serversRecyclerView.adapter = DiscoveredServerListAdapter { server ->
+            (binding.editTextServerAddress as AppCompatEditText).setText(server.address)
+            connectToServer()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -59,6 +65,17 @@ class AddServerFragment : Fragment() {
                         is AddServerViewModel.UiState.Normal -> bindUiStateNormal()
                         is AddServerViewModel.UiState.Error -> bindUiStateError(uiState)
                         is AddServerViewModel.UiState.Loading -> bindUiStateLoading()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.discoveredServersState.collect { serversState ->
+                    when (serversState) {
+                        is AddServerViewModel.DiscoveredServersState.Loading -> Unit
+                        is AddServerViewModel.DiscoveredServersState.Servers -> bindDiscoveredServersStateServers(serversState)
                     }
                 }
             }
@@ -80,15 +97,26 @@ class AddServerFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextServerAddress as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextServerAddressLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).error = uiState.message
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
         } else {
-            binding.editTextServerAddressLayout!!.error = uiState.message
+            binding.editTextServerAddressLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
         }
     }
 
@@ -96,9 +124,25 @@ class AddServerFragment : Fragment() {
         binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).error = null
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
         } else {
-            binding.editTextServerAddressLayout!!.error = null
+            binding.editTextServerAddressLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
+        }
+    }
+
+    private fun bindDiscoveredServersStateServers(serversState: AddServerViewModel.DiscoveredServersState.Servers) {
+        val servers = serversState.servers
+        if (servers.isEmpty()) {
+            binding.serversRecyclerView.isVisible = false
+        } else {
+            binding.serversRecyclerView.isVisible = true
+            (binding.serversRecyclerView.adapter as DiscoveredServerListAdapter).submitList(servers)
         }
     }
 

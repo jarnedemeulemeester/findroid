@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.UserListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -51,14 +52,30 @@ class LoginFragment : Fragment() {
             login()
         }
 
+        binding.usersRecyclerView.adapter = UserListAdapter { user ->
+            (binding.editTextUsername as AppCompatEditText).setText(user.name)
+            (binding.editTextPassword as AppCompatEditText).requestFocus()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when(uiState) {
+                    when (uiState) {
                         is LoginViewModel.UiState.Normal -> bindUiStateNormal()
                         is LoginViewModel.UiState.Error -> bindUiStateError(uiState)
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.usersState.collect { usersState ->
+                    when (usersState) {
+                        is LoginViewModel.UsersState.Loading -> Unit
+                        is LoginViewModel.UsersState.Users -> bindUsersStateUsers(usersState)
                     }
                 }
             }
@@ -80,15 +97,30 @@ class LoginFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).isEnabled = true
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextUsernameLayout!!.isEnabled = true
+            binding.editTextPasswordLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).error = uiState.message
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
         } else {
-            binding.editTextUsernameLayout!!.error = uiState.message
+            binding.editTextUsernameLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            binding.editTextPasswordLayout!!.isEnabled = true
         }
     }
 
@@ -96,9 +128,27 @@ class LoginFragment : Fragment() {
         binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).error = null
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = false
         } else {
-            binding.editTextUsernameLayout!!.error = null
+            binding.editTextUsernameLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
+            binding.editTextPasswordLayout!!.isEnabled = false
+        }
+    }
+
+    private fun bindUsersStateUsers(usersState: LoginViewModel.UsersState.Users) {
+        val users = usersState.users
+        if (users.isEmpty()) {
+            binding.usersRecyclerView.isVisible = false
+        } else {
+            binding.usersRecyclerView.isVisible = true
+            (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
         }
     }
 

@@ -86,7 +86,7 @@
     <string name="force_software_decoding_summary">Deshabilita la decodificación por hardtware y usa solo software. Puede ser útil sí la decodificación por hardware genera artefactos visuales.</string>
     <string name="download_button_description">Descarga</string>
     <string name="delete_button_description">Borrar</string>
-    <string name="person_detail_title">Detalle de persona</string>
+    <string name="person_detail_title">Detalles</string>
     <string name="error_getting_person_id">Detalle no disponible</string>
     <string name="movies_label">Películas</string>
     <string name="shows_label">Series</string>
@@ -97,7 +97,7 @@
     <string name="share">Compartir</string>
     <string name="image_description_poster">Poster de %1$s</string>
     <string name="image_description_backdrop">Fondo de %1$s</string>
-    <string name="sort_by_options_0">Nombre</string>
+    <string name="sort_by_options_0">Título</string>
     <string name="sort_by_options_1">Calificación IMDB</string>
     <string name="sort_by_options_2">Calificación de edad</string>
     <string name="sort_by_options_3">Fecha de adición</string>
@@ -126,4 +126,10 @@
     <string name="player_gestures_vb">Gesto de volumen y brillo</string>
     <string name="player_gestures_zoom">Gesto para ampliar</string>
     <string name="player_gestures_zoom_summary">Pellizcar para rellenar pantalla con el video</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="seeking">Buscando</string>
+    <string name="seek_forward_increment">Incrementar adelanto (ms)</string>
+    <string name="seek_back_increment">Incrementar retroceso (ms)</string>
+    <string name="dynamic_colors">Colores dinámicos</string>
+    <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (sólo disponible en Android 12+)</string>
 </resources>

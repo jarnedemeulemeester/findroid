@@ -26,8 +26,6 @@
             android:id="@+id/linearLayout"
             android:layout_width="@dimen/setup_container_width"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,15 +37,31 @@
                 android:id="@+id/text_add_server"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="32dp"
                 android:text="@string/add_server"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="?android:textColorPrimary" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/servers_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="2"
+                tools:listitem="@layout/discovered_server_item"
+                tools:visibility="visible" />
+
             <EditText
                 android:id="@+id/edit_text_server_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="8dp"
                 android:autofillHints=""
                 android:focusedByDefault="true"
@@ -57,7 +71,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp">
 
                 <Button
                     android:id="@+id/button_connect"

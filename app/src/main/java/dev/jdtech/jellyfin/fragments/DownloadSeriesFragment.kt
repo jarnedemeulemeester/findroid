@@ -54,7 +54,7 @@ class DownloadSeriesFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     when (uiState) {
                         is DownloadSeriesViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is DownloadSeriesViewModel.UiState.Loading -> bindUiStateLoading(uiState)
+                        is DownloadSeriesViewModel.UiState.Loading -> Unit
                         is DownloadSeriesViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
@@ -78,8 +78,6 @@ class DownloadSeriesFragment : Fragment() {
         binding.episodesRecyclerView.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
-
-    private fun bindUiStateLoading(uiState: DownloadSeriesViewModel.UiState.Loading) {}
 
     private fun bindUiStateError(uiState: DownloadSeriesViewModel.UiState.Error) {
         errorDialog = ErrorDialogFragment(uiState.error)

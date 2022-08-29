@@ -16,8 +16,7 @@
         android:layout_marginHorizontal="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@drawable/ripple_background"
-        android:orientation="vertical">
+        android:foreground="@drawable/ripple_background">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/episode_image"
@@ -36,6 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,6 +47,7 @@
             android:id="@+id/secondary_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
             android:text="@{String.format(@string/episode_name_extended, episode.parentIndexNumber, episode.indexNumber, episode.name)}"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"

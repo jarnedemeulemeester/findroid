@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.DiscoveredServer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -32,13 +33,37 @@ constructor(
     val uiState = _uiState.asStateFlow()
     private val _navigateToLogin = MutableSharedFlow<Boolean>()
     val navigateToLogin = _navigateToLogin.asSharedFlow()
+    private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
+    val discoveredServersState = _discoveredServersState.asStateFlow()
 
+    private val discoveredServers = mutableListOf<DiscoveredServer>()
     private var serverFound = false
 
     sealed class UiState {
         object Normal : UiState()
         object Loading : UiState()
         data class Error(val message: String) : UiState()
+    }
+
+    sealed class DiscoveredServersState {
+        object Loading : DiscoveredServersState()
+        data class Servers(val servers: List<DiscoveredServer>) : DiscoveredServersState()
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val servers = jellyfinApi.jellyfin.discovery.discoverLocalServers()
+            servers.collect { serverDiscoveryInfo ->
+                discoveredServers.add(DiscoveredServer(
+                    serverDiscoveryInfo.id,
+                    serverDiscoveryInfo.name,
+                    serverDiscoveryInfo.address
+                ))
+                _discoveredServersState.emit(
+                    DiscoveredServersState.Servers(ArrayList(discoveredServers))
+                )
+            }
+        }
     }
 
     /**
@@ -70,7 +95,10 @@ constructor(
 
                 recommended
                     .onCompletion {
-                        if (serverFound) return@onCompletion
+                        if (serverFound) {
+                            serverFound = false
+                            return@onCompletion
+                        }
                         when {
                             goodServers.isNotEmpty() -> {
                                 val issuesString = createIssuesString(goodServers.first())

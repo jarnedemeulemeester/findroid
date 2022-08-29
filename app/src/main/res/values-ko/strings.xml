@@ -115,7 +115,7 @@
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="no_favorites">즐겨찾기 없음</string>
     <string name="no_search_results">검색 결과 없음</string>
-    <string name="next_up">넘기기</string>
+    <string name="next_up">다음</string>
     <string name="continue_watching">이어서 보기</string>
     <string name="settings_cache_size_message">본 앱은 설정한 용량의 디스크 공간을 Jellyfin 서버의 이미지를 저장하는 데 사용합니다. 값이 클수록 느린 네트워크에서 큰 효과가 있습니다.</string>
     <string name="force_software_decoding">소프트웨어 디코딩 강제</string>
@@ -130,4 +130,5 @@
     <string name="settings_use_cache_summary">이미지 캐시를 디스크에 저장하여 로딩 시간을 단축합니다. 앱을 다시 시작한 후에 적용됩니다.</string>
     <string name="mpv_player_summary">실험용 mpv 플레이어를 사용하여 비디오를 재생합니다. mpv 플레이어는 더 많은 비디오, 오디오 및 자막 코덱을 지원합니다.</string>
     <string name="sort_order">정렬 기준</string>
+    <string name="libraries">라이브러리</string>
 </resources>
