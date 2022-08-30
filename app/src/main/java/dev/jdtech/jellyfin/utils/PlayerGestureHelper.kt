@@ -95,7 +95,7 @@ class PlayerGestureHelper(
                 return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
                     (!swipeGestureBrightnessOpen && !swipeGestureVolumeOpen)) {
                     val currentPos = playerView.player?.currentPosition ?: 0
-                    val vidDuration = playerView.player?.duration ?: 0
+                    val vidDuration = (playerView.player?.duration ?: 0).coerceAtLeast(0)
 
                     val difference = ((currentEvent.x - firstEvent.x) * 90).toLong()
                     val newPos = (currentPos + difference).coerceIn(0, vidDuration)
