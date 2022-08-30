@@ -353,8 +353,7 @@ class MPVPlayer(
      * Select a [Track] or disable a [TrackType] in the current player.
      *
      * @param trackType The [TrackType]
-     * @param isExternal If track is external or embed in media
-     * @param index Index to select or [C.INDEX_UNSET] to disable [TrackType]
+     * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
     fun selectTrack(
