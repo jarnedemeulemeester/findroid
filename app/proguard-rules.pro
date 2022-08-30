@@ -23,11 +23,6 @@
 -keepnames class dev.jdtech.jellyfin.models.PlayerItem
 -keepnames class dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 
-# Keep all mpvlib methods because proguard removes some which makes the app crash
--keep class is.xyz.libmpv.MPVLib {
-  *;
-}
-
 # ProGuard thinks all SettingsFragments are unused
 -keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment
 -keep class dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment
