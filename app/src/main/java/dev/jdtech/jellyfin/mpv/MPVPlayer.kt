@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.mpv
 
-import `is`.xyz.libmpv.MPVLib
-import android.annotation.SuppressLint
+import `is`.xyz.mpv.MPVLib
 import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
@@ -273,7 +272,6 @@ class MPVPlayer(
         }
     }
 
-    @SuppressLint("SwitchIntDef")
     override fun event(@MPVLib.Event eventId: Int) {
         handler.post {
             when (eventId) {
@@ -311,12 +309,9 @@ class MPVPlayer(
                         }
                     }
                 }
+                else -> Unit
             }
         }
-    }
-
-    override fun eventEndFile(@MPVLib.Reason reason: Int, @MPVLib.Error error: Int) {
-        // Nothing to do...
     }
 
     private fun setPlayerStateAndNotifyIfChanged(
@@ -358,33 +353,17 @@ class MPVPlayer(
      * Select a [Track] or disable a [TrackType] in the current player.
      *
      * @param trackType The [TrackType]
-     * @param isExternal If track is external or embed in media
-     * @param index Index to select or [C.INDEX_UNSET] to disable [TrackType]
+     * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
     fun selectTrack(
         @TrackType trackType: String,
-        isExternal: Boolean = false,
-        index: Int
+        id: Int
     ): Boolean {
-        if (index != C.INDEX_UNSET) {
-            Timber.i("${currentMpvTracks.size}")
-            currentMpvTracks.firstOrNull {
-                it.type == trackType && (if (isExternal) it.title else "${it.ffIndex}") == "$index"
-            }.let { track ->
-                if (track != null) {
-                    Timber.i("selected track ${track.ffIndex} ${track.type}")
-                    if (!track.selected) {
-                        MPVLib.setPropertyInt(trackType, track.id)
-                    }
-                } else {
-                    return false
-                }
-            }
+        if (id != C.INDEX_UNSET) {
+            MPVLib.setPropertyInt(trackType, id)
         } else {
-            if (currentMpvTracks.indexOfFirst { it.type == trackType && it.selected } != C.INDEX_UNSET) {
-                MPVLib.setPropertyString(trackType, "no")
-            }
+            MPVLib.setPropertyString(trackType, "no")
         }
         return true
     }
