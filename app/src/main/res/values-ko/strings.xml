@@ -131,4 +131,7 @@
     <string name="mpv_player_summary">실험용 mpv 플레이어를 사용하여 비디오를 재생합니다. mpv 플레이어는 더 많은 비디오, 오디오 및 자막 코덱을 지원합니다.</string>
     <string name="sort_order">정렬 기준</string>
     <string name="libraries">라이브러리</string>
+    <string name="subtitles">자막</string>
+    <string name="subtitles_summary">자막 스타일 커스텀</string>
+    <string name="external">외부</string>
 </resources>
