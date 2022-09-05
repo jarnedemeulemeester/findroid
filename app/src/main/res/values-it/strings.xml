@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="jellyfin_banner">Jellyfin banner</string>
+    <string name="jellyfin_banner">Banner di Jellyfin</string>
     <string name="add_server">Aggiungi server</string>
     <string name="add_server_error_not_jellyfin">Non è un server Jellyfin: %1$s</string>
     <string name="add_server_error_slow">Il server ha impiegato troppo tempo per rispondere: %1$s</string>
@@ -17,7 +17,7 @@
     <string name="remove_server">Rimuovi server</string>
     <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
     <string name="remove">Rimuovi</string>
-    <string name="cancel">Cancella</string>
+    <string name="cancel">Annulla</string>
     <string name="title_home">Home</string>
     <string name="title_media">I miei media</string>
     <string name="title_favorite">Favoriti</string>
@@ -55,7 +55,7 @@
     <string name="error_preparing_player_items">Errore nella preparazione della riproduzione.</string>
     <string name="view_details">Mostra dettagli</string>
     <string name="view_details_underlined"><u>Vedi dettagli</u></string>
-    <string name="app_description">Client di terze parti per Jellyfin</string>
+    <string name="app_description">Applicazione nativa di terze parti per Jellyfin</string>
     <string name="add_server_error_outdated">Versione del server non supportata: %1$s. Per favore aggiorna il tuo server</string>
     <string name="no_favorites">Non hai nessun favorito</string>
     <string name="add_server_error_not_found">Server non trovato</string>
@@ -128,4 +128,10 @@
     <string name="add_server_empty_error">Indirizzo server vuoto</string>
     <string name="display_extended_title">Mostra titolo esteso</string>
     <string name="display_extended_title_summary">Mostra titoli degli episodi in modo esteso includendo informazioni su stagione ed episodio (SXX:EXX - Nome episodio).</string>
+    <string name="subtitles">Sottotitoli</string>
+    <string name="subtitles_summary">Personalizza lo stile dei sottotitoli</string>
+    <string name="libraries">Librerie</string>
+    <string name="external">Esterno</string>
+    <string name="dynamic_colors">Colori dinamici</string>
+    <string name="dynamic_colors_summary">Usa i colori dinamici di Material You (disponibile solo su Android 12 e oltre)</string>
 </resources>
