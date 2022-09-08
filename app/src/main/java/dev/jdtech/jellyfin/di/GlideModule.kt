@@ -21,7 +21,7 @@ class GlideModule : AppGlideModule() {
         val use = preferences.getBoolean(Constants.PREF_IMAGE_CACHE, true)
 
         if (use) {
-            val sizeMb = preferences.getString(Constants.PREF_IMAGE_CACHE_SIZE, "${Constants.DEFAULT_CACHE_SIZE}")?.toInt()!!
+            val sizeMb = preferences.getString(Constants.PREF_IMAGE_CACHE_SIZE, Constants.DEFAULT_CACHE_SIZE.toString())!!.toIntOrNull() ?: Constants.DEFAULT_CACHE_SIZE
             val sizeB = 1024L * 1024 * sizeMb
             Timber.d("Setting image cache to use $sizeMb MB of disk space")
 

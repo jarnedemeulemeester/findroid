@@ -37,10 +37,10 @@ constructor(
     val playerSeekBackIncrement = sharedPreferences.getString(
         Constants.PREF_PLAYER_SEEK_BACK_INC,
         DEFAULT_SEEK_BACK_INCREMENT_MS.toString()
-    )!!.toLong()
+    )!!.toLongOrNull() ?: DEFAULT_SEEK_BACK_INCREMENT_MS
     val playerSeekForwardIncrement = sharedPreferences.getString(
         Constants.PREF_PLAYER_SEEK_FORWARD_INC,
         DEFAULT_SEEK_FORWARD_INCREMENT_MS.toString()
-    )!!.toLong()
+    )!!.toLongOrNull() ?: DEFAULT_SEEK_FORWARD_INCREMENT_MS
     val mpvDisableHwDec = sharedPreferences.getBoolean("mpv_disable_hwdec", false)
 }
