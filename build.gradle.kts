@@ -15,7 +15,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
-        val navVersion = "2.5.1"
+        val navVersion = "2.5.2"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
 
         val hiltVersion = "2.43.2"
