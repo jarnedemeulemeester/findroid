@@ -47,15 +47,25 @@ class MainActivity : AppCompatActivity() {
 
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
             graph.setStartDestination(R.id.homeFragmentTv)
-            navController.setGraph(graph, intent.extras)
-        }
-
-        val nServers = database.getServersCount()
-        if (nServers < 1) {
-            if (!viewModel.startDestinationChanged) {
-                graph.setStartDestination(R.id.addServerFragment)
+            val nServers = database.getServersCount()
+            if (nServers < 1) {
+                if (!viewModel.startDestinationChanged) {
+                    graph.setStartDestination(R.id.addServerFragment)
+                    viewModel.startDestinationChanged = true
+                }
+            }
+            if (!viewModel.startDestinationTvChanged) {
+                viewModel.startDestinationTvChanged = true
                 navController.setGraph(graph, intent.extras)
-                viewModel.startDestinationChanged = true
+            }
+        } else {
+            val nServers = database.getServersCount()
+            if (nServers < 1) {
+                if (!viewModel.startDestinationChanged) {
+                    graph.setStartDestination(R.id.addServerFragment)
+                    navController.setGraph(graph, intent.extras)
+                    viewModel.startDestinationChanged = true
+                }
             }
         }
 
