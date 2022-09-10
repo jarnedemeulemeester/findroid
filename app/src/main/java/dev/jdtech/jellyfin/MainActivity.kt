@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var uiModeManager: UiModeManager
 
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     @Inject
     lateinit var database: ServerDatabaseDao
@@ -47,25 +48,14 @@ class MainActivity : AppCompatActivity() {
 
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
             graph.setStartDestination(R.id.homeFragmentTv)
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                if (!viewModel.startDestinationChanged) {
-                    graph.setStartDestination(R.id.addServerFragment)
-                    viewModel.startDestinationChanged = true
-                }
-            }
+            checkServersEmpty(graph)
             if (!viewModel.startDestinationTvChanged) {
                 viewModel.startDestinationTvChanged = true
                 navController.setGraph(graph, intent.extras)
             }
         } else {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                if (!viewModel.startDestinationChanged) {
-                    graph.setStartDestination(R.id.addServerFragment)
-                    navController.setGraph(graph, intent.extras)
-                    viewModel.startDestinationChanged = true
-                }
+            checkServersEmpty(graph) {
+                navController.setGraph(graph, intent.extras)
             }
         }
 
@@ -107,5 +97,16 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun checkServersEmpty(graph: NavGraph, onServersEmpty: () -> Unit = {}) {
+        if (!viewModel.startDestinationChanged) {
+            val nServers = database.getServersCount()
+            if (nServers < 1) {
+                graph.setStartDestination(R.id.addServerFragment)
+                viewModel.startDestinationChanged = true
+                onServersEmpty()
+            }
+        }
     }
 }
