@@ -99,7 +99,7 @@
     <string name="gestures">Gesty</string>
     <string name="player_gestures">Gesty odtwarzacza</string>
     <string name="player_brightness_remember">Pamiętaj ustawienia jasności ekranu</string>
-    <string name="sort_by_options_0">Nazwa</string>
+    <string name="sort_by_options_0">Tytuł</string>
     <string name="sort_by_options_1">Ocena IMDB</string>
     <string name="sort_by_options_2">Kategoria rodzicielska</string>
     <string name="sort_by_options_3">Data dodania</string>
@@ -122,4 +122,10 @@
     <string name="remove_server">Usuń serwer</string>
     <string name="error_loading_data">Błąd ładowania danych</string>
     <string name="check_button_description">Oznacz jako obejrzane lub nieobejrzane</string>
+    <string name="player_gestures_vb">Gesty kontroli głośności i jasności ekranu</string>
+    <string name="player_gestures_zoom">Gest przybliżenia</string>
+    <string name="player_gestures_zoom_summary">Uszczypnij by wypełnić ekran</string>
+    <string name="dynamic_colors">Dynamiczne kolory</string>
+    <string name="dynamic_colors_summary">Użyj dynamicznych kolorów Material You (dostępne tylko w Android 12+)</string>
+    <string name="libraries">Biblioteki</string>
 </resources>

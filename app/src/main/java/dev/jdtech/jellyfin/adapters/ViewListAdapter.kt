@@ -94,6 +94,7 @@ class ViewListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
+            is HomeItem.Libraries -> -1
             is HomeItem.Section -> ITEM_VIEW_TYPE_NEXT_UP
             is HomeItem.ViewItem -> ITEM_VIEW_TYPE_VIEW
         }
@@ -105,6 +106,10 @@ class ViewListAdapter(
 }
 
 sealed class HomeItem {
+    data class Libraries(val section: HomeSection) : HomeItem() {
+        override val id = section.id
+    }
+
     data class Section(val homeSection: HomeSection) : HomeItem() {
         override val id = homeSection.id
     }

@@ -1,10 +1,15 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.util.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
+import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
@@ -17,11 +22,13 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
 import org.jellyfin.sdk.model.api.MediaProtocol
+import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
+    private val application: Application,
     private val repository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
@@ -105,7 +112,7 @@ class PlayerViewModel @Inject internal constructor(
         else -> emptyList()
     }
 
-    private fun itemToMoviePlayerItems(
+    private suspend fun itemToMoviePlayerItems(
         item: BaseItemDto,
         playbackPosition: Long,
         mediaSourceIndex: Int
@@ -160,11 +167,37 @@ class PlayerViewModel @Inject internal constructor(
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
-    private fun BaseItemDto.toPlayerItem(
+    private suspend fun BaseItemDto.toPlayerItem(
         mediaSourceIndex: Int,
         playbackPosition: Long
     ): PlayerItem {
-        val mediaSource = mediaSources!![mediaSourceIndex]
+        val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
+        val externalSubtitles = mutableListOf<ExternalSubtitle>()
+        for (mediaStream in mediaSource.mediaStreams!!) {
+            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+
+                // Temp fix for vtt
+                // Jellyfin returns a srt stream when it should return vtt stream.
+                var deliveryUrl = mediaStream.deliveryUrl!!
+                if (mediaStream.codec == "webvtt") {
+                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
+                }
+
+                externalSubtitles.add(
+                    ExternalSubtitle(
+                        mediaStream.title ?: application.getString(R.string.external),
+                        mediaStream.language.orEmpty(),
+                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
+                        when (mediaStream.codec) {
+                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                            "webvtt" -> MimeTypes.TEXT_VTT
+                            "ass" -> MimeTypes.TEXT_SSA
+                            else -> MimeTypes.TEXT_UNKNOWN
+                        }
+                    )
+                )
+            }
+        }
         return when (mediaSource.protocol) {
             MediaProtocol.FILE -> PlayerItem(
                 name = name,
@@ -172,7 +205,8 @@ class PlayerViewModel @Inject internal constructor(
                 mediaSourceId = mediaSource.id!!,
                 playbackPosition = playbackPosition,
                 parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber
+                indexNumber = indexNumber,
+                externalSubtitles = externalSubtitles
             )
             MediaProtocol.HTTP -> PlayerItem(
                 name = name,
@@ -181,7 +215,8 @@ class PlayerViewModel @Inject internal constructor(
                 mediaSourceUri = mediaSource.path!!,
                 playbackPosition = playbackPosition,
                 parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber
+                indexNumber = indexNumber,
+                externalSubtitles = externalSubtitles
             )
             else -> PlayerItem(
                 name = name,
@@ -189,7 +224,8 @@ class PlayerViewModel @Inject internal constructor(
                 mediaSourceId = mediaSource.id!!,
                 playbackPosition = playbackPosition,
                 parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber
+                indexNumber = indexNumber,
+                externalSubtitles = externalSubtitles
             )
         }
     }

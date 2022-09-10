@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.res.Resources
 import android.widget.Toast
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,10 +10,9 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import kotlinx.coroutines.Dispatchers
+import dev.jdtech.jellyfin.models.DiscoveredServer
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
@@ -31,9 +29,15 @@ constructor(
 ) : ViewModel() {
     private val resources: Resources = application.resources
 
-    private val uiState = MutableStateFlow<UiState>(UiState.Normal)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
+    val uiState = _uiState.asStateFlow()
+    private val _navigateToLogin = MutableSharedFlow<Boolean>()
+    val navigateToLogin = _navigateToLogin.asSharedFlow()
+    private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
+    val discoveredServersState = _discoveredServersState.asStateFlow()
 
-    private val navigateToLogin = MutableSharedFlow<Boolean>()
+    private val discoveredServers = mutableListOf<DiscoveredServer>()
+    private var serverFound = false
 
     sealed class UiState {
         object Normal : UiState()
@@ -41,12 +45,25 @@ constructor(
         data class Error(val message: String) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
+    sealed class DiscoveredServersState {
+        object Loading : DiscoveredServersState()
+        data class Servers(val servers: List<DiscoveredServer>) : DiscoveredServersState()
     }
 
-    fun onNavigateToLogin(scope: LifecycleCoroutineScope, collector: (Boolean) -> Unit) {
-        scope.launch { navigateToLogin.collect { collector(it) } }
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val servers = jellyfinApi.jellyfin.discovery.discoverLocalServers()
+            servers.collect { serverDiscoveryInfo ->
+                discoveredServers.add(DiscoveredServer(
+                    serverDiscoveryInfo.id,
+                    serverDiscoveryInfo.name,
+                    serverDiscoveryInfo.address
+                ))
+                _discoveredServersState.emit(
+                    DiscoveredServersState.Servers(ArrayList(discoveredServers))
+                )
+            }
+        }
     }
 
     /**
@@ -58,9 +75,8 @@ constructor(
      * @param inputValue Can be an ip address or hostname
      */
     fun checkServer(inputValue: String) {
-
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
 
             try {
                 // Check if input value is not empty
@@ -74,16 +90,16 @@ constructor(
                     RecommendedServerInfoScore.OK
                 )
 
-                val greatServers = mutableListOf<RecommendedServerInfo>()
                 val goodServers = mutableListOf<RecommendedServerInfo>()
                 val okServers = mutableListOf<RecommendedServerInfo>()
 
                 recommended
                     .onCompletion {
+                        if (serverFound) {
+                            serverFound = false
+                            return@onCompletion
+                        }
                         when {
-                            greatServers.isNotEmpty() -> {
-                                connectToServer(greatServers.first())
-                            }
                             goodServers.isNotEmpty() -> {
                                 val issuesString = createIssuesString(goodServers.first())
                                 Toast.makeText(
@@ -104,14 +120,20 @@ constructor(
                     }
                     .collect { recommendedServerInfo ->
                         when (recommendedServerInfo.score) {
-                            RecommendedServerInfoScore.GREAT -> greatServers.add(recommendedServerInfo)
+                            RecommendedServerInfoScore.GREAT -> {
+                                serverFound = true
+                                connectToServer(recommendedServerInfo)
+                                this.cancel()
+                            }
                             RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
                             RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
                             RecommendedServerInfoScore.BAD -> Unit
                         }
                     }
+            } catch (e: CancellationException) {
+
             } catch (e: Exception) {
-                uiState.emit(
+                _uiState.emit(
                     UiState.Error(
                         e.message ?: resources.getString(R.string.unknown_error)
                     )
@@ -135,8 +157,8 @@ constructor(
             api.accessToken = null
         }
 
-        uiState.emit(UiState.Normal)
-        navigateToLogin.emit(true)
+        _uiState.emit(UiState.Normal)
+        _navigateToLogin.emit(true)
     }
 
     /**

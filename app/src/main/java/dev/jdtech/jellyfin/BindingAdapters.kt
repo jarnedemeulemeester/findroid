@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.User
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
@@ -57,7 +58,7 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
 @BindingAdapter("personImage")
 fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
-        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", R.drawable.person_placeholder)
+        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = R.drawable.person_placeholder)
         .posterDescription(person.name)
 }
 
@@ -104,17 +105,23 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
     imageView.loadImage("/items/${seasonId}/Images/${ImageType.PRIMARY}")
 }
 
-private fun ImageView.loadImage(url: String, @DrawableRes errorPlaceHolderId: Int? = null): View {
+@BindingAdapter("userImage")
+fun bindUserImage(imageView: ImageView, user: User) {
+    imageView
+        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = R.drawable.user_placeholder)
+        .posterDescription(user.name)
+}
+
+private fun ImageView.loadImage(url: String, @DrawableRes placeholderId: Int = R.color.neutral_800, @DrawableRes errorPlaceHolderId: Int? = null): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
     Glide
         .with(context)
         .load("${api.api.baseUrl}$url")
         .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.color.neutral_800)
+        .placeholder(placeholderId)
         .error(errorPlaceHolderId)
         .into(this)
-        .view
 
     return this
 }

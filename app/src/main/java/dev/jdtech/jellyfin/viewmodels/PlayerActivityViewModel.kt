@@ -8,10 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -19,6 +16,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -32,7 +30,8 @@ class PlayerActivityViewModel
 constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
+    private val downloadDatabase: DownloadDatabaseDao,
+    appPreferences: AppPreferences,
 ) : ViewModel(), Player.Listener {
     val player: Player
 
@@ -63,8 +62,8 @@ constructor(
 
     init {
         val useMpv = sp.getBoolean("mpv_player", false)
-        val preferredAudioLanguage = sp.getString("audio_language", null) ?: ""
-        val preferredSubtitleLanguage = sp.getString("subtitle_language", null) ?: ""
+        val preferredAudioLanguage = sp.getString("audio_language", "")!!
+        val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
 
         if (useMpv) {
             val preferredLanguages = mapOf(
@@ -75,7 +74,7 @@ constructor(
                 application,
                 false,
                 preferredLanguages,
-                sp.getBoolean("mpv_disable_hwdec", false)
+                appPreferences
             )
         } else {
             val renderersFactory =
@@ -90,6 +89,8 @@ constructor(
             )
             player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
+                .setSeekBackIncrementMs(appPreferences.playerSeekBackIncrement)
+                .setSeekForwardIncrementMs(appPreferences.playerSeekForwardIncrement)
                 .build()
         }
     }
@@ -108,6 +109,13 @@ constructor(
                         item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
                         else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
                     }
+                    val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
+                        MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                            .setLabel(externalSubtitle.title)
+                            .setMimeType(externalSubtitle.mimeType)
+                            .setLanguage(externalSubtitle.language)
+                            .build()
+                    }
                     playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
                     Timber.d("Stream url: $streamUrl")
@@ -115,6 +123,7 @@ constructor(
                         MediaItem.Builder()
                             .setMediaId(item.itemId.toString())
                             .setUri(streamUrl)
+                            .setSubtitleConfigurations(mediaSubtitles)
                             .build()
                     mediaItems.add(mediaItem)
                 }
@@ -122,7 +131,7 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentMediaItemIndex, items[0].playbackPosition)
+            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
             val useMpv = sp.getBoolean("mpv_player", false)
             if(!useMpv || !playFromDownloads)
                 player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
@@ -172,7 +181,7 @@ constructor(
                         }
                     }
                 }
-                handler.postDelayed(this, 2000)
+                handler.postDelayed(this, 5000)
             }
         }
         handler.post(runnable)
@@ -217,7 +226,7 @@ constructor(
                 currentSubtitleTracks.clear()
                 when (player) {
                     is MPVPlayer -> {
-                        player.currentTracks.forEach {
+                        player.currentMpvTracks.forEach {
                             when (it.type) {
                                 TrackType.AUDIO -> {
                                     currentAudioTracks.add(it)
@@ -247,7 +256,7 @@ constructor(
 
     fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
         if (player is MPVPlayer) {
-            player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
+            player.selectTrack(trackType, id = track.id)
             disableSubtitle = track.ffIndex == -1
         }
     }

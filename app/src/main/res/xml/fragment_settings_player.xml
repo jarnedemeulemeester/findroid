@@ -5,6 +5,11 @@
         app:summary="@string/display_extended_title_summary"
         app:title="@string/display_extended_title" />
 
+    <Preference
+        app:key="pref_player_subtitles"
+        app:title="@string/subtitles"
+        app:summary="@string/subtitles_summary"/>
+
     <PreferenceCategory app:title="@string/mpv_player">
         <SwitchPreference
             app:key="mpv_player"
@@ -38,6 +43,19 @@
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/seeking">
+        <EditTextPreference
+            app:defaultValue="5000"
+            app:key="pref_player_seek_back_inc"
+            app:title="@string/seek_back_increment"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:defaultValue="15000"
+            app:key="pref_player_seek_forward_inc"
+            app:title="@string/seek_forward_increment"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

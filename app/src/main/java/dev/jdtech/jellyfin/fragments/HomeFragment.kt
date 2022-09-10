@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,25 +40,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var errorDialog: ErrorDialogFragment
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.home_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                navigateToSettingsFragment()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,15 +53,36 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.home_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_settings -> {
+                        navigateToSettingsFragment()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
     override fun onResume() {
         super.onResume()
 
-        viewModel.refreshData()
+        viewModel.loadData()
     }
 
     private fun setupView() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.refreshData()
+            viewModel.loadData()
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
@@ -96,7 +100,7 @@ class HomeFragment : Fragment() {
             })
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.refreshData()
+            viewModel.loadData()
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
@@ -107,7 +111,7 @@ class HomeFragment : Fragment() {
     private fun bindState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is HomeViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -183,7 +187,7 @@ class HomeFragment : Fragment() {
 
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToNavigationSettings()
+            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
         )
     }
 }

@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.DateTime
@@ -29,7 +30,8 @@ constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(
@@ -48,10 +50,6 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
     var item: BaseItemDto? = null
     private var runTime: String = ""
     private var dateString: String = ""
@@ -67,7 +65,7 @@ constructor(
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
                 val tempItem = jellyfinRepository.getItem(episodeId)
                 item = tempItem
@@ -77,7 +75,7 @@ constructor(
                 favorite = tempItem.userData?.isFavorite == true
                 canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, episodeId)
-                uiState.emit(
+                _uiState.emit(
                     UiState.Normal(
                         tempItem,
                         runTime,
@@ -91,19 +89,19 @@ constructor(
                     )
                 )
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
     }
 
     fun loadEpisode(playerItem: PlayerItem) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             playerItems.add(playerItem)
             item = downloadMetadataToBaseItemDto(playerItem.item!!)
             available = isItemAvailable(playerItem.itemId)
             Timber.d("Available: $available")
-            uiState.emit(
+            _uiState.emit(
                 UiState.Normal(
                     item!!,
                     runTime,

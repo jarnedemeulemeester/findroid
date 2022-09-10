@@ -46,6 +46,7 @@
     <string name="next_up">Next Up</string>
     <string name="continue_watching">Continue Watching</string>
     <string name="latest_library">Latest %1$s</string>
+    <string name="libraries">Libraries</string>
     <string name="series_poster">Series poster</string>
     <string name="no_favorites">You have no favorites</string>
     <string name="no_downloads">You have nothing downloaded</string>
@@ -88,7 +89,7 @@
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="download_button_description">Download</string>
     <string name="delete_button_description">Delete</string>
-    <string name="person_detail_title">Person Detail</string>
+    <string name="person_detail_title">Details</string>
     <string name="error_getting_person_id">Detail unavailable</string>
     <string name="movies_label">Movies</string>
     <string name="shows_label">TV Shows</string>
@@ -106,7 +107,7 @@
     <string name="player_gestures_vb_summary">Swipe up and down on the right side of the screen to change the volume and on the left side to change the brightness</string>
     <string name="player_gestures_zoom_summary">Pinch to fill the screen with the video</string>
     <string name="player_brightness_remember">Remember brightness level</string>
-    <string name="sort_by_options_0">Name</string>
+    <string name="sort_by_options_0">Title</string>
     <string name="sort_by_options_1">IMDB Rating</string>
     <string name="sort_by_options_2">Parental Rating</string>
     <string name="sort_by_options_3">Date Added</string>
@@ -125,4 +126,12 @@
     <string name="add_server_empty_error">Empty server address</string>
     <string name="display_extended_title_summary">Display extended episode title including season and episode information (SXX:EXX - EpisodeName).</string>
     <string name="display_extended_title">Display extended title</string>
+    <string name="seeking">Seeking</string>
+    <string name="seek_back_increment">Seek back increment (ms)</string>
+    <string name="seek_forward_increment">Seek forward increment (ms)</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="subtitles_summary">Customize subtitles appearance</string>
+    <string name="external">External</string>
 </resources>

@@ -22,7 +22,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/person_image"
-            android:layout_width="110dp"
+            android:layout_width="match_parent"
             android:layout_height="160dp"
             android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="1"
             android:text="@{person.name}"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             tools:text="Rosa Salazar" />
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="1"
             android:text="@{person.role}"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             tools:text="Alita" />

@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +16,7 @@ import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -28,7 +28,8 @@ class HomeViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
-    private val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
@@ -36,32 +37,48 @@ class HomeViewModel @Inject internal constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    fun onUiState(scope: LifecycleCoroutineScope, collector: (UiState) -> Unit) {
-        scope.launch { uiState.collect { collector(it) } }
-    }
-
     init {
-        loadData(updateCapabilities = true)
+        viewModelScope.launch {
+            try {
+                repository.postCapabilities()
+            } catch (e: Exception) {
+            }
+        }
     }
 
-    fun refreshData() = loadData(updateCapabilities = false)
-
-    private fun loadData(updateCapabilities: Boolean) {
+    fun loadData(includeLibraries: Boolean = false) {
         viewModelScope.launch {
-            uiState.emit(UiState.Loading)
+            _uiState.emit(UiState.Loading)
             try {
-                if (updateCapabilities) repository.postCapabilities()
+                val items = mutableListOf<HomeItem>()
 
-                val updated = loadDynamicItems() + loadViews()
+                if (includeLibraries) {
+                    items.add(loadLibraries())
+                }
+
+                val updated = items + loadDynamicItems() + loadViews()
 
                 withContext(Dispatchers.Default) {
                     syncPlaybackProgress(downloadDatabase, repository)
                 }
-                uiState.emit(UiState.Normal(updated))
+                _uiState.emit(UiState.Normal(updated))
             } catch (e: Exception) {
-                uiState.emit(UiState.Error(e))
+                _uiState.emit(UiState.Error(e))
             }
         }
+    }
+
+    private suspend fun loadLibraries(): HomeItem {
+        val items = repository.getItems()
+        val collections =
+            items.filter { collection -> CollectionType.unsupportedCollections.none { it.type == collection.collectionType } }
+        return HomeItem.Libraries(
+            HomeSection(
+                UUID.fromString("38f5ca96-9e4b-4c0e-a8e4-02225ed07e02"),
+                application.resources.getString(R.string.libraries),
+                collections
+            )
+        )
     }
 
     private suspend fun loadDynamicItems(): List<Section> {

@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.mpv
 
-import `is`.xyz.libmpv.MPVLib
-import android.annotation.SuppressLint
+import `is`.xyz.mpv.MPVLib
 import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
@@ -17,20 +16,18 @@ import androidx.core.content.getSystemService
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.Commands
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroup
-import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.text.Cue
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.text.CueGroup
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.*
 import com.google.android.exoplayer2.video.VideoSize
+import dev.jdtech.jellyfin.utils.AppPreferences
 import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
@@ -40,7 +37,7 @@ class MPVPlayer(
     context: Context,
     requestAudioFocus: Boolean,
     preferredLanguages: Map<String, String>,
-    disableHardwareDecoding: Boolean
+    private val appPreferences: AppPreferences
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -52,27 +49,25 @@ class MPVPlayer(
     init {
         require(context is Application)
         val mpvDir = File(context.getExternalFilesDir(null) ?: context.filesDir, "mpv")
-        if (!mpvDir.exists()) {
-            mpvDir.mkdirs()
-        }
+        Timber.i("mpv config dir: $mpvDir")
+        if (!mpvDir.exists()) mpvDir.mkdirs()
         arrayOf("mpv.conf", "subfont.ttf").forEach { fileName ->
             val file = File(mpvDir, fileName)
-            Log.i("mpv", "File ${file.absolutePath}")
-            if (!file.exists()) {
-                context.assets.open(fileName, AssetManager.ACCESS_STREAMING)
-                    .copyTo(FileOutputStream(file))
-            }
+            if (file.exists()) return@forEach
+            context.assets.open(fileName, AssetManager.ACCESS_STREAMING)
+                .copyTo(FileOutputStream(file))
         }
         MPVLib.create(context)
 
         // General
+        MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
         MPVLib.setOptionString("vo", "gpu")
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("ao", "audiotrack,opensles")
 
         // Hardware video decoding
-        if (disableHardwareDecoding) {
+        if (appPreferences.mpvDisableHwDec) {
             MPVLib.setOptionString("hwdec", "no")
         } else {
             MPVLib.setOptionString("hwdec", "mediacodec-copy")
@@ -89,7 +84,7 @@ class MPVPlayer(
         MPVLib.setOptionString("demuxer-max-back-bytes", "32MiB")
 
         // Subs
-        MPVLib.setOptionString("sub-scale-with-window", "no")
+        MPVLib.setOptionString("sub-scale-with-window", "yes")
         MPVLib.setOptionString("sub-use-margins", "no")
 
         // Other options
@@ -153,8 +148,7 @@ class MPVPlayer(
         CopyOnWriteArraySet<Player.Listener>()
 
     // Internal state.
-    private var internalMediaItems: List<MediaItem>? = null
-    private var internalMediaItem: MediaItem? = null
+    private var internalMediaItems: List<MediaItem> = emptyList()
 
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
@@ -162,7 +156,7 @@ class MPVPlayer(
 
     @Player.RepeatMode
     private val repeatMode: Int = REPEAT_MODE_OFF
-    private var tracksInfo: TracksInfo = TracksInfo.EMPTY
+    private var tracks: Tracks = Tracks.EMPTY
     private var playbackParameters: PlaybackParameters = PlaybackParameters.DEFAULT
 
     // MPV Custom
@@ -171,7 +165,7 @@ class MPVPlayer(
     private var currentPositionMs: Long? = null
     private var currentDurationMs: Long? = null
     private var currentCacheDurationMs: Long? = null
-    var currentTracks: List<Track> = emptyList()
+    var currentMpvTracks: List<Track> = emptyList()
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialSeekTo: Long = 0L
 
@@ -184,18 +178,18 @@ class MPVPlayer(
         handler.post {
             when (property) {
                 "track-list" -> {
-                    val (tracks, newTracksInfo) = getMPVTracks(value)
-                    tracks.forEach { Log.i("mpv", "${it.ffIndex} ${it.type} ${it.codec}") }
-                    currentTracks = tracks
+                    val (mpvTracks, newTracks) = getMPVTracks(value)
+                    mpvTracks.forEach { Timber.i("${it.ffIndex} ${it.type} ${it.codec}") }
+                    currentMpvTracks = mpvTracks
                     if (isPlayerReady) {
-                        if (newTracksInfo != tracksInfo) {
-                            tracksInfo = newTracksInfo
+                        if (newTracks != tracks) {
+                            tracks = newTracks
                             listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                                listener.onTracksInfoChanged(currentTracksInfo)
+                                listener.onTracksChanged(currentTracks)
                             }
                         }
                     } else {
-                        tracksInfo = newTracksInfo
+                        tracks = newTracks
                     }
                 }
             }
@@ -207,7 +201,7 @@ class MPVPlayer(
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
-                        if (currentIndex < (internalMediaItems?.size ?: 0)) {
+                        if (currentIndex < (internalMediaItems.size)) {
                             currentIndex += 1
                             prepareMediaItem(currentIndex)
                             play()
@@ -278,7 +272,6 @@ class MPVPlayer(
         }
     }
 
-    @SuppressLint("SwitchIntDef")
     override fun event(@MPVLib.Event eventId: Int) {
         handler.post {
             when (eventId) {
@@ -300,12 +293,11 @@ class MPVPlayer(
                     if (!isPlayerReady) {
                         isPlayerReady = true
                         listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                            //listener.onTracksChanged(currentTrackGroups, currentTrackSelections)
-                            listener.onTracksInfoChanged(currentTracksInfo)
+                            listener.onTracksChanged(currentTracks)
                         }
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
-                            Log.d("mpv", "Starting playback...")
+                            Timber.d("Starting playback...")
                             MPVLib.setPropertyBoolean("pause", false)
                         }
                         for (videoListener in videoListeners) {
@@ -317,12 +309,9 @@ class MPVPlayer(
                         }
                     }
                 }
+                else -> Unit
             }
         }
-    }
-
-    override fun eventEndFile(@MPVLib.Reason reason: Int, @MPVLib.Error error: Int) {
-        // Nothing to do...
     }
 
     private fun setPlayerStateAndNotifyIfChanged(
@@ -364,33 +353,17 @@ class MPVPlayer(
      * Select a [Track] or disable a [TrackType] in the current player.
      *
      * @param trackType The [TrackType]
-     * @param isExternal If track is external or embed in media
-     * @param index Index to select or [C.INDEX_UNSET] to disable [TrackType]
+     * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
     fun selectTrack(
         @TrackType trackType: String,
-        isExternal: Boolean = false,
-        index: Int
+        id: Int
     ): Boolean {
-        if (index != C.INDEX_UNSET) {
-            Log.i("mpv", "${currentTracks.size}")
-            currentTracks.firstOrNull {
-                it.type == trackType && (if (isExternal) it.title else "${it.ffIndex}") == "$index"
-            }.let { track ->
-                if (track != null) {
-                    Log.i("mpv", "selected track ${track.ffIndex} ${track.type}")
-                    if (!track.selected) {
-                        MPVLib.setPropertyInt(trackType, track.id)
-                    }
-                } else {
-                    return false
-                }
-            }
+        if (id != C.INDEX_UNSET) {
+            MPVLib.setPropertyInt(trackType, id)
         } else {
-            if (currentTracks.indexOfFirst { it.type == trackType && it.selected } != C.INDEX_UNSET) {
-                MPVLib.setPropertyString(trackType, "no")
-            }
+            MPVLib.setPropertyString(trackType, "no")
         }
         return true
     }
@@ -401,7 +374,7 @@ class MPVPlayer(
          * Returns the number of windows in the timeline.
          */
         override fun getWindowCount(): Int {
-            return internalMediaItems?.size ?: 0
+            return internalMediaItems.size
         }
 
         /**
@@ -419,7 +392,7 @@ class MPVPlayer(
             defaultPositionProjectionUs: Long
         ): Window {
             val currentMediaItem =
-                internalMediaItems?.get(windowIndex) ?: MediaItem.Builder().build()
+                internalMediaItems.getOrNull(windowIndex) ?: MediaItem.Builder().build()
             return window.set(
                 /* uid= */ windowIndex,
                 /* mediaItem= */ currentMediaItem,
@@ -442,7 +415,7 @@ class MPVPlayer(
          * Returns the number of periods in the timeline.
          */
         override fun getPeriodCount(): Int {
-            return internalMediaItems?.size ?: 0
+            return internalMediaItems.size
         }
 
         /**
@@ -680,7 +653,7 @@ class MPVPlayer(
         currentPositionMs = null
         currentDurationMs = null
         currentCacheDurationMs = null
-        tracksInfo = TracksInfo.EMPTY
+        tracks = Tracks.EMPTY
         playbackParameters = PlaybackParameters.DEFAULT
         initialCommands.clear()
         //initialSeekTo = 0L
@@ -688,7 +661,7 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems?.forEach { mediaItem ->
+        internalMediaItems.forEach { mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
@@ -839,8 +812,7 @@ class MPVPlayer(
     }
 
     private fun prepareMediaItem(index: Int) {
-        internalMediaItems?.get(index)?.let { mediaItem ->
-            internalMediaItem = mediaItem
+        internalMediaItems.getOrNull(index)?.let { mediaItem ->
             resetInternalState()
             mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
                 initialCommands.add(
@@ -870,11 +842,11 @@ class MPVPlayer(
     }
 
     override fun getSeekBackIncrement(): Long {
-        return C.DEFAULT_SEEK_BACK_INCREMENT_MS
+        return appPreferences.playerSeekBackIncrement
     }
 
     override fun getSeekForwardIncrement(): Long {
-        return C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
+        return appPreferences.playerSeekForwardIncrement
     }
 
     override fun getMaxSeekToPreviousPosition(): Long {
@@ -929,33 +901,8 @@ class MPVPlayer(
         currentIndex = 0
     }
 
-    /**
-     * Returns the available track groups.
-     *
-     * @see com.google.android.exoplayer2.Player.Listener.onTracksChanged
-     */
-    @Deprecated("Deprecated in Java")
-    override fun getCurrentTrackGroups(): TrackGroupArray {
-        return TrackGroupArray.EMPTY
-    }
-
-    /**
-     * Returns the current track selections.
-     *
-     *
-     * A concrete implementation may include null elements if it has a fixed number of renderer
-     * components, wishes to report a TrackSelection for each of them, and has one or more renderer
-     * components that is not assigned any selected tracks.
-     *
-     * @see com.google.android.exoplayer2.Player.Listener.onTracksChanged
-     */
-    @Deprecated("Deprecated in Java")
-    override fun getCurrentTrackSelections(): TrackSelectionArray {
-        return TrackSelectionArray()
-    }
-
-    override fun getCurrentTracksInfo(): TracksInfo {
-        return tracksInfo
+    override fun getCurrentTracks(): Tracks {
+        return tracks
     }
 
     override fun getTrackSelectionParameters(): TrackSelectionParameters {
@@ -1206,7 +1153,7 @@ class MPVPlayer(
     }
 
     /** Returns the current [Cues][Cue]. This list may be empty.  */
-    override fun getCurrentCues(): MutableList<Cue> {
+    override fun getCurrentCues(): CueGroup {
         TODO("Not yet implemented")
     }
 
@@ -1261,77 +1208,10 @@ class MPVPlayer(
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
-    /*private class CurrentTrackSelection(
-        private val currentTrackGroup: TrackGroup,
-        private val index: Int
-    ) : TrackSelection {
-        /**
-         * Returns an integer specifying the type of the selection, or [.TYPE_UNSET] if not
-         * specified.
-         *
-         *
-         * Track selection types are specific to individual applications, but should be defined
-         * starting from [.TYPE_CUSTOM_BASE] to ensure they don't conflict with any types that may
-         * be added to the library in the future.
-         */
-        override fun getType(): Int {
-            return TrackSelection.TYPE_UNSET
-        }
-
-        /** Returns the [TrackGroup] to which the selected tracks belong.  */
-        override fun getTrackGroup(): TrackGroup {
-            return currentTrackGroup
-        }
-
-        /** Returns the number of tracks in the selection.  */
-        override fun length(): Int {
-            return if (index != C.INDEX_UNSET) 1 else 0
-        }
-
-        /**
-         * Returns the format of the track at a given index in the selection.
-         *
-         * @param index The index in the selection.
-         * @return The format of the selected track.
-         */
-        override fun getFormat(index: Int): Format {
-            return currentTrackGroup.getFormat(index)
-        }
-
-        /**
-         * Returns the index in the track group of the track at a given index in the selection.
-         *
-         * @param index The index in the selection.
-         * @return The index of the selected track.
-         */
-        override fun getIndexInTrackGroup(index: Int): Int {
-            return index
-        }
-
-        /**
-         * Returns the index in the selection of the track with the specified format. The format is
-         * located by identity so, for example, `selection.indexOf(selection.getFormat(index)) ==
-         * index` even if multiple selected tracks have formats that contain the same values.
-         *
-         * @param format The format.
-         * @return The index in the selection, or [C.INDEX_UNSET] if the track with the specified
-         * format is not part of the selection.
-         */
-        override fun indexOf(format: Format): Int {
-            return currentTrackGroup.indexOf(format)
-        }
-
-        /**
-         * Returns the index in the selection of the track with the specified index in the track group.
-         *
-         * @param indexInTrackGroup The index in the track group.
-         * @return The index in the selection, or [C.INDEX_UNSET] if the track with the specified
-         * index is not part of the selection.
-         */
-        override fun indexOf(indexInTrackGroup: Int): Int {
-            return indexInTrackGroup
-        }
-    }*/
+    fun updateZoomMode(enabled: Boolean) {
+        val level = if (enabled) "1" else "0"
+        MPVLib.setOptionString("panscan", level)
+    }
 
     companion object {
         /**
@@ -1452,10 +1332,10 @@ class MPVPlayer(
             }
         }
 
-        private fun getMPVTracks(trackList: String): Pair<List<Track>, TracksInfo> {
-            val tracks = mutableListOf<Track>()
-            var tracksInfo = TracksInfo.EMPTY
-            val trackGroupInfos = mutableListOf<TracksInfo.TrackGroupInfo>()
+        private fun getMPVTracks(trackList: String): Pair<List<Track>, Tracks> {
+            val mpvTracks = mutableListOf<Track>()
+            var tracks = Tracks.EMPTY
+            val trackGroups = mutableListOf<Tracks.Group>()
 
             val trackListVideo = mutableListOf<Format>()
             val trackListAudio = mutableListOf<Format>()
@@ -1478,7 +1358,7 @@ class MPVPlayer(
                     width = null,
                     height = null
                 )
-                tracks.add(emptyTrack)
+                mpvTracks.add(emptyTrack)
                 trackListText.add(emptyTrack.toFormat())
                 val currentTrackList = JSONArray(trackList)
                 for (index in 0 until currentTrackList.length()) {
@@ -1486,21 +1366,21 @@ class MPVPlayer(
                     val currentFormat = currentTrack.toFormat()
                     when (currentTrack.type) {
                         TrackType.VIDEO -> {
-                            tracks.add(currentTrack)
+                            mpvTracks.add(currentTrack)
                             trackListVideo.add(currentFormat)
                             if (currentTrack.selected) {
                                 indexCurrentVideo = trackListVideo.indexOf(currentFormat)
                             }
                         }
                         TrackType.AUDIO -> {
-                            tracks.add(currentTrack)
+                            mpvTracks.add(currentTrack)
                             trackListAudio.add(currentFormat)
                             if (currentTrack.selected) {
                                 indexCurrentAudio = trackListAudio.indexOf(currentFormat)
                             }
                         }
                         TrackType.SUBTITLE -> {
-                            tracks.add(currentTrack)
+                            mpvTracks.add(currentTrack)
                             trackListText.add(currentFormat)
                             if (currentTrack.selected) {
                                 indexCurrentText = trackListText.indexOf(currentFormat)
@@ -1510,71 +1390,45 @@ class MPVPlayer(
                     }
                 }
                 if (trackListText.size == 1 && trackListText[0].id == emptyTrack.id.toString()) {
-                    tracks.remove(emptyTrack)
+                    mpvTracks.remove(emptyTrack)
                     trackListText.removeFirst()
                 }
                 if (trackListVideo.isNotEmpty()) {
                     with(TrackGroup(*trackListVideo.toTypedArray())) {
-                        TracksInfo.TrackGroupInfo(
+                        Tracks.Group(
                             this,
-                            intArrayOf(C.FORMAT_HANDLED),
-                            C.TRACK_TYPE_VIDEO,
+                            true,
+                            IntArray(this.length) { C.FORMAT_HANDLED },
                             BooleanArray(this.length) { it == indexCurrentVideo }
                         )
                     }
                 }
                 if (trackListAudio.isNotEmpty()) {
                     with(TrackGroup(*trackListAudio.toTypedArray())) {
-                        TracksInfo.TrackGroupInfo(
+                        Tracks.Group(
                             this,
+                            true,
                             IntArray(this.length) { C.FORMAT_HANDLED },
-                            C.TRACK_TYPE_AUDIO,
                             BooleanArray(this.length) { it == indexCurrentAudio }
                         )
                     }
                 }
                 if (trackListText.isNotEmpty()) {
                     with(TrackGroup(*trackListText.toTypedArray())) {
-                        TracksInfo.TrackGroupInfo(
+                        Tracks.Group(
                             this,
+                            true,
                             IntArray(this.length) { C.FORMAT_HANDLED },
-                            C.TRACK_TYPE_TEXT,
                             BooleanArray(this.length) { it == indexCurrentText }
                         )
                     }
                 }
-                if (trackGroupInfos.isNotEmpty()) {
-                    tracksInfo = TracksInfo(trackGroupInfos)
+                if (trackGroups.isNotEmpty()) {
+                    tracks = Tracks(trackGroups)
                 }
             } catch (e: JSONException) {
             }
-            return Pair(tracks, tracksInfo)
-        }
-
-        /**
-         * Merges multiple [subtitleSources] into a single [videoSource]
-         */
-        fun mergeMediaSources(
-            videoSource: MediaSource,
-            subtitleSources: Array<MediaSource>,
-            dataSource: DataSource.Factory
-        ): MediaSource {
-            return when {
-                subtitleSources.isEmpty() -> videoSource
-                else -> {
-                    val subtitleConfigurations = mutableListOf<MediaItem.SubtitleConfiguration>()
-                    subtitleSources.forEach { subtitleSource ->
-                        subtitleSource.mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitle ->
-                            subtitleConfigurations.add(subtitle)
-                        }
-                    }
-                    ProgressiveMediaSource.Factory(dataSource)
-                        .createMediaSource(
-                            videoSource.mediaItem.buildUpon()
-                                .setSubtitleConfigurations(subtitleConfigurations).build()
-                        )
-                }
-            }
+            return Pair(mpvTracks, tracks)
         }
     }
 }

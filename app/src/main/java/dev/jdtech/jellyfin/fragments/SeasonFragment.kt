@@ -44,7 +44,7 @@ class SeasonFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
@@ -52,6 +52,11 @@ class SeasonFragment : Fragment() {
                         is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loadEpisodes(args.seriesId, args.seasonId)
             }
         }

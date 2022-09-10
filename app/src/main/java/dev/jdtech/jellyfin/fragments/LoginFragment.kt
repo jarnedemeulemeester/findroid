@@ -1,10 +1,14 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.UserListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -22,6 +27,7 @@ import timber.log.Timber
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var uiModeManager: UiModeManager
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
@@ -29,8 +35,10 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater)
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
-        binding.editTextPassword.setOnEditorActionListener { _, actionId, _ ->
+        (binding.editTextPassword as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_GO -> {
                     login()
@@ -44,20 +52,40 @@ class LoginFragment : Fragment() {
             login()
         }
 
+        binding.usersRecyclerView.adapter = UserListAdapter { user ->
+            (binding.editTextUsername as AppCompatEditText).setText(user.name)
+            (binding.editTextPassword as AppCompatEditText).requestFocus()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when(uiState) {
+                    when (uiState) {
                         is LoginViewModel.UiState.Normal -> bindUiStateNormal()
                         is LoginViewModel.UiState.Error -> bindUiStateError(uiState)
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
                     }
                 }
-                viewModel.onNavigateToMain(viewLifecycleOwner.lifecycleScope) {
-                    Timber.d("Navigate to MainActivity: $it")
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.usersState.collect { usersState ->
+                    when (usersState) {
+                        is LoginViewModel.UsersState.Loading -> Unit
+                        is LoginViewModel.UsersState.Users -> bindUsersStateUsers(usersState)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToMain.collect {
                     if (it) {
-                        navigateToMainActivity()
+                        navigateToHomeFragment()
                     }
                 }
             }
@@ -67,27 +95,74 @@ class LoginFragment : Fragment() {
     }
 
     private fun bindUiStateNormal() {
+        binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).isEnabled = true
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextUsernameLayout!!.isEnabled = true
+            binding.editTextPasswordLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
+        binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
-        binding.editTextUsernameLayout.error = uiState.message
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextUsernameLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
+            binding.editTextPasswordLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateLoading() {
+        binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
-        binding.editTextUsernameLayout.error = null
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextUsername as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
+            (binding.editTextPassword as AppCompatEditText).isEnabled = false
+        } else {
+            binding.editTextUsernameLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
+            binding.editTextPasswordLayout!!.isEnabled = false
+        }
+    }
+
+    private fun bindUsersStateUsers(usersState: LoginViewModel.UsersState.Users) {
+        val users = usersState.users
+        if (users.isEmpty()) {
+            binding.usersRecyclerView.isVisible = false
+        } else {
+            binding.usersRecyclerView.isVisible = true
+            (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
+        }
     }
 
     private fun login() {
-        val username = binding.editTextUsername.text.toString()
-        val password = binding.editTextPassword.text.toString()
-        binding.progressCircular.visibility = View.VISIBLE
+        val username = (binding.editTextUsername as AppCompatEditText).text.toString()
+        val password = (binding.editTextPassword as AppCompatEditText).text.toString()
         viewModel.login(username, password)
     }
 
-    private fun navigateToMainActivity() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragment2ToNavigationHome())
+    private fun navigateToHomeFragment() {
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragmentTv())
+        } else {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
+        }
     }
 }

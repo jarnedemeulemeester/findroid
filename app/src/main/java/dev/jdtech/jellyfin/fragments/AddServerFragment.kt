@@ -1,10 +1,14 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.adapters.DiscoveredServerListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import kotlinx.coroutines.launch
@@ -22,6 +27,7 @@ import timber.log.Timber
 class AddServerFragment : Fragment() {
 
     private lateinit var binding: FragmentAddServerBinding
+    private lateinit var uiModeManager: UiModeManager
     private val viewModel: AddServerViewModel by viewModels()
 
     override fun onCreateView(
@@ -29,8 +35,10 @@ class AddServerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
-        binding.editTextServerAddress.setOnEditorActionListener { _, actionId, _ ->
+        (binding.editTextServerAddress as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_GO -> {
                     connectToServer()
@@ -44,9 +52,14 @@ class AddServerFragment : Fragment() {
             connectToServer()
         }
 
+        binding.serversRecyclerView.adapter = DiscoveredServerListAdapter { server ->
+            (binding.editTextServerAddress as AppCompatEditText).setText(server.address)
+            connectToServer()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onUiState(viewLifecycleOwner.lifecycleScope) { uiState ->
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
                         is AddServerViewModel.UiState.Normal -> bindUiStateNormal()
@@ -54,8 +67,23 @@ class AddServerFragment : Fragment() {
                         is AddServerViewModel.UiState.Loading -> bindUiStateLoading()
                     }
                 }
-                viewModel.onNavigateToLogin(viewLifecycleOwner.lifecycleScope) {
-                    Timber.d("Navigate to login: $it")
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.discoveredServersState.collect { serversState ->
+                    when (serversState) {
+                        is AddServerViewModel.DiscoveredServersState.Loading -> Unit
+                        is AddServerViewModel.DiscoveredServersState.Servers -> bindDiscoveredServersStateServers(serversState)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToLogin.collect {
                     if (it) {
                         navigateToLoginFragment()
                     }
@@ -67,25 +95,63 @@ class AddServerFragment : Fragment() {
     }
 
     private fun bindUiStateNormal() {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextServerAddress as AppCompatEditText).isEnabled = true
+        } else {
+            binding.editTextServerAddressLayout!!.isEnabled = true
+        }
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
+        binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
-        binding.editTextServerAddressLayout.error = uiState.message
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = uiState.message
+                isEnabled = true
+            }
+        } else {
+            binding.editTextServerAddressLayout!!.apply {
+                error = uiState.message
+                isEnabled = true
+            }
+        }
     }
 
     private fun bindUiStateLoading() {
+        binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
-        binding.editTextServerAddressLayout.error = null
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            (binding.editTextServerAddress as AppCompatEditText).apply {
+                error = null
+                isEnabled = false
+            }
+        } else {
+            binding.editTextServerAddressLayout!!.apply {
+                error = null
+                isEnabled = false
+            }
+        }
+    }
+
+    private fun bindDiscoveredServersStateServers(serversState: AddServerViewModel.DiscoveredServersState.Servers) {
+        val servers = serversState.servers
+        if (servers.isEmpty()) {
+            binding.serversRecyclerView.isVisible = false
+        } else {
+            binding.serversRecyclerView.isVisible = true
+            (binding.serversRecyclerView.adapter as DiscoveredServerListAdapter).submitList(servers)
+        }
     }
 
     private fun connectToServer() {
-        val serverAddress = binding.editTextServerAddress.text.toString()
+        val serverAddress = (binding.editTextServerAddress as AppCompatEditText).text.toString()
         viewModel.checkServer(serverAddress.removeSuffix("/"))
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragment3ToLoginFragment2())
+        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
     }
 }

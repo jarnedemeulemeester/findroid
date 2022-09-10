@@ -3,6 +3,8 @@ package dev.jdtech.jellyfin.utils
 import android.content.SharedPreferences
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
 import androidx.core.content.edit
+import com.google.android.exoplayer2.C.DEFAULT_SEEK_BACK_INCREMENT_MS
+import com.google.android.exoplayer2.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
 import javax.inject.Inject
 
 class AppPreferences
@@ -10,6 +12,11 @@ class AppPreferences
 constructor(
     private val sharedPreferences: SharedPreferences
 ) {
+    // Appearance
+    val theme = sharedPreferences.getString(Constants.PREF_THEME, null)
+    val dynamicColors = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
+
+    // Player
     val playerGestures = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
     val playerGesturesVB = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
@@ -27,4 +34,13 @@ constructor(
                 putFloat(Constants.PREF_PLAYER_BRIGHTNESS, value)
             }
         }
+    val playerSeekBackIncrement = sharedPreferences.getString(
+        Constants.PREF_PLAYER_SEEK_BACK_INC,
+        DEFAULT_SEEK_BACK_INCREMENT_MS.toString()
+    )!!.toLongOrNull() ?: DEFAULT_SEEK_BACK_INCREMENT_MS
+    val playerSeekForwardIncrement = sharedPreferences.getString(
+        Constants.PREF_PLAYER_SEEK_FORWARD_INC,
+        DEFAULT_SEEK_FORWARD_INCREMENT_MS.toString()
+    )!!.toLongOrNull() ?: DEFAULT_SEEK_FORWARD_INCREMENT_MS
+    val mpvDisableHwDec = sharedPreferences.getBoolean("mpv_disable_hwdec", false)
 }

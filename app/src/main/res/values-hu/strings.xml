@@ -120,6 +120,6 @@
     <string name="download_mobile_data">Letöltés mobilhálozaton</string>
     <string name="mpv_player_summary">Használd a kísérleti mpv lejátszót videók lejátszására. Az mpv több videó, hang, és felirat kódeket támogat.</string>
     <string name="image_description_poster">%1$s poszter</string>
-    <string name="player_gestures_summary">Húzd az újjad fel és le a képernyő jobb oldán, hogy változtasd a hangerőt, és a bal oldalán, hogy változtasd a fényerőt</string>
+    <string name="player_gestures_vb_summary">Húzd az újjad fel és le a képernyő jobb oldán, hogy változtasd a hangerőt, és a bal oldalán, hogy változtasd a fényerőt</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
 </resources>

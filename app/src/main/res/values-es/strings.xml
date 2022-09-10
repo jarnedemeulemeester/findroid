@@ -86,7 +86,7 @@
     <string name="force_software_decoding_summary">Deshabilite la decodificación de hardware y use la decodificación de software. Puede ser útil si la decodificación de hardware produce artefactos extraños.</string>
     <string name="download_button_description">Descarga</string>
     <string name="delete_button_description">Borrar</string>
-    <string name="person_detail_title">Detalle de persona</string>
+    <string name="person_detail_title">Detalles</string>
     <string name="error_getting_person_id">Detalle no disponible</string>
     <string name="movies_label">Películas</string>
     <string name="shows_label">Series</string>
@@ -97,7 +97,7 @@
     <string name="share">Compartir</string>
     <string name="image_description_poster">Poster de %1$s</string>
     <string name="image_description_backdrop">Fondo de %1$s</string>
-    <string name="sort_by_options_0">Nombre</string>
+    <string name="sort_by_options_0">Título</string>
     <string name="sort_by_options_1">Calificación IMDB</string>
     <string name="sort_by_options_2">Clasificación de edad</string>
     <string name="sort_by_options_3">Fecha de adición</string>
@@ -123,4 +123,15 @@
     <string name="player_gestures">Gestos del reproductor</string>
     <string name="player_brightness_remember">Recordar nivel de brillo</string>
     <string name="player_gestures_vb_summary">Deslice hacia arriba y hacia abajo en el lado derecho de la pantalla para cambiar el volumen y en el lado izquierdo para cambiar el brillo</string>
+    <string name="player_gestures_vb">Gestos de volumen y brillo</string>
+    <string name="player_gestures_zoom">Gesto de zoom</string>
+    <string name="player_gestures_zoom_summary">Pellizca la pantalla para llenar tu pantalla con el vídeo</string>
+    <string name="seeking">Buscando</string>
+    <string name="seek_back_increment">Incremento al retroceder (ms)</string>
+    <string name="seek_forward_increment">Incremento al avanzar (ms)</string>
+    <string name="subtitles">Subtítulos</string>
+    <string name="subtitles_summary">Personalizar apariencia de subtítulos</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="dynamic_colors">Colores dinámicos</string>
+    <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (solo en Android 12+)</string>
 </resources>

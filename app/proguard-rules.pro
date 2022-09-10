@@ -21,11 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keepnames class dev.jdtech.jellyfin.models.PlayerItem
-
-# Keep all mpvlib methods because proguard removes some which makes the app crash
--keep class is.xyz.libmpv.MPVLib {
-  *;
-}
+-keepnames class dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 
 # ProGuard thinks all SettingsFragments are unused
 -keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment

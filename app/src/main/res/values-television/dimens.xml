@@ -11,4 +11,6 @@
     <dimen name="track_selection_item_height">48dp</dimen>
     <dimen name="track_selection_item_text_size">16sp</dimen>
 
+    <item name="library_columns" type="integer">6</item>
+
 </resources>

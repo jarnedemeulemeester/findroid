@@ -1,7 +1,9 @@
 package dev.jdtech.jellyfin.repository
 
 
+import androidx.paging.PagingData
 import dev.jdtech.jellyfin.utils.SortBy
+import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.*
 import java.util.*
 
@@ -17,6 +19,14 @@ interface JellyfinRepository {
         sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
     ): List<BaseItemDto>
+
+    suspend fun getItemsPaging(
+        parentId: UUID? = null,
+        includeTypes: List<BaseItemKind>? = null,
+        recursive: Boolean = false,
+        sortBy: SortBy = SortBy.defaultValue,
+        sortOrder: SortOrder = SortOrder.ASCENDING
+    ): Flow<PagingData<BaseItemDto>>
 
     suspend fun getPersonItems(
         personIds: List<UUID>,
@@ -64,4 +74,8 @@ interface JellyfinRepository {
     suspend fun markAsUnplayed(itemId: UUID)
 
     suspend fun getIntros(itemId: UUID): List<BaseItemDto>
+
+    fun getBaseUrl(): String
+
+    suspend fun updateDeviceName(name: String)
 }
