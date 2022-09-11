@@ -9,13 +9,14 @@ plugins {
 }
 
 android {
-    compileSdk = 32
-    buildToolsVersion = "32.0.0"
+    namespace = "dev.jdtech.jellyfin"
+    compileSdk = 33
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 12
         versionName = "0.6.1"
     }
@@ -27,7 +28,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         create("staging") {
             initWith(getByName("release"))
