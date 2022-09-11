@@ -178,7 +178,7 @@ internal class MediaDetailFragment : Fragment() {
             // Check icon
             when (played) {
                 true -> {
-                    if (played) binding.checkButton.imageTintList = ColorStateList.valueOf(
+                    binding.checkButton.imageTintList = ColorStateList.valueOf(
                         resources.getColor(
                             R.color.red,
                             requireActivity().theme

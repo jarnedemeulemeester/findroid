@@ -217,10 +217,8 @@ suspend fun syncPlaybackProgress(
             }
 
             if (localPlaybackProgress != null) {
-                if (localPlaybackProgress > playbackProgress) {
-                    playbackProgress = localPlaybackProgress
-                    playedPercentage = localPlayedPercentage!!
-                }
+                playbackProgress = localPlaybackProgress
+                playedPercentage = localPlayedPercentage!!
             }
             if (remotePlaybackProgress != null) {
                 if (remotePlaybackProgress > playbackProgress) {

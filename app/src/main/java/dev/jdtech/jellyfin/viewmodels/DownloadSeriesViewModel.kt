@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel

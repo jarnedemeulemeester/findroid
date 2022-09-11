@@ -127,9 +127,9 @@ class MPVPlayer(
         if (requestAudioFocus) {
             @Suppress("DEPRECATION")
             audioFocusRequest = audioManager.requestAudioFocus(
-                /* listener= */ this,
-                /* streamType= */ AudioManager.STREAM_MUSIC,
-                /* durationHint= */ AudioManager.AUDIOFOCUS_GAIN
+                /* l = */ this,
+                /* streamType = */ AudioManager.STREAM_MUSIC,
+                /* durationHint = */ AudioManager.AUDIOFOCUS_GAIN
             )
             if (audioFocusRequest != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 MPVLib.setPropertyBoolean("pause", true)
@@ -142,7 +142,7 @@ class MPVPlayer(
         context.mainLooper,
         Clock.DEFAULT
     ) { listener: Player.Listener, flags: FlagSet ->
-        listener.onEvents( /* player= */this, Player.Events(flags))
+        listener.onEvents( /* player = */this, Player.Events(flags))
     }
     private val videoListeners =
         CopyOnWriteArraySet<Player.Listener>()
@@ -336,7 +336,7 @@ class MPVPlayer(
             playerStateChanged = true
         }
         if (playerStateChanged) {
-            listeners.queueEvent( /* eventFlag= */ C.INDEX_UNSET) { listener ->
+            listeners.queueEvent( /* eventFlag = */ C.INDEX_UNSET) { listener ->
                 @Suppress("DEPRECATION")
                 listener.onPlayerStateChanged(playWhenReady, playbackState)
             }
@@ -359,13 +359,12 @@ class MPVPlayer(
     fun selectTrack(
         @TrackType trackType: String,
         id: Int
-    ): Boolean {
+    ) {
         if (id != C.INDEX_UNSET) {
             MPVLib.setPropertyInt(trackType, id)
         } else {
             MPVLib.setPropertyString(trackType, "no")
         }
-        return true
     }
 
     // Timeline wrapper
@@ -394,20 +393,20 @@ class MPVPlayer(
             val currentMediaItem =
                 internalMediaItems.getOrNull(windowIndex) ?: MediaItem.Builder().build()
             return window.set(
-                /* uid= */ windowIndex,
-                /* mediaItem= */ currentMediaItem,
-                /* manifest= */ null,
-                /* presentationStartTimeMs= */ C.TIME_UNSET,
-                /* windowStartTimeMs= */ C.TIME_UNSET,
-                /* elapsedRealtimeEpochOffsetMs= */ C.TIME_UNSET,
-                /* isSeekable= */ isSeekable,
-                /* isDynamic= */ !isSeekable,
-                /* liveConfiguration= */ currentMediaItem.liveConfiguration,
-                /* defaultPositionUs= */ C.TIME_UNSET,
-                /* durationUs= */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
-                /* firstPeriodIndex= */ windowIndex,
-                /* lastPeriodIndex= */ windowIndex,
-                /* positionInFirstPeriodUs= */ C.TIME_UNSET
+                /* uid = */ windowIndex,
+                /* mediaItem = */ currentMediaItem,
+                /* manifest = */ null,
+                /* presentationStartTimeMs = */ C.TIME_UNSET,
+                /* windowStartTimeMs = */ C.TIME_UNSET,
+                /* elapsedRealtimeEpochOffsetMs = */ C.TIME_UNSET,
+                /* isSeekable = */ isSeekable,
+                /* isDynamic = */ !isSeekable,
+                /* liveConfiguration = */ currentMediaItem.liveConfiguration,
+                /* defaultPositionUs = */ C.TIME_UNSET,
+                /* durationUs = */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
+                /* firstPeriodIndex = */ windowIndex,
+                /* lastPeriodIndex = */ windowIndex,
+                /* positionInFirstPeriodUs = */ C.TIME_UNSET
             )
         }
 
@@ -430,11 +429,11 @@ class MPVPlayer(
          */
         override fun getPeriod(periodIndex: Int, period: Period, setIds: Boolean): Period {
             return period.set(
-                /* id= */ periodIndex,
-                /* uid= */ periodIndex,
-                /* windowIndex= */ periodIndex,
-                /* durationUs= */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
-                /* positionInWindowUs= */ 0
+                /* id = */ periodIndex,
+                /* uid = */ periodIndex,
+                /* windowIndex = */ periodIndex,
+                /* durationUs = */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
+                /* positionInWindowUs = */ 0
             )
         }
 
@@ -1394,39 +1393,42 @@ class MPVPlayer(
                     trackListText.removeFirst()
                 }
                 if (trackListVideo.isNotEmpty()) {
-                    with(TrackGroup(*trackListVideo.toTypedArray())) {
-                        Tracks.Group(
-                            this,
-                            true,
-                            IntArray(this.length) { C.FORMAT_HANDLED },
-                            BooleanArray(this.length) { it == indexCurrentVideo }
-                        )
-                    }
+                    trackGroups.add(
+                        with(TrackGroup(*trackListVideo.toTypedArray())) {
+                            Tracks.Group(
+                                this,
+                                true,
+                                IntArray(this.length) { C.FORMAT_HANDLED },
+                                BooleanArray(this.length) { it == indexCurrentVideo }
+                            )
+                        })
                 }
                 if (trackListAudio.isNotEmpty()) {
-                    with(TrackGroup(*trackListAudio.toTypedArray())) {
-                        Tracks.Group(
-                            this,
-                            true,
-                            IntArray(this.length) { C.FORMAT_HANDLED },
-                            BooleanArray(this.length) { it == indexCurrentAudio }
-                        )
-                    }
+                    trackGroups.add(
+                        with(TrackGroup(*trackListAudio.toTypedArray())) {
+                            Tracks.Group(
+                                this,
+                                true,
+                                IntArray(this.length) { C.FORMAT_HANDLED },
+                                BooleanArray(this.length) { it == indexCurrentAudio }
+                            )
+                        })
                 }
                 if (trackListText.isNotEmpty()) {
-                    with(TrackGroup(*trackListText.toTypedArray())) {
-                        Tracks.Group(
-                            this,
-                            true,
-                            IntArray(this.length) { C.FORMAT_HANDLED },
-                            BooleanArray(this.length) { it == indexCurrentText }
-                        )
-                    }
+                    trackGroups.add(
+                        with(TrackGroup(*trackListText.toTypedArray())) {
+                            Tracks.Group(
+                                this,
+                                true,
+                                IntArray(this.length) { C.FORMAT_HANDLED },
+                                BooleanArray(this.length) { it == indexCurrentText }
+                            )
+                        })
                 }
                 if (trackGroups.isNotEmpty()) {
                     tracks = Tracks(trackGroups)
                 }
-            } catch (e: JSONException) {
+            } catch (_: JSONException) {
             }
             return Pair(mpvTracks, tracks)
         }
