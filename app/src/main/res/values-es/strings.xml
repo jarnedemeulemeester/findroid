@@ -134,4 +134,5 @@
     <string name="libraries">Bibliotecas</string>
     <string name="dynamic_colors">Colores dinámicos</string>
     <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (solo en Android 12+)</string>
+    <string name="external">Externo</string>
 </resources>
