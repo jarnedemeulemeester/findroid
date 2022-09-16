@@ -1210,6 +1210,15 @@ class MPVPlayer(
     fun updateZoomMode(enabled: Boolean) {
         val level = if (enabled) "1" else "0"
         MPVLib.setOptionString("panscan", level)
+
+        if (enabled) {
+            MPVLib.setOptionString("sub-use-margins", "yes")
+            MPVLib.setOptionString("sub-ass-force-margins", "yes")
+        }
+        else {
+            MPVLib.setOptionString("sub-use-margins", "no")
+            MPVLib.setOptionString("sub-ass-force-margins", "no")
+        }
     }
 
     companion object {
