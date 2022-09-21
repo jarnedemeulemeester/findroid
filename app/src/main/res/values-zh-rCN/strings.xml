@@ -128,4 +128,9 @@
     <string name="seeking">快进快退</string>
     <string name="seek_back_increment">快退步进 (毫秒)</string>
     <string name="seek_forward_increment">快进步进 (毫秒)</string>
+    <string name="subtitles">字幕</string>
+    <string name="subtitles_summary">自定义字幕外观</string>
+    <string name="dynamic_colors">动态色彩</string>
+    <string name="dynamic_colors_summary">使用 Material You 动态颜色（仅适用于 Android 12+）</string>
+    <string name="libraries">库</string>
 </resources>

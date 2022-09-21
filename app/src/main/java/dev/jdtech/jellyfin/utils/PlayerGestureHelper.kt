@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.utils
 
+import android.annotation.SuppressLint
 import android.media.AudioManager
 import android.provider.Settings
 import android.view.GestureDetector
@@ -86,6 +87,7 @@ class PlayerGestureHelper(
             return true
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onScroll(firstEvent: MotionEvent, currentEvent: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
                 return false
@@ -95,7 +97,7 @@ class PlayerGestureHelper(
                 return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
                     (!swipeGestureBrightnessOpen && !swipeGestureVolumeOpen)) {
                     val currentPos = playerView.player?.currentPosition ?: 0
-                    val vidDuration = playerView.player?.duration ?: 0
+                    val vidDuration = (playerView.player?.duration ?: 0).coerceAtLeast(0)
 
                     val difference = ((currentEvent.x - firstEvent.x) * 90).toLong()
                     val newPos = (currentPos + difference).coerceIn(0, vidDuration)

@@ -130,7 +130,7 @@ constructor(
                             RecommendedServerInfoScore.BAD -> Unit
                         }
                     }
-            } catch (e: CancellationException) {
+            } catch (_: CancellationException) {
 
             } catch (e: Exception) {
                 _uiState.emit(

@@ -133,4 +133,5 @@
     <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
+    <string name="external">External</string>
 </resources>

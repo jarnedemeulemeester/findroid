@@ -41,7 +41,7 @@ class HomeViewModel @Inject internal constructor(
         viewModelScope.launch {
             try {
                 repository.postCapabilities()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }

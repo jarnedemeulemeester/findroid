@@ -13,9 +13,9 @@ I am developing this application in my spare time.
 
 
 ## Screenshots
-Home | Library | Movie | Season | Episode
------|---------|-------|--------|--------
-![Home](images/home-light-dark.png) | ![Library](images/library-dark.png) | ![Movie](images/movie-dark.png) | ![Season](images/season-dark.png) | ![Episode](images/episode-dark.png)
+| Home                                | Library                             | Movie                           | Season                            | Episode                             |
+|-------------------------------------|-------------------------------------|---------------------------------|-----------------------------------|-------------------------------------|
+| ![Home](images/home-light-dark.png) | ![Library](images/library-dark.png) | ![Movie](images/movie-dark.png) | ![Season](images/season-dark.png) | ![Episode](images/episode-dark.png) |
 
 ## Features
 - Completely native interface

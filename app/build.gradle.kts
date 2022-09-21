@@ -9,15 +9,16 @@ plugins {
 }
 
 android {
-    compileSdk = 32
-    buildToolsVersion = "32.0.0"
+    namespace = "dev.jdtech.jellyfin"
+    compileSdk = 33
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 26
-        targetSdk = 32
-        versionCode = 11
-        versionName = "0.6.0"
+        targetSdk = 33
+        versionCode = 12
+        versionName = "0.6.1"
     }
 
     buildTypes {
@@ -27,7 +28,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         create("staging") {
             initWith(getByName("release"))
@@ -58,8 +62,8 @@ android {
 dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha02")
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.5.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 
@@ -75,7 +79,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
     // Navigation
-    val navigationVersion = "2.5.1"
+    val navigationVersion = "2.5.2"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 

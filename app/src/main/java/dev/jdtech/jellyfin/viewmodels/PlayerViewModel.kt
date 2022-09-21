@@ -1,11 +1,13 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.util.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -26,6 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
+    private val application: Application,
     private val repository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
@@ -182,7 +185,7 @@ class PlayerViewModel @Inject internal constructor(
 
                 externalSubtitles.add(
                     ExternalSubtitle(
-                        mediaStream.title.orEmpty(),
+                        mediaStream.title ?: application.getString(R.string.external),
                         mediaStream.language.orEmpty(),
                         Uri.parse(repository.getBaseUrl() + deliveryUrl),
                         when (mediaStream.codec) {

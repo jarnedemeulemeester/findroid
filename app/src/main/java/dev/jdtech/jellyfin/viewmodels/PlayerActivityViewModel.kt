@@ -8,10 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -134,7 +131,7 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentMediaItemIndex, items[0].playbackPosition)
+            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
             val useMpv = sp.getBoolean("mpv_player", false)
             if(!useMpv || !playFromDownloads)
                 player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
@@ -259,7 +256,7 @@ constructor(
 
     fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
         if (player is MPVPlayer) {
-            player.selectTrack(trackType, isExternal = false, index = track.ffIndex)
+            player.selectTrack(trackType, id = track.id)
             disableSubtitle = track.ffIndex == -1
         }
     }
