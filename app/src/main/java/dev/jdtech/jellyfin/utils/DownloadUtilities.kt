@@ -20,6 +20,7 @@ import java.io.File
 import java.util.UUID
 
 var defaultStorage: File? = null
+var storageLocations:List<File> ?=null
 
 fun requestDownload(
     downloadDatabase: DownloadDatabaseDao,
@@ -65,18 +66,37 @@ private fun downloadFile(request: DownloadManager.Request, context: Context): Lo
 }
 
 fun loadDownloadLocation(context: Context) {
-    defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+    storageLocations = context.getExternalFilesDirs(Environment.DIRECTORY_MOVIES).toList();
+    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    if (storageLocations!!.size==2){
+        defaultStorage= storageLocations!![1]
+    }
+    if (preferences.getBoolean("download_location",false) && storageLocations!!.size==2){
+        defaultStorage = storageLocations!![1];
+    } else {
+        defaultStorage = storageLocations!![0]
+    }
 }
 
 fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerItem> {
     val items = downloadDatabase.loadItems()
     return items.map {
+        var mediaSourceUri=File(defaultStorage, it.id.toString())
+        if (!mediaSourceUri.exists() && storageLocations!!.size>1) {
+            for (location in storageLocations!!) {
+                val sourceLocation  = File(location, it.id.toString())
+                if (sourceLocation.exists()) {
+                    mediaSourceUri = sourceLocation
+                    break
+                }
+            }
+        }
         PlayerItem(
             name = it.name,
             itemId = it.id,
             mediaSourceId = "",
             playbackPosition = it.playbackPosition ?: 0,
-            mediaSourceUri = File(defaultStorage, it.id.toString()).absolutePath,
+            mediaSourceUri = mediaSourceUri.absolutePath,
             parentIndexNumber = it.parentIndexNumber,
             indexNumber = it.indexNumber,
             item = it
@@ -85,7 +105,18 @@ fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerIt
 }
 
 fun isItemAvailable(itemId: UUID): Boolean {
-    return File(defaultStorage, itemId.toString()).exists()
+    var mediaSourceUri=File(defaultStorage, itemId.toString())
+    if (!mediaSourceUri.exists() && storageLocations!!.size>1) {
+        for (location in storageLocations!!) {
+            val sourceLocation  = File(location, itemId.toString())
+            if (sourceLocation.exists()) {
+                return sourceLocation.exists()
+            }
+        }
+    } else {
+        return File(defaultStorage,itemId.toString()).exists()
+    }
+    return false
 }
 
 fun isItemDownloaded(downloadDatabaseDao: DownloadDatabaseDao, itemId: UUID): Boolean {

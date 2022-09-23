@@ -134,4 +134,5 @@
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
     <string name="external">External</string>
+    <string name="download_location">Download to SD Card</string>
 </resources>
