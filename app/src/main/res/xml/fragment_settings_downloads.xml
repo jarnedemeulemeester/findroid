@@ -9,4 +9,8 @@
         app:key="download_roaming"
         app:title="@string/download_roaming"
         android:defaultValue="false" />
+    <SwitchPreference
+        app:key="download_location"
+        app:title="@string/download_location"
+        android:defaultValue="false" />
 </PreferenceScreen>
