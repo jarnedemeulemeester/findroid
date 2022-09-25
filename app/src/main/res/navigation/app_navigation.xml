@@ -257,6 +257,9 @@
             android:name="isOffline"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_episodeBottomSheetFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
     </dialog>
     <fragment
         android:id="@+id/favoriteFragment"
