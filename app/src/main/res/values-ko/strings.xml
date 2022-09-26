@@ -56,7 +56,7 @@
     <string name="display_extended_title_summary">시즌 및 에피소드 정보를 포함한 확장 에피소드 제목(SXX:EXX - 에피소드 이름)을 표시합니다.</string>
     <string name="display_extended_title">확장 제목 표시</string>
     <string name="seeking">검색</string>
-    <string name="seek_back_increment">검색 역증분 지연 (ms)</string>
+    <string name="seek_back_increment">되감기 시간 (ms)</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_error_outdated">%1$s 버전은 오래되었습니다. 서버를 업데이트 해주십시오.</string>
     <string name="title_media">내 미디어</string>
@@ -68,7 +68,7 @@
     <string name="settings_category_device">디바이스</string>
     <string name="dynamic_colors">동적 색상</string>
     <string name="add_server_error_no_id">서버에서 ID를 찾을 수 없습니다. 서버의 문제일 가능성이 큽니다.</string>
-    <string name="no_downloads">"다운로드  된 항목 없음"</string>
+    <string name="no_downloads">다운로드된 항목 없음</string>
     <string name="retry">재시도</string>
     <string name="share">공유</string>
     <string name="select_server">서버 선택</string>
@@ -124,7 +124,7 @@
     <string name="sort_by_options_2">등급</string>
     <string name="descending">내림차순</string>
     <string name="player_controls_exit">플레이어 나가기</string>
-    <string name="seek_forward_increment">검색 순증분 지연 (ms)</string>
+    <string name="seek_forward_increment">빨리 감기 시간 (ms)</string>
     <string name="dynamic_colors_summary">Material You 동적 색상 사용(Android 12 이상에서만 사용 가능)</string>
     <string name="add_server_error_version">%1$s 은(는) 지원되지 않는 버전입니다. 서버를 업데이트 해주십시오.</string>
     <string name="settings_use_cache_summary">이미지 캐시를 디스크에 저장하여 로딩 시간을 단축합니다. 앱을 다시 시작한 후에 적용됩니다.</string>

@@ -27,6 +27,7 @@ import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
 import java.util.*
@@ -200,12 +201,19 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 episode.indexNumber,
                 episode.name
             )
+            binding.seriesName.text = episode.seriesName
             binding.overview.text = episode.overview
             binding.year.text = dateString
             binding.playtime.text = runTime
             binding.communityRating.isVisible = episode.communityRating != null
             binding.communityRating.text = episode.communityRating.toString()
             binding.missingIcon.isVisible = episode.locationType == LocationType.VIRTUAL
+
+            binding.seriesName.setOnClickListener {
+                if (episode.seriesId != null) {
+                    navigateToSeries(episode.seriesId!!, episode.seriesName)
+                }
+            }
             bindBaseItemImage(binding.episodeImage, episode)
         }
         binding.loadingIndicator.isVisible = false
@@ -253,6 +261,16 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
+            )
+        )
+    }
+
+    private fun navigateToSeries(id: UUID, name: String?) {
+        findNavController().navigate(
+            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToMediaInfoFragment(
+                itemId = id,
+                itemName = name,
+                itemType = BaseItemKind.SERIES
             )
         )
     }

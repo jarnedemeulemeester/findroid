@@ -18,7 +18,7 @@ buildscript {
         val navVersion = "2.5.2"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
 
-        val hiltVersion = "2.43.2"
+        val hiltVersion = "2.44"
         classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
 
         val aboutLibrariesVersion = "10.4.0"
