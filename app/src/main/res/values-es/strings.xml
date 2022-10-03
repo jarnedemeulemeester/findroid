@@ -135,4 +135,7 @@
     <string name="dynamic_colors">Colores dinámicos</string>
     <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (solo en Android 12+)</string>
     <string name="external">Externo</string>
+    <string name="theme_system">Seguir tema del dispositivo</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
 </resources>
