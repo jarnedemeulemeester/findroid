@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:7.3.0")
 
-        val kotlinVersion = "1.7.10"
+        val kotlinVersion = "1.7.20"
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -21,7 +21,7 @@ buildscript {
         val hiltVersion = "2.44"
         classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
 
-        val aboutLibrariesVersion = "10.4.0"
+        val aboutLibrariesVersion = "10.5.0"
         classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$aboutLibrariesVersion")
     }
 }

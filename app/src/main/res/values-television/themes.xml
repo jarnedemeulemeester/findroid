@@ -14,16 +14,4 @@
         <item name="defaultBrandColor">@color/neutral_900</item>
         <item name="browseTitleViewLayout">@layout/browse_support_fragment_title_view</item>
     </style>
-
-    <string-array name="themes">
-        <item>Follow system</item>
-        <item>Light</item>
-        <item>Dark</item>
-    </string-array>
-
-    <string-array name="themes_value">
-        <item>system</item>
-        <item>light</item>
-        <item>dark</item>
-    </string-array>
 </resources>

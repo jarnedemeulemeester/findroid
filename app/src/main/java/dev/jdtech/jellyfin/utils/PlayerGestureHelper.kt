@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.utils
 
 import android.annotation.SuppressLint
 import android.media.AudioManager
+import android.os.SystemClock
 import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -42,6 +43,8 @@ class PlayerGestureHelper(
     private var swipeGestureBrightnessOpen = false
     private var swipeGestureProgressOpen = false
 
+    private var lastScaleEvent: Long = 0
+
     private val tapGestureDetector = GestureDetector(playerView.context, object : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             playerView.apply {
@@ -73,7 +76,7 @@ class PlayerGestureHelper(
 
             return true
         }
-        
+
         override fun onDoubleTap(e: MotionEvent): Boolean {
             val viewCenterX = playerView.measuredWidth / 2
             val currentPos = playerView.player?.currentPosition ?: 0
@@ -95,7 +98,9 @@ class PlayerGestureHelper(
             // Check whether swipe was oriented vertically
             if (abs(distanceY / distanceX) < 2) {
                 return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
-                    (!swipeGestureBrightnessOpen && !swipeGestureVolumeOpen)) {
+                    !swipeGestureBrightnessOpen &&
+                    !swipeGestureVolumeOpen &&
+                    (SystemClock.elapsedRealtime() - lastScaleEvent) > 200) {
                     val currentPos = playerView.player?.currentPosition ?: 0
                     val vidDuration = (playerView.player?.duration ?: 0).coerceAtLeast(0)
 
@@ -190,6 +195,7 @@ class PlayerGestureHelper(
         override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
         override fun onScale(detector: ScaleGestureDetector): Boolean {
+            lastScaleEvent = SystemClock.elapsedRealtime()
             val scaleFactor = detector.scaleFactor
             if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
                 isZoomEnabled = scaleFactor > 1
