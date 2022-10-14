@@ -93,6 +93,7 @@
     <string name="error_getting_person_id">Detail unavailable</string>
     <string name="movies_label">Movies</string>
     <string name="shows_label">TV Shows</string>
+    <string name="episodes_label">Episodes</string>
     <string name="hide">Hide</string>
     <string name="sort_by">Sort by</string>
     <string name="sort_order">Sort order</string>

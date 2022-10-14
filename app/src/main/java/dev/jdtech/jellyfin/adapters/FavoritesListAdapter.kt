@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.FavoriteSectionBinding
 import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.utils.Constants
 
 class FavoritesListAdapter(
     private val onClickListener: ViewItemListAdapter.OnClickListener,
@@ -20,11 +21,11 @@ class FavoritesListAdapter(
             onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener
         ) {
             binding.section = section
-            if (section.name == "Movies" || section.name == "Shows") {
+            if (section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) {
                 binding.itemsRecyclerView.adapter =
                     ViewItemListAdapter(onClickListener, fixedWidth = true)
                 (binding.itemsRecyclerView.adapter as ViewItemListAdapter).submitList(section.items)
-            } else if (section.name == "Episodes") {
+            } else if (section.id == Constants.FAVORITE_TYPE_EPISODES) {
                 binding.itemsRecyclerView.adapter =
                     HomeEpisodeListAdapter(onEpisodeClickListener)
                 (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.items)

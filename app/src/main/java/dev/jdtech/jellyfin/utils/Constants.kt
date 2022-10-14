@@ -22,4 +22,9 @@ object Constants {
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20
+
+    // favorites
+    const val FAVORITE_TYPE_MOVIES = 0
+    const val FAVORITE_TYPE_SHOWS = 1
+    const val FAVORITE_TYPE_EPISODES = 2
 }

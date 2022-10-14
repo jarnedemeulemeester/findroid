@@ -1,25 +1,31 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.BaseApplication
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel
 @Inject
 constructor(
+    application: BaseApplication,
     private val jellyfinRepository: JellyfinRepository
 ) : ViewModel() {
+    private val resources: Resources = application.resources
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -48,24 +54,24 @@ constructor(
 
                 withContext(Dispatchers.Default) {
                     FavoriteSection(
-                        UUID.randomUUID(),
-                        "Movies",
+                        Constants.FAVORITE_TYPE_MOVIES,
+                        resources.getString(R.string.movies_label),
                         items.filter { it.type == BaseItemKind.MOVIE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
                     }
                     FavoriteSection(
-                        UUID.randomUUID(),
-                        "Shows",
+                        Constants.FAVORITE_TYPE_SHOWS,
+                        resources.getString(R.string.shows_label),
                         items.filter { it.type == BaseItemKind.SERIES }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
                         )
                     }
                     FavoriteSection(
-                        UUID.randomUUID(),
-                        "Episodes",
+                        Constants.FAVORITE_TYPE_EPISODES,
+                        resources.getString(R.string.episodes_label),
                         items.filter { it.type == BaseItemKind.EPISODE }).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
