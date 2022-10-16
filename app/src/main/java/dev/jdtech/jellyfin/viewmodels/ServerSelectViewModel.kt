@@ -39,7 +39,7 @@ constructor(
 
     fun connectToServer(server: Server) {
         viewModelScope.launch {
-            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)
+            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)!!
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
             val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
 

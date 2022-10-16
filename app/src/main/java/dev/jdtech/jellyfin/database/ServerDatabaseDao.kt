@@ -35,7 +35,7 @@ interface ServerDatabaseDao {
 
     @Transaction
     @Query("select * from servers where id = :id")
-    fun getServerWithAddressesAndUsers(id: String): ServerWithAddressesAndUsers
+    fun getServerWithAddressesAndUsers(id: String): ServerWithAddressesAndUsers?
 
     @Query("delete from servers")
     fun clear()

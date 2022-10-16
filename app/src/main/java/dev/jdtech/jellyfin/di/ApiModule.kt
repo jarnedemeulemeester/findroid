@@ -25,7 +25,7 @@ object ApiModule {
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {
-            val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId)
+            val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
             val server = serverWithAddressesAndUsers.server
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
             val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return jellyfinApi
