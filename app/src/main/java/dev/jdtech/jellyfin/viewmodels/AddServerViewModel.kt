@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.BaseApplication
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import kotlinx.coroutines.*

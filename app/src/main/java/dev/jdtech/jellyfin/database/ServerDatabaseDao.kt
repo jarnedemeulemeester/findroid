@@ -2,17 +2,40 @@ package dev.jdtech.jellyfin.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import dev.jdtech.jellyfin.models.*
+import java.util.UUID
 
 @Dao
 interface ServerDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(server: Server)
+    fun insertServer(server: Server)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertServerAddress(address: ServerAddress)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(user: User)
 
     @Update
     fun update(server: Server)
 
     @Query("select * from servers where id = :id")
     fun get(id: String): Server?
+
+    @Query("select * from users where id = :id")
+    fun getUser(id: UUID): User?
+
+    @Transaction
+    @Query("select * from servers where id = :id")
+    fun getServerWithAddresses(id: String): ServerWithAddresses
+
+    @Transaction
+    @Query("select * from servers where id = :id")
+    fun getServerWithUsers(id: String): ServerWithAddresses
+
+    @Transaction
+    @Query("select * from servers where id = :id")
+    fun getServerWithAddressesAndUsers(id: String): ServerWithAddressesAndUsers
 
     @Query("delete from servers")
     fun clear()

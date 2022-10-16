@@ -9,7 +9,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import java.util.UUID
 import javax.inject.Singleton
 
 @Module
@@ -26,11 +25,14 @@ object ApiModule {
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {
-            val server = serverDatabase.get(serverId) ?: return jellyfinApi
+            val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId)
+            val server = serverWithAddressesAndUsers.server
+            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
+            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return jellyfinApi
             jellyfinApi.apply {
-                api.baseUrl = server.address
-                api.accessToken = server.accessToken
-                userId = UUID.fromString(server.userId)
+                api.baseUrl = serverAddress.address
+                api.accessToken = user.accessToken
+                userId = user.id
             }
         }
 

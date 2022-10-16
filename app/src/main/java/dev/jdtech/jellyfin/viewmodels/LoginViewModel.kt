@@ -7,8 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.BaseApplication
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
+import java.util.UUID
 import javax.inject.Inject
 import kotlin.Exception
 
@@ -59,7 +61,8 @@ constructor(
             _usersState.emit(UsersState.Loading)
             try {
                 val publicUsers by jellyfinApi.userApi.getPublicUsers()
-                val users = publicUsers.map { User(it.id, it.name.orEmpty()) }
+                val users =
+                    publicUsers.map { User(id = it.id, name = it.name.orEmpty(), serverId = it.serverId!!) }
                 _usersState.emit(UsersState.Users(users))
             } catch (e: Exception) {
                 _usersState.emit(UsersState.Users(emptyList()))
@@ -87,16 +90,29 @@ constructor(
 
                 val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
 
-                val server = Server(
-                    serverInfo.id!!,
-                    serverInfo.serverName!!,
-                    jellyfinApi.api.baseUrl!!,
-                    authenticationResult.user?.id.toString(),
-                    authenticationResult.user?.name!!,
-                    authenticationResult.accessToken!!
+                val user = User(
+                    id = authenticationResult.user!!.id,
+                    name = authenticationResult.user!!.name!!,
+                    serverId = serverInfo.id!!,
+                    accessToken = authenticationResult.accessToken!!
                 )
 
-                insert(server)
+                val serverAddress = ServerAddress(
+                    id = UUID.randomUUID(),
+                    serverId = serverInfo.id!!,
+                    address = jellyfinApi.api.baseUrl!!
+                )
+
+                val server = Server(
+                    id = serverInfo.id!!,
+                    name = serverInfo.serverName!!,
+                    currentServerAddressId = serverAddress.id,
+                    currentUserId = user.id,
+                )
+
+                insertServer(server)
+                insertServerAddress(serverAddress)
+                insertUser(user)
 
                 val spEdit = sharedPreferences.edit()
                 spEdit.putString("selectedServer", server.id)
@@ -124,9 +140,21 @@ constructor(
      *
      * @param server The server
      */
-    private suspend fun insert(server: Server) {
+    private suspend fun insertServer(server: Server) {
         withContext(Dispatchers.IO) {
-            database.insert(server)
+            database.insertServer(server)
+        }
+    }
+
+    private suspend fun insertServerAddress(address: ServerAddress) {
+        withContext(Dispatchers.IO) {
+            database.insertServerAddress(address)
+        }
+    }
+
+    private suspend fun insertUser(user: User) {
+        withContext(Dispatchers.IO) {
+            database.insertUser(user)
         }
     }
 }
