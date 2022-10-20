@@ -137,4 +137,5 @@
     <string name="theme_system">기기 테마 사용</string>
     <string name="theme_light">라이트 모드</string>
     <string name="theme_dark">다크 모드</string>
+    <string name="episodes_label">에피소드</string>
 </resources>
