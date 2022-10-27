@@ -27,6 +27,7 @@ If applicable, add screenshots to help explain your problem.
  - Device: [e.g. Google Pixel 3]
  - Android version: [e.g. 12]
  - App version: [e.g. v0.1.1 (2)]
+ - Jellyfin version: [e.g. 10.8.5]
 
 **Additional context**
 Add any other context about the problem here.
