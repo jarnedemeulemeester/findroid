@@ -62,7 +62,7 @@
     <string name="select_playback_speed">Wähle Wiedergabegeschwindigkeit</string>
     <string name="mpv_player">MPV Mediaplayer</string>
     <string name="download_mobile_data">Über mobile Daten herunterladen</string>
-    <string name="download_roaming">Über roaming herunterladen</string>
+    <string name="download_roaming">Über Roaming herunterladen</string>
     <string name="add_server_error_version">Nicht unterstützte Server Version: %1$s. Bitte aktualisiere deinen Server</string>
     <string name="login_error_wrong_username_password">Falscher Benutzername oder Passwort</string>
     <string name="title_favorite">Favoriten</string>
@@ -85,7 +85,7 @@
     <string name="force_software_decoding">Erzwinge Software-Dekodierung</string>
     <string name="download_button_description">Herunterladen</string>
     <string name="delete_button_description">Löschen</string>
-    <string name="person_detail_title">Personendetails</string>
+    <string name="person_detail_title">Details</string>
     <string name="error_getting_person_id">Detail nicht verfügbar</string>
     <string name="movies_label">Filme</string>
     <string name="shows_label">Fernsehsendungen</string>
@@ -101,7 +101,7 @@
     <string name="image_description_poster">%1$s Poster</string>
     <string name="image_description_backdrop">%1$s Hintergrundbild</string>
     <string name="player_brightness_remember">Helligkeitsniveau beibehalten</string>
-    <string name="sort_by_options_0">Name</string>
+    <string name="sort_by_options_0">Titel</string>
     <string name="sort_by_options_1">IMDB-Bewertung</string>
     <string name="sort_by_options_2">Altersfreigabe</string>
     <string name="sort_by_options_3">Hinzufügungsdatum</string>
@@ -122,4 +122,17 @@
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
     <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen und auf der linken Seite, um gleiches mit der Helligkeit zu machen</string>
+    <string name="seeking">Suchen</string>
+    <string name="subtitles">Untertitel</string>
+    <string name="subtitles_summary">Untertitel anpassen</string>
+    <string name="external">Extern</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="episodes_label">Episoden</string>
+    <string name="dynamic_colors">Dynamische Farben</string>
+    <string name="dynamic_colors_summary">Dynamische Farben nutzen (ab Android 12 verfügbar)</string>
+    <string name="player_gestures_vb">Lautstärke- und Helligkeitsgesten</string>
+    <string name="player_gestures_zoom">Zoom-Gesten</string>
+    <string name="player_gestures_zoom_summary">Ziehen um den Bildschirm zu füllen</string>
+    <string name="libraries">Bibliotheken</string>
 </resources>
