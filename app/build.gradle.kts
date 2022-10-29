@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.mikepenz.aboutlibraries.plugin")
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 }
 
 android {
@@ -57,6 +58,11 @@ android {
         dataBinding = true
         viewBinding = true
     }
+}
+
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
 }
 
 dependencies {
