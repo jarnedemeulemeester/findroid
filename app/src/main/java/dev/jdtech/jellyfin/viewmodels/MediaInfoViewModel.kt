@@ -1,12 +1,10 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
@@ -74,8 +72,6 @@ constructor(
     private var downloaded: Boolean = false
     var canRetry: Boolean = false
     private var available: Boolean = true
-
-    private lateinit var downloadRequestItem: DownloadRequestItem
 
     lateinit var playerItem: PlayerItem
 

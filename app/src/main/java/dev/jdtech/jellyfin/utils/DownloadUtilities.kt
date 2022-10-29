@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.utils
 
-import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
@@ -9,7 +8,6 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
-import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -86,8 +84,7 @@ fun checkDownloadStatus(downloadDatabase: DownloadDatabaseDao, context: Context)
             if (result.getInt(7) == 8) {
                 File(defaultStorage, "${item.id}.downloading").renameTo(File(defaultStorage, item.id.toString()))
             }
-        } catch (e: Exception){
-        }
+        } catch (_: Exception) {}
     }
 }
 
@@ -120,7 +117,7 @@ fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, con
     result.moveToFirst()
     if (result.count == 0)
         return true
-    val status = result.getInt(result.getColumnIndex(DownloadManager.COLUMN_STATUS))
+    val status = result.getInt(result.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
     return status == 16
 }
 

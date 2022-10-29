@@ -51,6 +51,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
             if (viewModel.canRetry){
+                binding.playButton.isEnabled = false
                 viewModel.download()
                 return@setOnClickListener
             }
