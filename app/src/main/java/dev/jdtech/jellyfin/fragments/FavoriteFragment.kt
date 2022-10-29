@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +32,8 @@ class FavoriteFragment : Fragment() {
     private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
@@ -40,9 +41,11 @@ class FavoriteFragment : Fragment() {
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
             ViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
-            }, HomeEpisodeListAdapter.OnClickListener { item ->
+            },
+            HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToEpisodeBottomSheetFragment(item)
-            })
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

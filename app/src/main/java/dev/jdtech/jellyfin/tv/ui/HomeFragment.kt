@@ -10,7 +10,11 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.widget.*
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.DiffCallback
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
+import androidx.leanback.widget.ListRowPresenter
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -146,15 +150,21 @@ internal class HomeFragment : BrowseSupportFragment() {
             adapterMap[name]?.setItems(items, diffCallback)
         } else {
             adapterMap[name] = when (this) {
-                is HomeItem.Libraries -> ArrayObjectAdapter(LibaryItemPresenter { item ->
-                    navigateToLibraryFragment(item)
-                }).apply { setItems(items, diffCallback) }
-                is HomeItem.Section -> ArrayObjectAdapter(DynamicMediaItemPresenter { item ->
-                    navigateToMediaDetailFragment(item)
-                }).apply { setItems(items, diffCallback) }
-                is HomeItem.ViewItem -> ArrayObjectAdapter(MediaItemPresenter { item ->
-                    navigateToMediaDetailFragment(item)
-                }).apply { setItems(items, diffCallback) }
+                is HomeItem.Libraries -> ArrayObjectAdapter(
+                    LibaryItemPresenter { item ->
+                        navigateToLibraryFragment(item)
+                    }
+                ).apply { setItems(items, diffCallback) }
+                is HomeItem.Section -> ArrayObjectAdapter(
+                    DynamicMediaItemPresenter { item ->
+                        navigateToMediaDetailFragment(item)
+                    }
+                ).apply { setItems(items, diffCallback) }
+                is HomeItem.ViewItem -> ArrayObjectAdapter(
+                    MediaItemPresenter { item ->
+                        navigateToMediaDetailFragment(item)
+                    }
+                ).apply { setItems(items, diffCallback) }
             }
         }
 

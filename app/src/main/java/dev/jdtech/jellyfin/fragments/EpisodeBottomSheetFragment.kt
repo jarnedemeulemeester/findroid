@@ -26,11 +26,11 @@ import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import java.util.UUID
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -50,7 +50,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            if (viewModel.canRetry){
+            if (viewModel.canRetry) {
                 binding.playButton.isEnabled = false
                 viewModel.download()
                 return@setOnClickListener
@@ -194,7 +194,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     binding.downloadButtonWrapper.isVisible = false
                 }
             }
-
 
             binding.episodeName.text = String.format(
                 getString(R.string.episode_name_extended),

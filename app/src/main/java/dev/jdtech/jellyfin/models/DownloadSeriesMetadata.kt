@@ -1,8 +1,8 @@
 package dev.jdtech.jellyfin.models
 
 import android.os.Parcelable
+import java.util.UUID
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Parcelize
 data class DownloadSeriesMetadata(

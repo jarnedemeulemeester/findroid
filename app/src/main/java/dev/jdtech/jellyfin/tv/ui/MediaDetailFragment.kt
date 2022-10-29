@@ -76,7 +76,8 @@ internal class MediaDetailFragment : Fragment() {
 
         val seasonsAdapter = ViewItemListAdapter(
             fixedWidth = true,
-            onClickListener = ViewItemListAdapter.OnClickListener {})
+            onClickListener = ViewItemListAdapter.OnClickListener {}
+        )
 
         binding.seasonsRow.gridView.adapter = seasonsAdapter
         binding.seasonsRow.gridView.verticalSpacing = 25

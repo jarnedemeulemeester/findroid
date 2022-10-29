@@ -9,13 +9,13 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Constants
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
-import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultViewModel
@@ -52,7 +52,8 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         resources.getString(R.string.movies_label),
-                        items.filter { it.type == BaseItemKind.MOVIE }).let {
+                        items.filter { it.type == BaseItemKind.MOVIE }
+                    ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it
                         )
@@ -60,7 +61,8 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         resources.getString(R.string.shows_label),
-                        items.filter { it.type == BaseItemKind.SERIES }).let {
+                        items.filter { it.type == BaseItemKind.SERIES }
+                    ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it
                         )
@@ -68,7 +70,8 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         resources.getString(R.string.episodes_label),
-                        items.filter { it.type == BaseItemKind.EPISODE }).let {
+                        items.filter { it.type == BaseItemKind.EPISODE }
+                    ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it
                         )

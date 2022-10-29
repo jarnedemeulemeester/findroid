@@ -2,7 +2,8 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.SharedPreferences
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.BaseApplication
 import dev.jdtech.jellyfin.R
@@ -10,6 +11,8 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.User
+import javax.inject.Inject
+import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +21,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
-import javax.inject.Inject
-import kotlin.Exception
 
 @HiltViewModel
 class LoginViewModel

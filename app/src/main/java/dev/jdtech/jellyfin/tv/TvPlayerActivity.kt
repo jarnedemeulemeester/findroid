@@ -70,13 +70,15 @@ internal class TvPlayerActivity : BasePlayerActivity() {
                 when {
                     viewModel.player.isPlaying -> {
                         viewModel.player.pause()
-                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
+                        setImageDrawable(
+                            ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
                         )
                     }
                     viewModel.player.isLoading -> Unit
                     else -> {
                         viewModel.player.play()
-                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
+                        setImageDrawable(
+                            ResourcesCompat.getDrawable(resources, R.drawable.ic_play, theme)
                         )
                     }
                 }

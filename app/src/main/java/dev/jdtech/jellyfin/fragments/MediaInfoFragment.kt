@@ -31,11 +31,11 @@ import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import java.util.UUID
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
-import java.util.UUID
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -48,7 +48,8 @@ class MediaInfoFragment : Fragment() {
     lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
@@ -111,9 +112,12 @@ class MediaInfoFragment : Fragment() {
         }
 
         binding.seasonsRecyclerView.adapter =
-            ViewItemListAdapter(ViewItemListAdapter.OnClickListener { season ->
-                navigateToSeasonFragment(season)
-            }, fixedWidth = true)
+            ViewItemListAdapter(
+                ViewItemListAdapter.OnClickListener { season ->
+                    navigateToSeasonFragment(season)
+                },
+                fixedWidth = true
+            )
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
         }
@@ -121,7 +125,7 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            if (viewModel.canRetry){
+            if (viewModel.canRetry) {
                 binding.playButton.isEnabled = false
                 viewModel.download()
                 return@setOnClickListener
@@ -187,7 +191,6 @@ class MediaInfoFragment : Fragment() {
                     )
                 )
             }
-
         } else {
             binding.favoriteButton.isVisible = false
             binding.checkButton.isVisible = false
@@ -225,7 +228,6 @@ class MediaInfoFragment : Fragment() {
                 false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
-
             // Favorite icon
             val favoriteDrawable = when (favorite) {
                 true -> R.drawable.ic_heart_filled
@@ -247,7 +249,6 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = false
                 }
             }
-
 
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle

@@ -4,7 +4,12 @@ import android.app.UiModeManager
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -20,18 +25,18 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearSnapHelper
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.utils.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
+import java.lang.IllegalArgumentException
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
-import java.lang.IllegalArgumentException
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LibraryFragment : Fragment() {
@@ -47,7 +52,8 @@ class LibraryFragment : Fragment() {
     lateinit var sp: SharedPreferences
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)
@@ -95,7 +101,8 @@ class LibraryFragment : Fragment() {
                         else -> false
                     }
                 }
-            }, viewLifecycleOwner, Lifecycle.State.RESUMED
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
         )
 
         binding.title?.text = args.libraryName
@@ -117,9 +124,11 @@ class LibraryFragment : Fragment() {
         }
 
         binding.itemsRecyclerView.adapter =
-            ViewItemPagingAdapter(ViewItemPagingAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
-            })
+            ViewItemPagingAdapter(
+                ViewItemPagingAdapter.OnClickListener { item ->
+                    navigateToMediaInfoFragment(item)
+                }
+            )
 
         (binding.itemsRecyclerView.adapter as ViewItemPagingAdapter).addLoadStateListener {
             when (it.refresh) {

@@ -13,11 +13,11 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.models.User
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.UUID
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -112,7 +112,11 @@ fun bindUserImage(imageView: ImageView, user: User) {
         .posterDescription(user.name)
 }
 
-private fun ImageView.loadImage(url: String, @DrawableRes placeholderId: Int = R.color.neutral_800, @DrawableRes errorPlaceHolderId: Int? = null): View {
+private fun ImageView.loadImage(
+    url: String,
+    @DrawableRes placeholderId: Int = R.color.neutral_800,
+    @DrawableRes errorPlaceHolderId: Int? = null
+): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
     Glide

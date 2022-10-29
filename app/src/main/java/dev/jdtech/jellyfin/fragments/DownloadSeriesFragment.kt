@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,8 +18,8 @@ import dev.jdtech.jellyfin.databinding.FragmentDownloadSeriesBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.viewmodels.DownloadSeriesViewModel
+import java.util.UUID
 import kotlinx.coroutines.launch
-import java.util.*
 
 @AndroidEntryPoint
 class DownloadSeriesFragment : Fragment() {
@@ -32,7 +32,8 @@ class DownloadSeriesFragment : Fragment() {
     private val args: DownloadSeriesFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDownloadSeriesBinding.inflate(inflater, container, false)
@@ -45,9 +46,12 @@ class DownloadSeriesFragment : Fragment() {
         binding.viewModel = viewModel
 
         binding.episodesRecyclerView.adapter =
-            DownloadEpisodeListAdapter(DownloadEpisodeListAdapter.OnClickListener { episode ->
-                navigateToEpisodeBottomSheetFragment(episode)
-            }, args.seriesMetadata)
+            DownloadEpisodeListAdapter(
+                DownloadEpisodeListAdapter.OnClickListener { episode ->
+                    navigateToEpisodeBottomSheetFragment(episode)
+                },
+                args.seriesMetadata
+            )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

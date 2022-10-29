@@ -49,7 +49,8 @@ class ViewItemPagingAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), parent
+            ),
+            parent
         )
     }
 

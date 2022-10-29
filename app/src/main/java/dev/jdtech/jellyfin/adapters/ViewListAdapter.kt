@@ -65,7 +65,8 @@ class ViewListAdapter(
                 NextUpSectionBinding.inflate(
                     LayoutInflater.from(
                         parent.context
-                    ), parent, false
+                    ),
+                    parent, false
                 )
             )
             ITEM_VIEW_TYPE_VIEW -> ViewViewHolder(

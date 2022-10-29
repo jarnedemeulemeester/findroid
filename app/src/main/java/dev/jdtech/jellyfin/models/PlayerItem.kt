@@ -1,8 +1,8 @@
 package dev.jdtech.jellyfin.models
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.util.UUID
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PlayerItem(

@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         if (uiModeManager.currentModeType != Configuration.UI_MODE_TYPE_TELEVISION) {
             val navView: NavigationBarView = binding.navView as NavigationBarView
 

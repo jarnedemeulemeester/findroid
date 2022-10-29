@@ -1,12 +1,23 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.*
+import dev.jdtech.jellyfin.utils.canRetryDownload
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.utils.isItemAvailable
+import dev.jdtech.jellyfin.utils.isItemDownloaded
+import dev.jdtech.jellyfin.utils.requestDownload
+import java.text.DateFormat
+import java.time.ZoneOffset
+import java.util.Date
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -14,11 +25,6 @@ import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
-import java.text.DateFormat
-import java.time.ZoneOffset
-import java.util.Date
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel

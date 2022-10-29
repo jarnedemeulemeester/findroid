@@ -11,13 +11,21 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.DiscoveredServer
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class AddServerViewModel
@@ -54,11 +62,13 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val servers = jellyfinApi.jellyfin.discovery.discoverLocalServers()
             servers.collect { serverDiscoveryInfo ->
-                discoveredServers.add(DiscoveredServer(
-                    serverDiscoveryInfo.id,
-                    serverDiscoveryInfo.name,
-                    serverDiscoveryInfo.address
-                ))
+                discoveredServers.add(
+                    DiscoveredServer(
+                        serverDiscoveryInfo.id,
+                        serverDiscoveryInfo.name,
+                        serverDiscoveryInfo.address
+                    )
+                )
                 _discoveredServersState.emit(
                     DiscoveredServersState.Servers(ArrayList(discoveredServers))
                 )
@@ -131,7 +141,6 @@ constructor(
                         }
                     }
             } catch (_: CancellationException) {
-
             } catch (e: Exception) {
                 _uiState.emit(
                     UiState.Error(
