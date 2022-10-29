@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
 import dev.jdtech.jellyfin.utils.isItemAvailable
+import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -24,7 +25,6 @@ import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(

@@ -12,8 +12,8 @@ import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1

@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.mikepenz.aboutlibraries.plugin")
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 }
 
 android {
@@ -59,6 +60,12 @@ android {
     }
 }
 
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
+}
+
 dependencies {
     implementation("androidx.leanback:leanback:1.2.0-alpha02")
 
@@ -66,7 +73,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
 
     // Material
     implementation("com.google.android.material:material:1.7.0")

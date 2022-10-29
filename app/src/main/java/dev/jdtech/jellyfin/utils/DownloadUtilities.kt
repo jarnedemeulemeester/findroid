@@ -11,12 +11,12 @@ import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.io.File
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.UserItemDataDto
 import timber.log.Timber
-import java.io.File
-import java.util.UUID
 
 var defaultStorage: File? = null
 
@@ -76,7 +76,7 @@ fun loadDownloadLocation(context: Context) {
 fun checkDownloadStatus(downloadDatabase: DownloadDatabaseDao, context: Context) {
     val items = downloadDatabase.loadItems()
     for (item in items) {
-        try{
+        try {
             val query = DownloadManager.Query()
                 .setFilterById(item.downloadId!!)
             val result = context.getSystemService<DownloadManager>()!!.query(query)
@@ -156,7 +156,6 @@ fun deleteDownloadedEpisode(downloadDatabase: DownloadDatabaseDao, itemId: UUID)
     } catch (e: Exception) {
         Timber.e(e)
     }
-
 }
 
 fun postDownloadPlaybackProgress(
@@ -277,6 +276,5 @@ suspend fun syncPlaybackProgress(
         } catch (e: Exception) {
             Timber.e(e)
         }
-
     }
 }

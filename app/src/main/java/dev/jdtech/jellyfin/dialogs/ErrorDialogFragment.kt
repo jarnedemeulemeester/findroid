@@ -10,7 +10,7 @@ import java.lang.IllegalStateException
 
 class ErrorDialogFragment(
     private val error: Exception
-    ) : DialogFragment() {
+) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it, R.style.ErrorDialogStyle)
@@ -28,7 +28,6 @@ class ErrorDialogFragment(
 
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     startActivity(shareIntent)
-
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")

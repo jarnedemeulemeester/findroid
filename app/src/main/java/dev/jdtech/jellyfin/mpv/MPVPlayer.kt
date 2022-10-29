@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.mpv
 
-import `is`.xyz.mpv.MPVLib
 import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
@@ -13,24 +12,39 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import androidx.core.content.getSystemService
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.BasePlayer
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DeviceInfo
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.MediaMetadata
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Commands
+import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.TrackGroup
 import com.google.android.exoplayer2.text.Cue
 import com.google.android.exoplayer2.text.CueGroup
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
-import com.google.android.exoplayer2.util.*
+import com.google.android.exoplayer2.util.Clock
+import com.google.android.exoplayer2.util.FlagSet
+import com.google.android.exoplayer2.util.ListenerSet
+import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoSize
 import dev.jdtech.jellyfin.utils.AppPreferences
+import `is`.xyz.mpv.MPVLib
+import java.io.File
+import java.io.FileOutputStream
+import java.util.concurrent.CopyOnWriteArraySet
 import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.util.concurrent.CopyOnWriteArraySet
 
 @Suppress("SpellCheckingInspection")
 class MPVPlayer(
@@ -627,16 +641,16 @@ class MPVPlayer(
             .addIf(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM, hasPreviousMediaItem() && !isPlayingAd)
             .addIf(
                 COMMAND_SEEK_TO_PREVIOUS,
-                !currentTimeline.isEmpty
-                        && (hasPreviousMediaItem() || !isCurrentMediaItemLive || isCurrentMediaItemSeekable)
-                        && !isPlayingAd
+                !currentTimeline.isEmpty &&
+                    (hasPreviousMediaItem() || !isCurrentMediaItemLive || isCurrentMediaItemSeekable) &&
+                    !isPlayingAd
             )
             .addIf(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM, hasNextMediaItem() && !isPlayingAd)
             .addIf(
                 COMMAND_SEEK_TO_NEXT,
-                !currentTimeline.isEmpty
-                        && (hasNextMediaItem() || (isCurrentMediaItemLive && isCurrentMediaItemDynamic))
-                        && !isPlayingAd
+                !currentTimeline.isEmpty &&
+                    (hasNextMediaItem() || (isCurrentMediaItemLive && isCurrentMediaItemDynamic)) &&
+                    !isPlayingAd
             )
             .addIf(COMMAND_SEEK_TO_MEDIA_ITEM, !isPlayingAd)
             .addIf(COMMAND_SEEK_BACK, isCurrentMediaItemSeekable && !isPlayingAd)
@@ -655,7 +669,7 @@ class MPVPlayer(
         tracks = Tracks.EMPTY
         playbackParameters = PlaybackParameters.DEFAULT
         initialCommands.clear()
-        //initialSeekTo = 0L
+        // initialSeekTo = 0L
     }
 
     /** Prepares the player.  */
@@ -1212,8 +1226,7 @@ class MPVPlayer(
             MPVLib.setOptionString("panscan", "1")
             MPVLib.setOptionString("sub-use-margins", "yes")
             MPVLib.setOptionString("sub-ass-force-margins", "yes")
-        }
-        else {
+        } else {
             MPVLib.setOptionString("panscan", "0")
             MPVLib.setOptionString("sub-use-margins", "no")
             MPVLib.setOptionString("sub-ass-force-margins", "no")
@@ -1409,7 +1422,8 @@ class MPVPlayer(
                                 IntArray(this.length) { C.FORMAT_HANDLED },
                                 BooleanArray(this.length) { it == indexCurrentVideo }
                             )
-                        })
+                        }
+                    )
                 }
                 if (trackListAudio.isNotEmpty()) {
                     trackGroups.add(
@@ -1420,7 +1434,8 @@ class MPVPlayer(
                                 IntArray(this.length) { C.FORMAT_HANDLED },
                                 BooleanArray(this.length) { it == indexCurrentAudio }
                             )
-                        })
+                        }
+                    )
                 }
                 if (trackListText.isNotEmpty()) {
                     trackGroups.add(
@@ -1431,7 +1446,8 @@ class MPVPlayer(
                                 IntArray(this.length) { C.FORMAT_HANDLED },
                                 BooleanArray(this.length) { it == indexCurrentText }
                             )
-                        })
+                        }
+                    )
                 }
                 if (trackGroups.isNotEmpty()) {
                     tracks = Tracks(trackGroups)

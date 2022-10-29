@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.database
 
 import androidx.room.TypeConverter
-import java.util.*
+import java.util.UUID
 
 class Converters {
     @TypeConverter

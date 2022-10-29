@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +34,8 @@ class SearchResultFragment : Fragment() {
     private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
@@ -42,9 +43,11 @@ class SearchResultFragment : Fragment() {
         binding.searchResultsRecyclerView.adapter = FavoritesListAdapter(
             ViewItemListAdapter.OnClickListener { item ->
                 navigateToMediaInfoFragment(item)
-            }, HomeEpisodeListAdapter.OnClickListener { item ->
+            },
+            HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToEpisodeBottomSheetFragment(item)
-            })
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -72,7 +75,6 @@ class SearchResultFragment : Fragment() {
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, "errordialog")
         }
-
 
         return binding.root
     }

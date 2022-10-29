@@ -29,7 +29,5 @@ class SpeedSelectionDialogFragment(
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-
-
     }
 }

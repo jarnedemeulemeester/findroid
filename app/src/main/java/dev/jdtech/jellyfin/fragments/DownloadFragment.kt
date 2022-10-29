@@ -12,16 +12,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.adapters.*
+import dev.jdtech.jellyfin.adapters.DownloadSeriesListAdapter
+import dev.jdtech.jellyfin.adapters.DownloadViewItemListAdapter
+import dev.jdtech.jellyfin.adapters.DownloadsListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.DownloadViewModel
+import java.util.UUID
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
 @AndroidEntryPoint
 class DownloadFragment : Fragment() {
@@ -32,18 +34,21 @@ class DownloadFragment : Fragment() {
     private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDownloadBinding.inflate(inflater, container, false)
 
-        binding.downloadsRecyclerView.adapter = DownloadsListAdapter(
-            DownloadViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
-            }, DownloadSeriesListAdapter.OnClickListener { item ->
-                navigateToDownloadSeriesFragment(item)
-            }
-        )
+        binding.downloadsRecyclerView.adapter =
+            DownloadsListAdapter(
+                DownloadViewItemListAdapter.OnClickListener { item ->
+                    navigateToMediaInfoFragment(item)
+                },
+                DownloadSeriesListAdapter.OnClickListener { item ->
+                    navigateToDownloadSeriesFragment(item)
+                }
+            )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -97,11 +102,7 @@ class DownloadFragment : Fragment() {
     private fun navigateToMediaInfoFragment(item: PlayerItem) {
         findNavController().navigate(
             DownloadFragmentDirections.actionDownloadFragmentToMediaInfoFragment(
-                UUID.randomUUID(),
-                item.name,
-                item.item!!.type,
-                item,
-                isOffline = true
+                UUID.randomUUID(), item.name, item.item!!.type, item, isOffline = true
             )
         )
     }
@@ -109,8 +110,7 @@ class DownloadFragment : Fragment() {
     private fun navigateToDownloadSeriesFragment(series: DownloadSeriesMetadata) {
         findNavController().navigate(
             DownloadFragmentDirections.actionDownloadFragmentToDownloadSeriesFragment(
-                seriesMetadata = series,
-                seriesName = series.name
+                seriesMetadata = series, seriesName = series.name
             )
         )
     }

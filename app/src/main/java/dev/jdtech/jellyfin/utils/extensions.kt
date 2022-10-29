@@ -23,7 +23,7 @@ fun BaseItemDto.toView(): View {
 
 fun Fragment.checkIfLoginRequired(error: String?) {
     if (error != null) {
-        if (error.contains("401"))  {
+        if (error.contains("401")) {
             Timber.d("Login required!")
             findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
         }

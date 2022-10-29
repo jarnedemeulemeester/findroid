@@ -14,13 +14,13 @@ import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.syncPlaybackProgress
 import dev.jdtech.jellyfin.utils.toView
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
@@ -117,5 +117,3 @@ class HomeViewModel @Inject internal constructor(
         .map { (view, latest) -> view.toView().apply { items = latest } }
         .map { ViewItem(it) }
 }
-
-

@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.models
 
-import java.util.*
+import java.util.UUID
 
 data class DownloadSection(
     val id: UUID,

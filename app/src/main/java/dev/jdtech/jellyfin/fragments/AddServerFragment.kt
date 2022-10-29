@@ -31,7 +31,8 @@ class AddServerFragment : Fragment() {
     private val viewModel: AddServerViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
@@ -136,7 +137,9 @@ class AddServerFragment : Fragment() {
         }
     }
 
-    private fun bindDiscoveredServersStateServers(serversState: AddServerViewModel.DiscoveredServersState.Servers) {
+    private fun bindDiscoveredServersStateServers(
+        serversState: AddServerViewModel.DiscoveredServersState.Servers
+    ) {
         val servers = serversState.servers
         if (servers.isEmpty()) {
             binding.serversRecyclerView.isVisible = false

@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.models
 
-import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 data class View(
     val id: UUID,

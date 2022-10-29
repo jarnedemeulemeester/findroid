@@ -4,11 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.utils.SortBy
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 import timber.log.Timber
-import java.util.*
 
 class ItemsPagingSource(
     private val jellyfinApi: JellyfinApi,
@@ -25,14 +25,14 @@ class ItemsPagingSource(
 
         return try {
             val response = jellyfinApi.itemsApi.getItems(
-                    jellyfinApi.userId!!,
-            parentId = parentId,
-            includeItemTypes = includeTypes,
-            recursive = recursive,
-            sortBy = listOf(sortBy.SortString),
-            sortOrder = listOf(sortOrder),
-            startIndex = position,
-            limit = params.loadSize
+                jellyfinApi.userId!!,
+                parentId = parentId,
+                includeItemTypes = includeTypes,
+                recursive = recursive,
+                sortBy = listOf(sortBy.SortString),
+                sortOrder = listOf(sortOrder),
+                startIndex = position,
+                limit = params.loadSize
             ).content.items.orEmpty()
             LoadResult.Page(
                 data = response,

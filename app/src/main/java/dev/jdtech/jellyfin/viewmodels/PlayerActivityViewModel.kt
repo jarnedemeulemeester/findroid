@@ -8,7 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
@@ -18,11 +22,11 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -133,8 +137,8 @@ constructor(
 
             player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
             val useMpv = sp.getBoolean("mpv_player", false)
-            if(!useMpv || !playFromDownloads)
-                player.prepare() //TODO: This line causes a crash when playing from downloads with MPV
+            if (!useMpv || !playFromDownloads)
+                player.prepare() // TODO: This line causes a crash when playing from downloads with MPV
             player.play()
             pollPosition(player)
         }
@@ -167,8 +171,8 @@ constructor(
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
-                        if(playFromDownloads){
-                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble()/player.duration.toDouble()).times(100)) //TODO Automatically use the correct item
+                        if (playFromDownloads) {
+                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
                         }
                         try {
                             jellyfinRepository.postPlaybackProgress(

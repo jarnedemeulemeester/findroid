@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.api
 
 import android.content.Context
 import dev.jdtech.jellyfin.BuildConfig
+import java.util.UUID
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
@@ -15,7 +16,6 @@ import org.jellyfin.sdk.api.client.extensions.userViewsApi
 import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
-import java.util.UUID
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
