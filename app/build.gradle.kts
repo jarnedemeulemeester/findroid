@@ -73,7 +73,6 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-
     // Material
     implementation("com.google.android.material:material:1.7.0")
 

@@ -75,7 +75,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     var imageItemId = episode.id
     var imageType = ImageType.PRIMARY
 
-    if (!episode.imageTags.isNullOrEmpty()) { //TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
+    if (!episode.imageTags.isNullOrEmpty()) { // TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
         when (episode.type) {
             BaseItemKind.MOVIE -> {
                 if (!episode.backdropImageTags.isNullOrEmpty()) {
@@ -96,13 +96,13 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     }
 
     imageView
-        .loadImage("/items/${imageItemId}/Images/$imageType")
+        .loadImage("/items/$imageItemId/Images/$imageType")
         .posterDescription(episode.name)
 }
 
 @BindingAdapter("seasonPoster")
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
-    imageView.loadImage("/items/${seasonId}/Images/${ImageType.PRIMARY}")
+    imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}")
 }
 
 @BindingAdapter("userImage")
