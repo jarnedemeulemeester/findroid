@@ -1,11 +1,9 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.*
@@ -42,8 +40,8 @@ constructor(
             val favorite: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
-            val downloadEpisode: Boolean,
             val available: Boolean,
+            val canRetry: Boolean
         ) : UiState()
 
         object Loading : UiState()
@@ -57,11 +55,9 @@ constructor(
     var favorite: Boolean = false
     private var canDownload = false
     private var downloaded: Boolean = false
-    private var downloadEpisode: Boolean = false
     private var available: Boolean = true
+    var canRetry: Boolean = false
     var playerItems: MutableList<PlayerItem> = mutableListOf()
-
-    private lateinit var downloadRequestItem: DownloadRequestItem
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
@@ -84,8 +80,8 @@ constructor(
                         favorite,
                         canDownload,
                         downloaded,
-                        downloadEpisode,
                         available,
+                        canRetry,
                     )
                 )
             } catch (e: Exception) {
@@ -100,7 +96,7 @@ constructor(
             playerItems.add(playerItem)
             item = downloadMetadataToBaseItemDto(playerItem.item!!)
             available = isItemAvailable(playerItem.itemId)
-            Timber.d("Available: $available")
+            canRetry = canRetryDownload(playerItem.itemId, downloadDatabase, application)
             _uiState.emit(
                 UiState.Normal(
                     item!!,
@@ -110,8 +106,8 @@ constructor(
                     favorite,
                     canDownload,
                     downloaded,
-                    downloadEpisode,
                     available,
+                    canRetry,
                 )
             )
         }
@@ -161,18 +157,13 @@ constructor(
         favorite = false
     }
 
-    fun loadDownloadRequestItem(itemId: UUID) {
+    fun download() {
         viewModelScope.launch {
-            val episode = item
-            val uri = jellyfinRepository.getStreamUrl(itemId, episode?.mediaSources?.get(0)?.id!!)
-            val metadata = baseItemDtoToDownloadMetadata(episode)
-            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
-            downloadEpisode = true
             requestDownload(
+                jellyfinRepository,
                 downloadDatabase,
-                Uri.parse(downloadRequestItem.uri),
-                downloadRequestItem,
-                application
+                application,
+                item!!.id
             )
         }
     }

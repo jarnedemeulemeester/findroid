@@ -50,6 +50,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
+            if (viewModel.canRetry){
+                binding.playButton.isEnabled = false
+                viewModel.download()
+                return@setOnClickListener
+            }
             viewModel.item?.let {
                 if (!args.isOffline) {
                     playerViewModel.loadPlayerItems(it)
@@ -112,7 +117,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
-                viewModel.loadDownloadRequestItem(episodeId)
+                viewModel.download()
                 binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
             }
 
@@ -155,8 +160,14 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.isVisible = true
             }
 
-            binding.playButton.isEnabled = available
-            binding.playButton.alpha = if (!available) 0.5F else 1.0F
+            val clickable = available || canRetry
+            binding.playButton.isEnabled = clickable
+            binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
+            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
+            if (!clickable) {
+                binding.playButton.setImageResource(android.R.color.transparent)
+                binding.progressCircular.isVisible = true
+            }
 
             // Check icon
             when (played) {
