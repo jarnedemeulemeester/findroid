@@ -1,15 +1,20 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.*
+import dev.jdtech.jellyfin.utils.canRetryDownload
+import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
+import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
+import dev.jdtech.jellyfin.utils.isItemAvailable
+import dev.jdtech.jellyfin.utils.isItemDownloaded
+import dev.jdtech.jellyfin.utils.requestDownload
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,8 +25,6 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class MediaInfoViewModel
@@ -50,6 +53,7 @@ constructor(
             val favorite: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
+            var canRetry: Boolean = false,
             val available: Boolean,
         ) : UiState()
 
@@ -71,10 +75,8 @@ constructor(
     var favorite: Boolean = false
     private var canDownload: Boolean = false
     private var downloaded: Boolean = false
-    private var downloadMedia: Boolean = false
+    var canRetry: Boolean = false
     private var available: Boolean = true
-
-    private lateinit var downloadRequestItem: DownloadRequestItem
 
     lateinit var playerItem: PlayerItem
 
@@ -115,6 +117,7 @@ constructor(
                         favorite,
                         canDownload,
                         downloaded,
+                        canRetry,
                         available
                     )
                 )
@@ -139,6 +142,7 @@ constructor(
             played = tempItem.userData?.played ?: false
             favorite = tempItem.userData?.isFavorite ?: false
             available = isItemAvailable(tempItem.id)
+            canRetry = canRetryDownload(tempItem.id, downloadDatabase, application)
             _uiState.emit(
                 UiState.Normal(
                     tempItem,
@@ -155,6 +159,7 @@ constructor(
                     favorite,
                     canDownload,
                     downloaded,
+                    canRetry,
                     available
                 )
             )
@@ -253,19 +258,13 @@ constructor(
         return dateRange.joinToString(separator = " - ")
     }
 
-    fun loadDownloadRequestItem(itemId: UUID) {
+    fun download() {
         viewModelScope.launch {
-            val downloadItem = item
-            val uri =
-                jellyfinRepository.getStreamUrl(itemId, downloadItem?.mediaSources?.get(0)?.id!!)
-            val metadata = baseItemDtoToDownloadMetadata(downloadItem)
-            downloadRequestItem = DownloadRequestItem(uri, itemId, metadata)
-            downloadMedia = true
             requestDownload(
+                jellyfinRepository,
                 downloadDatabase,
-                Uri.parse(downloadRequestItem.uri),
-                downloadRequestItem,
-                application
+                application,
+                item!!.id
             )
         }
     }

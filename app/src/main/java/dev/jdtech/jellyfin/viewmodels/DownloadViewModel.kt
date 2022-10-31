@@ -1,24 +1,29 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import androidx.lifecycle.*
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadSection
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.checkDownloadStatus
 import dev.jdtech.jellyfin.utils.loadDownloadedEpisodes
-import kotlinx.coroutines.*
+import java.util.UUID
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
-import java.util.*
-import javax.inject.Inject
 
 @HiltViewModel
 class DownloadViewModel
 @Inject
 constructor(
+    private val application: Application,
     private val downloadDatabase: DownloadDatabaseDao,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -38,6 +43,7 @@ constructor(
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
+                checkDownloadStatus(downloadDatabase, application)
                 val items = loadDownloadedEpisodes(downloadDatabase)
 
                 val showsMap = mutableMapOf<UUID, MutableList<PlayerItem>>()

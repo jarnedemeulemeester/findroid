@@ -9,7 +9,8 @@ import dev.jdtech.jellyfin.databinding.DiscoveredServerItemBinding
 import dev.jdtech.jellyfin.models.DiscoveredServer
 
 class DiscoveredServerListAdapter(
-    private val clickListener: (server: DiscoveredServer) -> Unit) :
+    private val clickListener: (server: DiscoveredServer) -> Unit
+) :
     ListAdapter<DiscoveredServer, DiscoveredServerListAdapter.DiscoveredServerViewHolder>(
         DiffCallback
     ) {

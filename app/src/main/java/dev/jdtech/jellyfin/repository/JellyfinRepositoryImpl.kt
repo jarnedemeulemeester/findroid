@@ -5,12 +5,25 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.utils.SortBy
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.*
+import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceOptionsDto
+import org.jellyfin.sdk.model.api.DeviceProfile
+import org.jellyfin.sdk.model.api.DirectPlayProfile
+import org.jellyfin.sdk.model.api.DlnaProfileType
+import org.jellyfin.sdk.model.api.GeneralCommandType
+import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.ItemFilter
+import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.api.PlaybackInfoDto
+import org.jellyfin.sdk.model.api.SortOrder
+import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
+import org.jellyfin.sdk.model.api.SubtitleProfile
 import timber.log.Timber
-import java.util.*
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
@@ -150,7 +163,8 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> =
         withContext(Dispatchers.IO) {
             jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                itemId, PlaybackInfoDto(
+                itemId,
+                PlaybackInfoDto(
                     userId = jellyfinApi.userId!!,
                     deviceProfile = DeviceProfile(
                         name = "Direct play all",
@@ -220,7 +234,8 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                     GeneralCommandType.PLAY_STATE,
                     GeneralCommandType.PLAY_NEXT,
                     GeneralCommandType.PLAY_MEDIA_SOURCE
-                ), supportsMediaControl = true
+                ),
+                supportsMediaControl = true
             )
         }
     }

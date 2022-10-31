@@ -135,4 +135,8 @@
     <string name="subtitles">Subtítulos</string>
     <string name="subtitles_summary">Personalizar apariencia de subtítulos</string>
     <string name="external">Externo</string>
+    <string name="theme_system">Seguir al sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="episodes_label">Episodios</string>
 </resources>

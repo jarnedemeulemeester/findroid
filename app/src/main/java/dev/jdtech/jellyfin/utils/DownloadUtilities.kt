@@ -8,44 +8,49 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
-import dev.jdtech.jellyfin.models.DownloadRequestItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.io.File
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.UserItemDataDto
 import timber.log.Timber
-import java.io.File
-import java.util.UUID
 
 var defaultStorage: File? = null
 
-fun requestDownload(
+suspend fun requestDownload(
+    jellyfinRepository: JellyfinRepository,
     downloadDatabase: DownloadDatabaseDao,
-    uri: Uri,
-    downloadRequestItem: DownloadRequestItem,
-    context: Context
+    context: Context,
+    itemId: UUID
 ) {
-    val downloadRequest = DownloadManager.Request(uri)
-        .setTitle(downloadRequestItem.item.name)
+    val episode = jellyfinRepository.getItem(itemId)
+    val uri = jellyfinRepository.getStreamUrl(itemId, episode.mediaSources?.get(0)?.id!!)
+    val metadata = baseItemDtoToDownloadMetadata(episode)
+
+    val downloadRequest = DownloadManager.Request(Uri.parse(uri))
+        .setTitle(metadata.name)
         .setDescription("Downloading")
         .setDestinationUri(
             Uri.fromFile(
                 File(
                     defaultStorage,
-                    downloadRequestItem.itemId.toString()
+                    metadata.id.toString() + ".downloading"
                 )
             )
         )
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
     try {
-        downloadDatabase.insertItem(downloadRequestItem.item)
-        if (!File(defaultStorage, downloadRequestItem.itemId.toString()).exists()) {
+        if (downloadDatabase.exists(metadata.id))
+            downloadDatabase.deleteItem(metadata.id)
+        downloadDatabase.insertItem(metadata)
+        if (!File(defaultStorage, metadata.id.toString()).exists() && !File(defaultStorage, "${metadata.id}.downloading").exists()) {
             val downloadId = downloadFile(downloadRequest, context)
             Timber.d("$downloadId")
-            downloadDatabase.updateDownloadId(downloadRequestItem.itemId, downloadId)
+            downloadDatabase.updateDownloadId(metadata.id, downloadId)
         }
     } catch (e: Exception) {
         Timber.e(e)
@@ -68,6 +73,21 @@ fun loadDownloadLocation(context: Context) {
     defaultStorage = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
 }
 
+fun checkDownloadStatus(downloadDatabase: DownloadDatabaseDao, context: Context) {
+    val items = downloadDatabase.loadItems()
+    for (item in items) {
+        try {
+            val query = DownloadManager.Query()
+                .setFilterById(item.downloadId!!)
+            val result = context.getSystemService<DownloadManager>()!!.query(query)
+            result.moveToFirst()
+            if (result.getInt(7) == 8) {
+                File(defaultStorage, "${item.id}.downloading").renameTo(File(defaultStorage, item.id.toString()))
+            }
+        } catch (_: Exception) {}
+    }
+}
+
 fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerItem> {
     val items = downloadDatabase.loadItems()
     return items.map {
@@ -86,6 +106,19 @@ fun loadDownloadedEpisodes(downloadDatabase: DownloadDatabaseDao): List<PlayerIt
 
 fun isItemAvailable(itemId: UUID): Boolean {
     return File(defaultStorage, itemId.toString()).exists()
+}
+
+fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, context: Context): Boolean {
+    if (isItemAvailable(itemId))
+        return false
+    val downloadId = downloadDatabaseDao.loadItem(itemId)?.downloadId ?: return false
+    val query = DownloadManager.Query().setFilterById(downloadId)
+    val result = context.getSystemService<DownloadManager>()!!.query(query)
+    result.moveToFirst()
+    if (result.count == 0)
+        return true
+    val status = result.getInt(result.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
+    return status == 16
 }
 
 fun isItemDownloaded(downloadDatabaseDao: DownloadDatabaseDao, itemId: UUID): Boolean {
@@ -123,7 +156,6 @@ fun deleteDownloadedEpisode(downloadDatabase: DownloadDatabaseDao, itemId: UUID)
     } catch (e: Exception) {
         Timber.e(e)
     }
-
 }
 
 fun postDownloadPlaybackProgress(
@@ -244,6 +276,5 @@ suspend fun syncPlaybackProgress(
         } catch (e: Exception) {
             Timber.e(e)
         }
-
     }
 }

@@ -14,8 +14,7 @@ import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
 class DownloadViewItemListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-    ) :
-    ListAdapter<PlayerItem, DownloadViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<PlayerItem, DownloadViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
@@ -48,7 +47,8 @@ class DownloadViewItemListAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), parent
+            ),
+            parent
         )
     }
 

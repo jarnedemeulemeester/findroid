@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.PersonItemBinding
 import org.jellyfin.sdk.model.api.BaseItemPerson
 
-class PersonListAdapter(private val clickListener: (item: BaseItemPerson) -> Unit) :ListAdapter<BaseItemPerson, PersonListAdapter.PersonViewHolder>(DiffCallback) {
+class PersonListAdapter(private val clickListener: (item: BaseItemPerson) -> Unit) : ListAdapter<BaseItemPerson, PersonListAdapter.PersonViewHolder>(DiffCallback) {
 
     class PersonViewHolder(private var binding: PersonItemBinding) :
         RecyclerView.ViewHolder(binding.root) {

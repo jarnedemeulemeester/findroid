@@ -138,4 +138,5 @@
     <string name="theme_system">Seguir tema del dispositivo</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="episodes_label">Episodios</string>
 </resources>

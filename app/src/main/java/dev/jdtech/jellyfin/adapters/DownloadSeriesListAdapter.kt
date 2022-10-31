@@ -13,8 +13,7 @@ import dev.jdtech.jellyfin.utils.downloadSeriesMetadataToBaseItemDto
 class DownloadSeriesListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-    ) :
-    ListAdapter<DownloadSeriesMetadata, DownloadSeriesListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<DownloadSeriesMetadata, DownloadSeriesListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,11 +31,17 @@ class DownloadSeriesListAdapter(
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<DownloadSeriesMetadata>() {
-        override fun areItemsTheSame(oldItem: DownloadSeriesMetadata, newItem: DownloadSeriesMetadata): Boolean {
+        override fun areItemsTheSame(
+            oldItem: DownloadSeriesMetadata,
+            newItem: DownloadSeriesMetadata
+        ): Boolean {
             return oldItem.itemId == newItem.itemId
         }
 
-        override fun areContentsTheSame(oldItem: DownloadSeriesMetadata, newItem: DownloadSeriesMetadata): Boolean {
+        override fun areContentsTheSame(
+            oldItem: DownloadSeriesMetadata,
+            newItem: DownloadSeriesMetadata
+        ): Boolean {
             return oldItem == newItem
         }
     }
@@ -47,7 +52,8 @@ class DownloadSeriesListAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), parent
+            ),
+            parent
         )
     }
 

@@ -14,8 +14,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 class ViewItemListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-    ) :
-    ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
@@ -49,7 +48,8 @@ class ViewItemListAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), parent
+            ),
+            parent
         )
     }
 

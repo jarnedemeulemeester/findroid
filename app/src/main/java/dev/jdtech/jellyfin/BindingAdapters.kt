@@ -13,11 +13,11 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.UUID
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -75,7 +75,7 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     var imageItemId = episode.id
     var imageType = ImageType.PRIMARY
 
-    if (!episode.imageTags.isNullOrEmpty()) { //TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
+    if (!episode.imageTags.isNullOrEmpty()) { // TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
         when (episode.type) {
             BaseItemKind.MOVIE -> {
                 if (!episode.backdropImageTags.isNullOrEmpty()) {
@@ -96,13 +96,13 @@ fun bindBaseItemImage(imageView: ImageView, episode: BaseItemDto?) {
     }
 
     imageView
-        .loadImage("/items/${imageItemId}/Images/$imageType")
+        .loadImage("/items/$imageItemId/Images/$imageType")
         .posterDescription(episode.name)
 }
 
 @BindingAdapter("seasonPoster")
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
-    imageView.loadImage("/items/${seasonId}/Images/${ImageType.PRIMARY}")
+    imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}")
 }
 
 @BindingAdapter("userImage")
@@ -112,7 +112,11 @@ fun bindUserImage(imageView: ImageView, user: User) {
         .posterDescription(user.name)
 }
 
-private fun ImageView.loadImage(url: String, @DrawableRes placeholderId: Int = R.color.neutral_800, @DrawableRes errorPlaceHolderId: Int? = null): View {
+private fun ImageView.loadImage(
+    url: String,
+    @DrawableRes placeholderId: Int = R.color.neutral_800,
+    @DrawableRes errorPlaceHolderId: Int? = null
+): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
     Glide

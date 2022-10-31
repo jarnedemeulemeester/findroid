@@ -1,7 +1,13 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -41,9 +47,11 @@ class MediaFragment : Fragment() {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
         binding.viewsRecyclerView.adapter =
-            CollectionListAdapter(CollectionListAdapter.OnClickListener { library ->
-                navigateToLibraryFragment(library)
-            })
+            CollectionListAdapter(
+                CollectionListAdapter.OnClickListener { library ->
+                    navigateToLibraryFragment(library)
+                }
+            )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -73,32 +81,35 @@ class MediaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.media_menu, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.media_menu, menu)
 
-                val search = menu.findItem(R.id.action_search)
-                val searchView = search.actionView as SearchView
-                searchView.queryHint = getString(R.string.search_hint)
+                    val search = menu.findItem(R.id.action_search)
+                    val searchView = search.actionView as SearchView
+                    searchView.queryHint = getString(R.string.search_hint)
 
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(p0: String?): Boolean {
-                        if (p0 != null) {
-                            navigateToSearchResultFragment(p0)
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(p0: String?): Boolean {
+                            if (p0 != null) {
+                                navigateToSearchResultFragment(p0)
+                            }
+                            return true
                         }
-                        return true
-                    }
 
-                    override fun onQueryTextChange(p0: String?): Boolean {
-                        return false
-                    }
-                })
-            }
+                        override fun onQueryTextChange(p0: String?): Boolean {
+                            return false
+                        }
+                    })
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return true
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
     }
 
     override fun onStart() {
@@ -133,7 +144,6 @@ class MediaFragment : Fragment() {
         binding.viewsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
         checkIfLoginRequired(uiState.error.message)
-
     }
 
     private fun navigateToLibraryFragment(library: BaseItemDto) {

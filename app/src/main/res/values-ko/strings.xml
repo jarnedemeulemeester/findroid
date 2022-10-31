@@ -117,7 +117,7 @@
     <string name="no_search_results">검색 결과 없음</string>
     <string name="next_up">다음</string>
     <string name="continue_watching">이어서 보기</string>
-    <string name="settings_cache_size_message">본 앱은 설정한 용량의 디스크 공간을 Jellyfin 서버의 이미지를 저장하는 데 사용합니다. 값이 클수록 느린 네트워크에서 큰 효과가 있습니다.</string>
+    <string name="settings_cache_size_message">설정한 용량의 저장공간 용량을 Jellyfin 서버의 이미지 캐시를 저장하는 데 사용합니다. 값이 클수록 느린 네트워크에서 큰 효과가 있습니다.</string>
     <string name="force_software_decoding">소프트웨어 디코딩 강제</string>
     <string name="force_software_decoding_summary">하드웨어 디코딩을 비활성화하고 소프트웨어 디코딩을 사용합니다. 하드웨어 디코딩에서 오류가 발생할 경우 유용할 수 있습니다.</string>
     <string name="player_gestures_vb_summary">화면 오른쪽을 위아래로 스와이프하여 볼륨을 변경하고 왼쪽을 스와이프하여 밝기 변경</string>
@@ -127,14 +127,15 @@
     <string name="seek_forward_increment">빨리 감기 시간 (ms)</string>
     <string name="dynamic_colors_summary">Material You 동적 색상 사용(Android 12 이상에서만 사용 가능)</string>
     <string name="add_server_error_version">%1$s 은(는) 지원되지 않는 버전입니다. 서버를 업데이트 해주십시오.</string>
-    <string name="settings_use_cache_summary">이미지 캐시를 디스크에 저장하여 로딩 시간을 단축합니다. 앱을 다시 시작한 후에 적용됩니다.</string>
+    <string name="settings_use_cache_summary">이미지 캐시를 저장공간에 저장하여 로딩 시간을 단축합니다. 앱을 다시 시작한 후에 적용됩니다.</string>
     <string name="mpv_player_summary">실험용 mpv 플레이어를 사용하여 비디오를 재생합니다. mpv 플레이어는 더 많은 비디오, 오디오 및 자막 코덱을 지원합니다.</string>
     <string name="sort_order">정렬 기준</string>
     <string name="libraries">라이브러리</string>
     <string name="subtitles">자막</string>
     <string name="subtitles_summary">자막 스타일 커스텀</string>
     <string name="external">외부</string>
-    <string name="theme_system">기기 테마 사용</string>
+    <string name="theme_system">기기 테마와 동기화</string>
     <string name="theme_light">라이트 모드</string>
     <string name="theme_dark">다크 모드</string>
+    <string name="episodes_label">에피소드</string>
 </resources>

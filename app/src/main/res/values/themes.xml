@@ -28,9 +28,8 @@
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
         <!-- Shapes -->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Findroid.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Findroid.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Findroid.LargeComponent</item>
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.Findroid.Corner.ExtraSmall</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.Findroid.Corner.Small</item>
 
         <!-- Toolbar -->
         <item name="toolbarStyle">@style/Widget.Material3.Toolbar.Surface</item>

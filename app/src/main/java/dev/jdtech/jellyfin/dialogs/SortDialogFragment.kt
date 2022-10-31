@@ -8,9 +8,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.utils.SortBy
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
-import org.jellyfin.sdk.model.api.SortOrder
 import java.lang.IllegalStateException
-import java.util.*
+import java.util.UUID
+import org.jellyfin.sdk.model.api.SortOrder
 
 class SortDialogFragment(
     private val parentId: UUID,

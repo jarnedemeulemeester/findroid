@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import dev.jdtech.jellyfin.models.DownloadItem
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface DownloadDatabaseDao {
@@ -25,4 +25,7 @@ interface DownloadDatabaseDao {
 
     @Query("update downloads set downloadId = :downloadId where id = :id")
     fun updateDownloadId(id: UUID, downloadId: Long)
+
+    @Query("SELECT EXISTS (SELECT 1 FROM downloads WHERE id = :id)")
+    fun exists(id: UUID): Boolean
 }

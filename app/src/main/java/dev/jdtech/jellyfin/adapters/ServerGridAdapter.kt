@@ -11,7 +11,7 @@ import dev.jdtech.jellyfin.databinding.ServerItemBinding
 class ServerGridAdapter(
     private val onClickListener: OnClickListener,
     private val onLongClickListener: OnLongClickListener
-    ) : ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
+) : ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
     class ServerViewHolder(private var binding: ServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(server: Server) {

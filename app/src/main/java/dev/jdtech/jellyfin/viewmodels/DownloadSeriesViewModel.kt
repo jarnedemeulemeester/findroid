@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.adapters.DownloadEpisodeItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class DownloadSeriesViewModel
@@ -36,8 +36,11 @@ constructor() : ViewModel() {
 
     private fun getEpisodes(seriesMetadata: DownloadSeriesMetadata): List<DownloadEpisodeItem> {
         val episodes = seriesMetadata.episodes
-        return listOf(DownloadEpisodeItem.Header) + episodes.sortedWith(compareBy(
-            { it.item!!.parentIndexNumber },
-            { it.item!!.indexNumber })).map { DownloadEpisodeItem.Episode(it) }
+        return listOf(DownloadEpisodeItem.Header) + episodes.sortedWith(
+            compareBy(
+                { it.item!!.parentIndexNumber },
+                { it.item!!.indexNumber }
+            )
+        ).map { DownloadEpisodeItem.Episode(it) }
     }
 }

@@ -31,11 +31,11 @@ import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import java.util.UUID
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
-import java.util.UUID
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -48,7 +48,8 @@ class MediaInfoFragment : Fragment() {
     lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
@@ -111,9 +112,12 @@ class MediaInfoFragment : Fragment() {
         }
 
         binding.seasonsRecyclerView.adapter =
-            ViewItemListAdapter(ViewItemListAdapter.OnClickListener { season ->
-                navigateToSeasonFragment(season)
-            }, fixedWidth = true)
+            ViewItemListAdapter(
+                ViewItemListAdapter.OnClickListener { season ->
+                    navigateToSeasonFragment(season)
+                },
+                fixedWidth = true
+            )
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
         }
@@ -121,6 +125,11 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
+            if (viewModel.canRetry) {
+                binding.playButton.isEnabled = false
+                viewModel.download()
+                return@setOnClickListener
+            }
             viewModel.item?.let { item ->
                 if (!args.isOffline) {
                     playerViewModel.loadPlayerItems(item) {
@@ -174,7 +183,7 @@ class MediaInfoFragment : Fragment() {
 
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
-                viewModel.loadDownloadRequestItem(args.itemId)
+                viewModel.download()
                 binding.downloadButton.imageTintList = ColorStateList.valueOf(
                     resources.getColor(
                         R.color.red,
@@ -182,7 +191,6 @@ class MediaInfoFragment : Fragment() {
                     )
                 )
             }
-
         } else {
             binding.favoriteButton.isVisible = false
             binding.checkButton.isVisible = false
@@ -205,15 +213,20 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
-            binding.playButton.isEnabled = available
-            binding.playButton.alpha = if (!available) 0.5F else 1.0F
+            val clickable = available || canRetry
+            binding.playButton.isEnabled = clickable
+            binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
+            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
+            if (!clickable) {
+                binding.playButton.setImageResource(android.R.color.transparent)
+                binding.progressCircular.isVisible = true
+            }
 
             // Check icon
             when (played) {
                 true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
                 false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
-
 
             // Favorite icon
             val favoriteDrawable = when (favorite) {
@@ -236,7 +249,6 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = false
                 }
             }
-
 
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle
