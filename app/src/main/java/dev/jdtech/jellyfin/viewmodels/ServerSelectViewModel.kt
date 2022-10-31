@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import java.util.UUID
+import dev.jdtech.jellyfin.models.Server
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

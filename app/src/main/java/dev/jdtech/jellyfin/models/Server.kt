@@ -2,7 +2,7 @@ package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.UUID
 
 @Entity(tableName = "servers")
 data class Server(

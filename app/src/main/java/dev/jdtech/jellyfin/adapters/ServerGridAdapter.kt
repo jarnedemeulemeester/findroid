@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.databinding.ServerItemBinding
+import dev.jdtech.jellyfin.models.Server
 
 class ServerGridAdapter(
     private val onClickListener: OnClickListener,
