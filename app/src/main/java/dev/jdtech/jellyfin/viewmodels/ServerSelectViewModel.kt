@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import java.util.UUID
+import dev.jdtech.jellyfin.models.Server
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,15 +39,19 @@ constructor(
 
     fun connectToServer(server: Server) {
         viewModelScope.launch {
+            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)!!
+            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
+            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
+
+            jellyfinApi.apply {
+                api.baseUrl = serverAddress.address
+                api.accessToken = user.accessToken
+                userId = user.id
+            }
+
             val spEdit = sharedPreferences.edit()
             spEdit.putString("selectedServer", server.id)
             spEdit.apply()
-
-            jellyfinApi.apply {
-                api.baseUrl = server.address
-                api.accessToken = server.accessToken
-                userId = UUID.fromString(server.userId)
-            }
 
             _navigateToMain.emit(true)
         }

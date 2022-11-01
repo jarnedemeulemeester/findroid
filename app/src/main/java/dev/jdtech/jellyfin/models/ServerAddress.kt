@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import java.util.UUID
 
 @Entity(
-    tableName = "users",
+    tableName = "serverAddresses",
     foreignKeys = [
         ForeignKey(
             entity = Server::class,
@@ -17,11 +17,10 @@ import java.util.UUID
         )
     ]
 )
-data class User(
+data class ServerAddress(
     @PrimaryKey
     val id: UUID,
-    val name: String,
     @ColumnInfo(index = true)
     val serverId: String,
-    val accessToken: String? = null
+    val address: String
 )

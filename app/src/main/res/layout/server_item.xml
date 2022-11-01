@@ -7,7 +7,7 @@
 
         <variable
             name="server"
-            type="dev.jdtech.jellyfin.database.Server" />
+            type="dev.jdtech.jellyfin.models.Server" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

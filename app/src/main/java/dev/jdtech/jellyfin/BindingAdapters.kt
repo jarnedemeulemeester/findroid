@@ -11,7 +11,7 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.database.Server
+import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
