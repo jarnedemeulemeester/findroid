@@ -251,7 +251,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(error.error).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 

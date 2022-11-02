@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 
@@ -143,7 +143,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: HomeViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.refreshLayout.isRefreshing = false
         binding.viewsRecyclerView.isVisible = false

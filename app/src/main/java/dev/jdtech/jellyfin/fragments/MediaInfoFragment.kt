@@ -150,7 +150,7 @@ class MediaInfoFragment : Fragment() {
             }
 
             binding.errorLayout.errorDetailsButton.setOnClickListener {
-                errorDialog.show(parentFragmentManager, "errordialog")
+                errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
             }
 
             binding.checkButton.setOnClickListener {
@@ -297,7 +297,7 @@ class MediaInfoFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
@@ -326,7 +326,7 @@ class MediaInfoFragment : Fragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment(error.error).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 

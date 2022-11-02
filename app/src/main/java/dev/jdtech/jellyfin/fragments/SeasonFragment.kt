@@ -67,7 +67,7 @@ class SeasonFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         binding.episodesRecyclerView.adapter =
@@ -95,7 +95,7 @@ class SeasonFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: SeasonViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.episodesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true

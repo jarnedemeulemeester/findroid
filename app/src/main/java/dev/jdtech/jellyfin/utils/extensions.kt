@@ -2,6 +2,8 @@ package dev.jdtech.jellyfin.utils
 
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.os.Build
+import android.os.Bundle
 import android.util.TypedValue
 import android.widget.ImageButton
 import androidx.annotation.AttrRes
@@ -12,6 +14,7 @@ import dev.jdtech.jellyfin.AppNavigationDirections
 import dev.jdtech.jellyfin.models.View
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
+import java.io.Serializable
 
 fun BaseItemDto.toView(): View {
     return View(
@@ -50,4 +53,9 @@ fun ImageButton.setTintColorAttribute(@AttrRes attributeId: Int, theme: Resource
             theme
         )
     )
+}
+
+inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getSerializable(key) as? T
 }

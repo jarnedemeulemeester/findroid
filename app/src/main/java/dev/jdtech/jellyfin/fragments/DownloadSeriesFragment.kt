@@ -70,7 +70,7 @@ class DownloadSeriesFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         viewModel.loadEpisodes(args.seriesMetadata)
@@ -84,7 +84,7 @@ class DownloadSeriesFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: DownloadSeriesViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.episodesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
     }

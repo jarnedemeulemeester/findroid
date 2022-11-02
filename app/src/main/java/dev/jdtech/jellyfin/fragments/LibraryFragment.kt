@@ -114,7 +114,7 @@ class LibraryFragment : Fragment() {
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(
                 parentFragmentManager,
-                "errordialog"
+                ErrorDialogFragment.TAG
             )
         }
 
@@ -197,7 +197,7 @@ class LibraryFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: LibraryViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.itemsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true

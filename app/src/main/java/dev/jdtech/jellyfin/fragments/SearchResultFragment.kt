@@ -73,7 +73,7 @@ class SearchResultFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         return binding.root
@@ -97,7 +97,7 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: SearchResultViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true

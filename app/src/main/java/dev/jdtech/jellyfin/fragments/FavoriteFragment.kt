@@ -65,7 +65,7 @@ class FavoriteFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         return binding.root
@@ -89,7 +89,7 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: FavoriteViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.favoritesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true

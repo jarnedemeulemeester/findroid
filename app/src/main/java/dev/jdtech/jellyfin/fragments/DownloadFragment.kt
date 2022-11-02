@@ -68,7 +68,7 @@ class DownloadFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         return binding.root
@@ -92,7 +92,7 @@ class DownloadFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: DownloadViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.downloadsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true

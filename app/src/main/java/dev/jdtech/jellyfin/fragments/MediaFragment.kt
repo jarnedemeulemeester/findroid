@@ -71,7 +71,7 @@ class MediaFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, "errordialog")
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         return binding.root
@@ -139,7 +139,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun bindUiStateError(uiState: MediaViewModel.UiState.Error) {
-        errorDialog = ErrorDialogFragment(uiState.error)
+        errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.viewsRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
