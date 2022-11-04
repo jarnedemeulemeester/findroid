@@ -107,6 +107,8 @@ class MPVPlayer(
         MPVLib.setOptionString("save-position-on-quit", "no")
         MPVLib.setOptionString("sub-font-provider", "none")
         MPVLib.setOptionString("ytdl", "no")
+        // DR is known to ruin performance at least on Exynos devices, see mpv-android#508
+        MPVLib.setOptionString("vd-lavc-dr", "no")
 
         MPVLib.init()
 
