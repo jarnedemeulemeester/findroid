@@ -32,6 +32,11 @@
         app:icon="@drawable/ic_smartphone" />
 
     <Preference
+        app:fragment="dev.jdtech.jellyfin.fragments.SettingsNetworkFragment"
+        app:title="@string/settings_category_network"
+        app:icon="@drawable/ic_network"/>
+
+    <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
         app:title="@string/settings_category_cache" />
 

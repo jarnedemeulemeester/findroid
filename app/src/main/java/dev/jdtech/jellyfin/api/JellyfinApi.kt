@@ -2,7 +2,9 @@ package dev.jdtech.jellyfin.api
 
 import android.content.Context
 import dev.jdtech.jellyfin.BuildConfig
+import dev.jdtech.jellyfin.utils.Constants
 import java.util.UUID
+import org.jellyfin.sdk.api.client.HttpClientOptions
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
@@ -21,15 +23,27 @@ import org.jellyfin.sdk.model.ClientInfo
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
  *
  * @param androidContext The context
+ * @param socketTimeout The socket timeout
  * @constructor Creates a new [JellyfinApi] instance
  */
-class JellyfinApi(androidContext: Context) {
+class JellyfinApi(
+    androidContext: Context,
+    requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
+    connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
+    socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
+) {
     val jellyfin = createJellyfin {
         clientInfo =
             ClientInfo(name = androidContext.applicationInfo.loadLabel(androidContext.packageManager).toString(), version = BuildConfig.VERSION_NAME)
         context = androidContext
     }
-    val api = jellyfin.createApi()
+    val api = jellyfin.createApi(
+        httpClientOptions = HttpClientOptions(
+            requestTimeout = requestTimeout,
+            connectTimeout = connectTimeout,
+            socketTimeout = socketTimeout
+        )
+    )
     var userId: UUID? = null
 
     val devicesApi = api.devicesApi
@@ -48,11 +62,21 @@ class JellyfinApi(androidContext: Context) {
         @Volatile
         private var INSTANCE: JellyfinApi? = null
 
-        fun getInstance(context: Context): JellyfinApi {
+        fun getInstance(
+            context: Context,
+            requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
+            connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
+            socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
+        ): JellyfinApi {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    instance = JellyfinApi(context.applicationContext)
+                    instance = JellyfinApi(
+                        androidContext = context.applicationContext,
+                        requestTimeout = requestTimeout,
+                        connectTimeout = connectTimeout,
+                        socketTimeout = socketTimeout
+                    )
                     INSTANCE = instance
                 }
                 return instance
