@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.utils.serializable
 import java.io.Serializable
 import java.lang.IllegalStateException
 
-class ErrorDialogFragment: DialogFragment() {
+class ErrorDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val error = requireArguments().serializable<Exception>("error")!!
         return activity?.let {
