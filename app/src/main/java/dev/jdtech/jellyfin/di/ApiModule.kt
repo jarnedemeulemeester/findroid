@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.utils.Constants
+import dev.jdtech.jellyfin.utils.AppPreferences
 import javax.inject.Singleton
 
 @Module
@@ -20,10 +20,10 @@ object ApiModule {
     fun provideJellyfinApi(
         @ApplicationContext application: Context,
         sharedPreferences: SharedPreferences,
+        appPreferences: AppPreferences,
         serverDatabase: ServerDatabaseDao
     ): JellyfinApi {
-        val socketTimeout = sharedPreferences.getLong(Constants.PREF_NETWORK_SOCKET_TIMEOUT, Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
-        val jellyfinApi = JellyfinApi.getInstance(application, socketTimeout)
+        val jellyfinApi = JellyfinApi.getInstance(application, appPreferences.socketTimeout)
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {

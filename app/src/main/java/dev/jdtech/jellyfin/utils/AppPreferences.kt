@@ -43,4 +43,7 @@ constructor(
         DEFAULT_SEEK_FORWARD_INCREMENT_MS.toString()
     )!!.toLongOrNull() ?: DEFAULT_SEEK_FORWARD_INCREMENT_MS
     val mpvDisableHwDec = sharedPreferences.getBoolean("mpv_disable_hwdec", false)
+
+    // Network
+    val socketTimeout = sharedPreferences.getString(Constants.PREF_NETWORK_SOCKET_TIMEOUT, Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString())!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
 }
