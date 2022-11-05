@@ -45,6 +45,16 @@ constructor(
     val mpvDisableHwDec = sharedPreferences.getBoolean("mpv_disable_hwdec", false)
 
     // Network
+    val requestTimeout = sharedPreferences.getString(
+        Constants.PREF_NETWORK_REQUEST_TIMEOUT,
+        Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT.toString()
+    )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT
+
+    val connectTimeout = sharedPreferences.getString(
+        Constants.PREF_NETWORK_CONNECT_TIMEOUT,
+        Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT.toString()
+    )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT
+
     val socketTimeout = sharedPreferences.getString(
         Constants.PREF_NETWORK_SOCKET_TIMEOUT,
         Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString()

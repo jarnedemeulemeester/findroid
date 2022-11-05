@@ -28,6 +28,8 @@ import org.jellyfin.sdk.model.ClientInfo
  */
 class JellyfinApi(
     androidContext: Context,
+    requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
+    connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
     socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
 ) {
     val jellyfin = createJellyfin {
@@ -36,7 +38,11 @@ class JellyfinApi(
         context = androidContext
     }
     val api = jellyfin.createApi(
-        httpClientOptions = HttpClientOptions(socketTimeout = socketTimeout)
+        httpClientOptions = HttpClientOptions(
+            requestTimeout = requestTimeout,
+            connectTimeout = connectTimeout,
+            socketTimeout = socketTimeout
+        )
     )
     var userId: UUID? = null
 
@@ -58,12 +64,19 @@ class JellyfinApi(
 
         fun getInstance(
             context: Context,
+            requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
+            connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
             socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
         ): JellyfinApi {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    instance = JellyfinApi(context.applicationContext, socketTimeout)
+                    instance = JellyfinApi(
+                        androidContext = context.applicationContext,
+                        requestTimeout = requestTimeout,
+                        connectTimeout = connectTimeout,
+                        socketTimeout = socketTimeout
+                    )
                     INSTANCE = instance
                 }
                 return instance

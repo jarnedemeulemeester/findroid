@@ -23,7 +23,12 @@ object ApiModule {
         appPreferences: AppPreferences,
         serverDatabase: ServerDatabaseDao
     ): JellyfinApi {
-        val jellyfinApi = JellyfinApi.getInstance(application, appPreferences.socketTimeout)
+        val jellyfinApi = JellyfinApi.getInstance(
+            context = application,
+            requestTimeout = appPreferences.requestTimeout,
+            connectTimeout = appPreferences.connectTimeout,
+            socketTimeout = appPreferences.socketTimeout
+        )
 
         val serverId = sharedPreferences.getString("selectedServer", null)
         if (serverId != null) {

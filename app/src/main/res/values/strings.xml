@@ -138,6 +138,8 @@
     <string name="theme_system">Follow system</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="settings_socket_timeout">Socket timeout (ms)</string>
     <string name="settings_category_network">Network</string>
+    <string name="settings_request_timeout">Request timeout (ms)</string>
+    <string name="settings_connect_timeout">Connect timeout (ms)</string>
+    <string name="settings_socket_timeout">Socket timeout (ms)</string>
 </resources>
