@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <EditTextPreference
+        app:defaultValue="10000"
+        app:key="pref_network_socket_timeout"
+        app:title="@string/settings_socket_timeout"
+        app:useSimpleSummaryProvider="true" />
+</PreferenceScreen>
