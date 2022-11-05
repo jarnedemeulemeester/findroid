@@ -30,3 +30,4 @@
 -keep class dev.jdtech.jellyfin.fragments.SettingsPlayerFragment
 -keep class dev.jdtech.jellyfin.fragments.SettingsDeviceFragment
 -keep class dev.jdtech.jellyfin.fragments.SettingsCacheFragment
+-keep class dev.jdtech.jellyfin.fragments.SettingsNetworkFragment
