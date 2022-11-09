@@ -1,12 +1,13 @@
+@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-parcelize")
-    id("kotlin-kapt")
-    id("androidx.navigation.safeargs.kotlin")
-    id("dagger.hilt.android.plugin")
-    id("com.mikepenz.aboutlibraries.plugin")
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.androidx.navigation.safeargs)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.aboutlibraries)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -67,74 +68,38 @@ ktlint {
 }
 
 dependencies {
-    implementation("androidx.leanback:leanback:1.2.0-alpha02")
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.leanback)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.recyclerview.selection)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.exoplayer.core)
+    implementation(libs.exoplayer.ui)
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.jellyfin.core)
+    implementation(libs.material)
+    implementation(libs.timber)
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.5.1")
-    implementation("androidx.activity:activity-ktx:1.6.1")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
-    // Material
-    implementation("com.google.android.material:material:1.7.0")
-
-    // ConstraintLayout
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
-    // Lifecycle
-    val lifecycleVersion = "2.5.1"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-
-    // Navigation
-    val navigationVersion = "2.5.3"
-    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
-
-    // RecyclerView
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
-
-    // Room
-    val roomVersion = "2.4.3"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-
-    // Preference
-    val preferenceVersion = "1.2.0"
-    implementation("androidx.preference:preference-ktx:$preferenceVersion")
-
-    // Jellyfin
-    val jellyfinVersion = "1.3.7"
-    implementation("org.jellyfin.sdk:jellyfin-core:$jellyfinVersion")
-
-    // Glide
-    val glideVersion = "4.14.2"
-    implementation("com.github.bumptech.glide:glide:$glideVersion")
-    kapt("com.github.bumptech.glide:compiler:$glideVersion")
-
-    // Hilt
-    val hiltVersion = "2.44"
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
-
-    // ExoPlayer
-    val exoplayerVersion = "2.18.1"
-    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion")
-    implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion")
+    // ExoPlayer FFmpeg extension
     implementation(files("libs/extension-ffmpeg-release.aar"))
 
     // MPV
     implementation(files("libs/libmpv.aar"))
-
-    // Timber
-    val timberVersion = "5.0.1"
-    implementation("com.jakewharton.timber:timber:$timberVersion")
-
-    val aboutLibrariesVersion = "10.5.1"
-    implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
-    implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
-
-    val pagingVersion = "3.1.1"
-    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
 }
