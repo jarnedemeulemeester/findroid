@@ -97,6 +97,9 @@
             android:id="@+id/action_navigation_settings_to_serverSelectFragment"
             app:destination="@id/serverSelectFragment" />
         <action
+            android:id="@+id/action_navigation_settings_to_usersFragment"
+            app:destination="@id/usersFragment" />
+        <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
     </fragment>
@@ -346,6 +349,10 @@
             app:destination="@id/homeFragmentTv"
             app:popUpTo="@id/homeFragmentTv"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="reLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment
@@ -387,5 +394,28 @@
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment" />
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="dev.jdtech.jellyfin.fragments.UsersFragment"
+        android:label="@string/users"
+        tools:layout="@layout/fragment_users">
+        <action
+            android:id="@+id/action_usersFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_usersFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_usersFragment_to_homeFragmentTv"
+            app:destination="@id/homeFragmentTv"
+            app:popUpTo="@id/homeFragmentTv"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="serverId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

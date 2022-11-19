@@ -21,6 +21,8 @@
     <string name="button_login">Login</string>
     <string name="remove_server">Remove server</string>
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
+    <string name="remove_user">Remove user</string>
+    <string name="remove_user_dialog_text">Are you sure you want to remove the user %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Home</string>
@@ -142,4 +144,6 @@
     <string name="settings_request_timeout">Request timeout (ms)</string>
     <string name="settings_connect_timeout">Connect timeout (ms)</string>
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
+    <string name="users">Users</string>
+    <string name="add_user">Add user</string>
 </resources>

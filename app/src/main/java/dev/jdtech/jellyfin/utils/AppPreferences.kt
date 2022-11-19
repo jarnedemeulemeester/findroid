@@ -12,6 +12,15 @@ class AppPreferences
 constructor(
     private val sharedPreferences: SharedPreferences
 ) {
+    // Server
+    var currentServer: String?
+        get() = sharedPreferences.getString(Constants.PREF_CURRENT_SERVER, null)
+        set(value) {
+            sharedPreferences.edit {
+                putString(Constants.PREF_CURRENT_SERVER, value)
+            }
+        }
+
     // Appearance
     val theme = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)

@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
+import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
@@ -30,6 +31,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var database: ServerDatabaseDao
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     @OptIn(NavigationUiSaveStateControl::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +53,16 @@ class MainActivity : AppCompatActivity() {
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
             graph.setStartDestination(R.id.homeFragmentTv)
             checkServersEmpty(graph)
+            checkUser(graph)
             if (!viewModel.startDestinationTvChanged) {
                 viewModel.startDestinationTvChanged = true
                 navController.setGraph(graph, intent.extras)
             }
         } else {
             checkServersEmpty(graph) {
+                navController.setGraph(graph, intent.extras)
+            }
+            checkUser(graph) {
                 navController.setGraph(graph, intent.extras)
             }
         }
@@ -106,6 +114,20 @@ class MainActivity : AppCompatActivity() {
                 viewModel.startDestinationChanged = true
                 onServersEmpty()
             }
+        }
+    }
+
+    private fun checkUser(graph: NavGraph, onNoUser: () -> Unit = {}) {
+        if (!viewModel.startDestinationChanged) {
+            appPreferences.currentServer?.let {
+                val currentUser = database.getServerCurrentUser(it)
+                if (currentUser == null) {
+                    graph.setStartDestination(R.id.loginFragment)
+                    viewModel.startDestinationChanged = true
+                    onNoUser()
+                }
+            }
+
         }
     }
 }

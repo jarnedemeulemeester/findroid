@@ -12,6 +12,11 @@
         app:title="@string/manage_servers" />
 
     <Preference
+        app:icon="@drawable/ic_user"
+        app:key="switchUser"
+        app:title="@string/users" />
+
+    <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
         app:icon="@drawable/ic_palette"
         app:title="@string/settings_category_appearance" />
