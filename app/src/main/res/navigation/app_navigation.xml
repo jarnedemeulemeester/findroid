@@ -349,6 +349,10 @@
             app:destination="@id/homeFragmentTv"
             app:popUpTo="@id/homeFragmentTv"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="reLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment

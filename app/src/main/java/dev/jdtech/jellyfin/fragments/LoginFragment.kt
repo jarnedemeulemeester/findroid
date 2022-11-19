@@ -16,12 +16,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
+import dev.jdtech.jellyfin.utils.AppPreferences
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -29,6 +33,13 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var uiModeManager: UiModeManager
     private val viewModel: LoginViewModel by viewModels()
+    private val args: LoginFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var dataBase: ServerDatabaseDao
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +49,14 @@ class LoginFragment : Fragment() {
         binding = FragmentLoginBinding.inflate(inflater)
         uiModeManager =
             requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
+
+        if (args.reLogin) {
+            appPreferences.currentServer?.let { currentServerId ->
+                dataBase.getServerCurrentUser(currentServerId)?.let { user ->
+                    (binding.editTextUsername as AppCompatEditText).setText(user.name)
+                }
+            }
+        }
 
         (binding.editTextPassword as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {

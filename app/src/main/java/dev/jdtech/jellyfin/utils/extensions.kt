@@ -28,7 +28,7 @@ fun Fragment.checkIfLoginRequired(error: String?) {
     if (error != null) {
         if (error.contains("401")) {
             Timber.d("Login required!")
-            findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment())
+            findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment(reLogin = true))
         }
     }
 }
