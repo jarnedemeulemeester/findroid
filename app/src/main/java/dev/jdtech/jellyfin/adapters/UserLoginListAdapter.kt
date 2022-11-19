@@ -9,8 +9,7 @@ import dev.jdtech.jellyfin.databinding.UserItemBinding
 import dev.jdtech.jellyfin.models.User
 
 class UserLoginListAdapter(
-    private val clickListener: (user: User) -> Unit,
-    private val longClickListener: (user: User) -> Boolean
+    private val clickListener: (user: User) -> Unit
 ) : ListAdapter<User, UserLoginListAdapter.UserLoginViewHolder>(DiffCallback) {
     class UserLoginViewHolder(private var binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,7 +45,6 @@ class UserLoginListAdapter(
     override fun onBindViewHolder(holder: UserLoginViewHolder, position: Int) {
         val user = getItem(position)
         holder.itemView.setOnClickListener { clickListener(user) }
-        holder.itemView.setOnLongClickListener { longClickListener(user) }
         holder.bind(user)
     }
 }

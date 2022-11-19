@@ -53,10 +53,10 @@ class LoginFragment : Fragment() {
             login()
         }
 
-        binding.usersRecyclerView.adapter = UserLoginListAdapter({ user ->
+        binding.usersRecyclerView.adapter = UserLoginListAdapter { user ->
             (binding.editTextUsername as AppCompatEditText).setText(user.name)
             (binding.editTextPassword as AppCompatEditText).requestFocus()
-        }, { true })
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
