@@ -68,6 +68,6 @@ interface ServerDatabaseDao {
     @Query("update servers set currentUserId = :userId where id = :serverId")
     fun updateServerCurrentUser(serverId: String, userId: UUID)
 
-    @Query("select * from users where id = (select currentUserId from servers where serverId = :serverId)")
+    @Query("select * from users where id = (select currentUserId from servers where id = :serverId)")
     fun getServerCurrentUser(serverId: String): User?
 }
