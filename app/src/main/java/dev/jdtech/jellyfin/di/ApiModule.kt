@@ -33,11 +33,11 @@ object ApiModule {
             val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
             val server = serverWithAddressesAndUsers.server
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
-            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return jellyfinApi
+            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
             jellyfinApi.apply {
                 api.baseUrl = serverAddress.address
-                api.accessToken = user.accessToken
-                userId = user.id
+                api.accessToken = user?.accessToken
+                userId = user?.id
             }
         }
 
