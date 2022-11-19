@@ -1,12 +1,12 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
+import dev.jdtech.jellyfin.utils.AppPreferences
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
 class ServerSelectViewModel
 @Inject
 constructor(
-    private val sharedPreferences: SharedPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
     val servers = database.getAllServers()
 
@@ -49,9 +49,7 @@ constructor(
                 userId = user.id
             }
 
-            val spEdit = sharedPreferences.edit()
-            spEdit.putString("selectedServer", server.id)
-            spEdit.apply()
+            appPreferences.currentServer = server.id
 
             _navigateToMain.emit(true)
         }
