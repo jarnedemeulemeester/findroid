@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +18,6 @@ object ApiModule {
     @Provides
     fun provideJellyfinApi(
         @ApplicationContext application: Context,
-        sharedPreferences: SharedPreferences,
         appPreferences: AppPreferences,
         serverDatabase: ServerDatabaseDao
     ): JellyfinApi {
@@ -30,7 +28,7 @@ object ApiModule {
             socketTimeout = appPreferences.socketTimeout
         )
 
-        val serverId = sharedPreferences.getString("selectedServer", null)
+        val serverId = appPreferences.currentServer
         if (serverId != null) {
             val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
             val server = serverWithAddressesAndUsers.server

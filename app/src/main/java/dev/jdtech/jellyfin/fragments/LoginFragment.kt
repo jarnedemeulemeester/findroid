@@ -17,7 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.adapters.UserListAdapter
+import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -53,10 +53,10 @@ class LoginFragment : Fragment() {
             login()
         }
 
-        binding.usersRecyclerView.adapter = UserListAdapter { user ->
+        binding.usersRecyclerView.adapter = UserLoginListAdapter({ user ->
             (binding.editTextUsername as AppCompatEditText).setText(user.name)
             (binding.editTextPassword as AppCompatEditText).requestFocus()
-        }
+        }, { true })
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -149,7 +149,7 @@ class LoginFragment : Fragment() {
             binding.usersRecyclerView.isVisible = false
         } else {
             binding.usersRecyclerView.isVisible = true
-            (binding.usersRecyclerView.adapter as UserListAdapter).submitList(users)
+            (binding.usersRecyclerView.adapter as UserLoginListAdapter).submitList(users)
         }
     }
 

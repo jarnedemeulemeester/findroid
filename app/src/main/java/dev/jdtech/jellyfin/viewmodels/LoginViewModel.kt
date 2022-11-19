@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +8,8 @@ import dev.jdtech.jellyfin.BaseApplication
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.Server
-import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.User
-import java.util.UUID
+import dev.jdtech.jellyfin.utils.AppPreferences
 import javax.inject.Inject
 import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +26,7 @@ class LoginViewModel
 @Inject
 constructor(
     application: BaseApplication,
-    private val sharedPreferences: SharedPreferences,
+    private val appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
@@ -61,9 +58,19 @@ constructor(
         viewModelScope.launch {
             _usersState.emit(UsersState.Loading)
             try {
-                val publicUsers by jellyfinApi.userApi.getPublicUsers()
-                val users =
-                    publicUsers.map { User(id = it.id, name = it.name.orEmpty(), serverId = it.serverId!!) }
+                // Local users
+                val localUsers = appPreferences.currentServer?.let {
+                    database.getServerWithUsers(it).users
+                } ?: emptyList()
+
+                // Public users
+                val publicUsersResponse by jellyfinApi.userApi.getPublicUsers()
+                val publicUsers =
+                    publicUsersResponse.map { User(id = it.id, name = it.name.orEmpty(), serverId = it.serverId!!) }
+
+                // Combine both local and public users
+                val users = (localUsers + publicUsers).distinctBy { it.id }
+
                 _usersState.emit(UsersState.Users(users))
             } catch (e: Exception) {
                 _usersState.emit(UsersState.Users(emptyList()))
@@ -98,26 +105,7 @@ constructor(
                     accessToken = authenticationResult.accessToken!!
                 )
 
-                val serverAddress = ServerAddress(
-                    id = UUID.randomUUID(),
-                    serverId = serverInfo.id!!,
-                    address = jellyfinApi.api.baseUrl!!
-                )
-
-                val server = Server(
-                    id = serverInfo.id!!,
-                    name = serverInfo.serverName!!,
-                    currentServerAddressId = serverAddress.id,
-                    currentUserId = user.id,
-                )
-
-                insertServer(server)
-                insertServerAddress(serverAddress)
-                insertUser(user)
-
-                val spEdit = sharedPreferences.edit()
-                spEdit.putString("selectedServer", server.id)
-                spEdit.apply()
+                insertUser(appPreferences.currentServer!!, user)
 
                 jellyfinApi.apply {
                     api.accessToken = authenticationResult.accessToken
@@ -136,26 +124,10 @@ constructor(
         }
     }
 
-    /**
-     * Add server to the database
-     *
-     * @param server The server
-     */
-    private suspend fun insertServer(server: Server) {
-        withContext(Dispatchers.IO) {
-            database.insertServer(server)
-        }
-    }
-
-    private suspend fun insertServerAddress(address: ServerAddress) {
-        withContext(Dispatchers.IO) {
-            database.insertServerAddress(address)
-        }
-    }
-
-    private suspend fun insertUser(user: User) {
+    private suspend fun insertUser(serverId: String, user: User) {
         withContext(Dispatchers.IO) {
             database.insertUser(user)
+            database.updateServerCurrentUser(serverId, user.id)
         }
     }
 }

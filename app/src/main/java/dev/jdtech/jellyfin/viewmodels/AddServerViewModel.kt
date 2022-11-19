@@ -11,6 +11,9 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.Server
+import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.utils.AppPreferences
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +35,7 @@ class AddServerViewModel
 @Inject
 constructor(
     private val application: BaseApplication,
+    private val appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao
 ) : ViewModel() {
@@ -152,14 +156,32 @@ constructor(
     }
 
     private suspend fun connectToServer(recommendedServerInfo: RecommendedServerInfo) {
-        val serverId = recommendedServerInfo.systemInfo.getOrNull()?.id
+        val serverInfo = recommendedServerInfo.systemInfo.getOrNull()
             ?: throw Exception(resources.getString(R.string.add_server_error_no_id))
 
-        Timber.d("Connecting to server: $serverId")
+        Timber.d("Connecting to server: ${serverInfo.serverName}")
 
-        if (serverAlreadyInDatabase(serverId)) {
+        if (serverAlreadyInDatabase(serverInfo.id!!)) {
             throw Exception(resources.getString(R.string.add_server_error_already_added))
         }
+
+        val serverAddress = ServerAddress(
+            id = UUID.randomUUID(),
+            serverId = serverInfo.id!!,
+            address = recommendedServerInfo.address
+        )
+
+        val server = Server(
+            id = serverInfo.id!!,
+            name = serverInfo.serverName!!,
+            currentServerAddressId = serverAddress.id,
+            currentUserId = null,
+        )
+
+        insertServer(server)
+        insertServerAddress(serverAddress)
+
+        appPreferences.currentServer = server.id
 
         jellyfinApi.apply {
             api.baseUrl = recommendedServerInfo.address
@@ -221,7 +243,28 @@ constructor(
         withContext(Dispatchers.IO) {
             server = database.get(id)
         }
-        if (server != null) return true
-        return false
+        return (server != null)
+    }
+
+    /**
+     * Add server to the database
+     *
+     * @param server The server
+     */
+    private suspend fun insertServer(server: Server) {
+        withContext(Dispatchers.IO) {
+            database.insertServer(server)
+        }
+    }
+
+    /**
+     * Add server address to the database
+     *
+     * @param address The address
+     */
+    private suspend fun insertServerAddress(address: ServerAddress) {
+        withContext(Dispatchers.IO) {
+            database.insertServerAddress(address)
+        }
     }
 }

@@ -8,6 +8,7 @@ object Constants {
     const val ZOOM_SCALE_THRESHOLD = 0.01f
 
     // pref
+    const val PREF_CURRENT_SERVER = "pref_current_server"
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_GESTURES_VB = "pref_player_gestures_vb"
     const val PREF_PLAYER_GESTURES_ZOOM = "pref_player_gestures_zoom"

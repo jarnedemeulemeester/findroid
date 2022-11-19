@@ -6,14 +6,27 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.utils.AppPreferences
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
 
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
             findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
+            true
+        }
+
+        findPreference<Preference>("switchUser")?.setOnPreferenceClickListener {
+            val serverId = appPreferences.currentServer!!
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
             true
         }
 
