@@ -66,11 +66,10 @@ constructor(
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
-        val useMpv = sp.getBoolean("mpv_player", false)
         val preferredAudioLanguage = sp.getString("audio_language", "")!!
         val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
 
-        if (useMpv) {
+        if (appPreferences.playerMpv) {
             val preferredLanguages = mapOf(
                 TrackType.AUDIO to preferredAudioLanguage,
                 TrackType.SUBTITLE to preferredSubtitleLanguage

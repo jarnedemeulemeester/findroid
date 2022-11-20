@@ -76,17 +76,14 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("vo", "gpu")
+        MPVLib.setOptionString("vo", appPreferences.playerMpvVo)
         MPVLib.setOptionString("gpu-context", "android")
+        MPVLib.setOptionString("gpu-api", appPreferences.playerMpvGpuApi)
         MPVLib.setOptionString("ao", "audiotrack,opensles")
 
         // Hardware video decoding
-        if (appPreferences.mpvDisableHwDec) {
-            MPVLib.setOptionString("hwdec", "no")
-        } else {
-            MPVLib.setOptionString("hwdec", "mediacodec-copy")
-        }
-        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
+        MPVLib.setOptionString("hwdec", appPreferences.playerMpvHwdec)
+        MPVLib.setOptionString("hwdec-codecs", appPreferences.playerMpvHwdecCodecs.joinToString(separator = ","))
 
         // TLS
         MPVLib.setOptionString("tls-verify", "no")
