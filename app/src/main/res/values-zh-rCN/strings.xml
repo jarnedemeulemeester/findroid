@@ -138,4 +138,12 @@
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>
     <string name="episodes_label">季</string>
+    <string name="remove_user">移除用户</string>
+    <string name="remove_user_dialog_text">您确定想要移除用户%1$s吗？</string>
+    <string name="settings_category_network">网络</string>
+    <string name="settings_request_timeout">请求超时</string>
+    <string name="settings_connect_timeout">连接超时</string>
+    <string name="settings_socket_timeout">套接字超时</string>
+    <string name="users">用户</string>
+    <string name="add_user">添加用户</string>
 </resources>
