@@ -138,4 +138,12 @@
     <string name="theme_light">라이트 모드</string>
     <string name="theme_dark">다크 모드</string>
     <string name="episodes_label">에피소드</string>
+    <string name="remove_user_dialog_text">정말로 %1$s 유저를 제거하시겠습니까\?</string>
+    <string name="settings_category_network">네트워크</string>
+    <string name="settings_request_timeout">요청시간 초과(ms)</string>
+    <string name="settings_connect_timeout">연결시간 초과(ms)</string>
+    <string name="settings_socket_timeout">소켓시간 초과(ms)</string>
+    <string name="remove_user">유저 제거</string>
+    <string name="users">유저</string>
+    <string name="add_user">유저 추가</string>
 </resources>
