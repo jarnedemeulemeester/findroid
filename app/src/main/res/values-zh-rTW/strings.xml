@@ -44,7 +44,7 @@
     <string name="search">搜尋</string>
     <string name="no_search_results">沒有搜尋結果</string>
     <string name="settings_category_language">語言</string>
-    <string name="settings_preferred_audio_language">偏好音頻語言</string>
+    <string name="settings_preferred_audio_language">偏好音訊語言</string>
     <string name="settings_preferred_subtitle_language">偏好字幕語言</string>
     <string name="settings_category_servers">伺服器</string>
     <string name="settings_category_player">撥放器</string>
@@ -139,7 +139,7 @@
     <string name="view_details_underlined"><u>查看詳情</u></string>
     <string name="select_subtile_track">選擇字幕軌道</string>
     <string name="download_mobile_data">使用行動網路下載</string>
-    <string name="mpv_player_summary">使用實驗性 mpv 播放器播放影片。 mpv 支援更多的影片、音頻和字幕編解碼器。</string>
+    <string name="mpv_player_summary">使用實驗性 mpv 播放器播放影片。 mpv 支援更多的影片、音訊和字幕編解碼器。</string>
     <string name="sort_by">排序方式</string>
     <string name="player_gestures_vb">音量和亮度手勢</string>
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
