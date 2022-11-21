@@ -20,6 +20,7 @@ object Constants {
     const val PREF_PLAYER_MPV_HWDEC = "pref_player_mpv_hwdec"
     const val PREF_PLAYER_MPV_HWDEC_CODECS = "pref_player_mpv_hwdec_codecs"
     const val PREF_PLAYER_MPV_VO = "pref_player_mpv_vo"
+    const val PREF_PLAYER_MPV_AO = "pref_player_mpv_ao"
     const val PREF_PLAYER_MPV_GPU_API = "pref_player_mpv_gpu_api"
     const val PREF_IMAGE_CACHE = "pref_image_cache"
     const val PREF_IMAGE_CACHE_SIZE = "pref_image_cache_size"

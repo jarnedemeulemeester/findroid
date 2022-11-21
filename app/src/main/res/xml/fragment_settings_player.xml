@@ -39,6 +39,14 @@
             app:title="Video output"
             app:useSimpleSummaryProvider="true" />
         <DropDownPreference
+            app:defaultValue="opensles"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_aos"
+            app:entryValues="@array/mpv_aos"
+            app:key="pref_player_mpv_ao"
+            app:title="Audio output"
+            app:useSimpleSummaryProvider="true" />
+        <DropDownPreference
             app:defaultValue="opengl"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_gpu_api"

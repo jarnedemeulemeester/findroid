@@ -79,7 +79,7 @@ class MPVPlayer(
         MPVLib.setOptionString("vo", appPreferences.playerMpvVo)
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("gpu-api", appPreferences.playerMpvGpuApi)
-        MPVLib.setOptionString("ao", "audiotrack,opensles")
+        MPVLib.setOptionString("ao", appPreferences.playerMpvAo)
 
         // Hardware video decoding
         MPVLib.setOptionString("hwdec", appPreferences.playerMpvHwdec)
@@ -1262,6 +1262,7 @@ class MPVPlayer(
             override fun surfaceCreated(holder: SurfaceHolder) {
                 MPVLib.attachSurface(holder.surface)
                 MPVLib.setOptionString("force-window", "yes")
+                //TODO change this to appPreference
                 MPVLib.setOptionString("vo", "gpu")
             }
 
