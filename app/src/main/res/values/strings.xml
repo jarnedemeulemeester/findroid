@@ -87,8 +87,6 @@
     <string name="download_mobile_data">Download using mobile data</string>
     <string name="download_roaming">Download when roaming</string>
     <string name="mpv_player_summary">Use the experimental mpv player to play videos. mpv has support for more video, audio and subtitle codecs.</string>
-    <string name="force_software_decoding">Force software decoding</string>
-    <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="download_button_description">Download</string>
     <string name="delete_button_description">Delete</string>
     <string name="person_detail_title">Details</string>

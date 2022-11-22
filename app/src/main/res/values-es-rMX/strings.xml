@@ -82,8 +82,6 @@
     <string name="select_playback_speed">Seleccionar la velocidad de reproducción</string>
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor experimental MPV para reproducir contenidos. MPV soporta más códecs de vídeo, audio y subtítulos.</string>
-    <string name="force_software_decoding">Forzar la decodificación por software</string>
-    <string name="force_software_decoding_summary">Deshabilita la decodificación por hardtware y usa solo software. Puede ser útil sí la decodificación por hardware genera artefactos visuales.</string>
     <string name="download_button_description">Descarga</string>
     <string name="delete_button_description">Borrar</string>
     <string name="person_detail_title">Detalles</string>

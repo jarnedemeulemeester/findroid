@@ -82,7 +82,6 @@
     <string name="about">Über</string>
     <string name="settings_category_player">Player</string>
     <string name="mpv_player_summary">Benutze den experimentellen MPV-Player. Dieser unterstützt mehr Codecs in Bezug auf sowohl Video, Audio als auch Untertitel.</string>
-    <string name="force_software_decoding">Erzwinge Software-Dekodierung</string>
     <string name="download_button_description">Herunterladen</string>
     <string name="delete_button_description">Löschen</string>
     <string name="person_detail_title">Details</string>
@@ -117,7 +116,6 @@
     <string name="player_controls_pause">Pausieren</string>
     <string name="player_controls_skip">Überspringen</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="force_software_decoding_summary">Deaktiviere Hardware-Dekodierung und verwende stattdessen Software-Dekodierung. Von Vorteil, wenn die Hardware-Dekodierung Artefakte erzeugt.</string>
     <string name="display_extended_title_summary">Zeige erweiterten Episodentitel inklusiver der Staffel und Episodeninformationen (SXX:EXX - Episodenname).</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>

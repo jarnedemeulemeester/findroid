@@ -66,8 +66,6 @@
     <string name="mpv_player">mpv播放器</string>
     <string name="download_mobile_data">使用移动数据下载</string>
     <string name="download_roaming">漫游时下载</string>
-    <string name="force_software_decoding">强制软件解码</string>
-    <string name="force_software_decoding_summary">禁用硬件解码，使用软件解码。在硬件解码显示异常时可能会起作用。</string>
     <string name="download_button_description">下载</string>
     <string name="delete_button_description">删除</string>
     <string name="person_detail_title">详情</string>

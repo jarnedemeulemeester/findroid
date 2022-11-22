@@ -80,7 +80,6 @@
     <string name="select_playback_speed">Vitesse de lecture</string>
     <string name="mpv_player">Lecteur MPV</string>
     <string name="download_mobile_data">Télécharger via données mobiles</string>
-    <string name="force_software_decoding">Forcer le décodage logiciel</string>
     <string name="download_button_description">Télécharger</string>
     <string name="delete_button_description">Supprimer</string>
     <string name="movies_label">Films</string>
@@ -99,7 +98,6 @@
     <string name="settings_category_download">Téléchargements</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
-    <string name="force_software_decoding_summary">Désactiver le décodage matériel et utiliser le décodage logiciel. Peut être utile en cas de problèmes avec le décodage matériel.</string>
     <string name="mpv_player_summary">Utiliser le lecteur MPV (expérimental). Ce lecteur supporte d\'avantage de codecs vidéos, audios et sous-titres.</string>
     <string name="app_description">Client natif officieux pour Jellyfin</string>
     <string name="add_server_error_no_id">Le serveur n\'a pas d\'ID, quelque chose semble ne pas fonctionner correctement sur le serveur</string>

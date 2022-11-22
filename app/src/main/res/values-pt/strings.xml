@@ -123,8 +123,6 @@
     <string name="trailer_button_description">Ver o trailer</string>
     <string name="player_controls_pause">Pausa</string>
     <string name="settings_category_servers">Servidores</string>
-    <string name="force_software_decoding">Forçar a descodificação do software</string>
-    <string name="force_software_decoding_summary">Desactivar a descodificação de hardware e utilizar a descodificação por software. Pode ser útil se a descodificação de hardware der artefactos estranhos.</string>
     <string name="settings_category_download">Transferências</string>
     <string name="external">Externo</string>
     <string name="display_extended_title_summary">Mostrar título de episódio alargado incluindo temporada e informação de episódio (SXX:EXX - EpisodeName).</string>

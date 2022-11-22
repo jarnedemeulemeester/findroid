@@ -75,8 +75,6 @@
     <string name="select_playback_speed">Lejátszási sebesség kiválasztása</string>
     <string name="mpv_player">mpv lejátszó</string>
     <string name="download_roaming">Letöltés roaming közben</string>
-    <string name="force_software_decoding">Szoftveres dekódolás használata</string>
-    <string name="force_software_decoding_summary">Kikapcsolja a hardveres dekódolást, és helyette szoftveres dekódolást használ. Hasznos lehet, ha a hardveres dekódolás furcsa effektusokat eredményez.</string>
     <string name="download_button_description">Letöltés</string>
     <string name="delete_button_description">Törlés</string>
     <string name="person_detail_title">Részletek</string>

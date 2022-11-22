@@ -73,8 +73,6 @@
     <string name="select_audio_track">Seleziona traccia audio</string>
     <string name="mpv_player_summary">Usa il player MPV sperimentale per riprodurre i video. MPV supporta più video, audio e sottotitoli.</string>
     <string name="seek_forward_increment">Aumenta l\'andare Avanti veloce di (ms)</string>
-    <string name="force_software_decoding">Forsa la decodifica software</string>
-    <string name="force_software_decoding_summary">Disattiva la decodifica hardware e usa quella software. Può essere utile se la decodifica hardware crea degli artefatti visivi strani.</string>
     <string name="person_detail_title">Dettagli</string>
     <string name="player_gestures_vb">Gestures volume e luminosità</string>
     <string name="initializing">Inizializzazione…</string>
