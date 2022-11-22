@@ -120,6 +120,8 @@ class MPVPlayer(
             }
         }
 
+        companionPrefs = appPreferences
+
         MPVLib.addObserver(this)
 
         // Observe properties
@@ -1249,6 +1251,8 @@ class MPVPlayer(
             )
             .build()
 
+        private lateinit var companionPrefs: AppPreferences
+
         private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
             /**
              * This is called immediately after the surface is first created.
@@ -1262,8 +1266,7 @@ class MPVPlayer(
             override fun surfaceCreated(holder: SurfaceHolder) {
                 MPVLib.attachSurface(holder.surface)
                 MPVLib.setOptionString("force-window", "yes")
-                //TODO change this to appPreference
-                MPVLib.setOptionString("vo", "gpu")
+                MPVLib.setOptionString("vo", companionPrefs.playerMpvVo)
             }
 
             /**
