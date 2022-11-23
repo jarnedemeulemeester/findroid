@@ -33,6 +33,7 @@ import com.google.android.exoplayer2.util.Clock
 import com.google.android.exoplayer2.util.FlagSet
 import com.google.android.exoplayer2.util.ListenerSet
 import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.exoplayer2.util.Size
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoSize
 import dev.jdtech.jellyfin.utils.AppPreferences
@@ -1165,6 +1166,15 @@ class MPVPlayer(
      */
     override fun getVideoSize(): VideoSize {
         return VideoSize.UNKNOWN
+    }
+
+    override fun getSurfaceSize(): Size {
+        val mpvSize = MPVLib.getPropertyString("android-surface-size").split("x")
+        return try {
+            Size(mpvSize[0].toInt(), mpvSize[1].toInt())
+        } catch (_: IndexOutOfBoundsException) {
+            Size.UNKNOWN
+        }
     }
 
     /** Returns the current [Cues][Cue]. This list may be empty.  */
