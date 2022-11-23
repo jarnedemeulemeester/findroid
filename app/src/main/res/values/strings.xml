@@ -144,4 +144,9 @@
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
     <string name="users">Users</string>
     <string name="add_user">Add user</string>
+    <string name="pref_player_mpv_hwdec">Hardware decoding</string>
+    <string name="pref_player_mpv_hwdec_codecs">Hardware decoding codecs</string>
+    <string name="pref_player_mpv_vo">Video output</string>
+    <string name="pref_player_mpv_ao">Audio output</string>
+    <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
 </resources>
