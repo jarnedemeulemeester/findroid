@@ -61,6 +61,10 @@ constructor(
     val playerMpvAo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
     val playerMpvGpuApi = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_GPU_API, "opengl")!!
 
+    // Language
+    val preferredAudioLanguage = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
+    val preferredSubtitleLanguage = sharedPreferences.getString(Constants.PREF_SUBTITLE_LANGUAGE, "")!!
+
     // Network
     val requestTimeout = sharedPreferences.getString(
         Constants.PREF_NETWORK_REQUEST_TIMEOUT,

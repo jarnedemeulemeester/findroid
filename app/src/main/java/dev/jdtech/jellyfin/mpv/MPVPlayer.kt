@@ -50,7 +50,6 @@ import timber.log.Timber
 class MPVPlayer(
     context: Context,
     requestAudioFocus: Boolean,
-    preferredLanguages: Map<String, String>,
     private val appPreferences: AppPreferences
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
@@ -98,6 +97,10 @@ class MPVPlayer(
         MPVLib.setOptionString("sub-scale-with-window", "yes")
         MPVLib.setOptionString("sub-use-margins", "no")
 
+        // Language
+        MPVLib.setOptionString("alang", appPreferences.preferredAudioLanguage)
+        MPVLib.setOptionString("slang", appPreferences.preferredSubtitleLanguage)
+
         // Other options
         MPVLib.setOptionString("force-window", "no")
         MPVLib.setOptionString("keep-open", "always")
@@ -109,16 +112,6 @@ class MPVPlayer(
 
         MPVLib.init()
 
-        for (preferredLanguage in preferredLanguages) {
-            when (preferredLanguage.key) {
-                TrackType.AUDIO -> {
-                    MPVLib.setOptionString("alang", preferredLanguage.value)
-                }
-                TrackType.SUBTITLE -> {
-                    MPVLib.setOptionString("slang", preferredLanguage.value)
-                }
-            }
-        }
 
         companionPrefs = appPreferences
 
