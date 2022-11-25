@@ -58,7 +58,7 @@ constructor(
         setOf("h264", "hevc", "mpeg4", "mpeg2video", "vp8", "vp9")
     )!!
     val playerMpvVo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_VO, "gpu")!!
-    val playerMpvAo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "opensles")!!
+    val playerMpvAo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
     val playerMpvGpuApi = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_GPU_API, "opengl")!!
 
     // Network

@@ -39,7 +39,7 @@
             app:title="@string/pref_player_mpv_vo"
             app:useSimpleSummaryProvider="true" />
         <DropDownPreference
-            app:defaultValue="opensles"
+            app:defaultValue="audiotrack"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_aos"
             app:entryValues="@array/mpv_aos"
