@@ -5,7 +5,7 @@
         app:entries="@array/languages"
         app:entryValues="@array/languages_values"
         app:icon="@drawable/ic_speaker"
-        app:key="audio_language"
+        app:key="pref_audio_language"
         app:title="@string/settings_preferred_audio_language"
         app:useSimpleSummaryProvider="true" />
 
@@ -14,7 +14,7 @@
         app:entries="@array/languages"
         app:entryValues="@array/languages_values"
         app:icon="@drawable/ic_closed_caption"
-        app:key="subtitle_language"
+        app:key="pref_subtitle_language"
         app:title="@string/settings_preferred_subtitle_language"
         app:useSimpleSummaryProvider="true" />
 </PreferenceScreen>

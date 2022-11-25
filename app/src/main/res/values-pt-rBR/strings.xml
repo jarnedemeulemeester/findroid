@@ -67,7 +67,6 @@
     <string name="select_playback_speed">Selecione a velocidade de reprodução</string>
     <string name="mpv_player">Reprodutor mpv</string>
     <string name="download_mobile_data">Baixar usando dados móveis</string>
-    <string name="force_software_decoding">Forçar decodificação por software</string>
     <string name="download_button_description">Baixar</string>
     <string name="delete_button_description">Deletar</string>
     <string name="person_detail_title">Detalhes da pessoa</string>
@@ -94,5 +93,4 @@
     <string name="settings_use_cache_summary">Armazena imagens no disco para acelerar o tempo de carregamento. Surte efeito após reiniciar o aplicativo.</string>
     <string name="search_hint">Busca filmes, shows, episódios…</string>
     <string name="mpv_player_summary">Usa o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vidro, áudio e legenda.</string>
-    <string name="force_software_decoding_summary">Desabilita decodificação por software. Pode ser útil se decodificação por hardware exibir artefatos estranhos.</string>
 </resources>

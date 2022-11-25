@@ -51,7 +51,19 @@ constructor(
         Constants.PREF_PLAYER_SEEK_FORWARD_INC,
         DEFAULT_SEEK_FORWARD_INCREMENT_MS.toString()
     )!!.toLongOrNull() ?: DEFAULT_SEEK_FORWARD_INCREMENT_MS
-    val mpvDisableHwDec = sharedPreferences.getBoolean("mpv_disable_hwdec", false)
+    val playerMpv = sharedPreferences.getBoolean(Constants.PREF_PLAYER_MPV, false)
+    val playerMpvHwdec = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_HWDEC, "mediacodec-copy")!!
+    val playerMpvHwdecCodecs: Set<String> = sharedPreferences.getStringSet(
+        Constants.PREF_PLAYER_MPV_HWDEC_CODECS,
+        setOf("h264", "hevc", "mpeg4", "mpeg2video", "vp8", "vp9")
+    )!!
+    val playerMpvVo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_VO, "gpu")!!
+    val playerMpvAo = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
+    val playerMpvGpuApi = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_GPU_API, "opengl")!!
+
+    // Language
+    val preferredAudioLanguage = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
+    val preferredSubtitleLanguage = sharedPreferences.getString(Constants.PREF_SUBTITLE_LANGUAGE, "")!!
 
     // Network
     val requestTimeout = sharedPreferences.getString(

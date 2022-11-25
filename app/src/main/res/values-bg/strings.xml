@@ -60,7 +60,6 @@
     <string name="hide">Скрийте</string>
     <string name="sort_order">Ред на сортиране</string>
     <string name="download_mobile_data">Свалете с мобилна дата</string>
-    <string name="force_software_decoding">Принудително софтуерно декодиране</string>
     <string name="ascending">Възходящ</string>
     <string name="select_audio_track">Изберете аудиопът</string>
     <string name="select_subtile_track">Изберете писта за субтитри</string>
@@ -93,7 +92,6 @@
     <string name="no_search_results">Няма резултати от търсенето</string>
     <string name="settings_category_download">Свалени</string>
     <string name="manage_servers">Оправляване на сървърите</string>
-    <string name="force_software_decoding_summary">Деактивирайте хардуерното декодиране и използвайте софтуерно декодиране. Може да е полезно, ако хардуерното декодиране дава странни артефакти.</string>
     <string name="settings_use_cache_summary">Кеширайте снимките на диска за да ускорите времето за зареждане. Ще има ефект след рестартиране на приложението.</string>
     <string name="settings_cache_size_message">Приложението ще използва това количество MB от вашето дисково пространство, за да съхранява изображения от сървъра на Jellyfin. По-големи стойности може да са от полза при по-бавни мрежи.</string>
     <string name="descending">Низходящ</string>

@@ -12,4 +12,27 @@
         <item>@string/ascending</item>
         <item>@string/descending</item>
     </string-array>
+    <string-array name="mpv_hwdec">
+        <item>no</item>
+        <item>mediacodec</item>
+        <item>mediacodec-copy</item>
+    </string-array>
+    <string-array name="mpv_hwdec_codecs">
+        <item>h264</item>
+        <item>hevc</item>
+        <item>mpeg4</item>
+        <item>mpeg2video</item>
+        <item>vp8</item>
+        <item>vp9</item>
+    </string-array>
+    <string-array name="mpv_vos">
+        <item>gpu</item>
+    </string-array>
+    <string-array name="mpv_aos">
+        <item>audiotrack</item>
+        <item>opensles</item>
+    </string-array>
+    <string-array name="mpv_gpu_api">
+        <item>opengl</item>
+    </string-array>
 </resources>

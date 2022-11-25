@@ -51,7 +51,6 @@ import timber.log.Timber
 class MPVPlayer(
     context: Context,
     requestAudioFocus: Boolean,
-    preferredLanguages: Map<String, String>,
     private val appPreferences: AppPreferences
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
@@ -77,17 +76,14 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("vo", "gpu")
+        MPVLib.setOptionString("vo", appPreferences.playerMpvVo)
         MPVLib.setOptionString("gpu-context", "android")
-        MPVLib.setOptionString("ao", "audiotrack,opensles")
+        MPVLib.setOptionString("gpu-api", appPreferences.playerMpvGpuApi)
+        MPVLib.setOptionString("ao", appPreferences.playerMpvAo)
 
         // Hardware video decoding
-        if (appPreferences.mpvDisableHwDec) {
-            MPVLib.setOptionString("hwdec", "no")
-        } else {
-            MPVLib.setOptionString("hwdec", "mediacodec-copy")
-        }
-        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
+        MPVLib.setOptionString("hwdec", appPreferences.playerMpvHwdec)
+        MPVLib.setOptionString("hwdec-codecs", appPreferences.playerMpvHwdecCodecs.joinToString(separator = ","))
 
         // TLS
         MPVLib.setOptionString("tls-verify", "no")
@@ -102,6 +98,10 @@ class MPVPlayer(
         MPVLib.setOptionString("sub-scale-with-window", "yes")
         MPVLib.setOptionString("sub-use-margins", "no")
 
+        // Language
+        MPVLib.setOptionString("alang", appPreferences.preferredAudioLanguage)
+        MPVLib.setOptionString("slang", appPreferences.preferredSubtitleLanguage)
+
         // Other options
         MPVLib.setOptionString("force-window", "no")
         MPVLib.setOptionString("keep-open", "always")
@@ -113,16 +113,8 @@ class MPVPlayer(
 
         MPVLib.init()
 
-        for (preferredLanguage in preferredLanguages) {
-            when (preferredLanguage.key) {
-                TrackType.AUDIO -> {
-                    MPVLib.setOptionString("alang", preferredLanguage.value)
-                }
-                TrackType.SUBTITLE -> {
-                    MPVLib.setOptionString("slang", preferredLanguage.value)
-                }
-            }
-        }
+
+        companionPrefs = appPreferences
 
         MPVLib.addObserver(this)
 
@@ -1262,6 +1254,8 @@ class MPVPlayer(
             )
             .build()
 
+        private lateinit var companionPrefs: AppPreferences
+
         private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
             /**
              * This is called immediately after the surface is first created.
@@ -1275,7 +1269,7 @@ class MPVPlayer(
             override fun surfaceCreated(holder: SurfaceHolder) {
                 MPVLib.attachSurface(holder.surface)
                 MPVLib.setOptionString("force-window", "yes")
-                MPVLib.setOptionString("vo", "gpu")
+                MPVLib.setOptionString("vo", companionPrefs.playerMpvVo)
             }
 
             /**

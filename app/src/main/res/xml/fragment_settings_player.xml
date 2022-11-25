@@ -7,19 +7,53 @@
 
     <Preference
         app:key="pref_player_subtitles"
-        app:title="@string/subtitles"
-        app:summary="@string/subtitles_summary"/>
+        app:summary="@string/subtitles_summary"
+        app:title="@string/subtitles" />
 
     <PreferenceCategory app:title="@string/mpv_player">
         <SwitchPreference
-            app:key="mpv_player"
+            app:key="pref_player_mpv"
             app:summary="@string/mpv_player_summary"
             app:title="@string/mpv_player" />
-        <SwitchPreference
-            app:dependency="mpv_player"
-            app:key="mpv_disable_hwdec"
-            app:summary="@string/force_software_decoding_summary"
-            app:title="@string/force_software_decoding" />
+        <DropDownPreference
+            app:defaultValue="mediacodec-copy"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_hwdec"
+            app:entryValues="@array/mpv_hwdec"
+            app:key="pref_player_mpv_hwdec"
+            app:title="@string/pref_player_mpv_hwdec"
+            app:useSimpleSummaryProvider="true" />
+        <MultiSelectListPreference
+            app:defaultValue="@array/mpv_hwdec_codecs"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_hwdec_codecs"
+            app:entryValues="@array/mpv_hwdec_codecs"
+            app:key="pref_player_mpv_hwdec_codecs"
+            app:title="@string/pref_player_mpv_hwdec_codecs" />
+        <DropDownPreference
+            app:defaultValue="gpu"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_vos"
+            app:entryValues="@array/mpv_vos"
+            app:key="pref_player_mpv_vo"
+            app:title="@string/pref_player_mpv_vo"
+            app:useSimpleSummaryProvider="true" />
+        <DropDownPreference
+            app:defaultValue="audiotrack"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_aos"
+            app:entryValues="@array/mpv_aos"
+            app:key="pref_player_mpv_ao"
+            app:title="@string/pref_player_mpv_ao"
+            app:useSimpleSummaryProvider="true" />
+        <DropDownPreference
+            app:defaultValue="opengl"
+            app:dependency="pref_player_mpv"
+            app:entries="@array/mpv_gpu_api"
+            app:entryValues="@array/mpv_gpu_api"
+            app:key="pref_player_mpv_gpu_api"
+            app:title="@string/pref_player_mpv_gpu_api"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/gestures">

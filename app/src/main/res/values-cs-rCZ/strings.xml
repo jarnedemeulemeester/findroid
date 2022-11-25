@@ -72,8 +72,6 @@
     <string name="select_subtile_track">Vyberte titulky</string>
     <string name="mpv_player">mpv přehrávač</string>
     <string name="mpv_player_summary">Použít experimentální mpv přehrávač k přehrávání videí. mpv má podporu pro více video a audio kodeků a formátů titulků.</string>
-    <string name="force_software_decoding">Vynutit softwarové dekódování</string>
-    <string name="force_software_decoding_summary">Vypnout hardwarové dekódování a vynutit softwarové dekódování. Může být užitečné pokud hardwarové dekódování produkuje artefakty.</string>
     <string name="image_description_poster">%1$s plakát</string>
     <string name="image_description_backdrop">%1$s pozadí</string>
 </resources>

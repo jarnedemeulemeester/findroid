@@ -66,19 +66,10 @@ constructor(
     private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
-        val useMpv = sp.getBoolean("mpv_player", false)
-        val preferredAudioLanguage = sp.getString("audio_language", "")!!
-        val preferredSubtitleLanguage = sp.getString("subtitle_language", "")!!
-
-        if (useMpv) {
-            val preferredLanguages = mapOf(
-                TrackType.AUDIO to preferredAudioLanguage,
-                TrackType.SUBTITLE to preferredSubtitleLanguage
-            )
+        if (appPreferences.playerMpv) {
             player = MPVPlayer(
                 application,
                 false,
-                preferredLanguages,
                 appPreferences
             )
         } else {
@@ -89,8 +80,8 @@ constructor(
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
-                    .setPreferredAudioLanguage(preferredAudioLanguage)
-                    .setPreferredTextLanguage(preferredSubtitleLanguage)
+                    .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
+                    .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
             )
             player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
