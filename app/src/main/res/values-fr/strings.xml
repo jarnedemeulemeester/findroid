@@ -126,4 +126,19 @@
     <string name="seeking">Chercher</string>
     <string name="seek_forward_increment">Incrément de la recherche vers l\'avant (ms)</string>
     <string name="seek_back_increment">Incrément de retour de recherche (ms)</string>
+    <string name="libraries">Librairies</string>
+    <string name="settings_category_network">Réseau</string>
+    <string name="subtitles">Sous-titres</string>
+    <string name="subtitles_summary">Customiser l\'apparence des sous-titres</string>
+    <string name="external">Externe</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="episodes_label">Épisodes</string>
+    <string name="dynamic_colors">Couleurs dynamiques</string>
+    <string name="dynamic_colors_summary">Utiliser les couleurs dynamiques Material You (disponible uniquement sur Android 12+)</string>
+    <string name="add_user">Ajouter un utilisateur</string>
+    <string name="pref_player_mpv_hwdec">Décodage matériel</string>
+    <string name="remove_user">Supprimer l\'utilisateur</string>
+    <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
+    <string name="users">Utilisateurs</string>
 </resources>
