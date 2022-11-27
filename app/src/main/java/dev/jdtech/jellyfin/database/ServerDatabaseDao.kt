@@ -65,9 +65,15 @@ interface ServerDatabaseDao {
     @Query("delete from users where id = :id")
     fun deleteUser(id: UUID)
 
+    @Query("delete from serverAddresses where id = :id")
+    fun deleteServerAddress(id: UUID)
+
     @Query("update servers set currentUserId = :userId where id = :serverId")
     fun updateServerCurrentUser(serverId: String, userId: UUID)
 
     @Query("select * from users where id = (select currentUserId from servers where id = :serverId)")
     fun getServerCurrentUser(serverId: String): User?
+
+    @Query("select * from serverAddresses where id = (select currentServerAddressId from servers where id = :serverId)")
+    fun getServerCurrentAddress(serverId: String): ServerAddress?
 }

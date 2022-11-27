@@ -17,6 +17,11 @@
         app:title="@string/users" />
 
     <Preference
+        app:icon="@drawable/ic_minus_fat"
+        app:key="switchAddress"
+        app:title="@string/addresses" />
+
+    <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
         app:icon="@drawable/ic_palette"
         app:title="@string/settings_category_appearance" />

@@ -30,6 +30,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>("switchAddress")?.setOnPreferenceClickListener {
+            val serverId = appPreferences.currentServer!!
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerAddressesFragment(serverId))
+            true
+        }
+
         findPreference<Preference>("privacyPolicy")?.setOnPreferenceClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
