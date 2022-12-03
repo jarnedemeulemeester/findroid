@@ -1,9 +1,12 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -24,6 +27,7 @@ import timber.log.Timber
 class UsersFragment : Fragment() {
 
     private lateinit var binding: FragmentUsersBinding
+    private lateinit var uiModeManager: UiModeManager
     private val viewModel: UsersViewModel by viewModels()
     private val args: UsersFragmentArgs by navArgs()
 
@@ -33,6 +37,8 @@ class UsersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentUsersBinding.inflate(inflater)
+        uiModeManager =
+            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
         binding.usersRecyclerView.adapter =
             UserListAdapter(
@@ -95,6 +101,10 @@ class UsersFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            findNavController().navigate(UsersFragmentDirections.actionUsersFragmentToHomeFragmentTv())
+        } else {
+            findNavController().navigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
+        }
     }
 }
