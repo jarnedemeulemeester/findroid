@@ -84,7 +84,7 @@
     <string name="download_roaming">Pobieraj w roamingu</string>
     <string name="download_button_description">Pobierz</string>
     <string name="delete_button_description">Usuń</string>
-    <string name="person_detail_title">Informacje o osobie</string>
+    <string name="person_detail_title">Szczegóły</string>
     <string name="error_getting_person_id">Informacje niedostępne</string>
     <string name="movies_label">Filmy</string>
     <string name="shows_label">Seriale</string>
@@ -125,4 +125,26 @@
     <string name="dynamic_colors">Dynamiczne kolory</string>
     <string name="dynamic_colors_summary">Użyj dynamicznych kolorów Material You (dostępne tylko w Android 12+)</string>
     <string name="libraries">Biblioteki</string>
+    <string name="pref_player_mpv_hwdec">Dekodowanie sprzętowe</string>
+    <string name="settings_category_network">Sieć</string>
+    <string name="settings_request_timeout">Limit czasu żądania (ms)</string>
+    <string name="settings_connect_timeout">Limit czasu łączenia (ms)</string>
+    <string name="settings_socket_timeout">Limit czasu socketa (ms)</string>
+    <string name="subtitles_summary">Dostosuj wygląd napisów</string>
+    <string name="subtitles">Napisy</string>
+    <string name="seeking">Przesuwanie</string>
+    <string name="external">Zewnętrzny</string>
+    <string name="theme_system">Zgodnie z systemem</string>
+    <string name="theme_light">Jasny</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="episodes_label">Odcinki</string>
+    <string name="add_user">Dodaj użytkownika</string>
+    <string name="pref_player_mpv_hwdec_codecs">Sprzętowe kodeki do dekodowania</string>
+    <string name="pref_player_mpv_vo">Wyjście wideo</string>
+    <string name="pref_player_mpv_ao">Wyjście audio</string>
+    <string name="seek_back_increment">Krok przesuwania wstecznego (ms)</string>
+    <string name="seek_forward_increment">Krok przesuwania do przodu (ms)</string>
+    <string name="remove_user">Usuń użytkownika</string>
+    <string name="remove_user_dialog_text">Czy na pewno chcesz usunąć użytkownika %1$s</string>
+    <string name="users">Użytkownicy</string>
 </resources>
