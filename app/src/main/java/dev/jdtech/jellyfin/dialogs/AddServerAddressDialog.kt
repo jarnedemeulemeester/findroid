@@ -20,6 +20,7 @@ class AddServerAddressDialog(
         val uiModeManager =
             requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
         val editText = EditText(this.context)
+        editText.hint = "http://<server_ip>:8096"
         return activity?.let { activity ->
             val builder = if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
                 AlertDialog.Builder(activity)
