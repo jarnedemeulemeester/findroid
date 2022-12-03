@@ -151,5 +151,6 @@
     <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
+    <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
 </resources>

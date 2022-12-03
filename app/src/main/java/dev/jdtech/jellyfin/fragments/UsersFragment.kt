@@ -34,10 +34,6 @@ class UsersFragment : Fragment() {
     ): View {
         binding = FragmentUsersBinding.inflate(inflater)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.viewModel = viewModel
-
         binding.usersRecyclerView.adapter =
             UserListAdapter(
                 { user ->
