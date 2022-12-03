@@ -59,7 +59,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
@@ -169,7 +169,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.navigateBack.observe(this) {
             if (it) {
-                onBackPressed()
+                finish()
             }
         }
 

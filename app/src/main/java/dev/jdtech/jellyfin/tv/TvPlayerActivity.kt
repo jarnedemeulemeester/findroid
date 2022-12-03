@@ -86,7 +86,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         }
 
         findViewById<View>(R.id.back_button).setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         bindAudioControl()
