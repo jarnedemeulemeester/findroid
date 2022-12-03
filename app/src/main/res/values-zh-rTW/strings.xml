@@ -68,8 +68,6 @@
     <string name="select_playback_speed">選擇播放速度</string>
     <string name="download_roaming">漫遊時下載</string>
     <string name="mpv_player">mpv 播放器</string>
-    <string name="force_software_decoding">強制軟體解碼</string>
-    <string name="force_software_decoding_summary">禁用硬體解碼並使用軟體解碼。 如果硬體解碼產生奇怪的影像，則可能很有用。</string>
     <string name="download_button_description">下載</string>
     <string name="delete_button_description">刪除</string>
     <string name="person_detail_title">詳情</string>
