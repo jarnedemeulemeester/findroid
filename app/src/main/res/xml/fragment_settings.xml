@@ -17,7 +17,7 @@
         app:title="@string/users" />
 
     <Preference
-        app:icon="@drawable/ic_minus_fat"
+        app:icon="@drawable/ic_globe"
         app:key="switchAddress"
         app:title="@string/addresses" />
 
