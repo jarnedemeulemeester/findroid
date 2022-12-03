@@ -98,7 +98,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
 
         audioBtn.setOnFocusChangeListener { _, hasFocus ->
             displayedPopup = if (hasFocus) {
-                val items = viewModel.currentSubtitleTracks.toUiTrack()
+                val items = viewModel.currentAudioTracks.toUiTrack()
                 audioBtn.showPopupWindowAbove(items, AUDIO)
             } else {
                 displayedPopup?.dismiss()
