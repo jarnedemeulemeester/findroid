@@ -100,6 +100,9 @@
             android:id="@+id/action_navigation_settings_to_usersFragment"
             app:destination="@id/usersFragment" />
         <action
+            android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
+            app:destination="@id/serverAddressesFragment" />
+        <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
     </fragment>
@@ -403,6 +406,26 @@
         <action
             android:id="@+id/action_usersFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_usersFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_usersFragment_to_homeFragmentTv"
+            app:destination="@id/homeFragmentTv"
+            app:popUpTo="@id/homeFragmentTv"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="serverId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/serverAddressesFragment"
+        android:name="dev.jdtech.jellyfin.fragments.ServerAddressesFragment"
+        android:label="@string/addresses"
+        tools:layout="@layout/fragment_server_addresses">
         <action
             android:id="@+id/action_usersFragment_to_homeFragment"
             app:destination="@id/homeFragment"

@@ -15,20 +15,20 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppNavigationDirections
-import dev.jdtech.jellyfin.adapters.UserListAdapter
-import dev.jdtech.jellyfin.databinding.FragmentUsersBinding
-import dev.jdtech.jellyfin.dialogs.DeleteUserDialogFragment
-import dev.jdtech.jellyfin.viewmodels.UsersViewModel
+import dev.jdtech.jellyfin.adapters.ServerAddressAdapter
+import dev.jdtech.jellyfin.databinding.FragmentServerAddressesBinding
+import dev.jdtech.jellyfin.dialogs.AddServerAddressDialog
+import dev.jdtech.jellyfin.dialogs.DeleteServerAddressDialog
+import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class UsersFragment : Fragment() {
+class ServerAddressesFragment : Fragment() {
 
-    private lateinit var binding: FragmentUsersBinding
+    private lateinit var binding: FragmentServerAddressesBinding
     private lateinit var uiModeManager: UiModeManager
-    private val viewModel: UsersViewModel by viewModels()
+    private val viewModel: ServerAddressesViewModel by viewModels()
     private val args: UsersFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -36,26 +36,29 @@ class UsersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUsersBinding.inflate(inflater)
+        binding = FragmentServerAddressesBinding.inflate(inflater)
         uiModeManager =
             requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
-        binding.usersRecyclerView.adapter =
-            UserListAdapter(
-                { user ->
-                    viewModel.loginAsUser(user)
+        binding.addressesRecyclerView.adapter =
+            ServerAddressAdapter(
+                { address ->
+                    viewModel.switchToAddress(address)
                 },
-                { user ->
-                    DeleteUserDialogFragment(viewModel, user).show(
+                { address ->
+                    DeleteServerAddressDialog(viewModel, address).show(
                         parentFragmentManager,
-                        "deleteUser"
+                        "deleteServerAddress"
                     )
                     true
                 }
             )
 
-        binding.buttonAddUser.setOnClickListener {
-            navigateToLoginFragment()
+        binding.buttonAddAddress.setOnClickListener {
+            AddServerAddressDialog(viewModel).show(
+                parentFragmentManager,
+                "addServerAddress"
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -79,25 +82,19 @@ class UsersFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
-                        is UsersViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is UsersViewModel.UiState.Loading -> Unit
-                        is UsersViewModel.UiState.Error -> Unit
+                        is ServerAddressesViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is ServerAddressesViewModel.UiState.Loading -> Unit
+                        is ServerAddressesViewModel.UiState.Error -> Unit
                     }
                 }
             }
         }
 
-        viewModel.loadUsers(args.serverId)
+        viewModel.loadAddresses(args.serverId)
     }
 
-    fun bindUiStateNormal(uiState: UsersViewModel.UiState.Normal) {
-        (binding.usersRecyclerView.adapter as UserListAdapter).submitList(uiState.users)
-    }
-
-    private fun navigateToLoginFragment() {
-        findNavController().navigate(
-            AppNavigationDirections.actionGlobalLoginFragment()
-        )
+    fun bindUiStateNormal(uiState: ServerAddressesViewModel.UiState.Normal) {
+        (binding.addressesRecyclerView.adapter as ServerAddressAdapter).submitList(uiState.addresses)
     }
 
     private fun navigateToMainActivity() {
