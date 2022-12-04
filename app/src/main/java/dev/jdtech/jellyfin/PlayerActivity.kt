@@ -8,10 +8,10 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.media3.common.C
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment

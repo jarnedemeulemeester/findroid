@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.util.MimeTypes
+import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao

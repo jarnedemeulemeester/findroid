@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+    <androidx.media3.ui.AspectRatioFrameLayout
         android:id="@id/exo_content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,9 +46,9 @@
             android:textColor="@color/white"
             android:textSize="14sp" />
 
-    </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+    </androidx.media3.ui.AspectRatioFrameLayout>
 
-    <com.google.android.exoplayer2.ui.SubtitleView
+    <androidx.media3.ui.SubtitleView
         android:id="@id/exo_subtitles"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -10,8 +10,8 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.StyledPlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import kotlin.math.abs
@@ -20,7 +20,7 @@ import timber.log.Timber
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
     private val activity: PlayerActivity,
-    private val playerView: StyledPlayerView,
+    private val playerView: PlayerView,
     private val audioManager: AudioManager
 ) {
     /**

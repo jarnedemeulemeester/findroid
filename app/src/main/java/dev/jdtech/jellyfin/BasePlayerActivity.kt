@@ -5,7 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 
 abstract class BasePlayerActivity : AppCompatActivity() {

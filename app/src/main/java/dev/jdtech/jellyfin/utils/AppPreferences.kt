@@ -3,8 +3,8 @@ package dev.jdtech.jellyfin.utils
 import android.content.SharedPreferences
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
 import androidx.core.content.edit
-import com.google.android.exoplayer2.C.DEFAULT_SEEK_BACK_INCREMENT_MS
-import com.google.android.exoplayer2.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
+import androidx.media3.common.C.DEFAULT_SEEK_BACK_INCREMENT_MS
+import androidx.media3.common.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
 import javax.inject.Inject
 
 class AppPreferences

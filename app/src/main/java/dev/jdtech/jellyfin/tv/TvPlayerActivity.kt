@@ -51,7 +51,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (!binding.playerView.isControllerVisible) {
+        return if (!binding.playerView.isControllerFullyVisible) {
             binding.playerView.showController()
             true
         } else {
