@@ -124,6 +124,11 @@ constructor(
                         MediaItem.Builder()
                             .setMediaId(item.itemId.toString())
                             .setUri(streamUrl)
+                            .setMediaMetadata(
+                                MediaMetadata.Builder()
+                                    .setTitle(item.name)
+                                    .build()
+                            )
                             .setSubtitleConfigurations(mediaSubtitles)
                             .build()
                     mediaItems.add(mediaItem)
