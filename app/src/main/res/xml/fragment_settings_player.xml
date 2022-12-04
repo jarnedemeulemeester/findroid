@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
-        app:key="display_extended_title"
+        app:key="pref_player_display_extended_title"
         app:summary="@string/display_extended_title_summary"
         app:title="@string/display_extended_title" />
 

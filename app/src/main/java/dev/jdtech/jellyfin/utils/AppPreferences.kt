@@ -26,6 +26,8 @@ constructor(
     val dynamicColors = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
 
     // Player
+    val displayExtendedTitle = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTENDED_TITLE, false)
+
     val playerGestures = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
     val playerGesturesVB = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
