@@ -176,6 +176,7 @@ class MPVPlayer(
     var currentMpvTracks: List<Track> = emptyList()
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialSeekTo: Long = 0L
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build()
 
     // mpv events
     override fun eventProperty(property: String) {
@@ -913,11 +914,11 @@ class MPVPlayer(
     }
 
     override fun getTrackSelectionParameters(): TrackSelectionParameters {
-        TODO("Not yet implemented")
+        return trackSelectionParameters
     }
 
     override fun setTrackSelectionParameters(parameters: TrackSelectionParameters) {
-        TODO("Not yet implemented")
+        trackSelectionParameters = parameters
     }
 
     /**
@@ -934,7 +935,7 @@ class MPVPlayer(
     }
 
     override fun getPlaylistMetadata(): MediaMetadata {
-        TODO("Not yet implemented")
+        return MediaMetadata.EMPTY
     }
 
     override fun setPlaylistMetadata(mediaMetadata: MediaMetadata) {
@@ -1050,7 +1051,7 @@ class MPVPlayer(
      * @return The linear gain applied to all audio channels.
      */
     override fun getVolume(): Float {
-        TODO("Not yet implemented")
+        return MPVLib.getPropertyInt("volume") / 100F
     }
 
     /**
@@ -1170,12 +1171,12 @@ class MPVPlayer(
 
     /** Returns the current [CueGroup]. This list may be empty.  */
     override fun getCurrentCues(): CueGroup {
-        TODO("Not yet implemented")
+        return CueGroup(emptyList(), 0)
     }
 
     /** Gets the device information.  */
     override fun getDeviceInfo(): DeviceInfo {
-        TODO("Not yet implemented")
+        return DeviceInfo(DeviceInfo.PLAYBACK_TYPE_LOCAL, 0, 100)
     }
 
     /**
@@ -1192,12 +1193,12 @@ class MPVPlayer(
      * remote device is returned.
      */
     override fun getDeviceVolume(): Int {
-        TODO("Not yet implemented")
+        return MPVLib.getPropertyInt("volume")
     }
 
     /** Gets whether the device is muted or not.  */
     override fun isDeviceMuted(): Boolean {
-        TODO("Not yet implemented")
+        return MPVLib.getPropertyBoolean("mute")
     }
 
     /**
