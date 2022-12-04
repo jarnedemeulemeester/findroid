@@ -385,13 +385,13 @@ class MPVPlayer(
         }
 
         /**
-         * Populates a [com.google.android.exoplayer2.Timeline.Window] with data for the window at the specified index.
+         * Populates a [androidx.media3.common.Timeline.Window] with data for the window at the specified index.
          *
          * @param windowIndex The index of the window.
-         * @param window The [com.google.android.exoplayer2.Timeline.Window] to populate. Must not be null.
+         * @param window The [androidx.media3.common.Timeline.Window] to populate. Must not be null.
          * @param defaultPositionProjectionUs A duration into the future that the populated window's
          * default start position should be projected.
-         * @return The populated [com.google.android.exoplayer2.Timeline.Window], for convenience.
+         * @return The populated [androidx.media3.common.Timeline.Window], for convenience.
          */
         override fun getWindow(
             windowIndex: Int,
@@ -426,14 +426,14 @@ class MPVPlayer(
         }
 
         /**
-         * Populates a [com.google.android.exoplayer2.Timeline.Period] with data for the period at the specified index.
+         * Populates a [androidx.media3.common.Timeline.Period] with data for the period at the specified index.
          *
          * @param periodIndex The index of the period.
-         * @param period The [com.google.android.exoplayer2.Timeline.Period] to populate. Must not be null.
-         * @param setIds Whether [com.google.android.exoplayer2.Timeline.Period.id] and [com.google.android.exoplayer2.Timeline.Period.uid] should be populated. If false,
+         * @param period The [androidx.media3.common.Timeline.Period] to populate. Must not be null.
+         * @param setIds Whether [androidx.media3.common.Timeline.Period.id] and [androidx.media3.common.Timeline.Period.uid] should be populated. If false,
          * the fields will be set to null. The caller should pass false for efficiency reasons unless
          * the fields are required.
-         * @return The populated [com.google.android.exoplayer2.Timeline.Period], for convenience.
+         * @return The populated [androidx.media3.common.Timeline.Period], for convenience.
          */
         override fun getPeriod(periodIndex: Int, period: Period, setIds: Boolean): Period {
             return period.set(
@@ -446,7 +446,7 @@ class MPVPlayer(
         }
 
         /**
-         * Returns the index of the period identified by its unique [com.google.android.exoplayer2.Timeline.Period.uid], or [ ][C.INDEX_UNSET] if the period is not in the timeline.
+         * Returns the index of the period identified by its unique [Timeline.Period.uid], or [ ][C.INDEX_UNSET] if the period is not in the timeline.
          *
          * @param uid A unique identifier for a period.
          * @return The index of the period, or [C.INDEX_UNSET] if the period was not found.
@@ -556,12 +556,12 @@ class MPVPlayer(
      * Clears the playlist and adds the specified [MediaItems][MediaItem].
      *
      * @param mediaItems The new [MediaItems][MediaItem].
-     * @param startWindowIndex The window index to start playback from. If [com.google.android.exoplayer2.C.INDEX_UNSET] is
+     * @param startWindowIndex The window index to start playback from. If [C.INDEX_UNSET] is
      * passed, the current position is not reset.
-     * @param startPositionMs The position in milliseconds to start playback from. If [     ][com.google.android.exoplayer2.C.TIME_UNSET] is passed, the default position of the given window is used. In any case, if
-     * `startWindowIndex` is set to [com.google.android.exoplayer2.C.INDEX_UNSET], this parameter is ignored and the
+     * @param startPositionMs The position in milliseconds to start playback from. If [     ][C.TIME_UNSET] is passed, the default position of the given window is used. In any case, if
+     * `startWindowIndex` is set to [C.INDEX_UNSET], this parameter is ignored and the
      * position is not reset at all.
-     * @throws com.google.android.exoplayer2.IllegalSeekPositionException If the provided `startWindowIndex` is not within the
+     * @throws androidx.media3.common.IllegalSeekPositionException If the provided `startWindowIndex` is not within the
      * bounds of the list of media items.
      */
     override fun setMediaItems(
@@ -610,10 +610,10 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the player's currently available [com.google.android.exoplayer2.Player.Commands].
+     * Returns the player's currently available [Commands].
      *
      *
-     * The returned [com.google.android.exoplayer2.Player.Commands] are not updated when available commands change. Use [ ][com.google.android.exoplayer2.Player.Listener.onAvailableCommandsChanged] to get an update when the available commands
+     * The returned [Commands] are not updated when available commands change. Use [ ][androidx.media3.common.Player.Listener.onAvailableCommandsChanged] to get an update when the available commands
      * change.
      *
      *
@@ -624,8 +624,8 @@ class MPVPlayer(
      * [.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM] and [.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM]
      * are unavailable if there is no such [MediaItem].
      *
-     * @return The currently available [com.google.android.exoplayer2.Player.Commands].
-     * @see com.google.android.exoplayer2.Player.Listener.onAvailableCommandsChanged
+     * @return The currently available [Commands].
+     * @see androidx.media3.common.Player.Listener.onAvailableCommandsChanged
      */
     override fun getAvailableCommands(): Commands {
         return Commands.Builder()
@@ -681,10 +681,10 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the current [playback state][com.google.android.exoplayer2.Player.State] of the player.
+     * Returns the current [playback state][androidx.media3.common.Player.State] of the player.
      *
-     * @return The current [playback state][com.google.android.exoplayer2.Player.State].
-     * @see com.google.android.exoplayer2.Player.Listener.onPlaybackStateChanged
+     * @return The current [playback state][androidx.media3.common.Player.State].
+     * @see androidx.media3.common.Player.Listener.onPlaybackStateChanged
      */
     override fun getPlaybackState(): Int {
         return playbackState
@@ -693,8 +693,8 @@ class MPVPlayer(
     /**
      * Returns the reason why playback is suppressed even though [.getPlayWhenReady] is `true`, or [.PLAYBACK_SUPPRESSION_REASON_NONE] if playback is not suppressed.
      *
-     * @return The current [playback suppression reason][com.google.android.exoplayer2.Player.PlaybackSuppressionReason].
-     * @see com.google.android.exoplayer2.Player.Listener.onPlaybackSuppressionReasonChanged
+     * @return The current [playback suppression reason][androidx.media3.common.Player.PlaybackSuppressionReason].
+     * @see androidx.media3.common.Player.Listener.onPlaybackSuppressionReasonChanged
      */
     override fun getPlaybackSuppressionReason(): Int {
         return PLAYBACK_SUPPRESSION_REASON_NONE
@@ -702,7 +702,7 @@ class MPVPlayer(
 
     /**
      * Returns the error that caused playback to fail. This is the same error that will have been
-     * reported via [com.google.android.exoplayer2.Player.Listener.onPlayerError] at the time of failure. It
+     * reported via [androidx.media3.common.Player.Listener.onPlayerError] at the time of failure. It
      * can be queried using this method until the player is re-prepared.
      *
      *
@@ -710,7 +710,7 @@ class MPVPlayer(
      * [.STATE_IDLE].
      *
      * @return The error, or `null`.
-     * @see com.google.android.exoplayer2.Player.Listener.onPlayerError
+     * @see androidx.media3.common.Player.Listener.onPlayerError
      */
     override fun getPlayerError(): ExoPlaybackException? {
         return null
@@ -740,14 +740,14 @@ class MPVPlayer(
      * Whether playback will proceed when [.getPlaybackState] == [.STATE_READY].
      *
      * @return Whether playback will proceed when ready.
-     * @see com.google.android.exoplayer2.Player.Listener.onPlayWhenReadyChanged
+     * @see androidx.media3.common.Player.Listener.onPlayWhenReadyChanged
      */
     override fun getPlayWhenReady(): Boolean {
         return currentPlayWhenReady
     }
 
     /**
-     * Sets the [com.google.android.exoplayer2.Player.RepeatMode] to be used for playback.
+     * Sets the [androidx.media3.common.Player.RepeatMode] to be used for playback.
      *
      * @param repeatMode The repeat mode.
      */
@@ -756,10 +756,10 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the current [com.google.android.exoplayer2.Player.RepeatMode] used for playback.
+     * Returns the current [androidx.media3.common.Player.RepeatMode] used for playback.
      *
      * @return The current repeat mode.
-     * @see com.google.android.exoplayer2.Player.Listener.onRepeatModeChanged
+     * @see androidx.media3.common.Player.Listener.onRepeatModeChanged
      */
     override fun getRepeatMode(): Int {
         return repeatMode
@@ -777,7 +777,7 @@ class MPVPlayer(
     /**
      * Returns whether shuffling of windows is enabled.
      *
-     * @see com.google.android.exoplayer2.Player.Listener.onShuffleModeEnabledChanged
+     * @see androidx.media3.common.Player.Listener.onShuffleModeEnabledChanged
      */
     override fun getShuffleModeEnabled(): Boolean {
         return false
@@ -787,7 +787,7 @@ class MPVPlayer(
      * Whether the player is currently loading the source.
      *
      * @return Whether the player is currently loading the source.
-     * @see com.google.android.exoplayer2.Player.Listener.onIsLoadingChanged
+     * @see androidx.media3.common.Player.Listener.onIsLoadingChanged
      */
     override fun isLoading(): Boolean {
         return false
@@ -797,9 +797,9 @@ class MPVPlayer(
      * Seeks to a position specified in milliseconds in the specified window.
      *
      * @param windowIndex The index of the window.
-     * @param positionMs The seek position in the specified window, or [com.google.android.exoplayer2.C.TIME_UNSET] to seek to
+     * @param positionMs The seek position in the specified window, or [C.TIME_UNSET] to seek to
      * the window's default position.
-     * @throws com.google.android.exoplayer2.IllegalSeekPositionException If the player has a non-empty timeline and the provided
+     * @throws androidx.media3.common.IllegalSeekPositionException If the player has a non-empty timeline and the provided
      * `windowIndex` is not within the bounds of the current timeline.
      */
     override fun seekTo(windowIndex: Int, positionMs: Long) {
@@ -865,7 +865,7 @@ class MPVPlayer(
      * player to the default, which means there is no speed or pitch adjustment.
      *
      *
-     * Playback parameters changes may cause the player to buffer. [ ][com.google.android.exoplayer2.Player.Listener.onPlaybackParametersChanged] will be called whenever the currently
+     * Playback parameters changes may cause the player to buffer. [ ][androidx.media3.common.Player.Listener.onPlaybackParametersChanged] will be called whenever the currently
      * active playback parameters change.
      *
      * @param playbackParameters The playback parameters.
@@ -879,7 +879,7 @@ class MPVPlayer(
     /**
      * Returns the currently active playback parameters.
      *
-     * @see com.google.android.exoplayer2.Player.Listener.onPlaybackParametersChanged
+     * @see androidx.media3.common.Player.Listener.onPlaybackParametersChanged
      */
     override fun getPlaybackParameters(): PlaybackParameters {
         return playbackParameters
@@ -926,8 +926,8 @@ class MPVPlayer(
      *
      *
      * This [MediaMetadata] is a combination of the [MediaItem.mediaMetadata] and the
-     * static and dynamic metadata sourced from [com.google.android.exoplayer2.Player.Listener.onMediaMetadataChanged] and
-     * [com.google.android.exoplayer2.metadata.MetadataOutput.onMetadata].
+     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged] and
+     * [androidx.media3.exoplayer.metadata.MetadataOutput.onMetadata].
      */
     override fun getMediaMetadata(): MediaMetadata {
         return MediaMetadata.EMPTY
@@ -944,7 +944,7 @@ class MPVPlayer(
     /**
      * Returns the current [Timeline]. Never null, but may be empty.
      *
-     * @see com.google.android.exoplayer2.Player.Listener.onTimelineChanged
+     * @see androidx.media3.common.Player.Listener.onTimelineChanged
      */
     override fun getCurrentTimeline(): Timeline {
         return timeline
@@ -960,7 +960,7 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the duration of the current content window or ad in milliseconds, or [ ][com.google.android.exoplayer2.C.TIME_UNSET] if the duration is not known.
+     * Returns the duration of the current content window or ad in milliseconds, or [ ][C.TIME_UNSET] if the duration is not known.
      */
     override fun getDuration(): Long {
         return timeline.getWindow(currentMediaItemIndex, window).durationMs
@@ -998,7 +998,7 @@ class MPVPlayer(
 
     /**
      * If [.isPlayingAd] returns true, returns the index of the ad group in the period
-     * currently being played. Returns [com.google.android.exoplayer2.C.INDEX_UNSET] otherwise.
+     * currently being played. Returns [C.INDEX_UNSET] otherwise.
      */
     override fun getCurrentAdGroupIndex(): Int {
         return C.INDEX_UNSET
@@ -1006,7 +1006,7 @@ class MPVPlayer(
 
     /**
      * If [.isPlayingAd] returns true, returns the index of the ad in its ad group. Returns
-     * [com.google.android.exoplayer2.C.INDEX_UNSET] otherwise.
+     * [C.INDEX_UNSET] otherwise.
      */
     override fun getCurrentAdIndexInAdGroup(): Int {
         return C.INDEX_UNSET
@@ -1153,7 +1153,7 @@ class MPVPlayer(
      * The video's width and height are `0` if there is no video or its size has not been
      * determined yet.
      *
-     * @see com.google.android.exoplayer2.Player.Listener.onVideoSizeChanged
+     * @see androidx.media3.common.Player.Listener.onVideoSizeChanged
      */
     override fun getVideoSize(): VideoSize {
         return VideoSize.UNKNOWN
@@ -1168,7 +1168,7 @@ class MPVPlayer(
         }
     }
 
-    /** Returns the current [Cues][Cue]. This list may be empty.  */
+    /** Returns the current [CueGroup]. This list may be empty.  */
     override fun getCurrentCues(): CueGroup {
         TODO("Not yet implemented")
     }
@@ -1183,7 +1183,7 @@ class MPVPlayer(
      *
      *
      * For devices with [local playback][DeviceInfo.PLAYBACK_TYPE_LOCAL], the volume returned
-     * by this method varies according to the current [stream type][com.google.android.exoplayer2.C.StreamType]. The stream
+     * by this method varies according to the current [stream type][C.StreamType]. The stream
      * type is determined by [AudioAttributes.usage] which can be converted to stream type with
      * [Util.getStreamTypeForAudioUsage].
      *
