@@ -10,11 +10,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
-import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -36,7 +36,7 @@ constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository,
     private val downloadDatabase: DownloadDatabaseDao,
-    appPreferences: AppPreferences,
+    private val appPreferences: AppPreferences,
 ) : ViewModel(), Player.Listener {
     val player: Player
 
@@ -62,8 +62,6 @@ constructor(
 
     var playbackSpeed: Float = 1f
     var disableSubtitle: Boolean = false
-
-    private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     init {
         if (appPreferences.playerMpv) {
@@ -135,8 +133,7 @@ constructor(
             }
 
             player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
-            val useMpv = sp.getBoolean("mpv_player", false)
-            if (!useMpv || !playFromDownloads)
+            if (!appPreferences.playerMpv || !playFromDownloads)
                 player.prepare() // TODO: This line causes a crash when playing from downloads with MPV
             player.play()
             pollPosition(player)
@@ -196,10 +193,7 @@ constructor(
             try {
                 for (item in items) {
                     if (item.itemId.toString() == (player.currentMediaItem?.mediaId ?: "")) {
-                        if (sp.getBoolean(
-                                "display_extended_title",
-                                false
-                            ) && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
+                        if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
                         )
                             _currentItemTitle.value =
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
