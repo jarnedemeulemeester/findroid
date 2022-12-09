@@ -12,9 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/black"
         app:animation_enabled="false"
-        app:show_buffering="always">
-
-    </androidx.media3.ui.PlayerView>
+        app:show_buffering="always" />
 
     <LinearLayout
         android:id="@+id/progress_scrubber_layout"
