@@ -13,7 +13,7 @@ plugins {
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = 33
-    buildToolsVersion = "33.0.0"
+    buildToolsVersion = "33.0.1"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
