@@ -117,7 +117,6 @@
     <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
     <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
     <string name="settings_cache_size">缓存大小 (MB)</string>
-    <string name="add_server_error_already_added">服务器已经添加过了</string>
     <string name="title_home">首页</string>
     <string name="settings_cache_size_message">应用程序将会利用这些MB的磁盘空间来存储Jellyfin服务器的图片。在较慢的网络下，更大的数值可能会更好。</string>
     <string name="player_gestures_vb">音量和亮度手势</string>

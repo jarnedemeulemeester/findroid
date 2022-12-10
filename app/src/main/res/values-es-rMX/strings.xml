@@ -8,7 +8,6 @@
     <string name="add_server_error_not_jellyfin">No es un servidor Jellyfin: %1$s</string>
     <string name="add_server_error_version">Versión del servidor sin soporte: %1$s. Por favor actualice su servidor</string>
     <string name="add_server_error_slow">Servidor muy lento al responder: %1$s</string>
-    <string name="add_server_error_already_added">Servidor ya presente</string>
     <string name="add_server_error_empty_address">Dirección del servidor vacia</string>
     <string name="add_server_error_not_found">Servidor no encontrado</string>
     <string name="add_server_error_no_id">El servidor no tiene identificador, ocurrió un error en el servidor</string>

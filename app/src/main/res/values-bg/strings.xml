@@ -7,7 +7,6 @@
     <string name="download_roaming">Свалете при роуминг</string>
     <string name="mpv_player_summary">Използвайте експерименталният mpv плейър за да пускане на видеа. mpv поддържа повече кодекси за видео, аудио и субтитри.</string>
     <string name="jellyfin_banner">Jellyfin банер</string>
-    <string name="add_server_error_already_added">Сървърът е вече добавен</string>
     <string name="add_server_error_empty_address">Празен сървърен адрес</string>
     <string name="add_server_error_not_found">Сървърът не е намерен</string>
     <string name="login">Вход</string>

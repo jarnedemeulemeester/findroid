@@ -156,25 +156,42 @@ constructor(
 
         Timber.d("Connecting to server: ${serverInfo.serverName}")
 
-        if (serverAlreadyInDatabase(serverInfo.id!!)) {
-            throw Exception(resources.getString(R.string.add_server_error_already_added))
+        val serverInDatabase = serverAlreadyInDatabase(serverInfo.id!!)
+
+        // Check if server is already in the database
+        // If so only add a new address to that server if it's different
+        val server = if (serverInDatabase != null) {
+            val addresses = withContext(Dispatchers.IO) {
+                database.getServerWithAddresses(serverInDatabase.id).addresses
+            }
+            if (addresses.none { it.address == recommendedServerInfo.address }) {
+                val serverAddress = ServerAddress(
+                    id = UUID.randomUUID(),
+                    serverId = serverInDatabase.id,
+                    address = recommendedServerInfo.address
+                )
+
+                insertServerAddress(serverAddress)
+            }
+            serverInDatabase
+        } else {
+            val serverAddress = ServerAddress(
+                id = UUID.randomUUID(),
+                serverId = serverInfo.id!!,
+                address = recommendedServerInfo.address
+            )
+
+            val server = Server(
+                id = serverInfo.id!!,
+                name = serverInfo.serverName!!,
+                currentServerAddressId = serverAddress.id,
+                currentUserId = null,
+            )
+
+            insertServer(server)
+            insertServerAddress(serverAddress)
+            server
         }
-
-        val serverAddress = ServerAddress(
-            id = UUID.randomUUID(),
-            serverId = serverInfo.id!!,
-            address = recommendedServerInfo.address
-        )
-
-        val server = Server(
-            id = serverInfo.id!!,
-            name = serverInfo.serverName!!,
-            currentServerAddressId = serverAddress.id,
-            currentUserId = null,
-        )
-
-        insertServer(server)
-        insertServerAddress(serverAddress)
 
         appPreferences.currentServer = server.id
 
@@ -231,14 +248,10 @@ constructor(
      * Check if server is already in database using server ID
      *
      * @param id Server ID
-     * @return True if server is already in database
+     * @return [Server] if in database
      */
-    private suspend fun serverAlreadyInDatabase(id: String): Boolean {
-        val server: Server?
-        withContext(Dispatchers.IO) {
-            server = database.get(id)
-        }
-        return (server != null)
+    private suspend fun serverAlreadyInDatabase(id: String) = withContext(Dispatchers.IO) {
+        database.get(id)
     }
 
     /**
