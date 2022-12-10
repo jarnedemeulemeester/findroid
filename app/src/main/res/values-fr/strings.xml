@@ -88,7 +88,6 @@
     <string name="select_a_version">Choisissez une version</string>
     <string name="jellyfin_banner">Bannière Jellyfin</string>
     <string name="add_server_error_version">Version du serveur non supportée : %1$s. Veuillez mettre à jour le serveur</string>
-    <string name="add_server_error_already_added">Ce serveur existe déjà</string>
     <string name="login">Authentification</string>
     <string name="button_login">Authentification</string>
     <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>

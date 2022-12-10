@@ -17,12 +17,10 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -107,43 +105,40 @@ constructor(
                 val goodServers = mutableListOf<RecommendedServerInfo>()
                 val okServers = mutableListOf<RecommendedServerInfo>()
 
-                recommended
-                    .onCompletion {
-                        if (serverFound) {
-                            serverFound = false
-                            return@onCompletion
+                for (recommendedServerInfo in recommended) {
+                    when (recommendedServerInfo.score) {
+                        RecommendedServerInfoScore.GREAT -> {
+                            serverFound = true
+                            connectToServer(recommendedServerInfo)
                         }
-                        when {
-                            goodServers.isNotEmpty() -> {
-                                val issuesString = createIssuesString(goodServers.first())
-                                Toast.makeText(
-                                    application,
-                                    issuesString,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                connectToServer(goodServers.first())
-                            }
-                            okServers.isNotEmpty() -> {
-                                val okServer = okServers.first()
-                                throw Exception(createIssuesString(okServer))
-                            }
-                            else -> {
-                                throw Exception(resources.getString(R.string.add_server_error_not_found))
-                            }
-                        }
+                        RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
+                        RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
+                        RecommendedServerInfoScore.BAD -> Unit
                     }
-                    .collect { recommendedServerInfo ->
-                        when (recommendedServerInfo.score) {
-                            RecommendedServerInfoScore.GREAT -> {
-                                serverFound = true
-                                connectToServer(recommendedServerInfo)
-                                this.cancel()
-                            }
-                            RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
-                            RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
-                            RecommendedServerInfoScore.BAD -> Unit
-                        }
+                }
+
+                if (serverFound) {
+                    serverFound = false
+                    return@launch
+                }
+                when {
+                    goodServers.isNotEmpty() -> {
+                        val issuesString = createIssuesString(goodServers.first())
+                        Toast.makeText(
+                            application,
+                            issuesString,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        connectToServer(goodServers.first())
                     }
+                    okServers.isNotEmpty() -> {
+                        val okServer = okServers.first()
+                        throw Exception(createIssuesString(okServer))
+                    }
+                    else -> {
+                        throw Exception(resources.getString(R.string.add_server_error_not_found))
+                    }
+                }
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 _uiState.emit(
@@ -161,25 +156,42 @@ constructor(
 
         Timber.d("Connecting to server: ${serverInfo.serverName}")
 
-        if (serverAlreadyInDatabase(serverInfo.id!!)) {
-            throw Exception(resources.getString(R.string.add_server_error_already_added))
+        val serverInDatabase = serverAlreadyInDatabase(serverInfo.id!!)
+
+        // Check if server is already in the database
+        // If so only add a new address to that server if it's different
+        val server = if (serverInDatabase != null) {
+            val addresses = withContext(Dispatchers.IO) {
+                database.getServerWithAddresses(serverInDatabase.id).addresses
+            }
+            if (addresses.none { it.address == recommendedServerInfo.address }) {
+                val serverAddress = ServerAddress(
+                    id = UUID.randomUUID(),
+                    serverId = serverInDatabase.id,
+                    address = recommendedServerInfo.address
+                )
+
+                insertServerAddress(serverAddress)
+            }
+            serverInDatabase
+        } else {
+            val serverAddress = ServerAddress(
+                id = UUID.randomUUID(),
+                serverId = serverInfo.id!!,
+                address = recommendedServerInfo.address
+            )
+
+            val server = Server(
+                id = serverInfo.id!!,
+                name = serverInfo.serverName!!,
+                currentServerAddressId = serverAddress.id,
+                currentUserId = null,
+            )
+
+            insertServer(server)
+            insertServerAddress(serverAddress)
+            server
         }
-
-        val serverAddress = ServerAddress(
-            id = UUID.randomUUID(),
-            serverId = serverInfo.id!!,
-            address = recommendedServerInfo.address
-        )
-
-        val server = Server(
-            id = serverInfo.id!!,
-            name = serverInfo.serverName!!,
-            currentServerAddressId = serverAddress.id,
-            currentUserId = null,
-        )
-
-        insertServer(server)
-        insertServerAddress(serverAddress)
 
         appPreferences.currentServer = server.id
 
@@ -236,14 +248,10 @@ constructor(
      * Check if server is already in database using server ID
      *
      * @param id Server ID
-     * @return True if server is already in database
+     * @return [Server] if in database
      */
-    private suspend fun serverAlreadyInDatabase(id: String): Boolean {
-        val server: Server?
-        withContext(Dispatchers.IO) {
-            server = database.get(id)
-        }
-        return (server != null)
+    private suspend fun serverAlreadyInDatabase(id: String) = withContext(Dispatchers.IO) {
+        database.get(id)
     }
 
     /**

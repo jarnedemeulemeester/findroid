@@ -9,7 +9,6 @@
     <string name="add_server_error_not_jellyfin">Это не сервер Jellyfin: %1$s</string>
     <string name="add_server_error_version">Неподдерживаемая версия сервера: %1$s. Пожалуйста, обновите ваш сервер</string>
     <string name="add_server_error_slow">Сервер слишком медленно отвечает: %1$s</string>
-    <string name="add_server_error_already_added">Сервер уже добавлен</string>
     <string name="add_server_error_empty_address">Пустой адрес</string>
     <string name="add_server_error_not_found">Сервер не найден</string>
     <string name="add_server_error_no_id">Сервер не имеет id, похоже, с ним что-то не так</string>

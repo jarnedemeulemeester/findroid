@@ -6,7 +6,6 @@
     <string name="add_server">Server hinzufügen</string>
     <string name="add_server_error_outdated">Server Version ist veraltet: %1$s. Bitte aktualisiere deinen Server</string>
     <string name="add_server_error_not_jellyfin">Kein Jellyfin Server: %1$s</string>
-    <string name="add_server_error_already_added">Server wurde bereits hinzugefügt</string>
     <string name="add_server_error_empty_address">Leere Server Adresse</string>
     <string name="add_server_error_not_found">Server wurde nicht gefunden</string>
     <string name="add_server_error_no_id">Server hat keine ID. Irgendetwas mit dem Server scheint nicht in Ordnung zu sein</string>

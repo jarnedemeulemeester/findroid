@@ -4,7 +4,6 @@
     <string name="add_server">添加伺服器</string>
     <string name="add_server_error_version">不支援的伺服器版本：%1$s。 請更新您的伺服器</string>
     <string name="add_server_error_slow">伺服器回應太慢：%1$s</string>
-    <string name="add_server_error_already_added">伺服器已添加</string>
     <string name="add_server_error_not_found">找不到伺服器</string>
     <string name="add_server_error_no_id">伺服器沒有id，伺服器可能有問題</string>
     <string name="login">登入</string>

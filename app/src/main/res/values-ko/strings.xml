@@ -36,7 +36,6 @@
     <string name="player_gestures">플레이어 제스처</string>
     <string name="player_gestures_vb">볼륨 및 밝기 제스처</string>
     <string name="player_gestures_zoom">줌 제스처</string>
-    <string name="add_server_error_already_added">서버가 이미 추가되어 있음</string>
     <string name="add_server_error_not_found">서버를 찾을 수 없음</string>
     <string name="sort_by_options_0">타이틀</string>
     <string name="sort_by_options_1">IMDB 평점</string>

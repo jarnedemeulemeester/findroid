@@ -10,7 +10,6 @@
     <string name="player_gestures_vb_summary">Przesuń w górę lub w dół po prawej stronie ekrany by zmienić głośność, po lewej stronie by zmienić jasność</string>
     <string name="display_extended_title_summary">Wyświetlaj rozszerzoną nazwę odcinka, razem z informacją o sezonie i odcinku (SXX:EXX - NazwaOdcinka).</string>
     <string name="add_server_error_slow">Zbyt wolna odpowiedź serwera: %1$s</string>
-    <string name="add_server_error_already_added">Serwer już dodany</string>
     <string name="add_server_error_empty_address">Pusty adres serwera</string>
     <string name="add_server_error_not_found">Nie znaleziono serwera</string>
     <string name="add_server_error_no_id">Serwer nie ma ID. Błędna konfiguracja serwera</string>
