@@ -42,7 +42,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
-        val playerControls = binding.playerView.findViewById<View>(R.id.tv_player_controls)
+        val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
         configureInsets(playerControls)
 
         bind()
@@ -51,7 +51,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (!binding.playerView.isControllerVisible) {
+        return if (!binding.playerView.isControllerFullyVisible) {
             binding.playerView.showController()
             true
         } else {

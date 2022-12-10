@@ -3,8 +3,8 @@ package dev.jdtech.jellyfin.utils
 import android.content.SharedPreferences
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
 import androidx.core.content.edit
-import com.google.android.exoplayer2.C.DEFAULT_SEEK_BACK_INCREMENT_MS
-import com.google.android.exoplayer2.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
+import androidx.media3.common.C.DEFAULT_SEEK_BACK_INCREMENT_MS
+import androidx.media3.common.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
 import javax.inject.Inject
 
 class AppPreferences
@@ -26,6 +26,8 @@ constructor(
     val dynamicColors = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
 
     // Player
+    val displayExtendedTitle = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTENDED_TITLE, false)
+
     val playerGestures = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
     val playerGesturesVB = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)

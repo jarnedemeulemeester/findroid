@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_player_controls"
+    android:id="@+id/player_controls"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/player_background"
@@ -66,7 +66,7 @@
         app:layout_constraintStart_toEndOf="@id/btn_audio_track"
         />
 
-    <com.google.android.exoplayer2.ui.DefaultTimeBar
+    <androidx.media3.ui.DefaultTimeBar
         android:id="@+id/exo_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

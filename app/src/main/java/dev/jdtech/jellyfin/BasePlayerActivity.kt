@@ -5,12 +5,28 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector
+import androidx.media3.session.MediaSession
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 
 abstract class BasePlayerActivity : AppCompatActivity() {
 
     abstract val viewModel: PlayerActivityViewModel
+
+    lateinit var mediaSession: MediaSession
+
+    override fun onStart() {
+        super.onStart()
+
+        mediaSession = MediaSession.Builder(this, viewModel.player).build()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.player.playWhenReady = viewModel.playWhenReady
+        hideSystemUI()
+    }
 
     override fun onPause() {
         super.onPause()
@@ -18,10 +34,10 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         viewModel.player.playWhenReady = false
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.player.playWhenReady = viewModel.playWhenReady
-        hideSystemUI()
+    override fun onStop() {
+        super.onStop()
+
+        mediaSession.release()
     }
 
     @Suppress("DEPRECATION")
