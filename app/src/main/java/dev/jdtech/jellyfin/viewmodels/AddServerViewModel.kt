@@ -17,12 +17,10 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -107,43 +105,40 @@ constructor(
                 val goodServers = mutableListOf<RecommendedServerInfo>()
                 val okServers = mutableListOf<RecommendedServerInfo>()
 
-                recommended
-                    .onCompletion {
-                        if (serverFound) {
-                            serverFound = false
-                            return@onCompletion
+                for (recommendedServerInfo in recommended) {
+                    when (recommendedServerInfo.score) {
+                        RecommendedServerInfoScore.GREAT -> {
+                            serverFound = true
+                            connectToServer(recommendedServerInfo)
                         }
-                        when {
-                            goodServers.isNotEmpty() -> {
-                                val issuesString = createIssuesString(goodServers.first())
-                                Toast.makeText(
-                                    application,
-                                    issuesString,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                connectToServer(goodServers.first())
-                            }
-                            okServers.isNotEmpty() -> {
-                                val okServer = okServers.first()
-                                throw Exception(createIssuesString(okServer))
-                            }
-                            else -> {
-                                throw Exception(resources.getString(R.string.add_server_error_not_found))
-                            }
-                        }
+                        RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
+                        RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
+                        RecommendedServerInfoScore.BAD -> Unit
                     }
-                    .collect { recommendedServerInfo ->
-                        when (recommendedServerInfo.score) {
-                            RecommendedServerInfoScore.GREAT -> {
-                                serverFound = true
-                                connectToServer(recommendedServerInfo)
-                                this.cancel()
-                            }
-                            RecommendedServerInfoScore.GOOD -> goodServers.add(recommendedServerInfo)
-                            RecommendedServerInfoScore.OK -> okServers.add(recommendedServerInfo)
-                            RecommendedServerInfoScore.BAD -> Unit
-                        }
+                }
+
+                if (serverFound) {
+                    serverFound = false
+                    return@launch
+                }
+                when {
+                    goodServers.isNotEmpty() -> {
+                        val issuesString = createIssuesString(goodServers.first())
+                        Toast.makeText(
+                            application,
+                            issuesString,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        connectToServer(goodServers.first())
                     }
+                    okServers.isNotEmpty() -> {
+                        val okServer = okServers.first()
+                        throw Exception(createIssuesString(okServer))
+                    }
+                    else -> {
+                        throw Exception(resources.getString(R.string.add_server_error_not_found))
+                    }
+                }
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 _uiState.emit(
