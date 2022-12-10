@@ -7,8 +7,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -38,6 +40,8 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
 
+    private var originalSoftInputMode: Int? = null
+
     private lateinit var errorDialog: ErrorDialogFragment
 
     override fun onCreateView(
@@ -61,6 +65,38 @@ class HomeFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(R.menu.home_menu, menu)
+
+                    val settings = menu.findItem(R.id.action_settings)
+                    val search = menu.findItem(R.id.action_search)
+                    val searchView = search.actionView as SearchView
+                    searchView.queryHint = getString(R.string.search_hint)
+
+                    search.setOnActionExpandListener(
+                        object : MenuItem.OnActionExpandListener {
+                            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                                settings.isVisible = false
+                                return true
+                            }
+
+                            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                                settings.isVisible = true
+                                return true
+                            }
+                        }
+                    )
+
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(p0: String?): Boolean {
+                            if (p0 != null) {
+                                navigateToSearchResultFragment(p0)
+                            }
+                            return true
+                        }
+
+                        override fun onQueryTextChange(p0: String?): Boolean {
+                            return false
+                        }
+                    })
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -77,10 +113,25 @@ class HomeFragment : Fragment() {
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        requireActivity().window.let {
+            originalSoftInputMode = it.attributes?.softInputMode
+            it.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
         viewModel.loadData()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        originalSoftInputMode?.let { activity?.window?.setSoftInputMode(it) }
     }
 
     private fun setupView() {
@@ -192,6 +243,12 @@ class HomeFragment : Fragment() {
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+        )
+    }
+
+    private fun navigateToSearchResultFragment(query: String) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query)
         )
     }
 }
