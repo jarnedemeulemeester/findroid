@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 26
+        minSdk = 27
         targetSdk = 33
         versionCode = 13
         versionName = "0.7.0"

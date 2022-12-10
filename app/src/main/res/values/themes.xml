@@ -34,6 +34,10 @@
         <!-- Toolbar -->
         <item name="toolbarStyle">@style/Widget.Material3.Toolbar.Surface</item>
 
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+
         <!-- Extra -->
         <item name="elevationOverlayEnabled">false</item>
     </style>
