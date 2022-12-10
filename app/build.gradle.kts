@@ -100,4 +100,7 @@ dependencies {
 
     // MPV
     implementation(files("libs/libmpv.aar"))
+
+    // Media3 FFmpeg decoder
+    implementation(files("libs/lib-decoder-ffmpeg-release.aar"))
 }
