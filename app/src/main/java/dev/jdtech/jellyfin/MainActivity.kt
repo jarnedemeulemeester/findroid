@@ -129,7 +129,6 @@ class MainActivity : AppCompatActivity() {
                     onNoUser()
                 }
             }
-
         }
     }
 }

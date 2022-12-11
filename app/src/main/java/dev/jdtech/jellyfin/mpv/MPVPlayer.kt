@@ -12,8 +12,6 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import androidx.core.content.getSystemService
-import dev.jdtech.jellyfin.utils.AppPreferences
-import `is`.xyz.mpv.MPVLib
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.BasePlayer
 import androidx.media3.common.C
@@ -37,6 +35,8 @@ import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlaybackException
+import dev.jdtech.jellyfin.utils.AppPreferences
+import `is`.xyz.mpv.MPVLib
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
@@ -111,7 +111,6 @@ class MPVPlayer(
         MPVLib.setOptionString("vd-lavc-dr", "no")
 
         MPVLib.init()
-
 
         companionPrefs = appPreferences
 
