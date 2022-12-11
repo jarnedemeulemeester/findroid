@@ -16,7 +16,7 @@
             app:summary="@string/mpv_player_summary"
             app:title="@string/mpv_player" />
         <DropDownPreference
-            app:defaultValue="mediacodec-copy"
+            app:defaultValue="mediacodec"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_hwdec"
             app:entryValues="@array/mpv_hwdec"

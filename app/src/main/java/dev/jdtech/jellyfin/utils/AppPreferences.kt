@@ -54,7 +54,7 @@ constructor(
         DEFAULT_SEEK_FORWARD_INCREMENT_MS.toString()
     )!!.toLongOrNull() ?: DEFAULT_SEEK_FORWARD_INCREMENT_MS
     val playerMpv = sharedPreferences.getBoolean(Constants.PREF_PLAYER_MPV, false)
-    val playerMpvHwdec = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_HWDEC, "mediacodec-copy")!!
+    val playerMpvHwdec = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_HWDEC, "mediacodec")!!
     val playerMpvHwdecCodecs: Set<String> = sharedPreferences.getStringSet(
         Constants.PREF_PLAYER_MPV_HWDEC_CODECS,
         setOf("h264", "hevc", "mpeg4", "mpeg2video", "vp8", "vp9")
