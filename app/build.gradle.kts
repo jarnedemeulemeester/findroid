@@ -19,8 +19,8 @@ android {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 27
         targetSdk = 33
-        versionCode = 13
-        versionName = "0.7.0"
+        versionCode = 14
+        versionName = "0.8.0"
     }
 
     buildTypes {
