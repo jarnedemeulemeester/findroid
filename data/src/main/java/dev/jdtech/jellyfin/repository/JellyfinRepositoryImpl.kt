@@ -4,11 +4,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -213,6 +215,15 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 Timber.e(e)
                 ""
             }
+        }
+
+    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+        withContext(Dispatchers.IO) {
+            // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
+            val pathParameters = mutableMapOf<String, Any?>()
+            pathParameters["itemId"] = itemId
+            val response = jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters)
+            if (response.status == 404) null else response.content
         }
 
     override suspend fun postCapabilities() {

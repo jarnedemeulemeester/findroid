@@ -46,6 +46,16 @@
             android:textColor="@color/white"
             android:textSize="14sp" />
 
+        <Button
+            android:id="@+id/btn_skip_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableEnd="@drawable/ic_skip_forward"
+            android:text="@string/player_controls_skip_intro"
+            android:textColor="@color/white" />
+
     </androidx.media3.ui.AspectRatioFrameLayout>
 
     <androidx.media3.ui.SubtitleView

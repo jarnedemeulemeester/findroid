@@ -19,6 +19,7 @@ glide = "4.14.2"
 hilt = "2.44.2"
 jellyfin = "1.4.0"
 kotlin = "1.8.0"
+kotlinx-serialization = "1.4.1"
 ktlint = "11.0.0"
 libmpv = "0.1.0"
 material = "1.7.0"
@@ -56,6 +57,7 @@ jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jell
 libmpv = { module = "dev.jdtech.mpv:libmpv", version.ref = "libmpv" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
@@ -66,4 +68,5 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
