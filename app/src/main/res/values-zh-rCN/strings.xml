@@ -57,7 +57,7 @@
     <string name="about">关于</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="app_info">应用详情</string>
-    <string name="unknown_error">未知错误</string>
+    <string name="unknown_error">您的订阅已到期, 请登录官网续费</string>
     <string name="search_hint">搜索电影、节目、集名…</string>
     <string name="select_a_version">选择版本</string>
     <string name="select_audio_track">选择音轨</string>
@@ -136,11 +136,15 @@
     <string name="theme_dark">深色</string>
     <string name="episodes_label">季</string>
     <string name="remove_user">移除用户</string>
-    <string name="remove_user_dialog_text">您确定想要移除用户%1$s吗？</string>
+    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗？</string>
     <string name="settings_category_network">网络</string>
     <string name="settings_request_timeout">请求超时</string>
     <string name="settings_connect_timeout">连接超时</string>
-    <string name="settings_socket_timeout">套接字超时</string>
+    <string name="settings_socket_timeout">Socket超时</string>
     <string name="users">用户</string>
     <string name="add_user">添加用户</string>
+    <string name="pref_player_mpv_hwdec">硬解</string>
+    <string name="pref_player_mpv_hwdec_codecs">硬解解码器</string>
+    <string name="pref_player_mpv_vo">视频输出</string>
+    <string name="pref_player_mpv_ao">音频输出</string>
 </resources>
