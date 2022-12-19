@@ -148,4 +148,8 @@
     <string name="download_button_description">Download</string>
     <string name="delete_button_description">Verwijderen</string>
     <string name="movies_label">Films</string>
+    <string name="addresses">Adressen</string>
+    <string name="add_server_address">Server adres toevoegen</string>
+    <string name="add_address">Adressen toevoegen</string>
+    <string name="add">Toevoegen</string>
 </resources>
