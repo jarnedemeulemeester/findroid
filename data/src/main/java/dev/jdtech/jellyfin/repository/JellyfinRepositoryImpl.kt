@@ -10,6 +10,7 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.exception.InvalidStatusException
 import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -222,8 +223,13 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
             val pathParameters = mutableMapOf<String, Any?>()
             pathParameters["itemId"] = itemId
-            val response = jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters)
-            if (response.status == 404) null else response.content
+
+            try {
+                return@withContext jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters).content
+            } catch (e: InvalidStatusException) {
+                if (e.status != 404) throw e
+                return@withContext null
+            }
         }
 
     override suspend fun postCapabilities() {
