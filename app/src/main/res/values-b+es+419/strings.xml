@@ -136,4 +136,20 @@
     <string name="theme_system">Seguir al sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="settings_category_network">Red</string>
+    <string name="pref_player_mpv_hwdec">Decodificación por hardware</string>
+    <string name="pref_player_mpv_hwdec_codecs">Códecs de decodificación por hardware</string>
+    <string name="pref_player_mpv_vo">Salida de vídeo</string>
+    <string name="pref_player_mpv_ao">Salida de audio</string>
+    <string name="addresses">Direcciones</string>
+    <string name="add_address">Agregar dirección</string>
+    <string name="add_server_address">Agregar dirección del servidor</string>
+    <string name="add">Agregar</string>
+    <string name="remove_user">Remover usuario</string>
+    <string name="remove_user_dialog_text">Está seguro de que desea remover el usuario %1$s</string>
+    <string name="settings_request_timeout">Tiempo de espera de solicitud (ms)</string>
+    <string name="settings_connect_timeout">Tiempo de espera de conexión (ms)</string>
+    <string name="settings_socket_timeout">Tiempo de espera del socket (ms)</string>
+    <string name="users">Usuarios</string>
+    <string name="add_user">Agregar usuario</string>
 </resources>
