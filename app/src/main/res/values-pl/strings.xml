@@ -147,4 +147,8 @@
     <string name="remove_user">Usuń użytkownika</string>
     <string name="remove_user_dialog_text">Czy na pewno chcesz usunąć użytkownika %1$s</string>
     <string name="users">Użytkownicy</string>
+    <string name="addresses">Adresy</string>
+    <string name="add_address">Dodaj adres</string>
+    <string name="add_server_address">Dodaj adres serwera</string>
+    <string name="add">Dodaj</string>
 </resources>
