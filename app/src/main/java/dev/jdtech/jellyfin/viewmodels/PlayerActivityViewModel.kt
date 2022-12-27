@@ -137,7 +137,7 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
+            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition?.div(10000) ?: C.TIME_UNSET)
             if (!appPreferences.playerMpv || !playFromDownloads)
                 player.prepare() // TODO: This line causes a crash when playing from downloads with MPV
             player.play()
@@ -173,7 +173,7 @@ constructor(
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                         if (playFromDownloads) {
-                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
+                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition.times(10000), (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
                         }
                         try {
                             jellyfinRepository.postPlaybackProgress(

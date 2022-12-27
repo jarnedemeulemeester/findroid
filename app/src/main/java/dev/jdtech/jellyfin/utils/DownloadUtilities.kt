@@ -268,7 +268,7 @@ suspend fun syncPlaybackProgress(
                 )
                 jellyfinRepository.postPlaybackProgress(
                     it.itemId,
-                    playbackProgress.times(10000),
+                    playbackProgress,
                     true
                 )
                 Timber.d("Percentage: $playedPercentage")
