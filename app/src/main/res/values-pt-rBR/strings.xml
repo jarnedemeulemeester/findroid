@@ -141,4 +141,8 @@
     <string name="remove_user">Remover usuário</string>
     <string name="remove_user_dialog_text">Tem certeza que deseja remover o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
+    <string name="addresses">Endereços</string>
+    <string name="add_address">Adicionar endereço</string>
+    <string name="add_server_address">Adicionar endereço do servidor</string>
+    <string name="add">Adicionar</string>
 </resources>
