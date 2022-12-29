@@ -230,6 +230,7 @@ constructor(
                     is MPVPlayer -> {
                         player.currentMpvTracks.forEach {
                             when (it.type) {
+                                TrackType.VIDEO -> Unit
                                 TrackType.AUDIO -> {
                                     currentAudioTracks.add(it)
                                 }
@@ -256,7 +257,7 @@ constructor(
         releasePlayer()
     }
 
-    fun switchToTrack(trackType: String, track: MPVPlayer.Companion.Track) {
+    fun switchToTrack(trackType: TrackType, track: MPVPlayer.Companion.Track) {
         if (player is MPVPlayer) {
             player.selectTrack(trackType, id = track.id)
             disableSubtitle = track.ffIndex == -1

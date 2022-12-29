@@ -11,7 +11,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
 
 class TrackSelectionDialogFragment(
-    private val type: String,
+    private val type: TrackType,
     private val viewModel: PlayerActivityViewModel
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

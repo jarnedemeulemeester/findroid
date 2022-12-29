@@ -13,7 +13,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 class TrackSelectorAdapter(
     private val items: List<Track>,
     private val viewModel: PlayerActivityViewModel,
-    private val trackType: String,
+    private val trackType: TrackType,
     private val dismissWindow: () -> Unit
 ) : RecyclerView.Adapter<TrackSelectorAdapter.TrackSelectorViewHolder>() {
 
@@ -34,7 +34,7 @@ class TrackSelectorAdapter(
         fun bind(
             item: Track,
             viewModel: PlayerActivityViewModel,
-            trackType: String,
+            trackType: TrackType,
             dismissWindow: () -> Unit
         ) {
             view.findViewById<Button>(R.id.track_name).apply {
@@ -45,16 +45,7 @@ class TrackSelectorAdapter(
                     item.codec
                 )
                 setOnClickListener {
-                    when (trackType) {
-                        TrackType.AUDIO -> viewModel.switchToTrack(
-                            TrackType.AUDIO,
-                            item.playerTrack
-                        )
-                        TrackType.SUBTITLE -> viewModel.switchToTrack(
-                            TrackType.SUBTITLE,
-                            item.playerTrack
-                        )
-                    }
+                    viewModel.switchToTrack(trackType, item.playerTrack)
                     dismissWindow()
                 }
             }

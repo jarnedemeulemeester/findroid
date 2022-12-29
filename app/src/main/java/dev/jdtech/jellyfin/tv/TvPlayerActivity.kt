@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.PlayerActivityArgs
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.ActivityPlayerTvBinding
 import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.mpv.TrackType.AUDIO
 import dev.jdtech.jellyfin.mpv.TrackType.SUBTITLE
 import dev.jdtech.jellyfin.tv.ui.TrackSelectorAdapter
@@ -134,7 +135,7 @@ internal class TvPlayerActivity : BasePlayerActivity() {
 
     private fun View.showPopupWindowAbove(
         items: List<TrackSelectorAdapter.Track>,
-        type: String
+        type: TrackType
     ): PopupWindow {
         val popup = PopupWindow(this.context)
         popup.contentView = LayoutInflater.from(context).inflate(R.layout.track_selector, null)
