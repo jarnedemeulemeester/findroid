@@ -237,7 +237,7 @@ suspend fun syncPlaybackProgress(
             val localPlayedPercentage = it.item?.playedPercentage
 
             val item = jellyfinRepository.getItem(it.itemId)
-            val remotePlaybackProgress = item.userData?.playbackPositionTicks?.div(10000)
+            val remotePlaybackProgress = item.userData?.playbackPositionTicks
             val remotePlayedPercentage = item.userData?.playedPercentage
 
             var playbackProgress: Long = 0
