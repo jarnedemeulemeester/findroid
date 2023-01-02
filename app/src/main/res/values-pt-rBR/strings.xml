@@ -137,7 +137,7 @@
     <string name="sort_by_options_4">Data de Reprodução</string>
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
-    <string name="pref_player_mpv_vo">Saida de video</string>
+    <string name="pref_player_mpv_vo">Saida de vídeo</string>
     <string name="remove_user">Remover usuário</string>
     <string name="remove_user_dialog_text">Tem certeza que deseja remover o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>

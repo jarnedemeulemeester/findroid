@@ -95,7 +95,7 @@
     <string name="image_description_poster">Poster de %1$s</string>
     <string name="image_description_backdrop">Fondo de %1$s</string>
     <string name="sort_by_options_0">Título</string>
-    <string name="sort_by_options_1">Calificación IMDB</string>
+    <string name="sort_by_options_1">Calificación IMDb</string>
     <string name="sort_by_options_2">Calificación de edad</string>
     <string name="sort_by_options_3">Fecha de adición</string>
     <string name="sort_by_options_4">Fecha de reproducción</string>

@@ -8,7 +8,6 @@
     <string name="app_description">Derde-partij Jellyfin app</string>
     <string name="add_server_error_empty_address">Leeg server adres</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="add_server_error_already_added">Server is al toegevoegd</string>
     <string name="add_server_error_not_found">Server niet gevonden</string>
     <string name="login_error_wrong_username_password">Verkeerde gebruikersnaam of wachtwoord</string>
     <string name="select_server">Selecteer server</string>
