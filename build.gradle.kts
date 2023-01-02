@@ -15,6 +15,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://reposilite.jdtech.dev/releases")
+        }
     }
 }
 

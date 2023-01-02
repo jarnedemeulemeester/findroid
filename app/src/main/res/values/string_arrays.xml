@@ -24,9 +24,11 @@
         <item>mpeg2video</item>
         <item>vp8</item>
         <item>vp9</item>
+        <item>av1</item>
     </string-array>
     <string-array name="mpv_vos">
         <item>gpu</item>
+        <item>gpu-next</item>
     </string-array>
     <string-array name="mpv_aos">
         <item>audiotrack</item>
