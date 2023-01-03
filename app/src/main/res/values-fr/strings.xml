@@ -140,4 +140,5 @@
     <string name="remove_user">Supprimer l\'utilisateur</string>
     <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
     <string name="users">Utilisateurs</string>
+    <string name="pref_player_mpv_hwdec_codecs">Décodages matériels supportés</string>
 </resources>
