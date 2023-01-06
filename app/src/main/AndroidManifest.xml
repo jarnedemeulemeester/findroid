@@ -8,7 +8,6 @@
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
-        android:banner="@mipmap/ic_banner"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
