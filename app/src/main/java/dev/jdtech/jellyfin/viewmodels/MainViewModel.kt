@@ -4,5 +4,4 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
     var startDestinationChanged = false
-    var startDestinationTvChanged = false
 }
