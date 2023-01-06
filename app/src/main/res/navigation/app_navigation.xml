@@ -40,39 +40,8 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_homeFragment_to_mediaDetailFragment"
-            app:destination="@id/mediaDetailFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/homeFragmentTv"
-        android:name="dev.jdtech.jellyfin.tv.ui.HomeFragment"
-        android:label="@string/title_home" >
-
-        <action
-            android:id="@+id/action_homeFragment_to_mediaDetailFragment"
-            app:destination="@id/mediaDetailFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/twoPaneSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_libraryFragment"
-            app:destination="@id/libraryFragment" />
-
     </fragment>
 
     <fragment
@@ -133,9 +102,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_libraryFragment_to_mediaDetailFragment"
-            app:destination="@id/mediaDetailFragment" />
         <argument
             android:name="libraryType"
             android:defaultValue="unknown"
@@ -181,29 +147,7 @@
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
-    <fragment
-        android:id="@+id/mediaDetailFragment"
-        android:name="dev.jdtech.jellyfin.tv.ui.MediaDetailFragment"
-        android:label="{itemName}"
-        tools:layout="@layout/media_detail_fragment">
 
-        <argument
-            android:name="itemId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="itemName"
-            android:defaultValue="Media Info"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="itemType"
-            app:argType="org.jellyfin.sdk.model.api.BaseItemKind"
-            android:defaultValue="MOVIE" />
-
-        <action
-            android:id="@+id/action_mediaDetailFragment_to_playerActivity"
-            app:destination="@id/playerActivityTv" />
-    </fragment>
     <fragment
         android:id="@+id/seasonFragment"
         android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
@@ -334,11 +278,6 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_serverSelectFragment_to_homeFragmentTv"
-            app:destination="@id/homeFragmentTv"
-            app:popUpTo="@id/homeFragmentTv"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -349,11 +288,6 @@
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragmentTv"
-            app:destination="@id/homeFragmentTv"
-            app:popUpTo="@id/homeFragmentTv"
             app:popUpToInclusive="true" />
         <argument
             android:name="reLogin"
@@ -386,16 +320,6 @@
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
     </activity>
 
-    <activity
-        android:id="@+id/playerActivityTv"
-        android:name="dev.jdtech.jellyfin.tv.TvPlayerActivity"
-        android:label="activity_player_tv"
-        tools:layout="@layout/activity_player_tv">
-        <argument
-            android:name="items"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
-    </activity>
-
     <include app:graph="@navigation/aboutlibs_navigation" />
     <action
         android:id="@+id/action_global_loginFragment"
@@ -414,11 +338,6 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragmentTv"
-            app:destination="@id/homeFragmentTv"
-            app:popUpTo="@id/homeFragmentTv"
-            app:popUpToInclusive="true" />
         <argument
             android:name="serverId"
             app:argType="string" />
@@ -433,11 +352,6 @@
             android:id="@+id/action_usersFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragmentTv"
-            app:destination="@id/homeFragmentTv"
-            app:popUpTo="@id/homeFragmentTv"
             app:popUpToInclusive="true" />
         <argument
             android:name="serverId"

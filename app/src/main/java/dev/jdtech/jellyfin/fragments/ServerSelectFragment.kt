@@ -1,12 +1,9 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.app.UiModeManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -24,7 +21,6 @@ import kotlinx.coroutines.launch
 class ServerSelectFragment : Fragment() {
 
     private lateinit var binding: FragmentServerSelectBinding
-    private lateinit var uiModeManager: UiModeManager
     private val viewModel: ServerSelectViewModel by viewModels()
 
     override fun onCreateView(
@@ -33,8 +29,6 @@ class ServerSelectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentServerSelectBinding.inflate(inflater)
-        uiModeManager =
-            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -78,10 +72,6 @@ class ServerSelectFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragmentTv())
-        } else {
-            findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
-        }
+        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
     }
 }

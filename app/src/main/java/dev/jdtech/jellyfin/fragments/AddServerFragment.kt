@@ -1,13 +1,10 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.app.UiModeManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -27,7 +24,6 @@ import timber.log.Timber
 class AddServerFragment : Fragment() {
 
     private lateinit var binding: FragmentAddServerBinding
-    private lateinit var uiModeManager: UiModeManager
     private val viewModel: AddServerViewModel by viewModels()
 
     override fun onCreateView(
@@ -36,8 +32,6 @@ class AddServerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
-        uiModeManager =
-            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
         (binding.editTextServerAddress as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
@@ -98,42 +92,24 @@ class AddServerFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).isEnabled = true
-        } else {
-            binding.editTextServerAddressLayout!!.isEnabled = true
-        }
+        binding.editTextServerAddressLayout.isEnabled = true
     }
 
     private fun bindUiStateError(uiState: AddServerViewModel.UiState.Error) {
         binding.buttonConnect.isEnabled = true
         binding.progressCircular.isVisible = false
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).apply {
-                error = uiState.message
-                isEnabled = true
-            }
-        } else {
-            binding.editTextServerAddressLayout!!.apply {
-                error = uiState.message
-                isEnabled = true
-            }
+        binding.editTextServerAddressLayout.apply {
+            error = uiState.message
+            isEnabled = true
         }
     }
 
     private fun bindUiStateLoading() {
         binding.buttonConnect.isEnabled = false
         binding.progressCircular.isVisible = true
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextServerAddress as AppCompatEditText).apply {
-                error = null
-                isEnabled = false
-            }
-        } else {
-            binding.editTextServerAddressLayout!!.apply {
-                error = null
-                isEnabled = false
-            }
+        binding.editTextServerAddressLayout.apply {
+            error = null
+            isEnabled = false
         }
     }
 

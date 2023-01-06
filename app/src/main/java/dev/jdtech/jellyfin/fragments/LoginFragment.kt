@@ -1,13 +1,10 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.app.UiModeManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,7 +28,6 @@ import timber.log.Timber
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var uiModeManager: UiModeManager
     private val viewModel: LoginViewModel by viewModels()
     private val args: LoginFragmentArgs by navArgs()
 
@@ -47,8 +43,6 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater)
-        uiModeManager =
-            requireContext().getSystemService(AppCompatActivity.UI_MODE_SERVICE) as UiModeManager
 
         if (args.reLogin) {
             appPreferences.currentServer?.let { currentServerId ->
@@ -117,49 +111,28 @@ class LoginFragment : Fragment() {
     private fun bindUiStateNormal() {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).isEnabled = true
-            (binding.editTextPassword as AppCompatEditText).isEnabled = true
-        } else {
-            binding.editTextUsernameLayout!!.isEnabled = true
-            binding.editTextPasswordLayout!!.isEnabled = true
-        }
+        binding.editTextUsernameLayout.isEnabled = true
+        binding.editTextPasswordLayout.isEnabled = true
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).apply {
-                error = uiState.message
-                isEnabled = true
-            }
-            (binding.editTextPassword as AppCompatEditText).isEnabled = true
-        } else {
-            binding.editTextUsernameLayout!!.apply {
-                error = uiState.message
-                isEnabled = true
-            }
-            binding.editTextPasswordLayout!!.isEnabled = true
+        binding.editTextUsernameLayout.apply {
+            error = uiState.message
+            isEnabled = true
         }
+        binding.editTextPasswordLayout.isEnabled = true
     }
 
     private fun bindUiStateLoading() {
         binding.buttonLogin.isEnabled = false
         binding.progressCircular.isVisible = true
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            (binding.editTextUsername as AppCompatEditText).apply {
-                error = null
-                isEnabled = false
-            }
-            (binding.editTextPassword as AppCompatEditText).isEnabled = false
-        } else {
-            binding.editTextUsernameLayout!!.apply {
-                error = null
-                isEnabled = false
-            }
-            binding.editTextPasswordLayout!!.isEnabled = false
+        binding.editTextUsernameLayout.apply {
+            error = null
+            isEnabled = false
         }
+        binding.editTextPasswordLayout.isEnabled = false
     }
 
     private fun bindUsersStateUsers(usersState: LoginViewModel.UsersState.Users) {
@@ -179,10 +152,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToHomeFragment() {
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragmentTv())
-        } else {
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
-        }
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
     }
 }
