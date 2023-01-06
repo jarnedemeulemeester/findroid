@@ -36,7 +36,7 @@ import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlaybackException
 import dev.jdtech.jellyfin.utils.AppPreferences
-import `is`.xyz.mpv.MPVLib
+import dev.jdtech.mpv.MPVLib
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
