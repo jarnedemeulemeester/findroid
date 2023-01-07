@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.ktlint)
 }
 
@@ -23,15 +22,6 @@ android {
         val appVersionName: String by rootProject.extra
         buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
         buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
-    }
-
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = true
-        }
     }
 
     compileOptions {
@@ -52,8 +42,6 @@ ktlint {
 }
 
 dependencies {
-    implementation(libs.aboutlibraries.core)
-    implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
@@ -62,11 +50,8 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.preference)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
