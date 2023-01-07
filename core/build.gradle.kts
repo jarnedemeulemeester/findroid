@@ -19,10 +19,10 @@ android {
         minSdk = 27
         targetSdk = 33
 
-        val versionCode: Int by rootProject.extra
-        val versionName: String by rootProject.extra
-        buildConfigField("int", "VERSION_CODE", versionCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
+        val appVersionCode: Int by rootProject.extra
+        val appVersionName: String by rootProject.extra
+        buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
+        buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
     }
 
     splits {

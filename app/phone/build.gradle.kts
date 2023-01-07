@@ -19,8 +19,12 @@ android {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 27
         targetSdk = 33
-        versionCode = 14
-        versionName = "0.8.0"
+
+        val appVersionCode: Int by rootProject.extra
+        val appVersionName: String by rootProject.extra
+
+        versionCode = appVersionCode
+        versionName = appVersionName
     }
 
     buildTypes {
