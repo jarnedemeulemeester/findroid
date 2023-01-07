@@ -195,8 +195,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            binding.episodeName.text = String.format(
-                getString(R.string.episode_name_extended),
+            binding.episodeName.text = getString(
+                R.string.episode_name_extended,
                 episode.parentIndexNumber,
                 episode.indexNumber,
                 episode.name

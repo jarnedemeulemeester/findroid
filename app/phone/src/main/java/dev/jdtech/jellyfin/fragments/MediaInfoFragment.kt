@@ -272,8 +272,8 @@ class MediaInfoFragment : Fragment() {
             binding.writers.text = writersString
             binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
-            binding.nextUpName.text = String.format(
-                getString(R.string.episode_name_extended),
+            binding.nextUpName.text = getString(
+                R.string.episode_name_extended,
                 nextUp?.parentIndexNumber,
                 nextUp?.indexNumber,
                 nextUp?.name

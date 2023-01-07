@@ -131,11 +131,9 @@ private fun ImageView.loadImage(
 }
 
 private fun View.posterDescription(name: String?) {
-    contentDescription =
-        String.format(context.resources.getString(R.string.image_description_poster), name)
+    contentDescription = context.resources.getString(R.string.image_description_poster, name)
 }
 
 private fun View.backdropDescription(name: String?) {
-    contentDescription =
-        String.format(context.resources.getString(R.string.image_description_backdrop), name)
+    contentDescription = context.resources.getString(R.string.image_description_backdrop, name)
 }

@@ -29,7 +29,7 @@ class ViewListAdapter(
         ) {
             val view = dataItem.view
             binding.view = view
-            binding.viewName.text = String.format(binding.viewName.context.resources.getString(R.string.latest_library), view.name)
+            binding.viewName.text = binding.viewName.context.resources.getString(R.string.latest_library, view.name)
             binding.itemsRecyclerView.adapter =
                 ViewItemListAdapter(onItemClickListener, fixedWidth = true)
             binding.viewAll.setOnClickListener {
