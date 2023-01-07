@@ -1,4 +1,5 @@
-include(":app")
+include(":app:phone")
+include(":core")
 
 pluginManagement {
     repositories {

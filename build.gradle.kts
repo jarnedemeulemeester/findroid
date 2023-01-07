@@ -2,6 +2,7 @@
 @Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
     alias(libs.plugins.kotlin.kapt) apply false
@@ -21,3 +22,6 @@ allprojects {
 tasks.create<Delete>("clean") {
     delete(rootProject.buildDir)
 }
+
+val versionCode by extra { 14 }
+val versionName by extra { "0.8.0" }

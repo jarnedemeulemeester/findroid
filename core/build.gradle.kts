@@ -1,0 +1,84 @@
+@Suppress("DSL_SCOPE_VIOLATION") // False positive
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.androidx.navigation.safeargs)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.aboutlibraries)
+    alias(libs.plugins.ktlint)
+}
+
+android {
+    namespace = "dev.jdtech.jellyfin"
+    compileSdk = 33
+    buildToolsVersion = "33.0.1"
+
+    defaultConfig {
+        minSdk = 27
+        targetSdk = 33
+
+        val versionCode: Int by rootProject.extra
+        val versionName: String by rootProject.extra
+        buildConfigField("int", "VERSION_CODE", versionCode.toString())
+        buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+}
+
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
+}
+
+dependencies {
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.recyclerview.selection)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.jellyfin.core)
+    implementation(libs.libmpv)
+    implementation(libs.material)
+    implementation(libs.timber)
+
+    // Media3 FFmpeg decoder
+    implementation(files("libs/lib-decoder-ffmpeg-release.aar"))
+}
