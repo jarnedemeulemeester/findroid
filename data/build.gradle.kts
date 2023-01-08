@@ -2,10 +2,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.androidx.navigation.safeargs)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.ktlint)
 }
 
@@ -47,23 +43,7 @@ ktlint {
 
 dependencies {
     implementation(project(":preferences"))
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.paging)
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.timber)
-
-    // Media3 FFmpeg decoder
-    // implementation(files("libs/lib-decoder-ffmpeg-release.aar"))
 }
