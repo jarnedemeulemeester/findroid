@@ -2,15 +2,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.androidx.navigation.safeargs)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.ktlint)
 }
 
 android {
-    namespace = "dev.jdtech.jellyfin.player.preferences"
+    namespace = "dev.jdtech.jellyfin.preferences"
     compileSdk = 33
     buildToolsVersion = "33.0.1"
 
@@ -41,18 +37,7 @@ ktlint {
 }
 
 dependencies {
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.media3.common)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.timber)
-
-    // Media3 FFmpeg decoder
-    // implementation(files("libs/lib-decoder-ffmpeg-release.aar"))
 }
