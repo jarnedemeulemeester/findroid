@@ -12,7 +12,7 @@ import dev.jdtech.jellyfin.models.ExceptionUiTexts
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.UiText
-import dev.jdtech.jellyfin.utils.AppPreferences
+import dev.jdtech.jellyfin.AppPreferences
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException

@@ -50,7 +50,13 @@ constructor(
                 items.filter { it.item?.type == BaseItemKind.EPISODE }.forEach {
                     showsMap.computeIfAbsent(it.item!!.seriesId!!) { mutableListOf() } += it
                 }
-                val shows = showsMap.map { DownloadSeriesMetadata(it.key, it.value[0].item!!.seriesName, it.value) }
+                val shows = showsMap.map {
+                    dev.jdtech.jellyfin.models.DownloadSeriesMetadata(
+                        it.key,
+                        it.value[0].item!!.seriesName,
+                        it.value
+                    )
+                }
 
                 val downloadSections = mutableListOf<DownloadSection>()
                 withContext(Dispatchers.Default) {

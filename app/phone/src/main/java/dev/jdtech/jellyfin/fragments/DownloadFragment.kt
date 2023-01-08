@@ -107,7 +107,7 @@ class DownloadFragment : Fragment() {
         )
     }
 
-    private fun navigateToDownloadSeriesFragment(series: DownloadSeriesMetadata) {
+    private fun navigateToDownloadSeriesFragment(series: dev.jdtech.jellyfin.models.DownloadSeriesMetadata) {
         findNavController().navigate(
             DownloadFragmentDirections.actionDownloadFragmentToDownloadSeriesFragment(
                 seriesMetadata = series, seriesName = series.name

@@ -23,7 +23,7 @@ constructor() : ViewModel() {
         data class Error(val error: Exception) : UiState()
     }
 
-    fun loadEpisodes(seriesMetadata: DownloadSeriesMetadata) {
+    fun loadEpisodes(seriesMetadata: dev.jdtech.jellyfin.models.DownloadSeriesMetadata) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
@@ -34,7 +34,7 @@ constructor() : ViewModel() {
         }
     }
 
-    private fun getEpisodes(seriesMetadata: DownloadSeriesMetadata): List<DownloadEpisodeItem> {
+    private fun getEpisodes(seriesMetadata: dev.jdtech.jellyfin.models.DownloadSeriesMetadata): List<DownloadEpisodeItem> {
         val episodes = seriesMetadata.episodes
         return listOf(DownloadEpisodeItem.Header) + episodes.sortedWith(
             compareBy(

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
-import dev.jdtech.jellyfin.utils.AppPreferences
 import timber.log.Timber
 
 @HiltAndroidApp

@@ -8,7 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.utils.AppPreferences
+import dev.jdtech.jellyfin.AppPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint

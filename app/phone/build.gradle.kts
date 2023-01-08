@@ -73,6 +73,10 @@ ktlint {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":data"))
+    implementation(project(":preferences"))
+    implementation(project(":player:core"))
+    implementation(project(":player:video"))
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)

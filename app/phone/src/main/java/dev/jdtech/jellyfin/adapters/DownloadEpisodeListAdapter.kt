@@ -20,14 +20,14 @@ private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class DownloadEpisodeListAdapter(
     private val onClickListener: OnClickListener,
-    private val downloadSeriesMetadata: DownloadSeriesMetadata
+    private val downloadSeriesMetadata: dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 ) :
     ListAdapter<DownloadEpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class HeaderViewHolder(private var binding: SeasonHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            metadata: DownloadSeriesMetadata
+            metadata: dev.jdtech.jellyfin.models.DownloadSeriesMetadata
         ) {
             binding.seasonName.text = metadata.name
             binding.seriesId = metadata.itemId

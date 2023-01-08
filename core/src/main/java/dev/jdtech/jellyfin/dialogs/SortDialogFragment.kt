@@ -6,7 +6,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.utils.SortBy
+import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalStateException
 import java.util.UUID

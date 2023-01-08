@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.utils
+package dev.jdtech.jellyfin
 
 import android.content.SharedPreferences
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE

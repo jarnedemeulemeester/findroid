@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.repository
 
 import androidx.paging.PagingData
-import dev.jdtech.jellyfin.utils.SortBy
+import dev.jdtech.jellyfin.models.SortBy
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto

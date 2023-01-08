@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.repository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.utils.SortBy
+import dev.jdtech.jellyfin.models.SortBy
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind

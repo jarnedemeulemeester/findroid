@@ -21,7 +21,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.AppPreferences
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import java.util.UUID
 import javax.inject.Inject

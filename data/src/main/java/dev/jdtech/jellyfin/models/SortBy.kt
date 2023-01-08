@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.utils
+package dev.jdtech.jellyfin.models
 
 enum class SortBy(val SortString: String) {
     NAME("SortName"),
