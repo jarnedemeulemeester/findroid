@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import java.lang.IllegalStateException

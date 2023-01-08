@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository

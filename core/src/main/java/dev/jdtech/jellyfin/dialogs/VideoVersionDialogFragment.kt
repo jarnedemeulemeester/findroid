@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.lang.IllegalStateException
 import org.jellyfin.sdk.model.api.BaseItemDto

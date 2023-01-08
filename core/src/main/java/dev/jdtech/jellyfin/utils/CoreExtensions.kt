@@ -8,13 +8,9 @@ import android.util.TypedValue
 import android.widget.ImageButton
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import dev.jdtech.jellyfin.AppNavigationDirections
 import dev.jdtech.jellyfin.models.View
 import java.io.Serializable
 import org.jellyfin.sdk.model.api.BaseItemDto
-import timber.log.Timber
 
 fun BaseItemDto.toView(): View {
     return View(
@@ -22,15 +18,6 @@ fun BaseItemDto.toView(): View {
         name = name,
         type = collectionType
     )
-}
-
-fun Fragment.checkIfLoginRequired(error: String?) {
-    if (error != null) {
-        if (error.contains("401")) {
-            Timber.d("Login required!")
-            findNavController().navigate(AppNavigationDirections.actionGlobalLoginFragment(reLogin = true))
-        }
-    }
 }
 
 fun Resources.dip(px: Int) = (px * displayMetrics.density).toInt()

@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.api
 
 import android.content.Context
-import dev.jdtech.jellyfin.BuildConfig
+import dev.jdtech.jellyfin.core.BuildConfig
 import dev.jdtech.jellyfin.utils.Constants
 import java.util.UUID
 import org.jellyfin.sdk.api.client.HttpClientOptions
