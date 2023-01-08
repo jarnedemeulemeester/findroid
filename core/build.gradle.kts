@@ -24,14 +24,18 @@ android {
         buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
     }
 
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+        create("staging") {
+            initWith(getByName("release"))
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
     }
 }
 
