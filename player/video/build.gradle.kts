@@ -16,11 +16,6 @@ android {
     defaultConfig {
         minSdk = 27
         targetSdk = 33
-
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-        buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
     }
 
     buildTypes {

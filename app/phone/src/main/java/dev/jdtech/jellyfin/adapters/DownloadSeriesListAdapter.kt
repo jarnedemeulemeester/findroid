@@ -13,11 +13,11 @@ import dev.jdtech.jellyfin.utils.downloadSeriesMetadataToBaseItemDto
 class DownloadSeriesListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-) : ListAdapter<dev.jdtech.jellyfin.models.DownloadSeriesMetadata, DownloadSeriesListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<DownloadSeriesMetadata, DownloadSeriesListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: dev.jdtech.jellyfin.models.DownloadSeriesMetadata, fixedWidth: Boolean) {
+        fun bind(item: DownloadSeriesMetadata, fixedWidth: Boolean) {
             binding.item = downloadSeriesMetadataToBaseItemDto(item)
             binding.itemName.text = item.name
             binding.itemCount.text = item.episodes.size.toString()
@@ -30,17 +30,17 @@ class DownloadSeriesListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<dev.jdtech.jellyfin.models.DownloadSeriesMetadata>() {
+    companion object DiffCallback : DiffUtil.ItemCallback<DownloadSeriesMetadata>() {
         override fun areItemsTheSame(
-            oldItem: dev.jdtech.jellyfin.models.DownloadSeriesMetadata,
-            newItem: dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+            oldItem: DownloadSeriesMetadata,
+            newItem: DownloadSeriesMetadata
         ): Boolean {
             return oldItem.itemId == newItem.itemId
         }
 
         override fun areContentsTheSame(
-            oldItem: dev.jdtech.jellyfin.models.DownloadSeriesMetadata,
-            newItem: dev.jdtech.jellyfin.models.DownloadSeriesMetadata
+            oldItem: DownloadSeriesMetadata,
+            newItem: DownloadSeriesMetadata
         ): Boolean {
             return oldItem == newItem
         }
@@ -65,7 +65,7 @@ class DownloadSeriesListAdapter(
         holder.bind(item, fixedWidth)
     }
 
-    class OnClickListener(val clickListener: (item: dev.jdtech.jellyfin.models.DownloadSeriesMetadata) -> Unit) {
-        fun onClick(item: dev.jdtech.jellyfin.models.DownloadSeriesMetadata) = clickListener(item)
+    class OnClickListener(val clickListener: (item: DownloadSeriesMetadata) -> Unit) {
+        fun onClick(item: DownloadSeriesMetadata) = clickListener(item)
     }
 }

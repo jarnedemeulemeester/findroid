@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.text.InputType
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
+import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.utils.Constants
 
 @Suppress("unused")
 class SettingsNetworkFragment : PreferenceFragmentCompat() {

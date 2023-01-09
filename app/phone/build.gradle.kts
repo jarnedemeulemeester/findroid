@@ -100,7 +100,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
-    implementation(libs.libmpv)
+    compileOnly(libs.libmpv)
     implementation(libs.material)
     implementation(libs.timber)
 }

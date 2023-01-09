@@ -51,7 +51,7 @@ constructor(
                     showsMap.computeIfAbsent(it.item!!.seriesId!!) { mutableListOf() } += it
                 }
                 val shows = showsMap.map {
-                    dev.jdtech.jellyfin.models.DownloadSeriesMetadata(
+                    DownloadSeriesMetadata(
                         it.key,
                         it.value[0].item!!.seriesName,
                         it.value

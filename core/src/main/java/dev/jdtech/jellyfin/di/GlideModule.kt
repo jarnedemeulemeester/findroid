@@ -9,7 +9,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy.RESOURCE
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
-import dev.jdtech.jellyfin.utils.Constants
+import dev.jdtech.jellyfin.Constants
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber

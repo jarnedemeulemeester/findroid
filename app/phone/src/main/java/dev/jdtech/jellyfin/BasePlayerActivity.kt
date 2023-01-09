@@ -13,7 +13,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     abstract val viewModel: PlayerActivityViewModel
 
-    lateinit var mediaSession: MediaSession
+    private lateinit var mediaSession: MediaSession
 
     override fun onStart() {
         super.onStart()
