@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
@@ -58,13 +59,11 @@ suspend fun requestDownload(
 }
 
 private fun downloadFile(request: DownloadManager.Request, context: Context): Long {
-    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val downloadOverData = preferences.getBoolean("download_mobile_data", false)
-    val downloadWhenRoaming = preferences.getBoolean("download_roaming", false)
+    val preferences = AppPreferences(PreferenceManager.getDefaultSharedPreferences(context))
 
     request.apply {
-        setAllowedOverMetered(downloadOverData)
-        setAllowedOverRoaming(downloadWhenRoaming)
+        setAllowedOverMetered(preferences.downloadOverMobileData)
+        setAllowedOverRoaming(preferences.downloadWhenRoaming)
     }
     return context.getSystemService<DownloadManager>()!!.enqueue(request)
 }

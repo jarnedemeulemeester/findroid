@@ -82,4 +82,46 @@ constructor(
         Constants.PREF_NETWORK_SOCKET_TIMEOUT,
         Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString()
     )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
+
+    // Cache
+    val imageCache get() = sharedPreferences.getBoolean(
+        Constants.PREF_IMAGE_CACHE,
+        true
+    )
+    val imageCacheSize get() = sharedPreferences.getString(
+        Constants.PREF_IMAGE_CACHE_SIZE,
+        Constants.DEFAULT_CACHE_SIZE.toString()
+    )!!.toIntOrNull() ?: Constants.DEFAULT_CACHE_SIZE
+
+    // Downloads
+    val downloadOverMobileData get() = sharedPreferences.getBoolean(
+        Constants.PREF_DOWNLOADS_MOBILE_DATA,
+        false
+    )
+    val downloadWhenRoaming get() = sharedPreferences.getBoolean(
+        Constants.PREF_DOWNLOADS_ROAMING,
+        false
+    )
+
+    // Sorting
+    var sortBy: String
+        get() = sharedPreferences.getString(
+            Constants.PREF_SORT_BY,
+            Constants.DEFAULT_SORT_BY
+        )!!
+        set(value) {
+            sharedPreferences.edit {
+                putString(Constants.PREF_SORT_BY, value)
+            }
+        }
+    var sortOrder
+        get() = sharedPreferences.getString(
+            Constants.PREF_SORT_ORDER,
+            Constants.DEFAULT_SORT_ORDER
+        )!!
+        set(value) {
+            sharedPreferences.edit {
+                putString(Constants.PREF_SORT_ORDER, value)
+            }
+        }
 }

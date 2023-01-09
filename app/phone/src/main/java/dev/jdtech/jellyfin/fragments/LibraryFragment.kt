@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -20,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
@@ -44,7 +44,7 @@ class LibraryFragment : Fragment() {
     private lateinit var errorDialog: ErrorDialogFragment
 
     @Inject
-    lateinit var sp: SharedPreferences
+    lateinit var preferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -146,9 +146,9 @@ class LibraryFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 // Sorting options
-                val sortBy = SortBy.fromString(sp.getString("sortBy", SortBy.defaultValue.name)!!)
+                val sortBy = SortBy.fromString(preferences.sortBy)
                 val sortOrder = try {
-                    SortOrder.valueOf(sp.getString("sortOrder", SortOrder.ASCENDING.name)!!)
+                    SortOrder.valueOf(preferences.sortOrder)
                 } catch (e: IllegalArgumentException) {
                     SortOrder.ASCENDING
                 }

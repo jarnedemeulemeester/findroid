@@ -32,6 +32,10 @@ object Constants {
     const val PREF_NETWORK_REQUEST_TIMEOUT = "pref_network_request_timeout"
     const val PREF_NETWORK_CONNECT_TIMEOUT = "pref_network_connect_timeout"
     const val PREF_NETWORK_SOCKET_TIMEOUT = "pref_network_socket_timeout"
+    const val PREF_DOWNLOADS_MOBILE_DATA = "pref_downloads_mobile_data"
+    const val PREF_DOWNLOADS_ROAMING = "pref_downloads_roaming"
+    const val PREF_SORT_BY = "pref_sort_by"
+    const val PREF_SORT_ORDER = "pref_sort_order"
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20
@@ -45,4 +49,9 @@ object Constants {
     const val NETWORK_DEFAULT_REQUEST_TIMEOUT = 30_000L
     const val NETWORK_DEFAULT_CONNECT_TIMEOUT = 6_000L
     const val NETWORK_DEFAULT_SOCKET_TIMEOUT = 10_000L
+
+    // sorting
+    // This values must correspond to a SortString from [SortBy]
+    const val DEFAULT_SORT_BY = "SortName"
+    const val DEFAULT_SORT_ORDER = "Ascending"
 }

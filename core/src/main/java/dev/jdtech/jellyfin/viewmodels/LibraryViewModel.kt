@@ -47,7 +47,6 @@ constructor(
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
-
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
                     includeTypes = if (itemType != null) listOf(itemType) else null,

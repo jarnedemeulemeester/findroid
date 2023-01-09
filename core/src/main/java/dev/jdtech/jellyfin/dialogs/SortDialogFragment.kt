@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -20,18 +21,18 @@ class SortDialogFragment(
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val sp = PreferenceManager.getDefaultSharedPreferences(it.applicationContext)
+            val preferences = AppPreferences(PreferenceManager.getDefaultSharedPreferences(it.applicationContext))
             val builder = MaterialAlertDialogBuilder(it)
 
             // Current sort by
-            val currentSortByString = sp.getString("sortBy", SortBy.defaultValue.name)!!
+            val currentSortByString = preferences.sortBy
             val currentSortBy = SortBy.fromString(currentSortByString)
 
             // Current sort order
-            val currentSortOrderString = sp.getString("sortOrder", SortOrder.ASCENDING.name)!!
+            val currentSortOrderString = preferences.sortOrder
             val currentSortOrder = try {
                 SortOrder.valueOf(currentSortOrderString)
-            } catch (e: java.lang.IllegalArgumentException) {
+            } catch (e: IllegalArgumentException) {
                 SortOrder.ASCENDING
             }
 
@@ -44,11 +45,12 @@ class SortDialogFragment(
                         .setSingleChoiceItems(
                             sortByOptions, currentSortBy.ordinal
                         ) { dialog, which ->
-                            sp.edit().putString("sortBy", sortByValues[which].name).apply()
+                            val sortBy = sortByValues[which]
+                            preferences.sortBy = sortBy.name
                             viewModel.loadItems(
                                 parentId,
                                 libraryType,
-                                sortBy = sortByValues[which],
+                                sortBy = sortBy,
                                 sortOrder = currentSortOrder
                             )
                             dialog.dismiss()
@@ -63,13 +65,13 @@ class SortDialogFragment(
                         .setSingleChoiceItems(
                             sortByOptions, currentSortOrder.ordinal
                         ) { dialog, which ->
-                            sp.edit().putString("sortOrder", sortOrderValues[which].name).apply()
-
                             val sortOrder = try {
                                 sortOrderValues[which]
                             } catch (e: IllegalArgumentException) {
                                 SortOrder.ASCENDING
                             }
+
+                            preferences.sortOrder = sortOrder.name
 
                             viewModel.loadItems(
                                 parentId,
