@@ -9,13 +9,13 @@
     <string name="add_server_error_empty_address">Endereço de servidor vazio</string>
     <string name="add_server_error_not_found">Servidor não encontrado</string>
     <string name="add_server_error_no_id">O servidor não tem identificação, algo parece estar errado com o servidor</string>
-    <string name="login">Inicio de Sessão</string>
+    <string name="login">Início de Sessão</string>
     <string name="select_server">Selecionar servidor</string>
     <string name="edit_text_server_address_hint">Endereço de servidor</string>
     <string name="button_connect">Ligar</string>
     <string name="edit_text_username_hint">Utilizador</string>
     <string name="edit_text_password_hint">Senha</string>
-    <string name="title_home">Inicio</string>
+    <string name="title_home">Início</string>
     <string name="cancel">Cancelar</string>
     <string name="remove">Remover</string>
     <string name="remove_server">Remover Servidor</string>
@@ -116,7 +116,7 @@
     <string name="settings_request_timeout">Pedido de tempo limite (ms)</string>
     <string name="settings_connect_timeout">Tempo limite de ligação (ms)</string>
     <string name="settings_socket_timeout">Tempo limite de ligação (ms)</string>
-    <string name="genres">Genero</string>
+    <string name="genres">Género</string>
     <string name="director">Diretor</string>
     <string name="cast_amp_crew">Elenco e Equipa</string>
     <string name="trailer_button_description">Ver o trailer</string>

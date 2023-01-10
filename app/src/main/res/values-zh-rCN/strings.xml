@@ -136,7 +136,7 @@
     <string name="theme_dark">深色</string>
     <string name="episodes_label">季</string>
     <string name="remove_user">移除用户</string>
-    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗？</string>
+    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗\?</string>
     <string name="settings_category_network">网络</string>
     <string name="settings_request_timeout">请求超时</string>
     <string name="settings_connect_timeout">连接超时</string>
@@ -147,4 +147,8 @@
     <string name="pref_player_mpv_hwdec_codecs">硬解解码器</string>
     <string name="pref_player_mpv_vo">视频输出</string>
     <string name="pref_player_mpv_ao">音频输出</string>
+    <string name="addresses">地址</string>
+    <string name="add_address">添加地址</string>
+    <string name="add_server_address">添加服务器地址</string>
+    <string name="add">添加</string>
 </resources>

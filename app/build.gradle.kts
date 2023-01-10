@@ -74,7 +74,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
-    implementation(libs.androidx.leanback)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.exoplayer)
@@ -95,11 +94,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
+    implementation(libs.libmpv)
     implementation(libs.material)
     implementation(libs.timber)
-
-    // MPV
-    implementation(files("libs/libmpv.aar"))
 
     // Media3 FFmpeg decoder
     implementation(files("libs/lib-decoder-ffmpeg-release.aar"))

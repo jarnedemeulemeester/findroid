@@ -16,7 +16,7 @@
     <string name="remove">Remover</string>
     <string name="cancel">Cancelar</string>
     <string name="title_home">Início</string>
-    <string name="title_media">Minha mídia</string>
+    <string name="title_media">Minhas mídia</string>
     <string name="title_favorite">Favoritos</string>
     <string name="title_settings">Configurações</string>
     <string name="title_download">Downloads</string>
@@ -137,8 +137,18 @@
     <string name="sort_by_options_4">Data de Reprodução</string>
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
-    <string name="pref_player_mpv_vo">Saida de video</string>
+    <string name="pref_player_mpv_vo">Saida de vídeo</string>
     <string name="remove_user">Remover usuário</string>
     <string name="remove_user_dialog_text">Tem certeza que deseja remover o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
+    <string name="addresses">Endereços</string>
+    <string name="add_address">Adicionar endereço</string>
+    <string name="add_server_address">Adicionar endereço do servidor</string>
+    <string name="add">Adicionar</string>
+    <string name="seeking">Buscando</string>
+    <string name="seek_forward_increment">Incremento para frente (ms)</string>
+    <string name="seek_back_increment">Incremento para trás (ms)</string>
+    <string name="settings_socket_timeout">Tempo limite do soquete (ms)</string>
+    <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
+    <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
 </resources>

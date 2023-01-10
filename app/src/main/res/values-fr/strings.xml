@@ -117,7 +117,7 @@
     <string name="settings_cache_size_message">L\'application utilisera cette taille en MB pour stocker les images de votre serveur Jellyfin sur votre appareil. Allouer un plus grand espace peut être bénéfique si votre réseau est lent.</string>
     <string name="error_preparing_player_items">Erreur lors de la préparation de la lecture de vos médias.</string>
     <string name="download_roaming">Télécharger en itinérance</string>
-    <string name="person_detail_title">Détails sur la personne</string>
+    <string name="person_detail_title">Détails</string>
     <string name="error_getting_person_id">Détails indisponibles</string>
     <string name="player_gestures_vb">Gestes de volume et de luminosité</string>
     <string name="player_gestures_zoom">Geste de zoom</string>
@@ -140,4 +140,5 @@
     <string name="remove_user">Supprimer l\'utilisateur</string>
     <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
     <string name="users">Utilisateurs</string>
+    <string name="pref_player_mpv_hwdec_codecs">Décodages matériels supportés</string>
 </resources>

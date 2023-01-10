@@ -1,7 +1,5 @@
 package dev.jdtech.jellyfin
 
-import android.app.UiModeManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -26,7 +24,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var uiModeManager: UiModeManager
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -43,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
 
         setContentView(binding.root)
 
@@ -53,52 +49,40 @@ class MainActivity : AppCompatActivity() {
         val inflater = navController.navInflater
         val graph = inflater.inflate(R.navigation.app_navigation)
 
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            graph.setStartDestination(R.id.homeFragmentTv)
-            checkServersEmpty(graph)
-            checkUser(graph)
-            if (!viewModel.startDestinationTvChanged) {
-                viewModel.startDestinationTvChanged = true
-                navController.setGraph(graph, intent.extras)
-            }
-        } else {
-            checkServersEmpty(graph) {
-                navController.setGraph(graph, intent.extras)
-            }
-            checkUser(graph) {
-                navController.setGraph(graph, intent.extras)
-            }
+        checkServersEmpty(graph) {
+            navController.setGraph(graph, intent.extras)
+        }
+        checkUser(graph) {
+            navController.setGraph(graph, intent.extras)
         }
 
-        if (uiModeManager.currentModeType != Configuration.UI_MODE_TYPE_TELEVISION) {
-            val navView: NavigationBarView = binding.navView as NavigationBarView
+        val navView: NavigationBarView = binding.navView as NavigationBarView
 
-            setSupportActionBar(binding.mainToolbar)
+        setSupportActionBar(binding.mainToolbar)
 
-            // Passing each menu ID as a set of Ids because each
-            // menu should be considered as top level destinations.
-            val appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.homeFragment,
-                    R.id.mediaFragment,
-                    R.id.favoriteFragment,
-                    R.id.downloadFragment
-                )
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.homeFragment,
+                R.id.mediaFragment,
+                R.id.favoriteFragment,
+                R.id.downloadFragment
             )
+        )
 
-            setupActionBarWithNavController(navController, appBarConfiguration)
-            // navView.setupWithNavController(navController)
-            // Don't save the state of other main navigation items, only this experimental function allows turning off this behavior
-            NavigationUI.setupWithNavController(navView, navController, false)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        // navView.setupWithNavController(navController)
+        // Don't save the state of other main navigation items, only this experimental function allows turning off this behavior
+        NavigationUI.setupWithNavController(navView, navController, false)
 
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                binding.navView!!.visibility = when (destination.id) {
-                    R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, R.id.about_libraries_dest, R.id.usersFragment, R.id.serverAddressesFragment -> View.GONE
-                    else -> View.VISIBLE
-                }
-                if (destination.id == R.id.about_libraries_dest) binding.mainToolbar?.title =
-                    getString(R.string.app_info)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.navView.visibility = when (destination.id) {
+                R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, R.id.about_libraries_dest, R.id.usersFragment, R.id.serverAddressesFragment -> View.GONE
+                else -> View.VISIBLE
             }
+            if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title =
+                getString(R.string.app_info)
         }
 
         loadDownloadLocation(applicationContext)

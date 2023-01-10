@@ -18,8 +18,9 @@ androidx-swiperefreshlayout = "1.1.0"
 glide = "4.14.2"
 hilt = "2.44.2"
 jellyfin = "1.4.0"
-kotlin = "1.7.22"
+kotlin = "1.8.0"
 ktlint = "11.0.0"
+libmpv = "0.1.0"
 material = "1.7.0"
 timber = "5.0.1"
 
@@ -51,6 +52,7 @@ glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jellyfin" }
+libmpv = { module = "dev.jdtech.mpv:libmpv", version.ref = "libmpv" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
