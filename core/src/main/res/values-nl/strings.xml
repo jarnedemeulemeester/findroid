@@ -17,8 +17,8 @@
     <string name="remove_server">Server verwijderen</string>
     <string name="remove">Verwijderen</string>
     <string name="edit_text_server_address_hint">Server adres</string>
-    <string name="login">Inlogen</string>
-    <string name="button_login">Inlogen</string>
+    <string name="login">Inloggen</string>
+    <string name="button_login">Inloggen</string>
     <string name="title_favorite">Favorieten</string>
     <string name="add_server_error_no_id">Server heeft geen id, er lijkt iets miss te zijn met de server</string>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
@@ -26,8 +26,6 @@
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Speler</string>
     <string name="remove_server_dialog_text">Weet je zeker dat je de server wilt verwijderen %1$s</string>
-    <string name="select_subtile_track">Selecteer ondertiteling</string>
-    <string name="select_playback_speed">Selecteer afspeelsnelheid</string>
     <string name="mpv_player">mpv speler</string>
     <string name="download_mobile_data">Download met mobiele data</string>
     <string name="download_roaming">Download met roaming</string>
@@ -40,7 +38,6 @@
     <string name="subtitles_summary">pas het uiterlijk van ondertiteling aan</string>
     <string name="seeking">Zoeken</string>
     <string name="seek_back_increment">Terugzoek stappen (ms)</string>
-    <string name="external">Extern</string>
     <string name="theme_system">Volg systeem</string>
     <string name="theme_light">Licht</string>
     <string name="theme_dark">Donker</string>
@@ -141,8 +138,6 @@
     <string name="app_info">App info</string>
     <string name="unknown_error">Onbekende fout</string>
     <string name="search_hint">Zoek films, series, afleveringen…</string>
-    <string name="select_a_version">Kies een versie</string>
-    <string name="select_audio_track">Selecteer audiotrack</string>
     <string name="mpv_player_summary">Gebruik de experimentele mpv speler om videos af te spelen. mpv heeft ondersteuning voor meer video, audio en ondertiteling codecs.</string>
     <string name="download_button_description">Download</string>
     <string name="delete_button_description">Verwijderen</string>

@@ -73,11 +73,7 @@
     <string name="settings_category_device">Устройство</string>
     <string name="settings_use_cache_title">Кэшировать изображения</string>
     <string name="settings_use_cache_summary">Кэшировать изображения на диск ускорит время загрузки. Требуется перезапуск приложения.</string>
-    <string name="select_subtile_track">Выбрать субтитры</string>
-    <string name="select_playback_speed">Выбрать скорость воспроизведения</string>
     <string name="mpv_player">Проигрыватель mpv</string>
-    <string name="select_a_version">Выбрать версию</string>
-    <string name="select_audio_track">Выбрать аудиодорожку</string>
     <string name="download_mobile_data">Скачивать через мобильный интернет</string>
     <string name="download_roaming">Скачивать в роуминге</string>
     <string name="mpv_player_summary">Использовать экспериментальный проигрыватель mpv. Он имеет большую поддержку форматов аудио, видео и субтитров.</string>

@@ -75,10 +75,6 @@
     <string name="app_info">Información de la aplicación</string>
     <string name="unknown_error">Error desconocido</string>
     <string name="search_hint">Buscar películas, series, episodios…</string>
-    <string name="select_a_version">Selecciona una versión</string>
-    <string name="select_audio_track">Selecciona la pista de audio</string>
-    <string name="select_subtile_track">Selecciona la pista de subtítulo</string>
-    <string name="select_playback_speed">Selecciona la velocidad de reproducción</string>
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor experimental MPV parar reproducir contenidos. MPV soporta mas códecs de vídeo, audio y subtítulos.</string>
     <string name="download_button_description">Descarga</string>
@@ -95,7 +91,7 @@
     <string name="image_description_poster">Poster de %1$s</string>
     <string name="image_description_backdrop">Fondo de %1$s</string>
     <string name="sort_by_options_0">Título</string>
-    <string name="sort_by_options_1">Calificación IMDB</string>
+    <string name="sort_by_options_1">Calificación IMDb</string>
     <string name="sort_by_options_2">Clasificación de edad</string>
     <string name="sort_by_options_3">Fecha de adición</string>
     <string name="sort_by_options_4">Fecha de reproducción</string>
@@ -131,7 +127,6 @@
     <string name="libraries">Bibliotecas</string>
     <string name="dynamic_colors">Colores dinámicos</string>
     <string name="dynamic_colors_summary">Usar colores dinámicos de Material You (solo en Android 12+)</string>
-    <string name="external">Externo</string>
     <string name="theme_system">Seguir tema del dispositivo</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>

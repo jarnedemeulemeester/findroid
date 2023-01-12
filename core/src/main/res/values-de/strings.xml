@@ -55,10 +55,6 @@
     <string name="app_info">App Info</string>
     <string name="unknown_error">Unbekannter Fehler</string>
     <string name="search_hint">Suche Filme, Serien, Episoden…</string>
-    <string name="select_a_version">Wähle eine Version</string>
-    <string name="select_audio_track">Wähle eine Audiospur</string>
-    <string name="select_subtile_track">Wähle eine Untertitelspur</string>
-    <string name="select_playback_speed">Wähle Wiedergabegeschwindigkeit</string>
     <string name="mpv_player">MPV Mediaplayer</string>
     <string name="download_mobile_data">Über mobile Daten herunterladen</string>
     <string name="download_roaming">Über Roaming herunterladen</string>
@@ -122,7 +118,6 @@
     <string name="seeking">Suchen</string>
     <string name="subtitles">Untertitel</string>
     <string name="subtitles_summary">Untertitel anpassen</string>
-    <string name="external">Extern</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="episodes_label">Episoden</string>

@@ -62,9 +62,6 @@
     <string name="app_info">應用程式資訊</string>
     <string name="unknown_error">未知錯誤</string>
     <string name="search_hint">搜尋電影、節目、影集…</string>
-    <string name="select_a_version">選擇版本</string>
-    <string name="select_audio_track">選擇音軌</string>
-    <string name="select_playback_speed">選擇播放速度</string>
     <string name="download_roaming">漫遊時下載</string>
     <string name="mpv_player">mpv 播放器</string>
     <string name="download_button_description">下載</string>
@@ -108,7 +105,6 @@
     <string name="dynamic_colors">動態色彩</string>
     <string name="subtitles">字幕</string>
     <string name="subtitles_summary">自訂字幕外觀</string>
-    <string name="external">外部的</string>
     <string name="theme_system">跟隨系統</string>
     <string name="theme_light">明亮</string>
     <string name="theme_dark">黑暗</string>
@@ -134,7 +130,6 @@
     <string name="settings_cache_size_message">應用程式將使用此大小的磁碟空間儲存來自 Jellyfin 伺服器的圖片。 較大的值可能對較慢的網路有益。</string>
     <string name="view_details">查看詳情</string>
     <string name="view_details_underlined"><u>查看詳情</u></string>
-    <string name="select_subtile_track">選擇字幕軌道</string>
     <string name="download_mobile_data">使用行動網路下載</string>
     <string name="mpv_player_summary">使用實驗性 mpv 播放器播放影片。 mpv 支援更多的影片、音訊和字幕編解碼器。</string>
     <string name="sort_by">排序方式</string>

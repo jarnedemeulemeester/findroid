@@ -14,10 +14,6 @@
     <string name="app_info">앱 정보</string>
     <string name="unknown_error">알 수 없는 오류</string>
     <string name="search_hint">영화, 시리즈, 에피소드 검색…</string>
-    <string name="select_a_version">버전 선택</string>
-    <string name="select_audio_track">오디오 트랙 선택</string>
-    <string name="select_subtile_track">자막 트랙 선택</string>
-    <string name="select_playback_speed">재생 속도 선택</string>
     <string name="download_mobile_data">모바일 데이터를 사용하여 다운로드</string>
     <string name="mpv_player">mpv 플레이어</string>
     <string name="download_roaming">로밍 중에도 다운로드</string>
@@ -130,7 +126,6 @@
     <string name="libraries">라이브러리</string>
     <string name="subtitles">자막</string>
     <string name="subtitles_summary">자막 스타일 커스텀</string>
-    <string name="external">외부</string>
     <string name="theme_system">기기 테마와 동기화</string>
     <string name="theme_light">라이트 모드</string>
     <string name="theme_dark">다크 모드</string>

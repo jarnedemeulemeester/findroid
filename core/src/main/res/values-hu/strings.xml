@@ -68,10 +68,6 @@
     <string name="display_extended_title">Bővített cím megjelenítése</string>
     <string name="app_description">Egy egyedi, natív Jellyfin alkalmazás</string>
     <string name="remove_server">Szerver törlése</string>
-    <string name="select_a_version">Verzió kiválasztása</string>
-    <string name="select_audio_track">Hangsáv kiválasztása</string>
-    <string name="select_subtile_track">Felirat kiválasztása</string>
-    <string name="select_playback_speed">Lejátszási sebesség kiválasztása</string>
     <string name="mpv_player">mpv lejátszó</string>
     <string name="download_roaming">Letöltés roaming közben</string>
     <string name="download_button_description">Letöltés</string>

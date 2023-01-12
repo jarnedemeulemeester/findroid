@@ -54,10 +54,6 @@
     <string name="app_info">Info da Aplicação</string>
     <string name="unknown_error">Erro Desconhecido</string>
     <string name="search_hint">Procurar filmes, séries, episódios…</string>
-    <string name="select_a_version">Selecionar a versão</string>
-    <string name="select_audio_track">Seleccione a faixa de áudio</string>
-    <string name="select_subtile_track">Seleccione as legendas</string>
-    <string name="select_playback_speed">Seleccionar velocidade de reprodução</string>
     <string name="about">Sobre</string>
     <string name="mpv_player">mpv player</string>
     <string name="download_mobile_data">Transferir com dados móveis</string>
@@ -123,7 +119,6 @@
     <string name="player_controls_pause">Pausa</string>
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
-    <string name="external">Externo</string>
     <string name="display_extended_title_summary">Mostrar título de episódio alargado incluindo temporada e informação de episódio (SXX:EXX - EpisodeName).</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
     <string name="continue_watching">Continuar a ver</string>

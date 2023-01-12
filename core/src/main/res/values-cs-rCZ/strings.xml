@@ -67,8 +67,6 @@
     <string name="privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="app_info">Informace o aplikaci</string>
     <string name="unknown_error">Neočekávaná chyba</string>
-    <string name="select_audio_track">Vyberte zvukovou stopu</string>
-    <string name="select_subtile_track">Vyberte titulky</string>
     <string name="mpv_player">mpv přehrávač</string>
     <string name="mpv_player_summary">Použít experimentální mpv přehrávač k přehrávání videí. mpv má podporu pro více video a audio kodeků a formátů titulků.</string>
     <string name="image_description_poster">%1$s plakát</string>

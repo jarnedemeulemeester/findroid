@@ -60,9 +60,6 @@
     <string name="sort_order">Ред на сортиране</string>
     <string name="download_mobile_data">Свалете с мобилна дата</string>
     <string name="ascending">Възходящ</string>
-    <string name="select_audio_track">Изберете аудиопът</string>
-    <string name="select_subtile_track">Изберете писта за субтитри</string>
-    <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
     <string name="mpv_player">mpv плейър</string>
     <string name="delete_button_description">Изтрийте</string>
     <string name="download_button_description">Свалете</string>
@@ -81,7 +78,6 @@
     <string name="app_info">Информация за приложението</string>
     <string name="unknown_error">Непозната грешка</string>
     <string name="search_hint">Търсене на филми, предавания, епизоди…</string>
-    <string name="select_a_version">Изберете версия</string>
     <string name="select_server">Изберете сървър</string>
     <string name="add_server">Добавете сървър</string>
     <string name="add_server_error_outdated">Версията на сървъра е остаряла: %1$s. Моля ъпдейтнете сървъра</string>

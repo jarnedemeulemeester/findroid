@@ -59,10 +59,6 @@
     <string name="app_info">应用详情</string>
     <string name="unknown_error">您的订阅已到期, 请登录官网续费</string>
     <string name="search_hint">搜索电影、节目、集名…</string>
-    <string name="select_a_version">选择版本</string>
-    <string name="select_audio_track">选择音轨</string>
-    <string name="select_subtile_track">选择字幕轨</string>
-    <string name="select_playback_speed">选择播放速度</string>
     <string name="mpv_player">mpv播放器</string>
     <string name="download_mobile_data">使用移动数据下载</string>
     <string name="download_roaming">漫游时下载</string>
@@ -130,7 +126,6 @@
     <string name="dynamic_colors">动态色彩</string>
     <string name="dynamic_colors_summary">使用 Material You 动态颜色（仅适用于 Android 12+）</string>
     <string name="libraries">库</string>
-    <string name="external">加载</string>
     <string name="theme_system">跟随系统</string>
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>

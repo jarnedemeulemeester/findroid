@@ -69,7 +69,6 @@
     <string name="settings_cache_size">Dimensione della cache (MB)</string>
     <string name="trailer_button_description">Guarda il trailer</string>
     <string name="settings_cache_size_message">L\'app userà questa quantità di MB per salvare le immagini del tuo server Jellyfin. Valori alti potrebbero aiutarti in caso di connessione lenta.</string>
-    <string name="select_audio_track">Seleziona traccia audio</string>
     <string name="mpv_player_summary">Usa il player MPV sperimentale per riprodurre i video. MPV supporta più video, audio e sottotitoli.</string>
     <string name="seek_forward_increment">Salta avanti di (ms)</string>
     <string name="person_detail_title">Dettagli</string>
@@ -82,9 +81,6 @@
     <string name="app_info">Info App</string>
     <string name="unknown_error">Errore sconosciuto</string>
     <string name="search_hint">Cerca film, serie, episodi…</string>
-    <string name="select_a_version">Seleziona una versione</string>
-    <string name="select_subtile_track">Seleziona sottotilo</string>
-    <string name="select_playback_speed">Seleziona velocità di riproduzione</string>
     <string name="mpv_player">mpv player</string>
     <string name="download_mobile_data">Scarica usando i dati cellulare</string>
     <string name="download_roaming">Scarica in roaming</string>
@@ -128,7 +124,6 @@
     <string name="subtitles">Sottotitoli</string>
     <string name="subtitles_summary">Personalizza lo stile dei sottotitoli</string>
     <string name="libraries">Librerie</string>
-    <string name="external">Esterno</string>
     <string name="dynamic_colors">Colori dinamici</string>
     <string name="dynamic_colors_summary">Usa i colori dinamici Material You (disponibile solo per Android 12+)</string>
     <string name="remove_user">Rimuovi utente</string>

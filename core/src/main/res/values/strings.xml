@@ -78,10 +78,6 @@
     <string name="app_info">App info</string>
     <string name="unknown_error">Unknown error</string>
   	<string name="search_hint">Search movies, shows, episodes…</string>
-    <string name="select_a_version">"Select a version"</string>
-    <string name="select_audio_track">Select audio track</string>
-    <string name="select_subtile_track">Select subtitle track</string>
-    <string name="select_playback_speed">Select playback speed</string>
     <string name="mpv_player">mpv player</string>
     <string name="download_mobile_data">Download using mobile data</string>
     <string name="download_roaming">Download when roaming</string>
@@ -133,7 +129,6 @@
     <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
-    <string name="external">External</string>
     <string name="theme_system">Follow system</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>

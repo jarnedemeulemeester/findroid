@@ -4,7 +4,6 @@
     <string name="settings_use_cache_summary">Przechowuj obrazy w pamięci podręcznej by przyspieszyć ładowanie. Zadziała po ponownym uruchomieniu aplikacji.</string>
     <string name="settings_cache_size_message">Aplikacja zużyje tyle pamięci urządzenia by przechowywać obrazy z serwera Jellyfin. Większe wartości mogą być korzystne w wolnych sieciach.</string>
     <string name="view_details_underlined"><u>Zobacz szczegóły</u></string>
-    <string name="select_a_version">Wybierz wersję</string>
     <string name="download_mobile_data">Pobieraj używając danych komórkowych</string>
     <string name="mpv_player_summary">Używaj eksperymentalnego odtwarzacza MPV do odtwarzania wideo. MPV wspiera więcej kodeków wideo, audio i napisów.</string>
     <string name="player_gestures_vb_summary">Przesuń w górę lub w dół po prawej stronie ekrany by zmienić głośność, po lewej stronie by zmienić jasność</string>
@@ -77,9 +76,6 @@
     <string name="app_info">Informacje o aplikacji</string>
     <string name="unknown_error">Nieznany błąd</string>
     <string name="search_hint">Szukaj filmów, seriali, odcinków…</string>
-    <string name="select_audio_track">Wybierz ścieżkę audio</string>
-    <string name="select_subtile_track">Wybierz ścieżkę napisów</string>
-    <string name="select_playback_speed">Wybierz prędkość odtwarzania</string>
     <string name="mpv_player">Odtwarzacz MPV</string>
     <string name="download_roaming">Pobieraj w roamingu</string>
     <string name="download_button_description">Pobierz</string>
@@ -133,7 +129,6 @@
     <string name="subtitles_summary">Dostosuj wygląd napisów</string>
     <string name="subtitles">Napisy</string>
     <string name="seeking">Przesuwanie</string>
-    <string name="external">Zewnętrzny</string>
     <string name="theme_system">Zgodnie z systemem</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_dark">Ciemny</string>
