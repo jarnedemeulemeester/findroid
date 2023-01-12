@@ -3,8 +3,8 @@ package dev.jdtech.jellyfin.dialogs
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.SortBy
@@ -12,24 +12,28 @@ import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalStateException
 import java.util.UUID
 import org.jellyfin.sdk.model.api.SortOrder
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SortDialogFragment(
     private val parentId: UUID,
     private val libraryType: String?,
     private val viewModel: LibraryViewModel,
     private val sortType: String
 ) : DialogFragment() {
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val preferences = AppPreferences(PreferenceManager.getDefaultSharedPreferences(it.applicationContext))
             val builder = MaterialAlertDialogBuilder(it)
 
             // Current sort by
-            val currentSortByString = preferences.sortBy
+            val currentSortByString = appPreferences.sortBy
             val currentSortBy = SortBy.fromString(currentSortByString)
 
             // Current sort order
-            val currentSortOrderString = preferences.sortOrder
+            val currentSortOrderString = appPreferences.sortOrder
             val currentSortOrder = try {
                 SortOrder.valueOf(currentSortOrderString)
             } catch (e: IllegalArgumentException) {
@@ -46,7 +50,7 @@ class SortDialogFragment(
                             sortByOptions, currentSortBy.ordinal
                         ) { dialog, which ->
                             val sortBy = sortByValues[which]
-                            preferences.sortBy = sortBy.name
+                            appPreferences.sortBy = sortBy.name
                             viewModel.loadItems(
                                 parentId,
                                 libraryType,
@@ -71,7 +75,7 @@ class SortDialogFragment(
                                 SortOrder.ASCENDING
                             }
 
-                            preferences.sortOrder = sortOrder.name
+                            appPreferences.sortOrder = sortOrder.name
 
                             viewModel.loadItems(
                                 parentId,
