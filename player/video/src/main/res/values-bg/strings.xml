@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_audio_track">Изберете аудиопът</string>
+    <string name="select_subtile_track">Изберете писта за субтитри</string>
+    <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
+    <string name="select_a_version">Изберете версия</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">Selecciona una versión</string>
+    <string name="select_audio_track">Selecciona la pista de audio</string>
+    <string name="select_subtile_track">Selecciona la pista de subtítulo</string>
+    <string name="select_playback_speed">Selecciona la velocidad de reproducción</string>
+    <string name="external">Externo</string>
+</resources>

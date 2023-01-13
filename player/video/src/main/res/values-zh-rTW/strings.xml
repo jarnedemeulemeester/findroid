@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">選擇版本</string>
+    <string name="select_audio_track">選擇音軌</string>
+    <string name="select_subtile_track">選擇字幕軌道</string>
+    <string name="select_playback_speed">選擇播放速度</string>
+    <string name="external">外部的</string>
+</resources>
