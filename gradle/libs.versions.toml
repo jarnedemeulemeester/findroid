@@ -2,7 +2,7 @@
 aboutlibraries = "10.5.2"
 android-plugin = "7.4.0"
 androidx-activity = "1.6.1"
-androidx-appcompat = "1.5.1"
+androidx-appcompat = "1.6.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.9.0"
 androidx-leanback = "1.2.0-alpha02"
