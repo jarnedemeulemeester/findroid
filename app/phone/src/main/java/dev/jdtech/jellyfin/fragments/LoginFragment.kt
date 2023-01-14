@@ -1,10 +1,12 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -110,13 +112,15 @@ class LoginFragment : Fragment() {
                         is LoginViewModel.QuickConnectUiState.Normal -> {
                             binding.buttonQuickconnectLayout.isVisible = true
                             binding.buttonQuickconnect.text = resources.getString(R.string.quick_connect)
+                            val typedValue = TypedValue()
+                            requireActivity().theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+                            @ColorInt val textColor: Int = typedValue.data
+                            binding.buttonQuickconnect.setTextColor(textColor)
                             binding.buttonQuickconnectProgress.isVisible = false
-                            binding.buttonQuickconnect.isEnabled = true
                         }
                         is LoginViewModel.QuickConnectUiState.Waiting -> {
-                            binding.buttonQuickconnect.isEnabled = false
                             binding.buttonQuickconnect.text = quickConnectUiState.code
-                            binding.buttonQuickconnect.setTextColor(resources.getColor(R.color.white, requireActivity().theme))
+                            binding.buttonQuickconnect.setTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
                             binding.buttonQuickconnectProgress.isVisible = true
                         }
                     }

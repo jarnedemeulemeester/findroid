@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import javax.inject.Inject
 import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +40,8 @@ constructor(
     val quickConnectUiState = _quickConnectUiState.asStateFlow()
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
+
+    var quickConnectJob: Job? = null
 
     sealed class UiState {
         object Normal : UiState()
@@ -130,7 +133,11 @@ constructor(
     }
 
     fun useQuickConnect() {
-        viewModelScope.launch {
+        if (quickConnectJob != null && quickConnectJob!!.isActive) {
+            quickConnectJob!!.cancel()
+            return
+        }
+        quickConnectJob = viewModelScope.launch {
             try {
                 var quickConnectState = jellyfinApi.quickConnectApi.initiate().content
                 _quickConnectUiState.emit(QuickConnectUiState.Waiting(quickConnectState.code))
