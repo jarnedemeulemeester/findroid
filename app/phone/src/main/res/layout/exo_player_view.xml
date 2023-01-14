@@ -54,7 +54,9 @@
             android:background="?android:attr/selectableItemBackground"
             android:drawableEnd="@drawable/ic_skip_forward"
             android:text="@string/player_controls_skip_intro"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </androidx.media3.ui.AspectRatioFrameLayout>
 

@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.TrackSelectionDialogBuilder
@@ -81,8 +82,6 @@ class PlayerActivity : BasePlayerActivity() {
 
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
-
-        skipIntroButton.visibility = View.INVISIBLE
 
         audioButton.setOnClickListener {
             when (viewModel.player) {
@@ -160,7 +159,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         viewModel.currentIntro.observe(this) {
-            skipIntroButton.visibility = if (it != null) View.VISIBLE else View.INVISIBLE
+            skipIntroButton.isVisible = it != null
         }
 
         skipIntroButton.setOnClickListener {
