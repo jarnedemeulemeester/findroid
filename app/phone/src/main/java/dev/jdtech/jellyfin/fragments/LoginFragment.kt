@@ -1,10 +1,12 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,6 +21,7 @@ import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -66,6 +69,10 @@ class LoginFragment : Fragment() {
             login()
         }
 
+        binding.buttonQuickconnect.setOnClickListener {
+            viewModel.useQuickConnect()
+        }
+
         binding.usersRecyclerView.adapter = UserLoginListAdapter { user ->
             (binding.editTextUsername as AppCompatEditText).setText(user.name)
             (binding.editTextPassword as AppCompatEditText).requestFocus()
@@ -90,6 +97,32 @@ class LoginFragment : Fragment() {
                     when (usersState) {
                         is LoginViewModel.UsersState.Loading -> Unit
                         is LoginViewModel.UsersState.Users -> bindUsersStateUsers(usersState)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.quickConnectUiState.collect { quickConnectUiState ->
+                    when (quickConnectUiState) {
+                        is LoginViewModel.QuickConnectUiState.Disabled -> {
+                            binding.buttonQuickconnectLayout.isVisible = false
+                        }
+                        is LoginViewModel.QuickConnectUiState.Normal -> {
+                            binding.buttonQuickconnectLayout.isVisible = true
+                            binding.buttonQuickconnect.text = resources.getString(R.string.quick_connect)
+                            val typedValue = TypedValue()
+                            requireActivity().theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+                            @ColorInt val textColor: Int = typedValue.data
+                            binding.buttonQuickconnect.setTextColor(textColor)
+                            binding.buttonQuickconnectProgress.isVisible = false
+                        }
+                        is LoginViewModel.QuickConnectUiState.Waiting -> {
+                            binding.buttonQuickconnect.text = quickConnectUiState.code
+                            binding.buttonQuickconnect.setTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
+                            binding.buttonQuickconnectProgress.isVisible = true
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
 import org.jellyfin.sdk.api.client.extensions.playStateApi
+import org.jellyfin.sdk.api.client.extensions.quickConnectApi
 import org.jellyfin.sdk.api.client.extensions.sessionApi
 import org.jellyfin.sdk.api.client.extensions.systemApi
 import org.jellyfin.sdk.api.client.extensions.tvShowsApi
@@ -57,6 +58,7 @@ class JellyfinApi(
     val videosApi = api.videosApi
     val mediaInfoApi = api.mediaInfoApi
     val playStateApi = api.playStateApi
+    val quickConnectApi = api.quickConnectApi
 
     companion object {
         @Volatile
