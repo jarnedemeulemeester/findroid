@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.authenticateWithQuickConnect
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
+import org.jellyfin.sdk.model.api.AuthenticationResult
 
 @HiltViewModel
 class LoginViewModel
@@ -114,21 +115,7 @@ constructor(
                     )
                 )
 
-                val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-
-                val user = User(
-                    id = authenticationResult.user!!.id,
-                    name = authenticationResult.user!!.name!!,
-                    serverId = serverInfo.id!!,
-                    accessToken = authenticationResult.accessToken!!
-                )
-
-                insertUser(appPreferences.currentServer!!, user)
-
-                jellyfinApi.apply {
-                    api.accessToken = authenticationResult.accessToken
-                    userId = authenticationResult.user?.id
-                }
+                saveAuthenticationResult(authenticationResult)
 
                 _uiState.emit(UiState.Normal)
                 _navigateToMain.emit(true)
@@ -156,27 +143,31 @@ constructor(
                     secret = quickConnectState.secret
                 )
 
-                val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-
-                val user = User(
-                    id = authenticationResult.user!!.id,
-                    name = authenticationResult.user!!.name!!,
-                    serverId = serverInfo.id!!,
-                    accessToken = authenticationResult.accessToken!!
-                )
-
-                insertUser(appPreferences.currentServer!!, user)
-
-                jellyfinApi.apply {
-                    api.accessToken = authenticationResult.accessToken
-                    userId = authenticationResult.user?.id
-                }
+                saveAuthenticationResult(authenticationResult)
 
                 _quickConnectUiState.emit(QuickConnectUiState.Normal)
                 _navigateToMain.emit(true)
             } catch (_: Exception) {
                 _quickConnectUiState.emit(QuickConnectUiState.Normal)
             }
+        }
+    }
+
+    private suspend fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
+        val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
+
+        val user = User(
+            id = authenticationResult.user!!.id,
+            name = authenticationResult.user!!.name!!,
+            serverId = serverInfo.id!!,
+            accessToken = authenticationResult.accessToken!!
+        )
+
+        insertUser(appPreferences.currentServer!!, user)
+
+        jellyfinApi.apply {
+            api.accessToken = authenticationResult.accessToken
+            userId = authenticationResult.user?.id
         }
     }
 
