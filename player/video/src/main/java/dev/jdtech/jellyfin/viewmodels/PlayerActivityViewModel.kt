@@ -124,8 +124,10 @@ constructor(
                     }
                     playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
-                    val intro = jellyfinRepository.getIntroTimestamps(item.itemId)
-                    if (intro != null) intros[item.itemId] = intro
+                    if (appPreferences.playerIntroSkipper) {
+                        val intro = jellyfinRepository.getIntroTimestamps(item.itemId)
+                        if (intro != null) intros[item.itemId] = intro
+                    }
 
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =

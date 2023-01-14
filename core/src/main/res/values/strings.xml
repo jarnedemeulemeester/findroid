@@ -144,6 +144,8 @@
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
+    <string name="pref_player_intro_skipper">Intro Skipper</string>
+    <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>

@@ -92,4 +92,10 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <SwitchPreference
+        app:defaultValue="true"
+        app:key="pref_player_intro_skipper"
+        app:title="@string/pref_player_intro_skipper"
+        app:summary="@string/pref_player_intro_skipper_summary"/>
+
 </PreferenceScreen>
