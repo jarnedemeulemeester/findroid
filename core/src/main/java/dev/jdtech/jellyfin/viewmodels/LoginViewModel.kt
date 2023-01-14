@@ -12,12 +12,14 @@ import dev.jdtech.jellyfin.AppPreferences
 import javax.inject.Inject
 import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.extensions.authenticateWithQuickConnect
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 
 @HiltViewModel
@@ -32,6 +34,8 @@ constructor(
     val uiState = _uiState.asStateFlow()
     private val _usersState = MutableStateFlow<UsersState>(UsersState.Loading)
     val usersState = _usersState.asStateFlow()
+    private val _quickConnectUiState = MutableStateFlow<QuickConnectUiState>(QuickConnectUiState.Disabled)
+    val quickConnectUiState = _quickConnectUiState.asStateFlow()
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
 
@@ -46,8 +50,15 @@ constructor(
         data class Users(val users: List<User>) : UsersState()
     }
 
+    sealed class QuickConnectUiState {
+        object Disabled : QuickConnectUiState()
+        object Normal : QuickConnectUiState()
+        data class Waiting(val code: String) : QuickConnectUiState()
+    }
+
     init {
         loadPublicUsers()
+        loadQuickConnectAvailable()
     }
 
     private fun loadPublicUsers() {
@@ -71,6 +82,17 @@ constructor(
             } catch (e: Exception) {
                 _usersState.emit(UsersState.Users(emptyList()))
             }
+        }
+    }
+
+    private fun loadQuickConnectAvailable() {
+        viewModelScope.launch {
+            try {
+                val isEnabled by jellyfinApi.quickConnectApi.getEnabled()
+                if (isEnabled) {
+                    _quickConnectUiState.emit(QuickConnectUiState.Normal)
+                }
+            } catch (_: Exception) {}
         }
     }
 
@@ -116,6 +138,44 @@ constructor(
                         R.string.unknown_error
                     )
                 _uiState.emit(UiState.Error(message))
+            }
+        }
+    }
+
+    fun useQuickConnect() {
+        viewModelScope.launch {
+            try {
+                var quickConnectState = jellyfinApi.quickConnectApi.initiate().content
+                _quickConnectUiState.emit(QuickConnectUiState.Waiting(quickConnectState.code))
+
+                while (!quickConnectState.authenticated) {
+                    quickConnectState = jellyfinApi.quickConnectApi.connect(quickConnectState.secret).content
+                    delay(5000L)
+                }
+                val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
+                    secret = quickConnectState.secret
+                )
+
+                val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()
+
+                val user = User(
+                    id = authenticationResult.user!!.id,
+                    name = authenticationResult.user!!.name!!,
+                    serverId = serverInfo.id!!,
+                    accessToken = authenticationResult.accessToken!!
+                )
+
+                insertUser(appPreferences.currentServer!!, user)
+
+                jellyfinApi.apply {
+                    api.accessToken = authenticationResult.accessToken
+                    userId = authenticationResult.user?.id
+                }
+
+                _quickConnectUiState.emit(QuickConnectUiState.Normal)
+                _navigateToMain.emit(true)
+            } catch (_: Exception) {
+                _quickConnectUiState.emit(QuickConnectUiState.Normal)
             }
         }
     }

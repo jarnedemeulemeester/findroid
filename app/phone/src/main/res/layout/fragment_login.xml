@@ -116,6 +116,31 @@
                     android:visibility="invisible" />
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/button_quickconnect_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <Button
+                    android:id="@+id/button_quickconnect"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quick_connect" />
+
+                <ProgressBar
+                    android:id="@+id/button_quickconnect_progress"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:elevation="8dp"
+                    android:indeterminateTint="?attr/colorPrimary"
+                    android:padding="8dp"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

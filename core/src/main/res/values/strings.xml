@@ -147,4 +147,5 @@
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
+    <string name="quick_connect">Quick Connect</string>
 </resources>
