@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
 }
 
@@ -48,5 +49,6 @@ dependencies {
     implementation(project(":preferences"))
     implementation(libs.androidx.paging)
     implementation(libs.jellyfin.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
 }
