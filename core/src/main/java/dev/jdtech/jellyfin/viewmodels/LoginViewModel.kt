@@ -41,7 +41,7 @@ constructor(
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
 
-    var quickConnectJob: Job? = null
+    private var quickConnectJob: Job? = null
 
     sealed class UiState {
         object Normal : UiState()
