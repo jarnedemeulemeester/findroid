@@ -18,6 +18,8 @@ android {
         val appVersionName: String by rootProject.extra
         buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
         buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
+
+        consumerProguardFile("proguard-rules.pro")
     }
 
     buildTypes {
