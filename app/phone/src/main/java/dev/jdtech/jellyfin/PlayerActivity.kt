@@ -180,7 +180,9 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
+        if (binding.playerView.player?.isPlaying == true) {
             enterPictureInPictureMode()
+        }
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
