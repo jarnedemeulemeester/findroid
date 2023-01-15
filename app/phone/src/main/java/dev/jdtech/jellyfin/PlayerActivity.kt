@@ -197,6 +197,7 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.findViewById<View>(R.id.back_button).visibility = View.GONE
             binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.GONE
             binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.GONE
 
 
         } else {
@@ -209,6 +210,8 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.findViewById<View>(R.id.back_button).visibility = View.VISIBLE
             binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.VISIBLE
             binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.VISIBLE
+
         }
     }
 
