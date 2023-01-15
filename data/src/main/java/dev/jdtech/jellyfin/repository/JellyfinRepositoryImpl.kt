@@ -221,7 +221,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
             // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
-            val pathParameters = mutableMapOf<String, Any?>()
+            val pathParameters = mutableMapOf<String, UUID>()
             pathParameters["itemId"] = itemId
 
             try {

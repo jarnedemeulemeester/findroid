@@ -68,6 +68,8 @@ constructor(
     var playbackSpeed: Float = 1f
     var disableSubtitle: Boolean = false
 
+    private val handler = Handler(Looper.getMainLooper())
+
     init {
         if (appPreferences.playerMpv) {
             player = MPVPlayer(
@@ -177,47 +179,49 @@ constructor(
     }
 
     private fun pollPosition(player: Player) {
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-            private var sendTicks = 0
+        val playbackProgressRunnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
-                        if (playFromDownloads) {
-                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
-                        }
                         val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-
-                        intros[itemId].let {
-                            if (it != null) {
-                                val seconds = player.currentPosition / 1000.0
-                                if (seconds > it.showSkipPromptAt && seconds < it.hideSkipPromptAt) {
-                                    _currentIntro.value = it
-                                    return@let
-                                }
-                            }
-
-                            _currentIntro.value = null
+                        if (playFromDownloads) {
+                            postDownloadPlaybackProgress(downloadDatabase, itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
                         }
-
-                        if (sendTicks % 5 == 0) {
-                            try {
-                                jellyfinRepository.postPlaybackProgress(
-                                    itemId,
-                                    player.currentPosition.times(10000),
-                                    !player.isPlaying
-                                )
-                            } catch (e: Exception) {
-                                Timber.e(e)
-                            }
+                        try {
+                            jellyfinRepository.postPlaybackProgress(
+                                itemId,
+                                player.currentPosition.times(10000),
+                                !player.isPlaying
+                            )
+                        } catch (e: Exception) {
+                            Timber.e(e)
                         }
-                        sendTicks++
                     }
                 }
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, 5000L)
             }
         }
-        handler.post(runnable)
+        val introCheckRunnable = object : Runnable {
+            override fun run() {
+                if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                    val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
+                    intros[itemId].let {
+                        if (it != null) {
+                            val seconds = player.currentPosition / 1000.0
+                            if (seconds > it.showSkipPromptAt && seconds < it.hideSkipPromptAt) {
+                                _currentIntro.value = it
+                                return@let
+                            }
+                        }
+
+                        _currentIntro.value = null
+                    }
+                }
+                handler.postDelayed(this, 1000L)
+            }
+        }
+        handler.post(playbackProgressRunnable)
+        if (appPreferences.playerIntroSkipper && intros.isNotEmpty()) handler.post(introCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -282,6 +286,7 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.d("Clearing Player ViewModel")
+        handler.removeCallbacksAndMessages(null)
         releasePlayer()
     }
 
