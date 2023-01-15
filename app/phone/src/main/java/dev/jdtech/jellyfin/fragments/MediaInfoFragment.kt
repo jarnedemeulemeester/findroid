@@ -213,11 +213,11 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
-            val clickable = available || canRetry
+            val clickable = canPlay && (available || canRetry)
             binding.playButton.isEnabled = clickable
             binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
             binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
-            if (!clickable) {
+            if (!(available || canRetry)) {
                 binding.playButton.setImageResource(android.R.color.transparent)
                 binding.progressCircular.isVisible = true
             }
@@ -235,8 +235,6 @@ class MediaInfoFragment : Fragment() {
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
             if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
-
-            binding.downloadButton.isEnabled = !downloaded
 
             when (canDownload) {
                 true -> {

@@ -24,6 +24,7 @@ import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.PlayAccess
 import timber.log.Timber
 
 @HiltViewModel
@@ -51,6 +52,7 @@ constructor(
             val seasons: List<BaseItemDto>,
             val played: Boolean,
             val favorite: Boolean,
+            val canPlay: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
             var canRetry: Boolean = false,
@@ -73,6 +75,7 @@ constructor(
     var seasons: List<BaseItemDto> = emptyList()
     var played: Boolean = false
     var favorite: Boolean = false
+    private var canPlay: Boolean = true
     private var canDownload: Boolean = false
     private var downloaded: Boolean = false
     var canRetry: Boolean = false
@@ -95,6 +98,7 @@ constructor(
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played ?: false
                 favorite = tempItem.userData?.isFavorite ?: false
+                canPlay = tempItem.playAccess != PlayAccess.NONE
                 canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, itemId)
                 if (itemType == BaseItemKind.SERIES) {
@@ -115,6 +119,7 @@ constructor(
                         seasons,
                         played,
                         favorite,
+                        canPlay,
                         canDownload,
                         downloaded,
                         canRetry,
@@ -157,6 +162,7 @@ constructor(
                     seasons,
                     played,
                     favorite,
+                    canPlay,
                     canDownload,
                     downloaded,
                     canRetry,

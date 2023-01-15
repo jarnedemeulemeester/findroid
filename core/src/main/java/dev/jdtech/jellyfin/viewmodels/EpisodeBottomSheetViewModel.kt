@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.PlayAccess
 import timber.log.Timber
 
 @HiltViewModel
@@ -44,6 +45,7 @@ constructor(
             val dateString: String,
             val played: Boolean,
             val favorite: Boolean,
+            val canPlay: Boolean,
             val canDownload: Boolean,
             val downloaded: Boolean,
             val available: Boolean,
@@ -59,6 +61,7 @@ constructor(
     private var dateString: String = ""
     var played: Boolean = false
     var favorite: Boolean = false
+    private var canPlay = true
     private var canDownload = false
     private var downloaded: Boolean = false
     private var available: Boolean = true
@@ -75,6 +78,7 @@ constructor(
                 dateString = getDateString(tempItem.premiereDate)
                 played = tempItem.userData?.played == true
                 favorite = tempItem.userData?.isFavorite == true
+                canPlay = tempItem.playAccess != PlayAccess.NONE
                 canDownload = tempItem.canDownload == true
                 downloaded = isItemDownloaded(downloadDatabase, episodeId)
                 _uiState.emit(
@@ -84,6 +88,7 @@ constructor(
                         dateString,
                         played,
                         favorite,
+                        canPlay,
                         canDownload,
                         downloaded,
                         available,
@@ -110,6 +115,7 @@ constructor(
                     dateString,
                     played,
                     favorite,
+                    canPlay,
                     canDownload,
                     downloaded,
                     available,
