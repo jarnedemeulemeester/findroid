@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
@@ -180,7 +181,7 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
-        if (binding.playerView.player?.isPlaying == true) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && binding.playerView.player?.isPlaying == true) {
             enterPictureInPictureMode()
         }
     }
