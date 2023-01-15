@@ -221,7 +221,7 @@ constructor(
             }
         }
         handler.post(playbackProgressRunnable)
-        if (appPreferences.playerIntroSkipper && intros.isNotEmpty()) handler.post(introCheckRunnable)
+        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
