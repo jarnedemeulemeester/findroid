@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 import android.content.Context
+import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
@@ -44,7 +45,9 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.player = viewModel.player
 
+
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
+
 
         configureInsets(playerControls)
 
@@ -175,4 +178,39 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(args.items)
         hideSystemUI()
     }
+
+    override fun onUserLeaveHint() {
+            enterPictureInPictureMode()
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
+                                               newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            // Hide the full-screen UI (controls, etc.) while in PiP mode.
+            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.GONE
+
+
+        } else {
+            // Restore the full-screen UI.
+            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.VISIBLE
+        }
+    }
+
+
 }

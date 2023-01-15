@@ -18,6 +18,7 @@
 
         <activity
             android:name=".PlayerActivity"
+            android:supportsPictureInPicture="true"
             android:screenOrientation="sensorLandscape" />
 
         <activity
