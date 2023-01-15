@@ -5,9 +5,11 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.TrackSelectionDialogBuilder
@@ -70,6 +72,7 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
+        val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
 
         audioButton.isEnabled = false
         audioButton.imageAlpha = 75
@@ -153,6 +156,16 @@ class PlayerActivity : BasePlayerActivity() {
                 supportFragmentManager,
                 "speedselectiondialog"
             )
+        }
+
+        viewModel.currentIntro.observe(this) {
+            skipIntroButton.isVisible = it != null
+        }
+
+        skipIntroButton.setOnClickListener {
+            viewModel.currentIntro.value?.let {
+                binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+            }
         }
 
         viewModel.fileLoaded.observe(this) {

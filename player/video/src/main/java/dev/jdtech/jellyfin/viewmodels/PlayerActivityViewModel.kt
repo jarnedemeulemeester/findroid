@@ -17,6 +17,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
+import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
@@ -46,6 +47,10 @@ constructor(
     private val _currentItemTitle = MutableLiveData<String>()
     val currentItemTitle: LiveData<String> = _currentItemTitle
 
+    private val intros: MutableMap<UUID, Intro> = mutableMapOf()
+    private val _currentIntro = MutableLiveData<Intro?>(null)
+    val currentIntro: LiveData<Intro?> = _currentIntro
+
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
 
@@ -62,6 +67,8 @@ constructor(
 
     var playbackSpeed: Float = 1f
     var disableSubtitle: Boolean = false
+
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         if (appPreferences.playerMpv) {
@@ -119,6 +126,11 @@ constructor(
                     }
                     playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
+                    if (appPreferences.playerIntroSkipper) {
+                        val intro = jellyfinRepository.getIntroTimestamps(item.itemId)
+                        if (intro != null) intros[item.itemId] = intro
+                    }
+
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
                         MediaItem.Builder()
@@ -167,17 +179,17 @@ constructor(
     }
 
     private fun pollPosition(player: Player) {
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
+        val playbackProgressRunnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                        val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                         if (playFromDownloads) {
-                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
+                            postDownloadPlaybackProgress(downloadDatabase, itemId, player.currentPosition, (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
                         }
                         try {
                             jellyfinRepository.postPlaybackProgress(
-                                UUID.fromString(player.currentMediaItem!!.mediaId),
+                                itemId,
                                 player.currentPosition.times(10000),
                                 !player.isPlaying
                             )
@@ -186,10 +198,30 @@ constructor(
                         }
                     }
                 }
-                handler.postDelayed(this, 5000)
+                handler.postDelayed(this, 5000L)
             }
         }
-        handler.post(runnable)
+        val introCheckRunnable = object : Runnable {
+            override fun run() {
+                if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                    val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
+                    intros[itemId].let {
+                        if (it != null) {
+                            val seconds = player.currentPosition / 1000.0
+                            if (seconds > it.showSkipPromptAt && seconds < it.hideSkipPromptAt) {
+                                _currentIntro.value = it
+                                return@let
+                            }
+                        }
+
+                        _currentIntro.value = null
+                    }
+                }
+                handler.postDelayed(this, 1000L)
+            }
+        }
+        handler.post(playbackProgressRunnable)
+        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -254,6 +286,7 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.d("Clearing Player ViewModel")
+        handler.removeCallbacksAndMessages(null)
         releasePlayer()
     }
 

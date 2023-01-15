@@ -4,11 +4,14 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.exception.InvalidStatusException
+import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -212,6 +215,20 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             } catch (e: Exception) {
                 Timber.e(e)
                 ""
+            }
+        }
+
+    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+        withContext(Dispatchers.IO) {
+            // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
+            val pathParameters = mutableMapOf<String, UUID>()
+            pathParameters["itemId"] = itemId
+
+            try {
+                return@withContext jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters).content
+            } catch (e: InvalidStatusException) {
+                if (e.status != 404) throw e
+                return@withContext null
             }
         }
 

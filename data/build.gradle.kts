@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
 }
 
@@ -17,6 +18,8 @@ android {
         val appVersionName: String by rootProject.extra
         buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
         buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
+
+        consumerProguardFile("proguard-rules.pro")
     }
 
     buildTypes {
@@ -48,5 +51,6 @@ dependencies {
     implementation(project(":preferences"))
     implementation(libs.androidx.paging)
     implementation(libs.jellyfin.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
 }

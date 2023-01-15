@@ -118,6 +118,7 @@
     <string name="player_controls_fast_forward">Fast forward</string>
     <string name="player_controls_pause">Pause</string>
     <string name="player_controls_skip">Skip</string>
+    <string name="player_controls_skip_intro">Skip Intro</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Empty server address</string>
     <string name="display_extended_title_summary">Display extended episode title including season and episode information (SXX:EXX - EpisodeName).</string>
@@ -143,6 +144,8 @@
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
+    <string name="pref_player_intro_skipper">Intro Skipper</string>
+    <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
