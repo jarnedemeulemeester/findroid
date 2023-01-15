@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -202,6 +203,7 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.GONE
             binding.playerView.findViewById<View>(R.id.video_name).visibility = View.GONE
 
+            binding.playerView.player?.playWhenReady = viewModel.playWhenReady //Temporary workaround for the playback pausing when entering PiP
 
         } else {
             // Restore the full-screen UI.
