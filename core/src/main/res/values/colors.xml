@@ -38,8 +38,6 @@
     <color name="neutral_50">#F7FBFF</color>
     <color name="transparent_white_300">#4DFFFFFF</color>
     <color name="transparent_black_300">#4D000000</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="red">#EB5757</color>
     <color name="yellow">#F2C94C</color>
     <color name="player_background">#AA000000</color>

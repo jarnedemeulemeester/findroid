@@ -44,7 +44,7 @@
             android:paddingTop="4dp"
             android:paddingRight="12dp"
             android:paddingBottom="4dp"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:textSize="14sp" />
 
         <Button

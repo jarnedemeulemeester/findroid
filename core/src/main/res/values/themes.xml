@@ -5,13 +5,13 @@
     <style name="Base.Theme.Findroid" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary -->
         <item name="colorPrimary">@color/primary_light</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/primary_container_light</item>
         <item name="colorOnPrimaryContainer">@color/on_primary_container_light</item>
 
         <!-- Secondary -->
         <item name="colorSecondary">@color/secondary_light</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@android:color/white</item>
         <item name="colorSecondaryContainer">@color/secondary_container_light</item>
         <item name="colorOnSecondaryContainer">@color/on_secondary_container_light</item>
 
@@ -21,7 +21,7 @@
 
         <!-- Error -->
         <item name="colorError">@color/red</item>
-        <item name="colorOnError">@color/white</item>
+        <item name="colorOnError">@android:color/white</item>
 
         <!-- Status bar -->
         <item name="android:statusBarColor">?attr/colorSurface</item>

@@ -43,7 +43,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 tools:text="The Dawn of Despair" />
 
         </LinearLayout>
@@ -65,7 +65,7 @@
                 android:contentDescription="@string/select_playback_speed"
                 android:padding="16dp"
                 android:src="@drawable/ic_gauge"
-                app:tint="@color/white" />
+                app:tint="@android:color/white" />
 
             <Space
                 android:layout_width="16dp"
@@ -80,7 +80,7 @@
                 android:contentDescription="@string/select_audio_track"
                 android:padding="16dp"
                 android:src="@drawable/ic_speaker"
-                app:tint="@color/white" />
+                app:tint="@android:color/white" />
 
             <Space
                 android:layout_width="16dp"
@@ -95,7 +95,7 @@
                 android:contentDescription="@string/select_subtile_track"
                 android:padding="16dp"
                 android:src="@drawable/ic_closed_caption"
-                app:tint="@color/white" />
+                app:tint="@android:color/white" />
 
         </LinearLayout>
 
@@ -131,21 +131,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_background"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@android:color/white"
             android:padding="16dp"
             android:src="@drawable/ic_play"
-            app:tint="@color/black" />
+            app:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/exo_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_background"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@android:color/white"
             android:padding="16dp"
             android:src="@drawable/ic_pause"
             android:visibility="gone"
-            app:tint="@color/black" />
+            app:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/exo_ffwd"
@@ -185,7 +185,7 @@
                 android:id="@+id/exo_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="14sp"
                 tools:text="00:00" />
 
@@ -196,7 +196,7 @@
             <View
                 android:layout_width="4dp"
                 android:layout_height="1dp"
-                android:background="@color/white" />
+                android:background="@android:color/white" />
 
             <Space
                 android:layout_width="8dp"
@@ -206,7 +206,7 @@
                 android:id="@+id/exo_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="14sp"
                 tools:text="24:21" />
         </LinearLayout>
