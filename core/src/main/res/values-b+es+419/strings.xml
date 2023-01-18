@@ -147,4 +147,8 @@
     <string name="settings_socket_timeout">Tiempo de espera del socket (ms)</string>
     <string name="users">Usuarios</string>
     <string name="add_user">Agregar usuario</string>
+    <string name="quick_connect">Conexión rápida</string>
+    <string name="player_controls_skip_intro">Saltar intro</string>
+    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
+    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
 </resources>
