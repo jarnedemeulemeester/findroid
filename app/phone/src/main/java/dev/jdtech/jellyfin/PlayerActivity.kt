@@ -212,29 +212,15 @@ class PlayerActivity : BasePlayerActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             // Hide the full-screen UI (controls, etc.) while in PiP mode.
-            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.GONE
-            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.player_controls).visibility = View.GONE
+
 
             binding.playerView.player?.playWhenReady = viewModel.playWhenReady //Temporary workaround for the playback pausing when entering PiP
 
         } else {
             // Restore the full-screen UI.
-            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.VISIBLE
-            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.player_controls).visibility = View.VISIBLE
+
         }
     }
 
