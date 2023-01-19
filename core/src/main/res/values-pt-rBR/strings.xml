@@ -146,4 +146,8 @@
     <string name="settings_socket_timeout">Tempo limite do soquete (ms)</string>
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
+    <string name="quick_connect">Conexão Rápida</string>
+    <string name="player_controls_skip_intro">Pular introdução</string>
+    <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do ConfusedPolarBear seja instalado no servidor</string>
+    <string name="pref_player_intro_skipper">Intro Skipper</string>
 </resources>
