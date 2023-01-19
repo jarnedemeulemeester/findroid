@@ -235,7 +235,11 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.VISIBLE
             binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.VISIBLE
             binding.playerView.findViewById<View>(R.id.video_name).visibility = View.VISIBLE
-
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        finishAndRemoveTask()
     }
 }
