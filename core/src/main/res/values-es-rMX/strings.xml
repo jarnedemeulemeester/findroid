@@ -131,4 +131,24 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="episodes_label">Episodios</string>
+    <string name="quick_connect">Conexión rápida</string>
+    <string name="player_controls_skip_intro">Saltar intro</string>
+    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
+    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
+    <string name="settings_category_network">Red</string>
+    <string name="settings_connect_timeout">Espera de conexión (ms)</string>
+    <string name="settings_socket_timeout">Espera del conector (ms)</string>
+    <string name="settings_request_timeout">Espera de respuestas (ms)</string>
+    <string name="users">Usuarios</string>
+    <string name="add_user">Agregar usuario</string>
+    <string name="pref_player_mpv_hwdec">Decodificación por hardware</string>
+    <string name="pref_player_mpv_hwdec_codecs">Codecs con decodificación por hardware</string>
+    <string name="pref_player_mpv_vo">Salida de video</string>
+    <string name="pref_player_mpv_ao">Salida de audio</string>
+    <string name="addresses">Direcciones</string>
+    <string name="add_address">Agregar dirección</string>
+    <string name="add_server_address">Agregar dirección del servidor</string>
+    <string name="add">Agregar</string>
+    <string name="remove_user">Quitar usuario</string>
+    <string name="remove_user_dialog_text">Está seguro de querer quitar el usuario %1$s</string>
 </resources>
