@@ -1,6 +1,10 @@
 package dev.jdtech.jellyfin
 
+import android.app.PictureInPictureParams
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
@@ -187,5 +191,51 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.initializePlayer(args.items)
         hideSystemUI()
+    }
+
+    override fun onUserLeaveHint() {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && binding.playerView.player?.isPlaying == true) {
+            val visibleRect = Rect()
+
+            binding.playerView.getGlobalVisibleRect(visibleRect)
+
+            val params = PictureInPictureParams.Builder()
+                .setSourceRectHint(visibleRect)
+                .build()
+            enterPictureInPictureMode(params)
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
+                                               newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            // Hide the full-screen UI (controls, etc.) while in PiP mode.
+            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.GONE
+            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.GONE
+
+            binding.playerView.player?.playWhenReady = viewModel.playWhenReady //Temporary workaround for the playback pausing when entering PiP
+
+        } else {
+            // Restore the full-screen UI.
+            binding.playerView.findViewById<View>(R.id.exo_prev).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_rew).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_ffwd).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_next).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.extra_buttons).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.back_button).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_play_pause).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.exo_progress).visibility = View.VISIBLE
+            binding.playerView.findViewById<View>(R.id.video_name).visibility = View.VISIBLE
+
+        }
     }
 }
