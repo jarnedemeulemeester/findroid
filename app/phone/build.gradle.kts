@@ -107,4 +107,6 @@ dependencies {
     compileOnly(libs.libmpv)
     implementation(libs.material)
     implementation(libs.timber)
+
+    implementation(rootProject.files("libs/lib-decoder-ffmpeg-release.aar"))
 }
