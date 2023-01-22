@@ -1,4 +1,5 @@
 include(":app:phone")
+include(":app:tv")
 include(":core")
 include(":data")
 include(":preferences")
