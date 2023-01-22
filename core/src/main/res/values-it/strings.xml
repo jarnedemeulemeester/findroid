@@ -21,7 +21,7 @@
     <string name="title_media">I miei media</string>
     <string name="title_favorite">Preferiti</string>
     <string name="title_settings">Impostazioni</string>
-    <string name="title_download">Downloads</string>
+    <string name="title_download">Download</string>
     <string name="view_all">Mostra tutto</string>
     <string name="retry">Riprova</string>
     <string name="genres">Generi</string>
@@ -69,7 +69,7 @@
     <string name="settings_cache_size">Dimensione della cache (MB)</string>
     <string name="trailer_button_description">Guarda il trailer</string>
     <string name="settings_cache_size_message">L\'app userà questa quantità di MB per salvare le immagini del tuo server Jellyfin. Valori alti potrebbero aiutarti in caso di connessione lenta.</string>
-    <string name="mpv_player_summary">Usa il player MPV sperimentale per riprodurre i video. MPV supporta più video, audio e sottotitoli.</string>
+    <string name="mpv_player_summary">Usa il player sperimentale MPV per riprodurre i video. MPV supporta più codec audio, video e sottotitoli.</string>
     <string name="seek_forward_increment">Salta avanti di (ms)</string>
     <string name="person_detail_title">Dettagli</string>
     <string name="player_gestures_vb">Gesti volume e luminosità</string>
@@ -81,8 +81,8 @@
     <string name="app_info">Info App</string>
     <string name="unknown_error">Errore sconosciuto</string>
     <string name="search_hint">Cerca film, serie, episodi…</string>
-    <string name="mpv_player">mpv player</string>
-    <string name="download_mobile_data">Scarica usando i dati cellulare</string>
+    <string name="mpv_player">MPV player</string>
+    <string name="download_mobile_data">Scarica usando i dati mobili</string>
     <string name="download_roaming">Scarica in roaming</string>
     <string name="seeking">Avanti/Indietro rapido</string>
     <string name="download_button_description">Download</string>
@@ -146,4 +146,8 @@
     <string name="add_address">Aggiungi indirizzo</string>
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
+    <string name="quick_connect">Connessione Rapida</string>
+    <string name="player_controls_skip_intro">Salta intro</string>
+    <string name="pref_player_intro_skipper">Salta intro</string>
+    <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
 </resources>
