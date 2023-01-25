@@ -22,7 +22,7 @@ kotlin = "1.8.0"
 kotlinx-serialization = "1.4.1"
 ktlint = "11.0.0"
 libmpv = "0.1.0"
-material = "1.7.0"
+material = "1.8.0"
 timber = "5.0.1"
 
 [libraries]
