@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">Kies een versie</string>
+    <string name="select_audio_track">Selecteer audiotrack</string>
+    <string name="select_subtile_track">Selecteer ondertiteling</string>
+    <string name="select_playback_speed">Selecteer afspeelsnelheid</string>
+    <string name="external">Extern</string>
+</resources>

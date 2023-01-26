@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">Selecionar a versão</string>
+    <string name="select_audio_track">Seleccione a faixa de áudio</string>
+    <string name="select_subtile_track">Seleccione as legendas</string>
+    <string name="select_playback_speed">Seleccionar velocidade de reprodução</string>
+    <string name="external">Externo</string>
+</resources>

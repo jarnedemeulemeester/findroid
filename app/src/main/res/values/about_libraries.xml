@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="aboutLibraries_description_showIcon">true</string>
-    <string name="aboutLibraries_description_showVersion">true</string>
-    <string name="aboutLibraries_description_name">@string/app_name</string>
-    <string name="aboutLibraries_description_text">@string/app_description</string>
-    <string name="aboutLibraries_showLicense">true</string>
-</resources>

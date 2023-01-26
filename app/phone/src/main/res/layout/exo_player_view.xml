@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.media3.ui.AspectRatioFrameLayout
+        android:id="@id/exo_content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <!-- Video surface will be inserted as the first child of the content frame. -->
+
+        <View
+            android:id="@id/exo_shutter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black" />
+
+        <ImageView
+            android:id="@id/exo_artwork"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+
+        <ProgressBar
+            android:id="@id/exo_buffering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@id/exo_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="64dp"
+            android:background="@drawable/overlay_background"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.1"
+            android:paddingLeft="12dp"
+            android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_skip_intro"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="64dp"
+            android:text="@string/player_controls_skip_intro"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            app:backgroundTint="@color/player_background"
+            app:icon="@drawable/ic_skip_forward"
+            app:iconGravity="end"
+            app:iconTint="@android:color/white"
+            app:strokeColor="@android:color/white"
+            tools:visibility="visible" />
+
+    </androidx.media3.ui.AspectRatioFrameLayout>
+
+    <androidx.media3.ui.SubtitleView
+        android:id="@id/exo_subtitles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@id/exo_ad_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@id/exo_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@id/exo_controller_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</merge>

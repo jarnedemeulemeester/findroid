@@ -1,8 +1,8 @@
 [versions]
 aboutlibraries = "10.5.2"
-android-plugin = "7.3.1"
+android-plugin = "7.4.0"
 androidx-activity = "1.6.1"
-androidx-appcompat = "1.5.1"
+androidx-appcompat = "1.6.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.9.0"
 androidx-leanback = "1.2.0-alpha02"
@@ -13,12 +13,13 @@ androidx-paging = "3.1.1"
 androidx-preference = "1.2.0"
 androidx-recyclerview = "1.2.1"
 androidx-recyclerview-selection = "1.1.0"
-androidx-room = "2.4.3"
+androidx-room = "2.5.0"
 androidx-swiperefreshlayout = "1.1.0"
 glide = "4.14.2"
 hilt = "2.44.2"
-jellyfin = "1.4.0"
+jellyfin = "1.4.1"
 kotlin = "1.8.0"
+kotlinx-serialization = "1.4.1"
 ktlint = "11.0.0"
 libmpv = "0.1.0"
 material = "1.7.0"
@@ -34,6 +35,7 @@ androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-cor
 androidx-leanback = { module = "androidx.leanback:leanback", version.ref = "androidx-leanback" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "androidx-media3" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidx-media3" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "androidx-media3" }
@@ -55,13 +57,16 @@ jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jell
 libmpv = { module = "dev.jdtech.mpv:libmpv", version.ref = "libmpv" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-plugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
