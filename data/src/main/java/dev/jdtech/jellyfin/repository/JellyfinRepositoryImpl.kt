@@ -26,6 +26,7 @@ import org.jellyfin.sdk.model.api.PlaybackInfoDto
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
+import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
 
 class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
@@ -152,14 +153,16 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>?,
-        startItemId: UUID?
+        startItemId: UUID?,
+        limit: Int?,
     ): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.showsApi.getEpisodes(
             seriesId,
             jellyfinApi.userId!!,
             seasonId = seasonId,
             fields = fields,
-            startItemId = startItemId
+            startItemId = startItemId,
+            limit = limit,
         ).content.items.orEmpty()
     }
 
@@ -327,5 +330,9 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.devicesApi.updateDeviceOptions(id, DeviceOptionsDto(0, customName = name))
             }
         }
+    }
+
+    override suspend fun getUserConfiguration(): UserConfiguration = withContext(Dispatchers.IO) {
+        jellyfinApi.userApi.getCurrentUser().content.configuration!!
     }
 }
