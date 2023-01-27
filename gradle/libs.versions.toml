@@ -7,6 +7,7 @@ androidx-compose-material3 = "1.1.0-alpha04"
 androidx-compose-ui = "1.4.0-alpha05"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.9.0"
+androidx-hilt = "1.1.0-alpha01"
 androidx-leanback = "1.2.0-alpha02"
 androidx-lifecycle = "2.5.1"
 androidx-media3 = "1.0.0-beta03"
@@ -18,11 +19,13 @@ androidx-recyclerview-selection = "1.1.0"
 androidx-room = "2.5.0"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-tv = "1.0.0-alpha03"
+compose-destinations = "1.8.33-beta"
 glide = "4.14.2"
 hilt = "2.44.2"
 jellyfin = "1.4.1"
 kotlin = "1.8.0"
 kotlinx-serialization = "1.4.1"
+ksp = "1.8.0-1.0.9"
 ktlint = "11.1.0"
 libmpv = "0.1.0"
 material = "1.8.0"
@@ -40,6 +43,7 @@ androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", versi
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose-ui" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt" }
 androidx-leanback = { module = "androidx.leanback:leanback", version.ref = "androidx-leanback" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
@@ -60,6 +64,8 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv" }
+compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
+compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -80,4 +86,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

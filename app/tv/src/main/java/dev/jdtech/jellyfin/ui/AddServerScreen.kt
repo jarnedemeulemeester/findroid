@@ -23,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,20 +42,33 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.DiscoveredServer
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.Typography
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
-fun AddServerScreen(addServerViewModel: AddServerViewModel = viewModel()) {
+fun AddServerScreen(
+    addServerViewModel: AddServerViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
+) {
     val uiState by addServerViewModel.uiState.collectAsState()
     val discoveredServerState by addServerViewModel.discoveredServersState.collectAsState()
+    val navigateToLogin by addServerViewModel.navigateToLogin.collectAsState(initial = false)
+    if (navigateToLogin) {
+        navigator.navigate(LoginScreenDestination)
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxSize()
     ) {
         Banner()
         AddServerForm(uiState = uiState, discoveredServerState = discoveredServerState) {
@@ -77,7 +89,11 @@ fun Banner() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddServerForm(uiState: AddServerViewModel.UiState, discoveredServerState: AddServerViewModel.DiscoveredServersState, onSubmit: (String) -> Unit) {
+fun AddServerForm(
+    uiState: AddServerViewModel.UiState,
+    discoveredServerState: AddServerViewModel.DiscoveredServersState,
+    onSubmit: (String) -> Unit
+) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -85,9 +101,10 @@ fun AddServerForm(uiState: AddServerViewModel.UiState, discoveredServerState: Ad
     val isLoading = uiState is AddServerViewModel.UiState.Loading
     val context = LocalContext.current
 
-    val discoveredServers = if (discoveredServerState is AddServerViewModel.DiscoveredServersState.Servers) {
-        discoveredServerState.servers
-    } else emptyList()
+    val discoveredServers =
+        if (discoveredServerState is AddServerViewModel.DiscoveredServersState.Servers) {
+            discoveredServerState.servers
+        } else emptyList()
 
     Column(Modifier.width(320.dp)) {
         Text(text = stringResource(id = R.string.add_server), style = Typography.headlineMedium)
@@ -163,7 +180,10 @@ fun AddServerForm(uiState: AddServerViewModel.UiState, discoveredServerState: Ad
 }
 
 @Composable
-fun DiscoveredServerComponent(discoveredServer: DiscoveredServer, onClick: (DiscoveredServer) -> Unit = {}) {
+fun DiscoveredServerComponent(
+    discoveredServer: DiscoveredServer,
+    onClick: (DiscoveredServer) -> Unit = {}
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -198,18 +218,11 @@ fun DiscoveredServerComponent(discoveredServer: DiscoveredServer, onClick: (Disc
 @Preview
 @Composable
 fun DiscoveredServerComponentPreview() {
-    DiscoveredServerComponent(discoveredServer = DiscoveredServer("e9179766-1da2-4cea-98a4-e4e51fa7fbd0", "server", "server.local"))
-}
-
-@Preview(showBackground = true, widthDp = 1200, heightDp = 720)
-@Composable
-fun AddServerScreenPreview() {
-    FindroidTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            AddServerScreen()
-        }
-    }
+    DiscoveredServerComponent(
+        discoveredServer = DiscoveredServer(
+            "e9179766-1da2-4cea-98a4-e4e51fa7fbd0",
+            "server",
+            "server.local"
+        )
+    )
 }
