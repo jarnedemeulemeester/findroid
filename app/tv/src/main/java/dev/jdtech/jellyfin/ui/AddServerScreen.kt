@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,12 +53,13 @@ import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 @Composable
 fun AddServerScreen(addServerViewModel: AddServerViewModel = viewModel()) {
     val uiState by addServerViewModel.uiState.collectAsState()
+    val discoveredServerState by addServerViewModel.discoveredServersState.collectAsState()
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Banner()
-        AddServerForm(uiState = uiState) {
+        AddServerForm(uiState = uiState, discoveredServerState = discoveredServerState) {
             addServerViewModel.checkServer(it)
         }
     }
@@ -76,29 +77,36 @@ fun Banner() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddServerForm(uiState: AddServerViewModel.UiState, onSubmit: (String) -> Unit) {
-    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
+fun AddServerForm(uiState: AddServerViewModel.UiState, discoveredServerState: AddServerViewModel.DiscoveredServersState, onSubmit: (String) -> Unit) {
+    var text by rememberSaveable {
+        mutableStateOf("")
     }
     val isError = uiState is AddServerViewModel.UiState.Error
     val isLoading = uiState is AddServerViewModel.UiState.Loading
     val context = LocalContext.current
 
-    val discoveredServers = listOf(
-        DiscoveredServer("e9179766-1da2-4cea-98a4-e4e51fa7fbd0", "server1", "server1.local"),
-        DiscoveredServer("236c6ef9-c870-47fb-ab47-bc064a7f92af", "server2", "server2.local")
-    )
+    val discoveredServers = if (discoveredServerState is AddServerViewModel.DiscoveredServersState.Servers) {
+        discoveredServerState.servers
+    } else emptyList()
+
     Column(Modifier.width(320.dp)) {
         Text(text = stringResource(id = R.string.add_server), style = Typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsIndexed(discoveredServers) { _, discoveredServer ->
-                DiscoveredServerComponent(discoveredServer = discoveredServer)
+        AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
+            Column {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    itemsIndexed(discoveredServers) { _, discoveredServer ->
+                        DiscoveredServerComponent(discoveredServer = discoveredServer) {
+                            text = it.address
+                            onSubmit(it.address)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = text,
             leadingIcon = {
@@ -116,6 +124,7 @@ fun AddServerForm(uiState: AddServerViewModel.UiState, onSubmit: (String) -> Uni
                 imeAction = ImeAction.Go
             ),
             isError = isError,
+            enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -133,9 +142,9 @@ fun AddServerForm(uiState: AddServerViewModel.UiState, onSubmit: (String) -> Uni
         Box {
             Button(
                 onClick = {
-                    onSubmit(text.text)
+                    onSubmit(text)
                 },
-                enabled = uiState !is AddServerViewModel.UiState.Loading,
+                enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = stringResource(id = R.string.button_connect))
