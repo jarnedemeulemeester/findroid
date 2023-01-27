@@ -7,28 +7,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
+import androidx.media3.common.*
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
-import java.util.UUID
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -150,8 +148,12 @@ constructor(
             }
 
             player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition?.div(10000) ?: C.TIME_UNSET)
-            if (!appPreferences.playerMpv || !playFromDownloads)
-                player.prepare() // TODO: This line causes a crash when playing from downloads with MPV
+            if (appPreferences.playerMpv && playFromDownloads) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
+                withContext(Dispatchers.IO) {
+                    Thread.sleep(1)
+                }
+            }
+            player.prepare()
             player.play()
             pollPosition(player)
         }
