@@ -126,7 +126,7 @@
 
                 <Button
                     android:id="@+id/button_quickconnect"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/quick_connect" />
