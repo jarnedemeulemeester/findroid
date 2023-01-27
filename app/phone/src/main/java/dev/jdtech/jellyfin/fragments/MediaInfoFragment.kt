@@ -264,6 +264,12 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.text = item.communityRating.toString()
             binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false
             binding.genres.text = genresString
+            binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
+            binding.videoMeta.text = videoString
+            binding.audioLayout.isVisible = audioString.isNotEmpty()
+            binding.audio.text = audioString
+            binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
+            binding.subtitles.text = subtitleString
             binding.directorLayout.isVisible = director != null
             binding.director.text = director?.name
             binding.writersLayout.isVisible = writers.isNotEmpty()

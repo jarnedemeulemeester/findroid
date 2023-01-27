@@ -151,4 +151,7 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtitles</string>
 </resources>

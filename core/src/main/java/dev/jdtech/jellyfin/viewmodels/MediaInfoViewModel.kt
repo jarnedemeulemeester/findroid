@@ -21,10 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.PlayAccess
+import org.jellyfin.sdk.model.api.*
 import timber.log.Timber
 
 @HiltViewModel
@@ -46,6 +43,9 @@ constructor(
             val writers: List<BaseItemPerson>,
             val writersString: String,
             val genresString: String,
+            val videoString: String,
+            val audioString: String,
+            val subtitleString: String,
             val runTime: String,
             val dateString: String,
             val nextUp: BaseItemDto?,
@@ -69,6 +69,9 @@ constructor(
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
     private var genresString: String = ""
+    private var videoString: String = ""
+    private var audioString: String = ""
+    private var subtitleString: String = ""
     private var runTime: String = ""
     private var dateString: String = ""
     var nextUp: BaseItemDto? = null
@@ -94,6 +97,9 @@ constructor(
                 writers = getWriters(tempItem)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
                 genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+                videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
+                audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
+                subtitleString = getMediaString(tempItem, MediaStreamType.SUBTITLE)
                 runTime = "${tempItem.runTimeTicks?.div(600000000)} min"
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played ?: false
@@ -113,6 +119,9 @@ constructor(
                         writers,
                         writersString,
                         genresString,
+                        videoString,
+                        audioString,
+                        subtitleString,
                         runTime,
                         dateString,
                         nextUp,
@@ -142,6 +151,9 @@ constructor(
             writers = getWriters(tempItem)
             writersString = writers.joinToString(separator = ", ") { it.name.toString() }
             genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+            videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
+            audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
+            subtitleString = getMediaString(tempItem, MediaStreamType.SUBTITLE)
             runTime = ""
             dateString = ""
             played = tempItem.userData?.played ?: false
@@ -156,6 +168,9 @@ constructor(
                     writers,
                     writersString,
                     genresString,
+                    videoString,
+                    audioString,
+                    subtitleString,
                     runTime,
                     dateString,
                     nextUp,
@@ -194,6 +209,14 @@ constructor(
             writers = item.people?.filter { it.type == "Writer" } ?: emptyList()
         }
         return writers
+    }
+
+    private suspend fun getMediaString(item: BaseItemDto, type: MediaStreamType): String {
+        val streams: List<MediaStream>
+        withContext(Dispatchers.Default) {
+            streams = item.mediaStreams?.filter { it.type == type } ?: emptyList()
+        }
+        return streams.map { it.displayTitle }.joinToString(separator = ", ")
     }
 
     private suspend fun getNextUp(seriesId: UUID): BaseItemDto? {
