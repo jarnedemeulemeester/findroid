@@ -155,6 +155,7 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
+        // TODO Move user configuration to a separate class
         val userConfig = repository.getUserConfiguration()
         return repository
             .getEpisodes(
