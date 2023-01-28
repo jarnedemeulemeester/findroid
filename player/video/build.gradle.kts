@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
