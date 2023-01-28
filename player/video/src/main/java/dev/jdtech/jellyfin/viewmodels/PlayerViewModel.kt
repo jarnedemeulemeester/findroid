@@ -155,12 +155,15 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
+        // TODO Move user configuration to a separate class
+        val userConfig = repository.getUserConfiguration()
         return repository
             .getEpisodes(
                 seriesId = item.seriesId!!,
                 seasonId = item.seasonId!!,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
-                startItemId = item.id
+                startItemId = item.id,
+                limit = if (userConfig.enableNextEpisodeAutoPlay) null else 1
             )
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
             .filter { it.locationType != VIRTUAL }
