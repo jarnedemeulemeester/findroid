@@ -146,8 +146,8 @@
     <string name="add_address">添加地址</string>
     <string name="add_server_address">添加服务器地址</string>
     <string name="add">添加</string>
-    <string name="quick_connect">Quick Connect</string>
+    <string name="quick_connect">快速连接</string>
     <string name="player_controls_skip_intro">跳过片头</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
-    <string name="pref_player_intro_skipper_summary">需要 ConfusedPolarBear 的片头跳过器安装于服务器</string>
+    <string name="pref_player_intro_skipper_summary">需要在服务器上安装ConfusedPolarBear的Intro Skipper插件</string>
 </resources>
