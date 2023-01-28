@@ -25,6 +25,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -112,7 +113,11 @@ class LibraryFragment : Fragment() {
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
                 ViewItemPagingAdapter.OnClickListener { item ->
-                    navigateToMediaInfoFragment(item)
+                    if (args.libraryType == CollectionType.BoxSets.type) {
+                        navigateToCollectionFragment(item)
+                    } else {
+                        navigateToMediaInfoFragment(item)
+                    }
                 }
             )
 
@@ -196,6 +201,14 @@ class LibraryFragment : Fragment() {
                 item.id,
                 item.name,
                 item.type
+            )
+        )
+    }
+
+    private fun navigateToCollectionFragment(collection: BaseItemDto) {
+        findNavController().navigate(
+            LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
+                collection.id
             )
         )
     }

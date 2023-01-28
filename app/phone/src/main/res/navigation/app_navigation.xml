@@ -102,6 +102,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_libraryFragment_to_collectionFragment"
+            app:destination="@id/collectionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="libraryType"
             android:defaultValue="unknown"
@@ -224,6 +231,21 @@
             app:destination="@id/episodeBottomSheetFragment" />
         <action
             android:id="@+id/action_favoriteFragment_to_mediaInfoFragment"
+            app:destination="@id/mediaInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionFragment"
+        android:name="dev.jdtech.jellyfin.fragments.CollectionFragment"
+        android:label="Collections"
+        tools:layout="@layout/fragment_favorite">
+        <argument
+            android:name="collectionId"
+            app:argType="java.util.UUID" />
+        <action
+            android:id="@+id/action_collectionFragment_to_episodeBottomSheetFragment"
+            app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_collectionFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
     </fragment>
     <fragment

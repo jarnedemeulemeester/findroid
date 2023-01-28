@@ -40,8 +40,9 @@ constructor(
     ) {
         Timber.d("$libraryType")
         val itemType = when (libraryType) {
-            "movies" -> BaseItemKind.MOVIE
-            "tvshows" -> BaseItemKind.SERIES
+            "movies" -> listOf(BaseItemKind.MOVIE)
+            "tvshows" -> listOf(BaseItemKind.SERIES)
+            "boxsets" -> listOf(BaseItemKind.BOX_SET)
             else -> null
         }
         viewModelScope.launch {
@@ -49,7 +50,7 @@ constructor(
             try {
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
-                    includeTypes = if (itemType != null) listOf(itemType) else null,
+                    includeTypes = itemType,
                     recursive = true,
                     sortBy = sortBy,
                     sortOrder = sortOrder
