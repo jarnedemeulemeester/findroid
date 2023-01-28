@@ -50,6 +50,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.components.Banner
+import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.theme.Typography
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 
@@ -65,7 +66,7 @@ fun LoginScreen(
 
     val navigateToHome by loginViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToHome) {
-        // TODO navigate to home
+        navigator.navigate(HomeScreenDestination)
     }
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,

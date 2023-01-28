@@ -104,6 +104,7 @@ dependencies {
     ksp(libs.compose.destinations.ksp)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.jellyfin.core)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
