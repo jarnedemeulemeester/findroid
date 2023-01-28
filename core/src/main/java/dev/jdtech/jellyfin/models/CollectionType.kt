@@ -10,7 +10,7 @@ enum class CollectionType(val type: String) {
 
     companion object {
         val unsupportedCollections = listOf(
-            HomeVideos, Music, Playlists, Books, LiveTv, BoxSets
+            HomeVideos, Music, Playlists, Books, LiveTv
         )
     }
 }
