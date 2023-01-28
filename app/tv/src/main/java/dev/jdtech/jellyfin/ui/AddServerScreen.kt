@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,6 +47,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.models.DiscoveredServer
+import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.Typography
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
@@ -56,8 +56,8 @@ import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 @Destination
 @Composable
 fun AddServerScreen(
-    addServerViewModel: AddServerViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    addServerViewModel: AddServerViewModel = hiltViewModel()
 ) {
     val uiState by addServerViewModel.uiState.collectAsState()
     val discoveredServerState by addServerViewModel.discoveredServersState.collectAsState()
@@ -75,16 +75,6 @@ fun AddServerScreen(
             addServerViewModel.checkServer(it)
         }
     }
-}
-
-@Composable
-fun Banner() {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_banner),
-        contentDescription = null,
-        tint = Color.Unspecified,
-        modifier = Modifier.width(320.dp)
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
