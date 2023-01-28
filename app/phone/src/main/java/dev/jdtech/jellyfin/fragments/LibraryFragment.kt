@@ -208,7 +208,8 @@ class LibraryFragment : Fragment() {
     private fun navigateToCollectionFragment(collection: BaseItemDto) {
         findNavController().navigate(
             LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
-                collection.id
+                collection.id,
+                collection.name
             )
         )
     }

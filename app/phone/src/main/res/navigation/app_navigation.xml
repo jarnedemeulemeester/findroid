@@ -236,11 +236,16 @@
     <fragment
         android:id="@+id/collectionFragment"
         android:name="dev.jdtech.jellyfin.fragments.CollectionFragment"
-        android:label="Collections"
+        android:label="{collectionName}"
         tools:layout="@layout/fragment_favorite">
         <argument
             android:name="collectionId"
             app:argType="java.util.UUID" />
+        <argument
+            android:name="collectionName"
+            android:defaultValue="Collection"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_collectionFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
