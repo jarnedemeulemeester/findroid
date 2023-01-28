@@ -209,7 +209,7 @@ class MPVPlayer(
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
-                        if (currentIndex < (internalMediaItems.size)) {
+                        if (currentIndex < (internalMediaItems.size - 1)) {
                             currentIndex += 1
                             prepareMediaItem(currentIndex)
                             play()
