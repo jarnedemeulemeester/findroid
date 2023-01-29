@@ -24,9 +24,9 @@
     <string name="error_loading_data">Erro ao carregar dados</string>
     <string name="retry">Tentar novamente</string>
     <string name="genres">Gêneros</string>
-    <string name="director">Diretor(a)</string>
-    <string name="writers">Escritores(as)</string>
-    <string name="cast_amp_crew">Elenco e equipe</string>
+    <string name="director">Diretor</string>
+    <string name="writers">Escritor</string>
+    <string name="cast_amp_crew">Elenco e Equipe</string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproduzir</string>
     <string name="trailer_button_description">Trailer</string>
@@ -53,7 +53,7 @@
     <string name="settings_use_cache_title">Cache de imagens</string>
     <string name="settings_cache_size">Tamanho do cache (MB)</string>
     <string name="theme">Tema</string>
-    <string name="error_preparing_player_items">Erro preparando itens a serem reproduzidos.</string>
+    <string name="error_preparing_player_items">Erro ao preparar itens para serem reproduzidos.</string>
     <string name="view_details">Ver detalhes</string>
     <string name="view_details_underlined"><u>Ver detalhes</u></string>
     <string name="about">Sobre</string>
