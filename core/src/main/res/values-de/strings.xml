@@ -127,4 +127,9 @@
     <string name="player_gestures_zoom">Zoom-Gesten</string>
     <string name="player_gestures_zoom_summary">Ziehen um den Bildschirm zu füllen</string>
     <string name="libraries">Bibliotheken</string>
+    <string name="player_controls_skip_intro">Intro überspringen</string>
+    <string name="remove_user">Nutzer löschen</string>
+    <string name="remove_user_dialog_text">Bist du sicher, dass du den Benutzer %1$s löschen möchtest\?</string>
+    <string name="seek_back_increment"></string>
+    <string name="seek_forward_increment">Weiter suchen inkrement (ms)</string>
 </resources>
