@@ -131,4 +131,14 @@
     <string name="remove_user">Nutzer löschen</string>
     <string name="remove_user_dialog_text">Bist du sicher, dass du den Benutzer %1$s löschen möchtest\?</string>
     <string name="seek_forward_increment">Weiter suchen inkrement (ms)</string>
+    <string name="quick_connect">Quick Connect</string>
+    <string name="settings_category_network">Netzwerk</string>
+    <string name="settings_request_timeout">Zeitüberschreitung der Anforderung (ms)</string>
+    <string name="settings_connect_timeout">Verbindungszeitüberschreitung (ms)</string>
+    <string name="add_user">Benutzer hinzufügen</string>
+    <string name="settings_socket_timeout">Zeitüberschreitung der Socket (ms)</string>
+    <string name="add">Hinzufügen</string>
+    <string name="add_server_address">Serveradresse ergänzen</string>
+    <string name="add_address">Adresse ergänzen</string>
+    <string name="addresses">Adresse</string>
 </resources>
