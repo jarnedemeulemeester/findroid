@@ -141,4 +141,5 @@
     <string name="add_server_address">Serveradresse ergänzen</string>
     <string name="add_address">Adresse ergänzen</string>
     <string name="addresses">Adresse</string>
+    <string name="seek_back_increment">Zurückspulstufe (ms)</string>
 </resources>
