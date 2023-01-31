@@ -243,6 +243,7 @@ class MediaInfoFragment : Fragment() {
 
                     if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
                 }
+
                 false -> {
                     binding.downloadButton.isVisible = false
                 }
@@ -271,14 +272,17 @@ class MediaInfoFragment : Fragment() {
             binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
             binding.subtitles.text = subtitleString
             binding.subsChip.isVisible = subtitleString.isNotEmpty()
-            // TODO: Parse strings and change values here
-            binding.audioChip.text = "DTS-HD"
-            binding.audioChip.isVisible = true
-            binding.resChip.text = "4K"
-            binding.resChip.isVisible = true
-            binding.videoProfileChip.text = "HDR10"
-            binding.videoProfileChip.isVisible = true
-            // TODO: END
+            // TODO: Decide what values to show here
+            videoMetadata?.let {
+                with(binding) {
+                    audioChip.text = it.audio.firstOrNull()?.raw
+                    resChip.text = it.resolution.firstOrNull()?.raw
+                    videoProfileChip.text = it.displayProfile.firstOrNull()?.raw
+                    audioChip.isVisible = it.audio.isNotEmpty()
+                    resChip.isVisible = it.resolution.isNotEmpty()
+                    videoProfileChip.isVisible = it.displayProfile.isNotEmpty()
+                }
+            }
             binding.directorLayout.isVisible = director != null
             binding.director.text = director?.name
             binding.writersLayout.isVisible = writers.isNotEmpty()
