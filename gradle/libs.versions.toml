@@ -19,6 +19,7 @@ androidx-recyclerview-selection = "1.1.0"
 androidx-room = "2.5.0"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-tv = "1.0.0-alpha03"
+coil = "2.2.2"
 compose-destinations = "1.8.33-beta"
 glide = "4.14.2"
 hilt = "2.44.2"
@@ -64,6 +65,7 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
