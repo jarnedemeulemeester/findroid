@@ -212,15 +212,13 @@ class PlayerActivity : BasePlayerActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             // Hide the full-screen UI (controls, etc.) while in PiP mode.
-            binding.playerView.findViewById<View>(R.id.player_controls).visibility = View.GONE
+            binding.playerView.useController = false
+            
 
-
-            binding.playerView.player?.playWhenReady = viewModel.playWhenReady //Temporary workaround for the playback pausing when entering PiP
-
+            binding.playerView.player?.playWhenReady = viewModel.playWhenReady
         } else {
             // Restore the full-screen UI.
-            binding.playerView.findViewById<View>(R.id.player_controls).visibility = View.VISIBLE
-
+            binding.playerView.useController = true
         }
     }
 
