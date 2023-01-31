@@ -154,4 +154,6 @@
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtitles</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">temp</string>
 </resources>

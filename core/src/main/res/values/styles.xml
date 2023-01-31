@@ -9,4 +9,15 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
+    <style name="MetaChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:backgroundTint">?attr/colorSecondaryContainer</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="chipCornerRadius">6dp</item>
+        <item name="chipEndPadding">0dp</item>
+        <item name="chipStartPadding">0dp</item>
+        <item name="chipMinTouchTargetSize">20dp</item>
+        <item name="chipStrokeWidth">0dp</item>
+    </style>
+
 </resources>

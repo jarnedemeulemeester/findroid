@@ -270,6 +270,15 @@ class MediaInfoFragment : Fragment() {
             binding.audio.text = audioString
             binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
             binding.subtitles.text = subtitleString
+            binding.subsChip.isVisible = subtitleString.isNotEmpty()
+            // TODO: Parse strings and change values here
+            binding.audioChip.text = "DTS-HD"
+            binding.audioChip.isVisible = true
+            binding.resChip.text = "4K"
+            binding.resChip.isVisible = true
+            binding.videoProfileChip.text = "HDR10"
+            binding.videoProfileChip.isVisible = true
+            // TODO: END
             binding.directorLayout.isVisible = director != null
             binding.director.text = director?.name
             binding.writersLayout.isVisible = writers.isNotEmpty()

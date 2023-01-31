@@ -73,14 +73,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="16dp">
-
+                android:layout_marginBottom="15dp">
 
                 <TextView
                     android:id="@+id/year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="2019" />
 
@@ -89,6 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="122 min" />
 
@@ -97,6 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="PG-13" />
 
@@ -104,19 +106,65 @@
                     android:id="@+id/community_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:drawablePadding="4dp"
-                    android:gravity="bottom"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:drawableStartCompat="@drawable/ic_star"
                     app:drawableTint="@color/yellow"
                     tools:text="7.3" />
             </LinearLayout>
 
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginHorizontal="24dp"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/res_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="4K" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/video_profile_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="HDR10" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="5.1" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/subs_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtitle_chip_text"
+                    android:visibility="gone"
+                    tools:text="CC" />
+
+            </com.google.android.material.chip.ChipGroup>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginVertical="15dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -300,7 +348,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/subtitles_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp">
 
                     <TextView
                         android:id="@+id/subtitles_title"
@@ -329,7 +378,7 @@
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="15dp"
+                    android:layout_marginBottom="15dp"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
 
