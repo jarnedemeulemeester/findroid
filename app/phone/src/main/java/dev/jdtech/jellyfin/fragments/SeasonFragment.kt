@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,6 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -27,6 +30,7 @@ import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
+
 
 @AndroidEntryPoint
 class SeasonFragment : Fragment() {
@@ -53,6 +57,14 @@ class SeasonFragment : Fragment() {
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
                         R.id.action_download_season -> {
+                            var drawable: Drawable = menuItem.icon!!
+                            drawable = DrawableCompat.wrap(drawable)
+                            DrawableCompat.setTint(
+                                drawable,
+                                ContextCompat.getColor(context!!, R.color.red)
+                            )
+                            menuItem.icon = drawable
+                            menuItem.isEnabled = false
                             viewModel.download()
                             true
                         }
