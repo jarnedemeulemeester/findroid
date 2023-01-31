@@ -151,7 +151,7 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition?.div(10000) ?: C.TIME_UNSET)
+            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition?: C.TIME_UNSET)
             if (appPreferences.playerMpv && playFromDownloads) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1)

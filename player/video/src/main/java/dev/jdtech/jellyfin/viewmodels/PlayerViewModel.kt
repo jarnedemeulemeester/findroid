@@ -77,6 +77,8 @@ class PlayerViewModel @Inject internal constructor(
     fun loadOfflinePlayerItems(
         playerItem: PlayerItem
     ) {
+        Timber.d("Playback position playerviewmodel")
+        Timber.d(playerItem.playbackPosition.toString())
         playerItems.tryEmit(PlayerItems(listOf(playerItem)))
     }
 
