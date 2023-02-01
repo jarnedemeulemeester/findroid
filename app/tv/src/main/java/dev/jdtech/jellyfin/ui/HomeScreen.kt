@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -57,6 +60,7 @@ fun HomeScreen(
         }
         is HomeViewModel.UiState.Normal -> {
             LazyColumn(
+                contentPadding = PaddingValues(vertical = 32.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
@@ -64,11 +68,13 @@ fun HomeScreen(
                         is HomeItem.Libraries -> {
                             Text(
                                 text = homeItem.section.name,
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
                                 items(homeItem.section.items) { library ->
                                     Column(
@@ -94,11 +100,13 @@ fun HomeScreen(
                         is HomeItem.Section -> {
                             Text(
                                 text = homeItem.homeSection.name,
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
                                 items(homeItem.homeSection.items) { item ->
                                     Column(
@@ -114,7 +122,15 @@ fun HomeScreen(
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = item.name.orEmpty(),
-                                            style = MaterialTheme.typography.bodyMedium
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = item.seriesName.orEmpty(),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                 }
@@ -124,11 +140,13 @@ fun HomeScreen(
                         is HomeItem.ViewItem -> {
                             Text(
                                 text = homeItem.view.name.orEmpty(),
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
                                     Column(
