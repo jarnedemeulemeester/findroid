@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -196,11 +197,13 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onUserLeaveHint() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && binding.playerView.player?.isPlaying == true) {
             val visibleRect = Rect()
+            val aspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
             binding.playerView.getGlobalVisibleRect(visibleRect)
 
             val params = PictureInPictureParams.Builder()
                 .setSourceRectHint(visibleRect)
+                .setAspectRatio(aspectRatio)
                 .build()
             enterPictureInPictureMode(params)
         }
@@ -211,14 +214,16 @@ class PlayerActivity : BasePlayerActivity() {
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
+
             // Hide the full-screen UI (controls, etc.) while in PiP mode.
             binding.playerView.useController = false
-            
+
 
             binding.playerView.player?.playWhenReady = viewModel.playWhenReady
         } else {
             // Restore the full-screen UI.
             binding.playerView.useController = true
+
         }
     }
 
