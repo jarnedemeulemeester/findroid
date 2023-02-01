@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.AudioChannel
+import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Resolution
@@ -231,8 +232,9 @@ constructor(
 
     private suspend fun parseVideoMetadata(item: BaseItemDto): VideoMetadata {
         val resolution = mutableListOf<Resolution>()
-        val audioProfile = mutableListOf<AudioChannel>()
+        val audioChannels = mutableListOf<AudioChannel>()
         val displayProfile = mutableListOf<DisplayProfile>()
+        val audioCodecs = mutableListOf<AudioCodec>()
 
         withContext(Dispatchers.Default) {
             item.mediaStreams?.filter { stream ->
@@ -241,12 +243,29 @@ constructor(
                         /**
                          * Match audio profile from [MediaStream.channelLayout]
                          */
-                        audioProfile.add(
+                        audioChannels.add(
                             when (stream.channelLayout) {
                                 AudioChannel.CH_2_1.raw -> AudioChannel.CH_2_1
                                 AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
                                 AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
                                 else -> AudioChannel.CH_2_0
+                            }
+                        )
+
+                        /**
+                         * Match audio codec from [MediaStream.codec]
+                         */
+                        audioCodecs.add(
+                            when (stream.codec?.lowercase()) {
+                                AudioCodec.FLAC.toString() -> AudioCodec.FLAC
+                                AudioCodec.AAC.toString() -> AudioCodec.AAC
+                                AudioCodec.AC3.toString() -> AudioCodec.AC3
+                                AudioCodec.EAC3.toString() -> AudioCodec.EAC3
+                                AudioCodec.VORBIS.toString() -> AudioCodec.VORBIS
+                                AudioCodec.OPUS.toString() -> AudioCodec.OPUS
+                                AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
+                                AudioCodec.DTS.toString() -> AudioCodec.DTS
+                                else -> AudioCodec.MP3
                             }
                         )
                         true
@@ -293,7 +312,12 @@ constructor(
             }
         }
 
-        return VideoMetadata(resolution, displayProfile.toSet().toList(), audioProfile.toSet().toList())
+        return VideoMetadata(
+            resolution,
+            displayProfile.toSet().toList(),
+            audioChannels.toSet().toList(),
+            audioCodecs.toSet().toList()
+        )
     }
 
     private suspend fun getNextUp(seriesId: UUID): BaseItemDto? {

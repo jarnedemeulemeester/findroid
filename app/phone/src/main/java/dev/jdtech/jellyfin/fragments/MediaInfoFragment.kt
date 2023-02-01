@@ -25,6 +25,8 @@ import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
+import dev.jdtech.jellyfin.models.AudioCodec
+import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
@@ -157,8 +159,12 @@ class MediaInfoFragment : Fragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(args.itemId)
-                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.checkButton.setTintColorAttribute(
+                            R.attr.colorOnSecondaryContainer,
+                            requireActivity().theme
+                        )
                     }
+
                     false -> {
                         viewModel.markAsPlayed(args.itemId)
                         binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
@@ -171,8 +177,12 @@ class MediaInfoFragment : Fragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.favoriteButton.setTintColorAttribute(
+                            R.attr.colorOnSecondaryContainer,
+                            requireActivity().theme
+                        )
                     }
+
                     false -> {
                         viewModel.markAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
@@ -225,7 +235,10 @@ class MediaInfoFragment : Fragment() {
             // Check icon
             when (played) {
                 true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                false -> binding.checkButton.setTintColorAttribute(
+                    R.attr.colorOnSecondaryContainer,
+                    requireActivity().theme
+                )
             }
 
             // Favorite icon
@@ -241,7 +254,10 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+                    if (downloaded) binding.downloadButton.setTintColor(
+                        R.color.red,
+                        requireActivity().theme
+                    )
                 }
 
                 false -> {
@@ -272,15 +288,34 @@ class MediaInfoFragment : Fragment() {
             binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
             binding.subtitles.text = subtitleString
             binding.subsChip.isVisible = subtitleString.isNotEmpty()
-            // TODO: Decide what values to show here
             videoMetadata?.let {
                 with(binding) {
-                    audioChip.text = it.audio.firstOrNull()?.raw
+                    audioChannelChip.text = it.audioChannels.firstOrNull()?.raw
                     resChip.text = it.resolution.firstOrNull()?.raw
-                    videoProfileChip.text = it.displayProfile.firstOrNull()?.raw
-                    audioChip.isVisible = it.audio.isNotEmpty()
+                    audioChannelChip.isVisible = it.audioChannels.isNotEmpty()
                     resChip.isVisible = it.resolution.isNotEmpty()
-                    videoProfileChip.isVisible = it.displayProfile.isNotEmpty()
+
+                    it.displayProfiles.firstOrNull()?.apply {
+                        videoProfileChip.text = this.raw
+                        videoProfileChip.isVisible = this != DisplayProfile.SDR
+                    }
+
+                    audioCodecChip.text = when (it.audioCodecs.firstOrNull()) {
+                        AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> {
+                            audioCodecChip.isVisible = true
+                            AudioCodec.DOLBY.raw
+                        }
+
+                        AudioCodec.DTS -> {
+                            audioCodecChip.isVisible = true
+                            AudioCodec.DTS.raw
+                        }
+
+                        else -> {
+                            audioCodecChip.isVisible = false
+                            null
+                        }
+                    }
                 }
             }
             binding.directorLayout.isVisible = director != null
@@ -343,7 +378,8 @@ class MediaInfoFragment : Fragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
+            ErrorDialogFragment.newInstance(error.error)
+                .show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 

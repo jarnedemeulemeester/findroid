@@ -4,8 +4,9 @@ package dev.jdtech.jellyfin.models
 
 data class VideoMetadata(
     val resolution: List<Resolution>,
-    val displayProfile: List<DisplayProfile>,
-    val audio: List<AudioChannel>
+    val displayProfiles: List<DisplayProfile>,
+    val audioChannels: List<AudioChannel>,
+    val audioCodecs: List<AudioCodec>
 )
 
 enum class Resolution(val raw: String) {
@@ -27,4 +28,19 @@ enum class AudioChannel(val raw: String) {
     CH_2_1("2.1"),
     CH_5_1("5.1"),
     CH_7_1("7.1");
+}
+
+enum class AudioCodec(val raw: String) {
+    FLAC("FLAC"),
+    MP3("MP3"),
+    AAC("AAC"),
+    AC3("AC3"),
+    EAC3("EAC3"),
+    VORBIS("VORBIS"),
+    DOLBY("DOLBY"),
+    DTS("DTS"),
+    TRUEHD("TRUEHD"),
+    OPUS("OPUS");
+
+    override fun toString() = this.raw.lowercase()
 }

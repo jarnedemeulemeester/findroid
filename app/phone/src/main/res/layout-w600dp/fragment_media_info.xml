@@ -142,13 +142,23 @@
                     tools:text="HDR10" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/audio_chip"
+                    android:id="@+id/audio_channel_chip"
                     style="@style/MetaChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
                     tools:text="5.1" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_codec_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="DOLBY"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/subs_chip"

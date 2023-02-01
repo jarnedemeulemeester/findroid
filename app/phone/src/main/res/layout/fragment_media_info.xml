@@ -130,7 +130,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="4K" />
+                    tools:text="4K"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/video_profile_chip"
@@ -139,16 +140,28 @@
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="HDR10" />
+                    tools:text="HDR10"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/audio_chip"
+                    android:id="@+id/audio_codec_chip"
                     style="@style/MetaChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="5.1" />
+                    tools:text="DOLBY"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_channel_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="5.1"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/subs_chip"
@@ -157,7 +170,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/subtitle_chip_text"
                     android:visibility="gone"
-                    tools:text="CC" />
+                    tools:text="CC"
+                    tools:visibility="visible" />
 
             </com.google.android.material.chip.ChipGroup>
 
