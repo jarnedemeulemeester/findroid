@@ -274,5 +274,4 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             )
         )
     }
-
 }
