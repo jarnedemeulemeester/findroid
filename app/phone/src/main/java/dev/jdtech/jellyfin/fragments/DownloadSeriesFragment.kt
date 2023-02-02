@@ -1,9 +1,17 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.DownloadEpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadSeriesBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -38,6 +47,26 @@ class DownloadSeriesFragment : Fragment() {
     ): View {
         binding = FragmentDownloadSeriesBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.download_series_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.action_download_delete_series -> {
+                            viewModel.delete()
+                            findNavController().navigate(R.id.downloadFragment)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
         return binding.root
     }
 

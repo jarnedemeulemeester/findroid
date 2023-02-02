@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_download_delete_series"
+        android:icon="@drawable/ic_trash"
+        android:title="@string/download_delete_series_button_description"
+        app:showAsAction="always" />
+</menu>

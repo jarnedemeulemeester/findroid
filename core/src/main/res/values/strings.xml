@@ -152,4 +152,5 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="download_delete_series_button_description">Delete Series</string>
 </resources>
