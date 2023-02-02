@@ -14,7 +14,7 @@
     <string name="add_server_error_no_id">Сервер не имеет id, похоже, с ним что-то не так</string>
     <string name="login">Вход</string>
     <string name="login_error_wrong_username_password">Неверное имя пользователя или пароль</string>
-    <string name="select_server">Выбор сервера</string>
+    <string name="select_server">Выберите сервер</string>
     <string name="edit_text_username_hint">Имя пользователя</string>
     <string name="edit_text_password_hint">Пароль</string>
     <string name="button_connect">Подключиться</string>
@@ -52,7 +52,7 @@
     <string name="settings_category_servers">Сервера</string>
     <string name="settings_category_player">Проигрыватель</string>
     <string name="settings_category_download">Загрузки</string>
-    <string name="manage_servers">Управлять серверами</string>
+    <string name="manage_servers">Изменить сервера</string>
     <string name="settings_category_appearance">Внешний вид</string>
     <string name="device_name">Имя устройства</string>
     <string name="settings_category_cache">Кэш</string>
@@ -96,9 +96,9 @@
     <string name="player_gestures_vb_summary">Проведите пальцем вверх и вниз по правой стороне экрана для изменения громкости и по левой стороне для изменения яркости</string>
     <string name="player_brightness_remember">Запоминать яркость</string>
     <string name="sort_by_options_0">Заголовку</string>
-    <string name="sort_by_options_2">Родительский рейтинг</string>
+    <string name="sort_by_options_2">Родительскому рейтингу</string>
     <string name="sort_by_options_3">Дата добавления</string>
-    <string name="sort_by_options_4">Дата проигрывания</string>
+    <string name="sort_by_options_4">Дате проигрывания</string>
     <string name="ascending">По возрастанию</string>
     <string name="descending">По убыванию</string>
     <string name="select_video_version_title">Выбрать версию</string>
@@ -110,7 +110,7 @@
     <string name="display_extended_title_summary">Показывать расширенное название, включающее сезон и эпизод (СXX:ЭXX - НазваниеЭпизода).</string>
     <string name="display_extended_title">Показывать расширенное название</string>
     <string name="sort_by_options_1">Рейтингу IMDB</string>
-    <string name="sort_by_options_5">Дата выпуска</string>
+    <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>
     <string name="player_controls_rewind">Перемотка</string>
     <string name="player_controls_fast_forward">Быстрая перемотка</string>
