@@ -303,11 +303,13 @@ class MediaInfoFragment : Fragment() {
                     audioCodecChip.text = when (it.audioCodecs.firstOrNull()) {
                         AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> {
                             audioCodecChip.isVisible = true
+                            dolbyLogo.isVisible = true
                             AudioCodec.DOLBY.raw
                         }
 
                         AudioCodec.DTS -> {
                             audioCodecChip.isVisible = true
+                            dolbyLogo.isVisible = true
                             AudioCodec.DTS.raw
                         }
 

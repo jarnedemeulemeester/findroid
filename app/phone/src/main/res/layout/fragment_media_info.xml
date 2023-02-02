@@ -113,6 +113,18 @@
                     app:drawableStartCompat="@drawable/ic_star"
                     app:drawableTint="@color/yellow"
                     tools:text="7.3" />
+
+                <ImageView
+                    android:id="@+id/dolby_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/dolby_logo_desc"
+                    android:src="@drawable/ic_dolby"
+                    android:visibility="gone"
+                    app:tint="?attr/dolbyColor"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
