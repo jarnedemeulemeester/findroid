@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <DropDownPreference
+        app:defaultValue="Original"
+        app:entries="@array/video_quality_labels"
+        app:entryValues="@array/video_quality"
+        app:key="pref_player_preferred_quality"
+        app:summary="@string/preferred_quality"
+        app:title="@string/quality" />
+
+    <SwitchPreference
+        app:key="pref_player_display_extended_title"
+        app:summary="@string/display_extended_title_summary"
+        app:title="@string/display_extended_title" />
+
     <Preference
         app:key="pref_player_subtitles"
         app:summary="@string/subtitles_summary"
@@ -99,7 +112,7 @@
         app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
         app:widgetLayout="@layout/preference_material3_switch" />
-        
+
     <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="pref_player_trick_play"
@@ -113,5 +126,5 @@
             app:title="@string/picture_in_picture_gesture"
             app:summary="@string/picture_in_picture_gesture_summary" />
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

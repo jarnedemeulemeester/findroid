@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -19,6 +20,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -144,7 +147,8 @@ class PlayerViewModel @Inject internal constructor(
         }
         val externalSubtitles = mediaSource.mediaStreams
             .filter { mediaStream ->
-                mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+                (appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal)
+                        && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
             }
             .map { mediaStream ->
                 // Temp fix for vtt
@@ -166,17 +170,41 @@ class PlayerViewModel @Inject internal constructor(
                     },
                 )
             }
-        return PlayerItem(
-            name = name,
-            itemId = id,
-            mediaSourceId = mediaSource.id,
-            mediaSourceUri = mediaSource.path,
-            playbackPosition = playbackPosition,
-            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-            indexNumber = if (this is FindroidEpisode) indexNumber else null,
-            indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
-            externalSubtitles = externalSubtitles,
-        )
+        return when (mediaSource.protocol) {
+            MediaProtocol.FILE -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id,
+                mediaSourceUri = mediaSource.path,
+                playbackPosition = playbackPosition,
+                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+                indexNumber = if (this is FindroidEpisode) indexNumber else null,
+                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+                externalSubtitles = externalSubtitles
+            )
+            MediaProtocol.HTTP -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id,
+                mediaSourceUri = mediaSource.path,
+                playbackPosition = playbackPosition,
+                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+                indexNumber = if (this is FindroidEpisode) indexNumber else null,
+                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+                externalSubtitles = externalSubtitles
+            )
+            else -> PlayerItem(
+                name = name,
+                itemId = id,
+                mediaSourceId = mediaSource.id,
+                mediaSourceUri = mediaSource.path,
+                playbackPosition = playbackPosition,
+                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+                indexNumber = if (this is FindroidEpisode) indexNumber else null,
+                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+                externalSubtitles = externalSubtitles,
+            )
+        }
     }
 
     sealed class PlayerItemState

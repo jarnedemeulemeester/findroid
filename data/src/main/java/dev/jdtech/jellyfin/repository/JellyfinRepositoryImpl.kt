@@ -31,6 +31,8 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.exception.InvalidStatusException
+import org.jellyfin.sdk.api.client.extensions.dynamicHlsApi
 import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -60,6 +62,8 @@ class JellyfinRepositoryImpl(
     override suspend fun getPublicSystemInfo(): PublicSystemInfo = withContext(Dispatchers.IO) {
         jellyfinApi.systemApi.getPublicSystemInfo().content
     }
+
+    private val playSessionIds = mutableMapOf<UUID, String?>()
 
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
@@ -344,6 +348,55 @@ class JellyfinRepositoryImpl(
                     static = true,
                     mediaSourceId = mediaSourceId,
                 )
+            } catch (e: Exception) {
+                Timber.e(e)
+                ""
+            }
+        }
+
+    private fun getVideoTranscodeBitRate(transcodeResolution: Int?): Pair<Int?, Int?> {
+        return when (transcodeResolution) {
+            2160 -> 59616000 to 384000
+            1080 -> 14616000 to 384000
+            720  ->  7616000 to 384000
+            480  ->  2616000 to 384000
+            360  ->   292000 to 128000
+
+            else -> null to null
+        }
+    }
+
+    override suspend fun getHlsPlaylistUrl(
+        itemId: UUID,
+        mediaSourceId: String,
+        transcodeResolution: Int?
+    ): String =
+        withContext(Dispatchers.IO) {
+            try {
+                val (videoBitRate, audioBitRate) = getVideoTranscodeBitRate(transcodeResolution)
+                if(videoBitRate == null || audioBitRate == null) {
+                    jellyfinApi.api.dynamicHlsApi.getVariantHlsVideoPlaylistUrl(
+                        itemId,
+                        static = true,
+                        mediaSourceId = mediaSourceId,
+                        playSessionId = playSessionIds[itemId] // playSessionId is required to update the transcoding resolution
+                    )
+                }
+                else {
+                    jellyfinApi.api.dynamicHlsApi.getVariantHlsVideoPlaylistUrl(
+                        itemId,
+                        static = false,
+                        mediaSourceId = mediaSourceId,
+                        playSessionId = playSessionIds[itemId],
+                        videoCodec = "h264",
+                        audioCodec = "aac",
+                        videoBitRate = videoBitRate,
+                        audioBitRate = audioBitRate,
+                        maxHeight = transcodeResolution,
+                        subtitleMethod = SubtitleDeliveryMethod.EXTERNAL,
+                        transcodeReasons = "ContainerBitrateExceedsLimit",
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 ""
