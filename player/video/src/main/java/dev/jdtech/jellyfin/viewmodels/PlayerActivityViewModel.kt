@@ -105,6 +105,18 @@ constructor(
         }
     }
 
+    private fun getTranscodeResolution(preferredQuality: String): Int? {
+        return when (preferredQuality) {
+            "4K" -> 2160
+            "1080p" -> 1080
+            "720p" -> 720
+            "480p" -> 480
+            "360p" -> 360
+
+            else -> null
+        }
+    }
+
     fun initializePlayer(
         items: Array<PlayerItem>
     ) {
@@ -115,9 +127,13 @@ constructor(
             val mediaItems: MutableList<MediaItem> = mutableListOf()
             try {
                 for (item in items) {
+                    val transcodeResolution = getTranscodeResolution(appPreferences.playerPreferredQuality)
                     val streamUrl = when {
                         item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
-                        else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                        else -> when (transcodeResolution) {
+                            null -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
+                            else -> jellyfinRepository.getHlsPlaylistUrl(item.itemId, item.mediaSourceId, transcodeResolution)
+                        }
                     }
                     val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
                         MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)

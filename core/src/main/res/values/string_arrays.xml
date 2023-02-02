@@ -37,4 +37,20 @@
     <string-array name="mpv_gpu_api">
         <item>opengl</item>
     </string-array>
+    <string-array name="video_quality">
+        <item>Original</item>
+        <item>4K</item>
+        <item>1080p</item>
+        <item>720p</item>
+        <item>480p</item>
+        <item>360p</item>
+    </string-array>
+    <string-array name="video_quality_labels">
+        <item>@string/quality_original</item>
+        <item>4K</item>
+        <item>1080p</item>
+        <item>720p</item>
+        <item>480p</item>
+        <item>360p</item>
+    </string-array>
 </resources>

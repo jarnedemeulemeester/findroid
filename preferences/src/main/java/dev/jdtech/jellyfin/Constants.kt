@@ -9,6 +9,7 @@ object Constants {
 
     // pref
     const val PREF_CURRENT_SERVER = "pref_current_server"
+    const val PREF_PLAYER_PREFERRED_QUALITY = "pref_player_preferred_quality"
     const val PREF_DISPLAY_EXTENDED_TITLE = "pref_player_display_extended_title"
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_GESTURES_VB = "pref_player_gestures_vb"
