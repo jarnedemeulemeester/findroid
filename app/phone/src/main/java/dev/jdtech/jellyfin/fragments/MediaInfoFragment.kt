@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -48,6 +50,9 @@ class MediaInfoFragment : Fragment() {
     private val args: MediaInfoFragmentArgs by navArgs()
 
     lateinit var errorDialog: ErrorDialogFragment
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -281,13 +286,17 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.text = item.communityRating.toString()
             binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false
             binding.genres.text = genresString
-            binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
             binding.videoMeta.text = videoString
-            binding.audioLayout.isVisible = audioString.isNotEmpty()
             binding.audio.text = audioString
-            binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
             binding.subtitles.text = subtitleString
             binding.subsChip.isVisible = subtitleString.isNotEmpty()
+
+            if (appPreferences.displayExtraInfo) {
+                binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
+                binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
+                binding.audioLayout.isVisible = audioString.isNotEmpty()
+            }
+
             videoMetadata?.let {
                 with(binding) {
                     audioChannelChip.text = it.audioChannels.firstOrNull()?.raw

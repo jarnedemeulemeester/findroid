@@ -157,4 +157,6 @@
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temp</string>
     <string name="dolby_logo_desc">Dolby Logo</string>
+    <string name="extra_info">Display Extra Info.</string>
+    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
 </resources>

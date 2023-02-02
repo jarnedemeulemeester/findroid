@@ -320,7 +320,8 @@
                     android:id="@+id/video_meta_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/video_meta_title"
@@ -347,7 +348,8 @@
                     android:id="@+id/audio_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/audio_title"
@@ -376,7 +378,8 @@
                     android:id="@+id/subtitles_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp">
+                    android:layout_marginBottom="15dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/subtitles_title"
