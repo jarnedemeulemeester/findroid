@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -307,31 +306,29 @@ class MediaInfoFragment : Fragment() {
 
                     it.displayProfiles.firstOrNull()?.apply {
                         videoProfileChip.text = this.raw
-                        videoProfileChip.isVisible = when(this) {
+                        videoProfileChip.isVisible = when (this) {
                             DisplayProfile.HDR,
                             DisplayProfile.HDR10,
                             DisplayProfile.HLG -> {
                                 videoProfileChip.chipStartPadding = .0f
                                 true
                             }
+
                             DisplayProfile.DOLBY_VISION -> {
                                 videoProfileChip.isChipIconVisible = true
                                 true
                             }
+
                             else -> false
                         }
                     }
 
-                    audioCodecChip.text = when (it.audioCodecs.firstOrNull()) {
-                        AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> {
-                            audioCodecChip.isVisible = true
-                            AudioCodec.DOLBY.raw
-                        }
-
-                        AudioCodec.DTS -> {
-                            audioCodecChip.isVisible = true
-                            AudioCodec.DTS.raw
-                        }
+                    audioCodecChip.text = if (it.isAtmos.firstOrNull() == true) {
+                        audioCodecChip.isVisible = true
+                        "Atmos"
+                    } else when (val codec = it.audioCodecs.firstOrNull()) {
+                        AudioCodec.AC3, AudioCodec.EAC3,
+                        AudioCodec.DTS, AudioCodec.TRUEHD -> codec.raw
 
                         else -> {
                             audioCodecChip.isVisible = false

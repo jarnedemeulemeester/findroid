@@ -6,7 +6,8 @@ data class VideoMetadata(
     val resolution: List<Resolution>,
     val displayProfiles: List<DisplayProfile>,
     val audioChannels: List<AudioChannel>,
-    val audioCodecs: List<AudioCodec>
+    val audioCodecs: List<AudioCodec>,
+    val isAtmos: List<Boolean>
 )
 
 enum class Resolution(val raw: String) {
@@ -34,12 +35,11 @@ enum class AudioCodec(val raw: String) {
     FLAC("FLAC"),
     MP3("MP3"),
     AAC("AAC"),
-    AC3("AC3"),
-    EAC3("EAC3"),
+    AC3("Digital"),
+    EAC3("Digital Plus"),
     VORBIS("VORBIS"),
-    DOLBY("DOLBY"),
     DTS("DTS"),
-    TRUEHD("TRUEHD"),
+    TRUEHD("TrueHD"),
     OPUS("OPUS");
 
     override fun toString() = this.raw.lowercase()

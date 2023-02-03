@@ -235,6 +235,7 @@ constructor(
         val audioChannels = mutableListOf<AudioChannel>()
         val displayProfile = mutableListOf<DisplayProfile>()
         val audioCodecs = mutableListOf<AudioCodec>()
+        val isAtmosAudio = mutableListOf<Boolean>()
 
         withContext(Dispatchers.Default) {
             item.mediaStreams?.filter { stream ->
@@ -251,6 +252,13 @@ constructor(
                                 else -> AudioChannel.CH_2_0
                             }
                         )
+
+                        /**
+                         * Match [MediaStream.displayTitle] for Dolby Atmos
+                         */
+                        stream.displayTitle?.apply {
+                            isAtmosAudio.add(contains("ATMOS", true))
+                        }
 
                         /**
                          * Match audio codec from [MediaStream.codec]
@@ -316,7 +324,8 @@ constructor(
             resolution,
             displayProfile.toSet().toList(),
             audioChannels.toSet().toList(),
-            audioCodecs.toSet().toList()
+            audioCodecs.toSet().toList(),
+            isAtmosAudio
         )
     }
 
