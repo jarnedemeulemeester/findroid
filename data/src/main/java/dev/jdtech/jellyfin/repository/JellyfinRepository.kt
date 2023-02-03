@@ -10,6 +10,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaSourceInfo
 import org.jellyfin.sdk.model.api.SortOrder
+import org.jellyfin.sdk.model.api.UserConfiguration
 
 interface JellyfinRepository {
     suspend fun getUserViews(): List<BaseItemDto>
@@ -54,7 +55,8 @@ interface JellyfinRepository {
         seriesId: UUID,
         seasonId: UUID,
         fields: List<ItemFields>? = null,
-        startItemId: UUID? = null
+        startItemId: UUID? = null,
+        limit: Int? = null,
     ): List<BaseItemDto>
 
     suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
@@ -84,4 +86,6 @@ interface JellyfinRepository {
     fun getBaseUrl(): String
 
     suspend fun updateDeviceName(name: String)
+
+    suspend fun getUserConfiguration(): UserConfiguration
 }

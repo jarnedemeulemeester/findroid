@@ -4,4 +4,5 @@
     <string name="select_audio_track">Hangsáv kiválasztása</string>
     <string name="select_subtile_track">Felirat kiválasztása</string>
     <string name="select_playback_speed">Lejátszási sebesség kiválasztása</string>
+    <string name="external">Külső</string>
 </resources>

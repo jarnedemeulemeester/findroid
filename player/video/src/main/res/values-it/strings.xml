@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="select_a_version">Seleziona una versione</string>
-    <string name="select_audio_track">Audio</string>
-    <string name="select_subtile_track">Sottotitolo</string>
+    <string name="select_audio_track">Traccia audio</string>
+    <string name="select_subtile_track">Traccia dei sottotitoli</string>
     <string name="select_playback_speed">Velocità di riproduzione</string>
     <string name="external">Esterno</string>
 </resources>
