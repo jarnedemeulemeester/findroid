@@ -11,7 +11,7 @@ data class VideoMetadata(
 
 enum class Resolution(val raw: String) {
     SD("SD"),
-    HD("1080p"),
+    HD("HD"),
     UHD("4K");
 }
 
@@ -19,7 +19,7 @@ enum class DisplayProfile(val raw: String) {
     SDR("SDR"),
     HDR("HDR"),
     HDR10("HDR10"),
-    DOLBY_VISION("DOLBY VISION"),
+    DOLBY_VISION("Vision"),
     HLG("HLG");
 }
 

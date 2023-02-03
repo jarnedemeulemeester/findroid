@@ -113,18 +113,6 @@
                     app:drawableStartCompat="@drawable/ic_star"
                     app:drawableTint="@color/yellow"
                     tools:text="7.3" />
-
-                <ImageView
-                    android:id="@+id/dolby_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/dolby_logo_desc"
-                    android:src="@drawable/ic_dolby"
-                    android:visibility="gone"
-                    app:tint="?attr/dolbyColor"
-                    tools:visibility="visible" />
             </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
@@ -142,7 +130,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="4K" />
+                    tools:text="4K"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/video_profile_chip"
@@ -151,16 +140,13 @@
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="HDR10" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/audio_channel_chip"
-                    style="@style/MetaChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/temp"
-                    android:visibility="gone"
-                    tools:text="5.1" />
+                    app:chipIcon="@drawable/ic_dolby"
+                    app:chipIconSize="0dp"
+                    app:chipIconTint="?attr/colorOnPrimarySurface"
+                    app:chipIconVisible="false"
+                    app:chipStartPadding="8dp"
+                    tools:text="Vision"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/audio_codec_chip"
@@ -169,7 +155,22 @@
                     android:layout_height="wrap_content"
                     android:text="@string/temp"
                     android:visibility="gone"
-                    tools:text="DOLBY"
+                    app:chipIcon="@drawable/ic_dolby"
+                    app:chipIconSize="0dp"
+                    app:chipIconTint="?attr/colorOnBackground"
+                    app:chipIconVisible="true"
+                    app:chipStartPadding="8dp"
+                    tools:text="ATMOS"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_channel_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="5.1"
                     tools:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
@@ -179,8 +180,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/subtitle_chip_text"
                     android:visibility="gone"
-                    tools:text="CC" />
-
+                    tools:text="CC"
+                    tools:visibility="visible" />
             </com.google.android.material.chip.ChipGroup>
 
             <LinearLayout
