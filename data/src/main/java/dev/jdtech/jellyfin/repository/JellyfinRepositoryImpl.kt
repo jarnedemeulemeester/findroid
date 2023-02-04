@@ -229,7 +229,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
 
             try {
                 return@withContext jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters).content
-            } catch (e: InvalidStatusException) {
+            } catch (e: Exception) {
                 return@withContext null
             }
         }
