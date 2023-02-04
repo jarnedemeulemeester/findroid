@@ -36,7 +36,7 @@ enum class AudioCodec(val raw: String) {
     MP3("MP3"),
     AAC("AAC"),
     AC3("Digital"),
-    EAC3("Digital Plus"),
+    EAC3("DD+"),
     VORBIS("VORBIS"),
     DTS("DTS"),
     TRUEHD("TrueHD"),

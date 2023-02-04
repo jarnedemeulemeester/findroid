@@ -323,12 +323,22 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-                    audioCodecChip.text = if (it.isAtmos.firstOrNull() == true) {
-                        audioCodecChip.isVisible = true
-                        "Atmos"
-                    } else when (val codec = it.audioCodecs.firstOrNull()) {
-                        AudioCodec.AC3, AudioCodec.EAC3,
-                        AudioCodec.DTS, AudioCodec.TRUEHD -> codec.raw
+                    audioCodecChip.text = when (val codec = it.audioCodecs.firstOrNull()) {
+                        AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> {
+                            audioCodecChip.isVisible = true
+                            if (it.isAtmos.firstOrNull() == true) {
+                                "${codec.raw} | Atmos"
+                            } else codec.raw
+                        }
+
+                        AudioCodec.DTS -> {
+                            audioCodecChip.apply {
+                                isVisible = true
+                                isChipIconVisible = false
+                                chipStartPadding = .0f
+                            }
+                            codec.raw
+                        }
 
                         else -> {
                             audioCodecChip.isVisible = false

@@ -9,7 +9,7 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
-    <style name="MetaChip" parent="Widget.Material3.Chip.Filter">
+    <style name="MetaChip" parent="Widget.Material3.Chip.Assist">
         <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
         <item name="android:textStyle">bold</item>
         <item name="chipBackgroundColor">?attr/colorSecondaryContainer</item>
@@ -18,7 +18,6 @@
         <item name="chipStartPadding">0dp</item>
         <item name="chipMinTouchTargetSize">20dp</item>
         <item name="chipStrokeWidth">0dp</item>
-        <item name="textStartPadding">7dp</item>
     </style>
 
     <attr name="dolbyColor" format="reference|color" />
