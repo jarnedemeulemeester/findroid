@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_subtile_track">Chọn dòng phụ đề</string>
+    <string name="select_playback_speed">Chọn tốc độ phát</string>
+    <string name="select_a_version">Chọn phiên bản</string>
+    <string name="external">Ngoại</string>
+    <string name="select_audio_track">Chọn dòng âm thanh</string>
+</resources>

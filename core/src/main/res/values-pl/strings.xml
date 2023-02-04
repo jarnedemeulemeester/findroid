@@ -146,4 +146,8 @@
     <string name="add_address">Dodaj adres</string>
     <string name="add_server_address">Dodaj adres serwera</string>
     <string name="add">Dodaj</string>
+    <string name="quick_connect">Szybkie połączenie</string>
+    <string name="player_controls_skip_intro">Pomiń czołówkę</string>
+    <string name="pref_player_intro_skipper">Pomijać czołówek</string>
+    <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki ConfusedPolarBear\'s Intro Skipper</string>
 </resources>

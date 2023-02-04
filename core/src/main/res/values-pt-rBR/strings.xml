@@ -24,9 +24,9 @@
     <string name="error_loading_data">Erro ao carregar dados</string>
     <string name="retry">Tentar novamente</string>
     <string name="genres">Gêneros</string>
-    <string name="director">Diretor(a)</string>
-    <string name="writers">Escritores(as)</string>
-    <string name="cast_amp_crew">Elenco e equipe</string>
+    <string name="director">Diretor</string>
+    <string name="writers">Escritor</string>
+    <string name="cast_amp_crew">Elenco e Equipe</string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproduzir</string>
     <string name="trailer_button_description">Trailer</string>
@@ -53,7 +53,7 @@
     <string name="settings_use_cache_title">Cache de imagens</string>
     <string name="settings_cache_size">Tamanho do cache (MB)</string>
     <string name="theme">Tema</string>
-    <string name="error_preparing_player_items">Erro preparando itens a serem reproduzidos.</string>
+    <string name="error_preparing_player_items">Erro ao preparar itens para serem reproduzidos.</string>
     <string name="view_details">Ver detalhes</string>
     <string name="view_details_underlined"><u>Ver detalhes</u></string>
     <string name="about">Sobre</string>
@@ -101,7 +101,7 @@
     <string name="theme_dark">Escuro</string>
     <string name="app_description">Aplicação Jellyfin nativa de terceiros</string>
     <string name="latest_library">%1$s mais recentes</string>
-    <string name="jellyfin_banner">Jellyfin banner</string>
+    <string name="jellyfin_banner">Banner Jellyfin</string>
     <string name="download_roaming">Download quando estiver em roaming</string>
     <string name="settings_cache_size_message">O aplicativo usará essa quantidade em MB do seu espaço em disco para armazenar imagens do servidor Jellyfin. Valores maiores podem ser benéficos em redes mais lentas.</string>
     <string name="episodes_label">Episódios</string>
@@ -149,5 +149,5 @@
     <string name="quick_connect">Conexão Rápida</string>
     <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do ConfusedPolarBear seja instalado no servidor</string>
-    <string name="pref_player_intro_skipper">Intro Skipper</string>
+    <string name="pref_player_intro_skipper">Pular introdução</string>
 </resources>

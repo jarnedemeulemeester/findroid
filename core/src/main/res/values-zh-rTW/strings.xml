@@ -36,9 +36,9 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">第%1$d季：第%2$d集 - %3$s</string>
     <string name="next_up">接下來</string>
-    <string name="latest_library">最後觀看的 %1$s</string>
+    <string name="latest_library">最新上架的 %1$s</string>
     <string name="series_poster">系列海報</string>
-    <string name="libraries">圖書館</string>
+    <string name="libraries">媒體庫</string>
     <string name="no_favorites">你沒有收藏夾</string>
     <string name="search">搜尋</string>
     <string name="no_search_results">沒有搜尋結果</string>
@@ -138,4 +138,16 @@
     <string name="display_extended_title_summary">顯示擴展影集標題，包括季和影集資訊 （第XX季：第XX集 - 影集名稱）。</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
+    <string name="player_controls_skip_intro">跳過片頭</string>
+    <string name="quick_connect">快速連接</string>
+    <string name="pref_player_intro_skipper">片頭跳過器</string>
+    <string name="pref_player_intro_skipper_summary">需要在服務器上安裝ConfusedPolarBear的Intro Skipper挿件</string>
+    <string name="pref_player_mpv_hwdec">硬體解碼</string>
+    <string name="pref_player_mpv_hwdec_codecs">硬體解碼轉碼器</string>
+    <string name="pref_player_mpv_vo">視頻輸出</string>
+    <string name="pref_player_mpv_ao">音頻輸出</string>
+    <string name="addresses">地址</string>
+    <string name="add_address">添加地址</string>
+    <string name="add_server_address">添加伺服器地址</string>
+    <string name="add">添加</string>
 </resources>

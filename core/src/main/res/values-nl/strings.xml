@@ -146,4 +146,6 @@
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
+    <string name="quick_connect">Snel verbinden</string>
+    <string name="player_controls_skip_intro">Intro overslaan</string>
 </resources>

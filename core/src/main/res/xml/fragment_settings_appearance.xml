@@ -7,14 +7,16 @@
         app:key="theme"
         app:title="@string/theme"
         app:useSimpleSummaryProvider="true" />
-    <SwitchPreference
+    <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="dynamic_colors"
         app:summary="@string/dynamic_colors_summary"
-        app:title="@string/dynamic_colors" />
-    <SwitchPreference
+        app:title="@string/dynamic_colors"
+        app:widgetLayout="@layout/preference_material3_switch" />
+    <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="pref_display_extra_info"
         app:summary="@string/extra_info_summary"
-        app:title="@string/extra_info" />
+        app:title="@string/extra_info"
+        app:widgetLayout="@layout/preference_material3_switch" />
 </PreferenceScreen>
