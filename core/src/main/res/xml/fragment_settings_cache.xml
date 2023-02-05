@@ -4,8 +4,7 @@
         app:defaultValue="true"
         app:key="pref_image_cache"
         app:summary="@string/settings_use_cache_summary"
-        app:title="@string/settings_use_cache_title"
-        app:widgetLayout="@layout/preference_material3_switch" />
+        app:title="@string/settings_use_cache_title" />
     <EditTextPreference
         app:defaultValue="20"
         app:dependency="pref_image_cache"
