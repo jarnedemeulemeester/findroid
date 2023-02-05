@@ -150,4 +150,6 @@
     <string name="player_controls_skip_intro">跳过片头</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
     <string name="pref_player_intro_skipper_summary">需要在服务器上安装 ConfusedPolarBear 的 Intro Skipper 插件</string>
+    <string name="player_gestures_seek">搜索手势</string>
+    <string name="player_gestures_seek_summary">左右滑动调整播放进度前进和后退</string>
 </resources>
