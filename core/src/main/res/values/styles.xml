@@ -9,4 +9,13 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
+    <!-- Preferences theme overlay to use new switch style, taken from Material Components Catalog example. -->
+    <style name="ThemeOverlay.Findroid.Preference" parent="PreferenceThemeOverlay">
+        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.Catalog</item>
+    </style>
+
+    <style name="Preference.SwitchPreferenceCompat.Catalog" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:widgetLayout">@layout/preference_material3_switch</item>
+    </style>
+
 </resources>
