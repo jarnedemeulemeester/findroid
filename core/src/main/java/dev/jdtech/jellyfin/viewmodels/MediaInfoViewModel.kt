@@ -103,7 +103,8 @@ constructor(
                 director = getDirector(tempItem)
                 writers = getWriters(tempItem)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
-                videoMetadata = if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
+                videoMetadata =
+                    if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
                 genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
                 videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
                 audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
@@ -159,7 +160,8 @@ constructor(
             director = getDirector(tempItem)
             writers = getWriters(tempItem)
             writersString = writers.joinToString(separator = ", ") { it.name.toString() }
-            videoMetadata = if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
+            videoMetadata =
+                if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
             genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
             videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
             audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
@@ -285,10 +287,16 @@ constructor(
                              * Match dynamic range from [MediaStream.videoRangeType]
                              */
                             displayProfile.add(
-                                when (videoRangeType) {
+                                /**
+                                 * Since [MediaStream.videoRangeType] is [DisplayProfile.HDR10]
+                                 * Check if [MediaStream.videoDoViTitle] is not null and return
+                                 * [DisplayProfile.DOLBY_VISION] accordingly
+                                 */
+                                if (stream.videoDoViTitle != null) {
+                                    DisplayProfile.DOLBY_VISION
+                                } else when (videoRangeType) {
                                     DisplayProfile.HDR.raw -> DisplayProfile.HDR
                                     DisplayProfile.HDR10.raw -> DisplayProfile.HDR10
-                                    DisplayProfile.DOLBY_VISION.raw -> DisplayProfile.DOLBY_VISION
                                     DisplayProfile.HLG.raw -> DisplayProfile.HLG
                                     else -> DisplayProfile.SDR
                                 }
