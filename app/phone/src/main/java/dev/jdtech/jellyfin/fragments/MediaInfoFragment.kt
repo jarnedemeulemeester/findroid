@@ -299,6 +299,7 @@ class MediaInfoFragment : Fragment() {
 
             videoMetadata?.let {
                 with(binding) {
+                    videoMetaChips.isVisible = true
                     audioChannelChip.text = it.audioChannels.firstOrNull()?.raw
                     resChip.text = it.resolution.firstOrNull()?.raw
                     audioChannelChip.isVisible = it.audioChannels.isNotEmpty()

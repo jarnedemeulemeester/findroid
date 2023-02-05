@@ -103,7 +103,7 @@ constructor(
                 director = getDirector(tempItem)
                 writers = getWriters(tempItem)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
-                videoMetadata = parseVideoMetadata(tempItem)
+                videoMetadata = if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
                 genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
                 videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
                 audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
@@ -159,7 +159,7 @@ constructor(
             director = getDirector(tempItem)
             writers = getWriters(tempItem)
             writersString = writers.joinToString(separator = ", ") { it.name.toString() }
-            videoMetadata = parseVideoMetadata(tempItem)
+            videoMetadata = if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
             genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
             videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
             audioString = getMediaString(tempItem, MediaStreamType.AUDIO)

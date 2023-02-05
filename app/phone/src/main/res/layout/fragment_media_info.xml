@@ -72,8 +72,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="15dp">
+                android:layout_marginHorizontal="24dp">
 
                 <TextView
                     android:id="@+id/year"
@@ -116,12 +115,15 @@
             </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/video_meta_chips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="-3dp"
-                app:singleLine="true">
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:singleLine="true"
+                tools:visibility="visible">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/res_chip"
