@@ -122,7 +122,10 @@ fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, con
 
 fun isItemDownloaded(downloadDatabaseDao: DownloadDatabaseDao, itemId: UUID): Boolean {
     val item = downloadDatabaseDao.loadItem(itemId)
-    return item != null
+    if (item != null) {
+        return File(defaultStorage, item.id.toString()).exists() && File(defaultStorage, "${item.id}.downloading").exists()
+    }
+    return false
 }
 
 fun getDownloadPlayerItem(downloadDatabase: DownloadDatabaseDao, itemId: UUID): PlayerItem? {
