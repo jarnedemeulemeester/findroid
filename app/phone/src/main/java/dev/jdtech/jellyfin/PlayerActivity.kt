@@ -1,8 +1,14 @@
 package dev.jdtech.jellyfin
 
+import android.app.PictureInPictureParams
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Rect
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -22,8 +28,8 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
@@ -55,7 +61,7 @@ class PlayerActivity : BasePlayerActivity() {
                 appPreferences,
                 this,
                 binding.playerView,
-                getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                getSystemService(AUDIO_SERVICE) as AudioManager
             )
         }
 
@@ -159,7 +165,9 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         viewModel.currentIntro.observe(this) {
-            skipIntroButton.isVisible = it != null
+            if(!isInPictureInPictureMode) {
+                skipIntroButton.isVisible = it != null
+            }
         }
 
         skipIntroButton.setOnClickListener {
@@ -185,7 +193,48 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
+        binding.playerView.addOnLayoutChangeListener { _, _, _, _,
+                                                       _, _, _, _, _ ->
+            val sourceRectHint = Rect()
+            //val aspectRatio = Rational(binding.playerView.width,binding.playerView.height)
+            binding.playerView.getGlobalVisibleRect(sourceRectHint)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        //.setAspectRatio(aspectRatio)
+                        .setSourceRectHint(sourceRectHint)
+                        .setAutoEnterEnabled(true)
+                        .build()
+                )
+            } else {
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        //.setAspectRatio(aspectRatio)
+                        .setSourceRectHint(sourceRectHint)
+                        .build()
+                )
+            }
+        }
+
         viewModel.initializePlayer(args.items)
         hideSystemUI()
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onUserLeaveHint() {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && binding.playerView.player?.isPlaying == true) {
+            enterPictureInPictureMode()
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
+                                               newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            binding.playerView.useController = false
+            binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
+        } else {
+            binding.playerView.useController = true
+        }
     }
 }

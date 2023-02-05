@@ -30,8 +30,12 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.playWhenReady = viewModel.player.playWhenReady == true
-        viewModel.player.playWhenReady = false
+        if (isInPictureInPictureMode) {
+            viewModel.player.playWhenReady = true
+        } else {
+            viewModel.playWhenReady = viewModel.player.playWhenReady == true
+            viewModel.player.playWhenReady = false
+        }
     }
 
     override fun onStop() {
