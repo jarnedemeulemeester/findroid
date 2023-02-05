@@ -4,11 +4,9 @@
     <SwitchPreferenceCompat
         android:defaultValue="false"
         app:key="download_mobile_data"
-        app:title="@string/download_mobile_data"
-        app:widgetLayout="@layout/preference_material3_switch" />
+        app:title="@string/download_mobile_data" />
     <SwitchPreferenceCompat
         android:defaultValue="false"
         app:key="download_roaming"
-        app:title="@string/download_roaming"
-        app:widgetLayout="@layout/preference_material3_switch" />
+        app:title="@string/download_roaming" />
 </PreferenceScreen>

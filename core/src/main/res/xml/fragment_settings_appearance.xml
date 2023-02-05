@@ -11,6 +11,5 @@
         app:defaultValue="true"
         app:key="dynamic_colors"
         app:summary="@string/dynamic_colors_summary"
-        app:title="@string/dynamic_colors"
-        app:widgetLayout="@layout/preference_material3_switch" />
+        app:title="@string/dynamic_colors" />
 </PreferenceScreen>
