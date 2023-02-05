@@ -15,8 +15,7 @@
         <SwitchPreferenceCompat
             app:key="pref_player_mpv"
             app:summary="@string/mpv_player_summary"
-            app:title="@string/mpv_player"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/mpv_player" />
         <ListPreference
             app:defaultValue="mediacodec-copy"
             app:dependency="pref_player_mpv"
@@ -62,34 +61,29 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="pref_player_gestures"
-            app:title="@string/player_gestures"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/player_gestures" />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures"
             app:key="pref_player_gestures_vb"
             app:summary="@string/player_gestures_vb_summary"
-            app:title="@string/player_gestures_vb"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/player_gestures_vb" />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures"
             app:key="pref_player_gestures_zoom"
             app:summary="@string/player_gestures_zoom_summary"
-            app:title="@string/player_gestures_zoom"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/player_gestures_zoom" />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures"
             app:key="pref_player_gestures_seek"
             app:summary="@string/player_gestures_seek_summary"
-            app:title="@string/player_gestures_seek"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/player_gestures_seek" />
         <SwitchPreferenceCompat
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
-            app:title="@string/player_brightness_remember"
-            app:widgetLayout="@layout/preference_material3_switch" />
+            app:title="@string/player_brightness_remember" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/seeking">
