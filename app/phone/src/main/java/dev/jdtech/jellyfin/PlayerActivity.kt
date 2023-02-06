@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.content.Context
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -60,7 +61,7 @@ class PlayerActivity : BasePlayerActivity() {
                 appPreferences,
                 this,
                 binding.playerView,
-                getSystemService(AUDIO_SERVICE) as AudioManager
+                getSystemService(Context.AUDIO_SERVICE) as AudioManager
             )
         }
 
