@@ -27,6 +27,8 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
         if(!wasPip) {
             viewModel.player.playWhenReady = viewModel.playWhenReady
+        } else {
+            wasPip = false
         }
         hideSystemUI()
     }

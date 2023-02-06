@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -73,10 +74,14 @@ class PlayerActivity : BasePlayerActivity() {
             videoNameTextView.text = title
         }
 
-        binding.playerView.videoSurfaceView?.addOnLayoutChangeListener { v: View?, oldLeft: Int,
-                                                                         oldTop: Int, oldRight: Int, oldBottom: Int, newLeft: Int, newTop:
-                                                                         Int, newRight: Int, newBottom: Int ->
-            binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
+        binding.playerView.addOnLayoutChangeListener { v: View?, oldLeft: Int,
+                                                       oldTop: Int, oldRight: Int, oldBottom: Int, newLeft: Int, newTop:
+                                                       Int, newRight: Int, newBottom: Int ->
+            if(viewModel.player is MPVPlayer){
+                binding.playerView.getGlobalVisibleRect(sourceRectHint)
+            } else {
+                binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
+            }
         }
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
@@ -227,7 +232,14 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun pictureInPicture() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            val aspectRatio = if(viewModel.player is MPVPlayer){
+                Rational(binding.playerView.width, binding.playerView.height)
+            } else {
+                binding.playerView.player?.videoSize?.let { Rational(it.width , it.height) }
+            }
+
             val params = PictureInPictureParams.Builder()
+                .setAspectRatio(aspectRatio)
                 .setSourceRectHint(sourceRectHint)
                 .build()
 
