@@ -4,4 +4,5 @@
     <string name="select_playback_speed">Select playback speed</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
+    <string name="picture_in_picture">picture_in_picture</string>
 </resources>

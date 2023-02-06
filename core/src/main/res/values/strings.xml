@@ -153,4 +153,7 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="picture_in_picture">Picture in picture</string>
+    <string name="picture_in_picture_enable">Picture in picture</string>
+    <string name="picture_in_picture_button">Show picture in picture button</string>
 </resources>

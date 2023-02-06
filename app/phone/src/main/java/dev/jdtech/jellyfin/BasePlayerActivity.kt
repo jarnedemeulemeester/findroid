@@ -14,6 +14,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     abstract val viewModel: PlayerActivityViewModel
 
     private lateinit var mediaSession: MediaSession
+    private var wasPip = false
 
     override fun onStart() {
         super.onStart()
@@ -24,14 +25,17 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.player.playWhenReady = viewModel.playWhenReady
+        if(!wasPip) {
+            viewModel.player.playWhenReady = viewModel.playWhenReady
+        }
         hideSystemUI()
     }
 
     override fun onPause() {
         super.onPause()
-        if (isInPictureInPictureMode) {
-            viewModel.player.playWhenReady = true
+
+        if(isInPictureInPictureMode) {
+            wasPip = true
         } else {
             viewModel.playWhenReady = viewModel.player.playWhenReady == true
             viewModel.player.playWhenReady = false
@@ -40,8 +44,8 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-
         mediaSession.release()
+        finishAndRemoveTask()
     }
 
     @Suppress("DEPRECATION")

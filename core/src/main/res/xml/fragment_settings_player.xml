@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreferenceCompat
         app:key="pref_player_display_extended_title"
         app:summary="@string/display_extended_title_summary"
@@ -105,5 +106,16 @@
         app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
         app:widgetLayout="@layout/preference_material3_switch" />
+
+    <PreferenceCategory android:title="@string/picture_in_picture">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_player_picture_in_picture"
+            android:title="@string/picture_in_picture_enable" />
+        <SwitchPreferenceCompat
+            android:key="pref_player_picture_in_picture_button"
+            android:title="@string/picture_in_picture_button"
+            app:dependency="pref_player_picture_in_picture" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

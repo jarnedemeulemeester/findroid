@@ -65,6 +65,9 @@ constructor(
     val playerMpvGpuApi get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_GPU_API, "opengl")!!
     val playerIntroSkipper get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_INTRO_SKIPPER, true)
 
+    val playerPip get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP, true)
+    val playerPipButton get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_BUTTON, false)
+
     // Language
     val preferredAudioLanguage get() = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
     val preferredSubtitleLanguage get() = sharedPreferences.getString(Constants.PREF_SUBTITLE_LANGUAGE, "")!!

@@ -16,8 +16,9 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import kotlin.math.abs
 import timber.log.Timber
+import kotlin.math.abs
+
 
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
@@ -85,6 +86,9 @@ class PlayerGestureHelper(
                 if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
                     return false
 
+                if (firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM))
+                    return false
+
                 // Check whether swipe was oriented vertically
                 if (abs(distanceY / distanceX) < 2) {
                     return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
@@ -121,6 +125,9 @@ class PlayerGestureHelper(
                 distanceY: Float
             ): Boolean {
                 if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
+                    return false
+
+                if (firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM))
                     return false
 
                 if (abs(distanceY / distanceX) < 2) return false
