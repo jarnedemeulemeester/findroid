@@ -233,6 +233,8 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun pictureInPicture() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            binding.playerView.useController = false
+            binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
             val aspectRatio = if(viewModel.player is MPVPlayer){
                 Rational(binding.playerView.width, binding.playerView.height)
             } else {
@@ -250,10 +252,7 @@ class PlayerActivity : BasePlayerActivity() {
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if (isInPictureInPictureMode) {
-            binding.playerView.useController = false
-            binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
-        } else {
+        if (!isInPictureInPictureMode) {
             binding.playerView.useController = true
         }
     }
