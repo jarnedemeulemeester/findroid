@@ -36,11 +36,11 @@ enum class AudioCodec(val raw: String) {
     MP3("MP3"),
     AAC("AAC"),
     AC3("Digital"),
-    EAC3("DD+"),
+    EAC3("Digital+"),
     VORBIS("VORBIS"),
     DTS("DTS"),
     TRUEHD("TrueHD"),
     OPUS("OPUS");
 
-    override fun toString() = this.raw.lowercase()
+    override fun toString() = super.toString().lowercase()
 }
