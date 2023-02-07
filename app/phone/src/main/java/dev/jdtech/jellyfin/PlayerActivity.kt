@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin
 
-import android.content.Context
 import android.app.PictureInPictureParams
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
@@ -74,6 +74,8 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.currentItemTitle.observe(this) { title ->
             videoNameTextView.text = title
         }
+
+
 
         binding.playerView.addOnLayoutChangeListener { v: View?, oldLeft: Int,
                                                        oldTop: Int, oldRight: Int, oldBottom: Int, newLeft: Int, newTop:

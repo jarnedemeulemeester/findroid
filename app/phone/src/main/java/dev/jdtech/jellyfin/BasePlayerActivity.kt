@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -14,7 +15,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     abstract val viewModel: PlayerActivityViewModel
 
     private lateinit var mediaSession: MediaSession
-    private var wasPip = false
+    private var wasPip: Boolean = false
 
     override fun onStart() {
         super.onStart()
@@ -25,10 +26,10 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(!wasPip) {
-            viewModel.player.playWhenReady = viewModel.playWhenReady
-        } else {
+        if(wasPip) {
             wasPip = false
+        } else {
+            viewModel.player.playWhenReady = viewModel.playWhenReady
         }
         hideSystemUI()
     }
@@ -46,8 +47,16 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+
         mediaSession.release()
         finishAndRemoveTask()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        finish()
+        startActivity (intent)
     }
 
     @Suppress("DEPRECATION")
