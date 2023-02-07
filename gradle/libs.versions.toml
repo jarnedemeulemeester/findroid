@@ -21,7 +21,7 @@ jellyfin = "1.4.1"
 kotlin = "1.8.0"
 kotlinx-serialization = "1.4.1"
 ktlint = "11.1.0"
-libmpv = "0.1.0"
+libmpv = "0.1.1"
 material = "1.8.0"
 timber = "5.0.1"
 
