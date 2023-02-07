@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.mpv
 import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
@@ -49,14 +50,14 @@ import timber.log.Timber
 @Suppress("SpellCheckingInspection")
 class MPVPlayer(
     context: Context,
-    requestAudioFocus: Boolean,
+    private val requestAudioFocus: Boolean,
     private val appPreferences: AppPreferences
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
     private var currentIndex = 0
-    private var audioFocusRequest = AudioManager.AUDIOFOCUS_REQUEST_FAILED
+    private lateinit var audioFocusRequest: AudioFocusRequest
     private val handler = Handler(context.mainLooper)
 
     init {
@@ -132,13 +133,16 @@ class MPVPlayer(
         }
 
         if (requestAudioFocus) {
-            @Suppress("DEPRECATION")
-            audioFocusRequest = audioManager.requestAudioFocus(
-                /* l = */ this,
-                /* streamType = */ AudioManager.STREAM_MUSIC,
-                /* durationHint = */ AudioManager.AUDIOFOCUS_GAIN
-            )
-            if (audioFocusRequest != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            val audioAttributes = android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MOVIE)
+                .build()
+            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(audioAttributes)
+                .setOnAudioFocusChangeListener(this)
+                .build()
+            val res = audioManager.requestAudioFocus(audioFocusRequest)
+            if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 MPVLib.setPropertyBoolean("pause", true)
             }
         }
@@ -312,9 +316,7 @@ class MPVPlayer(
                             videoListener.onRenderedFirstFrame()
                         }
                     } else {
-                        if (playbackState == Player.STATE_BUFFERING && bufferedPosition > currentPosition) {
-                            setPlayerStateAndNotifyIfChanged(playbackState = Player.STATE_READY)
-                        }
+                        setPlayerStateAndNotifyIfChanged(playbackState = Player.STATE_READY)
                     }
                 }
                 else -> Unit
@@ -344,9 +346,8 @@ class MPVPlayer(
             playerStateChanged = true
         }
         if (playerStateChanged) {
-            listeners.queueEvent( /* eventFlag = */ C.INDEX_UNSET) { listener ->
-                @Suppress("DEPRECATION")
-                listener.onPlayerStateChanged(playWhenReady, playbackState)
+            listeners.queueEvent(C.INDEX_UNSET) { listener ->
+                listener.onPlaybackStateChanged(playbackState)
             }
         }
         if (wasPlaying != isPlaying) {
@@ -899,11 +900,11 @@ class MPVPlayer(
      * player must not be used after calling this method.
      */
     override fun release() {
-        if (audioFocusRequest == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            @Suppress("DEPRECATION")
-            audioManager.abandonAudioFocus(this)
+        if (requestAudioFocus) {
+            audioManager.abandonAudioFocusRequest(audioFocusRequest)
         }
         resetInternalState()
+        MPVLib.removeObserver(this)
         MPVLib.destroy()
         currentIndex = 0
     }

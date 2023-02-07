@@ -72,29 +72,9 @@ class PlayerGestureHelper(
         }
     )
 
-    private val gestureDetector = GestureDetector(
+    private val seekGestureDetector = GestureDetector(
         playerView.context,
         object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                playerView.apply {
-                    if (!isControllerFullyVisible) showController() else hideController()
-                }
-
-                return true
-            }
-
-            override fun onDoubleTap(e: MotionEvent): Boolean {
-                val viewCenterX = playerView.measuredWidth / 2
-                val currentPos = playerView.player?.currentPosition ?: 0
-
-                if (e.x.toInt() > viewCenterX) {
-                    playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
-                } else {
-                    playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
-                }
-                return true
-            }
-
             @SuppressLint("SetTextI18n")
             override fun onScroll(
                 firstEvent: MotionEvent,
@@ -125,6 +105,25 @@ class PlayerGestureHelper(
                         true
                     } else false
                 }
+                return true
+            }
+        }
+    )
+
+    private val vbGestureDetector = GestureDetector(
+        playerView.context,
+        object : GestureDetector.SimpleOnGestureListener() {
+            @SuppressLint("SetTextI18n")
+            override fun onScroll(
+                firstEvent: MotionEvent,
+                currentEvent: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
+                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
+                    return false
+
+                if (abs(distanceY / distanceX) < 2) return false
 
                 if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen)
                     return false
@@ -273,41 +272,22 @@ class PlayerGestureHelper(
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         }
 
-        if (appPreferences.playerGesturesVB && !appPreferences.playerGesturesZoom) {
-            @Suppress("ClickableViewAccessibility")
-            playerView.setOnTouchListener { _, event ->
-                if (playerView.useController) {
-                    if (event.pointerCount == 1) {
-                        gestureDetector.onTouchEvent(event)
+        @Suppress("ClickableViewAccessibility")
+        playerView.setOnTouchListener { _, event ->
+            if (playerView.useController) {
+                when (event.pointerCount) {
+                    1 -> {
+                        tapGestureDetector.onTouchEvent(event)
+                        if (appPreferences.playerGesturesVB) vbGestureDetector.onTouchEvent(event)
+                        if (appPreferences.playerGesturesSeek) seekGestureDetector.onTouchEvent(event)
+                    }
+                    2 -> {
+                        if (appPreferences.playerGesturesZoom) zoomGestureDetector.onTouchEvent(event)
                     }
                 }
-                releaseAction(event)
-                true
             }
-        } else if (!appPreferences.playerGesturesVB && appPreferences.playerGesturesZoom) {
-            @Suppress("ClickableViewAccessibility")
-            playerView.setOnTouchListener { _, event ->
-                if (playerView.useController) {
-                    when (event.pointerCount) {
-                        1 -> tapGestureDetector.onTouchEvent(event)
-                        2 -> zoomGestureDetector.onTouchEvent(event)
-                    }
-                }
-                releaseAction(event)
-                true
-            }
-        } else if (appPreferences.playerGesturesVB && appPreferences.playerGesturesZoom) {
-            @Suppress("ClickableViewAccessibility")
-            playerView.setOnTouchListener { _, event ->
-                if (playerView.useController) {
-                    when (event.pointerCount) {
-                        1 -> gestureDetector.onTouchEvent(event)
-                        2 -> zoomGestureDetector.onTouchEvent(event)
-                    }
-                }
-                releaseAction(event)
-                true
-            }
+            releaseAction(event)
+            true
         }
     }
 }

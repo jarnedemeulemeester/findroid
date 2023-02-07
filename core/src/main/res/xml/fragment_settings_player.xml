@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <DropDownPreference
-        app:defaultValue="Original"
-        app:entries="@array/video_quality_labels"
-        app:entryValues="@array/video_quality"
-        app:key="pref_player_preferred_quality"
-        app:summary="@string/preferred_quality"
-        app:title="@string/quality" />
-
-    <SwitchPreference
+    <SwitchPreferenceCompat
         app:key="pref_player_display_extended_title"
         app:summary="@string/display_extended_title_summary"
-        app:title="@string/display_extended_title" />
+        app:title="@string/display_extended_title"
+        app:widgetLayout="@layout/preference_material3_switch" />
 
     <Preference
         app:key="pref_player_subtitles"
@@ -19,11 +12,11 @@
         app:title="@string/subtitles" />
 
     <PreferenceCategory app:title="@string/mpv_player">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:key="pref_player_mpv"
             app:summary="@string/mpv_player_summary"
             app:title="@string/mpv_player" />
-        <DropDownPreference
+        <ListPreference
             app:defaultValue="mediacodec-copy"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_hwdec"
@@ -38,7 +31,7 @@
             app:entryValues="@array/mpv_hwdec_codecs"
             app:key="pref_player_mpv_hwdec_codecs"
             app:title="@string/pref_player_mpv_hwdec_codecs" />
-        <DropDownPreference
+        <ListPreference
             app:defaultValue="gpu"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_vos"
@@ -46,7 +39,7 @@
             app:key="pref_player_mpv_vo"
             app:title="@string/pref_player_mpv_vo"
             app:useSimpleSummaryProvider="true" />
-        <DropDownPreference
+        <ListPreference
             app:defaultValue="audiotrack"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_aos"
@@ -54,7 +47,7 @@
             app:key="pref_player_mpv_ao"
             app:title="@string/pref_player_mpv_ao"
             app:useSimpleSummaryProvider="true" />
-        <DropDownPreference
+        <ListPreference
             app:defaultValue="opengl"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_gpu_api"
@@ -65,23 +58,29 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/gestures">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="pref_player_gestures"
             app:title="@string/player_gestures" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures"
             app:key="pref_player_gestures_vb"
             app:summary="@string/player_gestures_vb_summary"
             app:title="@string/player_gestures_vb" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures"
             app:key="pref_player_gestures_zoom"
             app:summary="@string/player_gestures_zoom_summary"
             app:title="@string/player_gestures_zoom" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="pref_player_gestures"
+            app:key="pref_player_gestures_seek"
+            app:summary="@string/player_gestures_seek_summary"
+            app:title="@string/player_gestures_seek" />
+        <SwitchPreferenceCompat
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
@@ -100,10 +99,11 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="pref_player_intro_skipper"
+        app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
-        app:summary="@string/pref_player_intro_skipper_summary"/>
+        app:widgetLayout="@layout/preference_material3_switch" />
 
 </PreferenceScreen>

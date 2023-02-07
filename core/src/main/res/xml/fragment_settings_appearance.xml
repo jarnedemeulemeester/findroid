@@ -7,7 +7,7 @@
         app:key="theme"
         app:title="@string/theme"
         app:useSimpleSummaryProvider="true" />
-    <SwitchPreference
+    <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="dynamic_colors"
         app:summary="@string/dynamic_colors_summary"
