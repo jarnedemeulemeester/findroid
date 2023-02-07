@@ -156,4 +156,12 @@
     <string name="quality">Quality</string>
     <string name="preferred_quality">%s\nAny setting other than Original might require transcoding.</string>
     <string name="quality_original">Original</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtitles</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">temp</string>
+    <string name="dolby_logo_desc">Dolby Logo</string>
+    <string name="extra_info">Display Extra Info.</string>
+    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
 </resources>
