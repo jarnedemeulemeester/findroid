@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ListPreference
+        app:defaultValue="Original"
+        app:entries="@array/video_quality_labels"
+        app:entryValues="@array/video_quality"
+        app:key="pref_player_preferred_quality"
+        app:summary="@string/preferred_quality"
+        app:title="@string/quality" />
+
     <SwitchPreferenceCompat
         app:key="pref_player_display_extended_title"
         app:summary="@string/display_extended_title_summary"
