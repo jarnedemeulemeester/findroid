@@ -12,4 +12,9 @@
         app:key="dynamic_colors"
         app:summary="@string/dynamic_colors_summary"
         app:title="@string/dynamic_colors" />
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="pref_display_extra_info"
+        app:summary="@string/extra_info_summary"
+        app:title="@string/extra_info" />
 </PreferenceScreen>
