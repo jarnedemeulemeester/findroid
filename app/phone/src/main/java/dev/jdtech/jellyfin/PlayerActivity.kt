@@ -27,8 +27,8 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
@@ -75,12 +75,10 @@ class PlayerActivity : BasePlayerActivity() {
             videoNameTextView.text = title
         }
 
-
-
         binding.playerView.addOnLayoutChangeListener { v: View?, oldLeft: Int,
                                                        oldTop: Int, oldRight: Int, oldBottom: Int, newLeft: Int, newTop:
                                                        Int, newRight: Int, newBottom: Int ->
-            if(viewModel.player is MPVPlayer){
+            if (viewModel.player is MPVPlayer) {
                 binding.playerView.getGlobalVisibleRect(sourceRectHint)
             } else {
                 binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
@@ -102,7 +100,7 @@ class PlayerActivity : BasePlayerActivity() {
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
-        if(appPreferences.playerPipButton && appPreferences.playerPip &&
+        if (appPreferences.playerPipButton && appPreferences.playerPip &&
             packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             pipButton.isEnabled = false
             pipButton.imageAlpha = 75
@@ -190,7 +188,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         viewModel.currentIntro.observe(this) {
-            if(!isInPictureInPictureMode) {
+            if (!isInPictureInPictureMode) {
                 skipIntroButton.isVisible = it != null
             }
         }
@@ -209,7 +207,7 @@ class PlayerActivity : BasePlayerActivity() {
                 subtitleButton.imageAlpha = 255
                 speedButton.isEnabled = true
                 speedButton.imageAlpha = 255
-                if(appPreferences.playerPipButton && appPreferences.playerPip &&
+                if (appPreferences.playerPipButton && appPreferences.playerPip &&
                     packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                     pipButton.isEnabled = true
                     pipButton.imageAlpha = 255
@@ -228,27 +226,29 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
-        if (binding.playerView.player!!.isPlaying && appPreferences.playerPip) {
+        if (binding.playerView.player!!.isPlaying && appPreferences.playerPip && appPreferences.playerPipGesture) {
             pictureInPicture()
         }
+    }
+
+    private fun pipParams(): PictureInPictureParams.Builder {
+        val aspectRatio = if (viewModel.player is MPVPlayer) {
+            Rational(binding.playerView.width, binding.playerView.height)
+        } else {
+            binding.playerView.player?.videoSize?.let { Rational(it.width, it.height) }
+        }
+
+        return PictureInPictureParams.Builder()
+                .setAspectRatio(aspectRatio)
+                .setSourceRectHint(sourceRectHint)
     }
 
     private fun pictureInPicture() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             binding.playerView.useController = false
             binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
-            val aspectRatio = if(viewModel.player is MPVPlayer){
-                Rational(binding.playerView.width, binding.playerView.height)
-            } else {
-                binding.playerView.player?.videoSize?.let { Rational(it.width , it.height) }
-            }
 
-            val params = PictureInPictureParams.Builder()
-                .setAspectRatio(aspectRatio)
-                .setSourceRectHint(sourceRectHint)
-                .build()
-
-            enterPictureInPictureMode(params)
+            enterPictureInPictureMode(pipParams().build())
         }
     }
 

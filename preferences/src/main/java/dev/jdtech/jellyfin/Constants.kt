@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 object Constants {
+
     // player
     const val GESTURE_EXCLUSION_AREA_TOP = 48
     const val GESTURE_EXCLUSION_AREA_BOTTOM = 48
@@ -27,6 +28,7 @@ object Constants {
     const val PREF_PLAYER_MPV_GPU_API = "pref_player_mpv_gpu_api"
     const val PREF_PLAYER_INTRO_SKIPPER = "pref_player_intro_skipper"
     const val PREF_PLAYER_PIP = "pref_player_picture_in_picture"
+    const val PREF_PLAYER_PIP_GESTURE = "pref_player_picture_in_picture_gesture"
     const val PREF_PLAYER_PIP_BUTTON = "pref_player_picture_in_picture_button"
     const val PREF_AUDIO_LANGUAGE = "pref_audio_language"
     const val PREF_SUBTITLE_LANGUAGE = "pref_subtitle_language"

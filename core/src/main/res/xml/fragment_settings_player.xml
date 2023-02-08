@@ -113,6 +113,10 @@
             android:key="pref_player_picture_in_picture"
             android:title="@string/picture_in_picture_enable" />
         <SwitchPreferenceCompat
+            android:key="pref_player_picture_in_picture_gesture"
+            android:title="@string/picture_in_picture_gesture"
+            app:dependency="pref_player_picture_in_picture" />
+        <SwitchPreferenceCompat
             android:key="pref_player_picture_in_picture_button"
             android:title="@string/picture_in_picture_button"
             app:dependency="pref_player_picture_in_picture" />

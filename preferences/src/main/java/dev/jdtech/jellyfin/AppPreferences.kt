@@ -74,6 +74,7 @@ constructor(
 
     val playerPip get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP, true)
     val playerPipButton get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_BUTTON, false)
+    val playerPipGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_GESTURE, false)
 
     // Language
     val preferredAudioLanguage get() = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
