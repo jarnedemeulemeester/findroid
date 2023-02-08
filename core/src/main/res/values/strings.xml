@@ -155,8 +155,10 @@
     <string name="quick_connect">Quick Connect</string>
     <string name="picture_in_picture">Picture in picture</string>
     <string name="picture_in_picture_enable">Picture in picture</string>
-    <string name="picture_in_picture_button">Show button</string>
+    <string name="picture_in_picture_button">Player button</string>
+    <string name="picture_in_picture_button_summary">Show picture in picture button in the player</string>
     <string name="picture_in_picture_gesture">Home button/gesture</string>
+    <string name="picture_in_picture_gesture_summary">Use Home button/gesture to enter picture in picture while the video is playing</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtitles</string>
