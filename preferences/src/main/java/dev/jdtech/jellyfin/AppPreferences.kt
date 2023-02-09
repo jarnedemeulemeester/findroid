@@ -22,8 +22,9 @@ constructor(
         }
 
     // Appearance
-    val theme get() = sharedPreferences.getString(Constants.PREF_THEME, null)
+    val theme: String? get() = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors get() = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
+    val amoledTheme get() = sharedPreferences.getBoolean(Constants.PREF_AMOLED_THEME, false)
     var displayExtraInfo: Boolean
         get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTRA_INFO, false)
         set(value) {
