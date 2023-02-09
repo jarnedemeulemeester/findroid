@@ -19,24 +19,10 @@
         <!-- Extra -->
         <item name="dolbyColor">#FFF</item>
     </style>
-    <style name="Theme.FindroidAMOLED" parent="Base.Theme.Findroid">
-        <!-- Primary -->
-        <item name="colorPrimary">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/on_primary_dark</item>
-        <item name="colorPrimaryContainer">@color/primary_container_dark</item>
-        <item name="colorOnPrimaryContainer">@color/on_primary_container_dark</item>
 
-        <!-- Secondary -->
-        <item name="colorSecondary">@color/secondary_dark</item>
-        <item name="colorOnSecondary">@color/on_secondary_dark</item>
-        <item name="colorSecondaryContainer">@color/secondary_container_dark</item>
-        <item name="colorOnSecondaryContainer">@color/on_secondary_container_dark</item>
-
+    <style name="Theme.FindroidAMOLED" parent="Theme.Findroid">
         <!-- Surface -->
         <item name="android:colorBackground">@android:color/black</item>
         <item name="colorSurface">@android:color/black</item>
-
-        <!-- Extra -->
-        <item name="dolbyColor">#FFF</item>
     </style>
 </resources>
