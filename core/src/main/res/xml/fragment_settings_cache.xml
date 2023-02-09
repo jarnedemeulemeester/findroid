@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <SwitchPreference
+    <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="pref_image_cache"
         app:summary="@string/settings_use_cache_summary"

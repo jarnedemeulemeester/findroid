@@ -13,6 +13,7 @@ object Constants {
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_GESTURES_VB = "pref_player_gestures_vb"
     const val PREF_PLAYER_GESTURES_ZOOM = "pref_player_gestures_zoom"
+    const val PREF_PLAYER_GESTURES_SEEK = "pref_player_gestures_seek"
     const val PREF_PLAYER_BRIGHTNESS_REMEMBER = "pref_player_brightness_remember"
     const val PREF_PLAYER_BRIGHTNESS = "pref_player_brightness"
     const val PREF_PLAYER_SEEK_BACK_INC = "pref_player_seek_back_inc"
@@ -37,6 +38,7 @@ object Constants {
     const val PREF_DOWNLOADS_ROAMING = "pref_downloads_roaming"
     const val PREF_SORT_BY = "pref_sort_by"
     const val PREF_SORT_ORDER = "pref_sort_order"
+    const val PREF_DISPLAY_EXTRA_INFO = "pref_display_extra_info"
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20

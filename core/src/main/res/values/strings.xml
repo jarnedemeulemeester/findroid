@@ -100,8 +100,10 @@
     <string name="player_gestures">Player gestures</string>
     <string name="player_gestures_vb">Volume and brightness gestures</string>
     <string name="player_gestures_zoom">Zoom gesture</string>
+    <string name="player_gestures_seek">Seek gesture</string>
     <string name="player_gestures_vb_summary">Swipe up and down on the right side of the screen to change the volume and on the left side to change the brightness</string>
     <string name="player_gestures_zoom_summary">Pinch to fill the screen with the video</string>
+    <string name="player_gestures_seek_summary">Swipe horizontally to seek forwards or backwards</string>
     <string name="player_brightness_remember">Remember brightness level</string>
     <string name="sort_by_options_0">Title</string>
     <string name="sort_by_options_1">IMDB Rating</string>
@@ -151,4 +153,12 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtitles</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">temp</string>
+    <string name="dolby_logo_desc">Dolby Logo</string>
+    <string name="extra_info">Display Extra Info.</string>
+    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
 </resources>

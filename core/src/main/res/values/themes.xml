@@ -28,7 +28,9 @@
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
         <!-- Shapes -->
-        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.Findroid.Corner.ExtraSmall</item>
+        <item name="shapeAppearanceCornerExtraSmall">
+            @style/ShapeAppearance.Findroid.Corner.ExtraSmall
+        </item>
         <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.Findroid.Corner.Small</item>
 
         <!-- Toolbar -->
@@ -40,6 +42,10 @@
 
         <!-- Extra -->
         <item name="elevationOverlayEnabled">false</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
+        <item name="dialogCornerRadius">28dp</item>
+        <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
+        <item name="dolbyColor">#000</item>
     </style>
 
     <string-array name="themes">

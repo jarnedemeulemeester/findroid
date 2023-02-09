@@ -24,9 +24,11 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
@@ -163,17 +165,19 @@ constructor(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun releasePlayer() {
-        player.let { player ->
-            runBlocking {
-                try {
-                    jellyfinRepository.postPlaybackStop(
-                        UUID.fromString(player.currentMediaItem?.mediaId),
-                        player.currentPosition.times(10000)
-                    )
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
+        val mediaId = player.currentMediaItem?.mediaId
+        val position = player.currentPosition.times(10000)
+        GlobalScope.launch {
+            delay(1000L)
+            try {
+                jellyfinRepository.postPlaybackStop(
+                    UUID.fromString(mediaId),
+                    position
+                )
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
 

@@ -63,7 +63,7 @@
     <string name="mpv_player">Reprodutor mpv</string>
     <string name="download_mobile_data">Download usando dados móveis</string>
     <string name="download_button_description">Download</string>
-    <string name="delete_button_description">Deletar</string>
+    <string name="delete_button_description">Excluir</string>
     <string name="person_detail_title">Detalhes</string>
     <string name="error_getting_person_id">Detalhes indisponíveis</string>
     <string name="movies_label">Filmes</string>
@@ -73,7 +73,7 @@
     <string name="sort_order">Ordem</string>
     <string name="close">Fechar</string>
     <string name="share">Compartilhar</string>
-    <string name="image_description_poster">%1$s poster</string>
+    <string name="image_description_poster">%1$s pôster</string>
     <string name="image_description_backdrop">%1$s imagem de fundo</string>
     <string name="gestures">Gestos</string>
     <string name="add_server">Adicionar servidor</string>
@@ -149,5 +149,13 @@
     <string name="quick_connect">Conexão Rápida</string>
     <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do ConfusedPolarBear seja instalado no servidor</string>
-    <string name="pref_player_intro_skipper">Intro Skipper</string>
+    <string name="pref_player_intro_skipper">Pular introdução</string>
+    <string name="video">Vídeo</string>
+    <string name="audio">Áudio</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">Temporário</string>
+    <string name="dolby_logo_desc">Logo Dolby</string>
+    <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
+    <string name="subtitle">Legendas</string>
+    <string name="extra_info">Exibir informações extras.</string>
 </resources>

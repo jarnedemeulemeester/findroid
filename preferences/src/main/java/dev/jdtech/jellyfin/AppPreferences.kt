@@ -24,6 +24,13 @@ constructor(
     // Appearance
     val theme get() = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors get() = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
+    var displayExtraInfo: Boolean
+        get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTRA_INFO, false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(Constants.PREF_DISPLAY_EXTRA_INFO, value)
+            }
+        }
 
     // Player
     val displayExtendedTitle get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTENDED_TITLE, false)
@@ -31,6 +38,7 @@ constructor(
     val playerGestures get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
     val playerGesturesVB get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
+    val playerGesturesSeek get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_SEEK, true)
 
     val playerBrightnessRemember get() =
         sharedPreferences.getBoolean(Constants.PREF_PLAYER_BRIGHTNESS_REMEMBER, false)
@@ -125,4 +133,5 @@ constructor(
                 putString(Constants.PREF_SORT_ORDER, value)
             }
         }
+
 }
