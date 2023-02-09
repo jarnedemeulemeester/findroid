@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -42,6 +41,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.tv.foundation.lazy.list.TvLazyRow
+import androidx.tv.foundation.lazy.list.items
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
@@ -99,10 +100,10 @@ fun AddServerForm(
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
             Column {
-                LazyRow(
+                TvLazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    itemsIndexed(discoveredServers) { _, discoveredServer ->
+                    items(discoveredServers) { discoveredServer ->
                         DiscoveredServerComponent(discoveredServer = discoveredServer) {
                             text = it.address
                             onSubmit(it.address)

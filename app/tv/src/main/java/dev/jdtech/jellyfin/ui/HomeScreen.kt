@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.tv.foundation.lazy.list.TvLazyColumn
+import androidx.tv.foundation.lazy.list.TvLazyRow
+import androidx.tv.foundation.lazy.list.items
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -59,7 +59,7 @@ fun HomeScreen(
             Text(text = "LOADING")
         }
         is HomeViewModel.UiState.Normal -> {
-            LazyColumn(
+            TvLazyColumn(
                 contentPadding = PaddingValues(vertical = 32.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -72,7 +72,7 @@ fun HomeScreen(
                                 modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            LazyRow(
+                            TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
@@ -104,7 +104,7 @@ fun HomeScreen(
                                 modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            LazyRow(
+                            TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
@@ -144,11 +144,12 @@ fun HomeScreen(
                                 modifier = Modifier.padding(start = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            LazyRow(
+                            TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
-                                items(homeItem.view.items.orEmpty()) { item ->
+                                items(homeItem.view.items.orEmpty().count()) { i ->
+                                    val item = homeItem.view.items.orEmpty()[i]
                                     Column(
                                         modifier = Modifier
                                             .width(120.dp)

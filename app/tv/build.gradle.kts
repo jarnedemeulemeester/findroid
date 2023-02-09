@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
+    implementation(libs.androidx.tv.foundation)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
