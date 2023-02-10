@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -136,7 +137,11 @@ fun HomeScreen(
                                                     Box(
                                                         modifier = Modifier
                                                             .height(4.dp)
-                                                            .width(item.userData?.playedPercentage?.times(1.64)?.dp ?: 0.dp)
+                                                            .width(
+                                                                item.userData?.playedPercentage?.times(
+                                                                    1.64
+                                                                )?.dp ?: 0.dp
+                                                            )
                                                             .clip(MaterialTheme.shapes.extraSmall)
                                                             .background(MaterialTheme.colorScheme.primary)
                                                     )
@@ -147,17 +152,19 @@ fun HomeScreen(
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = item.name.orEmpty(),
+                                            text = if (item.type == BaseItemKind.EPISODE) item.seriesName.orEmpty() else item.name.orEmpty() ,
                                             style = MaterialTheme.typography.bodyMedium,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
-                                        Text(
-                                            text = item.seriesName.orEmpty(),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
+                                        if (item.type == BaseItemKind.EPISODE) {
+                                            Text(
+                                                text = stringResource(id = R.string.episode_name_extended, item.parentIndexNumber ?: 0, item.indexNumber ?: 0, item.name.orEmpty()),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -189,7 +196,9 @@ fun HomeScreen(
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = item.name.orEmpty(),
-                                            style = MaterialTheme.typography.bodyMedium
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                 }
