@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -123,11 +124,27 @@ fun HomeScreen(
                                             .width(180.dp)
                                             .clickable { }
                                     ) {
-                                        ItemPoster(
-                                            item = item,
-                                            api = api,
-                                            direction = Direction.HORIZONTAL
-                                        )
+                                        Box {
+                                            ItemPoster(
+                                                item = item,
+                                                api = api,
+                                                direction = Direction.HORIZONTAL
+                                            )
+                                            Column(modifier = Modifier.align(Alignment.BottomStart)) {
+                                                Row {
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .height(4.dp)
+                                                            .width(item.userData?.playedPercentage?.times(1.64)?.dp ?: 0.dp)
+                                                            .clip(MaterialTheme.shapes.extraSmall)
+                                                            .background(MaterialTheme.colorScheme.primary)
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                            }
+
+                                        }
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = item.name.orEmpty(),
