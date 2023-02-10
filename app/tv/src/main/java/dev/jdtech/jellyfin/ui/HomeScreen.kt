@@ -1,10 +1,12 @@
 package dev.jdtech.jellyfin.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,11 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
@@ -32,6 +37,7 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
@@ -60,9 +66,12 @@ fun HomeScreen(
         }
         is HomeViewModel.UiState.Normal -> {
             TvLazyColumn(
-                contentPadding = PaddingValues(vertical = 32.dp),
+                contentPadding = PaddingValues(bottom = 32.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+                item {
+                    Header()
+                }
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
                         is HomeItem.Libraries -> {
@@ -71,7 +80,7 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
@@ -103,7 +112,7 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
@@ -111,7 +120,7 @@ fun HomeScreen(
                                 items(homeItem.homeSection.items) { item ->
                                     Column(
                                         modifier = Modifier
-                                            .width(240.dp)
+                                            .width(180.dp)
                                             .clickable { }
                                     ) {
                                         ItemPoster(
@@ -143,7 +152,7 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
@@ -178,6 +187,24 @@ fun HomeScreen(
         is HomeViewModel.UiState.Error -> {
             Text(text = uiState.error.toString())
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Header() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(horizontal = 32.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_banner),
+            contentDescription = null,
+            modifier = Modifier.height(40.dp)
+        )
     }
 }
 
