@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity() {
 
         if (appPreferences.amoledTheme) {
             setTheme(R.style.Theme_FindroidAMOLED)
-        } else {
-            setTheme(R.style.Theme_Findroid)
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
