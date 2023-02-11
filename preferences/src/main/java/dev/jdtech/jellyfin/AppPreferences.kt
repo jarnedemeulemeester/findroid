@@ -133,5 +133,4 @@ constructor(
                 putString(Constants.PREF_SORT_ORDER, value)
             }
         }
-
 }
