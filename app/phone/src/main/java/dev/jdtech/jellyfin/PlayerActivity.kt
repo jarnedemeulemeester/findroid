@@ -226,7 +226,7 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
-        if (binding.playerView.player!!.isPlaying && appPreferences.playerPip && appPreferences.playerPipGesture) {
+        if (binding.playerView.player!!.isPlaying && appPreferences.playerPipGesture && appPreferences.playerPip) {
             pictureInPicture()
         }
     }

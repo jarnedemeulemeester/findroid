@@ -83,10 +83,10 @@ class PlayerGestureHelper(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
-                    return false
-
-                if (firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM))
+                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP) ||
+                    firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM) ||
+                    firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_SIDE) ||
+                    firstEvent.x > playerView.measuredWidth-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_SIDE))
                     return false
 
                 // Check whether swipe was oriented vertically
@@ -124,10 +124,10 @@ class PlayerGestureHelper(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
-                    return false
-
-                if (firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM))
+                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP) ||
+                    firstEvent.y > playerView.measuredHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_BOTTOM) ||
+                    firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_SIDE) ||
+                    firstEvent.x > playerView.measuredWidth-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_SIDE))
                     return false
 
                 if (abs(distanceY / distanceX) < 2) return false
