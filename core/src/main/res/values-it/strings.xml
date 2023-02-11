@@ -152,4 +152,12 @@
     <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
     <string name="player_gestures_seek">Gesto posizionamento</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Sottotitoli</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="dolby_logo_desc">Logo Dolby</string>
+    <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
+    <string name="temp">temporaneo</string>
+    <string name="video">Video</string>
+    <string name="extra_info">Mostra informazioni extra</string>
 </resources>
