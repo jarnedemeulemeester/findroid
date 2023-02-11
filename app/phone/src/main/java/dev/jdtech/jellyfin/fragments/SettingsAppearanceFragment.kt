@@ -7,7 +7,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import dev.jdtech.jellyfin.R
 
-
 @Suppress("unused")
 class SettingsAppearanceFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -22,7 +21,7 @@ class SettingsAppearanceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<SwitchPreferenceCompat>("pref_amoled_theme")?.setOnPreferenceChangeListener { _, isAmoledTheme ->
+        findPreference<SwitchPreferenceCompat>("pref_amoled_theme")?.setOnPreferenceChangeListener { _, _ ->
             requireActivity().recreate()
             true
         }
