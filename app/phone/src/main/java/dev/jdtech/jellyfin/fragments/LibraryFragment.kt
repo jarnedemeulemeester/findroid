@@ -150,6 +150,8 @@ class LibraryFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                if (viewModel.itemsloaded) return@repeatOnLifecycle
+
                 // Sorting options
                 val sortBy = SortBy.fromString(preferences.sortBy)
                 val sortOrder = try {
