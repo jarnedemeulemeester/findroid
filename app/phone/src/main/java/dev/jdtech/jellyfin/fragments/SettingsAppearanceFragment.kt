@@ -23,10 +23,7 @@ class SettingsAppearanceFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<SwitchPreferenceCompat>("pref_amoled_theme")?.setOnPreferenceChangeListener { _, isAmoledTheme ->
-            when (isAmoledTheme) {
-               true -> requireActivity().recreate()
-               false -> requireActivity().recreate()
-            }
+            requireActivity().recreate()
             true
         }
     }
