@@ -49,7 +49,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         super.onStop()
 
         viewModel.playWhenReady = false
-        mediaSession.player.playWhenReady = false
+        viewModel.player.playWhenReady = false
         mediaSession.release()
     }
 
