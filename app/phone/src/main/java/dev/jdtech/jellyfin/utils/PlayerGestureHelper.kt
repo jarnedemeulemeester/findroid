@@ -19,8 +19,8 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import timber.log.Timber
 import kotlin.math.abs
+import timber.log.Timber
 
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
@@ -280,14 +280,15 @@ class PlayerGestureHelper(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val insets = playerView.rootWindowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
 
-            if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right))
-                || (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom)))
+            if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right)) ||
+                (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom))
+            )
                 return true
-
         } else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
-            firstEvent.y > screenHeight-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
+            firstEvent.y > screenHeight - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
             firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL) ||
-            firstEvent.x > screenWidth-playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL))
+            firstEvent.x > screenWidth - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL)
+        )
             return true
         return false
     }
