@@ -157,5 +157,7 @@
     <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="subtitle">Legendas</string>
-    <string name="extra_info">Exibir informações extras.</string>
+    <string name="extra_info">Exibir informações extras</string>
+    <string name="amoled_theme">Tema escuro AMOLED</string>
+    <string name="amoled_theme_summary">Use o tema AMOLED com um fundo preto</string>
 </resources>
