@@ -1157,7 +1157,10 @@ class MPVPlayer(
      * @see androidx.media3.common.Player.Listener.onVideoSizeChanged
      */
     override fun getVideoSize(): VideoSize {
-        return VideoSize.UNKNOWN
+        val width = MPVLib.getPropertyInt("width")
+        val height = MPVLib.getPropertyInt("height")
+        if (width == null || height == null) return VideoSize.UNKNOWN
+        return VideoSize(width, height)
     }
 
     override fun getSurfaceSize(): Size {

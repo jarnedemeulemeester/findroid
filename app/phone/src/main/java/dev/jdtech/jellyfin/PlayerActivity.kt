@@ -235,11 +235,7 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun pipParams(): PictureInPictureParams.Builder {
-        val aspectRatio = if (viewModel.player is MPVPlayer) {
-            Rational(binding.playerView.width, binding.playerView.height)
-        } else {
-            binding.playerView.player?.videoSize?.let { Rational(it.width, it.height) }
-        }
+        val aspectRatio = binding.playerView.player?.videoSize?.let { Rational(it.width, it.height) }
 
         return PictureInPictureParams.Builder()
                 .setAspectRatio(aspectRatio)
