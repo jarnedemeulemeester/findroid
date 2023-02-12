@@ -56,8 +56,8 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        finish()
-        startActivity (intent)
+        finishAndRemoveTask()
+        startActivity(intent)
     }
 
     @Suppress("DEPRECATION")
