@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.models
 
-import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 sealed class EpisodeItem {
     abstract val id: UUID

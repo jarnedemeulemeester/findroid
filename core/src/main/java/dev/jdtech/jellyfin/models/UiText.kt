@@ -4,14 +4,14 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 
 sealed class UiText {
-    data class DynamicString(val value: String): UiText()
+    data class DynamicString(val value: String) : UiText()
     class StringResource(
         @StringRes val resId: Int,
         vararg val args: Any?
-    ): UiText()
+    ) : UiText()
 
     fun asString(resources: Resources): String {
-        return when(this) {
+        return when (this) {
             is DynamicString -> return value
             is StringResource -> resources.getString(resId, args)
         }

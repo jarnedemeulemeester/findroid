@@ -3,9 +3,10 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,8 @@ constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    var itemsloaded = false
+
     sealed class UiState {
         data class Normal(val items: Flow<PagingData<BaseItemDto>>) : UiState()
         object Loading : UiState()
@@ -38,6 +41,7 @@ constructor(
         sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
     ) {
+        itemsloaded = true
         Timber.d("$libraryType")
         val itemType = when (libraryType) {
             "movies" -> listOf(BaseItemKind.MOVIE)
@@ -54,7 +58,7 @@ constructor(
                     recursive = true,
                     sortBy = sortBy,
                     sortOrder = sortOrder
-                )
+                ).cachedIn(viewModelScope)
                 _uiState.emit(UiState.Normal(items))
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
