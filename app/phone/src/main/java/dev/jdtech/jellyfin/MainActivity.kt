@@ -38,6 +38,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (appPreferences.amoledTheme) {
+            setTheme(R.style.Theme_FindroidAMOLED)
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)

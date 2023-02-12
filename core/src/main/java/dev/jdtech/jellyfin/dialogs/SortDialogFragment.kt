@@ -11,8 +11,8 @@ import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalStateException
 import java.util.UUID
-import org.jellyfin.sdk.model.api.SortOrder
 import javax.inject.Inject
+import org.jellyfin.sdk.model.api.SortOrder
 
 @AndroidEntryPoint
 class SortDialogFragment(

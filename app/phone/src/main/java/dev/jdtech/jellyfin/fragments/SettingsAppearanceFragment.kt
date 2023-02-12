@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import dev.jdtech.jellyfin.R
 
 @Suppress("unused")
@@ -17,6 +18,11 @@ class SettingsAppearanceFragment : PreferenceFragmentCompat() {
                 "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+            true
+        }
+
+        findPreference<SwitchPreferenceCompat>("pref_amoled_theme")?.setOnPreferenceChangeListener { _, _ ->
+            requireActivity().recreate()
             true
         }
     }
