@@ -135,7 +135,16 @@ class PlayerGestureHelper(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
+
+                // Excludes area where app gestures conflicting with system gestures
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val insets = playerView.rootWindowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
+
+                    if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right))
+                        || (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom)))
+                        return false
+
+                } else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
                     return false
 
                 if (abs(distanceY / distanceX) < 2) return false
