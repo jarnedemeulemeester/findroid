@@ -78,11 +78,8 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.addOnLayoutChangeListener { v: View?, oldLeft: Int,
                                                        oldTop: Int, oldRight: Int, oldBottom: Int, newLeft: Int, newTop:
                                                        Int, newRight: Int, newBottom: Int ->
-            if (viewModel.player is MPVPlayer) {
-                binding.playerView.getGlobalVisibleRect(sourceRectHint)
-            } else {
-                binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
-            }
+
+            binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
         }
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)

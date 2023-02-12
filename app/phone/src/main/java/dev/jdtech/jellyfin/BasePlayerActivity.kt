@@ -48,8 +48,9 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
+        viewModel.playWhenReady = false
+        mediaSession.player.playWhenReady = false
         mediaSession.release()
-        finishAndRemoveTask()
     }
 
     override fun onNewIntent(intent: Intent?) {
