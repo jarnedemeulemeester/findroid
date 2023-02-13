@@ -10,7 +10,6 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.api.client.exception.InvalidStatusException
 import org.jellyfin.sdk.api.client.extensions.dynamicHlsApi
 import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -231,10 +230,9 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         return when (transcodeResolution) {
             2160 -> 59616000 to 384000
             1080 -> 14616000 to 384000
-            720  ->  7616000 to 384000
-            480  ->  2616000 to 384000
-            360  ->   292000 to 128000
-
+            720 -> 7616000 to 384000
+            480 -> 2616000 to 384000
+            360 -> 292000 to 128000
             else -> null to null
         }
     }
@@ -247,15 +245,14 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         withContext(Dispatchers.IO) {
             try {
                 val (videoBitRate, audioBitRate) = getVideoTranscodeBitRate(transcodeResolution)
-                if(videoBitRate == null || audioBitRate == null) {
+                if (videoBitRate == null || audioBitRate == null) {
                     jellyfinApi.api.dynamicHlsApi.getVariantHlsVideoPlaylistUrl(
                         itemId,
                         static = true,
                         mediaSourceId = mediaSourceId,
                         playSessionId = playSessionIds[itemId] // playSessionId is required to update the transcoding resolution
                     )
-                }
-                else {
+                } else {
                     jellyfinApi.api.dynamicHlsApi.getVariantHlsVideoPlaylistUrl(
                         itemId,
                         static = false,
