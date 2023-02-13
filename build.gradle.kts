@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.CommonExtension
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 @Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
@@ -18,6 +20,17 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    val configureAndroid = { _: AppliedPlugin ->
+        extensions.configure<CommonExtension<*, *, *, *>>("android") {
+            lint {
+                informational += "MissingTranslation"
+            }
+        }
+    }
+
+    pluginManager.withPlugin("com.android.library", configureAndroid)
+    pluginManager.withPlugin("com.android.application", configureAndroid)
 }
 
 tasks.create<Delete>("clean") {

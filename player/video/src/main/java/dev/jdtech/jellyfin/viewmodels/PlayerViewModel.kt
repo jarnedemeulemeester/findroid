@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
 import dev.jdtech.jellyfin.utils.isItemAvailable
