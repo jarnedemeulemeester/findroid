@@ -147,8 +147,9 @@ class PlayerViewModel @Inject internal constructor(
         }
         val externalSubtitles = mediaSource.mediaStreams
             .filter { mediaStream ->
-                (appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal)
-                        && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+                (appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
+                        mediaStream.type == MediaStreamType.SUBTITLE &&
+                        !mediaStream.path.isNullOrBlank()
             }
             .map { mediaStream ->
                 // Temp fix for vtt
