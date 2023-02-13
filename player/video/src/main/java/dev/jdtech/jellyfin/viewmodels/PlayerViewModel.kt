@@ -179,8 +179,11 @@ class PlayerViewModel @Inject internal constructor(
         val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
         for (mediaStream in mediaSource.mediaStreams!!) {
-            if ((appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) // When transcoding, subtitles aren't embedded, so we add them externally
-                && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+            // When transcoding, subtitles aren't embedded, so we add them externally
+            if ((appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
+                mediaStream.type == MediaStreamType.SUBTITLE &&
+                !mediaStream.deliveryUrl.isNullOrBlank()
+               ) {
 
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
