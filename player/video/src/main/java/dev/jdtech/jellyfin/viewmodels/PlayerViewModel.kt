@@ -183,7 +183,7 @@ class PlayerViewModel @Inject internal constructor(
             if ((appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
                 mediaStream.type == MediaStreamType.SUBTITLE &&
                 !mediaStream.deliveryUrl.isNullOrBlank()
-               ) {
+            ) {
 
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
