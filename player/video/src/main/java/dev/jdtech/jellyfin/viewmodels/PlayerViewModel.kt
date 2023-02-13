@@ -147,6 +147,7 @@ class PlayerViewModel @Inject internal constructor(
         }
         val externalSubtitles = mediaSource.mediaStreams
             .filter { mediaStream ->
+                // When transcoding, subtitles aren't embedded, so we add them externally
                 (appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
                         mediaStream.type == MediaStreamType.SUBTITLE &&
                         !mediaStream.path.isNullOrBlank()
