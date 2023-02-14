@@ -1,13 +1,16 @@
 package dev.jdtech.jellyfin.utils
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.media.AudioManager
+import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -47,6 +50,9 @@ class PlayerGestureHelper(
 
     private var lastScaleEvent: Long = 0
 
+    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+    private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+
     private val tapGestureDetector = GestureDetector(
         playerView.context,
         object : GestureDetector.SimpleOnGestureListener() {
@@ -82,8 +88,8 @@ class PlayerGestureHelper(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
-                    return false
+                // Excludes area where app gestures conflicting with system gestures
+                if (inExclusionArea(firstEvent)) return false
 
                 // Check whether swipe was oriented vertically
                 if (abs(distanceY / distanceX) < 2) {
@@ -120,8 +126,8 @@ class PlayerGestureHelper(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_TOP))
-                    return false
+                // Excludes area where app gestures conflicting with system gestures
+                if (inExclusionArea(firstEvent)) return false
 
                 if (abs(distanceY / distanceX) < 2) return false
 
@@ -265,6 +271,26 @@ class PlayerGestureHelper(
         val seconds = abs(duration).div(1000)
 
         return String.format("%s%02d:%02d:%02d", sign, seconds / 3600, (seconds / 60) % 60, seconds % 60)
+    }
+
+    /**
+     * Check if [firstEvent] is in the gesture exclusion area
+     */
+    private fun inExclusionArea(firstEvent: MotionEvent): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val insets = playerView.rootWindowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
+
+            if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right)) ||
+                (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom))
+            )
+                return true
+        } else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
+            firstEvent.y > screenHeight - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
+            firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL) ||
+            firstEvent.x > screenWidth - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL)
+        )
+            return true
+        return false
     }
 
     init {
