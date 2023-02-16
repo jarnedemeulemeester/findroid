@@ -34,5 +34,4 @@ class Indexed8Array(private val array: ByteArray) {
     fun order(): ByteOrder {
         return ByteOrder.BIG_ENDIAN
     }
-
 }

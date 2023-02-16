@@ -7,8 +7,8 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
-import io.ktor.util.*
-import io.ktor.utils.io.*
+import io.ktor.util.cio.toByteArray
+import io.ktor.utils.io.ByteReadChannel
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

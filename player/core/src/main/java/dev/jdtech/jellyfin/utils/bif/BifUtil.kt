@@ -2,8 +2,8 @@ package dev.jdtech.jellyfin.utils.bif
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import timber.log.Timber
 import java.nio.ByteBuffer
+import timber.log.Timber
 
 object BifUtil {
 
@@ -74,5 +74,4 @@ object BifUtil {
         val frame = playerTimestamp / multiplier
         return images[frame]
     }
-
 }

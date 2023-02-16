@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TrickPlayManifest (
+data class TrickPlayManifest(
     @SerialName("Version")
     val version: String,
     @SerialName("WidthResolutions")

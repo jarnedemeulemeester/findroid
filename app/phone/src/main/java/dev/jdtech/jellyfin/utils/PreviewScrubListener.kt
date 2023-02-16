@@ -22,7 +22,9 @@ class PreviewScrubListener(
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
-        if(currentTrickPlay.value == null) return
+        if (currentTrickPlay.value == null)
+            return
+
         previewFrameLayout.visibility = View.VISIBLE
     }
 
@@ -61,5 +63,4 @@ class PreviewScrubListener(
 
         previewFrameLayout.visibility = View.GONE
     }
-
 }
