@@ -7,12 +7,10 @@ import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.DownloadEpisodeItem
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
-import dev.jdtech.jellyfin.utils.requestDownload
-import kotlinx.coroutines.GlobalScope
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class DownloadSeriesViewModel
@@ -56,9 +54,10 @@ constructor(
                 if (uiState !is UiState.Normal) return@collect
                 val episodes = uiState.downloadEpisodes
                 episodes.forEach {
-                    try{
+                    try {
                         deleteDownloadedEpisode(downloadDatabase, it.id)
-                    } catch (_ : Exception) { }
+                    } catch (_: Exception) {
+                    }
                 }
             }
         }

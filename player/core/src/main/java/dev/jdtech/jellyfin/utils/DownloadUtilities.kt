@@ -43,7 +43,6 @@ suspend fun requestDownload(
             )
         )
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-
     try {
         if (downloadDatabase.exists(metadata.id))
             downloadDatabase.deleteItem(metadata.id)
@@ -110,12 +109,13 @@ fun isItemAvailable(itemId: UUID): Boolean {
 fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, context: Context): Boolean {
     if (isItemAvailable(itemId))
         return false
-    val downloadId = downloadDatabaseDao.loadItem(itemId)?.downloadId ?: return false
+    val downloadId = downloadDatabaseDao.loadItem(itemId)?.downloadId ?: return true
     val query = DownloadManager.Query().setFilterById(downloadId)
     val result = context.getSystemService<DownloadManager>()!!.query(query)
     result.moveToFirst()
-    if (result.count == 0)
+    if (result.count == 0){
         return true
+    }
     val status = result.getInt(result.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
     return status == 16
 }

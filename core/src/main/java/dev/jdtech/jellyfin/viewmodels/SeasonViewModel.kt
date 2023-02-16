@@ -53,14 +53,15 @@ constructor(
                 if (uiState !is UiState.Normal) return@collect
                 val episodes = uiState.episodes
                 episodes.forEach {
-                    try{
+                    try {
                         requestDownload(
                             jellyfinRepository,
                             downloadDatabase,
                             application,
                             it.id
                         )
-                    } catch (_ : Exception) { }
+                    } catch (_: Exception) {
+                    }
                 }
             }
         }
