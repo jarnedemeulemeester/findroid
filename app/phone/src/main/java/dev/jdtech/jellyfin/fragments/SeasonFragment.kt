@@ -31,7 +31,6 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class SeasonFragment : Fragment() {
 
