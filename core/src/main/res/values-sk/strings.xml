@@ -152,4 +152,14 @@
     <string name="display_extended_title">Zobraziť rozšírený názov</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
     <string name="add_user">Pridať používateľa</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Titulky</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="dolby_logo_desc">logo Dolby</string>
+    <string name="extra_info">Zobraziť doplnkové informácie</string>
+    <string name="extra_info_summary">Zobraziť detailné informácie o zvuku, videu a titulkoch</string>
+    <string name="temp">dočasné</string>
+    <string name="amoled_theme">AMOLED temný motív</string>
+    <string name="amoled_theme_summary">Použiť AMOLED motív s úplne čiernym pozadím</string>
 </resources>
