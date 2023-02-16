@@ -131,6 +131,8 @@
     <string name="seek_forward_increment">Seek forward increment (ms)</string>
     <string name="dynamic_colors">Dynamic colors</string>
     <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
+    <string name="amoled_theme">AMOLED dark theme</string>
+    <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
     <string name="theme_system">Follow system</string>
@@ -155,4 +157,12 @@
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
     <string name="download_delete_series_button_description">Delete Series</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtitles</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">temp</string>
+    <string name="dolby_logo_desc">Dolby Logo</string>
+    <string name="extra_info">Display Extra Info</string>
+    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
 </resources>

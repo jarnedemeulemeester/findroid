@@ -18,4 +18,17 @@
         <item name="android:widgetLayout">@layout/preference_material3_switch</item>
     </style>
 
+    <style name="MetaChip" parent="Widget.Material3.Chip.Assist">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="chipBackgroundColor">?attr/colorSecondaryContainer</item>
+        <item name="chipCornerRadius">6dp</item>
+        <item name="chipEndPadding">0dp</item>
+        <item name="chipStartPadding">0dp</item>
+        <item name="chipMinTouchTargetSize">20dp</item>
+        <item name="chipStrokeWidth">0dp</item>
+    </style>
+
+    <attr name="dolbyColor" format="reference|color" />
+
 </resources>

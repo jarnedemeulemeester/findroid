@@ -7,8 +7,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.R
 import javax.inject.Inject
 
 @AndroidEntryPoint

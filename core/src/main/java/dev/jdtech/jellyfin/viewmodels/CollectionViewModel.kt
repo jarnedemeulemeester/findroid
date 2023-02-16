@@ -8,14 +8,14 @@ import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class CollectionViewModel
@@ -81,6 +81,5 @@ constructor(
                 _uiState.emit(UiState.Error(e))
             }
         }
-
     }
 }

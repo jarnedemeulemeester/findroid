@@ -77,11 +77,11 @@
     <string name="player_gestures_vb_summary">Scorri su e giù nel lato destro dello schermo per cambiare il volume, a sinistra per cambiare la luminosità</string>
     <string name="sort_by_options_2">Classificazione per età</string>
     <string name="about">Info</string>
-    <string name="privacy_policy">Politica sulla privacy</string>
+    <string name="privacy_policy">Politica sulla riservatezza</string>
     <string name="app_info">Info App</string>
     <string name="unknown_error">Errore sconosciuto</string>
     <string name="search_hint">Cerca film, serie, episodi…</string>
-    <string name="mpv_player">MPV player</string>
+    <string name="mpv_player">Player MPV</string>
     <string name="download_mobile_data">Scarica usando i dati mobili</string>
     <string name="download_roaming">Scarica in roaming</string>
     <string name="seeking">Avanti/Indietro rapido</string>
@@ -150,4 +150,14 @@
     <string name="player_controls_skip_intro">Salta intro</string>
     <string name="pref_player_intro_skipper">Salta intro</string>
     <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
+    <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
+    <string name="player_gestures_seek">Gesto posizionamento</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Sottotitoli</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="dolby_logo_desc">Logo Dolby</string>
+    <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
+    <string name="temp">temporaneo</string>
+    <string name="video">Video</string>
+    <string name="extra_info">Mostra informazioni extra</string>
 </resources>

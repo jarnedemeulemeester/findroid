@@ -5,7 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
+import dev.jdtech.jellyfin.models.AudioChannel
+import dev.jdtech.jellyfin.models.AudioCodec
+import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.Resolution
+import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.canRetryDownload
 import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
@@ -24,6 +29,8 @@ import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.MediaStream
+import org.jellyfin.sdk.model.api.MediaStreamType
 import org.jellyfin.sdk.model.api.PlayAccess
 import timber.log.Timber
 
@@ -44,8 +51,12 @@ constructor(
             val actors: List<BaseItemPerson>,
             val director: BaseItemPerson?,
             val writers: List<BaseItemPerson>,
+            val videoMetadata: VideoMetadata?,
             val writersString: String,
             val genresString: String,
+            val videoString: String,
+            val audioString: String,
+            val subtitleString: String,
             val runTime: String,
             val dateString: String,
             val nextUp: BaseItemDto?,
@@ -67,8 +78,12 @@ constructor(
     private var actors: List<BaseItemPerson> = emptyList()
     private var director: BaseItemPerson? = null
     private var writers: List<BaseItemPerson> = emptyList()
+    private var videoMetadata: VideoMetadata? = null
     private var writersString: String = ""
     private var genresString: String = ""
+    private var videoString: String = ""
+    private var audioString: String = ""
+    private var subtitleString: String = ""
     private var runTime: String = ""
     private var dateString: String = ""
     var nextUp: BaseItemDto? = null
@@ -93,7 +108,12 @@ constructor(
                 director = getDirector(tempItem)
                 writers = getWriters(tempItem)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
+                videoMetadata =
+                    if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
                 genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+                videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
+                audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
+                subtitleString = getMediaString(tempItem, MediaStreamType.SUBTITLE)
                 runTime = "${tempItem.runTimeTicks?.div(600000000)} min"
                 dateString = getDateString(tempItem)
                 played = tempItem.userData?.played ?: false
@@ -111,8 +131,12 @@ constructor(
                         actors,
                         director,
                         writers,
+                        videoMetadata,
                         writersString,
                         genresString,
+                        videoString,
+                        audioString,
+                        subtitleString,
                         runTime,
                         dateString,
                         nextUp,
@@ -141,7 +165,12 @@ constructor(
             director = getDirector(tempItem)
             writers = getWriters(tempItem)
             writersString = writers.joinToString(separator = ", ") { it.name.toString() }
+            videoMetadata =
+                if (tempItem.type == BaseItemKind.MOVIE) parseVideoMetadata(tempItem) else null
             genresString = tempItem.genres?.joinToString(separator = ", ") ?: ""
+            videoString = getMediaString(tempItem, MediaStreamType.VIDEO)
+            audioString = getMediaString(tempItem, MediaStreamType.AUDIO)
+            subtitleString = getMediaString(tempItem, MediaStreamType.SUBTITLE)
             runTime = ""
             dateString = ""
             played = tempItem.userData?.played ?: false
@@ -154,8 +183,12 @@ constructor(
                     actors,
                     director,
                     writers,
+                    videoMetadata,
                     writersString,
                     genresString,
+                    videoString,
+                    audioString,
+                    subtitleString,
                     runTime,
                     dateString,
                     nextUp,
@@ -194,6 +227,119 @@ constructor(
             writers = item.people?.filter { it.type == "Writer" } ?: emptyList()
         }
         return writers
+    }
+
+    private suspend fun getMediaString(item: BaseItemDto, type: MediaStreamType): String {
+        val streams: List<MediaStream>
+        withContext(Dispatchers.Default) {
+            streams = item.mediaStreams?.filter { it.type == type } ?: emptyList()
+        }
+        return streams.map { it.displayTitle }.joinToString(separator = ", ")
+    }
+
+    private suspend fun parseVideoMetadata(item: BaseItemDto): VideoMetadata {
+        val resolution = mutableListOf<Resolution>()
+        val audioChannels = mutableListOf<AudioChannel>()
+        val displayProfile = mutableListOf<DisplayProfile>()
+        val audioCodecs = mutableListOf<AudioCodec>()
+        val isAtmosAudio = mutableListOf<Boolean>()
+
+        withContext(Dispatchers.Default) {
+            item.mediaStreams?.filter { stream ->
+                when (stream.type) {
+                    MediaStreamType.AUDIO -> {
+                        /**
+                         * Match audio profile from [MediaStream.channelLayout]
+                         */
+                        audioChannels.add(
+                            when (stream.channelLayout) {
+                                AudioChannel.CH_2_1.raw -> AudioChannel.CH_2_1
+                                AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
+                                AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
+                                else -> AudioChannel.CH_2_0
+                            }
+                        )
+
+                        /**
+                         * Match [MediaStream.displayTitle] for Dolby Atmos
+                         */
+                        stream.displayTitle?.apply {
+                            isAtmosAudio.add(contains("ATMOS", true))
+                        }
+
+                        /**
+                         * Match audio codec from [MediaStream.codec]
+                         */
+                        audioCodecs.add(
+                            when (stream.codec?.lowercase()) {
+                                AudioCodec.FLAC.toString() -> AudioCodec.FLAC
+                                AudioCodec.AAC.toString() -> AudioCodec.AAC
+                                AudioCodec.AC3.toString() -> AudioCodec.AC3
+                                AudioCodec.EAC3.toString() -> AudioCodec.EAC3
+                                AudioCodec.VORBIS.toString() -> AudioCodec.VORBIS
+                                AudioCodec.OPUS.toString() -> AudioCodec.OPUS
+                                AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
+                                AudioCodec.DTS.toString() -> AudioCodec.DTS
+                                else -> AudioCodec.MP3
+                            }
+                        )
+                        true
+                    }
+
+                    MediaStreamType.VIDEO -> {
+                        with(stream) {
+                            /**
+                             * Match dynamic range from [MediaStream.videoRangeType]
+                             */
+                            displayProfile.add(
+                                /**
+                                 * Since [MediaStream.videoRangeType] is [DisplayProfile.HDR10]
+                                 * Check if [MediaStream.videoDoViTitle] is not null and return
+                                 * [DisplayProfile.DOLBY_VISION] accordingly
+                                 */
+                                if (stream.videoDoViTitle != null) {
+                                    DisplayProfile.DOLBY_VISION
+                                } else when (videoRangeType) {
+                                    DisplayProfile.HDR.raw -> DisplayProfile.HDR
+                                    DisplayProfile.HDR10.raw -> DisplayProfile.HDR10
+                                    DisplayProfile.HLG.raw -> DisplayProfile.HLG
+                                    else -> DisplayProfile.SDR
+                                }
+                            )
+
+                            /**
+                             * Force stream [MediaStream.height] and [MediaStream.width] as not null
+                             * since we are inside [MediaStreamType.VIDEO] block
+                             */
+                            resolution.add(
+                                when {
+                                    height!! <= 1080 && width!! <= 1920 -> {
+                                        Resolution.HD
+                                    }
+
+                                    height!! <= 2160 && width!! <= 3840 -> {
+                                        Resolution.UHD
+                                    }
+
+                                    else -> Resolution.SD
+                                }
+                            )
+                        }
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }
+
+        return VideoMetadata(
+            resolution,
+            displayProfile.toSet().toList(),
+            audioChannels.toSet().toList(),
+            audioCodecs.toSet().toList(),
+            isAtmosAudio
+        )
     }
 
     private suspend fun getNextUp(seriesId: UUID): BaseItemDto? {
@@ -256,6 +402,7 @@ constructor(
             "Continuing" -> {
                 dateRange.add("Present")
             }
+
             "Ended" -> {
                 item.endDate?.let { dateRange.add(it.year.toString()) }
             }

@@ -150,4 +150,14 @@
     <string name="player_controls_skip_intro">跳过片头</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
     <string name="pref_player_intro_skipper_summary">需要在服务器上安装 ConfusedPolarBear 的 Intro Skipper 插件</string>
+    <string name="player_gestures_seek">搜索手势</string>
+    <string name="player_gestures_seek_summary">左右滑动调整播放进度前进和后退</string>
+    <string name="video">视频</string>
+    <string name="audio">音频</string>
+    <string name="subtitle">字幕</string>
+    <string name="subtitle_chip_text">隐藏式字幕</string>
+    <string name="dolby_logo_desc">杜比徽标</string>
+    <string name="extra_info">显示额外信息</string>
+    <string name="extra_info_summary">显示关于音频、视频和字幕的详细信息</string>
+    <string name="temp">temp</string>
 </resources>

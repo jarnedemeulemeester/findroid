@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -25,6 +26,8 @@ import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
+import dev.jdtech.jellyfin.models.AudioCodec
+import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
@@ -32,6 +35,7 @@ import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -46,6 +50,9 @@ class MediaInfoFragment : Fragment() {
     private val args: MediaInfoFragmentArgs by navArgs()
 
     lateinit var errorDialog: ErrorDialogFragment
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -157,8 +164,12 @@ class MediaInfoFragment : Fragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(args.itemId)
-                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.checkButton.setTintColorAttribute(
+                            R.attr.colorOnSecondaryContainer,
+                            requireActivity().theme
+                        )
                     }
+
                     false -> {
                         viewModel.markAsPlayed(args.itemId)
                         binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
@@ -171,8 +182,12 @@ class MediaInfoFragment : Fragment() {
                     true -> {
                         viewModel.unmarkAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.favoriteButton.setTintColorAttribute(
+                            R.attr.colorOnSecondaryContainer,
+                            requireActivity().theme
+                        )
                     }
+
                     false -> {
                         viewModel.markAsFavorite(args.itemId)
                         binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
@@ -225,7 +240,10 @@ class MediaInfoFragment : Fragment() {
             // Check icon
             when (played) {
                 true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                false -> binding.checkButton.setTintColorAttribute(
+                    R.attr.colorOnSecondaryContainer,
+                    requireActivity().theme
+                )
             }
 
             // Favorite icon
@@ -241,8 +259,12 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+                    if (downloaded) binding.downloadButton.setTintColor(
+                        R.color.red,
+                        requireActivity().theme
+                    )
                 }
+
                 false -> {
                     binding.downloadButton.isVisible = false
                 }
@@ -264,6 +286,68 @@ class MediaInfoFragment : Fragment() {
             binding.communityRating.text = item.communityRating.toString()
             binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false
             binding.genres.text = genresString
+            binding.videoMeta.text = videoString
+            binding.audio.text = audioString
+            binding.subtitles.text = subtitleString
+            binding.subsChip.isVisible = subtitleString.isNotEmpty()
+
+            if (appPreferences.displayExtraInfo) {
+                binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
+                binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
+                binding.audioLayout.isVisible = audioString.isNotEmpty()
+            }
+
+            videoMetadata?.let {
+                with(binding) {
+                    videoMetaChips.isVisible = true
+                    audioChannelChip.text = it.audioChannels.firstOrNull()?.raw
+                    resChip.text = it.resolution.firstOrNull()?.raw
+                    audioChannelChip.isVisible = it.audioChannels.isNotEmpty()
+                    resChip.isVisible = it.resolution.isNotEmpty()
+
+                    it.displayProfiles.firstOrNull()?.apply {
+                        videoProfileChip.text = this.raw
+                        videoProfileChip.isVisible = when (this) {
+                            DisplayProfile.HDR,
+                            DisplayProfile.HDR10,
+                            DisplayProfile.HLG -> {
+                                videoProfileChip.chipStartPadding = .0f
+                                true
+                            }
+
+                            DisplayProfile.DOLBY_VISION -> {
+                                videoProfileChip.isChipIconVisible = true
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+
+                    audioCodecChip.text = when (val codec = it.audioCodecs.firstOrNull()) {
+                        AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> {
+                            audioCodecChip.isVisible = true
+                            if (it.isAtmos.firstOrNull() == true) {
+                                "${codec.raw} | Atmos"
+                            } else codec.raw
+                        }
+
+                        AudioCodec.DTS -> {
+                            audioCodecChip.apply {
+                                isVisible = true
+                                isChipIconVisible = false
+                                chipStartPadding = .0f
+                            }
+                            codec.raw
+                        }
+
+                        else -> {
+                            audioCodecChip.isVisible = false
+                            null
+                        }
+                    }
+                }
+            }
             binding.directorLayout.isVisible = director != null
             binding.director.text = director?.name
             binding.writersLayout.isVisible = writers.isNotEmpty()
@@ -324,7 +408,8 @@ class MediaInfoFragment : Fragment() {
         )
         binding.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
+            ErrorDialogFragment.newInstance(error.error)
+                .show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 

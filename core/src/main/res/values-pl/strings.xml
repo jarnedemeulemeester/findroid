@@ -150,4 +150,14 @@
     <string name="player_controls_skip_intro">Pomiń czołówkę</string>
     <string name="pref_player_intro_skipper">Pomijać czołówek</string>
     <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki ConfusedPolarBear\'s Intro Skipper</string>
+    <string name="player_gestures_seek">Gest przesuwania</string>
+    <string name="player_gestures_seek_summary">Przesuń poziomo, aby przeszukać do przodu lub do tyłu</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Napisy</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="dolby_logo_desc">logo Dolby</string>
+    <string name="extra_info">Wyświetl dodatkowe informacje.</string>
+    <string name="temp">temp</string>
+    <string name="video">Wideo</string>
+    <string name="extra_info_summary">Wyświetla szczegółowe informacje o audio, wideo i napisach</string>
 </resources>
