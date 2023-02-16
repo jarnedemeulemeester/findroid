@@ -113,7 +113,7 @@ fun canRetryDownload(itemId: UUID, downloadDatabaseDao: DownloadDatabaseDao, con
     val query = DownloadManager.Query().setFilterById(downloadId)
     val result = context.getSystemService<DownloadManager>()!!.query(query)
     result.moveToFirst()
-    if (result.count == 0){
+    if (result.count == 0) {
         return true
     }
     val status = result.getInt(result.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
