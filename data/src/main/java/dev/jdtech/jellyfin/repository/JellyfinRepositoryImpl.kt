@@ -6,6 +6,9 @@ import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.TrickPlayManifest
+import io.ktor.util.*
+import io.ktor.utils.io.*
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -228,6 +231,33 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
 
             try {
                 return@withContext jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters).content
+            } catch (e: Exception) {
+                return@withContext null
+            }
+        }
+
+    override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
+        withContext(Dispatchers.IO) {
+            // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
+            val pathParameters = mutableMapOf<String, UUID>()
+            pathParameters["itemId"] = itemId
+
+            try {
+                return@withContext jellyfinApi.api.get<TrickPlayManifest>("/Trickplay/{itemId}/GetManifest", pathParameters).content
+            } catch (e: Exception) {
+                return@withContext null
+            }
+        }
+
+    override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
+        withContext(Dispatchers.IO) {
+            // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
+            val pathParameters = mutableMapOf<String, Any>()
+            pathParameters["itemId"] = itemId
+            pathParameters["width"] = width
+
+            try {
+                return@withContext jellyfinApi.api.get<ByteReadChannel>("/Trickplay/{itemId}/{width}/GetBIF", pathParameters).content.toByteArray()
             } catch (e: Exception) {
                 return@withContext null
             }

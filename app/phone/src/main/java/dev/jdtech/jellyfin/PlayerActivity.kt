@@ -5,13 +5,12 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +20,7 @@ import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
+import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import javax.inject.Inject
 import timber.log.Timber
@@ -167,6 +167,14 @@ class PlayerActivity : BasePlayerActivity() {
                 binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
             }
         }
+
+        val previewFrameLayout = binding.playerView.findViewById<FrameLayout>(R.id.preview_frame_layout)
+        val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
+
+        val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+        val previewScrubListener = PreviewScrubListener(previewFrameLayout, imagePreview, timeBar, viewModel.player, viewModel.currentTrickPlay)
+
+        timeBar.addListener(previewScrubListener)
 
         viewModel.fileLoaded.observe(this) {
             if (it) {

@@ -7,11 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
+import androidx.media3.common.*
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -23,16 +19,13 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.bif.BifData
+import dev.jdtech.jellyfin.utils.bif.BifUtil
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
-import java.util.UUID
-import javax.inject.Inject
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -54,6 +47,10 @@ constructor(
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
     private val _currentIntro = MutableLiveData<Intro?>(null)
     val currentIntro: LiveData<Intro?> = _currentIntro
+
+    private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
+    private val _currentTrickPlay = MutableLiveData<BifData?>(null)
+    val currentTrickPlay: LiveData<BifData?> = _currentTrickPlay
 
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
@@ -135,6 +132,22 @@ constructor(
                         if (intro != null) intros[item.itemId] = intro
                     }
 
+                    if (appPreferences.playerTrickPlay) {
+                        jellyfinRepository.getTrickPlayManifest(item.itemId)?.let { trickPlayManifest ->
+                            val widthResolution = trickPlayManifest.widthResolutions.max()
+                            Timber.d("Trickplay Resolution: $widthResolution")
+
+                            jellyfinRepository.getTrickPlayData(item.itemId, widthResolution)?.let { byteArray ->
+                                val trickPlayData = BifUtil.trickPlayDecode(byteArray, widthResolution)
+
+                                trickPlayData?.let {
+                                    Timber.d("Trickplay Images: ${it.imageCount}")
+                                    trickPlays[item.itemId] = it
+                                }
+                            }
+                        }
+                    }
+
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
                         MediaItem.Builder()
@@ -181,6 +194,7 @@ constructor(
             }
         }
 
+        _currentTrickPlay.value = null
         playWhenReady = player.playWhenReady
         playbackPosition = player.currentPosition
         currentMediaItemIndex = player.currentMediaItemIndex
@@ -246,6 +260,9 @@ constructor(
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
                         else
                             _currentItemTitle.value = item.name.orEmpty()
+
+                        if(appPreferences.playerTrickPlay)
+                            _currentTrickPlay.value = trickPlays[item.itemId]
                     }
                 }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))

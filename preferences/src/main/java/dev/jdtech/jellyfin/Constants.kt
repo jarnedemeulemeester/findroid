@@ -26,6 +26,7 @@ object Constants {
     const val PREF_PLAYER_MPV_AO = "pref_player_mpv_ao"
     const val PREF_PLAYER_MPV_GPU_API = "pref_player_mpv_gpu_api"
     const val PREF_PLAYER_INTRO_SKIPPER = "pref_player_intro_skipper"
+    const val PREF_PLAYER_TRICK_PLAY = "pref_player_trick_play"
     const val PREF_AUDIO_LANGUAGE = "pref_audio_language"
     const val PREF_SUBTITLE_LANGUAGE = "pref_subtitle_language"
     const val PREF_IMAGE_CACHE = "pref_image_cache"

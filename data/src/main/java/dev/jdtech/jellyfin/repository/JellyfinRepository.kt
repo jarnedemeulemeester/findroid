@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.repository
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.TrickPlayManifest
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -64,6 +65,10 @@ interface JellyfinRepository {
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
+
+    suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?
+
+    suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray?
 
     suspend fun postCapabilities()
 
