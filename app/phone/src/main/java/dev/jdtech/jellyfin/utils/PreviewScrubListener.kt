@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.media3.common.Player
 import androidx.media3.ui.TimeBar
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
 import timber.log.Timber
@@ -19,6 +20,8 @@ class PreviewScrubListener(
     private val currentTrickPlay: LiveData<BifData?>
 ) : TimeBar.OnScrubListener {
 
+    private val roundedCorners = RoundedCorners(10)
+
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
@@ -26,6 +29,7 @@ class PreviewScrubListener(
             return
 
         previewFrameLayout.visibility = View.VISIBLE
+        onScrubMove(timeBar, position)
     }
 
     override fun onScrubMove(timeBar: TimeBar, position: Long) {
@@ -54,7 +58,7 @@ class PreviewScrubListener(
 
         Glide.with(scrubbingPreview)
             .load(image)
-            .override(currentBifData.imageWidth)
+            .transform(roundedCorners)
             .into(scrubbingPreview)
     }
 

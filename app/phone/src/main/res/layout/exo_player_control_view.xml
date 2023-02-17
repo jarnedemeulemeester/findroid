@@ -179,7 +179,8 @@
             android:layout_height="90dp"
             android:layout_gravity="start"
             android:background="@android:color/transparent"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <ImageView
                 android:id="@+id/image_preview"
