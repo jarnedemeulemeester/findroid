@@ -805,7 +805,12 @@ class MPVPlayer(
      * @throws androidx.media3.common.IllegalSeekPositionException If the player has a non-empty timeline and the provided
      * `windowIndex` is not within the bounds of the current timeline.
      */
-    override fun seekTo(mediaItemIndex: Int, positionMs: Long, @Player.Command seekCommand: Int, isRepeatingCurrentItem: Boolean) {
+    override fun seekTo(
+        mediaItemIndex: Int,
+        positionMs: Long,
+        @Player.Command seekCommand: Int,
+        isRepeatingCurrentItem: Boolean
+    ) {
         if (mediaItemIndex == currentMediaItemIndex) {
             val seekTo =
                 if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
