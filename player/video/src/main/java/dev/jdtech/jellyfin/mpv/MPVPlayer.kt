@@ -797,14 +797,21 @@ class MPVPlayer(
     /**
      * Seeks to a position specified in milliseconds in the specified window.
      *
-     * @param windowIndex The index of the window.
+     * @param mediaItemIndex The index of the window.
      * @param positionMs The seek position in the specified window, or [C.TIME_UNSET] to seek to
      * the window's default position.
+     * @param seekCommand The {@link Player.Command} used to trigger the seek.
+     * @param isRepeatingCurrentItem Whether this seeks repeats the current item.
      * @throws androidx.media3.common.IllegalSeekPositionException If the player has a non-empty timeline and the provided
      * `windowIndex` is not within the bounds of the current timeline.
      */
-    override fun seekTo(windowIndex: Int, positionMs: Long) {
-        if (windowIndex == currentMediaItemIndex) {
+    override fun seekTo(
+        mediaItemIndex: Int,
+        positionMs: Long,
+        @Player.Command seekCommand: Int,
+        isRepeatingCurrentItem: Boolean
+    ) {
+        if (mediaItemIndex == currentMediaItemIndex) {
             val seekTo =
                 if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
             initialSeekTo = if (isPlayerReady) {
@@ -814,7 +821,7 @@ class MPVPlayer(
                 seekTo
             }
         } else {
-            prepareMediaItem(windowIndex)
+            prepareMediaItem(mediaItemIndex)
             play()
         }
     }

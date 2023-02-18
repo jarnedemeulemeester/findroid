@@ -153,4 +153,9 @@
     <string name="add">Agregar</string>
     <string name="player_gestures_seek">Gesto de búsqueda</string>
     <string name="player_gestures_seek_summary">Desliza de manera horizontal para buscar hacia delante o hacia detrás</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtítulos</string>
+    <string name="amoled_theme">Tema oscuro AMOLED</string>
+    <string name="amoled_theme_summary">Usa un tema de fondo negro puro para pantallas AMOLED</string>
 </resources>
