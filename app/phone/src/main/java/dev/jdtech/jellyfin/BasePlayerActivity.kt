@@ -26,7 +26,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(wasPip) {
+        if (wasPip) {
             wasPip = false
         } else {
             viewModel.player.playWhenReady = viewModel.playWhenReady
@@ -37,7 +37,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-        if(isInPictureInPictureMode) {
+        if (isInPictureInPictureMode) {
             wasPip = true
         } else {
             viewModel.playWhenReady = viewModel.player.playWhenReady == true
