@@ -38,7 +38,7 @@ import androidx.tv.foundation.lazy.list.items
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+// import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.HomeItem
@@ -51,7 +51,7 @@ import org.jellyfin.sdk.model.api.ImageType
 @Destination
 @Composable
 fun HomeScreen(
-    navigator: DestinationsNavigator,
+//    navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -148,11 +148,10 @@ fun HomeScreen(
                                                 }
                                                 Spacer(modifier = Modifier.height(8.dp))
                                             }
-
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = if (item.type == BaseItemKind.EPISODE) item.seriesName.orEmpty() else item.name.orEmpty() ,
+                                            text = if (item.type == BaseItemKind.EPISODE) item.seriesName.orEmpty() else item.name.orEmpty(),
                                             style = MaterialTheme.typography.bodyMedium,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
@@ -208,7 +207,6 @@ fun HomeScreen(
                     }
                 }
             }
-
         }
         is HomeViewModel.UiState.Error -> {
             Text(text = uiState.error.toString())
@@ -276,7 +274,6 @@ fun ItemPoster(item: BaseItemDto, api: JellyfinApi, direction: Direction) {
             if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId
                 ?: item.id else item.id
     }
-
 
     AsyncImage(
         model = "${api.api.baseUrl}/items/$itemId/Images/$imageType",

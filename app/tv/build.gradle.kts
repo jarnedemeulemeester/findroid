@@ -12,7 +12,7 @@ plugins {
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    buildToolsVersion = "33.0.2"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
@@ -58,10 +58,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-
     buildFeatures {
         compose = true
     }
@@ -86,6 +82,12 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/release/kotlin")
         }
     }
+}
+
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
 }
 
 dependencies {
