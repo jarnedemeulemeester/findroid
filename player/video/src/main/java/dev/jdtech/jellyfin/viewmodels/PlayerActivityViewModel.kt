@@ -32,6 +32,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -58,8 +60,8 @@ constructor(
     val currentIntro: LiveData<Intro?> = _currentIntro
 
     private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
-    private val _currentTrickPlay = MutableLiveData<BifData?>(null)
-    val currentTrickPlay: LiveData<BifData?> = _currentTrickPlay
+    private val _currentTrickPlay = MutableStateFlow<BifData?>(null)
+    val currentTrickPlay = _currentTrickPlay.asStateFlow()
 
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()

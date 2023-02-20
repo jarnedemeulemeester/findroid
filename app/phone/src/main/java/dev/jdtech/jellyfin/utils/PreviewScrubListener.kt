@@ -3,13 +3,13 @@ package dev.jdtech.jellyfin.utils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.lifecycle.LiveData
 import androidx.media3.common.Player
 import androidx.media3.ui.TimeBar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 class PreviewScrubListener(
@@ -17,7 +17,7 @@ class PreviewScrubListener(
     private val scrubbingPreview: ImageView,
     private val timeBarView: View,
     private val player: Player,
-    private val currentTrickPlay: LiveData<BifData?>
+    private val currentTrickPlay: StateFlow<BifData?>
 ) : TimeBar.OnScrubListener {
 
     private val roundedCorners = RoundedCorners(10)
