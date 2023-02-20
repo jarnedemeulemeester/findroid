@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -172,13 +171,18 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
-        val previewFrameLayout = binding.playerView.findViewById<FrameLayout>(R.id.preview_frame_layout)
-        val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
+        if (appPreferences.playerTrickPlay) {
+            val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
+            val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+            val previewScrubListener = PreviewScrubListener(
+                imagePreview,
+                timeBar,
+                viewModel.player,
+                viewModel.currentTrickPlay
+            )
 
-        val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
-        val previewScrubListener = PreviewScrubListener(previewFrameLayout, imagePreview, timeBar, viewModel.player, viewModel.currentTrickPlay)
-
-        timeBar.addListener(previewScrubListener)
+            timeBar.addListener(previewScrubListener)
+        }
 
         viewModel.fileLoaded.observe(this) {
             if (it) {

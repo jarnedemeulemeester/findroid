@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 class PreviewScrubListener(
-    private val previewFrameLayout: View,
     private val scrubbingPreview: ImageView,
     private val timeBarView: View,
     private val player: Player,
@@ -28,7 +27,7 @@ class PreviewScrubListener(
         if (currentTrickPlay.value == null)
             return
 
-        previewFrameLayout.visibility = View.VISIBLE
+        scrubbingPreview.visibility = View.VISIBLE
         onScrubMove(timeBar, position)
     }
 
@@ -38,23 +37,22 @@ class PreviewScrubListener(
         val currentBifData = currentTrickPlay.value ?: return
         val image = BifUtil.getTrickPlayFrame(position.toInt(), currentBifData) ?: return
 
-        val parent = previewFrameLayout.parent as ViewGroup
-        val layoutParams = previewFrameLayout.layoutParams as ViewGroup.MarginLayoutParams
+        val parent = scrubbingPreview.parent as ViewGroup
 
         val offset = position.toFloat() / player.duration
-        val minX = previewFrameLayout.left
-        val maxX = parent.width - parent.paddingRight - layoutParams.rightMargin
+        val minX = scrubbingPreview.left
+        val maxX = parent.width - parent.paddingRight
 
-        val startX = timeBarView.left + (timeBarView.right - timeBarView.left) * offset - previewFrameLayout.width / 2
-        val endX = startX + previewFrameLayout.width
+        val startX = timeBarView.left + (timeBarView.right - timeBarView.left) * offset - scrubbingPreview.width / 2
+        val endX = startX + scrubbingPreview.width
 
         val layoutX = when {
             startX >= minX && endX <= maxX -> startX
             startX < minX -> minX
-            else -> maxX - previewFrameLayout.width
+            else -> maxX - scrubbingPreview.width
         }.toFloat()
 
-        previewFrameLayout.x = layoutX
+        scrubbingPreview.x = layoutX
 
         Glide.with(scrubbingPreview)
             .load(image)
@@ -65,6 +63,6 @@ class PreviewScrubListener(
     override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
         Timber.d("Scrubbing stopped at $position")
 
-        previewFrameLayout.visibility = View.GONE
+        scrubbingPreview.visibility = View.GONE
     }
 }
