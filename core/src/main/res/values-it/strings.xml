@@ -159,5 +159,7 @@
     <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
     <string name="temp">temporaneo</string>
     <string name="video">Video</string>
-    <string name="extra_info">Mostra informazioni extra</string>
+    <string name="extra_info">Mostra più informazioni</string>
+    <string name="amoled_theme">Tema scuro AMOLED</string>
+    <string name="amoled_theme_summary">Usa il tema AMOLED con lo sfondo nero</string>
 </resources>

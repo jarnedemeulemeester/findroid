@@ -35,11 +35,11 @@ import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {

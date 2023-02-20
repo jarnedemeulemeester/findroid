@@ -12,8 +12,8 @@
     <string name="edit_text_password_hint">Senha</string>
     <string name="button_connect">Conectar</string>
     <string name="button_login">Entrar</string>
-    <string name="remove_server">Remover servidor</string>
-    <string name="remove">Remover</string>
+    <string name="remove_server">Excluir servidor</string>
+    <string name="remove">Excluir</string>
     <string name="cancel">Cancelar</string>
     <string name="title_home">Início</string>
     <string name="title_media">Minha Mídia</string>
@@ -80,7 +80,7 @@
     <string name="add_server_error_not_jellyfin">Não é um servidor do jellyfin: %1$s</string>
     <string name="add_server_error_not_found">Servidor não encontrado</string>
     <string name="edit_text_username_hint">Nome de usuário</string>
-    <string name="remove_server_dialog_text">Tem certeza que deseja remover o servidor %1$s</string>
+    <string name="remove_server_dialog_text">Tem certeza que deseja excluir o servidor (%1$s)</string>
     <string name="check_button_description">Marcar como assistido ou não assistido</string>
     <string name="no_downloads">Você não tem nada baixado</string>
     <string name="settings_category_servers">Servidores</string>
@@ -133,8 +133,8 @@
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
     <string name="pref_player_mpv_vo">Saida de vídeo</string>
-    <string name="remove_user">Remover usuário</string>
-    <string name="remove_user_dialog_text">Tem certeza que deseja remover o usuário (%1$s)</string>
+    <string name="remove_user">Excluir usuário</string>
+    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
     <string name="addresses">Endereços</string>
     <string name="add_address">Adicionar endereço</string>
@@ -157,5 +157,9 @@
     <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="subtitle">Legendas</string>
-    <string name="extra_info">Exibir informações extras.</string>
+    <string name="extra_info">Exibir informações extras</string>
+    <string name="amoled_theme">Tema escuro AMOLED</string>
+    <string name="amoled_theme_summary">Use o tema AMOLED com um fundo preto</string>
+    <string name="player_gestures_seek">Gesto de buscar</string>
+    <string name="player_gestures_seek_summary">Deslize horizontalmente para buscar para frente ou para trás</string>
 </resources>

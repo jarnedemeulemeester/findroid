@@ -153,4 +153,14 @@
     <string name="add">Agregar</string>
     <string name="player_gestures_seek">Gesto de búsqueda</string>
     <string name="player_gestures_seek_summary">Desliza de manera horizontal para buscar hacia delante o hacia detrás</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="subtitle">Subtítulos</string>
+    <string name="amoled_theme">Tema oscuro AMOLED</string>
+    <string name="amoled_theme_summary">Usa un tema de fondo negro puro para pantallas AMOLED</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">Temp</string>
+    <string name="dolby_logo_desc">Logo Dolby</string>
+    <string name="extra_info_summary">Muestra información detallada de audio, video y subtítulos</string>
+    <string name="extra_info">Mostrar info extra</string>
 </resources>

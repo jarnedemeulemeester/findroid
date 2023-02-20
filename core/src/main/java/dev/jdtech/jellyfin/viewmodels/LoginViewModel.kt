@@ -3,12 +3,12 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.AppPreferences
 import javax.inject.Inject
 import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
