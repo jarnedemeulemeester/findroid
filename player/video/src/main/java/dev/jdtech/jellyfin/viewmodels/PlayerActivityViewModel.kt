@@ -143,22 +143,6 @@ constructor(
                         if (intro != null) intros[item.itemId] = intro
                     }
 
-                    if (appPreferences.playerTrickPlay) {
-                        jellyfinRepository.getTrickPlayManifest(item.itemId)?.let { trickPlayManifest ->
-                            val widthResolution = trickPlayManifest.widthResolutions.max()
-                            Timber.d("Trickplay Resolution: $widthResolution")
-
-                            jellyfinRepository.getTrickPlayData(item.itemId, widthResolution)?.let { byteArray ->
-                                val trickPlayData = BifUtil.trickPlayDecode(byteArray, widthResolution)
-
-                                trickPlayData?.let {
-                                    Timber.d("Trickplay Images: ${it.imageCount}")
-                                    trickPlays[item.itemId] = it
-                                }
-                            }
-                        }
-                    }
-
                     Timber.d("Stream url: $streamUrl")
                     val mediaItem =
                         MediaItem.Builder()
@@ -272,11 +256,13 @@ constructor(
                         else
                             _currentItemTitle.value = item.name.orEmpty()
 
-                        if (appPreferences.playerTrickPlay)
-                            _currentTrickPlay.value = trickPlays[item.itemId]
+                        jellyfinRepository.postPlaybackStart(item.itemId)
+
+                        if (appPreferences.playerTrickPlay) {
+                            getTrickPlay(item.itemId)
+                        }
                     }
                 }
-                jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -338,5 +324,29 @@ constructor(
     fun selectSpeed(speed: Float) {
         player.setPlaybackSpeed(speed)
         playbackSpeed = speed
+    }
+
+    private suspend fun getTrickPlay(itemId: UUID) {
+        if (trickPlays[itemId] != null) return
+        jellyfinRepository.getTrickPlayManifest(itemId)
+            ?.let { trickPlayManifest ->
+                val widthResolution =
+                    trickPlayManifest.widthResolutions.max()
+                Timber.d("Trickplay Resolution: $widthResolution")
+
+                jellyfinRepository.getTrickPlayData(
+                    itemId,
+                    widthResolution
+                )?.let { byteArray ->
+                    val trickPlayData =
+                        BifUtil.trickPlayDecode(byteArray, widthResolution)
+
+                    trickPlayData?.let {
+                        Timber.d("Trickplay Images: ${it.imageCount}")
+                        trickPlays[itemId] = it
+                        _currentTrickPlay.value = trickPlays[itemId]
+                    }
+                }
+            }
     }
 }
