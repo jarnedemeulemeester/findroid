@@ -24,4 +24,3 @@ fun Activity.swipeToShowStatusBars() {
     WindowCompat.getInsetsController(window, window.decorView).systemBarsBehavior =
         WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 }
-
