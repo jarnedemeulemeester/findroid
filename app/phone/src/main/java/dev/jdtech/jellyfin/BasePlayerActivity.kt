@@ -1,8 +1,12 @@
 package dev.jdtech.jellyfin
 
+import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.media3.exoplayer.trackselection.MappingTrackSelector
 import androidx.media3.session.MediaSession
@@ -42,22 +46,21 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     protected fun hideSystemUI() {
-        // These methods are deprecated but we still use them because the new WindowInsetsControllerCompat has a bug which makes the action bar reappear
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            )
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.systemBars())
+        }
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.attributes.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
     }
 
     protected fun isRendererType(
         mappedTrackInfo: MappingTrackSelector.MappedTrackInfo,
         rendererIndex: Int,
-        type: Int,
+        type: Int
     ): Boolean {
         val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
         if (trackGroupArray.length == 0) {
