@@ -38,10 +38,11 @@ import androidx.tv.foundation.lazy.list.items
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-// import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.HomeItem
+import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -51,7 +52,7 @@ import org.jellyfin.sdk.model.api.ImageType
 @Destination
 @Composable
 fun HomeScreen(
-//    navigator: DestinationsNavigator,
+    navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -72,7 +73,9 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
-                    Header()
+                    Header(
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
                 }
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
@@ -91,7 +94,9 @@ fun HomeScreen(
                                     Column(
                                         modifier = Modifier
                                             .width(240.dp)
-                                            .clickable { }
+                                            .clickable {
+                                                navigator.navigate(LibraryScreenDestination(library.id, library.collectionType))
+                                            }
                                     ) {
                                         ItemPoster(
                                             item = library,
@@ -180,8 +185,7 @@ fun HomeScreen(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
-                                items(homeItem.view.items.orEmpty().count()) { i ->
-                                    val item = homeItem.view.items.orEmpty()[i]
+                                items(homeItem.view.items.orEmpty()) { item ->
                                     Column(
                                         modifier = Modifier
                                             .width(120.dp)
@@ -216,13 +220,12 @@ fun HomeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun Header() {
+fun Header(modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
-            .padding(horizontal = 32.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_banner),

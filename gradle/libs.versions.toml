@@ -13,6 +13,7 @@ androidx-lifecycle = "2.5.1"
 androidx-media3 = "1.0.0-rc01"
 androidx-navigation = "2.5.3"
 androidx-paging = "3.1.1"
+androidx-paging-compose = "1.0.0-alpha18"
 androidx-preference = "1.2.0"
 androidx-recyclerview = "1.2.1"
 androidx-recyclerview-selection = "1.1.0"
@@ -57,6 +58,7 @@ androidx-media3-session = { module = "androidx.media3:media3-session", version.r
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
 androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "androidx-paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
 androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-recyclerview-selection = { module = "androidx.recyclerview:recyclerview-selection", version.ref = "androidx-recyclerview-selection" }

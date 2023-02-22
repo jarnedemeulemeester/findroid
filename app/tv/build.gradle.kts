@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.coil.compose)
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
