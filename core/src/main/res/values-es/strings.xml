@@ -163,4 +163,6 @@
     <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Muestra información detallada de audio, video y subtítulos</string>
     <string name="extra_info">Mostrar info extra</string>
+    <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
+    <string name="pref_player_trick_play_summary">Requiere que el plugin Jellyscrub de nicknsy esté instalado en el servidor</string>
 </resources>
