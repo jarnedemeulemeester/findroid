@@ -156,8 +156,10 @@
     <string name="subtitle">Napisy</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="dolby_logo_desc">logo Dolby</string>
-    <string name="extra_info">Wyświetl dodatkowe informacje.</string>
+    <string name="extra_info">Wyświetl dodatkowe informacje</string>
     <string name="temp">temp</string>
     <string name="video">Wideo</string>
     <string name="extra_info_summary">Wyświetla szczegółowe informacje o audio, wideo i napisach</string>
+    <string name="amoled_theme">Ciemny motyw AMOLED</string>
+    <string name="amoled_theme_summary">Użyj motywu AMOLED z czystym czarnym tłem</string>
 </resources>
