@@ -1,5 +1,5 @@
 [versions]
-aboutlibraries = "10.6.0"
+aboutlibraries = "10.6.1"
 # v10.6.1 is only available for the plugin
 aboutlibraries-plugin = "10.6.1"
 android-plugin = "7.4.1"
