@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin
 
-import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -44,23 +43,20 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         mediaSession.release()
     }
 
-    @Suppress("DEPRECATION")
     protected fun hideSystemUI() {
         WindowCompat.getInsetsController(window, window.decorView).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsetsCompat.Type.systemBars())
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            window.attributes.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        }
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
     }
 
     protected fun isRendererType(
         mappedTrackInfo: MappingTrackSelector.MappedTrackInfo,
         rendererIndex: Int,
-        type: Int
+        type: Int,
     ): Boolean {
         val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
         if (trackGroupArray.length == 0) {
