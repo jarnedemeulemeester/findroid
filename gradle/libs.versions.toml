@@ -1,7 +1,5 @@
 [versions]
 aboutlibraries = "10.6.1"
-# v10.6.1 is only available for the plugin
-aboutlibraries-plugin = "10.6.1"
 android-plugin = "7.4.1"
 androidx-activity = "1.6.1"
 androidx-appcompat = "1.6.1"
@@ -63,7 +61,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
-aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries-plugin" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
