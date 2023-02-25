@@ -162,4 +162,6 @@
     <string name="extra_info_summary">Wyświetla szczegółowe informacje o audio, wideo i napisach</string>
     <string name="amoled_theme">Ciemny motyw AMOLED</string>
     <string name="amoled_theme_summary">Użyj motywu AMOLED z czystym czarnym tłem</string>
+    <string name="pref_player_trick_play">Trick Play</string>
+    <string name="pref_player_trick_play_summary">Wymaga zainstalowania na serwerze wtyczki Nicknsy\'s Jellyscrub</string>
 </resources>
