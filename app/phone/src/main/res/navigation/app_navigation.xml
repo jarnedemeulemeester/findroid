@@ -132,11 +132,6 @@
             android:name="itemType"
             app:argType="org.jellyfin.sdk.model.api.BaseItemKind"
             android:defaultValue="MOVIE" />
-        <argument
-            android:name="playerItem"
-            android:defaultValue="@null"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem"
-            app:nullable="true" />
         <action
             android:id="@+id/action_mediaInfoFragment_to_seasonFragment"
             app:destination="@id/seasonFragment" />
@@ -149,10 +144,6 @@
         <action
             android:id="@+id/action_mediaInfoFragment_to_personDetailFragment"
             app:destination="@id/personDetailFragment" />
-        <argument
-            android:name="isOffline"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
 
     <fragment
@@ -180,23 +171,6 @@
             android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/downloadSeriesFragment"
-        android:name="dev.jdtech.jellyfin.fragments.DownloadSeriesFragment"
-        android:label="{seriesName}"
-        tools:layout="@layout/fragment_season">
-        <argument
-            android:name="seriesMetadata"
-            app:argType="dev.jdtech.jellyfin.models.DownloadSeriesMetadata"/>
-        <argument
-            android:name="seriesName"
-            android:defaultValue="Series"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_downloadSeriesFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-    </fragment>
     <dialog
         android:id="@+id/episodeBottomSheetFragment"
         android:name="dev.jdtech.jellyfin.fragments.EpisodeBottomSheetFragment"
@@ -205,18 +179,9 @@
         <argument
             android:name="episodeId"
             app:argType="java.util.UUID" />
-        <argument
-            android:name="playerItem"
-            android:defaultValue="@null"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem"
-            app:nullable="true" />
         <action
             android:id="@+id/action_episodeBottomSheetFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
-        <argument
-            android:name="isOffline"
-            app:argType="boolean"
-            android:defaultValue="false" />
         <action
             android:id="@+id/action_episodeBottomSheetFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
@@ -252,21 +217,6 @@
         <action
             android:id="@+id/action_collectionFragment_to_mediaInfoFragment"
             app:destination="@id/mediaInfoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/downloadFragment"
-        android:name="dev.jdtech.jellyfin.fragments.DownloadFragment"
-        android:label="@string/title_download"
-        tools:layout="@layout/fragment_download">
-        <action
-            android:id="@+id/action_downloadFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_downloadFragment_to_mediaInfoFragment"
-            app:destination="@id/mediaInfoFragment" />
-        <action
-            android:id="@+id/action_downloadFragment_to_downloadSeriesFragment"
-            app:destination="@id/downloadSeriesFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"

@@ -18,18 +18,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import java.text.DateFormat
+import java.time.ZoneOffset
+import java.util.Date
 import java.util.UUID
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.LocationType
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -50,18 +54,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            if (viewModel.canRetry) {
-                binding.playButton.isEnabled = false
-                viewModel.download()
-                return@setOnClickListener
-            }
-            viewModel.item?.let {
-                if (!args.isOffline) {
-                    playerViewModel.loadPlayerItems(it)
-                } else {
-                    playerViewModel.loadOfflinePlayerItems(viewModel.playerItems[0])
-                }
-            }
+            playerViewModel.loadPlayerItems(viewModel.item)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -84,60 +77,25 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-        if (!args.isOffline) {
-            val episodeId: UUID = args.episodeId
-
-            binding.checkButton.setOnClickListener {
-                when (viewModel.played) {
-                    true -> {
-                        viewModel.markAsUnplayed(episodeId)
-                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
-                    }
-                    false -> {
-                        viewModel.markAsPlayed(episodeId)
-                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                    }
-                }
-            }
-
-            binding.favoriteButton.setOnClickListener {
-                when (viewModel.favorite) {
-                    true -> {
-                        viewModel.unmarkAsFavorite(episodeId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
-                    }
-                    false -> {
-                        viewModel.markAsFavorite(episodeId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
-                    }
-                }
-            }
-
-            binding.downloadButton.setOnClickListener {
-                binding.downloadButton.isEnabled = false
-                viewModel.download()
-                binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
-            }
-
-            viewModel.loadEpisode(episodeId)
-        } else {
-            val playerItem = args.playerItem!!
-            viewModel.loadEpisode(playerItem)
-
-            binding.deleteButton.isVisible = true
-
-            binding.deleteButton.setOnClickListener {
-                viewModel.deleteEpisode()
-                dismiss()
-                findNavController().navigate(R.id.downloadFragment)
-            }
-
-            binding.checkButton.isVisible = false
-            binding.favoriteButton.isVisible = false
-            binding.downloadButtonWrapper.isVisible = false
+        binding.seriesName.setOnClickListener {
+            navigateToSeries(viewModel.item.seriesId, viewModel.item.seriesName)
         }
+
+        binding.checkButton.setOnClickListener {
+            viewModel.togglePlayed()
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            viewModel.toggleFavorite()
+        }
+
+        binding.downloadButton.setOnClickListener {
+            binding.downloadButton.isEnabled = false
+            viewModel.download()
+            binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+        }
+
+        viewModel.loadEpisode(args.episodeId)
 
         return binding.root
     }
@@ -151,42 +109,43 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
         uiState.apply {
-            if (episode.userData?.playedPercentage != null) {
+            val downloaded = episode.sources.any { it.type == JellyfinSourceType.LOCAL }
+            val canDownload = episode.canDownload && episode.sources.any { it.type == JellyfinSourceType.REMOTE }
+
+            if (episode.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(1.26))!!.toFloat(),
+                    (episode.playedPercentage?.times(1.26))!!.toFloat(),
                     context?.resources?.displayMetrics
                 ).toInt()
                 binding.progressBar.isVisible = true
             }
 
-            val clickable = canPlay && (available || canRetry)
-            binding.playButton.isEnabled = clickable
-            binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
-            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
-            if (!(available || canRetry)) {
-                binding.playButton.setImageResource(android.R.color.transparent)
-                binding.progressCircular.isVisible = true
-            }
+            val canPlay = episode.canPlay && episode.sources.isNotEmpty()
+            binding.playButton.isEnabled = canPlay
+            binding.playButton.alpha = if (!canPlay) 0.5F else 1.0F
 
             // Check icon
-            when (played) {
+            when (episode.played) {
                 true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
                 false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
             // Favorite icon
-            val favoriteDrawable = when (favorite) {
+            val favoriteDrawable = when (episode.favorite) {
                 true -> R.drawable.ic_heart_filled
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            when (episode.favorite) {
+                true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+                false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+            }
 
             when (canDownload) {
                 true -> {
                     binding.downloadButtonWrapper.isVisible = true
-                    binding.downloadButton.isEnabled = !downloaded
+                    binding.downloadButton.isEnabled = true
 
                     if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
                 }
@@ -203,18 +162,14 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             )
             binding.seriesName.text = episode.seriesName
             binding.overview.text = episode.overview
-            binding.year.text = dateString
-            binding.playtime.text = runTime
+            binding.year.text = formatDateTime(episode.premiereDate)
+            binding.playtime.text = getString(R.string.runtime_minutes, episode.runtimeTicks.div(600000000))
             binding.communityRating.isVisible = episode.communityRating != null
             binding.communityRating.text = episode.communityRating.toString()
-            binding.missingIcon.isVisible = episode.locationType == LocationType.VIRTUAL
+            binding.missingIcon.isVisible = false
+            binding.downloadedIcon.isVisible = downloaded
 
-            binding.seriesName.setOnClickListener {
-                if (episode.seriesId != null) {
-                    navigateToSeries(episode.seriesId!!, episode.seriesName)
-                }
-            }
-            bindBaseItemImage(binding.episodeImage, episode)
+            bindCardItemImage(binding.episodeImage, episode)
         }
         binding.loadingIndicator.isVisible = false
     }
@@ -273,5 +228,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 itemType = BaseItemKind.SERIES
             )
         )
+    }
+
+    private fun formatDateTime(datetime: DateTime?): String {
+        if (datetime == null) return ""
+        val instant = datetime.toInstant(ZoneOffset.UTC)
+        val date = Date.from(instant)
+        return DateFormat.getDateInstance(DateFormat.SHORT).format(date)
     }
 }

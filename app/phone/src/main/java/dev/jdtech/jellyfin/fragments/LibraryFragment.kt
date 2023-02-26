@@ -26,13 +26,16 @@ import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 
 @AndroidEntryPoint
@@ -197,17 +200,21 @@ class LibraryFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
+    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
         findNavController().navigate(
             LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
-                item.type
+                when (item) {
+                    is JellyfinShowItem -> BaseItemKind.SERIES
+                    is JellyfinMovieItem -> BaseItemKind.MOVIE
+                    else -> BaseItemKind.MOVIE
+                }
             )
         )
     }
 
-    private fun navigateToCollectionFragment(collection: BaseItemDto) {
+    private fun navigateToCollectionFragment(collection: JellyfinItem) {
         findNavController().navigate(
             LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
                 collection.id,

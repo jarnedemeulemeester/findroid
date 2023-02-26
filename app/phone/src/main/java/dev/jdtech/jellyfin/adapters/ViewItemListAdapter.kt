@@ -8,21 +8,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinItem
 
 class ViewItemListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-) : ListAdapter<BaseItemDto, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<JellyfinItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: BaseItemDto, fixedWidth: Boolean) {
+        fun bind(item: JellyfinItem, fixedWidth: Boolean) {
             binding.item = item
-            binding.itemName.text = if (item.type == BaseItemKind.EPISODE) item.seriesName else item.name
+            binding.itemName.text = if (item is JellyfinEpisodeItem) item.seriesName else item.name
             binding.itemCount.visibility =
-                if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
+                if (item.unplayedItemCount != null && item.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {
                 binding.itemLayout.layoutParams.width =
                     parent.resources.getDimension(R.dimen.overview_media_width).toInt()
@@ -32,13 +32,13 @@ class ViewItemListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<BaseItemDto>() {
-        override fun areItemsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<JellyfinItem>() {
+        override fun areItemsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+            return oldItem.name == newItem.name
         }
     }
 
@@ -61,7 +61,7 @@ class ViewItemListAdapter(
         holder.bind(item, fixedWidth)
     }
 
-    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
-        fun onClick(item: BaseItemDto) = clickListener(item)
+    class OnClickListener(val clickListener: (item: JellyfinItem) -> Unit) {
+        fun onClick(item: JellyfinItem) = clickListener(item)
     }
 }

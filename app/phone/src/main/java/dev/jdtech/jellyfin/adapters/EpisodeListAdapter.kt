@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import java.util.UUID
-import org.jellyfin.sdk.model.api.BaseItemDto
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
@@ -43,12 +43,12 @@ class EpisodeListAdapter(
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(episode: BaseItemDto) {
+        fun bind(episode: JellyfinEpisodeItem) {
             binding.episode = episode
-            if (episode.userData?.playedPercentage != null) {
+            if (episode.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(),
+                    (episode.playedPercentage?.times(.84))!!.toFloat(),
                     binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
@@ -115,7 +115,7 @@ class EpisodeListAdapter(
         }
     }
 
-    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
-        fun onClick(item: BaseItemDto) = clickListener(item)
+    class OnClickListener(val clickListener: (item: JellyfinEpisodeItem) -> Unit) {
+        fun onClick(item: JellyfinEpisodeItem) = clickListener(item)
     }
 }

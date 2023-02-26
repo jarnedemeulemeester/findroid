@@ -11,7 +11,7 @@
 
         <variable
             name="episode"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            type="dev.jdtech.jellyfin.models.JellyfinEpisodeItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
-            app:baseItemImage="@{episode}"
+            app:cardItemImage="@{episode}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +44,7 @@
             android:contentDescription="@string/episode_watched_indicator"
             android:padding="4dp"
             android:src="@drawable/ic_check"
-            android:visibility="@{episode.userData.played == true ? View.VISIBLE : View.GONE}"
+            android:visibility="@{episode.played ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/episode_image"
             app:layout_constraintTop_toTopOf="@id/episode_image"
             app:tint="?attr/colorOnPrimary" />
@@ -57,7 +57,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
             android:backgroundTint="?attr/colorError"
-            android:visibility="@{episode.locationType == LocationType.VIRTUAL ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/played_icon"
             app:layout_constraintTop_toTopOf="@id/episode_image">
 

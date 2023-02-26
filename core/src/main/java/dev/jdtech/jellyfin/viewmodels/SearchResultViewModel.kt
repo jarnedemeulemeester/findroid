@@ -6,6 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
@@ -14,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemKind
 
 @HiltViewModel
 class SearchResultViewModel
@@ -48,7 +50,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(R.string.movies_label),
-                        items.filter { it.type == BaseItemKind.MOVIE }
+                        items.filterIsInstance<JellyfinMovieItem>()
                     ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it
@@ -57,7 +59,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(R.string.shows_label),
-                        items.filter { it.type == BaseItemKind.SERIES }
+                        items.filterIsInstance<JellyfinShowItem>()
                     ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it
@@ -66,7 +68,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(R.string.episodes_label),
-                        items.filter { it.type == BaseItemKind.EPISODE }
+                        items.filterIsInstance<JellyfinEpisodeItem>()
                     ).let {
                         if (it.items.isNotEmpty()) sections.add(
                             it

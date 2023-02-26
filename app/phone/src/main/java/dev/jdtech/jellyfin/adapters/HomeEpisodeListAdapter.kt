@@ -7,41 +7,50 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
 
-class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<BaseItemDto, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
-    class EpisodeViewHolder(private var binding: HomeEpisodeItemBinding) :
+class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<JellyfinItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+    class EpisodeViewHolder(
+        private var binding: HomeEpisodeItemBinding,
+        private val parent: ViewGroup
+    ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(episode: BaseItemDto) {
-            binding.episode = episode
-            if (episode.userData?.playedPercentage != null) {
+        fun bind(item: JellyfinItem) {
+            binding.item = item
+            if (item.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(2.24))!!.toFloat(), binding.progressBar.context.resources.displayMetrics
+                    (item.playedPercentage?.times(2.24))!!.toFloat(), binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
 
-            if (episode.type == BaseItemKind.MOVIE) {
-                binding.primaryName.text = episode.name
-                binding.secondaryName.visibility = View.GONE
-            } else if (episode.type == BaseItemKind.EPISODE) {
-                binding.primaryName.text = episode.seriesName
+            when (item) {
+                is JellyfinMovieItem -> {
+                    binding.primaryName.text = item.name
+                    binding.secondaryName.visibility = View.GONE
+                }
+                is JellyfinEpisodeItem -> {
+                    binding.primaryName.text = item.seriesName
+                    binding.secondaryName.text = parent.resources.getString(R.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
+                }
             }
 
             binding.executePendingBindings()
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<BaseItemDto>() {
-        override fun areItemsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<JellyfinItem>() {
+        override fun areItemsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+            return oldItem.name == newItem.name
         }
     }
 
@@ -51,7 +60,8 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            parent
         )
     }
 
@@ -63,7 +73,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
         holder.bind(item)
     }
 
-    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
-        fun onClick(item: BaseItemDto) = clickListener(item)
+    class OnClickListener(val clickListener: (item: JellyfinItem) -> Unit) {
+        fun onClick(item: JellyfinItem) = clickListener(item)
     }
 }

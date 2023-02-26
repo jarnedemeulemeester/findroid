@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.models
 
 enum class CollectionType(val type: String) {
+    Movies("movies"),
+    TvShows("tvshows"),
     HomeVideos("homevideos"),
     Music("music"),
     Playlists("playlists"),

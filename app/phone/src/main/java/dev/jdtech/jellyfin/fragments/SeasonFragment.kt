@@ -16,10 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -102,7 +102,7 @@ class SeasonFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinEpisodeItem) {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
                 episode.id

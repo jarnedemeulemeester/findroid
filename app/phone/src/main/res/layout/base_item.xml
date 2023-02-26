@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            type="dev.jdtech.jellyfin.models.JellyfinItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +55,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
             android:gravity="center"
-            android:text="@{item.userData.unplayedItemCount.toString()}"
+            android:text="@{item.unplayedItemCount.toString()}"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
             android:contentDescription="@string/episode_watched_indicator"
             android:padding="4dp"
             android:src="@drawable/ic_check"
-            android:visibility="@{item.userData.played == true ? View.VISIBLE : View.GONE}"
+            android:visibility="@{item.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/item_image"
             app:layout_constraintTop_toTopOf="@id/item_image"
             app:tint="?attr/colorOnPrimary" />

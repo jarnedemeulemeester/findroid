@@ -7,21 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinSeasonItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
-import dev.jdtech.jellyfin.utils.isItemAvailable
 import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
@@ -30,7 +29,6 @@ import timber.log.Timber
 class PlayerViewModel @Inject internal constructor(
     private val application: Application,
     private val repository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -44,24 +42,17 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     fun loadPlayerItems(
-        item: BaseItemDto,
+        item: JellyfinItem,
         mediaSourceIndex: Int = 0,
         onVersionSelectRequired: () -> Unit = { }
     ) {
-        if (isItemAvailable(item.id)) {
-            val playerItem = getDownloadPlayerItem(downloadDatabase, item.id)
-            if (playerItem != null) {
-                loadOfflinePlayerItems(playerItem)
-                return
-            }
-        }
         Timber.d("Loading player items for item ${item.id}")
-        if (item.mediaSources.orEmpty().size > 1) {
+        if (item.sources.size > 1) {
             onVersionSelectRequired()
         }
 
         viewModelScope.launch {
-            val playbackPosition = item.userData?.playbackPositionTicks?.div(10000) ?: 0
+            val playbackPosition = item.playbackPositionTicks.div(10000)
 
             val items = try {
                 createItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
@@ -74,14 +65,8 @@ class PlayerViewModel @Inject internal constructor(
         }
     }
 
-    fun loadOfflinePlayerItems(
-        playerItem: PlayerItem
-    ) {
-        playerItems.tryEmit(PlayerItems(listOf(playerItem)))
-    }
-
     private suspend fun createItems(
-        item: BaseItemDto,
+        item: JellyfinItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ) = if (playbackPosition <= 0) {
@@ -94,7 +79,7 @@ class PlayerViewModel @Inject internal constructor(
         prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
     }
 
-    private suspend fun prepareIntros(item: BaseItemDto): List<PlayerItem> {
+    private suspend fun prepareIntros(item: JellyfinItem): List<PlayerItem> {
         return repository
             .getIntros(item.id)
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
@@ -102,18 +87,18 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun prepareMediaPlayerItems(
-        item: BaseItemDto,
+        item: JellyfinItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
-    ): List<PlayerItem> = when (item.type) {
-        BaseItemKind.MOVIE -> itemToMoviePlayerItems(item, playbackPosition, mediaSourceIndex)
-        BaseItemKind.SERIES -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        BaseItemKind.EPISODE -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
+    ): List<PlayerItem> = when (item) {
+        is JellyfinMovieItem -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
+//        is JellyfinShowItem -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is JellyfinEpisodeItem -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
 
-    private suspend fun itemToMoviePlayerItems(
-        item: BaseItemDto,
+    private fun movieToPlayerItem(
+        item: JellyfinMovieItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
@@ -135,23 +120,23 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun seasonToPlayerItems(
-        item: BaseItemDto,
+        item: JellyfinSeasonItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
         return repository
             .getEpisodes(
-                seriesId = item.seriesId!!,
+                seriesId = item.seriesId,
                 seasonId = item.id,
                 fields = listOf(ItemFields.MEDIA_SOURCES)
             )
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .filter { it.locationType != VIRTUAL }
+            .filter { it.sources.isNotEmpty() }
+//            .filter { it.locationType != VIRTUAL }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
     private suspend fun episodeToPlayerItems(
-        item: BaseItemDto,
+        item: JellyfinEpisodeItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
@@ -159,15 +144,58 @@ class PlayerViewModel @Inject internal constructor(
         val userConfig = repository.getUserConfiguration()
         return repository
             .getEpisodes(
-                seriesId = item.seriesId!!,
-                seasonId = item.seasonId!!,
+                seriesId = item.seriesId,
+                seasonId = item.seasonId,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
                 startItemId = item.id,
                 limit = if (userConfig.enableNextEpisodeAutoPlay) null else 1
             )
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .filter { it.locationType != VIRTUAL }
+            .filter { it.sources.isNotEmpty() }
+//            .filter { it.locationType != VIRTUAL }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
+    }
+
+    private fun JellyfinItem.toPlayerItem(
+        mediaSourceIndex: Int,
+        playbackPosition: Long
+    ): PlayerItem {
+        val mediaSource = this.sources[mediaSourceIndex]
+        val externalSubtitles = mutableListOf<ExternalSubtitle>()
+        for (mediaStream in mediaSource.mediaStreams) {
+            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+
+                // Temp fix for vtt
+                // Jellyfin returns a srt stream when it should return vtt stream.
+                var deliveryUrl = mediaStream.deliveryUrl!!
+                if (mediaStream.codec == "webvtt") {
+                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
+                }
+
+                externalSubtitles.add(
+                    ExternalSubtitle(
+                        mediaStream.title ?: application.getString(R.string.external),
+                        mediaStream.language.orEmpty(),
+                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
+                        when (mediaStream.codec) {
+                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                            "webvtt" -> MimeTypes.TEXT_VTT
+                            "ass" -> MimeTypes.TEXT_SSA
+                            else -> MimeTypes.TEXT_UNKNOWN
+                        }
+                    )
+                )
+            }
+        }
+        return PlayerItem(
+            name = name,
+            itemId = id,
+            mediaSourceId = mediaSource.id,
+            mediaSourceUri = mediaSource.path,
+            playbackPosition = playbackPosition,
+            parentIndexNumber = if (this is JellyfinEpisodeItem) parentIndexNumber else null,
+            indexNumber = if (this is JellyfinEpisodeItem) indexNumber else null,
+            externalSubtitles = externalSubtitles
+        )
     }
 
     private suspend fun BaseItemDto.toPlayerItem(

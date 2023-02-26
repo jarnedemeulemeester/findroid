@@ -5,8 +5,18 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.JellyfinCollection
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinSeasonItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toJellyfinCollection
+import dev.jdtech.jellyfin.models.toJellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.toJellyfinItem
+import dev.jdtech.jellyfin.models.toJellyfinMovieItem
+import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
 import java.util.UUID
@@ -40,22 +50,54 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         jellyfinApi.userLibraryApi.getItem(jellyfinApi.userId!!, itemId).content
     }
 
+    override suspend fun getEpisode(itemId: UUID): JellyfinEpisodeItem =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(
+                jellyfinApi.userId!!,
+                itemId
+            ).content.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl)
+        }
+
+    override suspend fun getMovie(itemId: UUID): JellyfinMovieItem =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(
+                jellyfinApi.userId!!,
+                itemId
+            ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl)
+        }
+
+    override suspend fun getLibraries(): List<JellyfinCollection> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+            ).content.items
+                .orEmpty()
+                .map { it.toJellyfinCollection() }
+        }
+
     override suspend fun getItems(
         parentId: UUID?,
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean,
         sortBy: SortBy,
-        sortOrder: SortOrder
-    ): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.itemsApi.getItems(
-            jellyfinApi.userId!!,
-            parentId = parentId,
-            includeItemTypes = includeTypes,
-            recursive = recursive,
-            sortBy = listOf(sortBy.SortString),
-            sortOrder = listOf(sortOrder)
-        ).content.items.orEmpty()
-    }
+        sortOrder: SortOrder,
+        startIndex: Int?,
+        limit: Int?
+    ): List<JellyfinItem> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+                parentId = parentId,
+                includeItemTypes = includeTypes,
+                recursive = recursive,
+                sortBy = listOf(sortBy.SortString),
+                sortOrder = listOf(sortOrder),
+                startIndex = startIndex,
+                limit = limit,
+            ).content.items
+                .orEmpty()
+                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl) }
+        }
 
     override suspend fun getItemsPaging(
         parentId: UUID?,
@@ -63,7 +105,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         recursive: Boolean,
         sortBy: SortBy,
         sortOrder: SortOrder
-    ): Flow<PagingData<BaseItemDto>> {
+    ): Flow<PagingData<JellyfinItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -72,7 +114,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             ),
             pagingSourceFactory = {
                 ItemsPagingSource(
-                    jellyfinApi,
+                    this,
                     parentId,
                     includeTypes,
                     recursive,
@@ -87,29 +129,36 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean
-    ): List<BaseItemDto> = withContext(Dispatchers.IO) {
+    ): List<JellyfinItem> = withContext(Dispatchers.IO) {
         jellyfinApi.itemsApi.getItems(
             jellyfinApi.userId!!,
             personIds = personIds,
             includeItemTypes = includeTypes,
             recursive = recursive
-        ).content.items.orEmpty()
+        ).content.items
+            .orEmpty()
+            .mapNotNull {
+                it.toJellyfinItem(this@JellyfinRepositoryImpl)
+            }
     }
 
-    override suspend fun getFavoriteItems(): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.itemsApi.getItems(
-            jellyfinApi.userId!!,
-            filters = listOf(ItemFilter.IS_FAVORITE),
-            includeItemTypes = listOf(
-                BaseItemKind.MOVIE,
-                BaseItemKind.SERIES,
-                BaseItemKind.EPISODE
-            ),
-            recursive = true
-        ).content.items.orEmpty()
-    }
+    override suspend fun getFavoriteItems(): List<JellyfinItem> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.itemsApi.getItems(
+                jellyfinApi.userId!!,
+                filters = listOf(ItemFilter.IS_FAVORITE),
+                includeItemTypes = listOf(
+                    BaseItemKind.MOVIE,
+                    BaseItemKind.SERIES,
+                    BaseItemKind.EPISODE
+                ),
+                recursive = true
+            ).content.items
+                .orEmpty()
+                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl) }
+        }
 
-    override suspend fun getSearchItems(searchQuery: String): List<BaseItemDto> =
+    override suspend fun getSearchItems(searchQuery: String): List<JellyfinItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -120,35 +169,50 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                     BaseItemKind.EPISODE
                 ),
                 recursive = true
-            ).content.items.orEmpty()
+            ).content.items
+                .orEmpty()
+                .mapNotNull { it.toJellyfinItem() }
         }
 
-    override suspend fun getResumeItems(): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.itemsApi.getResumeItems(
-            jellyfinApi.userId!!,
-            includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
-        ).content.items.orEmpty()
+    override suspend fun getResumeItems(): List<JellyfinItem> {
+        val items = withContext(Dispatchers.IO) {
+            jellyfinApi.itemsApi.getResumeItems(
+                jellyfinApi.userId!!,
+                includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
+            ).content.items.orEmpty()
+        }
+        return items.mapNotNull {
+            it.toJellyfinItem(this)
+        }
     }
 
-    override suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto> =
-        withContext(Dispatchers.IO) {
+    override suspend fun getLatestMedia(parentId: UUID): List<JellyfinItem> {
+        val items = withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getLatestMedia(
                 jellyfinApi.userId!!,
                 parentId = parentId
             ).content
         }
+        return items.mapNotNull {
+            it.toJellyfinItem(this)
+        }
+    }
 
-    override suspend fun getSeasons(seriesId: UUID): List<BaseItemDto> =
+    override suspend fun getSeasons(seriesId: UUID): List<JellyfinSeasonItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items.orEmpty()
+            jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
+                .orEmpty()
+                .map { it.toJellyfinSeasonItem() }
         }
 
-    override suspend fun getNextUp(seriesId: UUID?): List<BaseItemDto> =
+    override suspend fun getNextUp(seriesId: UUID?): List<JellyfinEpisodeItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
                 seriesId = seriesId?.toString(),
-            ).content.items.orEmpty()
+            ).content.items
+                .orEmpty()
+                .map { it.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getEpisodes(
@@ -157,16 +221,19 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         fields: List<ItemFields>?,
         startItemId: UUID?,
         limit: Int?,
-    ): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.showsApi.getEpisodes(
-            seriesId,
-            jellyfinApi.userId!!,
-            seasonId = seasonId,
-            fields = fields,
-            startItemId = startItemId,
-            limit = limit,
-        ).content.items.orEmpty()
-    }
+    ): List<JellyfinEpisodeItem> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.showsApi.getEpisodes(
+                seriesId,
+                jellyfinApi.userId!!,
+                seasonId = seasonId,
+                fields = fields,
+                startItemId = startItemId,
+                limit = limit,
+            ).content.items
+                .orEmpty()
+                .map { it.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl) }
+        }
 
     override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> =
         withContext(Dispatchers.IO) {
@@ -230,7 +297,10 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             pathParameters["itemId"] = itemId
 
             try {
-                return@withContext jellyfinApi.api.get<Intro>("/Episode/{itemId}/IntroTimestamps/v1", pathParameters).content
+                return@withContext jellyfinApi.api.get<Intro>(
+                    "/Episode/{itemId}/IntroTimestamps/v1",
+                    pathParameters
+                ).content
             } catch (e: Exception) {
                 return@withContext null
             }
@@ -243,7 +313,10 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             pathParameters["itemId"] = itemId
 
             try {
-                return@withContext jellyfinApi.api.get<TrickPlayManifest>("/Trickplay/{itemId}/GetManifest", pathParameters).content
+                return@withContext jellyfinApi.api.get<TrickPlayManifest>(
+                    "/Trickplay/{itemId}/GetManifest",
+                    pathParameters
+                ).content
             } catch (e: Exception) {
                 return@withContext null
             }
@@ -257,7 +330,10 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             pathParameters["width"] = width
 
             try {
-                return@withContext jellyfinApi.api.get<ByteReadChannel>("/Trickplay/{itemId}/{width}/GetBIF", pathParameters).content.toByteArray()
+                return@withContext jellyfinApi.api.get<ByteReadChannel>(
+                    "/Trickplay/{itemId}/{width}/GetBIF",
+                    pathParameters
+                ).content.toByteArray()
             } catch (e: Exception) {
                 return@withContext null
             }
@@ -355,7 +431,10 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
     override suspend fun updateDeviceName(name: String) {
         jellyfinApi.jellyfin.deviceInfo?.id?.let { id ->
             withContext(Dispatchers.IO) {
-                jellyfinApi.devicesApi.updateDeviceOptions(id, DeviceOptionsDto(0, customName = name))
+                jellyfinApi.devicesApi.updateDeviceOptions(
+                    id,
+                    DeviceOptionsDto(0, customName = name)
+                )
             }
         }
     }

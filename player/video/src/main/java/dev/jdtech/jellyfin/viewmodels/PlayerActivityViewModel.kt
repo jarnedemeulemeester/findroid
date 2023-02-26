@@ -17,7 +17,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
@@ -25,7 +24,6 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
-import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -44,7 +42,6 @@ class PlayerActivityViewModel
 constructor(
     application: Application,
     private val jellyfinRepository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : ViewModel(), Player.Listener {
     val player: Player
@@ -125,10 +122,7 @@ constructor(
             val mediaItems: MutableList<MediaItem> = mutableListOf()
             try {
                 for (item in items) {
-                    val streamUrl = when {
-                        item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri
-                        else -> jellyfinRepository.getStreamUrl(item.itemId, item.mediaSourceId)
-                    }
+                    val streamUrl = item.mediaSourceUri
                     val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
                         MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
                             .setLabel(externalSubtitle.title)
@@ -203,9 +197,6 @@ constructor(
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                         val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                        if (playFromDownloads) {
-                            postDownloadPlaybackProgress(downloadDatabase, items[0].itemId, player.currentPosition.times(10000), (player.currentPosition.toDouble() / player.duration.toDouble()).times(100)) // TODO Automatically use the correct item
-                        }
                         try {
                             jellyfinRepository.postPlaybackProgress(
                                 itemId,

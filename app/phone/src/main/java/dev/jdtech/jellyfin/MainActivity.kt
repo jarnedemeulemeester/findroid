@@ -15,7 +15,6 @@ import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
-import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
 
@@ -69,8 +68,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment,
                 R.id.mediaFragment,
-                R.id.favoriteFragment,
-                R.id.downloadFragment
+                R.id.favoriteFragment
             )
         )
 
@@ -87,8 +85,6 @@ class MainActivity : AppCompatActivity() {
             if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title =
                 getString(R.string.app_info)
         }
-
-        loadDownloadLocation(applicationContext)
     }
 
     override fun onSupportNavigateUp(): Boolean {

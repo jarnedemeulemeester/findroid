@@ -20,10 +20,13 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -137,12 +140,16 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
+    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
         findNavController().navigate(
             PersonDetailFragmentDirections.actionPersonDetailFragmentToMediaInfoFragment(
                 itemId = item.id,
                 itemName = item.name,
-                itemType = item.type
+                itemType = when (item) {
+                    is JellyfinShowItem -> BaseItemKind.SERIES
+                    is JellyfinMovieItem -> BaseItemKind.MOVIE
+                    else -> BaseItemKind.MOVIE
+                }
             )
         )
     }

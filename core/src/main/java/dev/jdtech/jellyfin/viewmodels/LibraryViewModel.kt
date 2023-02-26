@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 import timber.log.Timber
@@ -30,7 +30,7 @@ constructor(
     var itemsloaded = false
 
     sealed class UiState {
-        data class Normal(val items: Flow<PagingData<BaseItemDto>>) : UiState()
+        data class Normal(val items: Flow<PagingData<JellyfinItem>>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }

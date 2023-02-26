@@ -2,6 +2,11 @@ package dev.jdtech.jellyfin.repository
 
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.JellyfinCollection
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinSeasonItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import java.util.UUID
@@ -17,14 +22,20 @@ interface JellyfinRepository {
     suspend fun getUserViews(): List<BaseItemDto>
 
     suspend fun getItem(itemId: UUID): BaseItemDto
+    suspend fun getEpisode(itemId: UUID): JellyfinEpisodeItem
+    suspend fun getMovie(itemId: UUID): JellyfinMovieItem
+
+    suspend fun getLibraries(): List<JellyfinCollection>
 
     suspend fun getItems(
         parentId: UUID? = null,
         includeTypes: List<BaseItemKind>? = null,
         recursive: Boolean = false,
         sortBy: SortBy = SortBy.defaultValue,
-        sortOrder: SortOrder = SortOrder.ASCENDING
-    ): List<BaseItemDto>
+        sortOrder: SortOrder = SortOrder.ASCENDING,
+        startIndex: Int? = null,
+        limit: Int? = null,
+    ): List<JellyfinItem>
 
     suspend fun getItemsPaging(
         parentId: UUID? = null,
@@ -32,25 +43,25 @@ interface JellyfinRepository {
         recursive: Boolean = false,
         sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
-    ): Flow<PagingData<BaseItemDto>>
+    ): Flow<PagingData<JellyfinItem>>
 
     suspend fun getPersonItems(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>? = null,
         recursive: Boolean = true
-    ): List<BaseItemDto>
+    ): List<JellyfinItem>
 
-    suspend fun getFavoriteItems(): List<BaseItemDto>
+    suspend fun getFavoriteItems(): List<JellyfinItem>
 
-    suspend fun getSearchItems(searchQuery: String): List<BaseItemDto>
+    suspend fun getSearchItems(searchQuery: String): List<JellyfinItem>
 
-    suspend fun getResumeItems(): List<BaseItemDto>
+    suspend fun getResumeItems(): List<JellyfinItem>
 
-    suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto>
+    suspend fun getLatestMedia(parentId: UUID): List<JellyfinItem>
 
-    suspend fun getSeasons(seriesId: UUID): List<BaseItemDto>
+    suspend fun getSeasons(seriesId: UUID): List<JellyfinSeasonItem>
 
-    suspend fun getNextUp(seriesId: UUID? = null): List<BaseItemDto>
+    suspend fun getNextUp(seriesId: UUID? = null): List<JellyfinEpisodeItem>
 
     suspend fun getEpisodes(
         seriesId: UUID,
@@ -58,7 +69,7 @@ interface JellyfinRepository {
         fields: List<ItemFields>? = null,
         startItemId: UUID? = null,
         limit: Int? = null,
-    ): List<BaseItemDto>
+    ): List<JellyfinEpisodeItem>
 
     suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
 

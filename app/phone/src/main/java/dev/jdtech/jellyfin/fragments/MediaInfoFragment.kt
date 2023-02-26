@@ -1,8 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.content.Intent
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +19,16 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
+import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.JellyfinSeasonItem
+import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
@@ -37,9 +38,10 @@ import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+
+// TODO move Shows to a seperate fragment
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -49,7 +51,7 @@ class MediaInfoFragment : Fragment() {
     private val playerViewModel: PlayerViewModel by viewModels()
     private val args: MediaInfoFragmentArgs by navArgs()
 
-    lateinit var errorDialog: ErrorDialogFragment
+    private lateinit var errorDialog: ErrorDialogFragment
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -82,11 +84,7 @@ class MediaInfoFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                if (!args.isOffline) {
-                    viewModel.loadData(args.itemId, args.itemType)
-                } else {
-                    viewModel.loadData(args.playerItem!!)
-                }
+                viewModel.loadData(args.itemId, args.itemType)
             }
         }
 
@@ -105,14 +103,14 @@ class MediaInfoFragment : Fragment() {
             }
         }
 
-        binding.trailerButton.setOnClickListener {
-            if (viewModel.item?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(viewModel.item?.remoteTrailers?.get(0)?.url)
-            )
-            startActivity(intent)
-        }
+//        binding.trailerButton.setOnClickListener {
+//            if (viewModel.item?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
+//            val intent = Intent(
+//                Intent.ACTION_VIEW,
+//                Uri.parse(viewModel.item?.remoteTrailers?.get(0)?.url)
+//            )
+//            startActivity(intent)
+//        }
 
         binding.nextUp.setOnClickListener {
             navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
@@ -121,7 +119,7 @@ class MediaInfoFragment : Fragment() {
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
                 ViewItemListAdapter.OnClickListener { season ->
-                    navigateToSeasonFragment(season)
+                    if (season is JellyfinSeasonItem) navigateToSeasonFragment(season)
                 },
                 fixedWidth = true
             )
@@ -132,113 +130,60 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            if (viewModel.canRetry) {
-                binding.playButton.isEnabled = false
-                viewModel.download()
-                return@setOnClickListener
-            }
-            viewModel.item?.let { item ->
-                if (!args.isOffline) {
-                    playerViewModel.loadPlayerItems(item) {
-                        VideoVersionDialogFragment(item, playerViewModel).show(
-                            parentFragmentManager,
-                            "videoversiondialog"
-                        )
-                    }
-                } else {
-                    playerViewModel.loadOfflinePlayerItems(args.playerItem!!)
-                }
+            playerViewModel.loadPlayerItems(viewModel.item) {
+                VideoVersionDialogFragment(viewModel.item, playerViewModel).show(
+                    parentFragmentManager,
+                    "videoversiondialog"
+                )
             }
         }
 
-        if (!args.isOffline) {
-            binding.errorLayout.errorRetryButton.setOnClickListener {
-                viewModel.loadData(args.itemId, args.itemType)
-            }
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData(args.itemId, args.itemType)
+        }
 
-            binding.errorLayout.errorDetailsButton.setOnClickListener {
-                errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
-            }
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
+        }
 
-            binding.checkButton.setOnClickListener {
-                when (viewModel.played) {
-                    true -> {
-                        viewModel.markAsUnplayed(args.itemId)
-                        binding.checkButton.setTintColorAttribute(
-                            R.attr.colorOnSecondaryContainer,
-                            requireActivity().theme
-                        )
-                    }
+        binding.checkButton.setOnClickListener {
+            viewModel.togglePlayed()
+        }
 
-                    false -> {
-                        viewModel.markAsPlayed(args.itemId)
-                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                    }
-                }
-            }
+        binding.favoriteButton.setOnClickListener {
+            viewModel.toggleFavorite()
+        }
 
-            binding.favoriteButton.setOnClickListener {
-                when (viewModel.favorite) {
-                    true -> {
-                        viewModel.unmarkAsFavorite(args.itemId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        binding.favoriteButton.setTintColorAttribute(
-                            R.attr.colorOnSecondaryContainer,
-                            requireActivity().theme
-                        )
-                    }
-
-                    false -> {
-                        viewModel.markAsFavorite(args.itemId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
-                    }
-                }
-            }
-
-            binding.downloadButton.setOnClickListener {
-                binding.downloadButton.isEnabled = false
-                viewModel.download()
-                binding.downloadButton.imageTintList = ColorStateList.valueOf(
-                    resources.getColor(
-                        R.color.red,
-                        requireActivity().theme
-                    )
+        binding.downloadButton.setOnClickListener {
+            binding.downloadButton.isEnabled = false
+            viewModel.download()
+            binding.downloadButton.imageTintList = ColorStateList.valueOf(
+                resources.getColor(
+                    R.color.red,
+                    requireActivity().theme
                 )
-            }
-        } else {
-            binding.favoriteButton.isVisible = false
-            binding.checkButton.isVisible = false
-            binding.downloadButton.isVisible = false
-            binding.deleteButton.isVisible = true
-
-            binding.deleteButton.setOnClickListener {
-                viewModel.deleteItem()
-                findNavController().navigate(R.id.downloadFragment)
-            }
+            )
         }
     }
 
     private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
         uiState.apply {
+            val downloaded = item.sources.any { it.type == JellyfinSourceType.LOCAL }
+            val canDownload = item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
+
             binding.originalTitle.isVisible = item.originalTitle != item.name
-            if (item.remoteTrailers.isNullOrEmpty()) {
-                binding.trailerButton.isVisible = false
-            }
+//            if (item.remoteTrailers.isNullOrEmpty()) {
+//                binding.trailerButton.isVisible = false
+//            }
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
-            val clickable = canPlay && (available || canRetry)
-            binding.playButton.isEnabled = clickable
-            binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
-            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
-            if (!(available || canRetry)) {
-                binding.playButton.setImageResource(android.R.color.transparent)
-                binding.progressCircular.isVisible = true
-            }
+            val canPlay = item.canPlay && item.sources.isNotEmpty()
+            binding.playButton.isEnabled = canPlay
+            binding.playButton.alpha = if (!canPlay) 0.5F else 1.0F
 
             // Check icon
-            when (played) {
+            when (item.played) {
                 true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
                 false -> binding.checkButton.setTintColorAttribute(
                     R.attr.colorOnSecondaryContainer,
@@ -247,12 +192,15 @@ class MediaInfoFragment : Fragment() {
             }
 
             // Favorite icon
-            val favoriteDrawable = when (favorite) {
+            val favoriteDrawable = when (item.favorite) {
                 true -> R.drawable.ic_heart_filled
                 false -> R.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            when (item.favorite) {
+                true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+                false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+            }
 
             when (canDownload) {
                 true -> {
@@ -284,7 +232,7 @@ class MediaInfoFragment : Fragment() {
             }
             binding.officialRating.text = item.officialRating
             binding.communityRating.text = item.communityRating.toString()
-            binding.genresLayout.isVisible = item.genres?.isNotEmpty() ?: false
+            binding.genresLayout.isVisible = item.genres.isNotEmpty()
             binding.genres.text = genresString
             binding.videoMeta.text = videoString
             binding.audio.text = audioString
@@ -366,7 +314,7 @@ class MediaInfoFragment : Fragment() {
             val actorsAdapter = binding.peopleRecyclerView.adapter as PersonListAdapter
             actorsAdapter.submitList(actors)
             bindItemBackdropImage(binding.itemBanner, item)
-            bindBaseItemImage(binding.nextUpImage, nextUp)
+            if (nextUp != null) bindCardItemImage(binding.nextUpImage, nextUp!!)
         }
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = true
@@ -413,7 +361,7 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinItem) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(
                 episode.id
@@ -421,10 +369,10 @@ class MediaInfoFragment : Fragment() {
         )
     }
 
-    private fun navigateToSeasonFragment(season: BaseItemDto) {
+    private fun navigateToSeasonFragment(season: JellyfinSeasonItem) {
         findNavController().navigate(
             MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
-                season.seriesId!!,
+                season.seriesId,
                 season.id,
                 season.seriesName,
                 season.name
