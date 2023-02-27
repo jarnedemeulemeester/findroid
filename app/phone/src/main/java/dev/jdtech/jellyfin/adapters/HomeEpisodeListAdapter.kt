@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.isDownloaded
 
 class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<JellyfinItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
@@ -28,6 +30,8 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
+
+            binding.downloadedIcon.isVisible = item.isDownloaded()
 
             when (item) {
                 is JellyfinMovieItem -> {

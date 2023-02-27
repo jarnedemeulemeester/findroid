@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.isDownloaded
 
 class ViewItemPagingAdapter(
     private val onClickListener: OnClickListener,
@@ -29,6 +31,9 @@ class ViewItemPagingAdapter(
                     parent.resources.getDimension(R.dimen.overview_media_width).toInt()
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
+
+            binding.downloadedIcon.isVisible = item.isDownloaded()
+
             binding.executePendingBindings()
         }
     }

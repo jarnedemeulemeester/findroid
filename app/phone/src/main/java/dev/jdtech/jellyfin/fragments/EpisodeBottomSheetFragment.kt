@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
@@ -108,7 +109,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
         uiState.apply {
-            val downloaded = episode.sources.any { it.type == JellyfinSourceType.LOCAL }
+            val downloaded = episode.isDownloaded()
             val canDownload = episode.canDownload && episode.sources.any { it.type == JellyfinSourceType.REMOTE }
 
             if (episode.playedPercentage != null) {

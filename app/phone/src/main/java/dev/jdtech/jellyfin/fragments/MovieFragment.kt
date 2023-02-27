@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
@@ -132,7 +133,7 @@ class MovieFragment : Fragment() {
 
     private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {
         uiState.apply {
-            val downloaded = item.sources.any { it.type == JellyfinSourceType.LOCAL }
+            val downloaded = item.isDownloaded()
             val canDownload = item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name

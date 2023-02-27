@@ -30,3 +30,7 @@ suspend fun BaseItemDto.toJellyfinItem(jellyfinRepository: JellyfinRepository? =
         else -> null
     }
 }
+
+fun JellyfinItem.isDownloaded(): Boolean {
+    return sources.any { it.type == JellyfinSourceType.LOCAL }
+}
