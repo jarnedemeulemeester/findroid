@@ -26,7 +26,6 @@ import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -121,7 +120,7 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
-        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaInfoFragment(it) }
+        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) }
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {
@@ -140,17 +139,24 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
-        findNavController().navigate(
-            PersonDetailFragmentDirections.actionPersonDetailFragmentToMediaInfoFragment(
-                itemId = item.id,
-                itemName = item.name,
-                itemType = when (item) {
-                    is JellyfinShowItem -> BaseItemKind.SERIES
-                    is JellyfinMovieItem -> BaseItemKind.MOVIE
-                    else -> BaseItemKind.MOVIE
-                }
-            )
-        )
+    private fun navigateToMediaItem(item: JellyfinItem) {
+        when (item) {
+            is JellyfinMovieItem -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+            is JellyfinShowItem -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+        }
     }
 }

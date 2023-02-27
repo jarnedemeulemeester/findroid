@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/error_layout"
+        layout="@layout/error_panel" />
+
+    <ScrollView
+        android:id="@+id/media_info_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/item_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/header_gradient"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                    app:layout_constraintBottom_toTopOf="@id/original_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Alita: Battle Angel" />
+
+                <TextView
+                    android:id="@+id/original_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp">
+
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="2019" />
+
+                <TextView
+                    android:id="@+id/playtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="122 min" />
+
+                <TextView
+                    android:id="@+id/official_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="PG-13" />
+
+                <TextView
+                    android:id="@+id/community_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    app:drawableStartCompat="@drawable/ic_star"
+                    app:drawableTint="@color/yellow"
+                    tools:text="7.3" />
+            </LinearLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/video_meta_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="10dp"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/res_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="4K"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/video_profile_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    app:chipIcon="@drawable/ic_dolby"
+                    app:chipIconSize="0dp"
+                    app:chipIconTint="?attr/colorOnPrimarySurface"
+                    app:chipIconVisible="false"
+                    app:chipStartPadding="8dp"
+                    tools:text="Vision"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_codec_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    app:chipIcon="@drawable/ic_dolby"
+                    app:chipIconSize="0dp"
+                    app:chipIconTint="?attr/colorOnBackground"
+                    app:chipIconVisible="true"
+                    app:chipStartPadding="8dp"
+                    tools:text="ATMOS"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/audio_channel_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp"
+                    android:visibility="gone"
+                    tools:text="5.1"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/subs_chip"
+                    style="@style/MetaChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtitle_chip_text"
+                    android:visibility="gone"
+                    tools:text="CC"
+                    tools:visibility="visible" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="15dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageButton
+                        android:id="@+id/play_button"
+                        android:layout_width="72dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_setup_background"
+                        android:contentDescription="@string/play_button_description"
+                        android:foreground="@drawable/ripple_background"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="12dp"
+                        android:src="@drawable/ic_play"
+                        app:tint="?attr/colorOnPrimary" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_circular"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerHorizontal="true"
+                        android:elevation="8dp"
+                        android:indeterminateTint="?attr/colorOnPrimary"
+                        android:padding="8dp"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+                <ImageButton
+                    android:id="@+id/trailer_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:contentDescription="@string/trailer_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_film"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+
+                <ImageButton
+                    android:id="@+id/check_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:contentDescription="@string/check_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_check"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+
+                <ImageButton
+                    android:id="@+id/favorite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:contentDescription="@string/download_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_heart"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+
+                <ImageButton
+                    android:id="@+id/download_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:contentDescription="@string/download_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_download"
+                    android:visibility="gone"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+
+                <ImageButton
+                    android:id="@+id/delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/button_accent_background"
+                    android:contentDescription="@string/delete_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_trash"
+                    android:visibility="gone"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/player_items_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="-12dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/player_items_error_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/error_preparing_player_items"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorError" />
+
+                <TextView
+                    android:id="@+id/player_items_error_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_details_underlined"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorError" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/video_meta_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/video_meta_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/video"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/video_meta"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="4K HEVC HDR" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/audio_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/audio_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/audio"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/audio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="AC-3 Eng 5.1, AC-3 iTA 5.1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/subtitles_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/subtitles_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/subtitle"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/subtitles"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="English - SUBRIP, SDH - English - SUBRIP" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="An angel falls. A warrior rises. When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past." />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/genres_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/genres_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/genres"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/genres"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Action, Science Fiction, Adventure" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/director_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/director_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/director"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/director"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Robert Rodriguez" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/writers_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/writers_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/writers"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/writers"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="James Cameron, Laeta Kalogridis, Yukito Kishiro" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/actors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/cast_amp_crew"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/people_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/person_item" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loading_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

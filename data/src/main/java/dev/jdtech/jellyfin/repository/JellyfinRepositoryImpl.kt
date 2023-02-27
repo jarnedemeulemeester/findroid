@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
 import dev.jdtech.jellyfin.models.JellyfinSeasonItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toJellyfinCollection
@@ -17,6 +18,7 @@ import dev.jdtech.jellyfin.models.toJellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.toJellyfinItem
 import dev.jdtech.jellyfin.models.toJellyfinMovieItem
 import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
+import dev.jdtech.jellyfin.models.toJellyfinShowItem
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
 import java.util.UUID
@@ -64,6 +66,14 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 jellyfinApi.userId!!,
                 itemId
             ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl)
+        }
+
+    override suspend fun getShow(itemId: UUID): JellyfinShowItem =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(
+                jellyfinApi.userId!!,
+                itemId
+            ).content.toJellyfinShowItem()
         }
 
     override suspend fun getLibraries(): List<JellyfinCollection> =

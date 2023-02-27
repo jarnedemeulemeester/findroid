@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.JellyfinCollection
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
 import dev.jdtech.jellyfin.models.JellyfinShowItem
@@ -35,7 +36,6 @@ import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 
 @AndroidEntryPoint
@@ -117,9 +117,9 @@ class LibraryFragment : Fragment() {
             ViewItemPagingAdapter(
                 ViewItemPagingAdapter.OnClickListener { item ->
                     if (args.libraryType == CollectionType.BoxSets.type) {
-                        navigateToCollectionFragment(item)
+                        navigateToItem(item)
                     } else {
-                        navigateToMediaInfoFragment(item)
+                        navigateToItem(item)
                     }
                 }
             )
@@ -200,26 +200,32 @@ class LibraryFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                when (item) {
-                    is JellyfinShowItem -> BaseItemKind.SERIES
-                    is JellyfinMovieItem -> BaseItemKind.MOVIE
-                    else -> BaseItemKind.MOVIE
-                }
-            )
-        )
-    }
-
-    private fun navigateToCollectionFragment(collection: JellyfinItem) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
-                collection.id,
-                collection.name
-            )
-        )
+    private fun navigateToItem(item: JellyfinItem) {
+        when (item) {
+            is JellyfinMovieItem -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToMovieFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is JellyfinShowItem -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is JellyfinCollection -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+        }
     }
 }

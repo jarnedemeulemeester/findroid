@@ -8,8 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -34,7 +32,6 @@ import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -145,15 +142,10 @@ class HomeFragment : Fragment() {
         binding.viewsRecyclerView.adapter = ViewListAdapter(
             onClickListener = ViewListAdapter.OnClickListener { navigateToLibraryFragment(it) },
             onItemClickListener = ViewItemListAdapter.OnClickListener {
-                navigateToMediaInfoFragment(it)
+                navigateToMediaItem(it)
             },
             onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
-                when (item) {
-                    is JellyfinEpisodeItem -> navigateToEpisodeBottomSheetFragment(item)
-                    is JellyfinMovieItem -> navigateToMediaInfoFragment(item)
-                    else -> Toast.makeText(requireContext(), R.string.unknown_error, LENGTH_LONG)
-                        .show()
-                }
+                navigateToMediaItem(item)
             }
         )
 
@@ -215,36 +207,32 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
-        if (item is JellyfinEpisodeItem) {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    item.seriesId,
-                    item.seriesName,
-                    BaseItemKind.SERIES
+    private fun navigateToMediaItem(item: JellyfinItem) {
+        when (item) {
+            is JellyfinMovieItem -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToMovieFragment(
+                        item.id,
+                        item.name
+                    )
                 )
-            )
-        } else {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    item.id,
-                    item.name,
-                    when (item) {
-                        is JellyfinShowItem -> BaseItemKind.SERIES
-                        is JellyfinMovieItem -> BaseItemKind.MOVIE
-                        else -> BaseItemKind.MOVIE
-                    }
+            }
+            is JellyfinShowItem -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToShowFragment(
+                        item.id,
+                        item.name
+                    )
                 )
-            )
+            }
+            is JellyfinEpisodeItem -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
+                        item.id
+                    )
+                )
+            }
         }
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinItem) {
-        findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
-                episode.id
-            )
-        )
     }
 
     private fun navigateToSettingsFragment() {

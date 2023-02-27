@@ -18,38 +18,30 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
-import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
-import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
+import dev.jdtech.jellyfin.databinding.FragmentMovieBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinSeasonItem
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
-import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import dev.jdtech.jellyfin.viewmodels.MovieViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
-// TODO move Shows to a seperate fragment
-
 @AndroidEntryPoint
-class MediaInfoFragment : Fragment() {
-
-    private lateinit var binding: FragmentMediaInfoBinding
-    private val viewModel: MediaInfoViewModel by viewModels()
+class MovieFragment : Fragment() {
+    private lateinit var binding: FragmentMovieBinding
+    private val viewModel: MovieViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
-    private val args: MediaInfoFragmentArgs by navArgs()
+    private val args: MovieFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
 
@@ -61,7 +53,7 @@ class MediaInfoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
+        binding = FragmentMovieBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -74,9 +66,9 @@ class MediaInfoFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
-                        is MediaInfoViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is MediaInfoViewModel.UiState.Loading -> bindUiStateLoading()
-                        is MediaInfoViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is MovieViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        is MovieViewModel.UiState.Loading -> bindUiStateLoading()
+                        is MovieViewModel.UiState.Error -> bindUiStateError(uiState)
                     }
                 }
             }
@@ -84,16 +76,16 @@ class MediaInfoFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadData(args.itemId, args.itemType)
+                viewModel.loadData(args.itemId)
             }
         }
 
-        if (args.itemType != BaseItemKind.MOVIE) {
-            binding.downloadButton.visibility = View.GONE
+        binding.errorLayout.errorRetryButton.setOnClickListener {
+            viewModel.loadData(args.itemId)
         }
 
-        binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadData(args.itemId, args.itemType)
+        binding.errorLayout.errorDetailsButton.setOnClickListener {
+            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
@@ -101,30 +93,6 @@ class MediaInfoFragment : Fragment() {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
-        }
-
-//        binding.trailerButton.setOnClickListener {
-//            if (viewModel.item?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
-//            val intent = Intent(
-//                Intent.ACTION_VIEW,
-//                Uri.parse(viewModel.item?.remoteTrailers?.get(0)?.url)
-//            )
-//            startActivity(intent)
-//        }
-
-        binding.nextUp.setOnClickListener {
-            navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
-        }
-
-        binding.seasonsRecyclerView.adapter =
-            ViewItemListAdapter(
-                ViewItemListAdapter.OnClickListener { season ->
-                    if (season is JellyfinSeasonItem) navigateToSeasonFragment(season)
-                },
-                fixedWidth = true
-            )
-        binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
-            navigateToPersonDetail(person.id)
         }
 
         binding.playButton.setOnClickListener {
@@ -136,14 +104,6 @@ class MediaInfoFragment : Fragment() {
                     "videoversiondialog"
                 )
             }
-        }
-
-        binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadData(args.itemId, args.itemType)
-        }
-
-        binding.errorLayout.errorDetailsButton.setOnClickListener {
-            errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         binding.checkButton.setOnClickListener {
@@ -164,9 +124,13 @@ class MediaInfoFragment : Fragment() {
                 )
             )
         }
+
+        binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
+            navigateToPersonDetail(person.id)
+        }
     }
 
-    private fun bindUiStateNormal(uiState: MediaInfoViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {
         uiState.apply {
             val downloaded = item.sources.any { it.type == JellyfinSourceType.LOCAL }
             val canDownload = item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
@@ -245,7 +209,7 @@ class MediaInfoFragment : Fragment() {
                 binding.audioLayout.isVisible = audioString.isNotEmpty()
             }
 
-            videoMetadata?.let {
+            videoMetadata.let {
                 with(binding) {
                     videoMetaChips.isVisible = true
                     audioChannelChip.text = it.audioChannels.firstOrNull()?.raw
@@ -301,20 +265,9 @@ class MediaInfoFragment : Fragment() {
             binding.writersLayout.isVisible = writers.isNotEmpty()
             binding.writers.text = writersString
             binding.description.text = item.overview
-            binding.nextUpLayout.isVisible = nextUp != null
-            binding.nextUpName.text = getString(
-                R.string.episode_name_extended,
-                nextUp?.parentIndexNumber,
-                nextUp?.indexNumber,
-                nextUp?.name
-            )
-            binding.seasonsLayout.isVisible = seasons.isNotEmpty()
-            val seasonsAdapter = binding.seasonsRecyclerView.adapter as ViewItemListAdapter
-            seasonsAdapter.submitList(seasons)
             val actorsAdapter = binding.peopleRecyclerView.adapter as PersonListAdapter
             actorsAdapter.submitList(actors)
             bindItemBackdropImage(binding.itemBanner, item)
-            if (nextUp != null) bindCardItemImage(binding.nextUpImage, nextUp!!)
         }
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = true
@@ -326,7 +279,7 @@ class MediaInfoFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: MediaInfoViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: MovieViewModel.UiState.Error) {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = false
@@ -361,30 +314,11 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinItem) {
-        findNavController().navigate(
-            MediaInfoFragmentDirections.actionMediaInfoFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
-        )
-    }
-
-    private fun navigateToSeasonFragment(season: JellyfinSeasonItem) {
-        findNavController().navigate(
-            MediaInfoFragmentDirections.actionMediaInfoFragmentToSeasonFragment(
-                season.seriesId,
-                season.id,
-                season.seriesName,
-                season.name
-            )
-        )
-    }
-
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
         findNavController().navigate(
-            MediaInfoFragmentDirections.actionMediaInfoFragmentToPlayerActivity(
+            MovieFragmentDirections.actionMovieFragmentToPlayerActivity(
                 playerItems
             )
         )
@@ -392,7 +326,7 @@ class MediaInfoFragment : Fragment() {
 
     private fun navigateToPersonDetail(personId: UUID) {
         findNavController().navigate(
-            MediaInfoFragmentDirections.actionMediaInfoFragmentToPersonDetailFragment(personId)
+            MovieFragmentDirections.actionMovieFragmentToPersonDetailFragment(personId)
         )
     }
 }

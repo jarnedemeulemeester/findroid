@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
 import dev.jdtech.jellyfin.models.JellyfinSeasonItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import java.util.UUID
@@ -24,6 +25,8 @@ interface JellyfinRepository {
     suspend fun getItem(itemId: UUID): BaseItemDto
     suspend fun getEpisode(itemId: UUID): JellyfinEpisodeItem
     suspend fun getMovie(itemId: UUID): JellyfinMovieItem
+
+    suspend fun getShow(itemId: UUID): JellyfinShowItem
 
     suspend fun getLibraries(): List<JellyfinCollection>
 

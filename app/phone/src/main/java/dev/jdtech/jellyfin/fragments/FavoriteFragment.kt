@@ -17,13 +17,13 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
 import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.FavoriteViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -43,10 +43,10 @@ class FavoriteFragment : Fragment() {
 
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
             ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
+                navigateToMediaItem(item)
             },
             HomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToEpisodeBottomSheetFragment(item)
+                navigateToMediaItem(item)
             }
         )
 
@@ -99,25 +99,31 @@ class FavoriteFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: JellyfinItem) {
-        findNavController().navigate(
-            FavoriteFragmentDirections.actionFavoriteFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                when (item) {
-                    is JellyfinShowItem -> BaseItemKind.SERIES
-                    is JellyfinMovieItem -> BaseItemKind.MOVIE
-                    else -> BaseItemKind.MOVIE
-                }
-            )
-        )
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinItem) {
-        findNavController().navigate(
-            FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
-        )
+    private fun navigateToMediaItem(item: JellyfinItem) {
+        when (item) {
+            is JellyfinMovieItem -> {
+                findNavController().navigate(
+                    FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is JellyfinShowItem -> {
+                findNavController().navigate(
+                    FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is JellyfinEpisodeItem -> {
+                findNavController().navigate(
+                    FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
+                        item.id
+                    )
+                )
+            }
+        }
     }
 }

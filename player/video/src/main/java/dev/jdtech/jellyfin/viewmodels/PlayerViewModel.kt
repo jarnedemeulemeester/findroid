@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
 import dev.jdtech.jellyfin.models.JellyfinSeasonItem
+import dev.jdtech.jellyfin.models.JellyfinShowItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -92,7 +93,7 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int
     ): List<PlayerItem> = when (item) {
         is JellyfinMovieItem -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
-//        is JellyfinShowItem -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is JellyfinShowItem -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
         is JellyfinEpisodeItem -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
@@ -104,7 +105,7 @@ class PlayerViewModel @Inject internal constructor(
     ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
-        item: BaseItemDto,
+        item: JellyfinShowItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {

@@ -33,7 +33,6 @@ import java.util.Date
 import java.util.UUID
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.DateTime
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -220,12 +219,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         )
     }
 
-    private fun navigateToSeries(id: UUID, name: String?) {
+    private fun navigateToSeries(id: UUID, name: String) {
         findNavController().navigate(
-            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToMediaInfoFragment(
+            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToShowFragment(
                 itemId = id,
-                itemName = name,
-                itemType = BaseItemKind.SERIES
+                itemName = name
             )
         )
     }
