@@ -1,15 +1,19 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.DownloaderImpl
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +32,7 @@ class MovieViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
+    private val serverDatabase: ServerDatabaseDao
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -53,46 +58,32 @@ constructor(
     }
 
     lateinit var item: JellyfinMovieItem
-    private var actors: List<BaseItemPerson> = emptyList()
-    private var director: BaseItemPerson? = null
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
-    private var genresString: String = ""
-    private var videoString: String = ""
-    private var audioString: String = ""
-    private var subtitleString: String = ""
     private var runTime: String = ""
-    private var dateString: String = ""
 
     fun loadData(itemId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = jellyfinRepository.getMovie(itemId)
-                actors = getActors(item)
-                director = getDirector(item)
                 writers = getWriters(item)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
-                genresString = item.genres.joinToString(separator = ", ")
-                videoString = getMediaString(item, MediaStreamType.VIDEO)
-                audioString = getMediaString(item, MediaStreamType.AUDIO)
-                subtitleString = getMediaString(item, MediaStreamType.SUBTITLE)
                 runTime = "${item.runtimeTicks.div(600000000)} min"
-                dateString = getDateString(item)
                 _uiState.emit(
                     UiState.Normal(
                         item,
-                        actors,
-                        director,
+                        getActors(item),
+                        getDirector(item),
                         writers,
                         parseVideoMetadata(item),
                         writersString,
-                        genresString,
-                        videoString,
-                        audioString,
-                        subtitleString,
+                        item.genres.joinToString(separator = ", "),
+                        getMediaString(item, MediaStreamType.VIDEO),
+                        getMediaString(item, MediaStreamType.AUDIO),
+                        getMediaString(item, MediaStreamType.SUBTITLE),
                         runTime,
-                        dateString,
+                        getDateString(item),
                     )
                 )
             } catch (e: Exception) {
@@ -284,7 +275,11 @@ constructor(
         return dateRange.joinToString(separator = " - ")
     }
 
-    fun download() {
+    fun download(context: Context) {
+        viewModelScope.launch {
+            val downloader = DownloaderImpl(context, jellyfinRepository, serverDatabase)
+            downloader.downloadFile(item, item.sources.first { it.type == JellyfinSourceType.REMOTE })
+        }
     }
 
     fun deleteItem() {

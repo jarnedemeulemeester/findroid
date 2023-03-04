@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.models.FindroidMovieDto
+import dev.jdtech.jellyfin.models.FindroidSourceDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
@@ -76,4 +78,13 @@ interface ServerDatabaseDao {
 
     @Query("select * from serverAddresses where id = (select currentServerAddressId from servers where id = :serverId)")
     fun getServerCurrentAddress(serverId: String): ServerAddress?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMovie(movie: FindroidMovieDto)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSource(source: FindroidSourceDto)
+
+    @Query("SELECT * FROM movies JOIN sources ON movies.id = sources.itemId")
+    fun getMoviesAndSources(): Map<FindroidMovieDto, List<FindroidSourceDto>>
 }

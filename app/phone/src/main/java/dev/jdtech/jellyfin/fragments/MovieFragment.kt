@@ -117,7 +117,7 @@ class MovieFragment : Fragment() {
 
         binding.downloadButton.setOnClickListener {
             binding.downloadButton.isEnabled = false
-            viewModel.download()
+            viewModel.download(requireContext())
             binding.downloadButton.imageTintList = ColorStateList.valueOf(
                 resources.getColor(
                     R.color.red,
