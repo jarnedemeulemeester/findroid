@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -122,21 +121,19 @@ class MovieFragment : Fragment() {
         }
 
         binding.downloadButton.setOnClickListener {
-            binding.downloadButton.isEnabled = false
-            if (viewModel.item.sources.size > 1) {
-                val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
-                    viewModel.download(requireContext(), it)
+            if (viewModel.item.isDownloaded()) {
+                viewModel.deleteItem()
+                binding.downloadButton.setImageResource(R.drawable.ic_download)
+            } else {
+                if (viewModel.item.sources.size > 1) {
+                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
+                        viewModel.download(it)
+                    }
+                    dialog.show()
+                    return@setOnClickListener
                 }
-                dialog.show()
-                return@setOnClickListener
+                viewModel.download()
             }
-            viewModel.download(requireContext())
-            binding.downloadButton.imageTintList = ColorStateList.valueOf(
-                resources.getColor(
-                    R.color.red,
-                    requireActivity().theme
-                )
-            )
         }
 
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
@@ -180,20 +177,13 @@ class MovieFragment : Fragment() {
                 false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
+            if (downloaded) {
+                binding.downloadButton.setImageResource(R.drawable.ic_trash)
+            }
+
             when (canDownload) {
-                true -> {
-                    binding.downloadButton.isVisible = true
-                    binding.downloadButton.isEnabled = !downloaded
-
-                    if (downloaded) binding.downloadButton.setTintColor(
-                        R.color.red,
-                        requireActivity().theme
-                    )
-                }
-
-                false -> {
-                    binding.downloadButton.isVisible = false
-                }
+                true -> binding.downloadButton.isVisible = true
+                false -> binding.downloadButton.isVisible = false
             }
 
             binding.name.text = item.name

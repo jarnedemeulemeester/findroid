@@ -26,6 +26,8 @@ class DownloadReceiver : BroadcastReceiver() {
                     database.setSourcePath(source.id, path)
                 } else {
                     database.deleteSource(source.id)
+                    // TODO can also be other type such as show, season or episode
+                    database.deleteMovie(source.itemId)
                 }
             }
         }

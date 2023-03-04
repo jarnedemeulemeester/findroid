@@ -102,4 +102,7 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM sources WHERE id = :id")
     fun deleteSource(id: String)
+
+    @Query("DELETE FROM movies WHERE id = :id")
+    fun deleteMovie(id: UUID)
 }

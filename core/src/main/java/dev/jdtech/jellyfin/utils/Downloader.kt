@@ -5,4 +5,6 @@ import dev.jdtech.jellyfin.models.JellyfinSource
 
 interface Downloader {
     suspend fun downloadItem(item: JellyfinItem, source: JellyfinSource): Long
+
+    suspend fun deleteItem(item: JellyfinItem, source: JellyfinSource)
 }

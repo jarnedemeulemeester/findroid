@@ -1,18 +1,17 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.DownloaderImpl
+import dev.jdtech.jellyfin.utils.Downloader
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,7 @@ class MovieViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
-    private val serverDatabase: ServerDatabaseDao
+    private val downloader: Downloader
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -274,13 +273,15 @@ constructor(
         return dateRange.joinToString(separator = " - ")
     }
 
-    fun download(context: Context, sourceIndex: Int = 0) {
+    fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            val downloader = DownloaderImpl(context, jellyfinRepository, serverDatabase)
             downloader.downloadItem(item, item.sources[sourceIndex])
         }
     }
 
     fun deleteItem() {
+        viewModelScope.launch {
+            downloader.deleteItem(item, item.sources.first { it.type == JellyfinSourceType.LOCAL })
+        }
     }
 }

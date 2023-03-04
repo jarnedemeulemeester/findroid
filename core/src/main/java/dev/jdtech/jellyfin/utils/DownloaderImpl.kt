@@ -40,4 +40,10 @@ class DownloaderImpl(
         database.setSourceDownloadId(source.id, downloadId)
         return downloadId
     }
+
+    override suspend fun deleteItem(item: JellyfinItem, source: JellyfinSource) {
+        database.deleteMovie(item.id)
+        database.deleteSource(source.id)
+        File(source.path).delete()
+    }
 }
