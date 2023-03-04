@@ -23,7 +23,6 @@ import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
 import dev.jdtech.jellyfin.models.JellyfinItem
 import dev.jdtech.jellyfin.models.JellyfinSeasonItem
 import dev.jdtech.jellyfin.models.JellyfinSourceType
@@ -127,12 +126,7 @@ class ShowFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            playerViewModel.loadPlayerItems(viewModel.item) {
-                VideoVersionDialogFragment(viewModel.item, playerViewModel).show(
-                    parentFragmentManager,
-                    "videoversiondialog"
-                )
-            }
+            playerViewModel.loadPlayerItems(viewModel.item)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
