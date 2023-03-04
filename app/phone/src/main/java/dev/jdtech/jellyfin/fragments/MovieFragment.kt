@@ -21,7 +21,7 @@ import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentMovieBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
+import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.JellyfinSourceType
@@ -97,13 +97,17 @@ class MovieFragment : Fragment() {
         }
 
         binding.playButton.setOnClickListener {
+            binding.playButton.isEnabled = false
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
             if (viewModel.item.sources.size > 1) {
-                VideoVersionDialogFragment(viewModel.item, playerViewModel).show(
-                    parentFragmentManager,
-                    "videoversiondialog"
-                )
+                val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
+                    playerViewModel.loadPlayerItems(viewModel.item, it)
+                }
+                dialog.setOnDismissListener {
+                    playButtonNormal()
+                }
+                dialog.show()
                 return@setOnClickListener
             }
             playerViewModel.loadPlayerItems(viewModel.item)
@@ -119,6 +123,13 @@ class MovieFragment : Fragment() {
 
         binding.downloadButton.setOnClickListener {
             binding.downloadButton.isEnabled = false
+            if (viewModel.item.sources.size > 1) {
+                val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
+                    viewModel.download(requireContext(), it)
+                }
+                dialog.show()
+                return@setOnClickListener
+            }
             viewModel.download(requireContext())
             binding.downloadButton.imageTintList = ColorStateList.valueOf(
                 resources.getColor(
@@ -304,6 +315,15 @@ class MovieFragment : Fragment() {
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
         Timber.e(error.error.message)
         binding.playerItemsError.visibility = View.VISIBLE
+        playButtonNormal()
+        binding.playerItemsErrorDetails.setOnClickListener {
+            ErrorDialogFragment.newInstance(error.error)
+                .show(parentFragmentManager, ErrorDialogFragment.TAG)
+        }
+    }
+
+    private fun playButtonNormal() {
+        binding.playButton.isEnabled = true
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
@@ -311,10 +331,6 @@ class MovieFragment : Fragment() {
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
-        binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error)
-                .show(parentFragmentManager, ErrorDialogFragment.TAG)
-        }
     }
 
     private fun navigateToPlayerActivity(

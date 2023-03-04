@@ -9,7 +9,6 @@ import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -275,10 +274,10 @@ constructor(
         return dateRange.joinToString(separator = " - ")
     }
 
-    fun download(context: Context) {
+    fun download(context: Context, sourceIndex: Int = 0) {
         viewModelScope.launch {
             val downloader = DownloaderImpl(context, jellyfinRepository, serverDatabase)
-            downloader.downloadItem(item, item.sources.first { it.type == JellyfinSourceType.REMOTE })
+            downloader.downloadItem(item, item.sources[sourceIndex])
         }
     }
 
