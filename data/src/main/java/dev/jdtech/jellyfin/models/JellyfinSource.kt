@@ -12,6 +12,7 @@ data class JellyfinSource(
     val type: JellyfinSourceType,
     val path: String,
     val mediaStreams: List<MediaStream>,
+    val downloadId: Long? = null
 )
 
 suspend fun MediaSourceInfo.toJellyfinSource(
@@ -44,7 +45,8 @@ fun FindroidSourceDto.toJellyfinSource(): JellyfinSource {
         name = name,
         type = type,
         path = path,
-        mediaStreams = emptyList()
+        mediaStreams = emptyList(),
+        downloadId = downloadId,
     )
 }
 

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.DownloadManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -76,6 +77,40 @@ class MovieFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.downloadStatus.collect { (status, progress) ->
+                    println("$status $progress")
+                    when (status) {
+                        0 -> Unit
+                        DownloadManager.STATUS_PENDING -> {
+                            binding.downloadButton.isEnabled = false
+                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.progressDownload.isIndeterminate = true
+                            binding.progressDownload.isVisible = true
+                        }
+                        DownloadManager.STATUS_RUNNING -> {
+                            binding.downloadButton.isEnabled = false
+                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.progressDownload.isIndeterminate = false
+                            binding.progressDownload.isVisible = true
+                            binding.progressDownload.setProgressCompat(progress, true)
+                        }
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                            binding.progressDownload.isVisible = false
+                            binding.downloadButton.isEnabled = true
+                        }
+                        else -> {
+                            binding.progressDownload.isVisible = false
+                            binding.downloadButton.setImageResource(R.drawable.ic_download)
+                            binding.downloadButton.isEnabled = true
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loadData(args.itemId)
             }
         }
@@ -143,8 +178,8 @@ class MovieFragment : Fragment() {
 
     private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {
         uiState.apply {
-            val downloaded = item.isDownloaded()
-            val canDownload = item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
+            val canDownload =
+                item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
 //            if (item.remoteTrailers.isNullOrEmpty()) {
@@ -174,10 +209,13 @@ class MovieFragment : Fragment() {
             binding.favoriteButton.setImageResource(favoriteDrawable)
             when (item.favorite) {
                 true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                false -> binding.favoriteButton.setTintColorAttribute(
+                    R.attr.colorOnSecondaryContainer,
+                    requireActivity().theme
+                )
             }
 
-            if (downloaded) {
+            if (item.isDownloaded()) {
                 binding.downloadButton.setImageResource(R.drawable.ic_trash)
             }
 

@@ -7,4 +7,6 @@ interface Downloader {
     suspend fun downloadItem(item: JellyfinItem, source: JellyfinSource): Long
 
     suspend fun deleteItem(item: JellyfinItem, source: JellyfinSource)
+
+    suspend fun getProgress(downloadId: Long?): Pair<Int, Int>
 }

@@ -251,17 +251,37 @@
                     android:src="@drawable/ic_heart"
                     app:tint="?attr/colorOnSecondaryContainer" />
 
-                <ImageButton
-                    android:id="@+id/download_button"
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/button_accent_background"
-                    android:contentDescription="@string/download_button_description"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_download"
-                    android:visibility="gone"
-                    app:tint="?attr/colorOnSecondaryContainer" />
+                    android:layout_marginEnd="12dp">
+
+                    <ImageButton
+                        android:id="@+id/download_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_accent_background"
+                        android:contentDescription="@string/download_button_description"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_download"
+                        android:visibility="gone"
+                        app:tint="?attr/colorOnSecondaryContainer"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/progress_download"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:indicatorSize="32dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:elevation="8dp"
+                        android:progress="0"
+                        android:progressTint="?attr/colorOnSecondary"
+                        android:visibility="invisible"
+                        app:trackCornerRadius="2dp"/>
+
+                </RelativeLayout>
 
                 <ImageButton
                     android:id="@+id/delete_button"

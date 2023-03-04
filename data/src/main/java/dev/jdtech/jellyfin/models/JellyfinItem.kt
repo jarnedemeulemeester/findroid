@@ -35,6 +35,10 @@ suspend fun BaseItemDto.toJellyfinItem(
     }
 }
 
+fun JellyfinItem.isDownloading(): Boolean {
+    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { it.path.endsWith(".download")}
+}
+
 fun JellyfinItem.isDownloaded(): Boolean {
-    return sources.any { it.type == JellyfinSourceType.LOCAL }
+    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { !it.path.endsWith(".download") }
 }
