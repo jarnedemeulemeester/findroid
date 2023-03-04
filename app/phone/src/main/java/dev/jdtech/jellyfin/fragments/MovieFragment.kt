@@ -99,12 +99,14 @@ class MovieFragment : Fragment() {
         binding.playButton.setOnClickListener {
             binding.playButton.setImageResource(android.R.color.transparent)
             binding.progressCircular.isVisible = true
-            playerViewModel.loadPlayerItems(viewModel.item) {
+            if (viewModel.item.sources.size > 1) {
                 VideoVersionDialogFragment(viewModel.item, playerViewModel).show(
                     parentFragmentManager,
                     "videoversiondialog"
                 )
+                return@setOnClickListener
             }
+            playerViewModel.loadPlayerItems(viewModel.item)
         }
 
         binding.checkButton.setOnClickListener {

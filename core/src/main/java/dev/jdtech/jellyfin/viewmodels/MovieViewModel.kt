@@ -278,7 +278,7 @@ constructor(
     fun download(context: Context) {
         viewModelScope.launch {
             val downloader = DownloaderImpl(context, jellyfinRepository, serverDatabase)
-            downloader.downloadFile(item, item.sources.first { it.type == JellyfinSourceType.REMOTE })
+            downloader.downloadItem(item, item.sources.first { it.type == JellyfinSourceType.REMOTE })
         }
     }
 

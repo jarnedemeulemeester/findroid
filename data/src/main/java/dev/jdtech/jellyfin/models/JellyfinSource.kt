@@ -38,6 +38,16 @@ suspend fun MediaSourceInfo.toJellyfinSource(
     )
 }
 
+fun FindroidSourceDto.toJellyfinSource(): JellyfinSource {
+    return JellyfinSource(
+        id = id,
+        name = name,
+        type = type,
+        path = path,
+        mediaStreams = emptyList()
+    )
+}
+
 enum class JellyfinSourceType {
     REMOTE,
     LOCAL,

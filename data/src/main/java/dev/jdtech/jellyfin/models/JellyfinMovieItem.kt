@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.models
 
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import org.jellyfin.sdk.model.DateTime
@@ -31,13 +32,21 @@ data class JellyfinMovieItem(
     override val unplayedItemCount: Int? = null,
 ) : JellyfinItem, JellyfinSources
 
-suspend fun BaseItemDto.toJellyfinMovieItem(jellyfinRepository: JellyfinRepository? = null): JellyfinMovieItem {
+suspend fun BaseItemDto.toJellyfinMovieItem(
+    jellyfinRepository: JellyfinRepository? = null,
+    serverDatabase: ServerDatabaseDao? = null
+): JellyfinMovieItem {
+    val sources = mutableListOf<JellyfinSource>()
+    sources.addAll(mediaSources?.map { it.toJellyfinSource(jellyfinRepository, id) } ?: emptyList())
+    if (serverDatabase != null) {
+        sources.addAll(serverDatabase.getSources(id).map { it.toJellyfinSource() })
+    }
     return JellyfinMovieItem(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
         overview = overview.orEmpty(),
-        sources = mediaSources?.map { it.toJellyfinSource(jellyfinRepository, id) } ?: emptyList(),
+        sources = sources,
         played = userData?.played ?: false,
         favorite = userData?.isFavorite ?: false,
         playedPercentage = userData?.playedPercentage?.toFloat(),

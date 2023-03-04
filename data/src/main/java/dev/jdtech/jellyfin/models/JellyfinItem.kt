@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.models
 
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -20,9 +21,12 @@ interface JellyfinItem {
     val playedPercentage: Float?
 }
 
-suspend fun BaseItemDto.toJellyfinItem(jellyfinRepository: JellyfinRepository? = null): JellyfinItem? {
+suspend fun BaseItemDto.toJellyfinItem(
+    jellyfinRepository: JellyfinRepository? = null,
+    serverDatabase: ServerDatabaseDao? = null
+): JellyfinItem? {
     return when (type) {
-        BaseItemKind.MOVIE -> toJellyfinMovieItem(jellyfinRepository)
+        BaseItemKind.MOVIE -> toJellyfinMovieItem(jellyfinRepository, serverDatabase)
         BaseItemKind.EPISODE -> toJellyfinEpisodeItem(jellyfinRepository)
         BaseItemKind.SEASON -> toJellyfinSeasonItem()
         BaseItemKind.SERIES -> toJellyfinShowItem()

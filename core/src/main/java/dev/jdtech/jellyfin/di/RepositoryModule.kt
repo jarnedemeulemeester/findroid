@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import javax.inject.Singleton
@@ -15,8 +16,9 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideJellyfinRepository(
-        jellyfinApi: JellyfinApi
+        jellyfinApi: JellyfinApi,
+        serverDatabase: ServerDatabaseDao
     ): JellyfinRepository {
-        return JellyfinRepositoryImpl(jellyfinApi)
+        return JellyfinRepositoryImpl(jellyfinApi, serverDatabase)
     }
 }

@@ -15,7 +15,7 @@ class VideoVersionDialogFragment(
 ) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val items = item.sources.map { it.name }.toTypedArray()
+        val items = item.sources.map { "${it.name} - ${it.type}" }.toTypedArray()
         return activity?.let { activity ->
             MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.select_a_version)

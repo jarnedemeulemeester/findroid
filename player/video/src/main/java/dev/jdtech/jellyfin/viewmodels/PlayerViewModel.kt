@@ -44,13 +44,9 @@ class PlayerViewModel @Inject internal constructor(
 
     fun loadPlayerItems(
         item: JellyfinItem,
-        mediaSourceIndex: Int = 0,
-        onVersionSelectRequired: () -> Unit = { }
+        mediaSourceIndex: Int = 0
     ) {
         Timber.d("Loading player items for item ${item.id}")
-        if (item.sources.size > 1) {
-            onVersionSelectRequired()
-        }
 
         viewModelScope.launch {
             val playbackPosition = item.playbackPositionTicks.div(10000)

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.JellyfinCollection
 import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
@@ -43,7 +44,10 @@ import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
 
-class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRepository {
+class JellyfinRepositoryImpl(
+    private val jellyfinApi: JellyfinApi,
+    private val serverDatabase: ServerDatabaseDao
+) : JellyfinRepository {
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
     }
@@ -65,7 +69,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl)
+            ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl, serverDatabase)
         }
 
     override suspend fun getShow(itemId: UUID): JellyfinShowItem =
@@ -106,7 +110,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 limit = limit,
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl) }
+                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getItemsPaging(
@@ -148,7 +152,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         ).content.items
             .orEmpty()
             .mapNotNull {
-                it.toJellyfinItem(this@JellyfinRepositoryImpl)
+                it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase)
             }
     }
 
@@ -165,7 +169,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl) }
+                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getSearchItems(searchQuery: String): List<JellyfinItem> =
@@ -181,7 +185,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem() }
+                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getResumeItems(): List<JellyfinItem> {
@@ -192,7 +196,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             ).content.items.orEmpty()
         }
         return items.mapNotNull {
-            it.toJellyfinItem(this)
+            it.toJellyfinItem(this, serverDatabase)
         }
     }
 
@@ -204,7 +208,7 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
             ).content
         }
         return items.mapNotNull {
-            it.toJellyfinItem(this)
+            it.toJellyfinItem(this, serverDatabase)
         }
     }
 

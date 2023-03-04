@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.utils
 
 import android.app.DownloadManager
 import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
@@ -11,20 +12,21 @@ import dev.jdtech.jellyfin.models.JellyfinSource
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.io.File
 
 class DownloaderImpl(
-    context: Context,
+    private val context: Context,
     private val jellyfinRepository: JellyfinRepository,
     private val database: ServerDatabaseDao
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
-    override suspend fun downloadFile(item: JellyfinItem, source: JellyfinSource): Long {
-        val path = "findroid/${item.id}.${source.id}"
+    override suspend fun downloadItem(item: JellyfinItem, source: JellyfinSource): Long {
+        val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
         when (item) {
             is JellyfinMovieItem -> {
                 database.insertMovie(item.toFindroidMovieDto())
-                database.insertSource(source.toFindroidSourceDto(item.id, path))
+                database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
             }
         }
 
@@ -33,7 +35,9 @@ class DownloaderImpl(
             .setTitle(item.name)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, path)
-        return downloadManager.enqueue(request)
+            .setDestinationUri(path)
+        val downloadId = downloadManager.enqueue(request)
+        database.setSourceDownloadId(source.id, downloadId)
+        return downloadId
     }
 }
