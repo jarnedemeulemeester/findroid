@@ -26,10 +26,10 @@ import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.JellyfinCollection
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -200,9 +200,9 @@ class LibraryFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToItem(item: JellyfinItem) {
+    private fun navigateToItem(item: FindroidItem) {
         when (item) {
-            is JellyfinMovieItem -> {
+            is FindroidMovie -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToMovieFragment(
                         item.id,
@@ -210,7 +210,7 @@ class LibraryFragment : Fragment() {
                     )
                 )
             }
-            is JellyfinShowItem -> {
+            is FindroidShow -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
                         item.id,
@@ -218,7 +218,7 @@ class LibraryFragment : Fragment() {
                     )
                 )
             }
-            is JellyfinCollection -> {
+            is FindroidCollection -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
                         item.id,

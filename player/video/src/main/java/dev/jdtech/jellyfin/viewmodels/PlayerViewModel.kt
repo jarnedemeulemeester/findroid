@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.ExternalSubtitle
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinSeasonItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -43,7 +43,7 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     fun loadPlayerItems(
-        item: JellyfinItem,
+        item: FindroidItem,
         mediaSourceIndex: Int = 0
     ) {
         Timber.d("Loading player items for item ${item.id}")
@@ -63,7 +63,7 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun createItems(
-        item: JellyfinItem,
+        item: FindroidItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ) = if (playbackPosition <= 0) {
@@ -76,7 +76,7 @@ class PlayerViewModel @Inject internal constructor(
         prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
     }
 
-    private suspend fun prepareIntros(item: JellyfinItem): List<PlayerItem> {
+    private suspend fun prepareIntros(item: FindroidItem): List<PlayerItem> {
         return repository
             .getIntros(item.id)
             .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
@@ -84,24 +84,24 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun prepareMediaPlayerItems(
-        item: JellyfinItem,
+        item: FindroidItem,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> = when (item) {
-        is JellyfinMovieItem -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
-        is JellyfinShowItem -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        is JellyfinEpisodeItem -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidMovie -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
+        is FindroidShow -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidEpisode -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
 
     private fun movieToPlayerItem(
-        item: JellyfinMovieItem,
+        item: FindroidMovie,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
-        item: JellyfinShowItem,
+        item: FindroidShow,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
@@ -117,7 +117,7 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun seasonToPlayerItems(
-        item: JellyfinSeasonItem,
+        item: FindroidSeason,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
@@ -133,7 +133,7 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun episodeToPlayerItems(
-        item: JellyfinEpisodeItem,
+        item: FindroidEpisode,
         playbackPosition: Long,
         mediaSourceIndex: Int
     ): List<PlayerItem> {
@@ -152,7 +152,7 @@ class PlayerViewModel @Inject internal constructor(
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
-    private fun JellyfinItem.toPlayerItem(
+    private fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int,
         playbackPosition: Long
     ): PlayerItem {
@@ -189,8 +189,8 @@ class PlayerViewModel @Inject internal constructor(
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,
             playbackPosition = playbackPosition,
-            parentIndexNumber = if (this is JellyfinEpisodeItem) parentIndexNumber else null,
-            indexNumber = if (this is JellyfinEpisodeItem) indexNumber else null,
+            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+            indexNumber = if (this is FindroidEpisode) indexNumber else null,
             externalSubtitles = externalSubtitles
         )
     }

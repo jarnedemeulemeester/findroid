@@ -6,7 +6,7 @@ import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaSourceInfo
 import org.jellyfin.sdk.model.api.MediaStream
 
-data class JellyfinSource(
+data class FindroidSource(
     val id: String,
     val name: String,
     val type: JellyfinSourceType,
@@ -18,7 +18,7 @@ data class JellyfinSource(
 suspend fun MediaSourceInfo.toJellyfinSource(
     jellyfinRepository: JellyfinRepository? = null,
     itemId: UUID
-): JellyfinSource {
+): FindroidSource {
     val path = when (protocol) {
         MediaProtocol.FILE -> {
             try {
@@ -30,7 +30,7 @@ suspend fun MediaSourceInfo.toJellyfinSource(
         MediaProtocol.HTTP -> this.path.orEmpty()
         else -> ""
     }
-    return JellyfinSource(
+    return FindroidSource(
         id = id.orEmpty(),
         name = name.orEmpty(),
         type = JellyfinSourceType.REMOTE,
@@ -39,8 +39,8 @@ suspend fun MediaSourceInfo.toJellyfinSource(
     )
 }
 
-fun FindroidSourceDto.toJellyfinSource(): JellyfinSource {
-    return JellyfinSource(
+fun FindroidSourceDto.toJellyfinSource(): FindroidSource {
+    return FindroidSource(
         id = id,
         name = name,
         type = type,

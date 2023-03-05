@@ -23,8 +23,8 @@ import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinSeasonItem
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
@@ -115,7 +115,7 @@ class ShowFragment : Fragment() {
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
                 ViewItemListAdapter.OnClickListener { season ->
-                    if (season is JellyfinSeasonItem) navigateToSeasonFragment(season)
+                    if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
                 fixedWidth = true
             )
@@ -297,7 +297,7 @@ class ShowFragment : Fragment() {
         }
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: JellyfinItem) {
+    private fun navigateToEpisodeBottomSheetFragment(episode: FindroidItem) {
         findNavController().navigate(
             ShowFragmentDirections.actionShowFragmentToEpisodeBottomSheetFragment(
                 episode.id
@@ -305,7 +305,7 @@ class ShowFragment : Fragment() {
         )
     }
 
-    private fun navigateToSeasonFragment(season: JellyfinSeasonItem) {
+    private fun navigateToSeasonFragment(season: FindroidSeason) {
         findNavController().navigate(
             ShowFragmentDirections.actionShowFragmentToSeasonFragment(
                 season.seriesId,

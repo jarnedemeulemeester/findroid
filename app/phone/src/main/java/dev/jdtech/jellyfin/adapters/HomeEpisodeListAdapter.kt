@@ -10,18 +10,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.isDownloaded
 
-class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<JellyfinItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
         private val parent: ViewGroup
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: JellyfinItem) {
+        fun bind(item: FindroidItem) {
             binding.item = item
             if (item.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
@@ -34,11 +34,11 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
             binding.downloadedIcon.isVisible = item.isDownloaded()
 
             when (item) {
-                is JellyfinMovieItem -> {
+                is FindroidMovie -> {
                     binding.primaryName.text = item.name
                     binding.secondaryName.visibility = View.GONE
                 }
-                is JellyfinEpisodeItem -> {
+                is FindroidEpisode -> {
                     binding.primaryName.text = item.seriesName
                     binding.secondaryName.text = parent.resources.getString(R.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
                 }
@@ -48,12 +48,12 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<JellyfinItem>() {
-        override fun areItemsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<FindroidItem>() {
+        override fun areItemsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+        override fun areContentsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
             return oldItem.name == newItem.name
         }
     }
@@ -77,7 +77,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
         holder.bind(item)
     }
 
-    class OnClickListener(val clickListener: (item: JellyfinItem) -> Unit) {
-        fun onClick(item: JellyfinItem) = clickListener(item)
+    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
+        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

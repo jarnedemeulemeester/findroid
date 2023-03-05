@@ -11,7 +11,7 @@
 
         <variable
             name="episode"
-            type="dev.jdtech.jellyfin.models.JellyfinEpisodeItem" />
+            type="dev.jdtech.jellyfin.models.FindroidEpisode" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

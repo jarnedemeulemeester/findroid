@@ -20,9 +20,9 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
@@ -139,9 +139,9 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToMediaItem(item: JellyfinItem) {
+    private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is JellyfinMovieItem -> {
+            is FindroidMovie -> {
                 findNavController().navigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
                         itemId = item.id,
@@ -149,7 +149,7 @@ internal class PersonDetailFragment : Fragment() {
                     )
                 )
             }
-            is JellyfinShowItem -> {
+            is FindroidShow -> {
                 findNavController().navigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
                         itemId = item.id,

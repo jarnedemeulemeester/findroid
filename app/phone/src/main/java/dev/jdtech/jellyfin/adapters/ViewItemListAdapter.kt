@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.isDownloaded
 
 class ViewItemListAdapter(
     private val onClickListener: OnClickListener,
     private val fixedWidth: Boolean = false,
-) : ListAdapter<JellyfinItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+) : ListAdapter<FindroidItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: JellyfinItem, fixedWidth: Boolean) {
+        fun bind(item: FindroidItem, fixedWidth: Boolean) {
             binding.item = item
-            binding.itemName.text = if (item is JellyfinEpisodeItem) item.seriesName else item.name
+            binding.itemName.text = if (item is FindroidEpisode) item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.unplayedItemCount != null && item.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {
@@ -37,12 +37,12 @@ class ViewItemListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<JellyfinItem>() {
-        override fun areItemsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<FindroidItem>() {
+        override fun areItemsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: JellyfinItem, newItem: JellyfinItem): Boolean {
+        override fun areContentsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
             return oldItem.name == newItem.name
         }
     }
@@ -66,7 +66,7 @@ class ViewItemListAdapter(
         holder.bind(item, fixedWidth)
     }
 
-    class OnClickListener(val clickListener: (item: JellyfinItem) -> Unit) {
-        fun onClick(item: JellyfinItem) = clickListener(item)
+    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
+        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

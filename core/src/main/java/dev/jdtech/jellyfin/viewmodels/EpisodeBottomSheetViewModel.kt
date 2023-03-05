@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
@@ -24,14 +24,14 @@ constructor(
 
     sealed class UiState {
         data class Normal(
-            val episode: JellyfinEpisodeItem,
+            val episode: FindroidEpisode,
         ) : UiState()
 
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    lateinit var item: JellyfinEpisodeItem
+    lateinit var item: FindroidEpisode
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {

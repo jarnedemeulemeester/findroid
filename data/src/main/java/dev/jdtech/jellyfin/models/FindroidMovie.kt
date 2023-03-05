@@ -8,12 +8,12 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.PlayAccess
 
-data class JellyfinMovieItem(
+data class FindroidMovie(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String?,
     override val overview: String,
-    override val sources: List<JellyfinSource>,
+    override val sources: List<FindroidSource>,
     override val playedPercentage: Float?,
     override val played: Boolean,
     override val favorite: Boolean,
@@ -30,18 +30,18 @@ data class JellyfinMovieItem(
     val productionYear: Int?,
     val endDate: DateTime?,
     override val unplayedItemCount: Int? = null,
-) : JellyfinItem, JellyfinSources
+) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toJellyfinMovieItem(
     jellyfinRepository: JellyfinRepository? = null,
     serverDatabase: ServerDatabaseDao? = null
-): JellyfinMovieItem {
-    val sources = mutableListOf<JellyfinSource>()
+): FindroidMovie {
+    val sources = mutableListOf<FindroidSource>()
     sources.addAll(mediaSources?.map { it.toJellyfinSource(jellyfinRepository, id) } ?: emptyList())
     if (serverDatabase != null) {
         sources.addAll(serverDatabase.getSources(id).map { it.toJellyfinSource() })
     }
-    return JellyfinMovieItem(
+    return FindroidMovie(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,

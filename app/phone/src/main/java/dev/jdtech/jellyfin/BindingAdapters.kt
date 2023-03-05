@@ -11,9 +11,9 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
@@ -29,7 +29,7 @@ fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
 }
 
 @BindingAdapter("items")
-fun bindItems(recyclerView: RecyclerView, data: List<JellyfinItem>?) {
+fun bindItems(recyclerView: RecyclerView, data: List<FindroidItem>?) {
     val adapter = recyclerView.adapter as ViewItemListAdapter
     adapter.submitList(data)
 }
@@ -45,9 +45,9 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
 }
 
 @BindingAdapter("itemImage")
-fun bindItemImage(imageView: ImageView, item: JellyfinItem) {
+fun bindItemImage(imageView: ImageView, item: FindroidItem) {
     val itemId = when (item) {
-        is JellyfinEpisodeItem -> item.seriesId
+        is FindroidEpisode -> item.seriesId
 //        is JellyfinSeasonItem && item.imageTags.isNullOrEmpty() -> item.seriesId
         else -> item.id
     }
@@ -58,16 +58,7 @@ fun bindItemImage(imageView: ImageView, item: JellyfinItem) {
 }
 
 @BindingAdapter("itemBackdropImage")
-fun bindItemBackdropImage(imageView: ImageView, item: BaseItemDto?) {
-    if (item == null) return
-
-    imageView
-        .loadImage("/items/${item.id}/Images/${ImageType.BACKDROP}")
-        .backdropDescription(item.name)
-}
-
-@BindingAdapter("itemBackdropImage")
-fun bindItemBackdropImage(imageView: ImageView, item: JellyfinItem?) {
+fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
     if (item == null) return
 
     imageView
@@ -88,15 +79,15 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
 }
 
 @BindingAdapter("homeEpisodes")
-fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<JellyfinItem>?) {
+fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<FindroidItem>?) {
     val adapter = recyclerView.adapter as HomeEpisodeListAdapter
     adapter.submitList(data)
 }
 
 @BindingAdapter("cardItemImage")
-fun bindCardItemImage(imageView: ImageView, item: JellyfinItem) {
+fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
     val imageType = when (item) {
-        is JellyfinMovieItem -> ImageType.BACKDROP
+        is FindroidMovie -> ImageType.BACKDROP
         else -> ImageType.PRIMARY
     }
 

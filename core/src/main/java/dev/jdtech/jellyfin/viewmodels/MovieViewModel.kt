@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
@@ -47,7 +47,7 @@ constructor(
 
     sealed class UiState {
         data class Normal(
-            val item: JellyfinMovieItem,
+            val item: FindroidMovie,
             val actors: List<BaseItemPerson>,
             val director: BaseItemPerson?,
             val writers: List<BaseItemPerson>,
@@ -65,7 +65,7 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    lateinit var item: JellyfinMovieItem
+    lateinit var item: FindroidMovie
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
     private var runTime: String = ""
@@ -103,7 +103,7 @@ constructor(
         }
     }
 
-    private suspend fun getActors(item: JellyfinMovieItem): List<BaseItemPerson> {
+    private suspend fun getActors(item: FindroidMovie): List<BaseItemPerson> {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             actors = item.people.filter { it.type == "Actor" }
@@ -111,7 +111,7 @@ constructor(
         return actors
     }
 
-    private suspend fun getDirector(item: JellyfinMovieItem): BaseItemPerson? {
+    private suspend fun getDirector(item: FindroidMovie): BaseItemPerson? {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
             director = item.people.firstOrNull { it.type == "Director" }
@@ -119,7 +119,7 @@ constructor(
         return director
     }
 
-    private suspend fun getWriters(item: JellyfinMovieItem): List<BaseItemPerson> {
+    private suspend fun getWriters(item: FindroidMovie): List<BaseItemPerson> {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             writers = item.people.filter { it.type == "Writer" }
@@ -127,7 +127,7 @@ constructor(
         return writers
     }
 
-    private suspend fun getMediaString(item: JellyfinMovieItem, type: MediaStreamType): String {
+    private suspend fun getMediaString(item: FindroidMovie, type: MediaStreamType): String {
         val streams: List<MediaStream>
         withContext(Dispatchers.Default) {
             streams =
@@ -136,7 +136,7 @@ constructor(
         return streams.map { it.displayTitle }.joinToString(separator = ", ")
     }
 
-    private suspend fun parseVideoMetadata(item: JellyfinMovieItem): VideoMetadata {
+    private suspend fun parseVideoMetadata(item: FindroidMovie): VideoMetadata {
         val resolution = mutableListOf<Resolution>()
         val audioChannels = mutableListOf<AudioChannel>()
         val displayProfile = mutableListOf<DisplayProfile>()
@@ -271,7 +271,7 @@ constructor(
         }
     }
 
-    private fun getDateString(item: JellyfinMovieItem): String {
+    private fun getDateString(item: FindroidMovie): String {
         val dateRange: MutableList<String> = mutableListOf()
         item.productionYear?.let { dateRange.add(it.toString()) }
         when (item.status) {
@@ -305,7 +305,6 @@ constructor(
         handler.removeCallbacksAndMessages(null)
         val downloadProgressRunnable = object : Runnable {
             override fun run() {
-                println("Polling download progress")
                 viewModelScope.launch {
                     val (downloadStatus, progress) = downloader.getProgress(item.sources.firstOrNull { it.type == JellyfinSourceType.LOCAL }?.downloadId)
                     _downloadStatus.emit(Pair(downloadStatus, progress))

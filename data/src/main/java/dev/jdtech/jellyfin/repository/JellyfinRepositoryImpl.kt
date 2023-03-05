@@ -6,12 +6,12 @@ import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Intro
-import dev.jdtech.jellyfin.models.JellyfinCollection
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinSeasonItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toJellyfinCollection
@@ -56,7 +56,7 @@ class JellyfinRepositoryImpl(
         jellyfinApi.userLibraryApi.getItem(jellyfinApi.userId!!, itemId).content
     }
 
-    override suspend fun getEpisode(itemId: UUID): JellyfinEpisodeItem =
+    override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
@@ -64,7 +64,7 @@ class JellyfinRepositoryImpl(
             ).content.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl)
         }
 
-    override suspend fun getMovie(itemId: UUID): JellyfinMovieItem =
+    override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
@@ -72,7 +72,7 @@ class JellyfinRepositoryImpl(
             ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl, serverDatabase)
         }
 
-    override suspend fun getShow(itemId: UUID): JellyfinShowItem =
+    override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
@@ -80,7 +80,7 @@ class JellyfinRepositoryImpl(
             ).content.toJellyfinShowItem()
         }
 
-    override suspend fun getLibraries(): List<JellyfinCollection> =
+    override suspend fun getLibraries(): List<FindroidCollection> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -97,7 +97,7 @@ class JellyfinRepositoryImpl(
         sortOrder: SortOrder,
         startIndex: Int?,
         limit: Int?
-    ): List<JellyfinItem> =
+    ): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -119,7 +119,7 @@ class JellyfinRepositoryImpl(
         recursive: Boolean,
         sortBy: SortBy,
         sortOrder: SortOrder
-    ): Flow<PagingData<JellyfinItem>> {
+    ): Flow<PagingData<FindroidItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -143,7 +143,7 @@ class JellyfinRepositoryImpl(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean
-    ): List<JellyfinItem> = withContext(Dispatchers.IO) {
+    ): List<FindroidItem> = withContext(Dispatchers.IO) {
         jellyfinApi.itemsApi.getItems(
             jellyfinApi.userId!!,
             personIds = personIds,
@@ -156,7 +156,7 @@ class JellyfinRepositoryImpl(
             }
     }
 
-    override suspend fun getFavoriteItems(): List<JellyfinItem> =
+    override suspend fun getFavoriteItems(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -172,7 +172,7 @@ class JellyfinRepositoryImpl(
                 .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
-    override suspend fun getSearchItems(searchQuery: String): List<JellyfinItem> =
+    override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -188,7 +188,7 @@ class JellyfinRepositoryImpl(
                 .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
-    override suspend fun getResumeItems(): List<JellyfinItem> {
+    override suspend fun getResumeItems(): List<FindroidItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getResumeItems(
                 jellyfinApi.userId!!,
@@ -200,7 +200,7 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun getLatestMedia(parentId: UUID): List<JellyfinItem> {
+    override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getLatestMedia(
                 jellyfinApi.userId!!,
@@ -212,14 +212,14 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun getSeasons(seriesId: UUID): List<JellyfinSeasonItem> =
+    override suspend fun getSeasons(seriesId: UUID): List<FindroidSeason> =
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
                 .orEmpty()
                 .map { it.toJellyfinSeasonItem() }
         }
 
-    override suspend fun getNextUp(seriesId: UUID?): List<JellyfinEpisodeItem> =
+    override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
@@ -235,7 +235,7 @@ class JellyfinRepositoryImpl(
         fields: List<ItemFields>?,
         startItemId: UUID?,
         limit: Int?,
-    ): List<JellyfinEpisodeItem> =
+    ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getEpisodes(
                 seriesId,

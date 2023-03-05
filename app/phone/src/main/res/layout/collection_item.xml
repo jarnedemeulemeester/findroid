@@ -7,7 +7,7 @@
 
         <variable
             name="collection"
-            type="dev.jdtech.jellyfin.models.JellyfinCollection" />
+            type="dev.jdtech.jellyfin.models.FindroidCollection" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

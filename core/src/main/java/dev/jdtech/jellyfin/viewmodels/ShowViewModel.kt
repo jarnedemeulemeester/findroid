@@ -3,9 +3,9 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinSeasonItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
@@ -31,7 +31,7 @@ constructor(
 
     sealed class UiState {
         data class Normal(
-            val item: JellyfinShowItem,
+            val item: FindroidShow,
             val actors: List<BaseItemPerson>,
             val director: BaseItemPerson?,
             val writers: List<BaseItemPerson>,
@@ -42,15 +42,15 @@ constructor(
             val subtitleString: String,
             val runTime: String,
             val dateString: String,
-            val nextUp: JellyfinEpisodeItem?,
-            val seasons: List<JellyfinSeasonItem>,
+            val nextUp: FindroidEpisode?,
+            val seasons: List<FindroidSeason>,
         ) : UiState()
 
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    lateinit var item: JellyfinShowItem
+    lateinit var item: FindroidShow
     private var actors: List<BaseItemPerson> = emptyList()
     private var director: BaseItemPerson? = null
     private var writers: List<BaseItemPerson> = emptyList()
@@ -61,8 +61,8 @@ constructor(
     private var subtitleString: String = ""
     private var runTime: String = ""
     private var dateString: String = ""
-    var nextUp: JellyfinEpisodeItem? = null
-    var seasons: List<JellyfinSeasonItem> = emptyList()
+    var nextUp: FindroidEpisode? = null
+    var seasons: List<FindroidSeason> = emptyList()
 
     fun loadData(itemId: UUID) {
         viewModelScope.launch {
@@ -104,7 +104,7 @@ constructor(
         }
     }
 
-    private suspend fun getActors(item: JellyfinShowItem): List<BaseItemPerson> {
+    private suspend fun getActors(item: FindroidShow): List<BaseItemPerson> {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             actors = item.people.filter { it.type == "Actor" }
@@ -112,7 +112,7 @@ constructor(
         return actors
     }
 
-    private suspend fun getDirector(item: JellyfinShowItem): BaseItemPerson? {
+    private suspend fun getDirector(item: FindroidShow): BaseItemPerson? {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
             director = item.people.firstOrNull { it.type == "Director" }
@@ -120,7 +120,7 @@ constructor(
         return director
     }
 
-    private suspend fun getWriters(item: JellyfinShowItem): List<BaseItemPerson> {
+    private suspend fun getWriters(item: FindroidShow): List<BaseItemPerson> {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             writers = item.people.filter { it.type == "Writer" }
@@ -128,7 +128,7 @@ constructor(
         return writers
     }
 
-    private suspend fun getMediaString(item: JellyfinShowItem, type: MediaStreamType): String {
+    private suspend fun getMediaString(item: FindroidShow, type: MediaStreamType): String {
         val streams: List<MediaStream>
         withContext(Dispatchers.Default) {
             streams = item.sources.getOrNull(0)?.mediaStreams?.filter { it.type == type } ?: emptyList()
@@ -136,7 +136,7 @@ constructor(
         return streams.map { it.displayTitle }.joinToString(separator = ", ")
     }
 
-    private suspend fun getNextUp(seriesId: UUID): JellyfinEpisodeItem? {
+    private suspend fun getNextUp(seriesId: UUID): FindroidEpisode? {
         val nextUpItems = jellyfinRepository.getNextUp(seriesId)
         return if (nextUpItems.isNotEmpty()) {
             nextUpItems[0]
@@ -175,7 +175,7 @@ constructor(
         }
     }
 
-    private fun getDateString(item: JellyfinShowItem): String {
+    private fun getDateString(item: FindroidShow): String {
         val dateRange: MutableList<String> = mutableListOf()
         item.productionYear?.let { dateRange.add(it.toString()) }
         when (item.status) {

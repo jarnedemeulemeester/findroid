@@ -6,9 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
@@ -54,7 +54,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(R.string.movies_label),
-                        items.filterIsInstance<JellyfinMovieItem>()
+                        items.filterIsInstance<FindroidMovie>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
@@ -63,7 +63,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(R.string.shows_label),
-                        items.filterIsInstance<JellyfinShowItem>()
+                        items.filterIsInstance<FindroidShow>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
@@ -72,7 +72,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(R.string.episodes_label),
-                        items.filterIsInstance<JellyfinEpisodeItem>()
+                        items.filterIsInstance<FindroidEpisode>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it

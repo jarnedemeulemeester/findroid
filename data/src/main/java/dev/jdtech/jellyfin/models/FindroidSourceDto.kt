@@ -17,7 +17,7 @@ data class FindroidSourceDto(
     val downloadId: Long? = null,
 )
 
-fun JellyfinSource.toFindroidSourceDto(itemId: UUID, path: String): FindroidSourceDto {
+fun FindroidSource.toFindroidSourceDto(itemId: UUID, path: String): FindroidSourceDto {
     return FindroidSourceDto(
         id = id,
         itemId = itemId,

@@ -9,7 +9,7 @@ sealed class EpisodeItem {
         override val id: UUID = UUID.randomUUID()
     }
 
-    data class Episode(val episode: JellyfinEpisodeItem) : EpisodeItem() {
+    data class Episode(val episode: FindroidEpisode) : EpisodeItem() {
         override val id = episode.id
     }
 }

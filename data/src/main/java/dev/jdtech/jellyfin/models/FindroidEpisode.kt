@@ -7,7 +7,7 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.PlayAccess
 
-data class JellyfinEpisodeItem(
+data class FindroidEpisode(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String?,
@@ -15,7 +15,7 @@ data class JellyfinEpisodeItem(
     val indexNumber: Int,
     val indexNumberEnd: Int,
     val parentIndexNumber: Int,
-    override val sources: List<JellyfinSource>,
+    override val sources: List<FindroidSource>,
     override val playedPercentage: Float? = null,
     override val played: Boolean,
     override val favorite: Boolean,
@@ -29,10 +29,10 @@ data class JellyfinEpisodeItem(
     val seasonId: UUID,
     val communityRating: Float?,
     override val unplayedItemCount: Int? = null,
-) : JellyfinItem, JellyfinSources
+) : FindroidItem, FindroidSources
 
-suspend fun BaseItemDto.toJellyfinEpisodeItem(jellyfinRepository: JellyfinRepository? = null): JellyfinEpisodeItem {
-    return JellyfinEpisodeItem(
+suspend fun BaseItemDto.toJellyfinEpisodeItem(jellyfinRepository: JellyfinRepository? = null): FindroidEpisode {
+    return FindroidEpisode(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
@@ -56,7 +56,7 @@ suspend fun BaseItemDto.toJellyfinEpisodeItem(jellyfinRepository: JellyfinReposi
     )
 }
 
-fun JellyfinEpisodeItem.toBaseItemDto(): BaseItemDto {
+fun FindroidEpisode.toBaseItemDto(): BaseItemDto {
     return BaseItemDto(
         id = this.id,
         name = this.name,

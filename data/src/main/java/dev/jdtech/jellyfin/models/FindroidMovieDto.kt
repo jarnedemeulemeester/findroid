@@ -27,7 +27,7 @@ data class FindroidMovieDto(
     val unplayedItemCount: Int? = null,
 )
 
-fun JellyfinMovieItem.toFindroidMovieDto(): FindroidMovieDto {
+fun FindroidMovie.toFindroidMovieDto(): FindroidMovieDto {
     return FindroidMovieDto(
         id = id,
         name = name,

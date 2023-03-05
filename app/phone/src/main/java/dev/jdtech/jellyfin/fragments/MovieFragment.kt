@@ -78,7 +78,6 @@ class MovieFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.downloadStatus.collect { (status, progress) ->
-                    println("$status $progress")
                     when (status) {
                         0 -> Unit
                         DownloadManager.STATUS_PENDING -> {

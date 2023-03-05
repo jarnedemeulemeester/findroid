@@ -1,18 +1,19 @@
 package dev.jdtech.jellyfin.models
 
 import java.util.UUID
-import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.PlayAccess
 
-data class JellyfinShowItem(
+data class FindroidSeason(
     override val id: UUID,
     override val name: String,
+    val seriesId: UUID,
+    val seriesName: String,
     override val originalTitle: String?,
     override val overview: String,
-    override val sources: List<JellyfinSource>,
-    val seasons: List<JellyfinSeasonItem>,
+    override val sources: List<FindroidSource>,
+    val indexNumber: Int,
+    val episodes: Collection<FindroidEpisode>,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -20,18 +21,10 @@ data class JellyfinShowItem(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     override val playedPercentage: Float? = null,
-    val genres: List<String>,
-    val people: List<BaseItemPerson>,
-    val runtimeTicks: Long,
-    val communityRating: Float?,
-    val officialRating: String?,
-    val status: String,
-    val productionYear: Int?,
-    val endDate: DateTime?,
-) : JellyfinItem
+) : FindroidItem
 
-fun BaseItemDto.toJellyfinShowItem(): JellyfinShowItem {
-    return JellyfinShowItem(
+fun BaseItemDto.toJellyfinSeasonItem(): FindroidSeason {
+    return FindroidSeason(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
@@ -42,15 +35,10 @@ fun BaseItemDto.toJellyfinShowItem(): JellyfinShowItem {
         canDownload = canDownload ?: false,
         playbackPositionTicks = userData?.playbackPositionTicks ?: 0L,
         unplayedItemCount = userData?.unplayedItemCount,
+        indexNumber = indexNumber ?: 0,
         sources = emptyList(),
-        seasons = emptyList(),
-        genres = genres ?: emptyList(),
-        people = people ?: emptyList(),
-        runtimeTicks = runTimeTicks ?: 0,
-        communityRating = communityRating,
-        officialRating = officialRating,
-        status = status ?: "Ended",
-        productionYear = productionYear,
-        endDate = endDate,
+        episodes = emptyList(),
+        seriesId = seriesId!!,
+        seriesName = seriesName.orEmpty(),
     )
 }

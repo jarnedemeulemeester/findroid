@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.JellyfinCollection
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ constructor(
     val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
-        data class Normal(val collections: List<JellyfinCollection>) : UiState()
+        data class Normal(val collections: List<FindroidCollection>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }

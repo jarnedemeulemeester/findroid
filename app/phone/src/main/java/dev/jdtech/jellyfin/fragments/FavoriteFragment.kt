@@ -17,10 +17,10 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinShowItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.FavoriteViewModel
 import kotlinx.coroutines.launch
@@ -99,9 +99,9 @@ class FavoriteFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: JellyfinItem) {
+    private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is JellyfinMovieItem -> {
+            is FindroidMovie -> {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
                         item.id,
@@ -109,7 +109,7 @@ class FavoriteFragment : Fragment() {
                     )
                 )
             }
-            is JellyfinShowItem -> {
+            is FindroidShow -> {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
                         item.id,
@@ -117,7 +117,7 @@ class FavoriteFragment : Fragment() {
                     )
                 )
             }
-            is JellyfinEpisodeItem -> {
+            is FindroidEpisode -> {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
                         item.id

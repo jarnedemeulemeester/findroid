@@ -1,12 +1,12 @@
 package dev.jdtech.jellyfin.utils
 
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinSource
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidSource
 
 interface Downloader {
-    suspend fun downloadItem(item: JellyfinItem, source: JellyfinSource): Long
+    suspend fun downloadItem(item: FindroidItem, source: FindroidSource): Long
 
-    suspend fun deleteItem(item: JellyfinItem, source: JellyfinSource)
+    suspend fun deleteItem(item: FindroidItem, source: FindroidSource)
 
     suspend fun getProgress(downloadId: Long?): Pair<Int, Int>
 }

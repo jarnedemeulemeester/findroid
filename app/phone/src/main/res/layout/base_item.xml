@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="dev.jdtech.jellyfin.models.JellyfinItem" />
+            type="dev.jdtech.jellyfin.models.FindroidItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

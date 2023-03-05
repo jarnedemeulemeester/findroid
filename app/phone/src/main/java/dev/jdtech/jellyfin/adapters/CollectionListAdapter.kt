@@ -6,25 +6,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
-import dev.jdtech.jellyfin.models.JellyfinCollection
+import dev.jdtech.jellyfin.models.FindroidCollection
 
 class CollectionListAdapter(
     private val onClickListener: OnClickListener
-) : ListAdapter<JellyfinCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
+) : ListAdapter<FindroidCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(collection: JellyfinCollection) {
+        fun bind(collection: FindroidCollection) {
             binding.collection = collection
             binding.executePendingBindings()
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<JellyfinCollection>() {
-        override fun areItemsTheSame(oldItem: JellyfinCollection, newItem: JellyfinCollection): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<FindroidCollection>() {
+        override fun areItemsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: JellyfinCollection, newItem: JellyfinCollection): Boolean {
+        override fun areContentsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem == newItem
         }
     }
@@ -47,7 +47,7 @@ class CollectionListAdapter(
         holder.bind(collection)
     }
 
-    class OnClickListener(val clickListener: (collection: JellyfinCollection) -> Unit) {
-        fun onClick(collection: JellyfinCollection) = clickListener(collection)
+    class OnClickListener(val clickListener: (collection: FindroidCollection) -> Unit) {
+        fun onClick(collection: FindroidCollection) = clickListener(collection)
     }
 }

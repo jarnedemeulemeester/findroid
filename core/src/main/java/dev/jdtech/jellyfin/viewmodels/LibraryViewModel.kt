@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.JellyfinItem
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
@@ -30,7 +30,7 @@ constructor(
     var itemsloaded = false
 
     sealed class UiState {
-        data class Normal(val items: Flow<PagingData<JellyfinItem>>) : UiState()
+        data class Normal(val items: Flow<PagingData<FindroidItem>>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }

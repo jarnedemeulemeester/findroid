@@ -6,9 +6,9 @@ import android.net.Uri
 import android.os.Environment
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.JellyfinItem
-import dev.jdtech.jellyfin.models.JellyfinMovieItem
-import dev.jdtech.jellyfin.models.JellyfinSource
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -21,10 +21,10 @@ class DownloaderImpl(
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
-    override suspend fun downloadItem(item: JellyfinItem, source: JellyfinSource): Long {
+    override suspend fun downloadItem(item: FindroidItem, source: FindroidSource): Long {
         val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
         when (item) {
-            is JellyfinMovieItem -> {
+            is FindroidMovie -> {
                 database.insertMovie(item.toFindroidMovieDto())
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
             }
@@ -41,7 +41,7 @@ class DownloaderImpl(
         return downloadId
     }
 
-    override suspend fun deleteItem(item: JellyfinItem, source: JellyfinSource) {
+    override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {
         database.deleteMovie(item.id)
         database.deleteSource(source.id)
         File(source.path).delete()

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
-import dev.jdtech.jellyfin.models.JellyfinEpisodeItem
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.isDownloaded
 import java.util.UUID
 
@@ -45,7 +45,7 @@ class EpisodeListAdapter(
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(episode: JellyfinEpisodeItem) {
+        fun bind(episode: FindroidEpisode) {
             binding.episode = episode
             if (episode.playedPercentage != null) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
@@ -120,7 +120,7 @@ class EpisodeListAdapter(
         }
     }
 
-    class OnClickListener(val clickListener: (item: JellyfinEpisodeItem) -> Unit) {
-        fun onClick(item: JellyfinEpisodeItem) = clickListener(item)
+    class OnClickListener(val clickListener: (item: FindroidEpisode) -> Unit) {
+        fun onClick(item: FindroidEpisode) = clickListener(item)
     }
 }
