@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -30,7 +31,9 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -43,6 +46,9 @@ class HomeFragment : Fragment() {
     private var originalSoftInputMode: Int? = null
 
     private lateinit var errorDialog: ErrorDialogFragment
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,45 +70,56 @@ class HomeFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.home_menu, menu)
-
-                    val settings = menu.findItem(R.id.action_settings)
-                    val search = menu.findItem(R.id.action_search)
-                    val searchView = search.actionView as SearchView
-                    searchView.queryHint = getString(R.string.search_hint)
-
-                    search.setOnActionExpandListener(
-                        object : MenuItem.OnActionExpandListener {
-                            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                                settings.isVisible = false
-                                return true
-                            }
-
-                            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                                settings.isVisible = true
-                                return true
-                            }
+                    when (appPreferences.offlineMode) {
+                        true -> {
+                            menuInflater.inflate(R.menu.home_offline_menu, menu)
                         }
-                    )
+                        false -> {
+                            menuInflater.inflate(R.menu.home_menu, menu)
+                            val settings = menu.findItem(R.id.action_settings)
+                            val search = menu.findItem(R.id.action_search)
+                            val searchView = search.actionView as SearchView
+                            searchView.queryHint = getString(R.string.search_hint)
 
-                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                        override fun onQueryTextSubmit(p0: String?): Boolean {
-                            if (p0 != null) {
-                                navigateToSearchResultFragment(p0)
-                            }
-                            return true
-                        }
+                            search.setOnActionExpandListener(
+                                object : MenuItem.OnActionExpandListener {
+                                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                                        settings.isVisible = false
+                                        return true
+                                    }
 
-                        override fun onQueryTextChange(p0: String?): Boolean {
-                            return false
+                                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                                        settings.isVisible = true
+                                        return true
+                                    }
+                                }
+                            )
+
+                            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                                override fun onQueryTextSubmit(p0: String?): Boolean {
+                                    if (p0 != null) {
+                                        navigateToSearchResultFragment(p0)
+                                    }
+                                    return true
+                                }
+
+                                override fun onQueryTextChange(p0: String?): Boolean {
+                                    return false
+                                }
+                            })
                         }
-                    })
+                    }
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
                         R.id.action_settings -> {
                             navigateToSettingsFragment()
+                            true
+                        }
+                        R.id.action_offline -> {
+                            appPreferences.offlineMode = false
+                            activity?.restart()
                             true
                         }
                         else -> false
@@ -155,6 +172,11 @@ class HomeFragment : Fragment() {
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
+        }
+
+        binding.errorLayout.errorOfflineModeButton.setOnClickListener {
+            appPreferences.offlineMode = true
+            activity?.restart()
         }
     }
 

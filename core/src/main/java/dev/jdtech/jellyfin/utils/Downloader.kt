@@ -4,7 +4,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSource
 
 interface Downloader {
-    suspend fun downloadItem(item: FindroidItem, source: FindroidSource): Long
+    suspend fun downloadItem(item: FindroidItem, source: FindroidSource, serverId: String): Long
 
     suspend fun deleteItem(item: FindroidItem, source: FindroidSource)
 

@@ -9,10 +9,10 @@ import org.jellyfin.sdk.model.DateTime
 data class FindroidMovieDto(
     @PrimaryKey
     val id: UUID,
+    val serverId: String?,
     val name: String,
     val originalTitle: String?,
     val overview: String,
-    val playedPercentage: Float?,
     val played: Boolean,
     val favorite: Boolean,
     val runtimeTicks: Long,
@@ -27,13 +27,13 @@ data class FindroidMovieDto(
     val unplayedItemCount: Int? = null,
 )
 
-fun FindroidMovie.toFindroidMovieDto(): FindroidMovieDto {
+fun FindroidMovie.toFindroidMovieDto(serverId: String? = null): FindroidMovieDto {
     return FindroidMovieDto(
         id = id,
+        serverId = serverId,
         name = name,
         originalTitle = originalTitle,
         overview = overview,
-        playedPercentage = playedPercentage,
         played = played,
         favorite = favorite,
         runtimeTicks = runtimeTicks,

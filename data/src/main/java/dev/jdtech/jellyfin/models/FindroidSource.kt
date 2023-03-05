@@ -15,7 +15,7 @@ data class FindroidSource(
     val downloadId: Long? = null
 )
 
-suspend fun MediaSourceInfo.toJellyfinSource(
+suspend fun MediaSourceInfo.toFindroidSource(
     jellyfinRepository: JellyfinRepository? = null,
     itemId: UUID
 ): FindroidSource {
@@ -39,7 +39,7 @@ suspend fun MediaSourceInfo.toJellyfinSource(
     )
 }
 
-fun FindroidSourceDto.toJellyfinSource(): FindroidSource {
+fun FindroidSourceDto.toFindroidSource(): FindroidSource {
     return FindroidSource(
         id = id,
         name = name,

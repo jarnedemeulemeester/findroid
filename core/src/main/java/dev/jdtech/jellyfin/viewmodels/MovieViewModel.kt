@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
@@ -35,6 +36,7 @@ class MovieViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
+    private val appPreferences: AppPreferences,
     private val downloader: Downloader
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -289,7 +291,7 @@ constructor(
 
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            downloader.downloadItem(item, item.sources[sourceIndex])
+            downloader.downloadItem(item, item.sources[sourceIndex], appPreferences.currentServer!!)
             loadData(item.id)
         }
     }

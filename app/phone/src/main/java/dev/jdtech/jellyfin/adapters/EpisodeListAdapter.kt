@@ -47,10 +47,10 @@ class EpisodeListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: FindroidEpisode) {
             binding.episode = episode
-            if (episode.playedPercentage != null) {
+            if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.playedPercentage?.times(.84))!!.toFloat(),
+                    (episode.playbackPositionTicks.div(episode.runtimeTicks).times(.84)).toFloat(),
                     binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE

@@ -166,4 +166,6 @@
     <string name="dolby_logo_desc">Dolby Logo</string>
     <string name="extra_info">Display Extra Info</string>
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
+    <string name="offline_mode">Offline Mode</string>
+    <string name="switch_to_offline_mode">Switch to offline mode</string>
 </resources>

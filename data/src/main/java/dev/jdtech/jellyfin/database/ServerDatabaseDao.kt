@@ -85,6 +85,9 @@ interface ServerDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSource(source: FindroidSourceDto)
 
+    @Query("SELECT * FROM movies WHERE id = :id")
+    fun getMovie(id: UUID): FindroidMovieDto
+
     @Query("SELECT * FROM movies JOIN sources ON movies.id = sources.itemId")
     fun getMoviesAndSources(): Map<FindroidMovieDto, List<FindroidSourceDto>>
 
@@ -105,4 +108,10 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM movies WHERE id = :id")
     fun deleteMovie(id: UUID)
+
+    @Query("SELECT * FROM movies WHERE serverId = :serverId AND playbackPositionTicks > 0")
+    fun getResumeItems(serverId: String): List<FindroidMovieDto>
+
+    @Query("UPDATE movies SET playbackPositionTicks = :playbackPositionTicks WHERE id = :itemId")
+    fun setMoviePlaybackPositionTicks(itemId: UUID, playbackPositionTicks: Long)
 }

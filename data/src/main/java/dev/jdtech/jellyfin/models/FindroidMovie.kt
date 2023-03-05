@@ -14,7 +14,6 @@ data class FindroidMovie(
     override val originalTitle: String?,
     override val overview: String,
     override val sources: List<FindroidSource>,
-    override val playedPercentage: Float?,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -32,14 +31,14 @@ data class FindroidMovie(
     override val unplayedItemCount: Int? = null,
 ) : FindroidItem, FindroidSources
 
-suspend fun BaseItemDto.toJellyfinMovieItem(
+suspend fun BaseItemDto.toFindroidMovie(
     jellyfinRepository: JellyfinRepository? = null,
     serverDatabase: ServerDatabaseDao? = null
 ): FindroidMovie {
     val sources = mutableListOf<FindroidSource>()
-    sources.addAll(mediaSources?.map { it.toJellyfinSource(jellyfinRepository, id) } ?: emptyList())
+    sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
     if (serverDatabase != null) {
-        sources.addAll(serverDatabase.getSources(id).map { it.toJellyfinSource() })
+        sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource() })
     }
     return FindroidMovie(
         id = id,
@@ -49,7 +48,6 @@ suspend fun BaseItemDto.toJellyfinMovieItem(
         sources = sources,
         played = userData?.played ?: false,
         favorite = userData?.isFavorite ?: false,
-        playedPercentage = userData?.playedPercentage?.toFloat(),
         canPlay = playAccess != PlayAccess.NONE,
         canDownload = canDownload ?: false,
         runtimeTicks = runTimeTicks ?: 0,
@@ -62,5 +60,30 @@ suspend fun BaseItemDto.toJellyfinMovieItem(
         status = status ?: "Ended",
         productionYear = productionYear,
         endDate = endDate,
+    )
+}
+
+fun FindroidMovieDto.toFindroidMovie(serverDatabase: ServerDatabaseDao): FindroidMovie {
+    return FindroidMovie(
+        id = id,
+        name = name,
+        originalTitle = originalTitle,
+        overview = overview,
+        played = played,
+        favorite = favorite,
+        runtimeTicks = runtimeTicks,
+        playbackPositionTicks = playbackPositionTicks,
+        premiereDate = premiereDate,
+        genres = emptyList(),
+        people = emptyList(),
+        communityRating = communityRating,
+        officialRating = officialRating,
+        status = status,
+        productionYear = productionYear,
+        endDate = endDate,
+        unplayedItemCount = unplayedItemCount,
+        canDownload = false,
+        canPlay = true,
+        sources = serverDatabase.getSources(id).map { it.toFindroidSource() }
     )
 }

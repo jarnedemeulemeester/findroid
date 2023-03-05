@@ -16,7 +16,6 @@ data class FindroidEpisode(
     val indexNumberEnd: Int,
     val parentIndexNumber: Int,
     override val sources: List<FindroidSource>,
-    override val playedPercentage: Float? = null,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -31,7 +30,7 @@ data class FindroidEpisode(
     override val unplayedItemCount: Int? = null,
 ) : FindroidItem, FindroidSources
 
-suspend fun BaseItemDto.toJellyfinEpisodeItem(jellyfinRepository: JellyfinRepository? = null): FindroidEpisode {
+suspend fun BaseItemDto.toFindroidEpisode(jellyfinRepository: JellyfinRepository? = null): FindroidEpisode {
     return FindroidEpisode(
         id = id,
         name = name.orEmpty(),
@@ -40,10 +39,9 @@ suspend fun BaseItemDto.toJellyfinEpisodeItem(jellyfinRepository: JellyfinReposi
         indexNumber = indexNumber ?: 0,
         indexNumberEnd = indexNumberEnd ?: 0,
         parentIndexNumber = parentIndexNumber ?: 0,
-        sources = mediaSources?.map { it.toJellyfinSource(jellyfinRepository, id) } ?: emptyList(),
+        sources = mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList(),
         played = userData?.played ?: false,
         favorite = userData?.isFavorite ?: false,
-        playedPercentage = userData?.playedPercentage?.toFloat(),
         canPlay = playAccess != PlayAccess.NONE,
         canDownload = canDownload ?: false,
         runtimeTicks = runTimeTicks ?: 0,

@@ -16,27 +16,27 @@ interface FindroidItem {
     val canPlay: Boolean
     val canDownload: Boolean
     val sources: List<FindroidSource>
+    val runtimeTicks: Long
     val playbackPositionTicks: Long
     val unplayedItemCount: Int?
-    val playedPercentage: Float?
 }
 
-suspend fun BaseItemDto.toJellyfinItem(
+suspend fun BaseItemDto.toFindroidItem(
     jellyfinRepository: JellyfinRepository? = null,
     serverDatabase: ServerDatabaseDao? = null
 ): FindroidItem? {
     return when (type) {
-        BaseItemKind.MOVIE -> toJellyfinMovieItem(jellyfinRepository, serverDatabase)
-        BaseItemKind.EPISODE -> toJellyfinEpisodeItem(jellyfinRepository)
+        BaseItemKind.MOVIE -> toFindroidMovie(jellyfinRepository, serverDatabase)
+        BaseItemKind.EPISODE -> toFindroidEpisode(jellyfinRepository)
         BaseItemKind.SEASON -> toJellyfinSeasonItem()
-        BaseItemKind.SERIES -> toJellyfinShowItem()
-        BaseItemKind.BOX_SET -> toJellyfinBoxSet()
+        BaseItemKind.SERIES -> toFindroidShow()
+        BaseItemKind.BOX_SET -> toFindroidBoxSet()
         else -> null
     }
 }
 
 fun FindroidItem.isDownloading(): Boolean {
-    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { it.path.endsWith(".download")}
+    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { it.path.endsWith(".download") }
 }
 
 fun FindroidItem.isDownloaded(): Boolean {

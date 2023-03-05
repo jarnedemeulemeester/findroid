@@ -18,9 +18,9 @@ data class FindroidSeason(
     override val favorite: Boolean,
     override val canPlay: Boolean,
     override val canDownload: Boolean,
+    override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
-    override val playedPercentage: Float? = null,
 ) : FindroidItem
 
 fun BaseItemDto.toJellyfinSeasonItem(): FindroidSeason {

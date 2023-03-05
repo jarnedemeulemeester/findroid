@@ -13,12 +13,12 @@ data class FindroidBoxSet(
     override val canPlay: Boolean = false,
     override val canDownload: Boolean = false,
     override val sources: List<FindroidSource> = emptyList(),
+    override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int? = null,
-    override val playedPercentage: Float? = null,
 ) : FindroidItem
 
-fun BaseItemDto.toJellyfinBoxSet(): FindroidBoxSet {
+fun BaseItemDto.toFindroidBoxSet(): FindroidBoxSet {
     return FindroidBoxSet(
         id = id,
         name = name.orEmpty(),

@@ -21,11 +21,11 @@ class DownloaderImpl(
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
-    override suspend fun downloadItem(item: FindroidItem, source: FindroidSource): Long {
+    override suspend fun downloadItem(item: FindroidItem, source: FindroidSource, serverId: String): Long {
         val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
         when (item) {
             is FindroidMovie -> {
-                database.insertMovie(item.toFindroidMovieDto())
+                database.insertMovie(item.toFindroidMovieDto(serverId))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
             }
         }

@@ -9,7 +9,7 @@ import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.User
 
-@Database(entities = [Server::class, ServerAddress::class, User::class, FindroidMovieDto::class, FindroidSourceDto::class], version = 3, exportSchema = false)
+@Database(entities = [Server::class, ServerAddress::class, User::class, FindroidMovieDto::class, FindroidSourceDto::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class ServerDatabase : RoomDatabase() {
     abstract val serverDatabaseDao: ServerDatabaseDao

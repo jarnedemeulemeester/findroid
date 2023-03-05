@@ -4,21 +4,48 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
+import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
+
     @Singleton
     @Provides
-    fun provideJellyfinRepository(
+    fun provideJellyfinRepositoryImpl(
         jellyfinApi: JellyfinApi,
-        serverDatabase: ServerDatabaseDao
-    ): JellyfinRepository {
+        serverDatabase: ServerDatabaseDao,
+    ): JellyfinRepositoryImpl {
+        println("Creating new jellyfinRepositoryImpl")
         return JellyfinRepositoryImpl(jellyfinApi, serverDatabase)
+    }
+
+    @Singleton
+    @Provides
+    fun provideJellyfinRepositoryOfflineImpl(
+        serverDatabase: ServerDatabaseDao,
+        appPreferences: AppPreferences,
+    ): JellyfinRepositoryOfflineImpl {
+        println("Creating new jellyfinRepositoryOfflineImpl")
+        return JellyfinRepositoryOfflineImpl(serverDatabase, appPreferences)
+    }
+
+    @Provides
+    fun provideJellyfinRepository(
+        jellyfinRepositoryImpl: JellyfinRepositoryImpl,
+        jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
+        appPreferences: AppPreferences,
+    ): JellyfinRepository {
+        println("Creating new JellyfinRepository")
+        return when (appPreferences.offlineMode) {
+            true -> jellyfinRepositoryOfflineImpl
+            false -> jellyfinRepositoryImpl
+        }
     }
 }

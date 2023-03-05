@@ -19,10 +19,9 @@ data class FindroidShow(
     override val canDownload: Boolean,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
-    override val playedPercentage: Float? = null,
     val genres: List<String>,
     val people: List<BaseItemPerson>,
-    val runtimeTicks: Long,
+    override val runtimeTicks: Long,
     val communityRating: Float?,
     val officialRating: String?,
     val status: String,
@@ -30,7 +29,7 @@ data class FindroidShow(
     val endDate: DateTime?,
 ) : FindroidItem
 
-fun BaseItemDto.toJellyfinShowItem(): FindroidShow {
+fun BaseItemDto.toFindroidShow(): FindroidShow {
     return FindroidShow(
         id = id,
         name = name.orEmpty(),

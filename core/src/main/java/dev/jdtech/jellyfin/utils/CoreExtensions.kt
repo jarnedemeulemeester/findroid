@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.utils
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Build
@@ -45,4 +47,10 @@ fun ImageButton.setTintColorAttribute(@AttrRes attributeId: Int, theme: Resource
 inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when {
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(key, T::class.java)
     else -> @Suppress("DEPRECATION") getSerializable(key) as? T
+}
+
+fun Activity.restart() {
+    val intent = Intent(this, this::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    startActivity(intent)
 }

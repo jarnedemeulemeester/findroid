@@ -23,10 +23,10 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FindroidItem) {
             binding.item = item
-            if (item.playedPercentage != null) {
+            if (item.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (item.playedPercentage?.times(2.24))!!.toFloat(), binding.progressBar.context.resources.displayMetrics
+                    (item.playbackPositionTicks.div(item.runtimeTicks.toFloat()).times(224)), binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }

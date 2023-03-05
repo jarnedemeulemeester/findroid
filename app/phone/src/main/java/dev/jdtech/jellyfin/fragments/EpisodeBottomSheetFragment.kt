@@ -112,10 +112,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             val downloaded = episode.isDownloaded()
             val canDownload = episode.canDownload && episode.sources.any { it.type == JellyfinSourceType.REMOTE }
 
-            if (episode.playedPercentage != null) {
+            if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.playedPercentage?.times(1.26))!!.toFloat(),
+                    (episode.playbackPositionTicks.div(episode.runtimeTicks).times(1.26)).toFloat(),
                     context?.resources?.displayMetrics
                 ).toInt()
                 binding.progressBar.isVisible = true

@@ -5,21 +5,21 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toFindroidEpisode
+import dev.jdtech.jellyfin.models.toFindroidItem
+import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toJellyfinCollection
-import dev.jdtech.jellyfin.models.toJellyfinEpisodeItem
-import dev.jdtech.jellyfin.models.toJellyfinItem
-import dev.jdtech.jellyfin.models.toJellyfinMovieItem
 import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
-import dev.jdtech.jellyfin.models.toJellyfinShowItem
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
 import java.util.UUID
@@ -61,7 +61,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl)
+            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
@@ -69,7 +69,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toJellyfinMovieItem(this@JellyfinRepositoryImpl, serverDatabase)
+            ).content.toFindroidMovie(this@JellyfinRepositoryImpl, serverDatabase)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
@@ -77,7 +77,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toJellyfinShowItem()
+            ).content.toFindroidShow()
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
@@ -110,7 +110,7 @@ class JellyfinRepositoryImpl(
                 limit = limit,
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getItemsPaging(
@@ -152,7 +152,7 @@ class JellyfinRepositoryImpl(
         ).content.items
             .orEmpty()
             .mapNotNull {
-                it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase)
+                it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase)
             }
     }
 
@@ -169,7 +169,7 @@ class JellyfinRepositoryImpl(
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> =
@@ -185,7 +185,7 @@ class JellyfinRepositoryImpl(
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toJellyfinItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
         }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
@@ -196,7 +196,7 @@ class JellyfinRepositoryImpl(
             ).content.items.orEmpty()
         }
         return items.mapNotNull {
-            it.toJellyfinItem(this, serverDatabase)
+            it.toFindroidItem(this, serverDatabase)
         }
     }
 
@@ -208,7 +208,7 @@ class JellyfinRepositoryImpl(
             ).content
         }
         return items.mapNotNull {
-            it.toJellyfinItem(this, serverDatabase)
+            it.toFindroidItem(this, serverDatabase)
         }
     }
 
@@ -226,7 +226,7 @@ class JellyfinRepositoryImpl(
                 seriesId = seriesId?.toString(),
             ).content.items
                 .orEmpty()
-                .map { it.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl) }
+                .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getEpisodes(
@@ -246,7 +246,7 @@ class JellyfinRepositoryImpl(
                 limit = limit,
             ).content.items
                 .orEmpty()
-                .map { it.toJellyfinEpisodeItem(this@JellyfinRepositoryImpl) }
+                .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> =
