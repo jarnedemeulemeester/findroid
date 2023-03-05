@@ -146,9 +146,19 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun postPlaybackStart(itemId: UUID) {}
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
+    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            when {
+                playedPercentage < 10 -> {
+                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
+                    serverDatabase.setPlayed(itemId, false)
+                }
+                playedPercentage > 90 -> {
+                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
+                    serverDatabase.setPlayed(itemId, true)
+                }
+                else -> serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            }
         }
     }
 
@@ -171,11 +181,15 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun markAsPlayed(itemId: UUID) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            serverDatabase.setPlayed(itemId, true)
+        }
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            serverDatabase.setPlayed(itemId, false)
+        }
     }
 
     override suspend fun getIntros(itemId: UUID): List<BaseItemDto> {

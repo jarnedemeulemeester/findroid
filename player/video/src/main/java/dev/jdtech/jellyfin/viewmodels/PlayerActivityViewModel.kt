@@ -170,13 +170,15 @@ constructor(
     @OptIn(DelicateCoroutinesApi::class)
     private fun releasePlayer() {
         val mediaId = player.currentMediaItem?.mediaId
-        val position = player.currentPosition.times(10000)
+        val position = player.currentPosition
+        val duration = player.duration
         GlobalScope.launch {
             delay(1000L)
             try {
                 jellyfinRepository.postPlaybackStop(
                     UUID.fromString(mediaId),
-                    position
+                    position.times(10000),
+                    position.div(duration).toInt()
                 )
             } catch (e: Exception) {
                 Timber.e(e)
@@ -185,7 +187,7 @@ constructor(
 
         _currentTrickPlay.value = null
         playWhenReady = player.playWhenReady
-        playbackPosition = player.currentPosition
+        playbackPosition = position
         currentMediaItemIndex = player.currentMediaItemIndex
         player.removeListener(this)
         player.release()

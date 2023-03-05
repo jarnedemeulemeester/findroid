@@ -391,10 +391,20 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
+    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
-            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            when {
+                playedPercentage < 10 -> {
+                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
+                    serverDatabase.setPlayed(itemId, false)
+                }
+                playedPercentage > 90 -> {
+                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
+                    serverDatabase.setPlayed(itemId, true)
+                }
+                else -> serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            }
             jellyfinApi.playStateApi.onPlaybackStopped(
                 jellyfinApi.userId!!,
                 itemId,
@@ -434,12 +444,14 @@ class JellyfinRepositoryImpl(
 
     override suspend fun markAsPlayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
+            serverDatabase.setPlayed(itemId, true)
             jellyfinApi.playStateApi.markPlayedItem(jellyfinApi.userId!!, itemId)
         }
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
+            serverDatabase.setPlayed(itemId, false)
             jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
         }
     }

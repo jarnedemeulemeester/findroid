@@ -136,4 +136,7 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM mediastreams WHERE sourceId = :sourceId")
     fun deleteMediaStreamsBySourceId(sourceId: String)
+
+    @Query("UPDATE movies SET played = :played WHERE id = :id")
+    fun setPlayed(id: UUID, played: Boolean)
 }

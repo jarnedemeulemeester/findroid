@@ -88,7 +88,7 @@ interface JellyfinRepository {
 
     suspend fun postPlaybackStart(itemId: UUID)
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long)
+    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
 
     suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
 
