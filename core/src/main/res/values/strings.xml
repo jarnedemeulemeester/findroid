@@ -167,5 +167,7 @@
     <string name="extra_info">Display Extra Info</string>
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
     <string name="offline_mode">Offline Mode</string>
-    <string name="switch_to_offline_mode">Switch to offline mode</string>
+    <string name="offline_mode_icon">Offline Mode icon</string>
+    <string name="offline_mode_go_online">Go online</string>
+    <string name="offline_mode_button">Switch to offline mode</string>
 </resources>

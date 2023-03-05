@@ -54,6 +54,6 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/switch_to_offline_mode" />
+        android:text="@string/offline_mode_button" />
 
 </LinearLayout>

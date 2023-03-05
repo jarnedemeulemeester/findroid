@@ -388,6 +388,7 @@ class JellyfinRepositoryImpl(
     override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
+            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
             jellyfinApi.playStateApi.onPlaybackStopped(
                 jellyfinApi.userId!!,
                 itemId,
@@ -403,6 +404,7 @@ class JellyfinRepositoryImpl(
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
+            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
             jellyfinApi.playStateApi.onPlaybackProgress(
                 jellyfinApi.userId!!,
                 itemId,

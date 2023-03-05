@@ -144,7 +144,11 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun postPlaybackStart(itemId: UUID) {}
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {}
+    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long) {
+        withContext(Dispatchers.IO) {
+            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+        }
+    }
 
     override suspend fun postPlaybackProgress(
         itemId: UUID,

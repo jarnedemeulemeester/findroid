@@ -3,6 +3,11 @@ package dev.jdtech.jellyfin.models
 import java.util.UUID
 
 sealed class HomeItem {
+    object OfflineCard : HomeItem() {
+        override val id: UUID
+            get() = UUID.randomUUID()
+    }
+
     data class Libraries(val section: HomeSection) : HomeItem() {
         override val id = section.id
     }

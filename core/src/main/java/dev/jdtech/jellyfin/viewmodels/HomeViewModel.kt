@@ -1,13 +1,14 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.toView
 import java.util.UUID
@@ -18,8 +19,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
-    private val application: Application,
     private val repository: JellyfinRepository,
+    private val appPreferences: AppPreferences,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -45,6 +46,8 @@ class HomeViewModel @Inject internal constructor(
             try {
                 val items = mutableListOf<HomeItem>()
 
+                if (appPreferences.offlineMode) items.add(HomeItem.OfflineCard)
+
                 if (includeLibraries) {
                     items.add(loadLibraries())
                 }
@@ -65,7 +68,7 @@ class HomeViewModel @Inject internal constructor(
         return HomeItem.Libraries(
             HomeSection(
                 UUID.fromString("38f5ca96-9e4b-4c0e-a8e4-02225ed07e02"),
-                application.resources.getString(R.string.libraries),
+                UiText.StringResource(R.string.libraries),
                 collections
             )
         )
@@ -80,7 +83,7 @@ class HomeViewModel @Inject internal constructor(
             items.add(
                 HomeSection(
                     UUID.fromString("44845958-8326-4e83-beb4-c4f42e9eeb95"),
-                    application.resources.getString(R.string.continue_watching),
+                    UiText.StringResource(R.string.continue_watching),
                     resumeItems
                 )
             )
@@ -90,7 +93,7 @@ class HomeViewModel @Inject internal constructor(
             items.add(
                 HomeSection(
                     UUID.fromString("18bfced5-f237-4d42-aa72-d9d7fed19279"),
-                    application.resources.getString(R.string.next_up),
+                    UiText.StringResource(R.string.next_up),
                     nextUpItems
                 )
             )

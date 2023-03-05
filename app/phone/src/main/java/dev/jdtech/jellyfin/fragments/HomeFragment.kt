@@ -70,56 +70,44 @@ class HomeFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    when (appPreferences.offlineMode) {
-                        true -> {
-                            menuInflater.inflate(R.menu.home_offline_menu, menu)
+                    menuInflater.inflate(R.menu.home_menu, menu)
+                    val settings = menu.findItem(R.id.action_settings)
+                    val search = menu.findItem(R.id.action_search)
+                    val searchView = search.actionView as SearchView
+                    searchView.queryHint = getString(R.string.search_hint)
+
+                    search.setOnActionExpandListener(
+                        object : MenuItem.OnActionExpandListener {
+                            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                                settings.isVisible = false
+                                return true
+                            }
+
+                            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                                settings.isVisible = true
+                                return true
+                            }
                         }
-                        false -> {
-                            menuInflater.inflate(R.menu.home_menu, menu)
-                            val settings = menu.findItem(R.id.action_settings)
-                            val search = menu.findItem(R.id.action_search)
-                            val searchView = search.actionView as SearchView
-                            searchView.queryHint = getString(R.string.search_hint)
+                    )
 
-                            search.setOnActionExpandListener(
-                                object : MenuItem.OnActionExpandListener {
-                                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                                        settings.isVisible = false
-                                        return true
-                                    }
-
-                                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                                        settings.isVisible = true
-                                        return true
-                                    }
-                                }
-                            )
-
-                            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                                override fun onQueryTextSubmit(p0: String?): Boolean {
-                                    if (p0 != null) {
-                                        navigateToSearchResultFragment(p0)
-                                    }
-                                    return true
-                                }
-
-                                override fun onQueryTextChange(p0: String?): Boolean {
-                                    return false
-                                }
-                            })
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(p0: String?): Boolean {
+                            if (p0 != null) {
+                                navigateToSearchResultFragment(p0)
+                            }
+                            return true
                         }
-                    }
+
+                        override fun onQueryTextChange(p0: String?): Boolean {
+                            return false
+                        }
+                    })
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
                         R.id.action_settings -> {
                             navigateToSettingsFragment()
-                            true
-                        }
-                        R.id.action_offline -> {
-                            appPreferences.offlineMode = false
-                            activity?.restart()
                             true
                         }
                         else -> false
@@ -163,6 +151,10 @@ class HomeFragment : Fragment() {
             },
             onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToMediaItem(item)
+            },
+            onOnlineClickListener = ViewListAdapter.OnClickListenerOfflineCard {
+                appPreferences.offlineMode = false
+                activity?.restart()
             }
         )
 
