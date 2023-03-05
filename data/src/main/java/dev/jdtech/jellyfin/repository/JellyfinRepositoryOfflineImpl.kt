@@ -9,10 +9,12 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidSource
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +22,6 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.MediaSourceInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
@@ -120,9 +121,10 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
+        withContext(Dispatchers.IO) {
+            serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) }
+        }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
         TODO("Not yet implemented")
@@ -181,7 +183,7 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override fun getBaseUrl(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override suspend fun updateDeviceName(name: String) {

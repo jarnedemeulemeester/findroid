@@ -32,13 +32,13 @@ data class FindroidMovie(
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidMovie(
-    jellyfinRepository: JellyfinRepository? = null,
+    jellyfinRepository: JellyfinRepository,
     serverDatabase: ServerDatabaseDao? = null
 ): FindroidMovie {
     val sources = mutableListOf<FindroidSource>()
     sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
     if (serverDatabase != null) {
-        sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource() })
+        sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) })
     }
     return FindroidMovie(
         id = id,
@@ -84,6 +84,6 @@ fun FindroidMovieDto.toFindroidMovie(serverDatabase: ServerDatabaseDao): Findroi
         unplayedItemCount = unplayedItemCount,
         canDownload = false,
         canPlay = true,
-        sources = serverDatabase.getSources(id).map { it.toFindroidSource() }
+        sources = serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) }
     )
 }

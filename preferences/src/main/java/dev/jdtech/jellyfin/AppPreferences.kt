@@ -23,7 +23,7 @@ constructor(
 
     // Offline
     var offlineMode
-        get() = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, true)
+        get() = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false)
         set(value) {
             sharedPreferences.edit {
                 putBoolean(Constants.PREF_OFFLINE_MODE, value)

@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
+import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.JellyfinSourceType
 import dev.jdtech.jellyfin.models.Resolution
@@ -130,7 +131,7 @@ constructor(
     }
 
     private suspend fun getMediaString(item: FindroidMovie, type: MediaStreamType): String {
-        val streams: List<MediaStream>
+        val streams: List<FindroidMediaStream>
         withContext(Dispatchers.Default) {
             streams =
                 item.sources.getOrNull(0)?.mediaStreams?.filter { it.type == type } ?: emptyList()
@@ -172,7 +173,7 @@ constructor(
                          * Match audio codec from [MediaStream.codec]
                          */
                         audioCodecs.add(
-                            when (stream.codec?.lowercase()) {
+                            when (stream.codec.lowercase()) {
                                 AudioCodec.FLAC.toString() -> AudioCodec.FLAC
                                 AudioCodec.AAC.toString() -> AudioCodec.AAC
                                 AudioCodec.AC3.toString() -> AudioCodec.AC3
@@ -291,7 +292,8 @@ constructor(
 
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            downloader.downloadItem(item, item.sources[sourceIndex], appPreferences.currentServer!!)
+            val mediaSource = jellyfinRepository.getMediaSources(item.id)[sourceIndex]
+            downloader.downloadItem(item, mediaSource, appPreferences.currentServer!!, jellyfinRepository.getBaseUrl())
             loadData(item.id)
         }
     }

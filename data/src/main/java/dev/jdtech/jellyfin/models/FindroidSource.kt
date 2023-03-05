@@ -1,28 +1,28 @@
 package dev.jdtech.jellyfin.models
 
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaSourceInfo
-import org.jellyfin.sdk.model.api.MediaStream
 
 data class FindroidSource(
     val id: String,
     val name: String,
     val type: JellyfinSourceType,
     val path: String,
-    val mediaStreams: List<MediaStream>,
+    val mediaStreams: List<FindroidMediaStream>,
     val downloadId: Long? = null
 )
 
 suspend fun MediaSourceInfo.toFindroidSource(
-    jellyfinRepository: JellyfinRepository? = null,
+    jellyfinRepository: JellyfinRepository,
     itemId: UUID
 ): FindroidSource {
     val path = when (protocol) {
         MediaProtocol.FILE -> {
             try {
-                jellyfinRepository?.getStreamUrl(itemId, id.orEmpty()) ?: ""
+                jellyfinRepository.getStreamUrl(itemId, id.orEmpty())
             } catch (e: Exception) {
                 ""
             }
@@ -35,17 +35,19 @@ suspend fun MediaSourceInfo.toFindroidSource(
         name = name.orEmpty(),
         type = JellyfinSourceType.REMOTE,
         path = path,
-        mediaStreams = mediaStreams ?: emptyList()
+        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList()
     )
 }
 
-fun FindroidSourceDto.toFindroidSource(): FindroidSource {
+fun FindroidSourceDto.toFindroidSource(
+    serverDatabaseDao: ServerDatabaseDao,
+): FindroidSource {
     return FindroidSource(
         id = id,
         name = name,
         type = type,
         path = path,
-        mediaStreams = emptyList(),
+        mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toFindroidMediaStream() },
         downloadId = downloadId,
     )
 }

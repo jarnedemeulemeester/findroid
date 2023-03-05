@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
@@ -18,6 +19,7 @@ import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidShow
+import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toJellyfinCollection
 import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
 import io.ktor.util.cio.toByteArray
@@ -36,7 +38,6 @@ import org.jellyfin.sdk.model.api.DlnaProfileType
 import org.jellyfin.sdk.model.api.GeneralCommandType
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
-import org.jellyfin.sdk.model.api.MediaSourceInfo
 import org.jellyfin.sdk.model.api.PlaybackInfoDto
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
@@ -249,45 +250,50 @@ class JellyfinRepositoryImpl(
                 .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
-    override suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo> =
+    override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                itemId,
-                PlaybackInfoDto(
-                    userId = jellyfinApi.userId!!,
-                    deviceProfile = DeviceProfile(
-                        name = "Direct play all",
-                        maxStaticBitrate = 1_000_000_000,
+            val sources = mutableListOf<FindroidSource>()
+            sources.addAll(
+                jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                    itemId,
+                    PlaybackInfoDto(
+                        userId = jellyfinApi.userId!!,
+                        deviceProfile = DeviceProfile(
+                            name = "Direct play all",
+                            maxStaticBitrate = 1_000_000_000,
+                            maxStreamingBitrate = 1_000_000_000,
+                            codecProfiles = emptyList(),
+                            containerProfiles = emptyList(),
+                            directPlayProfiles = listOf(
+                                DirectPlayProfile(type = DlnaProfileType.VIDEO),
+                                DirectPlayProfile(type = DlnaProfileType.AUDIO)
+                            ),
+                            transcodingProfiles = emptyList(),
+                            responseProfiles = emptyList(),
+                            subtitleProfiles = listOf(
+                                SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                                SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
+                                SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                            ),
+                            xmlRootAttributes = emptyList(),
+                            supportedMediaTypes = "",
+                            enableAlbumArtInDidl = false,
+                            enableMsMediaReceiverRegistrar = false,
+                            enableSingleAlbumArtLimit = false,
+                            enableSingleSubtitleLimit = false,
+                            ignoreTranscodeByteRangeRequests = false,
+                            maxAlbumArtHeight = 1_000_000_000,
+                            maxAlbumArtWidth = 1_000_000_000,
+                            requiresPlainFolders = false,
+                            requiresPlainVideoItems = false,
+                            timelineOffsetSeconds = 0
+                        ),
                         maxStreamingBitrate = 1_000_000_000,
-                        codecProfiles = emptyList(),
-                        containerProfiles = emptyList(),
-                        directPlayProfiles = listOf(
-                            DirectPlayProfile(type = DlnaProfileType.VIDEO),
-                            DirectPlayProfile(type = DlnaProfileType.AUDIO)
-                        ),
-                        transcodingProfiles = emptyList(),
-                        responseProfiles = emptyList(),
-                        subtitleProfiles = listOf(
-                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                            SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
-                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                        ),
-                        xmlRootAttributes = emptyList(),
-                        supportedMediaTypes = "",
-                        enableAlbumArtInDidl = false,
-                        enableMsMediaReceiverRegistrar = false,
-                        enableSingleAlbumArtLimit = false,
-                        enableSingleSubtitleLimit = false,
-                        ignoreTranscodeByteRangeRequests = false,
-                        maxAlbumArtHeight = 1_000_000_000,
-                        maxAlbumArtWidth = 1_000_000_000,
-                        requiresPlainFolders = false,
-                        requiresPlainVideoItems = false,
-                        timelineOffsetSeconds = 0
-                    ),
-                    maxStreamingBitrate = 1_000_000_000,
-                )
-            ).content.mediaSources
+                    )
+                ).content.mediaSources.map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId) }
+            )
+            sources.addAll(serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) })
+            sources
         }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =

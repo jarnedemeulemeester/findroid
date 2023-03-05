@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -16,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 
@@ -129,7 +129,7 @@ constructor(
     }
 
     private suspend fun getMediaString(item: FindroidShow, type: MediaStreamType): String {
-        val streams: List<MediaStream>
+        val streams: List<FindroidMediaStream>
         withContext(Dispatchers.Default) {
             streams = item.sources.getOrNull(0)?.mediaStreams?.filter { it.type == type } ?: emptyList()
         }

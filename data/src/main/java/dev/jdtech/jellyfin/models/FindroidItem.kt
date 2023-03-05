@@ -22,7 +22,7 @@ interface FindroidItem {
 }
 
 suspend fun BaseItemDto.toFindroidItem(
-    jellyfinRepository: JellyfinRepository? = null,
+    jellyfinRepository: JellyfinRepository,
     serverDatabase: ServerDatabaseDao? = null
 ): FindroidItem? {
     return when (type) {

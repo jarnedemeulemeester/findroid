@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
 import dev.jdtech.jellyfin.models.Server
@@ -95,7 +96,7 @@ interface ServerDatabaseDao {
     fun getSources(itemId: UUID): List<FindroidSourceDto>
 
     @Query("SELECT * FROM sources WHERE downloadId = :downloadId")
-    fun getSourceByDownloadId(downloadId: Long): FindroidSourceDto
+    fun getSourceByDownloadId(downloadId: Long): FindroidSourceDto?
 
     @Query("UPDATE sources SET downloadId = :downloadId WHERE id = :id")
     fun setSourceDownloadId(id: String, downloadId: Long)
@@ -114,4 +115,25 @@ interface ServerDatabaseDao {
 
     @Query("UPDATE movies SET playbackPositionTicks = :playbackPositionTicks WHERE id = :itemId")
     fun setMoviePlaybackPositionTicks(itemId: UUID, playbackPositionTicks: Long)
+
+    @Insert
+    fun insertMediaStream(mediaStream: FindroidMediaStreamDto)
+
+    @Query("SELECT * FROM mediastreams WHERE sourceId = :sourceId")
+    fun getMediaStreamsBySourceId(sourceId: String): List<FindroidMediaStreamDto>
+
+    @Query("SELECT * FROM mediastreams WHERE downloadId = :downloadId")
+    fun getMediaStreamByDownloadId(downloadId: Long): FindroidMediaStreamDto?
+
+    @Query("UPDATE mediastreams SET downloadId = :downloadId WHERE id = :id")
+    fun setMediaStreamDownloadId(id: UUID, downloadId: Long)
+
+    @Query("UPDATE mediastreams SET path = :path WHERE id = :id")
+    fun setMediaStreamPath(id: UUID, path: String)
+
+    @Query("DELETE FROM mediastreams WHERE id = :id")
+    fun deleteMediaStream(id: UUID)
+
+    @Query("DELETE FROM mediastreams WHERE sourceId = :sourceId")
+    fun deleteMediaStreamsBySourceId(sourceId: String)
 }

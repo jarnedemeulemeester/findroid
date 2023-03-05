@@ -4,8 +4,7 @@ import java.util.UUID
 
 sealed class HomeItem {
     object OfflineCard : HomeItem() {
-        override val id: UUID
-            get() = UUID.randomUUID()
+        override val id: UUID = UUID.fromString("dbfef8a9-7ff0-4c36-9e36-81dfd65fdd46")
     }
 
     data class Libraries(val section: HomeSection) : HomeItem() {

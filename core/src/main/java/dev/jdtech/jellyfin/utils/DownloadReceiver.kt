@@ -20,14 +20,27 @@ class DownloadReceiver : BroadcastReceiver() {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             if (id != -1L) {
                 val source = database.getSourceByDownloadId(id)
-                val path = source.path.replace(".download", "")
-                val successfulRename = File(source.path).renameTo(File(path))
-                if (successfulRename) {
-                    database.setSourcePath(source.id, path)
+                if (source != null) {
+                    val path = source.path.replace(".download", "")
+                    val successfulRename = File(source.path).renameTo(File(path))
+                    if (successfulRename) {
+                        database.setSourcePath(source.id, path)
+                    } else {
+                        database.deleteSource(source.id)
+                        // TODO can also be other type such as show, season or episode
+                        database.deleteMovie(source.itemId)
+                    }
                 } else {
-                    database.deleteSource(source.id)
-                    // TODO can also be other type such as show, season or episode
-                    database.deleteMovie(source.itemId)
+                    val mediaStream = database.getMediaStreamByDownloadId(id)
+                    if (mediaStream != null) {
+                        val path = mediaStream.path.replace(".download", "")
+                        val successfulRename = File(mediaStream.path).renameTo(File(path))
+                        if (successfulRename) {
+                            database.setMediaStreamPath(mediaStream.id, path)
+                        } else {
+                            database.deleteMediaStream(mediaStream.id)
+                        }
+                    }
                 }
             }
         }

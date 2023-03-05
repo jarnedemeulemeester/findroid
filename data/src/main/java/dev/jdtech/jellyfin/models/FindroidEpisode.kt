@@ -30,7 +30,7 @@ data class FindroidEpisode(
     override val unplayedItemCount: Int? = null,
 ) : FindroidItem, FindroidSources
 
-suspend fun BaseItemDto.toFindroidEpisode(jellyfinRepository: JellyfinRepository? = null): FindroidEpisode {
+suspend fun BaseItemDto.toFindroidEpisode(jellyfinRepository: JellyfinRepository): FindroidEpisode {
     return FindroidEpisode(
         id = id,
         name = name.orEmpty(),

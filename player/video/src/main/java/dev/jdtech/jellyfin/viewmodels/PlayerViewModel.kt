@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,6 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
@@ -22,13 +20,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
-    private val application: Application,
     private val repository: JellyfinRepository,
 ) : ViewModel() {
 
@@ -94,7 +90,7 @@ class PlayerViewModel @Inject internal constructor(
         else -> emptyList()
     }
 
-    private fun movieToPlayerItem(
+    private suspend fun movieToPlayerItem(
         item: FindroidMovie,
         playbackPosition: Long,
         mediaSourceIndex: Int
@@ -152,27 +148,27 @@ class PlayerViewModel @Inject internal constructor(
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
-    private fun FindroidItem.toPlayerItem(
+    private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int,
         playbackPosition: Long
     ): PlayerItem {
-        val mediaSource = this.sources[mediaSourceIndex]
+        val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
         for (mediaStream in mediaSource.mediaStreams) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()) {
 
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.deliveryUrl!!
+                var deliveryUrl = mediaStream.path!!
                 if (mediaStream.codec == "webvtt") {
                     deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
                 }
 
                 externalSubtitles.add(
                     ExternalSubtitle(
-                        mediaStream.title ?: application.getString(R.string.external),
-                        mediaStream.language.orEmpty(),
-                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
+                        mediaStream.title,
+                        mediaStream.language,
+                        Uri.parse(deliveryUrl),
                         when (mediaStream.codec) {
                             "subrip" -> MimeTypes.APPLICATION_SUBRIP
                             "webvtt" -> MimeTypes.TEXT_VTT
@@ -201,20 +197,20 @@ class PlayerViewModel @Inject internal constructor(
     ): PlayerItem {
         val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
-        for (mediaStream in mediaSource.mediaStreams!!) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+        for (mediaStream in mediaSource.mediaStreams) {
+            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()) {
 
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.deliveryUrl!!
+                var deliveryUrl = mediaStream.path!!
                 if (mediaStream.codec == "webvtt") {
                     deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
                 }
 
                 externalSubtitles.add(
                     ExternalSubtitle(
-                        mediaStream.title ?: application.getString(R.string.external),
-                        mediaStream.language.orEmpty(),
+                        mediaStream.title,
+                        mediaStream.language,
                         Uri.parse(repository.getBaseUrl() + deliveryUrl),
                         when (mediaStream.codec) {
                             "subrip" -> MimeTypes.APPLICATION_SUBRIP
@@ -226,36 +222,16 @@ class PlayerViewModel @Inject internal constructor(
                 )
             }
         }
-        return when (mediaSource.protocol) {
-            MediaProtocol.FILE -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-            MediaProtocol.HTTP -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                mediaSourceUri = mediaSource.path!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-            else -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-        }
+        return PlayerItem(
+            name = name,
+            itemId = id,
+            mediaSourceId = mediaSource.id,
+            mediaSourceUri = mediaSource.path,
+            playbackPosition = playbackPosition,
+            parentIndexNumber = parentIndexNumber,
+            indexNumber = indexNumber,
+            externalSubtitles = externalSubtitles
+        )
     }
 
     sealed class PlayerItemState
