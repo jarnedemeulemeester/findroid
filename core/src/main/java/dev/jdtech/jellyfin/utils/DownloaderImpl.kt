@@ -36,7 +36,7 @@ class DownloaderImpl(
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                 for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
                     val id = UUID.randomUUID()
-                    val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "$id.download"))
+                    val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.$id.download"))
                     database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
                     val request = DownloadManager.Request(Uri.parse(baseUrl + mediaStream.path))
                         .setTitle(mediaStream.title)
