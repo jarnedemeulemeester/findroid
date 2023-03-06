@@ -240,20 +240,18 @@ constructor(
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         viewModelScope.launch {
             try {
-                for (item in items) {
-                    if (item.itemId.toString() == (player.currentMediaItem?.mediaId ?: "")) {
-                        if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
-                        )
-                            _currentItemTitle.value =
-                                "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
-                        else
-                            _currentItemTitle.value = item.name.orEmpty()
+                items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }.let { item ->
+                    if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
+                    )
+                        _currentItemTitle.value =
+                            "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                    else
+                        _currentItemTitle.value = item.name.orEmpty()
 
-                        jellyfinRepository.postPlaybackStart(item.itemId)
+                    jellyfinRepository.postPlaybackStart(item.itemId)
 
-                        if (appPreferences.playerTrickPlay) {
-                            getTrickPlay(item.itemId)
-                        }
+                    if (appPreferences.playerTrickPlay) {
+                        getTrickPlay(item.itemId)
                     }
                 }
             } catch (e: Exception) {
