@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidIntro
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -16,6 +17,7 @@ import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidEpisode
+import dev.jdtech.jellyfin.models.toFindroidIntro
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidShow
@@ -290,9 +292,16 @@ class JellyfinRepositoryImpl(
                         ),
                         maxStreamingBitrate = 1_000_000_000,
                     )
-                ).content.mediaSources.map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId) }
+                ).content.mediaSources.map {
+                    it.toFindroidSource(
+                        this@JellyfinRepositoryImpl,
+                        itemId
+                    )
+                }
             )
-            sources.addAll(serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) })
+            sources.addAll(
+                serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) }
+            )
             sources
         }
 
@@ -391,7 +400,11 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int) {
+    override suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int
+    ) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
             when {
@@ -456,9 +469,13 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun getIntros(itemId: UUID): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.userLibraryApi.getIntros(jellyfinApi.userId!!, itemId).content.items.orEmpty()
-    }
+    override suspend fun getIntros(itemId: UUID): List<FindroidIntro> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getIntros(
+                jellyfinApi.userId!!,
+                itemId
+            ).content.items.orEmpty().map { it.toFindroidIntro(this@JellyfinRepositoryImpl) }
+        }
 
     override fun getBaseUrl() = jellyfinApi.api.baseUrl.orEmpty()
 

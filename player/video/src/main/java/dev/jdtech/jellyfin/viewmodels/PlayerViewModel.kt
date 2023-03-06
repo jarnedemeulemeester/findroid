@@ -18,7 +18,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
@@ -75,7 +74,7 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun prepareIntros(item: FindroidItem): List<PlayerItem> {
         return repository
             .getIntros(item.id)
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
+            .filter { it.sources.isNotEmpty() }
             .map { intro -> intro.toPlayerItem(mediaSourceIndex = 0, playbackPosition = 0) }
     }
 
@@ -187,49 +186,6 @@ class PlayerViewModel @Inject internal constructor(
             playbackPosition = playbackPosition,
             parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
-            externalSubtitles = externalSubtitles
-        )
-    }
-
-    private suspend fun BaseItemDto.toPlayerItem(
-        mediaSourceIndex: Int,
-        playbackPosition: Long
-    ): PlayerItem {
-        val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
-        val externalSubtitles = mutableListOf<ExternalSubtitle>()
-        for (mediaStream in mediaSource.mediaStreams) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()) {
-
-                // Temp fix for vtt
-                // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.path!!
-                if (mediaStream.codec == "webvtt") {
-                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
-                }
-
-                externalSubtitles.add(
-                    ExternalSubtitle(
-                        mediaStream.title,
-                        mediaStream.language,
-                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
-                        when (mediaStream.codec) {
-                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.TEXT_VTT
-                            "ass" -> MimeTypes.TEXT_SSA
-                            else -> MimeTypes.TEXT_UNKNOWN
-                        }
-                    )
-                )
-            }
-        }
-        return PlayerItem(
-            name = name,
-            itemId = id,
-            mediaSourceId = mediaSource.id,
-            mediaSourceUri = mediaSource.path,
-            playbackPosition = playbackPosition,
-            parentIndexNumber = parentIndexNumber,
-            indexNumber = indexNumber,
             externalSubtitles = externalSubtitles
         )
     }

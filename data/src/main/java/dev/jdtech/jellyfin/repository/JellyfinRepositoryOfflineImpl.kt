@@ -5,6 +5,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidIntro
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -192,8 +193,8 @@ class JellyfinRepositoryOfflineImpl(
         }
     }
 
-    override suspend fun getIntros(itemId: UUID): List<BaseItemDto> {
-        TODO("Not yet implemented")
+    override suspend fun getIntros(itemId: UUID): List<FindroidIntro> {
+        return emptyList()
     }
 
     override fun getBaseUrl(): String {
