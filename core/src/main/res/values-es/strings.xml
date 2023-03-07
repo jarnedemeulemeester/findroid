@@ -45,7 +45,7 @@
     <string name="episode_name_extended">T%1$d:E%2$d - %3$s</string>
     <string name="next_up">Siguiente</string>
     <string name="continue_watching">Continuar viendo</string>
-    <string name="latest_library">Reciente en %1$ss</string>
+    <string name="latest_library">Reciente en %1$s</string>
     <string name="series_poster">Póster de la serie</string>
     <string name="no_favorites">No tienes favoritos</string>
     <string name="no_downloads">No tienes descargas</string>
@@ -163,4 +163,6 @@
     <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Muestra información detallada de audio, video y subtítulos</string>
     <string name="extra_info">Mostrar info extra</string>
+    <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
+    <string name="pref_player_trick_play_summary">Requiere que el plugin Jellyscrub de nicknsy esté instalado en el servidor</string>
 </resources>

@@ -1,7 +1,5 @@
 [versions]
-aboutlibraries = "10.6.0"
-# v10.6.1 is only available for the plugin
-aboutlibraries-plugin = "10.6.1"
+aboutlibraries = "10.6.1"
 android-plugin = "7.4.1"
 androidx-activity = "1.6.1"
 androidx-appcompat = "1.6.1"
@@ -17,11 +15,11 @@ androidx-recyclerview = "1.2.1"
 androidx-recyclerview-selection = "1.1.0"
 androidx-room = "2.5.0"
 androidx-swiperefreshlayout = "1.1.0"
-glide = "4.14.2"
+glide = "4.15.0"
 hilt = "2.45"
 jellyfin = "1.4.1"
 kotlin = "1.8.10"
-kotlinx-serialization = "1.4.1"
+kotlinx-serialization = "1.5.0"
 ktlint = "11.1.0"
 libmpv = "0.1.1"
 material = "1.8.0"
@@ -63,7 +61,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
-aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries-plugin" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }

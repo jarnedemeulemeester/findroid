@@ -162,4 +162,6 @@
     <string name="extra_info">Mostra più informazioni</string>
     <string name="amoled_theme">Tema scuro AMOLED</string>
     <string name="amoled_theme_summary">Usa il tema AMOLED con lo sfondo nero</string>
+    <string name="pref_player_trick_play">Anteprima</string>
+    <string name="pref_player_trick_play_summary">Richiede il plugin Jellyscrub di nicknsy installato sul server</string>
 </resources>
