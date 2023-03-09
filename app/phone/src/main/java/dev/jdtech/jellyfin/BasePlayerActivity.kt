@@ -55,8 +55,10 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        setIntent(intent)
 
-        finishAndRemoveTask()
+        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
 
