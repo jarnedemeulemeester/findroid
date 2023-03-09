@@ -150,4 +150,6 @@
     <string name="player_controls_skip_intro">Intro overslaan</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBears\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
+    <string name="subtitle">Ondertitels</string>
+    <string name="extra_info">Extra informatie weergeven</string>
 </resources>

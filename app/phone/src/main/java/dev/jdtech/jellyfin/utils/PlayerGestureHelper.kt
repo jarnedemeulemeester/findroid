@@ -148,15 +148,14 @@ class PlayerGestureHelper(
 
                     val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                     val change = ratioChange * maxVolume
-                    swipeGestureValueTrackerVolume += change
+                    swipeGestureValueTrackerVolume = (swipeGestureValueTrackerVolume + change).coerceIn(0f, maxVolume.toFloat())
 
-                    val toSet = swipeGestureValueTrackerVolume.toInt().coerceIn(0, maxVolume)
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, toSet, 0)
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, swipeGestureValueTrackerVolume.toInt(), 0)
 
                     activity.binding.gestureVolumeLayout.visibility = View.VISIBLE
                     activity.binding.gestureVolumeProgressBar.max = maxVolume
-                    activity.binding.gestureVolumeProgressBar.progress = toSet
-                    activity.binding.gestureVolumeText.text = "${(toSet.toFloat() / maxVolume.toFloat()).times(100).toInt()}%"
+                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.toInt()
+                    activity.binding.gestureVolumeText.text = "${(swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()}%"
 
                     swipeGestureVolumeOpen = true
                 } else {

@@ -23,6 +23,8 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.bif.BifData
+import dev.jdtech.jellyfin.utils.bif.BifUtil
 import dev.jdtech.jellyfin.utils.postDownloadPlaybackProgress
 import java.util.UUID
 import javax.inject.Inject
@@ -30,6 +32,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -54,6 +58,10 @@ constructor(
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
     private val _currentIntro = MutableLiveData<Intro?>(null)
     val currentIntro: LiveData<Intro?> = _currentIntro
+
+    private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
+    private val _currentTrickPlay = MutableStateFlow<BifData?>(null)
+    val currentTrickPlay = _currentTrickPlay.asStateFlow()
 
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
@@ -181,6 +189,7 @@ constructor(
             }
         }
 
+        _currentTrickPlay.value = null
         playWhenReady = player.playWhenReady
         playbackPosition = player.currentPosition
         currentMediaItemIndex = player.currentMediaItemIndex
@@ -246,9 +255,14 @@ constructor(
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
                         else
                             _currentItemTitle.value = item.name.orEmpty()
+
+                        jellyfinRepository.postPlaybackStart(item.itemId)
+
+                        if (appPreferences.playerTrickPlay) {
+                            getTrickPlay(item.itemId)
+                        }
                     }
                 }
-                jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -310,5 +324,29 @@ constructor(
     fun selectSpeed(speed: Float) {
         player.setPlaybackSpeed(speed)
         playbackSpeed = speed
+    }
+
+    private suspend fun getTrickPlay(itemId: UUID) {
+        if (trickPlays[itemId] != null) return
+        jellyfinRepository.getTrickPlayManifest(itemId)
+            ?.let { trickPlayManifest ->
+                val widthResolution =
+                    trickPlayManifest.widthResolutions.max()
+                Timber.d("Trickplay Resolution: $widthResolution")
+
+                jellyfinRepository.getTrickPlayData(
+                    itemId,
+                    widthResolution
+                )?.let { byteArray ->
+                    val trickPlayData =
+                        BifUtil.trickPlayDecode(byteArray, widthResolution)
+
+                    trickPlayData?.let {
+                        Timber.d("Trickplay Images: ${it.imageCount}")
+                        trickPlays[itemId] = it
+                        _currentTrickPlay.value = trickPlays[itemId]
+                    }
+                }
+            }
     }
 }
