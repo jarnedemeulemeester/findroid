@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
@@ -40,7 +41,7 @@ import timber.log.Timber
 class PlayerActivityViewModel
 @Inject
 constructor(
-    application: Application,
+    private val application: Application,
     private val jellyfinRepository: JellyfinRepository,
     private val appPreferences: AppPreferences,
 ) : ViewModel(), Player.Listener {
@@ -124,7 +125,7 @@ constructor(
                     val streamUrl = item.mediaSourceUri
                     val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
                         MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
-                            .setLabel(externalSubtitle.title)
+                            .setLabel(if (externalSubtitle.title.isBlank()) application.getString(R.string.external) else externalSubtitle.title)
                             .setMimeType(externalSubtitle.mimeType)
                             .setLanguage(externalSubtitle.language)
                             .build()
