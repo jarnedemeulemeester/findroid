@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
 import dev.jdtech.jellyfin.utils.DownloaderImpl
 import javax.inject.Singleton
@@ -18,9 +17,8 @@ object DownloaderModule {
     @Provides
     fun provideDownloader(
         application: Application,
-        jellyfinRepository: JellyfinRepository,
         serverDatabase: ServerDatabaseDao,
     ): Downloader {
-        return DownloaderImpl(application, jellyfinRepository, serverDatabase)
+        return DownloaderImpl(application, serverDatabase)
     }
 }

@@ -70,7 +70,6 @@ constructor(
 
     val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
-    private var playFromDownloads = false
     private var currentMediaItemIndex = 0
     private var playbackPosition: Long = 0
 
@@ -119,7 +118,7 @@ constructor(
         player.addListener(this)
 
         viewModelScope.launch {
-            val mediaItems: MutableList<MediaItem> = mutableListOf()
+            val mediaItems = mutableListOf<MediaItem>()
             try {
                 for (item in items) {
                     val streamUrl = item.mediaSourceUri
@@ -130,11 +129,11 @@ constructor(
                             .setLanguage(externalSubtitle.language)
                             .build()
                     }
-                    playFromDownloads = item.mediaSourceUri.isNotEmpty()
 
                     if (appPreferences.playerIntroSkipper) {
-                        val intro = jellyfinRepository.getIntroTimestamps(item.itemId)
-                        if (intro != null) intros[item.itemId] = intro
+                        jellyfinRepository.getIntroTimestamps(item.itemId)?.let {  intro ->
+                            intros[item.itemId] = intro
+                        }
                     }
 
                     Timber.d("Stream url: $streamUrl")
@@ -155,8 +154,12 @@ constructor(
                 Timber.e(e)
             }
 
-            player.setMediaItems(mediaItems, currentMediaItemIndex, items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET)
-            if (appPreferences.playerMpv && playFromDownloads) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
+            player.setMediaItems(
+                mediaItems,
+                currentMediaItemIndex,
+                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET
+            )
+            if (appPreferences.playerMpv) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1)
                 }
@@ -178,7 +181,7 @@ constructor(
                 jellyfinRepository.postPlaybackStop(
                     UUID.fromString(mediaId),
                     position.times(10000),
-                    position.div(duration).toInt()
+                    position.div(duration.toFloat()).times(100).toInt()
                 )
             } catch (e: Exception) {
                 Timber.e(e)
@@ -217,15 +220,12 @@ constructor(
             override fun run() {
                 if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                     val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                    intros[itemId].let {
-                        if (it != null) {
-                            val seconds = player.currentPosition / 1000.0
-                            if (seconds > it.showSkipPromptAt && seconds < it.hideSkipPromptAt) {
-                                _currentIntro.value = it
-                                return@let
-                            }
+                    intros[itemId]?.let { intro ->
+                        val seconds = player.currentPosition / 1000.0
+                        if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
+                            _currentIntro.value = intro
+                            return@let
                         }
-
                         _currentIntro.value = null
                     }
                 }
@@ -240,20 +240,21 @@ constructor(
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         viewModelScope.launch {
             try {
-                items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }.let { item ->
-                    if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
-                    )
-                        _currentItemTitle.value =
-                            "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
-                    else
-                        _currentItemTitle.value = item.name.orEmpty()
+                items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
+                    .let { item ->
+                        if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
+                        )
+                            _currentItemTitle.value =
+                                "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                        else
+                            _currentItemTitle.value = item.name.orEmpty()
 
-                    jellyfinRepository.postPlaybackStart(item.itemId)
+                        jellyfinRepository.postPlaybackStart(item.itemId)
 
-                    if (appPreferences.playerTrickPlay) {
-                        getTrickPlay(item.itemId)
+                        if (appPreferences.playerTrickPlay) {
+                            getTrickPlay(item.itemId)
+                        }
                     }
-                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -332,9 +333,9 @@ constructor(
                     val trickPlayData =
                         BifUtil.trickPlayDecode(byteArray, widthResolution)
 
-                    trickPlayData?.let {
-                        Timber.d("Trickplay Images: ${it.imageCount}")
-                        trickPlays[itemId] = it
+                    trickPlayData?.let { bifData ->
+                        Timber.d("Trickplay Images: ${bifData.imageCount}")
+                        trickPlays[itemId] = bifData
                         _currentTrickPlay.value = trickPlays[itemId]
                     }
                 }

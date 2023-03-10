@@ -12,13 +12,11 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
 
 class DownloaderImpl(
     private val context: Context,
-    private val jellyfinRepository: JellyfinRepository,
     private val database: ServerDatabaseDao
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
@@ -49,8 +47,7 @@ class DownloaderImpl(
             }
         }
 
-        val uri = jellyfinRepository.getStreamUrl(item.id, source.id)
-        val request = DownloadManager.Request(uri.toUri())
+        val request = DownloadManager.Request(source.path.toUri())
             .setTitle(item.name)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

@@ -152,10 +152,11 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long
     ): PlayerItem {
         val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
-        val externalSubtitles = mutableListOf<ExternalSubtitle>()
-        for (mediaStream in mediaSource.mediaStreams) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()) {
-
+        val externalSubtitles = mediaSource.mediaStreams
+            .filter { mediaStream ->
+                mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+            }
+            .map { mediaStream ->
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
                 var deliveryUrl = mediaStream.path!!
@@ -163,21 +164,18 @@ class PlayerViewModel @Inject internal constructor(
                     deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
                 }
 
-                externalSubtitles.add(
-                    ExternalSubtitle(
-                        mediaStream.title,
-                        mediaStream.language,
-                        Uri.parse(deliveryUrl),
-                        when (mediaStream.codec) {
-                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.TEXT_VTT
-                            "ass" -> MimeTypes.TEXT_SSA
-                            else -> MimeTypes.TEXT_UNKNOWN
-                        }
-                    )
+                ExternalSubtitle(
+                    mediaStream.title,
+                    mediaStream.language,
+                    Uri.parse(deliveryUrl),
+                    when (mediaStream.codec) {
+                        "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                        "webvtt" -> MimeTypes.TEXT_VTT
+                        "ass" -> MimeTypes.TEXT_SSA
+                        else -> MimeTypes.TEXT_UNKNOWN
+                    }
                 )
             }
-        }
         return PlayerItem(
             name = name,
             itemId = id,
