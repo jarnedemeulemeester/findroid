@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.di
 
+import android.app.Application
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,21 +20,23 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideJellyfinRepositoryImpl(
+        application: Application,
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
     ): JellyfinRepositoryImpl {
         println("Creating new jellyfinRepositoryImpl")
-        return JellyfinRepositoryImpl(jellyfinApi, serverDatabase)
+        return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase)
     }
 
     @Singleton
     @Provides
     fun provideJellyfinRepositoryOfflineImpl(
+        application: Application,
         serverDatabase: ServerDatabaseDao,
         appPreferences: AppPreferences,
     ): JellyfinRepositoryOfflineImpl {
         println("Creating new jellyfinRepositoryOfflineImpl")
-        return JellyfinRepositoryOfflineImpl(serverDatabase, appPreferences)
+        return JellyfinRepositoryOfflineImpl(application, serverDatabase, appPreferences)
     }
 
     @Provides

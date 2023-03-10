@@ -293,7 +293,13 @@ constructor(
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
             val mediaSource = jellyfinRepository.getMediaSources(item.id)[sourceIndex]
-            downloader.downloadItem(item, mediaSource, appPreferences.currentServer!!, jellyfinRepository.getBaseUrl())
+            val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
+            val trickPlayData = if (trickPlayManifest != null) {
+                jellyfinRepository.getTrickPlayData(item.id, trickPlayManifest.widthResolutions.max())
+            } else {
+                null
+            }
+            downloader.downloadItem(item, mediaSource, trickPlayManifest, trickPlayData, appPreferences.currentServer!!, jellyfinRepository.getBaseUrl())
             loadData(item.id)
         }
     }

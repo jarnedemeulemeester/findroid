@@ -9,9 +9,11 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
+import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
+import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import java.io.File
 import java.util.UUID
 
@@ -24,6 +26,8 @@ class DownloaderImpl(
     override suspend fun downloadItem(
         item: FindroidItem,
         source: FindroidSource,
+        trickPlayManifest: TrickPlayManifest?,
+        trickPlayData: ByteArray?,
         serverId: String,
         baseUrl: String
     ): Long {
@@ -32,17 +36,9 @@ class DownloaderImpl(
             is FindroidMovie -> {
                 database.insertMovie(item.toFindroidMovieDto(serverId))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
-                for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
-                    val id = UUID.randomUUID()
-                    val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.$id.download"))
-                    database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
-                    val request = DownloadManager.Request(Uri.parse(baseUrl + mediaStream.path))
-                        .setTitle(mediaStream.title)
-                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationUri(streamPath)
-                    val downloadId = downloadManager.enqueue(request)
-                    database.setMediaStreamDownloadId(id, downloadId)
+                downloadExternalMediaStreams(item, source, baseUrl)
+                if (trickPlayManifest != null && trickPlayData != null) {
+                    downloadTrickPlay(item, trickPlayManifest, trickPlayData)
                 }
             }
         }
@@ -68,6 +64,9 @@ class DownloaderImpl(
             File(mediaStream.path).delete()
         }
         database.deleteMediaStreamsBySourceId(source.id)
+
+        database.deleteTrickPlayManifest(item.id)
+        File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.bif").delete()
     }
 
     override suspend fun getProgress(downloadId: Long?): Pair<Int, Int> {
@@ -99,5 +98,34 @@ class DownloaderImpl(
             }
         }
         return Pair(downloadStatus, progress)
+    }
+
+    private fun downloadExternalMediaStreams(
+        item: FindroidItem,
+        source: FindroidSource,
+        baseUrl: String
+    ) {
+        for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
+            val id = UUID.randomUUID()
+            val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.$id.download"))
+            database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
+            val request = DownloadManager.Request(Uri.parse(baseUrl + mediaStream.path))
+                .setTitle(mediaStream.title)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                .setDestinationUri(streamPath)
+            val downloadId = downloadManager.enqueue(request)
+            database.setMediaStreamDownloadId(id, downloadId)
+        }
+    }
+
+    private fun downloadTrickPlay(
+        item: FindroidItem,
+        trickPlayManifest: TrickPlayManifest,
+        byteArray: ByteArray
+    ) {
+        database.insertTrickPlayManifest(trickPlayManifest.toTrickPlayManifestDto(item.id))
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.bif")
+        file.writeBytes(byteArray)
     }
 }

@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.repository
 
+import android.content.Context
+import android.os.Environment
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
@@ -16,6 +18,8 @@ import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.toTrickPlayManifest
+import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,6 +31,7 @@ import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
 class JellyfinRepositoryOfflineImpl(
+    private val context: Context,
     private val serverDatabase: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
@@ -135,13 +140,22 @@ class JellyfinRepositoryOfflineImpl(
         return null
     }
 
-    override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? {
-        return null
-    }
+    override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
+        withContext(Dispatchers.IO) {
+            serverDatabase.getTrickPlayManifest(itemId)?.toTrickPlayManifest()
+        }
 
-    override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
+        withContext(Dispatchers.IO) {
+            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            if (trickPlayManifest != null) {
+                return@withContext File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+                    "$itemId.bif"
+                ).readBytes()
+            }
+            null
+        }
 
     override suspend fun postCapabilities() {}
 

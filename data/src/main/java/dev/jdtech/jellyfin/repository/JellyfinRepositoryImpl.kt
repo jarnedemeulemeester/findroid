@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.repository
 
+import android.content.Context
+import android.os.Environment
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -24,8 +26,10 @@ import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toJellyfinCollection
 import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
+import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
+import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +52,7 @@ import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
 
 class JellyfinRepositoryImpl(
+    private val context: Context,
     private val jellyfinApi: JellyfinApi,
     private val serverDatabase: ServerDatabaseDao
 ) : JellyfinRepository {
@@ -337,6 +342,9 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
         withContext(Dispatchers.IO) {
+            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            if (trickPlayManifest != null)
+                return@withContext trickPlayManifest.toTrickPlayManifest()
             // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
             val pathParameters = mutableMapOf<String, UUID>()
             pathParameters["itemId"] = itemId
@@ -353,6 +361,14 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
         withContext(Dispatchers.IO) {
+            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            if (trickPlayManifest != null) {
+                return@withContext File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+                    "$itemId.bif"
+                ).readBytes()
+            }
+
             // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
             val pathParameters = mutableMapOf<String, Any>()
             pathParameters["itemId"] = itemId

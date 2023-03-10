@@ -131,7 +131,7 @@ constructor(
                     }
 
                     if (appPreferences.playerIntroSkipper) {
-                        jellyfinRepository.getIntroTimestamps(item.itemId)?.let {  intro ->
+                        jellyfinRepository.getIntroTimestamps(item.itemId)?.let { intro ->
                             intros[item.itemId] = intro
                         }
                     }

@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.ServerWithUsers
+import dev.jdtech.jellyfin.models.TrickPlayManifestDto
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
 
@@ -139,4 +140,13 @@ interface ServerDatabaseDao {
 
     @Query("UPDATE movies SET played = :played WHERE id = :id")
     fun setPlayed(id: UUID, played: Boolean)
+
+    @Insert
+    fun insertTrickPlayManifest(trickPlayManifestDto: TrickPlayManifestDto)
+
+    @Query("SELECT * FROM trickPlayManifests WHERE itemId = :itemId")
+    fun getTrickPlayManifest(itemId: UUID): TrickPlayManifestDto?
+
+    @Query("DELETE FROM trickPlayManifests WHERE itemId = :itemId")
+    fun deleteTrickPlayManifest(itemId: UUID)
 }
