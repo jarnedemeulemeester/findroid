@@ -36,9 +36,9 @@ suspend fun BaseItemDto.toFindroidItem(
 }
 
 fun FindroidItem.isDownloading(): Boolean {
-    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { it.path.endsWith(".download") }
+    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { it.path.endsWith(".download") }
 }
 
 fun FindroidItem.isDownloaded(): Boolean {
-    return sources.filter { it.type == JellyfinSourceType.LOCAL }.any { !it.path.endsWith(".download") }
+    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { !it.path.endsWith(".download") }
 }

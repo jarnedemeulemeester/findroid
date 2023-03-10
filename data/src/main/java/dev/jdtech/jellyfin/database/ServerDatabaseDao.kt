@@ -141,7 +141,7 @@ interface ServerDatabaseDao {
     @Query("UPDATE movies SET played = :played WHERE id = :id")
     fun setPlayed(id: UUID, played: Boolean)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrickPlayManifest(trickPlayManifestDto: TrickPlayManifestDto)
 
     @Query("SELECT * FROM trickPlayManifests WHERE itemId = :itemId")

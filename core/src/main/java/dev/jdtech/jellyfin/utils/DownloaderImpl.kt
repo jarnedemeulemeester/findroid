@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.core.net.toUri
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -14,43 +15,49 @@ import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
 
 class DownloaderImpl(
     private val context: Context,
-    private val database: ServerDatabaseDao
+    private val database: ServerDatabaseDao,
+    private val jellyfinRepository: JellyfinRepository,
+    private val appPreferences: AppPreferences,
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
     override suspend fun downloadItem(
         item: FindroidItem,
-        source: FindroidSource,
-        trickPlayManifest: TrickPlayManifest?,
-        trickPlayData: ByteArray?,
-        serverId: String,
-        baseUrl: String
+        sourceId: String,
     ): Long {
+        val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
+        val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
+        val trickPlayData = if (trickPlayManifest != null) {
+            jellyfinRepository.getTrickPlayData(item.id, trickPlayManifest.widthResolutions.max())
+        } else {
+            null
+        }
         val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
         when (item) {
             is FindroidMovie -> {
-                database.insertMovie(item.toFindroidMovieDto(serverId))
+                database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
-                downloadExternalMediaStreams(item, source, baseUrl)
+                downloadExternalMediaStreams(item, source)
                 if (trickPlayManifest != null && trickPlayData != null) {
                     downloadTrickPlay(item, trickPlayManifest, trickPlayData)
                 }
+                val request = DownloadManager.Request(source.path.toUri())
+                    .setTitle(item.name)
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationUri(path)
+                val downloadId = downloadManager.enqueue(request)
+                database.setSourceDownloadId(source.id, downloadId)
+                return downloadId
             }
         }
-
-        val request = DownloadManager.Request(source.path.toUri())
-            .setTitle(item.name)
-            .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationUri(path)
-        val downloadId = downloadManager.enqueue(request)
-        database.setSourceDownloadId(source.id, downloadId)
-        return downloadId
+        return -1
     }
 
     override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {
@@ -103,13 +110,12 @@ class DownloaderImpl(
     private fun downloadExternalMediaStreams(
         item: FindroidItem,
         source: FindroidSource,
-        baseUrl: String
     ) {
         for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
             val id = UUID.randomUUID()
             val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.$id.download"))
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
-            val request = DownloadManager.Request(Uri.parse(baseUrl + mediaStream.path))
+            val request = DownloadManager.Request(Uri.parse(mediaStream.path))
                 .setTitle(mediaStream.title)
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)

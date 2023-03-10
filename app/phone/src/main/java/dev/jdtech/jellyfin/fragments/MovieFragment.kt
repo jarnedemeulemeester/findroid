@@ -24,7 +24,7 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
-import dev.jdtech.jellyfin.models.JellyfinSourceType
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
@@ -178,7 +178,8 @@ class MovieFragment : Fragment() {
     private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {
         uiState.apply {
             val canDownload =
-                item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
+                item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
+            val canDelete = item.sources.any { it.type == FindroidSourceType.LOCAL }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
 //            if (item.remoteTrailers.isNullOrEmpty()) {
@@ -218,7 +219,7 @@ class MovieFragment : Fragment() {
                 binding.downloadButton.setImageResource(R.drawable.ic_trash)
             }
 
-            when (canDownload) {
+            when (canDownload || canDelete) {
                 true -> binding.downloadButton.isVisible = true
                 false -> binding.downloadButton.isVisible = false
             }

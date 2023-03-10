@@ -54,7 +54,7 @@ import timber.log.Timber
 class JellyfinRepositoryImpl(
     private val context: Context,
     private val jellyfinApi: JellyfinApi,
-    private val serverDatabase: ServerDatabaseDao
+    private val database: ServerDatabaseDao
 ) : JellyfinRepository {
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
@@ -77,7 +77,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toFindroidMovie(this@JellyfinRepositoryImpl, serverDatabase)
+            ).content.toFindroidMovie(this@JellyfinRepositoryImpl, database)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
@@ -118,7 +118,7 @@ class JellyfinRepositoryImpl(
                 limit = limit,
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getItemsPaging(
@@ -160,7 +160,7 @@ class JellyfinRepositoryImpl(
         ).content.items
             .orEmpty()
             .mapNotNull {
-                it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase)
+                it.toFindroidItem(this@JellyfinRepositoryImpl, database)
             }
     }
 
@@ -177,7 +177,7 @@ class JellyfinRepositoryImpl(
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> =
@@ -193,7 +193,7 @@ class JellyfinRepositoryImpl(
                 recursive = true
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, serverDatabase) }
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
@@ -204,7 +204,7 @@ class JellyfinRepositoryImpl(
             ).content.items.orEmpty()
         }
         return items.mapNotNull {
-            it.toFindroidItem(this, serverDatabase)
+            it.toFindroidItem(this, database)
         }
     }
 
@@ -216,7 +216,7 @@ class JellyfinRepositoryImpl(
             ).content
         }
         return items.mapNotNull {
-            it.toFindroidItem(this, serverDatabase)
+            it.toFindroidItem(this, database)
         }
     }
 
@@ -305,7 +305,7 @@ class JellyfinRepositoryImpl(
                 }
             )
             sources.addAll(
-                serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) }
+                database.getSources(itemId).map { it.toFindroidSource(database) }
             )
             sources
         }
@@ -342,7 +342,7 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
         withContext(Dispatchers.IO) {
-            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            val trickPlayManifest = database.getTrickPlayManifest(itemId)
             if (trickPlayManifest != null)
                 return@withContext trickPlayManifest.toTrickPlayManifest()
             // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
@@ -361,7 +361,7 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
         withContext(Dispatchers.IO) {
-            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            val trickPlayManifest = database.getTrickPlayManifest(itemId)
             if (trickPlayManifest != null) {
                 return@withContext File(
                     context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
@@ -425,14 +425,14 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             when {
                 playedPercentage < 10 -> {
-                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
-                    serverDatabase.setPlayed(itemId, false)
+                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlayed(itemId, false)
                 }
                 playedPercentage > 90 -> {
-                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
-                    serverDatabase.setPlayed(itemId, true)
+                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlayed(itemId, true)
                 }
-                else -> serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+                else -> database.setMoviePlaybackPositionTicks(itemId, positionTicks)
             }
             jellyfinApi.playStateApi.onPlaybackStopped(
                 jellyfinApi.userId!!,
@@ -449,7 +449,7 @@ class JellyfinRepositoryImpl(
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
-            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            database.setMoviePlaybackPositionTicks(itemId, positionTicks)
             jellyfinApi.playStateApi.onPlaybackProgress(
                 jellyfinApi.userId!!,
                 itemId,
@@ -473,14 +473,14 @@ class JellyfinRepositoryImpl(
 
     override suspend fun markAsPlayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setPlayed(itemId, true)
+            database.setPlayed(itemId, true)
             jellyfinApi.playStateApi.markPlayedItem(jellyfinApi.userId!!, itemId)
         }
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setPlayed(itemId, false)
+            database.setPlayed(itemId, false)
             jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
         }
     }

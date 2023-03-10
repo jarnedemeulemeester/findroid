@@ -25,7 +25,7 @@ import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.JellyfinSourceType
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
@@ -156,7 +156,7 @@ class ShowFragment : Fragment() {
     private fun bindUiStateNormal(uiState: ShowViewModel.UiState.Normal) {
         uiState.apply {
             val downloaded = item.isDownloaded()
-            val canDownload = item.canDownload && item.sources.any { it.type == JellyfinSourceType.REMOTE }
+            val canDownload = item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
 //            if (item.remoteTrailers.isNullOrEmpty()) {

@@ -6,13 +6,12 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.JellyfinSourceType
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.models.isDownloading
@@ -37,7 +36,6 @@ class MovieViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
-    private val appPreferences: AppPreferences,
     private val downloader: Downloader
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -292,21 +290,14 @@ constructor(
 
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            val mediaSource = jellyfinRepository.getMediaSources(item.id)[sourceIndex]
-            val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
-            val trickPlayData = if (trickPlayManifest != null) {
-                jellyfinRepository.getTrickPlayData(item.id, trickPlayManifest.widthResolutions.max())
-            } else {
-                null
-            }
-            downloader.downloadItem(item, mediaSource, trickPlayManifest, trickPlayData, appPreferences.currentServer!!, jellyfinRepository.getBaseUrl())
+            downloader.downloadItem(item, item.sources[sourceIndex].id)
             loadData(item.id)
         }
     }
 
     fun deleteItem() {
         viewModelScope.launch {
-            downloader.deleteItem(item, item.sources.first { it.type == JellyfinSourceType.LOCAL })
+            downloader.deleteItem(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
             loadData(item.id)
         }
     }
@@ -316,7 +307,7 @@ constructor(
         val downloadProgressRunnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
-                    val (downloadStatus, progress) = downloader.getProgress(item.sources.firstOrNull { it.type == JellyfinSourceType.LOCAL }?.downloadId)
+                    val (downloadStatus, progress) = downloader.getProgress(item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }?.downloadId)
                     _downloadStatus.emit(Pair(downloadStatus, progress))
                     if (downloadStatus != DownloadManager.STATUS_RUNNING && downloadStatus != DownloadManager.STATUS_PENDING) {
                         loadData(item.id)

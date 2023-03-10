@@ -9,7 +9,7 @@ import org.jellyfin.sdk.model.api.MediaSourceInfo
 data class FindroidSource(
     val id: String,
     val name: String,
-    val type: JellyfinSourceType,
+    val type: FindroidSourceType,
     val path: String,
     val mediaStreams: List<FindroidMediaStream>,
     val downloadId: Long? = null
@@ -33,7 +33,7 @@ suspend fun MediaSourceInfo.toFindroidSource(
     return FindroidSource(
         id = id.orEmpty(),
         name = name.orEmpty(),
-        type = JellyfinSourceType.REMOTE,
+        type = FindroidSourceType.REMOTE,
         path = path,
         mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList()
     )
@@ -52,7 +52,7 @@ fun FindroidSourceDto.toFindroidSource(
     )
 }
 
-enum class JellyfinSourceType {
+enum class FindroidSourceType {
     REMOTE,
     LOCAL,
 }

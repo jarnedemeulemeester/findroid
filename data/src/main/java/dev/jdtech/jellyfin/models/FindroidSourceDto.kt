@@ -12,7 +12,7 @@ data class FindroidSourceDto(
     val id: String,
     val itemId: UUID,
     val name: String,
-    val type: JellyfinSourceType,
+    val type: FindroidSourceType,
     val path: String,
     val downloadId: Long? = null,
 )
@@ -22,7 +22,7 @@ fun FindroidSource.toFindroidSourceDto(itemId: UUID, path: String): FindroidSour
         id = id,
         itemId = itemId,
         name = name,
-        type = JellyfinSourceType.LOCAL,
+        type = FindroidSourceType.LOCAL,
         path = path,
     )
 }

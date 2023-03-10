@@ -21,7 +21,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.JellyfinSourceType
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.setTintColor
@@ -110,7 +110,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
         uiState.apply {
             val downloaded = episode.isDownloaded()
-            val canDownload = episode.canDownload && episode.sources.any { it.type == JellyfinSourceType.REMOTE }
+            val canDownload = episode.canDownload && episode.sources.any { it.type == FindroidSourceType.REMOTE }
 
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(

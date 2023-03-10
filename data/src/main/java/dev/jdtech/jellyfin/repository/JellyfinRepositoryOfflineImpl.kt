@@ -32,7 +32,7 @@ import org.jellyfin.sdk.model.api.UserConfiguration
 
 class JellyfinRepositoryOfflineImpl(
     private val context: Context,
-    private val serverDatabase: ServerDatabaseDao,
+    private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
     override suspend fun getUserViews(): List<BaseItemDto> {
@@ -49,7 +49,7 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            serverDatabase.getMovie(itemId).toFindroidMovie(serverDatabase)
+            database.getMovie(itemId).toFindroidMovie(database)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow {
@@ -99,9 +99,9 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
-        val items = serverDatabase.getResumeItems(appPreferences.currentServer!!)
+        val items = database.getResumeItems(appPreferences.currentServer!!)
         return items.map {
-            it.toFindroidMovie(serverDatabase)
+            it.toFindroidMovie(database)
         }
     }
 
@@ -129,7 +129,7 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
         withContext(Dispatchers.IO) {
-            serverDatabase.getSources(itemId).map { it.toFindroidSource(serverDatabase) }
+            database.getSources(itemId).map { it.toFindroidSource(database) }
         }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
@@ -142,12 +142,12 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
         withContext(Dispatchers.IO) {
-            serverDatabase.getTrickPlayManifest(itemId)?.toTrickPlayManifest()
+            database.getTrickPlayManifest(itemId)?.toTrickPlayManifest()
         }
 
     override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
         withContext(Dispatchers.IO) {
-            val trickPlayManifest = serverDatabase.getTrickPlayManifest(itemId)
+            val trickPlayManifest = database.getTrickPlayManifest(itemId)
             if (trickPlayManifest != null) {
                 return@withContext File(
                     context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
@@ -165,14 +165,14 @@ class JellyfinRepositoryOfflineImpl(
         withContext(Dispatchers.IO) {
             when {
                 playedPercentage < 10 -> {
-                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
-                    serverDatabase.setPlayed(itemId, false)
+                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlayed(itemId, false)
                 }
                 playedPercentage > 90 -> {
-                    serverDatabase.setMoviePlaybackPositionTicks(itemId, 0)
-                    serverDatabase.setPlayed(itemId, true)
+                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlayed(itemId, true)
                 }
-                else -> serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+                else -> database.setMoviePlaybackPositionTicks(itemId, positionTicks)
             }
         }
     }
@@ -183,7 +183,7 @@ class JellyfinRepositoryOfflineImpl(
         isPaused: Boolean
     ) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            database.setMoviePlaybackPositionTicks(itemId, positionTicks)
         }
     }
 
@@ -197,13 +197,13 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun markAsPlayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setPlayed(itemId, true)
+            database.setPlayed(itemId, true)
         }
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            serverDatabase.setPlayed(itemId, false)
+            database.setPlayed(itemId, false)
         }
     }
 
