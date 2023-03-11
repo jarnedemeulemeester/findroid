@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
 
         val navView: NavigationBarView = binding.navView as NavigationBarView
 
+        if (appPreferences.offlineMode) {
+            navView.menu.clear()
+            navView.inflateMenu(R.menu.bottom_nav_menu_offline)
+        }
+
         setSupportActionBar(binding.mainToolbar)
 
         // Passing each menu ID as a set of Ids because each
@@ -68,7 +73,8 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment,
                 R.id.mediaFragment,
-                R.id.favoriteFragment
+                R.id.favoriteFragment,
+                R.id.downloadsFragment,
             )
         )
 

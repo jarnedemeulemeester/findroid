@@ -23,9 +23,10 @@ object RepositoryModule {
         application: Application,
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
+        appPreferences: AppPreferences,
     ): JellyfinRepositoryImpl {
         println("Creating new jellyfinRepositoryImpl")
-        return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase)
+        return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase, appPreferences)
     }
 
     @Singleton

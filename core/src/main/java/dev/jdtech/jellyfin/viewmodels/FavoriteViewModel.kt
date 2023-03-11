@@ -43,11 +43,6 @@ constructor(
             try {
                 val items = jellyfinRepository.getFavoriteItems()
 
-                if (items.isEmpty()) {
-                    _uiState.emit(UiState.Normal(emptyList()))
-                    return@launch
-                }
-
                 val favoriteSections = mutableListOf<FavoriteSection>()
 
                 withContext(Dispatchers.Default) {

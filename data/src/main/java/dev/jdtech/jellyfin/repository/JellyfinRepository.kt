@@ -108,4 +108,6 @@ interface JellyfinRepository {
     suspend fun updateDeviceName(name: String)
 
     suspend fun getUserConfiguration(): UserConfiguration
+
+    suspend fun getDownloads(currentServer: Boolean = false): List<FindroidItem>
 }

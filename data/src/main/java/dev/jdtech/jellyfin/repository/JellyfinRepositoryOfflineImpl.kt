@@ -222,4 +222,12 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun getUserConfiguration(): UserConfiguration {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getDownloads(currentServer: Boolean): List<FindroidItem> =
+        withContext(Dispatchers.IO) {
+            when (currentServer) {
+                true -> database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database) }
+                false -> database.getMovies().map { it.toFindroidMovie(database) }
+            }
+        }
 }

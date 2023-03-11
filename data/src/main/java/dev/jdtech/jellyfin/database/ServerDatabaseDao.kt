@@ -149,4 +149,10 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM trickPlayManifests WHERE itemId = :itemId")
     fun deleteTrickPlayManifest(itemId: UUID)
+
+    @Query("SELECT * FROM movies")
+    fun getMovies(): List<FindroidMovieDto>
+
+    @Query("SELECT * FROM movies WHERE serverId = :serverId")
+    fun getMoviesByServerId(serverId: String): List<FindroidMovieDto>
 }

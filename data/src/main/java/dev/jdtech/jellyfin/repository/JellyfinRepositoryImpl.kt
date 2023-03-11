@@ -5,6 +5,7 @@ import android.os.Environment
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
@@ -54,7 +55,8 @@ import timber.log.Timber
 class JellyfinRepositoryImpl(
     private val context: Context,
     private val jellyfinApi: JellyfinApi,
-    private val database: ServerDatabaseDao
+    private val database: ServerDatabaseDao,
+    private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
@@ -509,4 +511,12 @@ class JellyfinRepositoryImpl(
     override suspend fun getUserConfiguration(): UserConfiguration = withContext(Dispatchers.IO) {
         jellyfinApi.userApi.getCurrentUser().content.configuration!!
     }
+
+    override suspend fun getDownloads(currentServer: Boolean): List<FindroidItem> =
+        withContext(Dispatchers.IO) {
+            when (currentServer) {
+                true -> database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database) }
+                false -> database.getMovies().map { it.toFindroidMovie(database) }
+            }
+        }
 }

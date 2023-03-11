@@ -125,7 +125,7 @@ constructor(
                     val streamUrl = item.mediaSourceUri
                     val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
                         MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
-                            .setLabel(if (externalSubtitle.title.isBlank()) application.getString(R.string.external) else externalSubtitle.title)
+                            .setLabel(externalSubtitle.title.ifBlank { application.getString(R.string.external) })
                             .setMimeType(externalSubtitle.mimeType)
                             .setLanguage(externalSubtitle.language)
                             .build()
