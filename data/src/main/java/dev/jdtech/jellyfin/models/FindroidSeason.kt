@@ -23,7 +23,7 @@ data class FindroidSeason(
     override val unplayedItemCount: Int?,
 ) : FindroidItem
 
-fun BaseItemDto.toJellyfinSeasonItem(): FindroidSeason {
+fun BaseItemDto.toFindroidSeason(): FindroidSeason {
     return FindroidSeason(
         id = id,
         name = name.orEmpty(),
@@ -40,5 +40,24 @@ fun BaseItemDto.toJellyfinSeasonItem(): FindroidSeason {
         episodes = emptyList(),
         seriesId = seriesId!!,
         seriesName = seriesName.orEmpty(),
+    )
+}
+
+fun FindroidSeasonDto.toFindroidSeason(): FindroidSeason {
+    return FindroidSeason(
+        id = id,
+        name = name,
+        originalTitle = null,
+        overview = overview,
+        played = played,
+        favorite = favorite,
+        canPlay = true,
+        canDownload = false,
+        unplayedItemCount = unplayedItemCount,
+        indexNumber = indexNumber,
+        sources = emptyList(),
+        episodes = emptyList(),
+        seriesId = seriesId,
+        seriesName = seriesName,
     )
 }

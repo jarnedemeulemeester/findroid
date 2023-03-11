@@ -29,6 +29,8 @@ interface JellyfinRepository {
 
     suspend fun getShow(itemId: UUID): FindroidShow
 
+    suspend fun getSeason(itemId: UUID): FindroidSeason
+
     suspend fun getLibraries(): List<FindroidCollection>
 
     suspend fun getItems(
@@ -107,7 +109,7 @@ interface JellyfinRepository {
 
     suspend fun updateDeviceName(name: String)
 
-    suspend fun getUserConfiguration(): UserConfiguration
+    suspend fun getUserConfiguration(): UserConfiguration?
 
     suspend fun getDownloads(currentServer: Boolean = false): List<FindroidItem>
 }

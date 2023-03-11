@@ -1,10 +1,16 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.DownloadManager
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.Downloader
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +23,16 @@ import timber.log.Timber
 class EpisodeBottomSheetViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val downloader: Downloader,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private val _downloadStatus = MutableStateFlow(Pair(0, 0))
+    val downloadStatus = _downloadStatus.asStateFlow()
+
+    private val handler = Handler(Looper.getMainLooper())
 
     sealed class UiState {
         data class Normal(
@@ -38,6 +50,9 @@ constructor(
             _uiState.emit(UiState.Loading)
             try {
                 item = jellyfinRepository.getEpisode(episodeId)
+                if (item.isDownloading()) {
+                    pollDownloadProgress()
+                }
                 _uiState.emit(
                     UiState.Normal(
                         item,
@@ -79,9 +94,41 @@ constructor(
         }
     }
 
-    fun download() {
+    fun download(sourceIndex: Int = 0) {
+        viewModelScope.launch {
+            downloader.downloadItem(item, item.sources[sourceIndex].id)
+            loadEpisode(item.id)
+        }
     }
 
     fun deleteEpisode() {
+        viewModelScope.launch {
+            downloader.deleteItem(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
+            loadEpisode(item.id)
+        }
+    }
+
+    private fun pollDownloadProgress() {
+        handler.removeCallbacksAndMessages(null)
+        val downloadProgressRunnable = object : Runnable {
+            override fun run() {
+                viewModelScope.launch {
+                    val (downloadStatus, progress) = downloader.getProgress(item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }?.downloadId)
+                    _downloadStatus.emit(Pair(downloadStatus, progress))
+                    if (downloadStatus != DownloadManager.STATUS_RUNNING && downloadStatus != DownloadManager.STATUS_PENDING) {
+                        loadEpisode(item.id)
+                    }
+                }
+                if (item.isDownloading()) {
+                    handler.postDelayed(this, 2000L)
+                }
+            }
+        }
+        handler.post(downloadProgressRunnable)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        handler.removeCallbacksAndMessages(null)
     }
 }

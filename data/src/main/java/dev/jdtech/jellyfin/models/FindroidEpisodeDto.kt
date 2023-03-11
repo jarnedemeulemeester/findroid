@@ -5,42 +5,44 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Entity(tableName = "movies")
-data class FindroidMovieDto(
+@Entity(tableName = "episodes")
+data class FindroidEpisodeDto(
     @PrimaryKey
     val id: UUID,
     val serverId: String?,
+    val seasonId: UUID,
+    val seriesId: UUID,
     val name: String,
-    val originalTitle: String?,
+    val seriesName: String,
     val overview: String,
+    val indexNumber: Int,
+    val indexNumberEnd: Int,
+    val parentIndexNumber: Int,
     val played: Boolean,
     val favorite: Boolean,
     val runtimeTicks: Long,
     val playbackPositionTicks: Long,
     val premiereDate: LocalDateTime?,
     val communityRating: Float?,
-    val officialRating: String?,
-    val status: String,
-    val productionYear: Int?,
-    val endDate: LocalDateTime?,
 )
 
-fun FindroidMovie.toFindroidMovieDto(serverId: String? = null): FindroidMovieDto {
-    return FindroidMovieDto(
+fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpisodeDto {
+    return FindroidEpisodeDto(
         id = id,
         serverId = serverId,
+        seasonId = seasonId,
+        seriesId = seriesId,
         name = name,
-        originalTitle = originalTitle,
+        seriesName = seriesName,
         overview = overview,
+        indexNumber = indexNumber,
+        indexNumberEnd = indexNumberEnd,
+        parentIndexNumber = parentIndexNumber,
         played = played,
         favorite = favorite,
         runtimeTicks = runtimeTicks,
         playbackPositionTicks = playbackPositionTicks,
         premiereDate = premiereDate,
         communityRating = communityRating,
-        officialRating = officialRating,
-        status = status,
-        productionYear = productionYear,
-        endDate = endDate,
     )
 }

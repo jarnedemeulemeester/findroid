@@ -23,10 +23,10 @@ import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidIntro
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toJellyfinCollection
-import dev.jdtech.jellyfin.models.toJellyfinSeasonItem
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
@@ -71,7 +71,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl)
+            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
@@ -88,6 +88,14 @@ class JellyfinRepositoryImpl(
                 jellyfinApi.userId!!,
                 itemId
             ).content.toFindroidShow()
+        }
+
+    override suspend fun getSeason(itemId: UUID): FindroidSeason =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(
+                jellyfinApi.userId!!,
+                itemId
+            ).content.toFindroidSeason()
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
@@ -226,7 +234,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
                 .orEmpty()
-                .map { it.toJellyfinSeasonItem() }
+                .map { it.toFindroidSeason() }
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
@@ -256,7 +264,7 @@ class JellyfinRepositoryImpl(
                 limit = limit,
             ).content.items
                 .orEmpty()
-                .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
+                .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
@@ -514,9 +522,28 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getDownloads(currentServer: Boolean): List<FindroidItem> =
         withContext(Dispatchers.IO) {
+            val items = mutableListOf<FindroidItem>()
             when (currentServer) {
-                true -> database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database) }
-                false -> database.getMovies().map { it.toFindroidMovie(database) }
+                true -> {
+                    items.addAll(
+                        database.getMoviesByServerId(appPreferences.currentServer!!)
+                            .map { it.toFindroidMovie(database) }
+                    )
+                    items.addAll(
+                        database.getShowsByServerId(appPreferences.currentServer!!)
+                            .map { it.toFindroidShow() }
+                    )
+                    items
+                }
+                false -> {
+                    items.addAll(
+                        database.getMovies().map { it.toFindroidMovie(database) }
+                    )
+                    items.addAll(
+                        database.getShows().map { it.toFindroidShow() }
+                    )
+                    items
+                }
             }
         }
 }

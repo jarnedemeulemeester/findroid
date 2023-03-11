@@ -16,7 +16,10 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import java.io.File
@@ -43,18 +46,25 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getEpisode(itemId: UUID): FindroidEpisode {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
             database.getMovie(itemId).toFindroidMovie(database)
         }
 
-    override suspend fun getShow(itemId: UUID): FindroidShow {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getShow(itemId: UUID): FindroidShow =
+        withContext(Dispatchers.IO) {
+            database.getShow(itemId).toFindroidShow()
+        }
+
+    override suspend fun getSeason(itemId: UUID): FindroidSeason =
+        withContext(Dispatchers.IO) {
+            database.getSeason(itemId).toFindroidSeason()
+        }
+
+    override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
+        withContext(Dispatchers.IO) {
+            database.getEpisode(itemId).toFindroidEpisode(database)
+        }
 
     override suspend fun getLibraries(): List<FindroidCollection> {
         TODO("Not yet implemented")
@@ -109,9 +119,10 @@ class JellyfinRepositoryOfflineImpl(
         return emptyList()
     }
 
-    override suspend fun getSeasons(seriesId: UUID): List<FindroidSeason> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getSeasons(seriesId: UUID): List<FindroidSeason> =
+        withContext(Dispatchers.IO) {
+            database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason() }
+        }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> {
         return emptyList()
@@ -123,9 +134,10 @@ class JellyfinRepositoryOfflineImpl(
         fields: List<ItemFields>?,
         startItemId: UUID?,
         limit: Int?
-    ): List<FindroidEpisode> {
-        TODO("Not yet implemented")
-    }
+    ): List<FindroidEpisode> =
+        withContext(Dispatchers.IO) {
+            database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database) }
+        }
 
     override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
         withContext(Dispatchers.IO) {
@@ -219,15 +231,34 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserConfiguration(): UserConfiguration {
-        TODO("Not yet implemented")
+    override suspend fun getUserConfiguration(): UserConfiguration? {
+        return null
     }
 
     override suspend fun getDownloads(currentServer: Boolean): List<FindroidItem> =
         withContext(Dispatchers.IO) {
+            val items = mutableListOf<FindroidItem>()
             when (currentServer) {
-                true -> database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database) }
-                false -> database.getMovies().map { it.toFindroidMovie(database) }
+                true -> {
+                    items.addAll(
+                        database.getMoviesByServerId(appPreferences.currentServer!!)
+                            .map { it.toFindroidMovie(database) }
+                    )
+                    items.addAll(
+                        database.getShowsByServerId(appPreferences.currentServer!!)
+                            .map { it.toFindroidShow() }
+                    )
+                    items
+                }
+                false -> {
+                    items.addAll(
+                        database.getMovies().map { it.toFindroidMovie(database) }
+                    )
+                    items.addAll(
+                        database.getShows().map { it.toFindroidShow() }
+                    )
+                    items
+                }
             }
         }
 }

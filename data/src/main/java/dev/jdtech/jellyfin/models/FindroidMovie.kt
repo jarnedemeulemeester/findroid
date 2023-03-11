@@ -63,7 +63,7 @@ suspend fun BaseItemDto.toFindroidMovie(
     )
 }
 
-fun FindroidMovieDto.toFindroidMovie(serverDatabase: ServerDatabaseDao): FindroidMovie {
+fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao): FindroidMovie {
     return FindroidMovie(
         id = id,
         name = name,
@@ -81,9 +81,8 @@ fun FindroidMovieDto.toFindroidMovie(serverDatabase: ServerDatabaseDao): Findroi
         status = status,
         productionYear = productionYear,
         endDate = endDate,
-        unplayedItemCount = unplayedItemCount,
         canDownload = false,
         canPlay = true,
-        sources = serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) }
+        sources = database.getSources(id).map { it.toFindroidSource(database) }
     )
 }

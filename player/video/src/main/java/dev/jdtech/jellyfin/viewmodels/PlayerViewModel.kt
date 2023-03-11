@@ -140,7 +140,7 @@ class PlayerViewModel @Inject internal constructor(
                 seasonId = item.seasonId,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
                 startItemId = item.id,
-                limit = if (userConfig.enableNextEpisodeAutoPlay) null else 1
+                limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1
             )
             .filter { it.sources.isNotEmpty() }
 //            .filter { it.locationType != VIRTUAL }

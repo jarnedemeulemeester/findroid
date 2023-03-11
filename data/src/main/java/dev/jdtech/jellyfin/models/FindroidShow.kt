@@ -53,3 +53,28 @@ fun BaseItemDto.toFindroidShow(): FindroidShow {
         endDate = endDate,
     )
 }
+
+fun FindroidShowDto.toFindroidShow(): FindroidShow {
+    return FindroidShow(
+        id = id,
+        name = name,
+        originalTitle = originalTitle,
+        overview = overview,
+        played = played,
+        favorite = favorite,
+        canPlay = true,
+        canDownload = false,
+        playbackPositionTicks = playbackPositionTicks,
+        unplayedItemCount = unplayedItemCount,
+        sources = emptyList(),
+        seasons = emptyList(),
+        genres = emptyList(),
+        people = emptyList(),
+        runtimeTicks = runtimeTicks,
+        communityRating = communityRating,
+        officialRating = officialRating,
+        status = status,
+        productionYear = productionYear,
+        endDate = endDate,
+    )
+}

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.app.DownloadManager
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
@@ -70,6 +72,39 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.downloadStatus.collect { (status, progress) ->
+                    when (status) {
+                        0 -> Unit
+                        DownloadManager.STATUS_PENDING -> {
+                            binding.downloadButton.isEnabled = false
+                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.progressDownload.isIndeterminate = true
+                            binding.progressDownload.isVisible = true
+                        }
+                        DownloadManager.STATUS_RUNNING -> {
+                            binding.downloadButton.isEnabled = false
+                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.progressDownload.isIndeterminate = false
+                            binding.progressDownload.isVisible = true
+                            binding.progressDownload.setProgressCompat(progress, true)
+                        }
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                            binding.progressDownload.isVisible = false
+                            binding.downloadButton.isEnabled = true
+                        }
+                        else -> {
+                            binding.progressDownload.isVisible = false
+                            binding.downloadButton.setImageResource(R.drawable.ic_download)
+                            binding.downloadButton.isEnabled = true
+                        }
+                    }
+                }
+            }
+        }
+
         playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
             when (playerItems) {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
@@ -90,9 +125,19 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         binding.downloadButton.setOnClickListener {
-            binding.downloadButton.isEnabled = false
-            viewModel.download()
-            binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+            if (viewModel.item.isDownloaded()) {
+                viewModel.deleteEpisode()
+                binding.downloadButton.setImageResource(R.drawable.ic_download)
+            } else {
+                if (viewModel.item.sources.size > 1) {
+                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
+                        viewModel.download(it)
+                    }
+                    dialog.show()
+                    return@setOnClickListener
+                }
+                viewModel.download()
+            }
         }
 
         viewModel.loadEpisode(args.episodeId)
@@ -109,8 +154,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
         uiState.apply {
-            val downloaded = episode.isDownloaded()
             val canDownload = episode.canDownload && episode.sources.any { it.type == FindroidSourceType.REMOTE }
+            val canDelete = episode.sources.any { it.type == FindroidSourceType.LOCAL }
 
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
@@ -142,16 +187,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
-            when (canDownload) {
-                true -> {
-                    binding.downloadButtonWrapper.isVisible = true
-                    binding.downloadButton.isEnabled = true
+            if (episode.isDownloaded()) {
+                binding.downloadButton.setImageResource(R.drawable.ic_trash)
+            }
 
-                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
-                }
-                false -> {
-                    binding.downloadButtonWrapper.isVisible = false
-                }
+            when (canDownload || canDelete) {
+                true -> binding.downloadButton.isVisible = true
+                false -> binding.downloadButton.isVisible = false
             }
 
             binding.episodeName.text = getString(
@@ -167,7 +209,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.communityRating.isVisible = episode.communityRating != null
             binding.communityRating.text = episode.communityRating.toString()
             binding.missingIcon.isVisible = false
-            binding.downloadedIcon.isVisible = downloaded
 
             bindCardItemImage(binding.episodeImage, episode)
         }

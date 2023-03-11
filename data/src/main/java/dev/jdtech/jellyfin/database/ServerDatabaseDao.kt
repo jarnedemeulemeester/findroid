@@ -7,8 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
+import dev.jdtech.jellyfin.models.FindroidSeasonDto
+import dev.jdtech.jellyfin.models.FindroidShowDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
@@ -155,4 +158,49 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM movies WHERE serverId = :serverId")
     fun getMoviesByServerId(serverId: String): List<FindroidMovieDto>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertShow(show: FindroidShowDto)
+
+    @Query("SELECT * FROM shows WHERE id = :id")
+    fun getShow(id: UUID): FindroidShowDto
+
+    @Query("SELECT * FROM shows")
+    fun getShows(): List<FindroidShowDto>
+
+    @Query("SELECT * FROM shows WHERE serverId = :serverId")
+    fun getShowsByServerId(serverId: String): List<FindroidShowDto>
+
+    @Query("DELETE FROM shows WHERE id = :id")
+    fun deleteShow(id: UUID)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSeason(show: FindroidSeasonDto)
+
+    @Query("SELECT * FROM seasons WHERE id = :id")
+    fun getSeason(id: UUID): FindroidSeasonDto
+
+    @Query("SELECT * FROM seasons WHERE seriesId = :seriesId")
+    fun getSeasonsByShowId(seriesId: UUID): List<FindroidSeasonDto>
+
+    @Query("DELETE FROM seasons WHERE id = :id")
+    fun deleteSeason(id: UUID)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertEpisode(episode: FindroidEpisodeDto)
+
+    @Query("SELECT * FROM episodes WHERE id = :id")
+    fun getEpisode(id: UUID): FindroidEpisodeDto
+
+    @Query("SELECT * FROM episodes WHERE seasonId = :seasonId")
+    fun getEpisodesBySeasonId(seasonId: UUID): List<FindroidEpisodeDto>
+
+    @Query("SELECT * FROM episodes WHERE serverId = :serverId AND playbackPositionTicks > 0")
+    fun getEpisodeResumeItems(serverId: String): List<FindroidEpisodeDto>
+
+    @Query("DELETE FROM episodes WHERE id = :id")
+    fun deleteEpisode(id: UUID)
+
+    @Query("DELETE FROM episodes WHERE seasonId = :seasonId")
+    fun deleteEpisodesBySeasonId(seasonId: UUID)
 }

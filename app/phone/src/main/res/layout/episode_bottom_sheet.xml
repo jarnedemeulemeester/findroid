@@ -223,12 +223,9 @@
             app:tint="?attr/colorOnSecondaryContainer" />
 
         <RelativeLayout
-            android:id="@+id/download_button_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_marginEnd="12dp">
 
             <ImageButton
                 android:id="@+id/download_button"
@@ -238,17 +235,23 @@
                 android:contentDescription="@string/download_button_description"
                 android:padding="12dp"
                 android:src="@drawable/ic_download"
-                app:tint="?attr/colorOnSecondaryContainer" />
+                android:visibility="gone"
+                app:tint="?attr/colorOnSecondaryContainer"
+                tools:visibility="visible" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress_download"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                app:indicatorSize="32dp"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:elevation="8dp"
-                android:indeterminateTint="@android:color/white"
-                android:padding="8dp"
-                android:visibility="invisible" />
+                android:progress="0"
+                android:progressTint="?attr/colorOnSecondary"
+                android:visibility="invisible"
+                app:trackCornerRadius="2dp"/>
+
         </RelativeLayout>
 
         <ImageButton

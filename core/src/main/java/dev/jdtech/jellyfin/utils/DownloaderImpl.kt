@@ -7,12 +7,16 @@ import android.os.Environment
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
+import dev.jdtech.jellyfin.models.toFindroidSeasonDto
+import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -56,12 +60,37 @@ class DownloaderImpl(
                 database.setSourceDownloadId(source.id, downloadId)
                 return downloadId
             }
+            is FindroidEpisode -> {
+                database.insertShow(jellyfinRepository.getShow(item.seriesId).toFindroidShowDto(appPreferences.currentServer!!))
+                database.insertSeason(jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto())
+                database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
+                database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
+                downloadExternalMediaStreams(item, source)
+                if (trickPlayManifest != null && trickPlayData != null) {
+                    downloadTrickPlay(item, trickPlayManifest, trickPlayData)
+                }
+                val request = DownloadManager.Request(source.path.toUri())
+                    .setTitle(item.name)
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationUri(path)
+                val downloadId = downloadManager.enqueue(request)
+                database.setSourceDownloadId(source.id, downloadId)
+                return downloadId
+            }
         }
         return -1
     }
 
     override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {
-        database.deleteMovie(item.id)
+        when (item) {
+            is FindroidMovie -> {
+                database.deleteMovie(item.id)
+            }
+            is FindroidEpisode -> {
+                database.deleteEpisode(item.id)
+            }
+        }
 
         database.deleteSource(source.id)
         File(source.path).delete()
