@@ -89,6 +89,14 @@ class DownloaderImpl(
             }
             is FindroidEpisode -> {
                 database.deleteEpisode(item.id)
+                val remainingEpisodes = database.getEpisodesBySeasonId(item.seasonId)
+                if (remainingEpisodes.isEmpty()) {
+                    database.deleteSeason(item.seasonId)
+                    val remainingSeasons = database.getSeasonsByShowId(item.seriesId)
+                    if (remainingSeasons.isEmpty()) {
+                        database.deleteShow(item.seriesId)
+                    }
+                }
             }
         }
 
