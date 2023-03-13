@@ -51,6 +51,10 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         viewModel.playWhenReady = false
         viewModel.player.playWhenReady = false
         mediaSession.release()
+
+        if(isInPictureInPictureMode) {
+            finish()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

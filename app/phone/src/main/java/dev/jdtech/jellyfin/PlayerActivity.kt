@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin
 
 import android.app.PictureInPictureParams
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
@@ -31,8 +30,8 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
@@ -190,11 +189,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         pipButton.setOnClickListener {
-            val startMain = Intent(Intent.ACTION_MAIN)
-            startMain.addCategory(Intent.CATEGORY_HOME)
-            startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             pictureInPicture()
-            startActivity(startMain)
         }
 
         viewModel.currentIntro.observe(this) {

@@ -19,10 +19,12 @@
 
         <activity
             android:name=".PlayerActivity"
-            android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="sensorLandscape"
+            android:finishOnTaskLaunch="true"
             android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape" />
+            android:supportsPictureInPicture="true"
+            android:excludeFromRecents="true" />
 
         <activity
             android:name=".MainActivity"
