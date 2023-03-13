@@ -61,7 +61,6 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
 
-        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
