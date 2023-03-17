@@ -150,4 +150,18 @@
     <string name="settings_request_timeout">Время ожидания запроса (мс)</string>
     <string name="settings_connect_timeout">Время ожидания соединения (мс)</string>
     <string name="settings_socket_timeout">Время ожидания сокета (мс)</string>
+    <string name="pref_player_trick_play_summary">Требуется, чтобы на сервере был установлен плагин Jellyscrub от nicknsy</string>
+    <string name="pref_player_trick_play">Миниатюры предварительного просмотра (Trick Play)</string>
+    <string name="subtitle">Субтитры</string>
+    <string name="extra_info_summary">Показывает дополнительную информацию о Аудио, Видео и Субтитрах</string>
+    <string name="extra_info">Показывать дополнительную информацию</string>
+    <string name="temp">temp</string>
+    <string name="dolby_logo_desc">Логотип Dolby</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="video">Видео</string>
+    <string name="audio">Аудио</string>
+    <string name="player_gestures_seek_summary">Проведите горизонтально, чтобы перемотать вперёд или назад</string>
+    <string name="player_gestures_seek">Жест перемотки</string>
+    <string name="amoled_theme">Тёмная тема AMOLED</string>
+    <string name="amoled_theme_summary">Используйте тему AMOLED с чистым чёрным фоном</string>
 </resources>
