@@ -18,6 +18,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
+import dev.jdtech.jellyfin.models.toIntroDto
 import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
@@ -36,6 +37,7 @@ class DownloaderImpl(
         sourceId: String,
     ): Long {
         val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
+        val intro = jellyfinRepository.getIntroTimestamps(item.id)
         val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
         val trickPlayData = if (trickPlayManifest != null) {
             jellyfinRepository.getTrickPlayData(item.id, trickPlayManifest.widthResolutions.max())
@@ -48,6 +50,9 @@ class DownloaderImpl(
                 database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                 downloadExternalMediaStreams(item, source)
+                if (intro != null) {
+                    database.insertIntro(intro.toIntroDto(item.id))
+                }
                 if (trickPlayManifest != null && trickPlayData != null) {
                     downloadTrickPlay(item, trickPlayManifest, trickPlayData)
                 }
@@ -66,6 +71,9 @@ class DownloaderImpl(
                 database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                 downloadExternalMediaStreams(item, source)
+                if (intro != null) {
+                    database.insertIntro(intro.toIntroDto(item.id))
+                }
                 if (trickPlayManifest != null && trickPlayData != null) {
                     downloadTrickPlay(item, trickPlayManifest, trickPlayData)
                 }
@@ -108,6 +116,8 @@ class DownloaderImpl(
             File(mediaStream.path).delete()
         }
         database.deleteMediaStreamsBySourceId(source.id)
+
+        database.deleteIntro(item.id)
 
         database.deleteTrickPlayManifest(item.id)
         File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.bif").delete()

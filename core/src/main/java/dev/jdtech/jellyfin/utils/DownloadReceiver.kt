@@ -6,6 +6,15 @@ import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.toFindroidEpisode
+import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.models.toFindroidShow
+import dev.jdtech.jellyfin.models.toFindroidSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -14,6 +23,9 @@ class DownloadReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var database: ServerDatabaseDao
+
+    @Inject
+    lateinit var downloader: Downloader
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == "android.intent.action.DOWNLOAD_COMPLETE") {
@@ -26,9 +38,25 @@ class DownloadReceiver : BroadcastReceiver() {
                     if (successfulRename) {
                         database.setSourcePath(source.id, path)
                     } else {
-                        database.deleteSource(source.id)
-                        // TODO can also be other type such as show, season or episode
-                        database.deleteMovie(source.itemId)
+                        val items = mutableListOf<FindroidItem>()
+                        items.addAll(
+                            database.getMovies().map { it.toFindroidMovie(database) }
+                        )
+                        items.addAll(
+                            database.getShows().map { it.toFindroidShow() }
+                        )
+                        items.addAll(
+                            database.getSeasons().map { it.toFindroidSeason() }
+                        )
+                        items.addAll(
+                            database.getEpisodes().map { it.toFindroidEpisode(database) }
+                        )
+
+                        items.firstOrNull { it.id == source.itemId }?.let {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                downloader.deleteItem(it, source.toFindroidSource(database))
+                            }
+                        }
                     }
                 } else {
                     val mediaStream = database.getMediaStreamByDownloadId(id)

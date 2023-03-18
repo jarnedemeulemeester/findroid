@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.models.FindroidMovieDto
 import dev.jdtech.jellyfin.models.FindroidSeasonDto
 import dev.jdtech.jellyfin.models.FindroidShowDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
+import dev.jdtech.jellyfin.models.IntroDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
@@ -203,4 +204,19 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM episodes WHERE seasonId = :seasonId")
     fun deleteEpisodesBySeasonId(seasonId: UUID)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertIntro(intro: IntroDto)
+
+    @Query("SELECT * FROM intros WHERE itemId = :itemId")
+    fun getIntro(itemId: UUID): IntroDto?
+
+    @Query("DELETE FROM intros WHERE itemId = :itemId")
+    fun deleteIntro(itemId: UUID)
+
+    @Query("SELECT * FROM seasons")
+    fun getSeasons(): List<FindroidSeasonDto>
+
+    @Query("SELECT * FROM episodes")
+    fun getEpisodes(): List<FindroidEpisodeDto>
 }

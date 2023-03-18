@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.toIntro
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import java.io.File
 import java.util.UUID
@@ -148,9 +149,10 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getIntroTimestamps(itemId: UUID): Intro? {
-        return null
-    }
+    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+        withContext(Dispatchers.IO) {
+           database.getIntro(itemId)?.toIntro()
+        }
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
         withContext(Dispatchers.IO) {

@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.toIntro
 import dev.jdtech.jellyfin.models.toJellyfinCollection
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import io.ktor.util.cio.toByteArray
@@ -336,6 +337,12 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
+            val intro = database.getIntro(itemId)?.toIntro()
+
+            if (intro != null) {
+                return@withContext intro
+            }
+
             // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
             val pathParameters = mutableMapOf<String, UUID>()
             pathParameters["itemId"] = itemId
