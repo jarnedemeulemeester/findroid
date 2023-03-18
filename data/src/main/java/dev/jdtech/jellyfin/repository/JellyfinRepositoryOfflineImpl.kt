@@ -151,7 +151,7 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
-           database.getIntro(itemId)?.toIntro()
+            database.getIntro(itemId)?.toIntro()
         }
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =

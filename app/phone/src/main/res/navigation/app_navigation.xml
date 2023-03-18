@@ -87,8 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment">
-    </fragment>
+        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment" />
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
@@ -306,8 +305,8 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="reLogin"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -395,6 +394,15 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_downloadsFragment_to_storageActivity"
+            app:destination="@id/storageActivity" />
     </fragment>
+
+    <activity
+        android:id="@+id/storageActivity"
+        android:name="dev.jdtech.jellyfin.StorageActivity"
+        android:label="activity_storage"
+        tools:layout="@layout/activity_storage" />
 
 </navigation>

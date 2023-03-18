@@ -196,9 +196,9 @@ class MPVPlayer(
                     if (isPlayerReady) {
                         if (newTracks != tracks) {
                             tracks = newTracks
-                            listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                                listener.onTracksChanged(currentTracks)
-                            }
+//                            listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
+//                                listener.onTracksChanged(currentTracks)
+//                            }
                         }
                     } else {
                         tracks = newTracks
