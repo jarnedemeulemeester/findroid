@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="select_audio_track">בחר רצועת שמע</string>
+    <string name="select_playback_speed">בחר מהירות הפעלה</string>
+    <string name="external">חיצוני</string>
+    <string name="select_a_version">בחר גרסה</string>
+    <string name="select_subtile_track">בחר רצועת כתוביות</string>
+</resources>
