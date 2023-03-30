@@ -1,7 +1,7 @@
 [versions]
 aboutlibraries = "10.6.1"
 android-plugin = "7.4.2"
-androidx-activity = "1.6.1"
+androidx-activity = "1.7.0"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.9.0"
