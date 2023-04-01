@@ -442,14 +442,14 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             when {
                 playedPercentage < 10 -> {
-                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(itemId, false)
                 }
                 playedPercentage > 90 -> {
-                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(itemId, true)
                 }
-                else -> database.setMoviePlaybackPositionTicks(itemId, positionTicks)
+                else -> database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             }
             jellyfinApi.playStateApi.onPlaybackStopped(
                 jellyfinApi.userId!!,
@@ -466,7 +466,7 @@ class JellyfinRepositoryImpl(
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
-            database.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             jellyfinApi.playStateApi.onPlaybackProgress(
                 jellyfinApi.userId!!,
                 itemId,
@@ -534,23 +534,27 @@ class JellyfinRepositoryImpl(
                 true -> {
                     items.addAll(
                         database.getMoviesByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidMovie(database) }
+                            .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
                     )
                     items.addAll(
                         database.getShowsByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidShow() }
+                            .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
                     )
                     items
                 }
                 false -> {
                     items.addAll(
-                        database.getMovies().map { it.toFindroidMovie(database) }
+                        database.getMovies().map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
                     )
                     items.addAll(
-                        database.getShows().map { it.toFindroidShow() }
+                        database.getShows().map { it.toFindroidShow(database, jellyfinApi.userId!!) }
                     )
                     items
                 }
             }
         }
+
+    override fun getUserId(): UUID {
+        return jellyfinApi.userId!!
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -36,6 +37,7 @@ import org.jellyfin.sdk.model.api.UserConfiguration
 
 class JellyfinRepositoryOfflineImpl(
     private val context: Context,
+    private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
@@ -49,22 +51,22 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            database.getMovie(itemId).toFindroidMovie(database)
+            database.getMovie(itemId).toFindroidMovie(database, jellyfinApi.userId!!)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
-            database.getShow(itemId).toFindroidShow()
+            database.getShow(itemId).toFindroidShow(database, jellyfinApi.userId!!)
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
         withContext(Dispatchers.IO) {
-            database.getSeason(itemId).toFindroidSeason()
+            database.getSeason(itemId).toFindroidSeason(database, jellyfinApi.userId!!)
         }
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
-            database.getEpisode(itemId).toFindroidEpisode(database)
+            database.getEpisode(itemId).toFindroidEpisode(database, jellyfinApi.userId!!)
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> {
@@ -112,7 +114,7 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun getResumeItems(): List<FindroidItem> {
         val items = database.getResumeItems(appPreferences.currentServer!!)
         return items.map {
-            it.toFindroidMovie(database)
+            it.toFindroidMovie(database, jellyfinApi.userId!!)
         }
     }
 
@@ -122,7 +124,7 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getSeasons(seriesId: UUID): List<FindroidSeason> =
         withContext(Dispatchers.IO) {
-            database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason() }
+            database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> {
@@ -137,7 +139,7 @@ class JellyfinRepositoryOfflineImpl(
         limit: Int?
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
-            database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database) }
+            database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
         }
 
     override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
@@ -179,14 +181,14 @@ class JellyfinRepositoryOfflineImpl(
         withContext(Dispatchers.IO) {
             when {
                 playedPercentage < 10 -> {
-                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(itemId, false)
                 }
                 playedPercentage > 90 -> {
-                    database.setMoviePlaybackPositionTicks(itemId, 0)
+                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(itemId, true)
                 }
-                else -> database.setMoviePlaybackPositionTicks(itemId, positionTicks)
+                else -> database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             }
         }
     }
@@ -197,7 +199,7 @@ class JellyfinRepositoryOfflineImpl(
         isPaused: Boolean
     ) {
         withContext(Dispatchers.IO) {
-            database.setMoviePlaybackPositionTicks(itemId, positionTicks)
+            database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
         }
     }
 
@@ -244,23 +246,27 @@ class JellyfinRepositoryOfflineImpl(
                 true -> {
                     items.addAll(
                         database.getMoviesByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidMovie(database) }
+                            .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
                     )
                     items.addAll(
                         database.getShowsByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidShow() }
+                            .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
                     )
                     items
                 }
                 false -> {
                     items.addAll(
-                        database.getMovies().map { it.toFindroidMovie(database) }
+                        database.getMovies().map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
                     )
                     items.addAll(
-                        database.getShows().map { it.toFindroidShow() }
+                        database.getShows().map { it.toFindroidShow(database, jellyfinApi.userId!!) }
                     )
                     items
                 }
             }
         }
+
+    override fun getUserId(): UUID {
+        return jellyfinApi.userId!!
+    }
 }

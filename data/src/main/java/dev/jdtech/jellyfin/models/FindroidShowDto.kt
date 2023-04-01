@@ -13,16 +13,12 @@ data class FindroidShowDto(
     val name: String,
     val originalTitle: String?,
     val overview: String,
-    val played: Boolean,
-    val favorite: Boolean,
     val runtimeTicks: Long,
-    val playbackPositionTicks: Long,
     val communityRating: Float?,
     val officialRating: String?,
     val status: String,
     val productionYear: Int?,
     val endDate: LocalDateTime?,
-    val unplayedItemCount: Int? = null,
 )
 
 fun FindroidShow.toFindroidShowDto(serverId: String? = null): FindroidShowDto {
@@ -32,10 +28,7 @@ fun FindroidShow.toFindroidShowDto(serverId: String? = null): FindroidShowDto {
         name = name,
         originalTitle = originalTitle,
         overview = overview,
-        played = played,
-        favorite = favorite,
         runtimeTicks = runtimeTicks,
-        playbackPositionTicks = playbackPositionTicks,
         communityRating = communityRating,
         officialRating = officialRating,
         status = status,

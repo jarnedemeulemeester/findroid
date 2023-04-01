@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.models
 
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
@@ -33,7 +34,6 @@ fun BaseItemDto.toFindroidSeason(): FindroidSeason {
         favorite = userData?.isFavorite ?: false,
         canPlay = playAccess != PlayAccess.NONE,
         canDownload = canDownload ?: false,
-        playbackPositionTicks = userData?.playbackPositionTicks ?: 0L,
         unplayedItemCount = userData?.unplayedItemCount,
         indexNumber = indexNumber ?: 0,
         sources = emptyList(),
@@ -43,17 +43,18 @@ fun BaseItemDto.toFindroidSeason(): FindroidSeason {
     )
 }
 
-fun FindroidSeasonDto.toFindroidSeason(): FindroidSeason {
+fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason {
+    val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidSeason(
         id = id,
         name = name,
         originalTitle = null,
         overview = overview,
-        played = played,
-        favorite = favorite,
+        played = userData.played,
+        favorite = userData.favorite,
         canPlay = true,
         canDownload = false,
-        unplayedItemCount = unplayedItemCount,
+        unplayedItemCount = null,
         indexNumber = indexNumber,
         sources = emptyList(),
         episodes = emptyList(),

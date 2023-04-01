@@ -63,16 +63,17 @@ suspend fun BaseItemDto.toFindroidMovie(
     )
 }
 
-fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao): FindroidMovie {
+fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie {
+    val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidMovie(
         id = id,
         name = name,
         originalTitle = originalTitle,
         overview = overview,
-        played = played,
-        favorite = favorite,
+        played = userData.played,
+        favorite = userData.favorite,
         runtimeTicks = runtimeTicks,
-        playbackPositionTicks = playbackPositionTicks,
+        playbackPositionTicks = userData.playbackPositionTicks,
         premiereDate = premiereDate,
         genres = emptyList(),
         people = emptyList(),

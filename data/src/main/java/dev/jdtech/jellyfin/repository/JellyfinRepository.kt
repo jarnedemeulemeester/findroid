@@ -112,4 +112,6 @@ interface JellyfinRepository {
     suspend fun getUserConfiguration(): UserConfiguration?
 
     suspend fun getDownloads(currentServer: Boolean = false): List<FindroidItem>
+
+    fun getUserId(): UUID
 }

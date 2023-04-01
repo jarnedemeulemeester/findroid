@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ import timber.log.Timber
 class StorageViewModel
 @Inject
 constructor(
-    private val database: ServerDatabaseDao
+    private val database: ServerDatabaseDao,
+    private val repository: JellyfinRepository,
 ) : ViewModel() {
     private val _serversState = MutableStateFlow<List<Server>>(emptyList())
     val serversState = _serversState.asStateFlow()
@@ -50,7 +52,7 @@ constructor(
                 val items = mutableListOf<StorageItem>()
 
                 database.getMoviesByServerId(serverId)
-                    .map { it.toFindroidMovie(database) }
+                    .map { it.toFindroidMovie(database, repository.getUserId()) }
                     .map { movie ->
                         items.add(
                             StorageItem(
@@ -62,7 +64,7 @@ constructor(
                         )
                     }
                 database.getShowsByServerId(serverId)
-                    .map { it.toFindroidShow() }
+                    .map { it.toFindroidShow(database, repository.getUserId()) }
                     .map { show ->
                         items.add(
                             StorageItem(
@@ -70,7 +72,7 @@ constructor(
                             )
                         )
                         database.getSeasonsByShowId(show.id)
-                            .map { it.toFindroidSeason() }
+                            .map { it.toFindroidSeason(database, repository.getUserId()) }
                             .map { season ->
                                 items.add(
                                     StorageItem(
@@ -79,7 +81,7 @@ constructor(
                                     )
                                 )
                                 database.getEpisodesBySeasonId(season.id)
-                                    .map { it.toFindroidEpisode(database) }
+                                    .map { it.toFindroidEpisode(database, repository.getUserId()) }
                                     .map { episode ->
                                         items.add(
                                             StorageItem(

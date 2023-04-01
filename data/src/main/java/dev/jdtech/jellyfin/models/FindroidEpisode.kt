@@ -62,7 +62,8 @@ suspend fun BaseItemDto.toFindroidEpisode(
     )
 }
 
-fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao): FindroidEpisode {
+fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID): FindroidEpisode {
+    val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidEpisode(
         id = id,
         name = name,
@@ -72,12 +73,12 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao): FindroidE
         indexNumberEnd = indexNumberEnd,
         parentIndexNumber = parentIndexNumber,
         sources = database.getSources(id).map { it.toFindroidSource(database) },
-        played = played,
-        favorite = favorite,
+        played = userData.played,
+        favorite = userData.favorite,
         canPlay = true,
         canDownload = false,
         runtimeTicks = runtimeTicks,
-        playbackPositionTicks = playbackPositionTicks,
+        playbackPositionTicks = userData.playbackPositionTicks,
         premiereDate = premiereDate,
         seriesName = seriesName,
         seriesId = seriesId,

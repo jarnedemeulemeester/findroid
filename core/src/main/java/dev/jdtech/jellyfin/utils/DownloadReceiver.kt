@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,9 @@ class DownloadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var downloader: Downloader
 
+    @Inject
+    lateinit var repository: JellyfinRepository
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == "android.intent.action.DOWNLOAD_COMPLETE") {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
@@ -40,16 +44,16 @@ class DownloadReceiver : BroadcastReceiver() {
                     } else {
                         val items = mutableListOf<FindroidItem>()
                         items.addAll(
-                            database.getMovies().map { it.toFindroidMovie(database) }
+                            database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) }
                         )
                         items.addAll(
-                            database.getShows().map { it.toFindroidShow() }
+                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) }
                         )
                         items.addAll(
-                            database.getSeasons().map { it.toFindroidSeason() }
+                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) }
                         )
                         items.addAll(
-                            database.getEpisodes().map { it.toFindroidEpisode(database) }
+                            database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) }
                         )
 
                         items.firstOrNull { it.id == source.itemId }?.let {

@@ -1,10 +1,21 @@
 package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity(tableName = "seasons")
+@Entity(
+    tableName = "seasons",
+    foreignKeys = [
+        ForeignKey(
+            entity = FindroidShowDto::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("seriesId"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class FindroidSeasonDto(
     @PrimaryKey
     val id: UUID,
@@ -13,9 +24,6 @@ data class FindroidSeasonDto(
     val seriesName: String,
     val overview: String,
     val indexNumber: Int,
-    val played: Boolean,
-    val favorite: Boolean,
-    val unplayedItemCount: Int? = null,
 )
 
 fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
@@ -26,8 +34,5 @@ fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
         seriesName = seriesName,
         overview = overview,
         indexNumber = indexNumber,
-        played = played,
-        favorite = favorite,
-        unplayedItemCount = unplayedItemCount,
     )
 }

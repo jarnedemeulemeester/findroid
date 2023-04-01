@@ -18,6 +18,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
+import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.models.toIntroDto
 import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -49,6 +50,7 @@ class DownloaderImpl(
             is FindroidMovie -> {
                 database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
+                database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                 downloadExternalMediaStreams(item, source)
                 if (intro != null) {
                     database.insertIntro(intro.toIntroDto(item.id))
@@ -70,6 +72,7 @@ class DownloaderImpl(
                 database.insertSeason(jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto())
                 database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
+                database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                 downloadExternalMediaStreams(item, source)
                 if (intro != null) {
                     database.insertIntro(intro.toIntroDto(item.id))
@@ -116,6 +119,8 @@ class DownloaderImpl(
             File(mediaStream.path).delete()
         }
         database.deleteMediaStreamsBySourceId(source.id)
+
+        database.deleteUserData(item.id)
 
         database.deleteIntro(item.id)
 

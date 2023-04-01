@@ -1,11 +1,28 @@
 package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Entity(tableName = "episodes")
+@Entity(
+    tableName = "episodes",
+    foreignKeys = [
+        ForeignKey(
+            entity = FindroidSeasonDto::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("seasonId"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = FindroidShowDto::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("seriesId"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class FindroidEpisodeDto(
     @PrimaryKey
     val id: UUID,
@@ -18,10 +35,7 @@ data class FindroidEpisodeDto(
     val indexNumber: Int,
     val indexNumberEnd: Int,
     val parentIndexNumber: Int,
-    val played: Boolean,
-    val favorite: Boolean,
     val runtimeTicks: Long,
-    val playbackPositionTicks: Long,
     val premiereDate: LocalDateTime?,
     val communityRating: Float?,
 )
@@ -38,10 +52,7 @@ fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpis
         indexNumber = indexNumber,
         indexNumberEnd = indexNumberEnd,
         parentIndexNumber = parentIndexNumber,
-        played = played,
-        favorite = favorite,
         runtimeTicks = runtimeTicks,
-        playbackPositionTicks = playbackPositionTicks,
         premiereDate = premiereDate,
         communityRating = communityRating,
     )
