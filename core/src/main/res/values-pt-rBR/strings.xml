@@ -163,5 +163,5 @@
     <string name="player_gestures_seek">Gesto de buscar</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para buscar para frente ou para trás</string>
     <string name="pref_player_trick_play_summary">Requer que o plug-in Jellyscrub do nicknsy seja instalado no servidor</string>
-    <string name="pref_player_trick_play">Pré-visualização</string>
+    <string name="pref_player_trick_play">Miniatura de pré-visualização</string>
 </resources>
