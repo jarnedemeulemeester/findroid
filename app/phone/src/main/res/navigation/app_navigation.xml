@@ -198,6 +198,9 @@
         <action
             android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />
+        <action
+            android:id="@+id/action_seasonFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
     <dialog
         android:id="@+id/episodeBottomSheetFragment"

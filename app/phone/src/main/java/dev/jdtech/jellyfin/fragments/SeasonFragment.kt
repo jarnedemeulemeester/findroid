@@ -17,7 +17,9 @@ import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,6 +29,7 @@ class SeasonFragment : Fragment() {
 
     private lateinit var binding: FragmentSeasonBinding
     private val viewModel: SeasonViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
     private val args: SeasonFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
@@ -66,6 +69,15 @@ class SeasonFragment : Fragment() {
             viewModel.loadEpisodes(args.seriesId, args.seasonId)
         }
 
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItems -> {
+                    navigateToPlayerActivity(playerItems.items.toTypedArray())
+                }
+                is PlayerViewModel.PlayerItemError -> {}
+            }
+        }
+
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
@@ -75,7 +87,15 @@ class SeasonFragment : Fragment() {
                 EpisodeListAdapter.OnClickListener { episode ->
                     navigateToEpisodeBottomSheetFragment(episode)
                 },
-                args.seriesId, args.seriesName, args.seasonId, args.seasonName
+                EpisodeListAdapter.OnButtonClickListener {
+                    playerViewModel.loadPlayerItems(viewModel.season)
+                },
+                EpisodeListAdapter.OnButtonClickListener {
+                    viewModel.togglePlayed()
+                },
+                EpisodeListAdapter.OnButtonClickListener {
+                    viewModel.toggleFavorite()
+                },
             )
     }
 
@@ -106,6 +126,16 @@ class SeasonFragment : Fragment() {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
                 episode.id
+            )
+        )
+    }
+
+    private fun navigateToPlayerActivity(
+        playerItems: Array<PlayerItem>,
+    ) {
+        findNavController().navigate(
+            SeasonFragmentDirections.actionSeasonFragmentToPlayerActivity(
+                playerItems
             )
         )
     }

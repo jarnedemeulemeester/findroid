@@ -4,13 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.EpisodeItem
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.ItemFields
+import timber.log.Timber
 
 @HiltViewModel
 class SeasonViewModel
@@ -27,10 +30,13 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
+    lateinit var season: FindroidSeason
+
     fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
+                season = getSeason(seasonId)
                 val episodes = getEpisodes(seriesId, seasonId)
                 _uiState.emit(UiState.Normal(episodes))
             } catch (e: Exception) {
@@ -39,9 +45,46 @@ constructor(
         }
     }
 
+    private suspend fun getSeason(seasonId: UUID): FindroidSeason {
+        return jellyfinRepository.getSeason(seasonId)
+    }
+
     private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID): List<EpisodeItem> {
+        val header = EpisodeItem.Header(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name)
+        val buttons = EpisodeItem.Buttons(isLoading = false, isPlayed = season.played, isFavorite = season.favorite)
         val episodes =
             jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW))
-        return listOf(EpisodeItem.Header) + episodes.map { EpisodeItem.Episode(it) }
+
+        return listOf(header, buttons) + episodes.map { EpisodeItem.Episode(it) }
+    }
+
+    fun togglePlayed() {
+        viewModelScope.launch {
+            try {
+                if (season.played) {
+                    jellyfinRepository.markAsUnplayed(season.id)
+                } else {
+                    jellyfinRepository.markAsPlayed(season.id)
+                }
+                loadEpisodes(season.seriesId, season.id)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
+        }
+    }
+
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            try {
+                if (season.favorite) {
+                    jellyfinRepository.unmarkAsFavorite(season.id)
+                } else {
+                    jellyfinRepository.markAsFavorite(season.id)
+                }
+                loadEpisodes(season.seriesId, season.id)
+            } catch (e: ApiClientException) {
+                Timber.d(e)
+            }
+        }
     }
 }

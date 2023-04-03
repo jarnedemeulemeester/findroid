@@ -85,6 +85,7 @@ class PlayerViewModel @Inject internal constructor(
     ): List<PlayerItem> = when (item) {
         is FindroidMovie -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
         is FindroidShow -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidSeason -> seasonToPlayerItems(item, playbackPosition, mediaSourceIndex)
         is FindroidEpisode -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
