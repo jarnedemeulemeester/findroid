@@ -25,11 +25,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
-import timber.log.Timber
 
 @HiltViewModel
 class MovieViewModel
@@ -67,6 +65,8 @@ constructor(
     }
 
     lateinit var item: FindroidMovie
+    private var played: Boolean = false
+    private var favorite: Boolean = false
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
     private var runTime: String = ""
@@ -76,6 +76,8 @@ constructor(
             _uiState.emit(UiState.Loading)
             try {
                 item = jellyfinRepository.getMovie(itemId)
+                played = item.played
+                favorite = item.favorite
                 writers = getWriters(item)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
                 runTime = "${item.runtimeTicks.div(600000000)} min"
@@ -242,34 +244,48 @@ constructor(
         )
     }
 
-    fun togglePlayed() {
-        viewModelScope.launch {
-            try {
-                if (item.played) {
-                    jellyfinRepository.markAsUnplayed(item.id)
-                } else {
-                    jellyfinRepository.markAsPlayed(item.id)
+    fun togglePlayed(): Boolean {
+        when (played) {
+            false -> {
+                played = true
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsPlayed(item.id)
+                    } catch (_: Exception) {}
                 }
-                loadData(item.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            }
+            true -> {
+                played = false
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsUnplayed(item.id)
+                    } catch (_: Exception) {}
+                }
             }
         }
+        return played
     }
 
-    fun toggleFavorite() {
-        viewModelScope.launch {
-            try {
-                if (item.favorite) {
-                    jellyfinRepository.unmarkAsFavorite(item.id)
-                } else {
-                    jellyfinRepository.markAsFavorite(item.id)
+    fun toggleFavorite(): Boolean {
+        when (favorite) {
+            false -> {
+                favorite = true
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsFavorite(item.id)
+                    } catch (_: Exception) {}
                 }
-                loadData(item.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            }
+            true -> {
+                favorite = false
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.unmarkAsFavorite(item.id)
+                    } catch (_: Exception) {}
+                }
             }
         }
+        return favorite
     }
 
     private fun getDateString(item: FindroidMovie): String {

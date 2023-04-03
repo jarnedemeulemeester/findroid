@@ -117,11 +117,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         binding.checkButton.setOnClickListener {
-            viewModel.togglePlayed()
+            val played = viewModel.togglePlayed()
+            bindCheckButtonState(played)
         }
 
         binding.favoriteButton.setOnClickListener {
-            viewModel.toggleFavorite()
+            val favorite = viewModel.toggleFavorite()
+            bindFavoriteButtonState(favorite)
         }
 
         binding.downloadButton.setOnClickListener {
@@ -170,22 +172,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.playButton.isEnabled = canPlay
             binding.playButton.alpha = if (!canPlay) 0.5F else 1.0F
 
-            // Check icon
-            when (episode.played) {
-                true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
-            }
+            bindCheckButtonState(episode.played)
 
-            // Favorite icon
-            val favoriteDrawable = when (episode.favorite) {
-                true -> R.drawable.ic_heart_filled
-                false -> R.drawable.ic_heart
-            }
-            binding.favoriteButton.setImageResource(favoriteDrawable)
-            when (episode.favorite) {
-                true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
-            }
+            bindFavoriteButtonState(episode.favorite)
 
             if (episode.isDownloaded()) {
                 binding.downloadButton.setImageResource(R.drawable.ic_trash)
@@ -233,6 +222,31 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun bindCheckButtonState(played: Boolean) {
+        when (played) {
+            true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+            false -> binding.checkButton.setTintColorAttribute(
+                R.attr.colorOnSecondaryContainer,
+                requireActivity().theme
+            )
+        }
+    }
+
+    private fun bindFavoriteButtonState(favorite: Boolean) {
+        val favoriteDrawable = when (favorite) {
+            true -> R.drawable.ic_heart_filled
+            false -> R.drawable.ic_heart
+        }
+        binding.favoriteButton.setImageResource(favoriteDrawable)
+        when (favorite) {
+            true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            false -> binding.favoriteButton.setTintColorAttribute(
+                R.attr.colorOnSecondaryContainer,
+                requireActivity().theme
+            )
+        }
     }
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {

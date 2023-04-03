@@ -16,8 +16,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.api.client.exception.ApiClientException
-import timber.log.Timber
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel
@@ -44,12 +42,16 @@ constructor(
     }
 
     lateinit var item: FindroidEpisode
+    private var played: Boolean = false
+    private var favorite: Boolean = false
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = jellyfinRepository.getEpisode(episodeId)
+                played = item.played
+                favorite = item.favorite
                 if (item.isDownloading()) {
                     pollDownloadProgress()
                 }
@@ -64,34 +66,48 @@ constructor(
         }
     }
 
-    fun togglePlayed() {
-        viewModelScope.launch {
-            try {
-                if (item.played) {
-                    jellyfinRepository.markAsUnplayed(item.id)
-                } else {
-                    jellyfinRepository.markAsPlayed(item.id)
+    fun togglePlayed(): Boolean {
+        when (played) {
+            false -> {
+                played = true
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsPlayed(item.id)
+                    } catch (_: Exception) {}
                 }
-                loadEpisode(item.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            }
+            true -> {
+                played = false
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsUnplayed(item.id)
+                    } catch (_: Exception) {}
+                }
             }
         }
+        return played
     }
 
-    fun toggleFavorite() {
-        viewModelScope.launch {
-            try {
-                if (item.favorite) {
-                    jellyfinRepository.unmarkAsFavorite(item.id)
-                } else {
-                    jellyfinRepository.markAsFavorite(item.id)
+    fun toggleFavorite(): Boolean {
+        when (favorite) {
+            false -> {
+                favorite = true
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.markAsFavorite(item.id)
+                    } catch (_: Exception) {}
                 }
-                loadEpisode(item.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            }
+            true -> {
+                favorite = false
+                viewModelScope.launch {
+                    try {
+                        jellyfinRepository.unmarkAsFavorite(item.id)
+                    } catch (_: Exception) {}
+                }
             }
         }
+        return favorite
     }
 
     fun download(sourceIndex: Int = 0) {
