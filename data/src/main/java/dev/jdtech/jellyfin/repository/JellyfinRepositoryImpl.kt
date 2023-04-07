@@ -211,6 +211,7 @@ class JellyfinRepositoryImpl(
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getResumeItems(
                 jellyfinApi.userId!!,
+                limit = 6,
                 includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
             ).content.items.orEmpty()
         }
@@ -223,7 +224,8 @@ class JellyfinRepositoryImpl(
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getLatestMedia(
                 jellyfinApi.userId!!,
-                parentId = parentId
+                parentId = parentId,
+                limit = 12,
             ).content
         }
         return items.mapNotNull {
@@ -242,6 +244,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
+                limit = 9,
                 seriesId = seriesId?.toString(),
             ).content.items
                 .orEmpty()
