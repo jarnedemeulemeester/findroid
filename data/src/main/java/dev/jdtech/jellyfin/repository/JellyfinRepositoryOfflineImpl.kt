@@ -182,14 +182,18 @@ class JellyfinRepositoryOfflineImpl(
             when {
                 playedPercentage < 10 -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
-                    database.setPlayed(itemId, false)
+                    database.setPlayed(jellyfinApi.userId!!, itemId, false)
                 }
                 playedPercentage > 90 -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
-                    database.setPlayed(itemId, true)
+                    database.setPlayed(jellyfinApi.userId!!, itemId, true)
                 }
-                else -> database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
+                else -> {
+                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
+                    database.setPlayed(jellyfinApi.userId!!, itemId, false)
+                }
             }
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }
 
@@ -200,26 +204,35 @@ class JellyfinRepositoryOfflineImpl(
     ) {
         withContext(Dispatchers.IO) {
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }
 
     override suspend fun markAsFavorite(itemId: UUID) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            database.setFavorite(jellyfinApi.userId!!, itemId, true)
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
+        }
     }
 
     override suspend fun unmarkAsFavorite(itemId: UUID) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            database.setFavorite(jellyfinApi.userId!!, itemId, false)
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
+        }
     }
 
     override suspend fun markAsPlayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            database.setPlayed(itemId, true)
+            database.setPlayed(jellyfinApi.userId!!, itemId, true)
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
-            database.setPlayed(itemId, false)
+            database.setPlayed(jellyfinApi.userId!!, itemId, false)
+            database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }
 

@@ -7,15 +7,15 @@ import java.util.UUID
 @Entity(tableName = "trickPlayManifests")
 data class TrickPlayManifestDto(
     @PrimaryKey
-    val version: String,
     val itemId: UUID,
+    val version: String,
     val resolution: Int,
 )
 
 fun TrickPlayManifest.toTrickPlayManifestDto(itemId: UUID): TrickPlayManifestDto {
     return TrickPlayManifestDto(
-        version = version,
         itemId = itemId,
+        version = version,
         resolution = widthResolutions.max(),
     )
 }

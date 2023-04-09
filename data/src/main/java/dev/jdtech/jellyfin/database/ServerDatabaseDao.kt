@@ -38,52 +38,52 @@ abstract class ServerDatabaseDao {
     @Update
     abstract fun update(server: Server)
 
-    @Query("select * from servers where id = :id")
+    @Query("SELECT * FROM servers WHERE id = :id")
     abstract fun get(id: String): Server?
 
-    @Query("select * from users where id = :id")
+    @Query("SELECT * FROM users WHERE id = :id")
     abstract fun getUser(id: UUID): User?
 
     @Transaction
-    @Query("select * from servers where id = :id")
+    @Query("SELECT * FROM servers WHERE id = :id")
     abstract fun getServerWithAddresses(id: String): ServerWithAddresses
 
     @Transaction
-    @Query("select * from servers where id = :id")
+    @Query("SELECT * FROM servers WHERE id = :id")
     abstract fun getServerWithUsers(id: String): ServerWithUsers
 
     @Transaction
-    @Query("select * from servers where id = :id")
+    @Query("SELECT * FROM servers WHERE id = :id")
     abstract fun getServerWithAddressesAndUsers(id: String): ServerWithAddressesAndUsers?
 
-    @Query("delete from servers")
+    @Query("DELETE FROM servers")
     abstract fun clear()
 
-    @Query("select * from servers")
+    @Query("SELECT * FROM servers")
     abstract fun getAllServers(): LiveData<List<Server>>
 
-    @Query("select * from servers")
+    @Query("SELECT * FROM servers")
     abstract fun getAllServersSync(): List<Server>
 
-    @Query("select count(*) from servers")
+    @Query("SELECT COUNT(*) FROM servers")
     abstract fun getServersCount(): Int
 
-    @Query("delete from servers where id = :id")
+    @Query("DELETE FROM servers WHERE id = :id")
     abstract fun delete(id: String)
 
-    @Query("delete from users where id = :id")
+    @Query("DELETE FROM users WHERE id = :id")
     abstract fun deleteUser(id: UUID)
 
-    @Query("delete from serverAddresses where id = :id")
+    @Query("DELETE FROM serverAddresses WHERE id = :id")
     abstract fun deleteServerAddress(id: UUID)
 
-    @Query("update servers set currentUserId = :userId where id = :serverId")
+    @Query("UPDATE servers SET currentUserId = :userId WHERE id = :serverId")
     abstract fun updateServerCurrentUser(serverId: String, userId: UUID)
 
-    @Query("select * from users where id = (select currentUserId from servers where id = :serverId)")
+    @Query("SELECT * FROM users WHERE id = (SELECT currentUserId FROM servers WHERE id = :serverId)")
     abstract fun getServerCurrentUser(serverId: String): User?
 
-    @Query("select * from serverAddresses where id = (select currentServerAddressId from servers where id = :serverId)")
+    @Query("SELECT * FROM serverAddresses WHERE id = (SELECT currentServerAddressId FROM servers WHERE id = :serverId)")
     abstract fun getServerCurrentAddress(serverId: String): ServerAddress?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -143,8 +143,11 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM mediastreams WHERE sourceId = :sourceId")
     abstract fun deleteMediaStreamsBySourceId(sourceId: String)
 
-    @Query("UPDATE userdata SET played = :played WHERE itemId = :id")
-    abstract fun setPlayed(id: UUID, played: Boolean)
+    @Query("UPDATE userdata SET played = :played WHERE userId = :userId AND itemId = :itemId")
+    abstract fun setPlayed(userId: UUID, itemId: UUID, played: Boolean)
+
+    @Query("UPDATE userdata SET favorite = :favorite WHERE userId = :userId AND itemId = :itemId")
+    abstract fun setFavorite(userId: UUID, itemId: UUID, favorite: Boolean)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertTrickPlayManifest(trickPlayManifestDto: TrickPlayManifestDto)
@@ -231,7 +234,6 @@ abstract class ServerDatabaseDao {
         // Create user data when there is none
         if (userData == null) {
             userData = FindroidUserDataDto(
-                id = UUID.randomUUID(),
                 userId = userId,
                 itemId = itemId,
                 played = false,
@@ -249,4 +251,10 @@ abstract class ServerDatabaseDao {
 
     @Query("DELETE FROM userdata WHERE itemId = :itemId")
     abstract fun deleteUserData(itemId: UUID)
+
+    @Query("SELECT * FROM userdata WHERE itemId = :itemId AND toBeSynced = TRUE")
+    abstract fun getUserDataToBeSynced(itemId: UUID): List<FindroidUserDataDto>
+
+    @Query("UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId")
+    abstract fun setUserDataToBeSynced(userId: UUID, itemId: UUID, toBeSynced: Boolean)
 }
