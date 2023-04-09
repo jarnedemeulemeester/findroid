@@ -200,6 +200,9 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM episodes WHERE seasonId = :seasonId")
     abstract fun getEpisodesBySeasonId(seasonId: UUID): List<FindroidEpisodeDto>
 
+    @Query("SELECT * FROM episodes WHERE serverId = :serverId")
+    abstract fun getEpisodesByServerId(serverId: String): List<FindroidEpisodeDto>
+
     @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0")
     abstract fun getEpisodeResumeItems(serverId: String): List<FindroidEpisodeDto>
 
@@ -252,8 +255,8 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM userdata WHERE itemId = :itemId")
     abstract fun deleteUserData(itemId: UUID)
 
-    @Query("SELECT * FROM userdata WHERE itemId = :itemId AND toBeSynced = TRUE")
-    abstract fun getUserDataToBeSynced(itemId: UUID): List<FindroidUserDataDto>
+    @Query("SELECT * FROM userdata WHERE userId = :userId AND itemId = :itemId AND toBeSynced = TRUE")
+    abstract fun getUserDataToBeSynced(userId: UUID, itemId: UUID): FindroidUserDataDto?
 
     @Query("UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId")
     abstract fun setUserDataToBeSynced(userId: UUID, itemId: UUID, toBeSynced: Boolean)

@@ -11,11 +11,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUiSaveStateControl
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
+import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,6 +42,20 @@ class MainActivity : AppCompatActivity() {
     @OptIn(NavigationUiSaveStateControl::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(
+                        NetworkType.CONNECTED
+                    )
+                    .build()
+            )
+            .build()
+
+        val workManager = WorkManager.getInstance(applicationContext)
+
+        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest).enqueue()
 
         if (appPreferences.amoledTheme) {
             setTheme(R.style.Theme_FindroidAMOLED)
