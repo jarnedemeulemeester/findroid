@@ -1,12 +1,16 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
+import com.google.android.gms.cast.framework.CastContext
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -18,6 +22,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
@@ -30,7 +35,9 @@ import timber.log.Timber
 class PlayerViewModel @Inject internal constructor(
     private val application: Application,
     private val repository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
+    private val downloadDatabase: DownloadDatabaseDao,
+    private val jellyfinApi: JellyfinApi,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -61,6 +68,17 @@ class PlayerViewModel @Inject internal constructor(
         }
 
         viewModelScope.launch {
+            val session = CastContext.getSharedInstance(context).sessionManager.currentCastSession
+
+            if (session != null) {
+                val thing =
+                    "{\"options\":{\"ids\":[\"${item.id}\"],\"startPositionTicks\":${
+                        item.userData?.playbackPositionTicks ?: 0
+                    },\"serverId\":\"\",\"fullscreen\":true,\"items\":[{\"Id\":\"${item.id}\",\"ServerId\":\"\",\"Name\":\"${item.name}\",\"Type\":\"${item.type}\",\"MediaType\":\"${item.mediaType}\",\"IsFolder\":false}]},\"command\":\"PlayNow\",\"userId\":\"${jellyfinApi.userId}\",\"deviceId\":\"${jellyfinApi.api.deviceInfo.id}\",\"accessToken\":\"${jellyfinApi.api.accessToken}\",\"serverAddress\":\"${jellyfinApi.api.baseUrl}\",\"serverId\":\"\",\"serverVersion\":\"\",\"receiverName\":\"Living Room TV\",\"subtitleAppearance\":{\"verticalPosition\":-3},\"subtitleBurnIn\":\"\"}"
+                session.sendMessage("urn:x-cast:com.connectsdk", thing)
+                return@launch
+            }
+
             val playbackPosition = item.userData?.playbackPositionTicks?.div(10000) ?: 0
 
             val items = try {
@@ -69,7 +87,6 @@ class PlayerViewModel @Inject internal constructor(
                 Timber.d(e)
                 PlayerItemError(e)
             }
-
             playerItems.tryEmit(items)
         }
     }

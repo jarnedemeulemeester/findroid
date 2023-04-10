@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.libmpv)
     implementation(libs.material)
     implementation(libs.timber)
+    implementation(libs.playServicesCastFramework)
 }
