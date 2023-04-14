@@ -20,7 +20,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -63,12 +63,12 @@ class LibraryFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.library_menu, menu)
+                    menuInflater.inflate(CoreR.menu.library_menu, menu)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.action_sort_by -> {
+                        CoreR.id.action_sort_by -> {
                             SortDialogFragment(
                                 args.libraryId,
                                 args.libraryType,
@@ -80,7 +80,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
-                        R.id.action_sort_order -> {
+                        CoreR.id.action_sort_order -> {
                             SortDialogFragment(
                                 args.libraryId,
                                 args.libraryType,

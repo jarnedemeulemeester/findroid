@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
@@ -109,7 +109,7 @@ class LoginFragment : Fragment() {
                         }
                         is LoginViewModel.QuickConnectUiState.Normal -> {
                             binding.buttonQuickconnectLayout.isVisible = true
-                            binding.buttonQuickconnect.text = resources.getString(R.string.quick_connect)
+                            binding.buttonQuickconnect.text = resources.getString(CoreR.string.quick_connect)
                             binding.buttonQuickconnectProgress.isVisible = false
                         }
                         is LoginViewModel.QuickConnectUiState.Waiting -> {
