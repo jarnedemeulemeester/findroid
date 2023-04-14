@@ -13,10 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.R as MaterialR
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.bindBaseItemImage
 import dev.jdtech.jellyfin.core.R as CoreR
