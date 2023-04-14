@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 import dev.jdtech.jellyfin.utils.downloadSeriesMetadataToBaseItemDto
@@ -23,7 +23,7 @@ class DownloadSeriesListAdapter(
             binding.itemCount.text = item.episodes.size.toString()
             if (fixedWidth) {
                 binding.itemLayout.layoutParams.width =
-                    parent.resources.getDimension(R.dimen.overview_media_width).toInt()
+                    parent.resources.getDimension(CoreR.dimen.overview_media_width).toInt()
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
             binding.executePendingBindings()

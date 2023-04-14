@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
@@ -24,7 +24,7 @@ class DownloadViewItemListAdapter(
             binding.itemName.text = item.name
             binding.itemCount.visibility = View.GONE
             if (fixedWidth) {
-                binding.itemLayout.layoutParams.width = parent.resources.getDimension(R.dimen.overview_media_width).toInt()
+                binding.itemLayout.layoutParams.width = parent.resources.getDimension(CoreR.dimen.overview_media_width).toInt()
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
             binding.executePendingBindings()

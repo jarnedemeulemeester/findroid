@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -26,7 +26,7 @@ class ViewItemPagingAdapter(
                 if (item.userData?.unplayedItemCount != null && item.userData?.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {
                 binding.itemLayout.layoutParams.width =
-                    parent.resources.getDimension(R.dimen.overview_media_width).toInt()
+                    parent.resources.getDimension(CoreR.dimen.overview_media_width).toInt()
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
             binding.executePendingBindings()

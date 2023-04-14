@@ -19,8 +19,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
@@ -84,11 +84,11 @@ class MediaFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.media_menu, menu)
+                    menuInflater.inflate(CoreR.menu.media_menu, menu)
 
-                    val search = menu.findItem(R.id.action_search)
+                    val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
-                    searchView.queryHint = getString(R.string.search_hint)
+                    searchView.queryHint = getString(CoreR.string.search_hint)
 
                     searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                         override fun onQueryTextSubmit(p0: String?): Boolean {
