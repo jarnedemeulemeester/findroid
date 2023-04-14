@@ -13,11 +13,11 @@ import androidx.navigation.ui.NavigationUiSaveStateControl
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.utils.loadDownloadLocation
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
-import dev.jdtech.jellyfin.core.R as CoreR
 import javax.inject.Inject
 
 @AndroidEntryPoint
