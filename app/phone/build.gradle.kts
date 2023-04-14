@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
