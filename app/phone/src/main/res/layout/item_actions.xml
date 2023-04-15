@@ -36,6 +36,19 @@
     </RelativeLayout>
 
     <ImageButton
+        android:id="@+id/trailer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/button_accent_background"
+        android:contentDescription="@string/trailer_button_description"
+        android:padding="12dp"
+        android:src="@drawable/ic_film"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:tint="?attr/colorOnSecondaryContainer" />
+
+    <ImageButton
         android:id="@+id/check_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

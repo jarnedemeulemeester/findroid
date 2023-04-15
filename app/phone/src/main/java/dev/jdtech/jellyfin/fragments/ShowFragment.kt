@@ -85,7 +85,7 @@ class ShowFragment : Fragment() {
         }
 
         // TODO make download button work for shows
-        binding.downloadButton.visibility = View.GONE
+        binding.itemActions.downloadButton.visibility = View.GONE
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
             viewModel.loadData(args.itemId)
@@ -122,9 +122,9 @@ class ShowFragment : Fragment() {
             navigateToPersonDetail(person.id)
         }
 
-        binding.playButton.setOnClickListener {
-            binding.playButton.setImageResource(android.R.color.transparent)
-            binding.progressCircular.isVisible = true
+        binding.itemActions.playButton.setOnClickListener {
+            binding.itemActions.playButton.setImageResource(android.R.color.transparent)
+            binding.itemActions.progressCircular.isVisible = true
             playerViewModel.loadPlayerItems(viewModel.item)
         }
 
@@ -132,20 +132,20 @@ class ShowFragment : Fragment() {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
-        binding.checkButton.setOnClickListener {
+        binding.itemActions.checkButton.setOnClickListener {
             val played = viewModel.togglePlayed()
             bindCheckButtonState(played)
         }
 
-        binding.favoriteButton.setOnClickListener {
+        binding.itemActions.favoriteButton.setOnClickListener {
             val favorite = viewModel.toggleFavorite()
             bindFavoriteButtonState(favorite)
         }
 
-        binding.downloadButton.setOnClickListener {
-            binding.downloadButton.isEnabled = false
+        binding.itemActions.downloadButton.setOnClickListener {
+            binding.itemActions.downloadButton.isEnabled = false
             viewModel.download()
-            binding.downloadButton.imageTintList = ColorStateList.valueOf(
+            binding.itemActions.downloadButton.imageTintList = ColorStateList.valueOf(
                 resources.getColor(
                     CoreR.color.red,
                     requireActivity().theme
@@ -167,8 +167,8 @@ class ShowFragment : Fragment() {
             binding.actors.isVisible = actors.isNotEmpty()
 
             val canPlay = item.canPlay /*&& item.sources.isNotEmpty()*/ // TODO currently the sources of a show is always empty, we need a way to check if sources are available
-            binding.playButton.isEnabled = canPlay
-            binding.playButton.alpha = if (!canPlay) 0.5F else 1.0F
+            binding.itemActions.playButton.isEnabled = canPlay
+            binding.itemActions.playButton.alpha = if (!canPlay) 0.5F else 1.0F
 
             bindCheckButtonState(item.played)
 
@@ -176,17 +176,17 @@ class ShowFragment : Fragment() {
 
             when (canDownload) {
                 true -> {
-                    binding.downloadButton.isVisible = true
-                    binding.downloadButton.isEnabled = !downloaded
+                    binding.itemActions.downloadButton.isVisible = true
+                    binding.itemActions.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.setTintColor(
+                    if (downloaded) binding.itemActions.downloadButton.setTintColor(
                         CoreR.color.red,
                         requireActivity().theme
                     )
                 }
 
                 false -> {
-                    binding.downloadButton.isVisible = false
+                    binding.itemActions.downloadButton.isVisible = false
                 }
             }
 
@@ -209,7 +209,6 @@ class ShowFragment : Fragment() {
             binding.videoMeta.text = videoString
             binding.audio.text = audioString
             binding.subtitles.text = subtitleString
-            binding.subsChip.isVisible = subtitleString.isNotEmpty()
 
             if (appPreferences.displayExtraInfo) {
                 binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
@@ -257,8 +256,8 @@ class ShowFragment : Fragment() {
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.checkButton.setTintColorAttribute(
+            true -> binding.itemActions.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
+            false -> binding.itemActions.checkButton.setTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -270,10 +269,10 @@ class ShowFragment : Fragment() {
             true -> CoreR.drawable.ic_heart_filled
             false -> CoreR.drawable.ic_heart
         }
-        binding.favoriteButton.setImageResource(favoriteDrawable)
+        binding.itemActions.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.favoriteButton.setTintColorAttribute(
+            true -> binding.itemActions.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
+            false -> binding.itemActions.favoriteButton.setTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -282,25 +281,25 @@ class ShowFragment : Fragment() {
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
-        binding.playButton.setImageDrawable(
+        binding.itemActions.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
                 CoreR.drawable.ic_play
             )
         )
-        binding.progressCircular.visibility = View.INVISIBLE
+        binding.itemActions.progressCircular.visibility = View.INVISIBLE
     }
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
         Timber.e(error.error.message)
         binding.playerItemsError.visibility = View.VISIBLE
-        binding.playButton.setImageDrawable(
+        binding.itemActions.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
                 CoreR.drawable.ic_play
             )
         )
-        binding.progressCircular.visibility = View.INVISIBLE
+        binding.itemActions.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
             ErrorDialogFragment.newInstance(error.error)
                 .show(parentFragmentManager, ErrorDialogFragment.TAG)

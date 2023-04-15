@@ -55,9 +55,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     ): View {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
-        binding.playButton.setOnClickListener {
-            binding.playButton.setImageResource(AndroidR.color.transparent)
-            binding.progressCircular.isVisible = true
+        binding.itemActions.playButton.setOnClickListener {
+            binding.itemActions.playButton.setImageResource(AndroidR.color.transparent)
+            binding.itemActions.progressCircular.isVisible = true
             playerViewModel.loadPlayerItems(viewModel.item)
         }
 
@@ -80,27 +80,27 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     when (status) {
                         0 -> Unit
                         DownloadManager.STATUS_PENDING -> {
-                            binding.downloadButton.isEnabled = false
-                            binding.downloadButton.setImageResource(AndroidR.color.transparent)
-                            binding.progressDownload.isIndeterminate = true
-                            binding.progressDownload.isVisible = true
+                            binding.itemActions.downloadButton.isEnabled = false
+                            binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
+                            binding.itemActions.progressDownload.isIndeterminate = true
+                            binding.itemActions.progressDownload.isVisible = true
                         }
                         DownloadManager.STATUS_RUNNING -> {
-                            binding.downloadButton.isEnabled = false
-                            binding.downloadButton.setImageResource(AndroidR.color.transparent)
-                            binding.progressDownload.isIndeterminate = false
-                            binding.progressDownload.isVisible = true
-                            binding.progressDownload.setProgressCompat(progress, true)
+                            binding.itemActions.downloadButton.isEnabled = false
+                            binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
+                            binding.itemActions.progressDownload.isIndeterminate = false
+                            binding.itemActions.progressDownload.isVisible = true
+                            binding.itemActions.progressDownload.setProgressCompat(progress, true)
                         }
                         DownloadManager.STATUS_SUCCESSFUL -> {
-                            binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
-                            binding.progressDownload.isVisible = false
-                            binding.downloadButton.isEnabled = true
+                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                            binding.itemActions.progressDownload.isVisible = false
+                            binding.itemActions.downloadButton.isEnabled = true
                         }
                         else -> {
-                            binding.progressDownload.isVisible = false
-                            binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                            binding.downloadButton.isEnabled = true
+                            binding.itemActions.progressDownload.isVisible = false
+                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                            binding.itemActions.downloadButton.isEnabled = true
                         }
                     }
                 }
@@ -118,20 +118,20 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             navigateToSeries(viewModel.item.seriesId, viewModel.item.seriesName)
         }
 
-        binding.checkButton.setOnClickListener {
+        binding.itemActions.checkButton.setOnClickListener {
             val played = viewModel.togglePlayed()
             bindCheckButtonState(played)
         }
 
-        binding.favoriteButton.setOnClickListener {
+        binding.itemActions.favoriteButton.setOnClickListener {
             val favorite = viewModel.toggleFavorite()
             bindFavoriteButtonState(favorite)
         }
 
-        binding.downloadButton.setOnClickListener {
+        binding.itemActions.downloadButton.setOnClickListener {
             if (viewModel.item.isDownloaded()) {
                 viewModel.deleteEpisode()
-                binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
             } else {
                 if (viewModel.item.sources.size > 1) {
                     val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
@@ -171,20 +171,20 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             val canPlay = episode.canPlay && episode.sources.isNotEmpty()
-            binding.playButton.isEnabled = canPlay
-            binding.playButton.alpha = if (!canPlay) 0.5F else 1.0F
+            binding.itemActions.playButton.isEnabled = canPlay
+            binding.itemActions.playButton.alpha = if (!canPlay) 0.5F else 1.0F
 
             bindCheckButtonState(episode.played)
 
             bindFavoriteButtonState(episode.favorite)
 
             if (episode.isDownloaded()) {
-                binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
             }
 
             when (canDownload || canDelete) {
-                true -> binding.downloadButton.isVisible = true
-                false -> binding.downloadButton.isVisible = false
+                true -> binding.itemActions.downloadButton.isVisible = true
+                false -> binding.itemActions.downloadButton.isVisible = false
             }
 
             binding.episodeName.text = getString(
@@ -217,19 +217,19 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
-        binding.playButton.setImageDrawable(
+        binding.itemActions.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
                 CoreR.drawable.ic_play
             )
         )
-        binding.progressCircular.visibility = View.INVISIBLE
+        binding.itemActions.progressCircular.visibility = View.INVISIBLE
     }
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.checkButton.setTintColorAttribute(
+            true -> binding.itemActions.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
+            false -> binding.itemActions.checkButton.setTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -241,10 +241,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             true -> CoreR.drawable.ic_heart_filled
             false -> CoreR.drawable.ic_heart
         }
-        binding.favoriteButton.setImageResource(favoriteDrawable)
+        binding.itemActions.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.favoriteButton.setTintColorAttribute(
+            true -> binding.itemActions.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
+            false -> binding.itemActions.favoriteButton.setTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -255,13 +255,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         Timber.e(error.error.message)
 
         binding.playerItemsError.isVisible = true
-        binding.playButton.setImageDrawable(
+        binding.itemActions.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
                 CoreR.drawable.ic_play
             )
         )
-        binding.progressCircular.visibility = View.INVISIBLE
+        binding.itemActions.progressCircular.visibility = View.INVISIBLE
         binding.playerItemsErrorDetails.setOnClickListener {
             ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
         }

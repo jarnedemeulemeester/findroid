@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MaterialR
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
-import dev.jdtech.jellyfin.databinding.SeasonButtonsBinding
+import dev.jdtech.jellyfin.databinding.ItemActionsBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -42,7 +42,7 @@ class EpisodeListAdapter(
         }
     }
 
-    class ButtonsViewHolder(private var binding: SeasonButtonsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ButtonsViewHolder(private var binding: ItemActionsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: EpisodeItem.Buttons,
             onPlayClickListener: OnButtonClickListener,
@@ -136,7 +136,7 @@ class EpisodeListAdapter(
             }
             ITEM_VIEW_TYPE_BUTTONS -> {
                 ButtonsViewHolder(
-                    SeasonButtonsBinding.inflate(
+                    ItemActionsBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
