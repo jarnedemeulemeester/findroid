@@ -17,10 +17,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -73,12 +73,12 @@ class DownloadsFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.downloads_menu, menu)
+                    menuInflater.inflate(CoreR.menu.downloads_menu, menu)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.action_storage -> {
+                        CoreR.id.action_storage -> {
                             navigateToStorageActivity()
                             true
                         }

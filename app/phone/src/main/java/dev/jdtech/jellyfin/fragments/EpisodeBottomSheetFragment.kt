@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.R as AndroidR
 import android.app.DownloadManager
 import android.os.Bundle
 import android.util.TypedValue
@@ -19,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -55,7 +56,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
         binding.playButton.setOnClickListener {
-            binding.playButton.setImageResource(android.R.color.transparent)
+            binding.playButton.setImageResource(AndroidR.color.transparent)
             binding.progressCircular.isVisible = true
             playerViewModel.loadPlayerItems(viewModel.item)
         }
@@ -80,25 +81,25 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         0 -> Unit
                         DownloadManager.STATUS_PENDING -> {
                             binding.downloadButton.isEnabled = false
-                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.downloadButton.setImageResource(AndroidR.color.transparent)
                             binding.progressDownload.isIndeterminate = true
                             binding.progressDownload.isVisible = true
                         }
                         DownloadManager.STATUS_RUNNING -> {
                             binding.downloadButton.isEnabled = false
-                            binding.downloadButton.setImageResource(android.R.color.transparent)
+                            binding.downloadButton.setImageResource(AndroidR.color.transparent)
                             binding.progressDownload.isIndeterminate = false
                             binding.progressDownload.isVisible = true
                             binding.progressDownload.setProgressCompat(progress, true)
                         }
                         DownloadManager.STATUS_SUCCESSFUL -> {
-                            binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                            binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
                             binding.progressDownload.isVisible = false
                             binding.downloadButton.isEnabled = true
                         }
                         else -> {
                             binding.progressDownload.isVisible = false
-                            binding.downloadButton.setImageResource(R.drawable.ic_download)
+                            binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
                             binding.downloadButton.isEnabled = true
                         }
                     }
@@ -130,7 +131,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.downloadButton.setOnClickListener {
             if (viewModel.item.isDownloaded()) {
                 viewModel.deleteEpisode()
-                binding.downloadButton.setImageResource(R.drawable.ic_download)
+                binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
             } else {
                 if (viewModel.item.sources.size > 1) {
                     val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
@@ -195,7 +196,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.seriesName.text = episode.seriesName
             binding.overview.text = episode.overview
             binding.year.text = formatDateTime(episode.premiereDate)
-            binding.playtime.text = getString(R.string.runtime_minutes, episode.runtimeTicks.div(600000000))
+            binding.playtime.text = getString(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000))
             binding.communityRating.isVisible = episode.communityRating != null
             binding.communityRating.text = episode.communityRating.toString()
             binding.missingIcon.isVisible = false
@@ -229,7 +230,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         when (played) {
             true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.checkButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }

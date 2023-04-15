@@ -8,7 +8,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import com.google.android.material.R as MaterialR
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonButtonsBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
@@ -50,22 +51,22 @@ class EpisodeListAdapter(
         ) {
             // Check icon
             when (item.isPlayed) {
-                true -> binding.checkButton.setTintColor(R.color.red, binding.root.context.theme)
+                true -> binding.checkButton.setTintColor(CoreR.color.red, binding.root.context.theme)
                 false -> binding.checkButton.setTintColorAttribute(
-                    R.attr.colorOnSecondaryContainer,
+                    MaterialR.attr.colorOnSecondaryContainer,
                     binding.root.context.theme
                 )
             }
 
             // Favorite icon
             val favoriteDrawable = when (item.isFavorite) {
-                true -> R.drawable.ic_heart_filled
-                false -> R.drawable.ic_heart
+                true -> CoreR.drawable.ic_heart_filled
+                false -> CoreR.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
             when (item.isFavorite) {
-                true -> binding.favoriteButton.setTintColor(R.color.red, binding.root.context.theme)
-                false -> binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, binding.root.context.theme)
+                true -> binding.favoriteButton.setTintColor(CoreR.color.red, binding.root.context.theme)
+                false -> binding.favoriteButton.setTintColorAttribute(MaterialR.attr.colorOnSecondaryContainer, binding.root.context.theme)
             }
 
             binding.playButton.setOnClickListener {

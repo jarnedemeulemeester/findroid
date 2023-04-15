@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.StorageItemBinding
 import dev.jdtech.jellyfin.models.StorageItem
 import kotlin.math.roundToInt
@@ -24,7 +24,7 @@ class StorageListAdapter :
             (binding.introTimestampsLayout.layoutParams as MarginLayoutParams).marginStart = (storageItem.indent + 1) * 12.dp
             (binding.trickPlayLayout.layoutParams as MarginLayoutParams).marginStart = (storageItem.indent + 1) * 12.dp
             if (storageItem.size != null) {
-                binding.size.text = binding.root.context.getString(R.string.mega_byte_suffix, storageItem.size)
+                binding.size.text = binding.root.context.getString(CoreR.string.mega_byte_suffix, storageItem.size)
             }
             binding.introTimestampsLayout.isVisible = storageItem.introTimestamps
             binding.trickPlayLayout.isVisible = storageItem.trickPlayData

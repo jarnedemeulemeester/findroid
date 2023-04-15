@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -40,7 +40,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 }
                 is FindroidEpisode -> {
                     binding.primaryName.text = item.seriesName
-                    binding.secondaryName.text = parent.resources.getString(R.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
+                    binding.secondaryName.text = parent.resources.getString(CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
                 }
             }
 

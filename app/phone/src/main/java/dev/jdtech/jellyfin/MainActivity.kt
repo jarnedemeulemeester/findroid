@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
         if (appPreferences.offlineMode) {
             navView.menu.clear()
-            navView.inflateMenu(R.menu.bottom_nav_menu_offline)
+            navView.inflateMenu(CoreR.menu.bottom_nav_menu_offline)
         }
 
         setSupportActionBar(binding.mainToolbar)

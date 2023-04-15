@@ -95,13 +95,13 @@ class MovieFragment : Fragment() {
                             binding.progressDownload.setProgressCompat(progress, true)
                         }
                         DownloadManager.STATUS_SUCCESSFUL -> {
-                            binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                            binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
                             binding.progressDownload.isVisible = false
                             binding.downloadButton.isEnabled = true
                         }
                         else -> {
                             binding.progressDownload.isVisible = false
-                            binding.downloadButton.setImageResource(R.drawable.ic_download)
+                            binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
                             binding.downloadButton.isEnabled = true
                         }
                     }
@@ -330,7 +330,7 @@ class MovieFragment : Fragment() {
         }
         binding.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(coreR.color.red, requireActivity().theme)
+            true -> binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.favoriteButton.setTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme

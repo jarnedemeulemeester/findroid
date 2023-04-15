@@ -14,13 +14,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -37,8 +38,6 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
-// TODO move Shows to a seperate fragment
 
 @AndroidEntryPoint
 class ShowFragment : Fragment() {
@@ -148,7 +147,7 @@ class ShowFragment : Fragment() {
             viewModel.download()
             binding.downloadButton.imageTintList = ColorStateList.valueOf(
                 resources.getColor(
-                    R.color.red,
+                    CoreR.color.red,
                     requireActivity().theme
                 )
             )
@@ -181,7 +180,7 @@ class ShowFragment : Fragment() {
                     binding.downloadButton.isEnabled = !downloaded
 
                     if (downloaded) binding.downloadButton.setTintColor(
-                        R.color.red,
+                        CoreR.color.red,
                         requireActivity().theme
                     )
                 }
@@ -225,7 +224,7 @@ class ShowFragment : Fragment() {
             binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
             binding.nextUpName.text = getString(
-                R.string.episode_name_extended,
+                CoreR.string.episode_name_extended,
                 nextUp?.parentIndexNumber,
                 nextUp?.indexNumber,
                 nextUp?.name
@@ -258,9 +257,9 @@ class ShowFragment : Fragment() {
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.checkButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }
@@ -268,14 +267,14 @@ class ShowFragment : Fragment() {
 
     private fun bindFavoriteButtonState(favorite: Boolean) {
         val favoriteDrawable = when (favorite) {
-            true -> R.drawable.ic_heart_filled
-            false -> R.drawable.ic_heart
+            true -> CoreR.drawable.ic_heart_filled
+            false -> CoreR.drawable.ic_heart
         }
         binding.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.favoriteButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }
@@ -286,7 +285,7 @@ class ShowFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
@@ -298,7 +297,7 @@ class ShowFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
