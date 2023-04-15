@@ -57,7 +57,7 @@
     <string name="about">关于</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="app_info">应用详情</string>
-    <string name="unknown_error">您的订阅已到期, 请登录官网续费</string>
+    <string name="unknown_error">未知错误</string>
     <string name="search_hint">搜索电影、节目、集名…</string>
     <string name="mpv_player">mpv播放器</string>
     <string name="download_mobile_data">使用移动数据下载</string>
