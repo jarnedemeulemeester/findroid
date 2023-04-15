@@ -18,6 +18,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest).enqueue()
 
         if (appPreferences.amoledTheme) {
-            setTheme(R.style.Theme_FindroidAMOLED)
+            setTheme(CoreR.style.Theme_FindroidAMOLED)
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -105,11 +106,11 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.navView.visibility = when (destination.id) {
-                R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, R.id.about_libraries_dest, R.id.usersFragment, R.id.serverAddressesFragment -> View.GONE
+                R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, com.mikepenz.aboutlibraries.R.id.about_libraries_dest, R.id.usersFragment, R.id.serverAddressesFragment -> View.GONE
                 else -> View.VISIBLE
             }
-            if (destination.id == R.id.about_libraries_dest) binding.mainToolbar.title =
-                getString(R.string.app_info)
+            if (destination.id == com.mikepenz.aboutlibraries.R.id.about_libraries_dest) binding.mainToolbar.title =
+                getString(CoreR.string.app_info)
         }
     }
 

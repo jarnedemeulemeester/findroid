@@ -14,12 +14,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.bindCardItemImage
+import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
@@ -177,7 +178,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             bindFavoriteButtonState(episode.favorite)
 
             if (episode.isDownloaded()) {
-                binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
             }
 
             when (canDownload || canDelete) {
@@ -186,7 +187,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             binding.episodeName.text = getString(
-                R.string.episode_name_extended,
+                CoreR.string.episode_name_extended,
                 episode.parentIndexNumber,
                 episode.indexNumber,
                 episode.name
@@ -218,7 +219,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
@@ -226,7 +227,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.checkButton.setTintColorAttribute(
                 R.attr.colorOnSecondaryContainer,
                 requireActivity().theme
@@ -236,14 +237,14 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindFavoriteButtonState(favorite: Boolean) {
         val favoriteDrawable = when (favorite) {
-            true -> R.drawable.ic_heart_filled
-            false -> R.drawable.ic_heart
+            true -> CoreR.drawable.ic_heart_filled
+            false -> CoreR.drawable.ic_heart
         }
         binding.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.favoriteButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }
@@ -256,7 +257,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE

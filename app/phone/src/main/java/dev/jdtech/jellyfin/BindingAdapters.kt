@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
@@ -74,7 +75,7 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
 @BindingAdapter("personImage")
 fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
-        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = R.drawable.person_placeholder)
+        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.person_placeholder)
         .posterDescription(person.name)
 }
 
@@ -104,13 +105,13 @@ fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
 @BindingAdapter("userImage")
 fun bindUserImage(imageView: ImageView, user: User) {
     imageView
-        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = R.drawable.user_placeholder)
+        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.user_placeholder)
         .posterDescription(user.name)
 }
 
 private fun ImageView.loadImage(
     url: String,
-    @DrawableRes placeholderId: Int = R.color.neutral_800,
+    @DrawableRes placeholderId: Int = CoreR.color.neutral_800,
     @DrawableRes errorPlaceHolderId: Int? = null
 ): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
@@ -127,9 +128,9 @@ private fun ImageView.loadImage(
 }
 
 private fun View.posterDescription(name: String?) {
-    contentDescription = context.resources.getString(R.string.image_description_poster, name)
+    contentDescription = context.resources.getString(CoreR.string.image_description_poster, name)
 }
 
 private fun View.backdropDescription(name: String?) {
-    contentDescription = context.resources.getString(R.string.image_description_backdrop, name)
+    contentDescription = context.resources.getString(CoreR.string.image_description_backdrop, name)
 }

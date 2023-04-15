@@ -15,9 +15,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -128,11 +128,11 @@ internal class PersonDetailFragment : Fragment() {
             with(binding.overview) {
                 if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT) {
                     updateLayoutParams { height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT }
-                    binding.readAll.text = getString(R.string.view_all)
+                    binding.readAll.text = getString(CoreR.string.view_all)
                     binding.overviewGradient.isVisible = true
                 } else {
                     updateLayoutParams { height = ConstraintLayout.LayoutParams.WRAP_CONTENT }
-                    binding.readAll.text = getString(R.string.hide)
+                    binding.readAll.text = getString(CoreR.string.hide)
                     binding.overviewGradient.isVisible = false
                 }
             }

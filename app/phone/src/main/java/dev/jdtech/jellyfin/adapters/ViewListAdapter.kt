@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.CardOfflineBinding
 import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
@@ -32,7 +32,7 @@ class ViewListAdapter(
         ) {
             val view = dataItem.view
             binding.view = view
-            binding.viewName.text = binding.viewName.context.resources.getString(R.string.latest_library, view.name)
+            binding.viewName.text = binding.viewName.context.resources.getString(CoreR.string.latest_library, view.name)
             binding.itemsRecyclerView.adapter =
                 ViewItemListAdapter(onItemClickListener, fixedWidth = true)
             binding.viewAll.setOnClickListener {

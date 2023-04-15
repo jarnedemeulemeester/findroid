@@ -20,10 +20,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -70,11 +70,11 @@ class HomeFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.home_menu, menu)
-                    val settings = menu.findItem(R.id.action_settings)
-                    val search = menu.findItem(R.id.action_search)
+                    menuInflater.inflate(CoreR.menu.home_menu, menu)
+                    val settings = menu.findItem(CoreR.id.action_settings)
+                    val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
-                    searchView.queryHint = getString(R.string.search_hint)
+                    searchView.queryHint = getString(CoreR.string.search_hint)
 
                     search.setOnActionExpandListener(
                         object : MenuItem.OnActionExpandListener {
@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.action_settings -> {
+                        CoreR.id.action_settings -> {
                             navigateToSettingsFragment()
                             true
                         }

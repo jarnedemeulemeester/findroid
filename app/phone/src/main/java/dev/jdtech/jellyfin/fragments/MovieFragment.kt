@@ -14,11 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.bindItemBackdropImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentMovieBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
@@ -159,7 +160,7 @@ class MovieFragment : Fragment() {
         binding.downloadButton.setOnClickListener {
             if (viewModel.item.isDownloaded()) {
                 viewModel.deleteItem()
-                binding.downloadButton.setImageResource(R.drawable.ic_download)
+                binding.downloadButton.setImageResource(CoreR.drawable.ic_download)
             } else {
                 if (viewModel.item.sources.size > 1) {
                     val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
@@ -199,7 +200,7 @@ class MovieFragment : Fragment() {
             bindFavoriteButtonState(item.favorite)
 
             if (item.isDownloaded()) {
-                binding.downloadButton.setImageResource(R.drawable.ic_trash)
+                binding.downloadButton.setImageResource(CoreR.drawable.ic_trash)
             }
 
             when (canDownload || canDelete) {
@@ -314,9 +315,9 @@ class MovieFragment : Fragment() {
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
             false -> binding.checkButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }
@@ -324,14 +325,14 @@ class MovieFragment : Fragment() {
 
     private fun bindFavoriteButtonState(favorite: Boolean) {
         val favoriteDrawable = when (favorite) {
-            true -> R.drawable.ic_heart_filled
-            false -> R.drawable.ic_heart
+            true -> CoreR.drawable.ic_heart_filled
+            false -> CoreR.drawable.ic_heart
         }
         binding.favoriteButton.setImageResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            true -> binding.favoriteButton.setTintColor(coreR.color.red, requireActivity().theme)
             false -> binding.favoriteButton.setTintColorAttribute(
-                R.attr.colorOnSecondaryContainer,
+                MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
         }
@@ -342,7 +343,7 @@ class MovieFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
@@ -363,7 +364,7 @@ class MovieFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
