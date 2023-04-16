@@ -101,16 +101,4 @@
             app:trackCornerRadius="2dp" />
 
     </RelativeLayout>
-
-    <ImageButton
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/button_accent_background"
-        android:contentDescription="@string/delete_button_description"
-        android:padding="12dp"
-        android:src="@drawable/ic_trash"
-        android:visibility="gone"
-        app:tint="?attr/colorOnSecondaryContainer" />
 </LinearLayout>

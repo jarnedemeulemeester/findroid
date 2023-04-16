@@ -80,7 +80,6 @@ class MovieFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.downloadStatus.collect { (status, progress) ->
                     when (status) {
-                        0 -> Unit
                         DownloadManager.STATUS_PENDING -> {
                             binding.itemActions.downloadButton.isEnabled = false
                             binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
@@ -90,9 +89,13 @@ class MovieFragment : Fragment() {
                         DownloadManager.STATUS_RUNNING -> {
                             binding.itemActions.downloadButton.isEnabled = false
                             binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
-                            binding.itemActions.progressDownload.isIndeterminate = false
                             binding.itemActions.progressDownload.isVisible = true
-                            binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                            if (progress < 5) {
+                                binding.itemActions.progressDownload.isIndeterminate = true
+                            } else {
+                                binding.itemActions.progressDownload.isIndeterminate = false
+                                binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                            }
                         }
                         DownloadManager.STATUS_SUCCESSFUL -> {
                             binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
