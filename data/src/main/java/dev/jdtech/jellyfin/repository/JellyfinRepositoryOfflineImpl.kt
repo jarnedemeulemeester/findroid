@@ -8,7 +8,6 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidIntro
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -234,10 +233,6 @@ class JellyfinRepositoryOfflineImpl(
             database.setPlayed(jellyfinApi.userId!!, itemId, false)
             database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
-    }
-
-    override suspend fun getIntros(itemId: UUID): List<FindroidIntro> {
-        return emptyList()
     }
 
     override fun getBaseUrl(): String {

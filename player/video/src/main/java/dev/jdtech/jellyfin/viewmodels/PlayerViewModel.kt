@@ -47,7 +47,7 @@ class PlayerViewModel @Inject internal constructor(
             val playbackPosition = item.playbackPositionTicks.div(10000)
 
             val items = try {
-                createItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
+                prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
             } catch (e: Exception) {
                 Timber.d(e)
                 PlayerItemError(e)
@@ -55,27 +55,6 @@ class PlayerViewModel @Inject internal constructor(
 
             playerItems.tryEmit(items)
         }
-    }
-
-    private suspend fun createItems(
-        item: FindroidItem,
-        playbackPosition: Long,
-        mediaSourceIndex: Int
-    ) = if (playbackPosition <= 0) {
-        prepareIntros(item) + prepareMediaPlayerItems(
-            item,
-            playbackPosition,
-            mediaSourceIndex
-        )
-    } else {
-        prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
-    }
-
-    private suspend fun prepareIntros(item: FindroidItem): List<PlayerItem> {
-        return repository
-            .getIntros(item.id)
-            .filter { it.sources.isNotEmpty() }
-            .map { intro -> intro.toPlayerItem(mediaSourceIndex = 0, playbackPosition = 0) }
     }
 
     private suspend fun prepareMediaPlayerItems(

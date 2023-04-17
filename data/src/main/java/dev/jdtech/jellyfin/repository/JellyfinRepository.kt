@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.repository
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidIntro
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -102,8 +101,6 @@ interface JellyfinRepository {
     suspend fun markAsPlayed(itemId: UUID)
 
     suspend fun markAsUnplayed(itemId: UUID)
-
-    suspend fun getIntros(itemId: UUID): List<FindroidIntro>
 
     fun getBaseUrl(): String
 
