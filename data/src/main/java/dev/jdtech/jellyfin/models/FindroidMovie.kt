@@ -28,6 +28,7 @@ data class FindroidMovie(
     val status: String,
     val productionYear: Int?,
     val endDate: DateTime?,
+    val trailer: String?,
     override val unplayedItemCount: Int? = null,
 ) : FindroidItem, FindroidSources
 
@@ -60,6 +61,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         status = status ?: "Ended",
         productionYear = productionYear,
         endDate = endDate,
+        trailer = remoteTrailers?.getOrNull(0)?.url,
     )
 }
 
@@ -84,6 +86,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         endDate = endDate,
         canDownload = false,
         canPlay = true,
-        sources = database.getSources(id).map { it.toFindroidSource(database) }
+        sources = database.getSources(id).map { it.toFindroidSource(database) },
+        trailer = null,
     )
 }

@@ -28,6 +28,7 @@ data class FindroidShow(
     val status: String,
     val productionYear: Int?,
     val endDate: DateTime?,
+    val trailer: String?,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidShow(): FindroidShow {
@@ -51,6 +52,7 @@ fun BaseItemDto.toFindroidShow(): FindroidShow {
         status = status ?: "Ended",
         productionYear = productionYear,
         endDate = endDate,
+        trailer = remoteTrailers?.getOrNull(0)?.url,
     )
 }
 
@@ -76,5 +78,6 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         status = status,
         productionYear = productionYear,
         endDate = endDate,
+        trailer = null,
     )
 }

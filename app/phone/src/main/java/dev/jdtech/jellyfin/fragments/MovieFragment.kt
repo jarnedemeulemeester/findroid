@@ -1,10 +1,13 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.app.DownloadManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -160,6 +163,20 @@ class MovieFragment : Fragment() {
             playerViewModel.loadPlayerItems(viewModel.item)
         }
 
+        binding.itemActions.trailerButton.setOnClickListener {
+            viewModel.item.trailer.let { trailerUri ->
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(trailerUri)
+                )
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         binding.itemActions.checkButton.setOnClickListener {
             val played = viewModel.togglePlayed()
             bindCheckButtonState(played)
@@ -198,9 +215,9 @@ class MovieFragment : Fragment() {
             val canDelete = item.sources.any { it.type == FindroidSourceType.LOCAL }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
-//            if (item.remoteTrailers.isNullOrEmpty()) {
-//                binding.trailerButton.isVisible = false
-//            }
+            if (item.trailer != null) {
+                binding.itemActions.trailerButton.isVisible = true
+            }
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 

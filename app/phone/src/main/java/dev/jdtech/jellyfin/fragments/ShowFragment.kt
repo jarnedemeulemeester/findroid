@@ -1,10 +1,13 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -98,14 +101,19 @@ class ShowFragment : Fragment() {
             }
         }
 
-//        binding.trailerButton.setOnClickListener {
-//            if (viewModel.item?.remoteTrailers.isNullOrEmpty()) return@setOnClickListener
-//            val intent = Intent(
-//                Intent.ACTION_VIEW,
-//                Uri.parse(viewModel.item?.remoteTrailers?.get(0)?.url)
-//            )
-//            startActivity(intent)
-//        }
+        binding.itemActions.trailerButton.setOnClickListener {
+            viewModel.item.trailer.let { trailerUri ->
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(trailerUri)
+                )
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         binding.nextUp.setOnClickListener {
             navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
@@ -160,9 +168,9 @@ class ShowFragment : Fragment() {
             val canDownload = item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
-//            if (item.remoteTrailers.isNullOrEmpty()) {
-//                binding.trailerButton.isVisible = false
-//            }
+            if (item.trailer != null) {
+                binding.itemActions.trailerButton.isVisible = true
+            }
             binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
