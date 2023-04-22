@@ -8,12 +8,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
+import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -29,6 +32,9 @@ constructor(
 
     private val _downloadStatus = MutableStateFlow(Pair(0, 0))
     val downloadStatus = _downloadStatus.asStateFlow()
+
+    private val _downloadError = MutableSharedFlow<UiText>()
+    val downloadError = _downloadError.asSharedFlow()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -112,7 +118,10 @@ constructor(
 
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            downloader.downloadItem(item, item.sources[sourceIndex].id)
+            val result = downloader.downloadItem(item, item.sources[sourceIndex].id)
+            if (result.second != null) {
+                _downloadError.emit(result.second!!)
+            }
             loadEpisode(item.id)
         }
     }

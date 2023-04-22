@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.R as MaterialR
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
@@ -27,6 +28,7 @@ import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
@@ -108,6 +110,14 @@ class MovieFragment : Fragment() {
                             binding.itemActions.downloadButton.isEnabled = true
                         }
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.downloadError.collect { uiText ->
+                    createErrorDialog(uiText)
                 }
             }
         }
@@ -371,6 +381,16 @@ class MovieFragment : Fragment() {
             )
         )
         binding.itemActions.progressCircular.visibility = View.INVISIBLE
+    }
+
+    private fun createErrorDialog(uiText: UiText) {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder
+            .setTitle(CoreR.string.not_enough_storage)
+            .setMessage(uiText.asString(requireContext().resources))
+            .setPositiveButton(getString(CoreR.string.close)) { _, _ ->
+            }
+        builder.show()
     }
 
     private fun navigateToPlayerActivity(

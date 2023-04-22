@@ -5,12 +5,14 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import java.io.File
 
 data class FindroidSource(
     val id: String,
     val name: String,
     val type: FindroidSourceType,
     val path: String,
+    val size: Long,
     val mediaStreams: List<FindroidMediaStream>,
     val downloadId: Long? = null
 )
@@ -35,6 +37,7 @@ suspend fun MediaSourceInfo.toFindroidSource(
         name = name.orEmpty(),
         type = FindroidSourceType.REMOTE,
         path = path,
+        size = size ?: 0,
         mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList()
     )
 }
@@ -47,6 +50,7 @@ fun FindroidSourceDto.toFindroidSource(
         name = name,
         type = type,
         path = path,
+        size = File(path).length(),
         mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toFindroidMediaStream() },
         downloadId = downloadId,
     )

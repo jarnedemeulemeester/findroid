@@ -4,14 +4,17 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.os.StatFs
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
@@ -36,7 +39,7 @@ class DownloaderImpl(
     override suspend fun downloadItem(
         item: FindroidItem,
         sourceId: String,
-    ): Long {
+    ): Pair<Long, UiText?> {
         val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
         val intro = jellyfinRepository.getIntroTimestamps(item.id)
         val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
@@ -46,6 +49,10 @@ class DownloaderImpl(
             null
         }
         val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
+        val stats = StatFs(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.path)
+        if (stats.availableBytes < source.size) {
+            return Pair(-1, UiText.StringResource(CoreR.string.not_enough_storage_details, source.size.div(1000000), stats.availableBytes.div(1000000)))
+        }
         when (item) {
             is FindroidMovie -> {
                 database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
@@ -65,7 +72,7 @@ class DownloaderImpl(
                     .setDestinationUri(path)
                 val downloadId = downloadManager.enqueue(request)
                 database.setSourceDownloadId(source.id, downloadId)
-                return downloadId
+                return Pair(downloadId, null)
             }
             is FindroidEpisode -> {
                 database.insertShow(jellyfinRepository.getShow(item.seriesId).toFindroidShowDto(appPreferences.currentServer!!))
@@ -87,10 +94,10 @@ class DownloaderImpl(
                     .setDestinationUri(path)
                 val downloadId = downloadManager.enqueue(request)
                 database.setSourceDownloadId(source.id, downloadId)
-                return downloadId
+                return Pair(downloadId, null)
             }
         }
-        return -1
+        return Pair(-1, null)
     }
 
     override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {

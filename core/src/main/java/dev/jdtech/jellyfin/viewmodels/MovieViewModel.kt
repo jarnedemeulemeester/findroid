@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.Resolution
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -21,7 +22,9 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +44,9 @@ constructor(
 
     private val _downloadStatus = MutableStateFlow(Pair(0, 0))
     val downloadStatus = _downloadStatus.asStateFlow()
+
+    private val _downloadError = MutableSharedFlow<UiText>()
+    val downloadError = _downloadError.asSharedFlow()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -306,7 +312,10 @@ constructor(
 
     fun download(sourceIndex: Int = 0) {
         viewModelScope.launch {
-            downloader.downloadItem(item, item.sources[sourceIndex].id)
+            val result = downloader.downloadItem(item, item.sources[sourceIndex].id)
+            if (result.second != null) {
+                _downloadError.emit(result.second!!)
+            }
             loadData(item.id)
         }
     }
