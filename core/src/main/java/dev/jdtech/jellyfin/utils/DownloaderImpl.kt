@@ -67,7 +67,8 @@ class DownloaderImpl(
                 }
                 val request = DownloadManager.Request(source.path.toUri())
                     .setTitle(item.name)
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                    .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                    .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                     .setDestinationUri(path)
                 val downloadId = downloadManager.enqueue(request)
@@ -89,7 +90,8 @@ class DownloaderImpl(
                 }
                 val request = DownloadManager.Request(source.path.toUri())
                     .setTitle(item.name)
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                    .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                    .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                     .setDestinationUri(path)
                 val downloadId = downloadManager.enqueue(request)
