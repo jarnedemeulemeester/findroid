@@ -33,7 +33,7 @@ data class FindroidEpisodeDto(
     val seriesName: String,
     val overview: String,
     val indexNumber: Int,
-    val indexNumberEnd: Int,
+    val indexNumberEnd: Int?,
     val parentIndexNumber: Int,
     val runtimeTicks: Long,
     val premiereDate: LocalDateTime?,
