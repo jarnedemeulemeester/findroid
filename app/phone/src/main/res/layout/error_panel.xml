@@ -49,11 +49,4 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/error_offline_mode_button"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/offline_mode_button" />
-
 </LinearLayout>

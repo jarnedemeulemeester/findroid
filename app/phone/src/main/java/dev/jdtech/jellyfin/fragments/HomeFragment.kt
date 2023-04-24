@@ -165,11 +165,6 @@ class HomeFragment : Fragment() {
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
-
-        binding.errorLayout.errorOfflineModeButton.setOnClickListener {
-            appPreferences.offlineMode = true
-            activity?.restart()
-        }
     }
 
     private fun bindState() {

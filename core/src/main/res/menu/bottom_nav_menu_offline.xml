@@ -7,11 +7,6 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/favoriteFragment"
-        android:icon="@drawable/ic_heart"
-        android:title="@string/title_favorite" />
-
-    <item
         android:id="@+id/downloadsFragment"
         android:icon="@drawable/ic_download"
         android:title="@string/title_download" />
