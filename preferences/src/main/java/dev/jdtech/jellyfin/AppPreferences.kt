@@ -34,6 +34,11 @@ constructor(
         }
 
     // Player
+    val playerPreferredQuality: String get() = sharedPreferences.getString(
+        Constants.PREF_PLAYER_PREFERRED_QUALITY,
+        "Original"
+    )!!
+
     val displayExtendedTitle get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTENDED_TITLE, false)
 
     val playerGestures get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)

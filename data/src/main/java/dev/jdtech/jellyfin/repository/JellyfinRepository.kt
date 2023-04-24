@@ -64,6 +64,8 @@ interface JellyfinRepository {
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
+    suspend fun getHlsPlaylistUrl(itemId: UUID, mediaSourceId: String, transcodeResolution: Int?): String
+
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
 
     suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?

@@ -157,6 +157,9 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="quality">Quality</string>
+    <string name="preferred_quality">%s\nAny setting other than Original might require transcoding.</string>
+    <string name="quality_original">Original</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtitles</string>

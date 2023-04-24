@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -30,7 +31,8 @@ import timber.log.Timber
 class PlayerViewModel @Inject internal constructor(
     private val application: Application,
     private val repository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
+    private val downloadDatabase: DownloadDatabaseDao,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -177,7 +179,11 @@ class PlayerViewModel @Inject internal constructor(
         val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
         val externalSubtitles = mutableListOf<ExternalSubtitle>()
         for (mediaStream in mediaSource.mediaStreams!!) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
+            // When transcoding, subtitles aren't embedded, so we add them externally
+            if ((appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
+                mediaStream.type == MediaStreamType.SUBTITLE &&
+                !mediaStream.deliveryUrl.isNullOrBlank()
+            ) {
 
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
