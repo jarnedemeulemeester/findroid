@@ -3,6 +3,6 @@
   "labels": ["dependencies"],
   "extends": [
     "config:base",
-    ":semanticCommitsDisabled"
+    ":semanticCommits"
   ]
 }
