@@ -13,12 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindBaseItemImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -91,11 +92,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 when (viewModel.played) {
                     true -> {
                         viewModel.markAsUnplayed(episodeId)
-                        binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.checkButton.setTintColorAttribute(MaterialR.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsPlayed(episodeId)
-                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+                        binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -104,13 +105,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 when (viewModel.favorite) {
                     true -> {
                         viewModel.unmarkAsFavorite(episodeId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
-                        binding.favoriteButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                        binding.favoriteButton.setImageResource(CoreR.drawable.ic_heart)
+                        binding.favoriteButton.setTintColorAttribute(MaterialR.attr.colorOnSecondaryContainer, requireActivity().theme)
                     }
                     false -> {
                         viewModel.markAsFavorite(episodeId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+                        binding.favoriteButton.setImageResource(CoreR.drawable.ic_heart_filled)
+                        binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -118,7 +119,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.downloadButton.setOnClickListener {
                 binding.downloadButton.isEnabled = false
                 viewModel.download()
-                binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+                binding.downloadButton.setTintColor(CoreR.color.red, requireActivity().theme)
             }
 
             viewModel.loadEpisode(episodeId)
@@ -131,7 +132,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteEpisode()
                 dismiss()
-                findNavController().navigate(R.id.downloadFragment)
+                findNavController().navigate(CoreR.id.downloadFragment)
             }
 
             binding.checkButton.isVisible = false
@@ -163,7 +164,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             val clickable = canPlay && (available || canRetry)
             binding.playButton.isEnabled = clickable
             binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
-            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
+            binding.playButton.setImageResource(if (!canRetry) CoreR.drawable.ic_play else CoreR.drawable.ic_rotate_ccw)
             if (!(available || canRetry)) {
                 binding.playButton.setImageResource(android.R.color.transparent)
                 binding.progressCircular.isVisible = true
@@ -171,24 +172,24 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
             // Check icon
             when (played) {
-                true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
-                false -> binding.checkButton.setTintColorAttribute(R.attr.colorOnSecondaryContainer, requireActivity().theme)
+                true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
+                false -> binding.checkButton.setTintColorAttribute(MaterialR.attr.colorOnSecondaryContainer, requireActivity().theme)
             }
 
             // Favorite icon
             val favoriteDrawable = when (favorite) {
-                true -> R.drawable.ic_heart_filled
-                false -> R.drawable.ic_heart
+                true -> CoreR.drawable.ic_heart_filled
+                false -> CoreR.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            if (favorite) binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
 
             when (canDownload) {
                 true -> {
                     binding.downloadButtonWrapper.isVisible = true
                     binding.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.downloadButton.setTintColor(R.color.red, requireActivity().theme)
+                    if (downloaded) binding.downloadButton.setTintColor(CoreR.color.red, requireActivity().theme)
                 }
                 false -> {
                     binding.downloadButtonWrapper.isVisible = false
@@ -196,7 +197,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             binding.episodeName.text = getString(
-                R.string.episode_name_extended,
+                CoreR.string.episode_name_extended,
                 episode.parentIndexNumber,
                 episode.indexNumber,
                 episode.name
@@ -233,7 +234,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
@@ -246,7 +247,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE

@@ -27,6 +27,7 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -136,7 +137,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
                         this,
-                        resources.getString(R.string.select_audio_track),
+                        resources.getString(PlayerVideoR.string.select_audio_track),
                         viewModel.player,
                         C.TRACK_TYPE_AUDIO
                     )
@@ -169,7 +170,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
                         this,
-                        resources.getString(R.string.select_subtile_track),
+                        resources.getString(PlayerVideoR.string.select_subtile_track),
                         viewModel.player,
                         C.TRACK_TYPE_TEXT
                     )

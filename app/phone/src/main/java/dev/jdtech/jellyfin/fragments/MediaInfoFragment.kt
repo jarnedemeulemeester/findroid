@@ -16,13 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.R as MaterialR
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindBaseItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentMediaInfoBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.VideoVersionDialogFragment
@@ -165,14 +166,14 @@ class MediaInfoFragment : Fragment() {
                     true -> {
                         viewModel.markAsUnplayed(args.itemId)
                         binding.checkButton.setTintColorAttribute(
-                            R.attr.colorOnSecondaryContainer,
+                            MaterialR.attr.colorOnSecondaryContainer,
                             requireActivity().theme
                         )
                     }
 
                     false -> {
                         viewModel.markAsPlayed(args.itemId)
-                        binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+                        binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -181,17 +182,17 @@ class MediaInfoFragment : Fragment() {
                 when (viewModel.favorite) {
                     true -> {
                         viewModel.unmarkAsFavorite(args.itemId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart)
+                        binding.favoriteButton.setImageResource(CoreR.drawable.ic_heart)
                         binding.favoriteButton.setTintColorAttribute(
-                            R.attr.colorOnSecondaryContainer,
+                            MaterialR.attr.colorOnSecondaryContainer,
                             requireActivity().theme
                         )
                     }
 
                     false -> {
                         viewModel.markAsFavorite(args.itemId)
-                        binding.favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                        binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+                        binding.favoriteButton.setImageResource(CoreR.drawable.ic_heart_filled)
+                        binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
                     }
                 }
             }
@@ -201,7 +202,7 @@ class MediaInfoFragment : Fragment() {
                 viewModel.download()
                 binding.downloadButton.imageTintList = ColorStateList.valueOf(
                     resources.getColor(
-                        R.color.red,
+                        CoreR.color.red,
                         requireActivity().theme
                     )
                 )
@@ -214,7 +215,7 @@ class MediaInfoFragment : Fragment() {
 
             binding.deleteButton.setOnClickListener {
                 viewModel.deleteItem()
-                findNavController().navigate(R.id.downloadFragment)
+                findNavController().navigate(CoreR.id.downloadFragment)
             }
         }
     }
@@ -231,7 +232,7 @@ class MediaInfoFragment : Fragment() {
             val clickable = canPlay && (available || canRetry)
             binding.playButton.isEnabled = clickable
             binding.playButton.alpha = if (!clickable) 0.5F else 1.0F
-            binding.playButton.setImageResource(if (!canRetry) R.drawable.ic_play else R.drawable.ic_rotate_ccw)
+            binding.playButton.setImageResource(if (!canRetry) CoreR.drawable.ic_play else CoreR.drawable.ic_rotate_ccw)
             if (!(available || canRetry)) {
                 binding.playButton.setImageResource(android.R.color.transparent)
                 binding.progressCircular.isVisible = true
@@ -239,20 +240,20 @@ class MediaInfoFragment : Fragment() {
 
             // Check icon
             when (played) {
-                true -> binding.checkButton.setTintColor(R.color.red, requireActivity().theme)
+                true -> binding.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
                 false -> binding.checkButton.setTintColorAttribute(
-                    R.attr.colorOnSecondaryContainer,
+                    MaterialR.attr.colorOnSecondaryContainer,
                     requireActivity().theme
                 )
             }
 
             // Favorite icon
             val favoriteDrawable = when (favorite) {
-                true -> R.drawable.ic_heart_filled
-                false -> R.drawable.ic_heart
+                true -> CoreR.drawable.ic_heart_filled
+                false -> CoreR.drawable.ic_heart
             }
             binding.favoriteButton.setImageResource(favoriteDrawable)
-            if (favorite) binding.favoriteButton.setTintColor(R.color.red, requireActivity().theme)
+            if (favorite) binding.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
 
             when (canDownload) {
                 true -> {
@@ -260,7 +261,7 @@ class MediaInfoFragment : Fragment() {
                     binding.downloadButton.isEnabled = !downloaded
 
                     if (downloaded) binding.downloadButton.setTintColor(
-                        R.color.red,
+                        CoreR.color.red,
                         requireActivity().theme
                     )
                 }
@@ -355,7 +356,7 @@ class MediaInfoFragment : Fragment() {
             binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
             binding.nextUpName.text = getString(
-                R.string.episode_name_extended,
+                CoreR.string.episode_name_extended,
                 nextUp?.parentIndexNumber,
                 nextUp?.indexNumber,
                 nextUp?.name
@@ -391,7 +392,7 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE
@@ -403,7 +404,7 @@ class MediaInfoFragment : Fragment() {
         binding.playButton.setImageDrawable(
             ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.ic_play
+                CoreR.drawable.ic_play
             )
         )
         binding.progressCircular.visibility = View.INVISIBLE

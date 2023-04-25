@@ -57,7 +57,7 @@
     <string name="about">关于</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="app_info">应用详情</string>
-    <string name="unknown_error">您的订阅已到期, 请登录官网续费</string>
+    <string name="unknown_error">未知错误</string>
     <string name="search_hint">搜索电影、节目、集名…</string>
     <string name="mpv_player">mpv播放器</string>
     <string name="download_mobile_data">使用移动数据下载</string>
@@ -106,7 +106,7 @@
     <string name="edit_text_server_address_hint">服务器地址</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>
-    <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级你的服务器</string>
+    <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级您的服务器</string>
     <string name="button_login">登录</string>
     <string name="settings_use_cache_summary">把图片缓存到磁盘上来加快加载时间。将会在应用程序重启后生效。</string>
     <string name="player_controls_fast_forward">快进</string>
