@@ -249,7 +249,7 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun pipParams(): PictureInPictureParams {
         val aspectRatio =
-            binding.playerView.player?.videoSize?.let { Rational(it.width, it.height) }
+            binding.playerView.player?.videoSize?.let { Rational(it.width.coerceAtMost((it.height * 2.39f).toInt()), it.height) }
 
         return PictureInPictureParams.Builder()
             .setAspectRatio(aspectRatio)
