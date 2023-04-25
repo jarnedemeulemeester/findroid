@@ -192,6 +192,10 @@ class MovieFragment : Fragment() {
                 viewModel.deleteItem()
                 binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
             } else {
+                binding.itemActions.downloadButton.isEnabled = false
+                binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
+                binding.itemActions.progressDownload.isIndeterminate = true
+                binding.itemActions.progressDownload.isVisible = true
                 if (viewModel.item.sources.size > 1) {
                     val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
                         viewModel.download(it)
