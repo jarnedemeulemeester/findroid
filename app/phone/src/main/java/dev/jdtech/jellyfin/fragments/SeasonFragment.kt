@@ -87,15 +87,6 @@ class SeasonFragment : Fragment() {
                 EpisodeListAdapter.OnClickListener { episode ->
                     navigateToEpisodeBottomSheetFragment(episode)
                 },
-                EpisodeListAdapter.OnButtonClickListener {
-                    playerViewModel.loadPlayerItems(viewModel.season)
-                },
-                EpisodeListAdapter.OnButtonClickListener {
-                    viewModel.togglePlayed()
-                },
-                EpisodeListAdapter.OnButtonClickListener {
-                    viewModel.toggleFavorite()
-                },
             )
     }
 

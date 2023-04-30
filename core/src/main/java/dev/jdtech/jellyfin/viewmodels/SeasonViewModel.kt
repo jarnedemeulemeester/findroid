@@ -11,9 +11,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.model.api.ItemFields
-import timber.log.Timber
 
 @HiltViewModel
 class SeasonViewModel
@@ -51,40 +49,9 @@ constructor(
 
     private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID): List<EpisodeItem> {
         val header = EpisodeItem.Header(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name)
-        val buttons = EpisodeItem.Buttons(isLoading = false, isPlayed = season.played, isFavorite = season.favorite)
         val episodes =
             jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW))
 
-        return listOf(header, buttons) + episodes.map { EpisodeItem.Episode(it) }
-    }
-
-    fun togglePlayed() {
-        viewModelScope.launch {
-            try {
-                if (season.played) {
-                    jellyfinRepository.markAsUnplayed(season.id)
-                } else {
-                    jellyfinRepository.markAsPlayed(season.id)
-                }
-                loadEpisodes(season.seriesId, season.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
-            }
-        }
-    }
-
-    fun toggleFavorite() {
-        viewModelScope.launch {
-            try {
-                if (season.favorite) {
-                    jellyfinRepository.unmarkAsFavorite(season.id)
-                } else {
-                    jellyfinRepository.markAsFavorite(season.id)
-                }
-                loadEpisodes(season.seriesId, season.id)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
-            }
-        }
+        return listOf(header) + episodes.map { EpisodeItem.Episode(it) }
     }
 }

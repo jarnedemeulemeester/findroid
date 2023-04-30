@@ -17,12 +17,4 @@ sealed class EpisodeItem {
     data class Episode(val episode: FindroidEpisode) : EpisodeItem() {
         override val id = episode.id
     }
-
-    data class Buttons(
-        val isLoading: Boolean,
-        val isPlayed: Boolean,
-        val isFavorite: Boolean,
-    ) : EpisodeItem() {
-        override val id: UUID = UUID.fromString("621358a0-92dd-4066-acd9-f0a750d05c82")
-    }
 }
