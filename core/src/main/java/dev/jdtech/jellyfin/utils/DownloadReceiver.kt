@@ -31,8 +31,8 @@ class DownloadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var repository: JellyfinRepository
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == "android.intent.action.DOWNLOAD_COMPLETE") {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == "android.intent.action.DOWNLOAD_COMPLETE") {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             if (id != -1L) {
                 val source = database.getSourceByDownloadId(id)
