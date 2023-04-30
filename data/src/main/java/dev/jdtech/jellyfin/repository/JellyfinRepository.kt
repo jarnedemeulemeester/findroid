@@ -16,10 +16,13 @@ import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
 interface JellyfinRepository {
+    suspend fun getPublicSystemInfo(): PublicSystemInfo
+
     suspend fun getUserViews(): List<BaseItemDto>
 
     suspend fun getItem(itemId: UUID): BaseItemDto

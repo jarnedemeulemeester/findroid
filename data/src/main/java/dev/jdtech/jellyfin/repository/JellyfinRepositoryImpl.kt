@@ -45,6 +45,7 @@ import org.jellyfin.sdk.model.api.GeneralCommandType
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
 import org.jellyfin.sdk.model.api.PlaybackInfoDto
+import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
@@ -57,6 +58,10 @@ class JellyfinRepositoryImpl(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
+    override suspend fun getPublicSystemInfo(): PublicSystemInfo = withContext(Dispatchers.IO) {
+        jellyfinApi.systemApi.getPublicSystemInfo().content
+    }
+
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
     }

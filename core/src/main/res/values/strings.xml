@@ -173,4 +173,5 @@
     <string name="mega_byte_suffix">%d MB</string>
     <string name="not_enough_storage">Not enough storage space</string>
     <string name="not_enough_storage_details">This item requires %d MB of free storage but only %d MB is available</string>
+    <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
 </resources>

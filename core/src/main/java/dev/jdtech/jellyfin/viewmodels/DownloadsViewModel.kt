@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
@@ -10,8 +11,11 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -19,10 +23,13 @@ import kotlinx.coroutines.launch
 class DownloadsViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository
+    private val appPreferences: AppPreferences,
+    private val repository: JellyfinRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
+    private val _connectionError = MutableSharedFlow<Exception>()
+    val connectionError = _connectionError.asSharedFlow()
 
     sealed class UiState {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
@@ -31,7 +38,21 @@ constructor(
     }
 
     init {
+        testServerConnection()
         loadData()
+    }
+
+    private fun testServerConnection() {
+        viewModelScope.launch {
+            try {
+                if (appPreferences.offlineMode) return@launch
+                repository.getPublicSystemInfo()
+                // Give the UI a chance to load
+                delay(100)
+            } catch (e: Exception) {
+                _connectionError.emit(e)
+            }
+        }
     }
 
     fun loadData() {
@@ -40,7 +61,7 @@ constructor(
 
             val sections = mutableListOf<FavoriteSection>()
 
-            val items = jellyfinRepository.getDownloads(currentServer = true)
+            val items = repository.getDownloads(currentServer = true)
 
             FavoriteSection(
                 Constants.FAVORITE_TYPE_MOVIES,

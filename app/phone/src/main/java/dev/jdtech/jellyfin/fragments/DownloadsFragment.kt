@@ -16,23 +16,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadsFragment : Fragment() {
     private lateinit var binding: FragmentDownloadsBinding
     private val viewModel: DownloadsViewModel by viewModels()
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,12 +60,25 @@ class DownloadsFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is DownloadsViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is DownloadsViewModel.UiState.Loading -> bindUiStateLoading()
-                        is DownloadsViewModel.UiState.Error -> Unit
+                launch {
+                    viewModel.connectionError.collect {
+                        Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
+                            .setAnchorView(requireActivity().findViewById(R.id.nav_view))
+                            .setAction(CoreR.string.offline_mode) {
+                                appPreferences.offlineMode = true
+                                activity?.restart()
+                            }
+                            .show()
+                    }
+                }
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is DownloadsViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is DownloadsViewModel.UiState.Loading -> bindUiStateLoading()
+                            is DownloadsViewModel.UiState.Error -> Unit
+                        }
                     }
                 }
             }

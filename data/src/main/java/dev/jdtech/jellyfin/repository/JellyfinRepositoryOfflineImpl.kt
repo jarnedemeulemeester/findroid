@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
@@ -40,6 +41,11 @@ class JellyfinRepositoryOfflineImpl(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
+
+    override suspend fun getPublicSystemInfo(): PublicSystemInfo {
+        throw Exception("System info not available in offline mode")
+    }
+
     override suspend fun getUserViews(): List<BaseItemDto> {
         return emptyList()
     }
