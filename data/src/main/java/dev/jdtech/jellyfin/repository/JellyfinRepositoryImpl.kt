@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.repository
 
 import android.content.Context
-import android.os.Environment
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -387,8 +386,8 @@ class JellyfinRepositoryImpl(
             val trickPlayManifest = database.getTrickPlayManifest(itemId)
             if (trickPlayManifest != null) {
                 return@withContext File(
-                    context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
-                    "$itemId.bif"
+                    context.filesDir,
+                    "trickplay/$itemId.bif"
                 ).readBytes()
             }
 

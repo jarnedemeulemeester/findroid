@@ -39,6 +39,7 @@ class DownloaderImpl(
     override suspend fun downloadItem(
         item: FindroidItem,
         sourceId: String,
+        storageIndex: Int,
     ): Pair<Long, UiText?> {
         val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
         val intro = jellyfinRepository.getIntroTimestamps(item.id)
@@ -48,8 +49,12 @@ class DownloaderImpl(
         } else {
             null
         }
-        val path = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.download"))
-        val stats = StatFs(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.path)
+        val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
+        if (storageLocation == null || Environment.getExternalStorageState(storageLocation) != Environment.MEDIA_MOUNTED) {
+            return Pair(-1, UiText.StringResource(CoreR.string.storage_unavailable))
+        }
+        val path = Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.download"))
+        val stats = StatFs(storageLocation.path)
         if (stats.availableBytes < source.size) {
             return Pair(-1, UiText.StringResource(CoreR.string.not_enough_storage_details, source.size.div(1000000), stats.availableBytes.div(1000000)))
         }
@@ -58,7 +63,7 @@ class DownloaderImpl(
                 database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                 database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
-                downloadExternalMediaStreams(item, source)
+                downloadExternalMediaStreams(item, source, storageIndex)
                 if (intro != null) {
                     database.insertIntro(intro.toIntroDto(item.id))
                 }
@@ -81,7 +86,7 @@ class DownloaderImpl(
                 database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
                 database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                 database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
-                downloadExternalMediaStreams(item, source)
+                downloadExternalMediaStreams(item, source, storageIndex)
                 if (intro != null) {
                     database.insertIntro(intro.toIntroDto(item.id))
                 }
@@ -134,7 +139,7 @@ class DownloaderImpl(
         database.deleteIntro(item.id)
 
         database.deleteTrickPlayManifest(item.id)
-        File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.bif").delete()
+        File(context.filesDir, "trickplay/${item.id}.bif").delete()
     }
 
     override suspend fun getProgress(downloadId: Long?): Pair<Int, Int> {
@@ -171,10 +176,12 @@ class DownloaderImpl(
     private fun downloadExternalMediaStreams(
         item: FindroidItem,
         source: FindroidSource,
+        storageIndex: Int = 0,
     ) {
+        val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
         for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
             val id = UUID.randomUUID()
-            val streamPath = Uri.fromFile(File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.${source.id}.$id.download"))
+            val streamPath = Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.$id.download"))
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
             val request = DownloadManager.Request(Uri.parse(mediaStream.path))
                 .setTitle(mediaStream.title)
@@ -192,7 +199,7 @@ class DownloaderImpl(
         byteArray: ByteArray
     ) {
         database.insertTrickPlayManifest(trickPlayManifest.toTrickPlayManifestDto(item.id))
-        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "${item.id}.bif")
+        val file = File(context.filesDir, "trickplay/${item.id}.bif")
         file.writeBytes(byteArray)
     }
 }

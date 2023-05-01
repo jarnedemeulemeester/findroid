@@ -119,9 +119,9 @@ constructor(
         return favorite
     }
 
-    fun download(sourceIndex: Int = 0) {
+    fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
         viewModelScope.launch {
-            val result = downloader.downloadItem(item, item.sources[sourceIndex].id)
+            val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
             if (result.second != null) {
                 _downloadError.emit(result.second!!)
             }

@@ -25,6 +25,7 @@ import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
 import dev.jdtech.jellyfin.dialogs.getVideoVersionDialog
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -150,9 +151,23 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
                 binding.itemActions.progressDownload.isIndeterminate = true
                 binding.itemActions.progressDownload.isVisible = true
+                if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
+                    val storageDialog = getStorageSelectionDialog(requireContext()) { storageIndex ->
+                        if (viewModel.item.sources.size > 1) {
+                            val dialog = getVideoVersionDialog(requireContext(), viewModel.item) { sourceIndex ->
+                                viewModel.download(sourceIndex, storageIndex)
+                            }
+                            dialog.show()
+                            return@getStorageSelectionDialog
+                        }
+                        viewModel.download(storageIndex = storageIndex)
+                    }
+                    storageDialog.show()
+                    return@setOnClickListener
+                }
                 if (viewModel.item.sources.size > 1) {
-                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item) {
-                        viewModel.download(it)
+                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item) { sourceIndex ->
+                        viewModel.download(sourceIndex)
                     }
                     dialog.show()
                     return@setOnClickListener

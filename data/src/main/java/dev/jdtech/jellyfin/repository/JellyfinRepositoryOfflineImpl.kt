@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.repository
 
 import android.content.Context
-import android.os.Environment
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -171,8 +170,8 @@ class JellyfinRepositoryOfflineImpl(
             val trickPlayManifest = database.getTrickPlayManifest(itemId)
             if (trickPlayManifest != null) {
                 return@withContext File(
-                    context.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
-                    "$itemId.bif"
+                    context.filesDir,
+                    "trickplay/$itemId.bif"
                 ).readBytes()
             }
             null

@@ -8,6 +8,7 @@ interface Downloader {
     suspend fun downloadItem(
         item: FindroidItem,
         sourceId: String,
+        storageIndex: Int = 0,
     ): Pair<Long, UiText?>
 
     suspend fun deleteItem(item: FindroidItem, source: FindroidSource)

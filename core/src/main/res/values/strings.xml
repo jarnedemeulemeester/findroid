@@ -174,4 +174,9 @@
     <string name="not_enough_storage">Not enough storage space</string>
     <string name="not_enough_storage_details">This item requires %d MB of free storage but only %d MB is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
+    <string name="select_storage_location">Select storage location</string>
+    <string name="storage_unavailable">Storage location is unavailable</string>
+    <string name="internal">Internal</string>
+    <string name="external">External</string>
+    <string name="storage_name">%s (%d MB free)</string>
 </resources>
