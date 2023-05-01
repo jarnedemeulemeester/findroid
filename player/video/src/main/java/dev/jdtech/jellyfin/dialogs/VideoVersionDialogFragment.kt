@@ -9,13 +9,18 @@ import dev.jdtech.jellyfin.player.video.R
 fun getVideoVersionDialog(
     context: Context,
     item: FindroidItem,
-    onItemSelected: (which: Int) -> Unit
+    onItemSelected: (which: Int) -> Unit,
+    onCancel: () -> Unit,
 ): AlertDialog {
     val items = item.sources.map { "${it.name} - ${it.type}" }.toTypedArray()
     val dialog = MaterialAlertDialogBuilder(context)
         .setTitle(R.string.select_a_version)
         .setItems(items) { _, which ->
             onItemSelected(which)
-        }.create()
+        }
+        .setOnCancelListener {
+            onCancel()
+        }
+        .create()
     return dialog
 }

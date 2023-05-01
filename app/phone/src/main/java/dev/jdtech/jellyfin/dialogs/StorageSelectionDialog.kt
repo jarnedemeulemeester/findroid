@@ -9,7 +9,8 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 fun getStorageSelectionDialog(
     context: Context,
-    onItemSelected: (which: Int) -> Unit
+    onItemSelected: (which: Int) -> Unit,
+    onCancel: () -> Unit,
 ): AlertDialog {
     val locations = context.getExternalFilesDirs(null).mapNotNull {
         val locationStringRes = if (Environment.isExternalStorageRemovable(it)) CoreR.string.external else CoreR.string.internal
@@ -20,6 +21,9 @@ fun getStorageSelectionDialog(
         .setTitle(CoreR.string.select_storage_location)
         .setItems(locations) { _, which ->
             onItemSelected(which)
+        }
+        .setOnCancelListener() {
+            onCancel()
         }.create()
     return dialog
 }

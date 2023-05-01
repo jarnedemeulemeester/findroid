@@ -152,23 +152,41 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.itemActions.progressDownload.isIndeterminate = true
                 binding.itemActions.progressDownload.isVisible = true
                 if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
-                    val storageDialog = getStorageSelectionDialog(requireContext()) { storageIndex ->
+                    val storageDialog = getStorageSelectionDialog(requireContext(),
+                    onItemSelected = { storageIndex ->
                         if (viewModel.item.sources.size > 1) {
-                            val dialog = getVideoVersionDialog(requireContext(), viewModel.item) { sourceIndex ->
+                            val dialog = getVideoVersionDialog(requireContext(), viewModel.item,
+                            onItemSelected = { sourceIndex ->
                                 viewModel.download(sourceIndex, storageIndex)
-                            }
+                            },
+                            onCancel = {
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                binding.itemActions.downloadButton.isEnabled = true
+                            })
                             dialog.show()
                             return@getStorageSelectionDialog
                         }
                         viewModel.download(storageIndex = storageIndex)
-                    }
+                    },
+                    onCancel = {
+                        binding.itemActions.progressDownload.isVisible = false
+                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                        binding.itemActions.downloadButton.isEnabled = true
+                    })
                     storageDialog.show()
                     return@setOnClickListener
                 }
                 if (viewModel.item.sources.size > 1) {
-                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item) { sourceIndex ->
+                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item,
+                    onItemSelected = { sourceIndex ->
                         viewModel.download(sourceIndex)
-                    }
+                    },
+                    onCancel = {
+                        binding.itemActions.progressDownload.isVisible = false
+                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                        binding.itemActions.downloadButton.isEnabled = true
+                    })
                     dialog.show()
                     return@setOnClickListener
                 }
@@ -307,6 +325,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             .setPositiveButton(getString(CoreR.string.close)) { _, _ ->
             }
         builder.show()
+        binding.itemActions.progressDownload.isVisible = false
+        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+        binding.itemActions.downloadButton.isEnabled = true
     }
 
     private fun navigateToPlayerActivity(
