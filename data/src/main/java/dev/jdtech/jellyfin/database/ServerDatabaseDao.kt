@@ -86,7 +86,7 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM serverAddresses WHERE id = (SELECT currentServerAddressId FROM servers WHERE id = :serverId)")
     abstract fun getServerCurrentAddress(serverId: String): ServerAddress?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertMovie(movie: FindroidMovieDto)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -122,7 +122,7 @@ abstract class ServerDatabaseDao {
     @Query("UPDATE userdata SET playbackPositionTicks = :playbackPositionTicks WHERE itemId = :itemId AND userid = :userId")
     abstract fun setPlaybackPositionTicks(itemId: UUID, userId: UUID, playbackPositionTicks: Long)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertMediaStream(mediaStream: FindroidMediaStreamDto)
 
     @Query("SELECT * FROM mediastreams WHERE sourceId = :sourceId")
@@ -164,7 +164,7 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM movies WHERE serverId = :serverId")
     abstract fun getMoviesByServerId(serverId: String): List<FindroidMovieDto>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertShow(show: FindroidShowDto)
 
     @Query("SELECT * FROM shows WHERE id = :id")
@@ -179,7 +179,7 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM shows WHERE id = :id")
     abstract fun deleteShow(id: UUID)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertSeason(show: FindroidSeasonDto)
 
     @Query("SELECT * FROM seasons WHERE id = :id")
@@ -191,7 +191,7 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM seasons WHERE id = :id")
     abstract fun deleteSeason(id: UUID)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertEpisode(episode: FindroidEpisodeDto)
 
     @Query("SELECT * FROM episodes WHERE id = :id")
