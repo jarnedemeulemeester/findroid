@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.UiText
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository,
+    private val repository: JellyfinRepository,
+    private val database: ServerDatabaseDao,
     private val downloader: Downloader,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -55,7 +58,7 @@ constructor(
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
-                item = jellyfinRepository.getEpisode(episodeId)
+                item = repository.getEpisode(episodeId)
                 played = item.played
                 favorite = item.favorite
                 if (item.isDownloading()) {
@@ -78,7 +81,7 @@ constructor(
                 played = true
                 viewModelScope.launch {
                     try {
-                        jellyfinRepository.markAsPlayed(item.id)
+                        repository.markAsPlayed(item.id)
                     } catch (_: Exception) {}
                 }
             }
@@ -86,7 +89,7 @@ constructor(
                 played = false
                 viewModelScope.launch {
                     try {
-                        jellyfinRepository.markAsUnplayed(item.id)
+                        repository.markAsUnplayed(item.id)
                     } catch (_: Exception) {}
                 }
             }
@@ -100,7 +103,7 @@ constructor(
                 favorite = true
                 viewModelScope.launch {
                     try {
-                        jellyfinRepository.markAsFavorite(item.id)
+                        repository.markAsFavorite(item.id)
                     } catch (_: Exception) {}
                 }
             }
@@ -108,7 +111,7 @@ constructor(
                 favorite = false
                 viewModelScope.launch {
                     try {
-                        jellyfinRepository.unmarkAsFavorite(item.id)
+                        repository.unmarkAsFavorite(item.id)
                     } catch (_: Exception) {}
                 }
             }
@@ -138,9 +141,19 @@ constructor(
         val downloadProgressRunnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
-                    val (downloadStatus, progress) = downloader.getProgress(item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }?.downloadId)
+                    val source = item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }
+                    val (downloadStatus, progress) = downloader.getProgress(source?.downloadId)
                     _downloadStatus.emit(Pair(downloadStatus, progress))
-                    if (downloadStatus != DownloadManager.STATUS_RUNNING && downloadStatus != DownloadManager.STATUS_PENDING) {
+                    if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                        if (source == null) return@launch
+                        val path = source.path.replace(".download", "")
+                        File(source.path).renameTo(File(path))
+                        database.setSourcePath(source.id, path)
+                        loadEpisode(item.id)
+                    }
+                    if (downloadStatus == DownloadManager.STATUS_FAILED) {
+                        if (source == null) return@launch
+                        downloader.deleteItem(item, source)
                         loadEpisode(item.id)
                     }
                 }
