@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -148,17 +147,6 @@ class ShowFragment : Fragment() {
         binding.itemActions.favoriteButton.setOnClickListener {
             val favorite = viewModel.toggleFavorite()
             bindFavoriteButtonState(favorite)
-        }
-
-        binding.itemActions.downloadButton.setOnClickListener {
-            binding.itemActions.downloadButton.isEnabled = false
-            viewModel.download()
-            binding.itemActions.downloadButton.imageTintList = ColorStateList.valueOf(
-                resources.getColor(
-                    CoreR.color.red,
-                    requireActivity().theme
-                )
-            )
         }
     }
 

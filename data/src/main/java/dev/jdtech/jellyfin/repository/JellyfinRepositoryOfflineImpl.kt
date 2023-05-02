@@ -116,9 +116,11 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
-        val movies = database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
-        val episodes = database.getEpisodesByServerId(appPreferences.currentServer!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
-        return movies + episodes
+        return withContext(Dispatchers.IO) {
+            val movies = database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+            val episodes = database.getEpisodesByServerId(appPreferences.currentServer!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+            movies + episodes
+        }
     }
 
     override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> {
@@ -131,7 +133,22 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> {
-        return emptyList()
+        return withContext(Dispatchers.IO) {
+            val result = mutableListOf<FindroidEpisode>()
+            val shows = database.getShowsByServerId(appPreferences.currentServer!!).filter {
+                if (seriesId != null) it.id == seriesId else true
+            }
+            for (show in shows) {
+                val episodes = database.getEpisodesByShowId(show.id).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                val indexOfLastPlayed = episodes.indexOfLast { it.played }
+                if (indexOfLastPlayed == -1) {
+                    result.add(episodes.first())
+                } else {
+                    episodes.getOrNull(indexOfLastPlayed+1)?.let { result.add(it) }
+                }
+            }
+            result.filter { it.playbackPositionTicks == 0L }
+        }
     }
 
     override suspend fun getEpisodes(
@@ -228,6 +245,7 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun markAsPlayed(itemId: UUID) {
         withContext(Dispatchers.IO) {
             database.setPlayed(jellyfinApi.userId!!, itemId, true)
+            database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
             database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }

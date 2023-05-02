@@ -140,11 +140,7 @@ constructor(
 
     private suspend fun getNextUp(seriesId: UUID): FindroidEpisode? {
         val nextUpItems = jellyfinRepository.getNextUp(seriesId)
-        return if (nextUpItems.isNotEmpty()) {
-            nextUpItems[0]
-        } else {
-            null
-        }
+        return nextUpItems.getOrNull(0)
     }
 
     fun togglePlayed(): Boolean {
@@ -205,11 +201,5 @@ constructor(
         }
         if (dateRange.count() > 1 && dateRange[0] == dateRange[1]) return dateRange[0]
         return dateRange.joinToString(separator = " - ")
-    }
-
-    fun download() {
-    }
-
-    fun deleteItem() {
     }
 }

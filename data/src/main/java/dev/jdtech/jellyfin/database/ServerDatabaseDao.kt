@@ -194,6 +194,9 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM episodes WHERE id = :id")
     abstract fun getEpisode(id: UUID): FindroidEpisodeDto
 
+    @Query("SELECT * FROM episodes WHERE seriesId = :seriesId")
+    abstract fun getEpisodesByShowId(seriesId: UUID): List<FindroidEpisodeDto>
+
     @Query("SELECT * FROM episodes WHERE seasonId = :seasonId")
     abstract fun getEpisodesBySeasonId(seasonId: UUID): List<FindroidEpisodeDto>
 
