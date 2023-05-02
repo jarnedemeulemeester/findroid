@@ -116,9 +116,6 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM movies WHERE id = :id")
     abstract fun deleteMovie(id: UUID)
 
-    @Query("SELECT movies.id, movies.serverId, movies.name, movies.originalTitle, movies.overview, movies.runtimeTicks, movies.premiereDate, movies.communityRating, movies.officialRating, movies.status, movies.productionYear, movies.endDate FROM movies INNER JOIN userdata ON movies.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0")
-    abstract fun getResumeItems(serverId: String): List<FindroidMovieDto>
-
     @Query("UPDATE userdata SET playbackPositionTicks = :playbackPositionTicks WHERE itemId = :itemId AND userid = :userId")
     abstract fun setPlaybackPositionTicks(itemId: UUID, userId: UUID, playbackPositionTicks: Long)
 

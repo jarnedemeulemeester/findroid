@@ -116,10 +116,9 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
-        val items = database.getResumeItems(appPreferences.currentServer!!)
-        return items.map {
-            it.toFindroidMovie(database, jellyfinApi.userId!!)
-        }
+        val movies = database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+        val episodes = database.getEpisodesByServerId(appPreferences.currentServer!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+        return movies + episodes
     }
 
     override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> {
