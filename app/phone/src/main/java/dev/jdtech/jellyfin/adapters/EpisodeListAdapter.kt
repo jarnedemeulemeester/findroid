@@ -40,7 +40,7 @@ class EpisodeListAdapter(
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.playbackPositionTicks.div(episode.runtimeTicks).times(.84)).toFloat(),
+                    (episode.playbackPositionTicks.div(episode.runtimeTicks.toFloat()).times(84)),
                     binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
