@@ -199,6 +199,7 @@ class DownloaderImpl(
         byteArray: ByteArray
     ) {
         database.insertTrickPlayManifest(trickPlayManifest.toTrickPlayManifestDto(item.id))
+        File(context.filesDir, "trickplay").mkdirs()
         val file = File(context.filesDir, "trickplay/${item.id}.bif")
         file.writeBytes(byteArray)
     }
