@@ -37,8 +37,6 @@
 
         </activity>
 
-        <activity android:name=".StorageActivity" />
-
         <receiver
             android:name=".utils.DownloadReceiver"
             android:exported="true">

@@ -381,7 +381,7 @@
     <fragment
         android:id="@+id/downloadsFragment"
         android:name="dev.jdtech.jellyfin.fragments.DownloadsFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_download"
         tools:layout="@layout/fragment_favorite">
         <action
             android:id="@+id/action_downloadsFragment_to_movieFragment"
@@ -397,15 +397,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_downloadsFragment_to_storageActivity"
-            app:destination="@id/storageActivity" />
     </fragment>
-
-    <activity
-        android:id="@+id/storageActivity"
-        android:name="dev.jdtech.jellyfin.StorageActivity"
-        android:label="activity_storage"
-        tools:layout="@layout/activity_storage" />
 
 </navigation>
