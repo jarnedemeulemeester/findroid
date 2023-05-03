@@ -144,7 +144,7 @@ class JellyfinRepositoryOfflineImpl(
                 if (indexOfLastPlayed == -1) {
                     result.add(episodes.first())
                 } else {
-                    episodes.getOrNull(indexOfLastPlayed+1)?.let { result.add(it) }
+                    episodes.getOrNull(indexOfLastPlayed + 1)?.let { result.add(it) }
                 }
             }
             result.filter { it.playbackPositionTicks == 0L }
