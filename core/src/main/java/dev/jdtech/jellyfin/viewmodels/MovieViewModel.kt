@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,6 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
-import java.io.File
 
 @HiltViewModel
 class MovieViewModel
