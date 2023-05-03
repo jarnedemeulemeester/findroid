@@ -17,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.R as MaterialR
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
@@ -152,13 +152,15 @@ class MovieFragment : Fragment() {
             binding.itemActions.playButton.setImageResource(android.R.color.transparent)
             binding.itemActions.progressCircular.isVisible = true
             if (viewModel.item.sources.size > 1) {
-                val dialog = getVideoVersionDialog(requireContext(), viewModel.item,
-                onItemSelected = {
-                    playerViewModel.loadPlayerItems(viewModel.item, it)
-                },
-                onCancel = {
-                    playButtonNormal()
-                })
+                val dialog = getVideoVersionDialog(
+                    requireContext(), viewModel.item,
+                    onItemSelected = {
+                        playerViewModel.loadPlayerItems(viewModel.item, it)
+                    },
+                    onCancel = {
+                        playButtonNormal()
+                    }
+                )
                 dialog.show()
                 return@setOnClickListener
             }
@@ -199,41 +201,49 @@ class MovieFragment : Fragment() {
                 binding.itemActions.progressDownload.isIndeterminate = true
                 binding.itemActions.progressDownload.isVisible = true
                 if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
-                    val storageDialog = getStorageSelectionDialog(requireContext(),
-                    onItemSelected = { storageIndex ->
-                        if (viewModel.item.sources.size > 1) {
-                            val dialog = getVideoVersionDialog(requireContext(), viewModel.item,
-                            onItemSelected = { sourceIndex ->
-                                viewModel.download(sourceIndex, storageIndex)
-                            },
-                            onCancel = {
-                                binding.itemActions.progressDownload.isVisible = false
-                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                                binding.itemActions.downloadButton.isEnabled = true
-                            })
-                            dialog.show()
-                            return@getStorageSelectionDialog
+                    val storageDialog = getStorageSelectionDialog(
+                        requireContext(),
+                        onItemSelected = { storageIndex ->
+                            if (viewModel.item.sources.size > 1) {
+                                val dialog = getVideoVersionDialog(
+                                    requireContext(),
+                                    viewModel.item,
+                                    onItemSelected = { sourceIndex ->
+                                        viewModel.download(sourceIndex, storageIndex)
+                                    },
+                                    onCancel = {
+                                        binding.itemActions.progressDownload.isVisible = false
+                                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                        binding.itemActions.downloadButton.isEnabled = true
+                                    }
+                                )
+                                dialog.show()
+                                return@getStorageSelectionDialog
+                            }
+                            viewModel.download(storageIndex = storageIndex)
+                        },
+                        onCancel = {
+                            binding.itemActions.progressDownload.isVisible = false
+                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                            binding.itemActions.downloadButton.isEnabled = true
                         }
-                        viewModel.download(storageIndex = storageIndex)
-                    },
-                    onCancel = {
-                        binding.itemActions.progressDownload.isVisible = false
-                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                        binding.itemActions.downloadButton.isEnabled = true
-                    })
+                    )
                     storageDialog.show()
                     return@setOnClickListener
                 }
                 if (viewModel.item.sources.size > 1) {
-                    val dialog = getVideoVersionDialog(requireContext(), viewModel.item,
-                    onItemSelected = { sourceIndex ->
-                        viewModel.download(sourceIndex)
-                    },
-                    onCancel = {
-                        binding.itemActions.progressDownload.isVisible = false
-                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                        binding.itemActions.downloadButton.isEnabled = true
-                    })
+                    val dialog = getVideoVersionDialog(
+                        requireContext(),
+                        viewModel.item,
+                        onItemSelected = { sourceIndex ->
+                            viewModel.download(sourceIndex)
+                        },
+                        onCancel = {
+                            binding.itemActions.progressDownload.isVisible = false
+                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                            binding.itemActions.downloadButton.isEnabled = true
+                        }
+                    )
                     dialog.show()
                     return@setOnClickListener
                 }
