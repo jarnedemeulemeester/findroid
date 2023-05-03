@@ -24,7 +24,7 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toIntro
-import dev.jdtech.jellyfin.models.toJellyfinCollection
+import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.ByteReadChannel
@@ -107,7 +107,7 @@ class JellyfinRepositoryImpl(
                 jellyfinApi.userId!!,
             ).content.items
                 .orEmpty()
-                .map { it.toJellyfinCollection() }
+                .mapNotNull { it.toFindroidCollection() }
         }
 
     override suspend fun getItems(

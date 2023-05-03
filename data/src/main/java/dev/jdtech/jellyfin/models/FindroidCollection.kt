@@ -19,10 +19,15 @@ data class FindroidCollection(
     val type: CollectionType
 ) : FindroidItem
 
-fun BaseItemDto.toJellyfinCollection(): FindroidCollection {
-    return FindroidCollection(
-        id = id,
-        name = name.orEmpty(),
-        type = CollectionType.values().first { it.type == collectionType },
-    )
+fun BaseItemDto.toFindroidCollection(): FindroidCollection? {
+    val type = CollectionType.values().firstOrNull { it.type == collectionType }
+    return if (type != null) {
+        FindroidCollection(
+            id = id,
+            name = name.orEmpty(),
+            type = type,
+        )
+    } else {
+        null
+    }
 }
