@@ -95,7 +95,7 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM movies WHERE id = :id")
     abstract fun getMovie(id: UUID): FindroidMovieDto
 
-    @Query("SELECT * FROM movies JOIN sources ON movies.id = sources.itemId")
+    @Query("SELECT * FROM movies JOIN sources ON movies.id = sources.itemId ORDER BY movies.name ASC")
     abstract fun getMoviesAndSources(): Map<FindroidMovieDto, List<FindroidSourceDto>>
 
     @Query("SELECT * FROM sources WHERE itemId = :itemId")
@@ -155,10 +155,10 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM trickPlayManifests WHERE itemId = :itemId")
     abstract fun deleteTrickPlayManifest(itemId: UUID)
 
-    @Query("SELECT * FROM movies")
+    @Query("SELECT * FROM movies ORDER BY name ASC")
     abstract fun getMovies(): List<FindroidMovieDto>
 
-    @Query("SELECT * FROM movies WHERE serverId = :serverId")
+    @Query("SELECT * FROM movies WHERE serverId = :serverId ORDER BY name ASC")
     abstract fun getMoviesByServerId(serverId: String): List<FindroidMovieDto>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -167,10 +167,10 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM shows WHERE id = :id")
     abstract fun getShow(id: UUID): FindroidShowDto
 
-    @Query("SELECT * FROM shows")
+    @Query("SELECT * FROM shows ORDER BY name ASC")
     abstract fun getShows(): List<FindroidShowDto>
 
-    @Query("SELECT * FROM shows WHERE serverId = :serverId")
+    @Query("SELECT * FROM shows WHERE serverId = :serverId ORDER BY name ASC")
     abstract fun getShowsByServerId(serverId: String): List<FindroidShowDto>
 
     @Query("DELETE FROM shows WHERE id = :id")
@@ -182,7 +182,7 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM seasons WHERE id = :id")
     abstract fun getSeason(id: UUID): FindroidSeasonDto
 
-    @Query("SELECT * FROM seasons WHERE seriesId = :seriesId")
+    @Query("SELECT * FROM seasons WHERE seriesId = :seriesId ORDER BY indexNumber ASC")
     abstract fun getSeasonsByShowId(seriesId: UUID): List<FindroidSeasonDto>
 
     @Query("DELETE FROM seasons WHERE id = :id")
@@ -194,16 +194,16 @@ abstract class ServerDatabaseDao {
     @Query("SELECT * FROM episodes WHERE id = :id")
     abstract fun getEpisode(id: UUID): FindroidEpisodeDto
 
-    @Query("SELECT * FROM episodes WHERE seriesId = :seriesId")
+    @Query("SELECT * FROM episodes WHERE seriesId = :seriesId ORDER BY parentIndexNumber ASC, indexNumber ASC")
     abstract fun getEpisodesByShowId(seriesId: UUID): List<FindroidEpisodeDto>
 
-    @Query("SELECT * FROM episodes WHERE seasonId = :seasonId")
+    @Query("SELECT * FROM episodes WHERE seasonId = :seasonId ORDER BY indexNumber ASC")
     abstract fun getEpisodesBySeasonId(seasonId: UUID): List<FindroidEpisodeDto>
 
-    @Query("SELECT * FROM episodes WHERE serverId = :serverId")
+    @Query("SELECT * FROM episodes WHERE serverId = :serverId ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC")
     abstract fun getEpisodesByServerId(serverId: String): List<FindroidEpisodeDto>
 
-    @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0")
+    @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0 ORDER BY episodes.parentIndexNumber ASC, episodes.indexNumber ASC")
     abstract fun getEpisodeResumeItems(serverId: String): List<FindroidEpisodeDto>
 
     @Query("DELETE FROM episodes WHERE id = :id")
