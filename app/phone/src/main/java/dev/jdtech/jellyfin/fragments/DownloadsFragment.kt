@@ -82,6 +82,12 @@ class DownloadsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadData()
+    }
+
     private fun bindUiStateNormal(uiState: DownloadsViewModel.UiState.Normal) {
         binding.loadingIndicator.isVisible = false
         binding.downloadsRecyclerView.isVisible = true

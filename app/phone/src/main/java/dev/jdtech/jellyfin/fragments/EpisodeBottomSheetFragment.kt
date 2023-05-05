@@ -66,57 +66,61 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is EpisodeBottomSheetViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is EpisodeBottomSheetViewModel.UiState.Loading -> bindUiStateLoading()
-                        is EpisodeBottomSheetViewModel.UiState.Error -> bindUiStateError(uiState)
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is EpisodeBottomSheetViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is EpisodeBottomSheetViewModel.UiState.Loading -> bindUiStateLoading()
+                            is EpisodeBottomSheetViewModel.UiState.Error -> bindUiStateError(uiState)
+                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.downloadStatus.collect { (status, progress) ->
-                    when (status) {
-                        DownloadManager.STATUS_PENDING -> {
-                            binding.itemActions.downloadButton.isEnabled = false
-                            binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
-                            binding.itemActions.progressDownload.isIndeterminate = true
-                            binding.itemActions.progressDownload.isVisible = true
-                        }
-                        DownloadManager.STATUS_RUNNING -> {
-                            binding.itemActions.downloadButton.isEnabled = false
-                            binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
-                            binding.itemActions.progressDownload.isVisible = true
-                            if (progress < 5) {
+                launch {
+                    viewModel.downloadStatus.collect { (status, progress) ->
+                        when (status) {
+                            DownloadManager.STATUS_PENDING -> {
+                                binding.itemActions.downloadButton.isEnabled = false
+                                binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
-                            } else {
-                                binding.itemActions.progressDownload.isIndeterminate = false
-                                binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                                binding.itemActions.progressDownload.isVisible = true
+                            }
+                            DownloadManager.STATUS_RUNNING -> {
+                                binding.itemActions.downloadButton.isEnabled = false
+                                binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
+                                binding.itemActions.progressDownload.isVisible = true
+                                if (progress < 5) {
+                                    binding.itemActions.progressDownload.isIndeterminate = true
+                                } else {
+                                    binding.itemActions.progressDownload.isIndeterminate = false
+                                    binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                                }
+                            }
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.isEnabled = true
+                            }
+                            else -> {
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                binding.itemActions.downloadButton.isEnabled = true
                             }
                         }
-                        DownloadManager.STATUS_SUCCESSFUL -> {
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.isEnabled = true
-                        }
-                        else -> {
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                            binding.itemActions.downloadButton.isEnabled = true
-                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.downloadError.collect { uiText ->
-                    createErrorDialog(uiText)
+                launch {
+                    viewModel.downloadError.collect { uiText ->
+                        createErrorDialog(uiText)
+                    }
+                }
+
+                launch {
+                    viewModel.navigateBack.collect {
+                        if (it) findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -202,8 +206,6 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-        viewModel.loadEpisode(args.episodeId)
-
         return binding.root
     }
 
@@ -212,6 +214,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             val sheet = it as BottomSheetDialog
             sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadEpisode(args.episodeId)
     }
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {

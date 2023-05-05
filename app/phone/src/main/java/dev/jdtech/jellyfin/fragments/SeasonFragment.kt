@@ -48,20 +48,22 @@ class SeasonFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
-                        is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
+                            is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadEpisodes(args.seriesId, args.seasonId)
+                launch {
+                    viewModel.navigateBack.collect {
+                        if (it) findNavController().navigateUp()
+                    }
+                }
             }
         }
 
@@ -88,6 +90,12 @@ class SeasonFragment : Fragment() {
                     navigateToEpisodeBottomSheetFragment(episode)
                 },
             )
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadEpisodes(args.seriesId, args.seasonId)
     }
 
     private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal) {

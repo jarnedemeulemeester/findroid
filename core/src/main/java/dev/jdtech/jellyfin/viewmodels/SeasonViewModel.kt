@@ -8,7 +8,9 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
@@ -21,6 +23,9 @@ constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private val _navigateBack = MutableSharedFlow<Boolean>()
+    val navigateBack = _navigateBack.asSharedFlow()
 
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
@@ -37,6 +42,9 @@ constructor(
                 season = getSeason(seasonId)
                 val episodes = getEpisodes(seriesId, seasonId)
                 _uiState.emit(UiState.Normal(episodes))
+            } catch (_: NullPointerException) {
+                // Navigate back because item does not exist (probably because it's been deleted)
+                _navigateBack.emit(true)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }

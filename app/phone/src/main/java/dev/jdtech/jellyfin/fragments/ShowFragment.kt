@@ -69,20 +69,22 @@ class ShowFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is ShowViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is ShowViewModel.UiState.Loading -> bindUiStateLoading()
-                        is ShowViewModel.UiState.Error -> bindUiStateError(uiState)
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is ShowViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is ShowViewModel.UiState.Loading -> bindUiStateLoading()
+                            is ShowViewModel.UiState.Error -> bindUiStateError(uiState)
+                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadData(args.itemId)
+                launch {
+                    viewModel.navigateBack.collect {
+                        if (it) findNavController().navigateUp()
+                    }
+                }
             }
         }
 
@@ -148,6 +150,12 @@ class ShowFragment : Fragment() {
             val favorite = viewModel.toggleFavorite()
             bindFavoriteButtonState(favorite)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadData(args.itemId)
     }
 
     private fun bindUiStateNormal(uiState: ShowViewModel.UiState.Normal) {

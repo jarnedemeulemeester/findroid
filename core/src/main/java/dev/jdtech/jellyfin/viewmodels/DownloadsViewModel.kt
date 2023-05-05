@@ -39,7 +39,6 @@ constructor(
 
     init {
         testServerConnection()
-        loadData()
     }
 
     private fun testServerConnection() {

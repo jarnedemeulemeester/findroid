@@ -71,64 +71,62 @@ class MovieFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is MovieViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is MovieViewModel.UiState.Loading -> bindUiStateLoading()
-                        is MovieViewModel.UiState.Error -> bindUiStateError(uiState)
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is MovieViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is MovieViewModel.UiState.Loading -> bindUiStateLoading()
+                            is MovieViewModel.UiState.Error -> bindUiStateError(uiState)
+                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.downloadStatus.collect { (status, progress) ->
-                    when (status) {
-                        DownloadManager.STATUS_PENDING -> {
-                            binding.itemActions.downloadButton.isEnabled = false
-                            binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
-                            binding.itemActions.progressDownload.isIndeterminate = true
-                            binding.itemActions.progressDownload.isVisible = true
-                        }
-                        DownloadManager.STATUS_RUNNING -> {
-                            binding.itemActions.downloadButton.isEnabled = false
-                            binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
-                            binding.itemActions.progressDownload.isVisible = true
-                            if (progress < 5) {
+                launch {
+                    viewModel.downloadStatus.collect { (status, progress) ->
+                        when (status) {
+                            DownloadManager.STATUS_PENDING -> {
+                                binding.itemActions.downloadButton.isEnabled = false
+                                binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
-                            } else {
-                                binding.itemActions.progressDownload.isIndeterminate = false
-                                binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                                binding.itemActions.progressDownload.isVisible = true
+                            }
+                            DownloadManager.STATUS_RUNNING -> {
+                                binding.itemActions.downloadButton.isEnabled = false
+                                binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
+                                binding.itemActions.progressDownload.isVisible = true
+                                if (progress < 5) {
+                                    binding.itemActions.progressDownload.isIndeterminate = true
+                                } else {
+                                    binding.itemActions.progressDownload.isIndeterminate = false
+                                    binding.itemActions.progressDownload.setProgressCompat(progress, true)
+                                }
+                            }
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.isEnabled = true
+                            }
+                            else -> {
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                binding.itemActions.downloadButton.isEnabled = true
                             }
                         }
-                        DownloadManager.STATUS_SUCCESSFUL -> {
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.isEnabled = true
-                        }
-                        else -> {
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                            binding.itemActions.downloadButton.isEnabled = true
-                        }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.downloadError.collect { uiText ->
-                    createErrorDialog(uiText)
+                launch {
+                    viewModel.downloadError.collect { uiText ->
+                        createErrorDialog(uiText)
+                    }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadData(args.itemId)
+                launch {
+                    viewModel.navigateBack.collect {
+                        if (it) findNavController().navigateUp()
+                    }
+                }
             }
         }
 
@@ -254,6 +252,12 @@ class MovieFragment : Fragment() {
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadData(args.itemId)
     }
 
     private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {

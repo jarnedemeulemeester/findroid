@@ -39,6 +39,9 @@ constructor(
     private val _downloadError = MutableSharedFlow<UiText>()
     val downloadError = _downloadError.asSharedFlow()
 
+    private val _navigateBack = MutableSharedFlow<Boolean>()
+    val navigateBack = _navigateBack.asSharedFlow()
+
     private val handler = Handler(Looper.getMainLooper())
 
     sealed class UiState {
@@ -69,6 +72,9 @@ constructor(
                         item,
                     )
                 )
+            } catch (_: NullPointerException) {
+                // Navigate back because item does not exist (probably because it's been deleted)
+                _navigateBack.emit(true)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
