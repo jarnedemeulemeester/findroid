@@ -5,6 +5,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.LocationType
 import org.jellyfin.sdk.model.api.PlayAccess
 
 data class FindroidEpisode(
@@ -28,6 +29,7 @@ data class FindroidEpisode(
     val seasonId: UUID,
     val communityRating: Float?,
     override val unplayedItemCount: Int? = null,
+    val missing: Boolean = false,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(
@@ -59,6 +61,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
         seriesId = seriesId!!,
         seasonId = seasonId!!,
         communityRating = communityRating,
+        missing = locationType == LocationType.VIRTUAL,
     )
 }
 

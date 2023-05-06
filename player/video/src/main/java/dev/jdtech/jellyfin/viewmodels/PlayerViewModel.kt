@@ -104,7 +104,7 @@ class PlayerViewModel @Inject internal constructor(
                 fields = listOf(ItemFields.MEDIA_SOURCES)
             )
             .filter { it.sources.isNotEmpty() }
-//            .filter { it.locationType != VIRTUAL }
+            .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
@@ -124,7 +124,7 @@ class PlayerViewModel @Inject internal constructor(
                 limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1
             )
             .filter { it.sources.isNotEmpty() }
-//            .filter { it.locationType != VIRTUAL }
+            .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 

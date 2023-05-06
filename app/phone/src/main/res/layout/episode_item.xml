@@ -7,8 +7,6 @@
 
         <import type="android.view.View" />
 
-        <import type="org.jellyfin.sdk.model.api.LocationType" />
-
         <variable
             name="episode"
             type="dev.jdtech.jellyfin.models.FindroidEpisode" />
@@ -65,7 +63,7 @@
                 android:layout_marginStart="8dp"
                 android:background="@drawable/circle_background"
                 android:backgroundTint="?attr/colorError"
-                android:visibility="gone"
+                android:visibility="@{episode.missing ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toStartOf="@id/played_icon"
                 app:layout_constraintTop_toTopOf="@id/episode_image"
                 tools:visibility="visible">
