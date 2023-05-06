@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
@@ -14,6 +15,9 @@ import java.util.UUID
             childColumns = arrayOf("seriesId"),
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("seriesId"),
     ]
 )
 data class FindroidSeasonDto(

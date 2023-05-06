@@ -20,6 +20,12 @@ android {
         buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
 
         consumerProguardFile("proguard-rules.pro")
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
     }
 
     buildTypes {

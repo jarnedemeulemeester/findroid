@@ -144,4 +144,12 @@ constructor(
                 putString(Constants.PREF_SORT_ORDER, value)
             }
         }
+
+    // Temp
+    var downloadsMigrated
+        //get() = sharedPreferences.getBoolean("downloadsMigrated", false)
+        get() = false
+        set(value) = sharedPreferences.edit {
+            putBoolean("downloadsMigrated", value)
+        }
 }

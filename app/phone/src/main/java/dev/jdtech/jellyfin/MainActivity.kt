@@ -1,9 +1,11 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
@@ -23,6 +25,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        print("OnCreate LOOOOOL")
+
         val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
             .setConstraints(
                 Constraints.Builder()
@@ -57,6 +62,10 @@ class MainActivity : AppCompatActivity() {
         val workManager = WorkManager.getInstance(applicationContext)
 
         workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest).enqueue()
+
+        if (!appPreferences.downloadsMigrated) {
+            cleanUpOldDownloads()
+        }
 
         if (appPreferences.amoledTheme) {
             setTheme(CoreR.style.Theme_FindroidAMOLED)
@@ -139,6 +148,28 @@ class MainActivity : AppCompatActivity() {
                     onNoUser()
                 }
             }
+        }
+    }
+
+    /**
+     * Temp to remove old downloads, will be removed in a future version
+     */
+    private fun cleanUpOldDownloads() {
+        lifecycleScope.launch {
+            val oldDir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+            if (oldDir == null) {
+                appPreferences.downloadsMigrated = true
+                return@launch
+            }
+
+            try {
+                for (file in oldDir.listFiles()!!) {
+                    file.delete()
+                }
+            } catch (_: Exception) {}
+
+
+            appPreferences.downloadsMigrated = true
         }
     }
 }

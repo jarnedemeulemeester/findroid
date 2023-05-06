@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -19,7 +20,9 @@ import dev.jdtech.jellyfin.models.User
 @Database(
     entities = [Server::class, ServerAddress::class, User::class, FindroidMovieDto::class, FindroidShowDto::class, FindroidSeasonDto::class, FindroidEpisodeDto::class, FindroidSourceDto::class, FindroidMediaStreamDto::class, TrickPlayManifestDto::class, IntroDto::class, FindroidUserDataDto::class],
     version = 3,
-    exportSchema = false
+    autoMigrations = [
+        AutoMigration(from = 2, to = 3)
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class ServerDatabase : RoomDatabase() {
