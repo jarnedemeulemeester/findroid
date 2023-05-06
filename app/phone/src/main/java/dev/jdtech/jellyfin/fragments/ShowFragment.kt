@@ -92,7 +92,7 @@ class ShowFragment : Fragment() {
         binding.itemActions.downloadButton.visibility = View.GONE
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadData(args.itemId)
+            viewModel.loadData(args.itemId, args.offline)
         }
 
         playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
@@ -155,7 +155,7 @@ class ShowFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.loadData(args.itemId)
+        viewModel.loadData(args.itemId, args.offline)
     }
 
     private fun bindUiStateNormal(uiState: ShowViewModel.UiState.Normal) {
@@ -324,7 +324,8 @@ class ShowFragment : Fragment() {
                 season.seriesId,
                 season.id,
                 season.seriesName,
-                season.name
+                season.name,
+                args.offline
             )
         )
     }

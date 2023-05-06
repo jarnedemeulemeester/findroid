@@ -116,7 +116,8 @@ class DownloadsFragment : Fragment() {
                 findNavController().navigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(
                         item.id,
-                        item.name
+                        item.name,
+                        true
                     )
                 )
             }

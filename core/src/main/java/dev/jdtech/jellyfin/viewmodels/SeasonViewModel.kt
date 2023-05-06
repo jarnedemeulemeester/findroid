@@ -35,12 +35,12 @@ constructor(
 
     lateinit var season: FindroidSeason
 
-    fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
+    fun loadEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 season = getSeason(seasonId)
-                val episodes = getEpisodes(seriesId, seasonId)
+                val episodes = getEpisodes(seriesId, seasonId, offline)
                 _uiState.emit(UiState.Normal(episodes))
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
@@ -55,10 +55,10 @@ constructor(
         return jellyfinRepository.getSeason(seasonId)
     }
 
-    private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID): List<EpisodeItem> {
+    private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean): List<EpisodeItem> {
         val header = EpisodeItem.Header(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name)
         val episodes =
-            jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW))
+            jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW), offline = offline)
 
         return listOf(header) + episodes.map { EpisodeItem.Episode(it) }
     }

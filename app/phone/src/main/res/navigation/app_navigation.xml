@@ -139,6 +139,10 @@
         <argument
             android:name="itemName"
             app:argType="string" />
+        <argument
+            android:name="offline"
+            app:argType="boolean"
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_showFragment_to_seasonFragment"
             app:destination="@id/seasonFragment" />
@@ -195,6 +199,10 @@
             android:defaultValue="Season"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="offline"
+            app:argType="boolean"
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
             app:destination="@id/episodeBottomSheetFragment" />

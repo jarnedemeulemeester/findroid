@@ -127,7 +127,7 @@ class JellyfinRepositoryOfflineImpl(
         return emptyList()
     }
 
-    override suspend fun getSeasons(seriesId: UUID): List<FindroidSeason> =
+    override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
         withContext(Dispatchers.IO) {
             database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
         }
@@ -156,7 +156,8 @@ class JellyfinRepositoryOfflineImpl(
         seasonId: UUID,
         fields: List<ItemFields>?,
         startItemId: UUID?,
-        limit: Int?
+        limit: Int?,
+        offline: Boolean,
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
@@ -269,31 +270,18 @@ class JellyfinRepositoryOfflineImpl(
         return null
     }
 
-    override suspend fun getDownloads(currentServer: Boolean): List<FindroidItem> =
+    override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             val items = mutableListOf<FindroidItem>()
-            when (currentServer) {
-                true -> {
-                    items.addAll(
-                        database.getMoviesByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-                    )
-                    items.addAll(
-                        database.getShowsByServerId(appPreferences.currentServer!!)
-                            .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-                    )
-                    items
-                }
-                false -> {
-                    items.addAll(
-                        database.getMovies().map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-                    )
-                    items.addAll(
-                        database.getShows().map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-                    )
-                    items
-                }
-            }
+            items.addAll(
+                database.getMoviesByServerId(appPreferences.currentServer!!)
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+            )
+            items.addAll(
+                database.getShowsByServerId(appPreferences.currentServer!!)
+                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
+            )
+            items
         }
 
     override fun getUserId(): UUID {

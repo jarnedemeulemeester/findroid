@@ -69,7 +69,7 @@ constructor(
     var nextUp: FindroidEpisode? = null
     var seasons: List<FindroidSeason> = emptyList()
 
-    fun loadData(itemId: UUID) {
+    fun loadData(itemId: UUID, offline: Boolean) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
@@ -87,7 +87,7 @@ constructor(
                 runTime = "${item.runtimeTicks.div(600000000)} min"
                 dateString = getDateString(item)
                 nextUp = getNextUp(itemId)
-                seasons = jellyfinRepository.getSeasons(itemId)
+                seasons = jellyfinRepository.getSeasons(itemId, offline)
                 _uiState.emit(
                     UiState.Normal(
                         item,

@@ -68,7 +68,7 @@ class SeasonFragment : Fragment() {
         }
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadEpisodes(args.seriesId, args.seasonId)
+            viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
         }
 
         playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
@@ -95,7 +95,7 @@ class SeasonFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.loadEpisodes(args.seriesId, args.seasonId)
+        viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
     }
 
     private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal) {

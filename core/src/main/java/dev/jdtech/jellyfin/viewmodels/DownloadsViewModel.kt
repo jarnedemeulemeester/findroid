@@ -60,7 +60,7 @@ constructor(
 
             val sections = mutableListOf<FavoriteSection>()
 
-            val items = repository.getDownloads(currentServer = true)
+            val items = repository.getDownloads()
 
             FavoriteSection(
                 Constants.FAVORITE_TYPE_MOVIES,
