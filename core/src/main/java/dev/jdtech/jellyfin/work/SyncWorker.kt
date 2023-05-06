@@ -25,8 +25,8 @@ class SyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val jellyfinApi = JellyfinApi.getInstance(
-            context = context,
+        val jellyfinApi = JellyfinApi(
+            androidContext = context.applicationContext,
             requestTimeout = appPreferences.requestTimeout,
             connectTimeout = appPreferences.connectTimeout,
             socketTimeout = appPreferences.socketTimeout
