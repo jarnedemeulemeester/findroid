@@ -25,8 +25,8 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -167,7 +167,6 @@ class MainActivity : AppCompatActivity() {
                     file.delete()
                 }
             } catch (_: Exception) {}
-
 
             appPreferences.downloadsMigrated = true
         }
