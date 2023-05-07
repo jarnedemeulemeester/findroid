@@ -323,11 +323,14 @@ constructor(
     fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
         viewModelScope.launch {
             val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
+
+            // Send one time signal to fragment that the download has been initiated
+            _downloadStatus.emit(Pair(10, Random.nextInt()))
+
             if (result.second != null) {
                 _downloadError.emit(result.second!!)
             }
-            // Send one time signal to fragment that the download has been initiated
-            _downloadStatus.emit(Pair(10, Random.nextInt()))
+
             loadData(item.id)
         }
     }

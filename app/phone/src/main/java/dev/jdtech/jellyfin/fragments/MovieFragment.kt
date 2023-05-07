@@ -213,8 +213,8 @@ class MovieFragment : Fragment() {
                                     requireContext(),
                                     viewModel.item,
                                     onItemSelected = { sourceIndex ->
-                                        viewModel.download(sourceIndex, storageIndex)
                                         createDownloadPreparingDialog()
+                                        viewModel.download(sourceIndex, storageIndex)
                                     },
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
@@ -225,8 +225,8 @@ class MovieFragment : Fragment() {
                                 dialog.show()
                                 return@getStorageSelectionDialog
                             }
-                            viewModel.download(storageIndex = storageIndex)
                             createDownloadPreparingDialog()
+                            viewModel.download(storageIndex = storageIndex)
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -242,8 +242,8 @@ class MovieFragment : Fragment() {
                         requireContext(),
                         viewModel.item,
                         onItemSelected = { sourceIndex ->
-                            viewModel.download(sourceIndex)
                             createDownloadPreparingDialog()
+                            viewModel.download(sourceIndex)
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -254,8 +254,8 @@ class MovieFragment : Fragment() {
                     dialog.show()
                     return@setOnClickListener
                 }
-                viewModel.download()
                 createDownloadPreparingDialog()
+                viewModel.download()
             }
         }
 
