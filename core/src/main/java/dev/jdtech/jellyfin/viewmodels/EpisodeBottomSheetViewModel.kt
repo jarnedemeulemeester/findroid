@@ -140,6 +140,13 @@ constructor(
         }
     }
 
+    fun cancelDownload() {
+        viewModelScope.launch {
+            downloader.cancelDownload(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
+            loadEpisode(item.id)
+        }
+    }
+
     fun deleteEpisode() {
         viewModelScope.launch {
             downloader.deleteItem(item, item.sources.first { it.type == FindroidSourceType.LOCAL })

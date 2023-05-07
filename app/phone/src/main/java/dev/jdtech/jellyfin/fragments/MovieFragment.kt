@@ -36,6 +36,7 @@ import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setTintColor
 import dev.jdtech.jellyfin.utils.setTintColorAttribute
@@ -92,13 +93,11 @@ class MovieFragment : Fragment() {
                                 downloadPreparingDialog.dismiss()
                             }
                             DownloadManager.STATUS_PENDING -> {
-                                binding.itemActions.downloadButton.isEnabled = false
                                 binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
                                 binding.itemActions.progressDownload.isVisible = true
                             }
                             DownloadManager.STATUS_RUNNING -> {
-                                binding.itemActions.downloadButton.isEnabled = false
                                 binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
                                 binding.itemActions.progressDownload.isVisible = true
                                 if (progress < 5) {
@@ -111,12 +110,10 @@ class MovieFragment : Fragment() {
                             DownloadManager.STATUS_SUCCESSFUL -> {
                                 binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
                                 binding.itemActions.progressDownload.isVisible = false
-                                binding.itemActions.downloadButton.isEnabled = true
                             }
                             else -> {
                                 binding.itemActions.progressDownload.isVisible = false
                                 binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                                binding.itemActions.downloadButton.isEnabled = true
                             }
                         }
                     }
@@ -199,8 +196,9 @@ class MovieFragment : Fragment() {
             if (viewModel.item.isDownloaded()) {
                 viewModel.deleteItem()
                 binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+            } else if (viewModel.item.isDownloading()) {
+                createCancelDialog()
             } else {
-                binding.itemActions.downloadButton.isEnabled = false
                 binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
                 binding.itemActions.progressDownload.isIndeterminate = true
                 binding.itemActions.progressDownload.isVisible = true
@@ -219,7 +217,6 @@ class MovieFragment : Fragment() {
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
                                         binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                                        binding.itemActions.downloadButton.isEnabled = true
                                     }
                                 )
                                 dialog.show()
@@ -231,7 +228,6 @@ class MovieFragment : Fragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                            binding.itemActions.downloadButton.isEnabled = true
                         }
                     )
                     storageDialog.show()
@@ -248,7 +244,6 @@ class MovieFragment : Fragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-                            binding.itemActions.downloadButton.isEnabled = true
                         }
                     )
                     dialog.show()
@@ -472,7 +467,6 @@ class MovieFragment : Fragment() {
         builder.show()
         binding.itemActions.progressDownload.isVisible = false
         binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
-        binding.itemActions.downloadButton.isEnabled = true
     }
 
     private fun createDownloadPreparingDialog() {
@@ -483,6 +477,20 @@ class MovieFragment : Fragment() {
             .setCancelable(false)
             .create()
         downloadPreparingDialog.show()
+    }
+
+    private fun createCancelDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialog = builder
+            .setTitle(CoreR.string.cancel_download)
+            .setMessage(CoreR.string.cancel_download_message)
+            .setPositiveButton(CoreR.string.stop_download) { _, _ ->
+                viewModel.cancelDownload()
+            }
+            .setNegativeButton(CoreR.string.cancel) { _, _ ->
+            }
+            .create()
+        dialog.show()
     }
 
     private fun navigateToPlayerActivity(

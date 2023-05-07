@@ -180,4 +180,7 @@
     <string name="external">External</string>
     <string name="storage_name">%s (%d MB free)</string>
     <string name="preparing_download">Preparing download</string>
+    <string name="cancel_download">Cancel download</string>
+    <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
+    <string name="stop_download">Stop download</string>
 </resources>

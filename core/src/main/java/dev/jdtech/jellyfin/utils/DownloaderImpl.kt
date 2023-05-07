@@ -134,6 +134,13 @@ class DownloaderImpl(
         }
     }
 
+    override suspend fun cancelDownload(item: FindroidItem, source: FindroidSource) {
+        if (source.downloadId != null) {
+            downloadManager.remove(source.downloadId!!)
+        }
+        deleteItem(item, source)
+    }
+
     override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {
         when (item) {
             is FindroidMovie -> {
@@ -196,6 +203,8 @@ class DownloaderImpl(
                     progress = 100
                 }
             }
+        } else {
+            downloadStatus = DownloadManager.STATUS_FAILED
         }
         return Pair(downloadStatus, progress)
     }

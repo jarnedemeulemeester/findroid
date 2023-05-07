@@ -11,6 +11,8 @@ interface Downloader {
         storageIndex: Int = 0,
     ): Pair<Long, UiText?>
 
+    suspend fun cancelDownload(item: FindroidItem, source: FindroidSource)
+
     suspend fun deleteItem(item: FindroidItem, source: FindroidSource)
 
     suspend fun getProgress(downloadId: Long?): Pair<Int, Int>
