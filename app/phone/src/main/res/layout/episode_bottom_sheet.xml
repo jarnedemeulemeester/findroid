@@ -58,6 +58,22 @@
             tools:ignore="HardcodedText" />
     </FrameLayout>
 
+    <ImageView
+        android:id="@+id/downloaded_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="@string/downloaded_indicator"
+        android:padding="4dp"
+        android:src="@drawable/ic_download"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image"
+        app:tint="?attr/colorOnPrimary"
+        tools:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
@@ -145,108 +161,18 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/item_actions"
+        layout="@layout/item_actions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/episode_metadata">
+        app:layout_constraintTop_toBottomOf="@id/episode_metadata" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp">
-
-            <ImageButton
-                android:id="@+id/play_button"
-                android:layout_width="72dp"
-                android:layout_height="48dp"
-                android:background="@drawable/button_setup_background"
-                android:contentDescription="@string/play_button_description"
-                android:foreground="@drawable/ripple_background"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="12dp"
-                android:src="@drawable/ic_play"
-                app:tint="?attr/colorOnPrimary" />
-
-            <ProgressBar
-                android:id="@+id/progress_circular"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerHorizontal="true"
-                android:elevation="8dp"
-                android:indeterminateTint="?attr/colorOnPrimary"
-                android:padding="8dp"
-                android:visibility="invisible" />
-        </RelativeLayout>
-
-        <ImageButton
-            android:id="@+id/check_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/button_accent_background"
-            android:contentDescription="@string/check_button_description"
-            android:padding="12dp"
-            android:src="@drawable/ic_check"
-            app:tint="?attr/colorOnSecondaryContainer" />
-
-        <ImageButton
-            android:id="@+id/favorite_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/button_accent_background"
-            android:contentDescription="@string/favorite_button_description"
-            android:padding="12dp"
-            android:src="@drawable/ic_heart"
-            app:tint="?attr/colorOnSecondaryContainer" />
-
-        <RelativeLayout
-            android:id="@+id/download_button_wrapper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:visibility="gone">
-
-            <ImageButton
-                android:id="@+id/download_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/button_accent_background"
-                android:contentDescription="@string/download_button_description"
-                android:padding="12dp"
-                android:src="@drawable/ic_download"
-                app:tint="?attr/colorOnSecondaryContainer" />
-
-            <ProgressBar
-                android:id="@+id/progress_download"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerHorizontal="true"
-                android:elevation="8dp"
-                android:indeterminateTint="@android:color/white"
-                android:padding="8dp"
-                android:visibility="invisible" />
-        </RelativeLayout>
-
-        <ImageButton
-            android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/button_accent_background"
-            android:contentDescription="@string/delete_button_description"
-            android:padding="12dp"
-            android:src="@drawable/ic_trash"
-            android:visibility="gone"
-            app:tint="?attr/colorOnSecondaryContainer"
-            tools:visibility="visible" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/player_items_error"
@@ -255,11 +181,11 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttons"
+        app:layout_constraintTop_toBottomOf="@id/item_actions"
         tools:visibility="visible">
 
         <TextView

@@ -20,10 +20,12 @@ import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -118,7 +120,7 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
-        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaInfoFragment(it) }
+        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) }
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {
@@ -137,13 +139,24 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            PersonDetailFragmentDirections.actionPersonDetailFragmentToMediaInfoFragment(
-                itemId = item.id,
-                itemName = item.name,
-                itemType = item.type
-            )
-        )
+    private fun navigateToMediaItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+        }
     }
 }

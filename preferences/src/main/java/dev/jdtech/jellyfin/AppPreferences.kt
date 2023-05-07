@@ -21,6 +21,15 @@ constructor(
             }
         }
 
+    // Offline
+    var offlineMode
+        get() = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(Constants.PREF_OFFLINE_MODE, value)
+            }
+        }
+
     // Appearance
     val theme get() = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors get() = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
@@ -134,5 +143,12 @@ constructor(
             sharedPreferences.edit {
                 putString(Constants.PREF_SORT_ORDER, value)
             }
+        }
+
+    // Temp
+    var downloadsMigrated
+        get() = sharedPreferences.getBoolean("downloadsMigrated", false)
+        set(value) = sharedPreferences.edit {
+            putBoolean("downloadsMigrated", value)
         }
 }

@@ -17,7 +17,7 @@
         android:title="@string/title_favorite" />
 
     <item
-        android:id="@+id/downloadFragment"
+        android:id="@+id/downloadsFragment"
         android:icon="@drawable/ic_download"
         android:title="@string/title_download" />
 

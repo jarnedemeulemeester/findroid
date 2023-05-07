@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.databinding.CardOfflineBinding
 import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.HomeItem
@@ -13,11 +14,13 @@ import dev.jdtech.jellyfin.models.View
 
 private const val ITEM_VIEW_TYPE_NEXT_UP = 0
 private const val ITEM_VIEW_TYPE_VIEW = 1
+private const val ITEM_VIEW_TYPE_OFFLINE_CARD = 2
 
 class ViewListAdapter(
     private val onClickListener: OnClickListener,
     private val onItemClickListener: ViewItemListAdapter.OnClickListener,
-    private val onNextUpClickListener: HomeEpisodeListAdapter.OnClickListener
+    private val onNextUpClickListener: HomeEpisodeListAdapter.OnClickListener,
+    private val onOnlineClickListener: OnClickListenerOfflineCard
 ) : ListAdapter<HomeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class ViewViewHolder(private var binding: ViewItemBinding) :
@@ -43,8 +46,17 @@ class ViewListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(section: HomeItem.Section, onClickListener: HomeEpisodeListAdapter.OnClickListener) {
             binding.section = section.homeSection
+            binding.sectionName.text = section.homeSection.name.asString(binding.sectionName.context.resources)
             binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener)
             binding.executePendingBindings()
+        }
+    }
+
+    class OfflineCardViewHolder(private var binding: CardOfflineBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(onClickListener: OnClickListenerOfflineCard) {
+            binding.onlineButton.setOnClickListener {
+                onClickListener.onClick()
+            }
         }
     }
 
@@ -75,6 +87,15 @@ class ViewListAdapter(
                     false
                 )
             )
+            ITEM_VIEW_TYPE_OFFLINE_CARD -> {
+                OfflineCardViewHolder(
+                    CardOfflineBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -89,11 +110,15 @@ class ViewListAdapter(
                 val view = getItem(position) as HomeItem.ViewItem
                 (holder as ViewViewHolder).bind(view, onClickListener, onItemClickListener)
             }
+            ITEM_VIEW_TYPE_OFFLINE_CARD -> {
+                (holder as OfflineCardViewHolder).bind(onOnlineClickListener)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
+            is HomeItem.OfflineCard -> ITEM_VIEW_TYPE_OFFLINE_CARD
             is HomeItem.Libraries -> -1
             is HomeItem.Section -> ITEM_VIEW_TYPE_NEXT_UP
             is HomeItem.ViewItem -> ITEM_VIEW_TYPE_VIEW
@@ -102,5 +127,9 @@ class ViewListAdapter(
 
     class OnClickListener(val clickListener: (view: View) -> Unit) {
         fun onClick(view: View) = clickListener(view)
+    }
+
+    class OnClickListenerOfflineCard(val clickListener: () -> Unit) {
+        fun onClick() = clickListener()
     }
 }

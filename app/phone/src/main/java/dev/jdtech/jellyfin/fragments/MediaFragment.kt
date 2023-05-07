@@ -23,10 +23,10 @@ import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -146,12 +146,12 @@ class MediaFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToLibraryFragment(library: BaseItemDto) {
+    private fun navigateToLibraryFragment(library: FindroidCollection) {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
                 library.id,
                 library.name,
-                library.collectionType,
+                library.type.type,
             )
         )
     }

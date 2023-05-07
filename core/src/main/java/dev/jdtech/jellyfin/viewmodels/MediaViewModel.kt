@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 
 @HiltViewModel
 class MediaViewModel
@@ -22,7 +22,7 @@ constructor(
     val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
-        data class Normal(val collections: List<BaseItemDto>) : UiState()
+        data class Normal(val collections: List<FindroidCollection>) : UiState()
         object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
@@ -35,9 +35,9 @@ constructor(
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
-                val items = jellyfinRepository.getItems()
+                val items = jellyfinRepository.getLibraries()
                 val collections =
-                    items.filter { collection -> CollectionType.unsupportedCollections.none { it.type == collection.collectionType } }
+                    items.filter { collection -> CollectionType.unsupportedCollections.none { it == collection.type } }
                 _uiState.emit(UiState.Normal(collections))
             } catch (e: Exception) {
                 _uiState.emit(

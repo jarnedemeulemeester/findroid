@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            type="dev.jdtech.jellyfin.models.FindroidItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,34 +47,57 @@
             app:layout_constraintTop_toBottomOf="@id/item_image"
             tools:text="Movie title" />
 
-        <TextView
-            android:id="@+id/item_count"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_background"
-            android:gravity="center"
-            android:text="@{item.userData.unplayedItemCount.toString()}"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            android:textColor="?attr/colorOnPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="9" />
-
-        <ImageView
-            android:id="@+id/played_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_background"
-            android:contentDescription="@string/episode_watched_indicator"
-            android:padding="4dp"
-            android:src="@drawable/ic_check"
-            android:visibility="@{item.userData.played == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/item_image"
-            app:layout_constraintTop_toTopOf="@id/item_image"
-            app:tint="?attr/colorOnPrimary" />
+            app:layout_constraintTop_toTopOf="@id/item_image">
+
+            <ImageView
+                android:id="@+id/downloaded_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_background"
+                android:contentDescription="@string/downloaded_indicator"
+                android:padding="4dp"
+                android:src="@drawable/ic_download"
+                android:visibility="gone"
+                app:tint="?attr/colorOnPrimary"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/item_count"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_background"
+                android:gravity="center"
+                android:text="@{item.unplayedItemCount.toString()}"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="?attr/colorOnPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="9" />
+
+            <ImageView
+                android:id="@+id/played_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_background"
+                android:contentDescription="@string/episode_watched_indicator"
+                android:padding="4dp"
+                android:src="@drawable/ic_check"
+                android:visibility="@{item.played == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="@id/item_image"
+                app:layout_constraintTop_toTopOf="@id/item_image"
+                app:tint="?attr/colorOnPrimary" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,6 +1,13 @@
 package dev.jdtech.jellyfin.repository
 
 import androidx.paging.PagingData
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
@@ -9,22 +16,34 @@ import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
 interface JellyfinRepository {
+    suspend fun getPublicSystemInfo(): PublicSystemInfo
+
     suspend fun getUserViews(): List<BaseItemDto>
 
     suspend fun getItem(itemId: UUID): BaseItemDto
+    suspend fun getEpisode(itemId: UUID): FindroidEpisode
+    suspend fun getMovie(itemId: UUID): FindroidMovie
+
+    suspend fun getShow(itemId: UUID): FindroidShow
+
+    suspend fun getSeason(itemId: UUID): FindroidSeason
+
+    suspend fun getLibraries(): List<FindroidCollection>
 
     suspend fun getItems(
         parentId: UUID? = null,
         includeTypes: List<BaseItemKind>? = null,
         recursive: Boolean = false,
         sortBy: SortBy = SortBy.defaultValue,
-        sortOrder: SortOrder = SortOrder.ASCENDING
-    ): List<BaseItemDto>
+        sortOrder: SortOrder = SortOrder.ASCENDING,
+        startIndex: Int? = null,
+        limit: Int? = null,
+    ): List<FindroidItem>
 
     suspend fun getItemsPaging(
         parentId: UUID? = null,
@@ -32,25 +51,25 @@ interface JellyfinRepository {
         recursive: Boolean = false,
         sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
-    ): Flow<PagingData<BaseItemDto>>
+    ): Flow<PagingData<FindroidItem>>
 
     suspend fun getPersonItems(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>? = null,
         recursive: Boolean = true
-    ): List<BaseItemDto>
+    ): List<FindroidItem>
 
-    suspend fun getFavoriteItems(): List<BaseItemDto>
+    suspend fun getFavoriteItems(): List<FindroidItem>
 
-    suspend fun getSearchItems(searchQuery: String): List<BaseItemDto>
+    suspend fun getSearchItems(searchQuery: String): List<FindroidItem>
 
-    suspend fun getResumeItems(): List<BaseItemDto>
+    suspend fun getResumeItems(): List<FindroidItem>
 
-    suspend fun getLatestMedia(parentId: UUID): List<BaseItemDto>
+    suspend fun getLatestMedia(parentId: UUID): List<FindroidItem>
 
-    suspend fun getSeasons(seriesId: UUID): List<BaseItemDto>
+    suspend fun getSeasons(seriesId: UUID, offline: Boolean = false): List<FindroidSeason>
 
-    suspend fun getNextUp(seriesId: UUID? = null): List<BaseItemDto>
+    suspend fun getNextUp(seriesId: UUID? = null): List<FindroidEpisode>
 
     suspend fun getEpisodes(
         seriesId: UUID,
@@ -58,9 +77,10 @@ interface JellyfinRepository {
         fields: List<ItemFields>? = null,
         startItemId: UUID? = null,
         limit: Int? = null,
-    ): List<BaseItemDto>
+        offline: Boolean = false
+    ): List<FindroidEpisode>
 
-    suspend fun getMediaSources(itemId: UUID): List<MediaSourceInfo>
+    suspend fun getMediaSources(itemId: UUID): List<FindroidSource>
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
@@ -74,7 +94,7 @@ interface JellyfinRepository {
 
     suspend fun postPlaybackStart(itemId: UUID)
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long)
+    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
 
     suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
 
@@ -86,11 +106,13 @@ interface JellyfinRepository {
 
     suspend fun markAsUnplayed(itemId: UUID)
 
-    suspend fun getIntros(itemId: UUID): List<BaseItemDto>
-
     fun getBaseUrl(): String
 
     suspend fun updateDeviceName(name: String)
 
-    suspend fun getUserConfiguration(): UserConfiguration
+    suspend fun getUserConfiguration(): UserConfiguration?
+
+    suspend fun getDownloads(): List<FindroidItem>
+
+    fun getUserId(): UUID
 }

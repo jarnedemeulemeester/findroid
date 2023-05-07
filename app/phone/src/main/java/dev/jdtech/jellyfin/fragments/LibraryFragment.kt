@@ -26,13 +26,16 @@ import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
 
 @AndroidEntryPoint
@@ -114,9 +117,9 @@ class LibraryFragment : Fragment() {
             ViewItemPagingAdapter(
                 ViewItemPagingAdapter.OnClickListener { item ->
                     if (args.libraryType == CollectionType.BoxSets.type) {
-                        navigateToCollectionFragment(item)
+                        navigateToItem(item)
                     } else {
-                        navigateToMediaInfoFragment(item)
+                        navigateToItem(item)
                     }
                 }
             )
@@ -197,22 +200,32 @@ class LibraryFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type
-            )
-        )
-    }
-
-    private fun navigateToCollectionFragment(collection: BaseItemDto) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
-                collection.id,
-                collection.name
-            )
-        )
+    private fun navigateToItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToMovieFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is FindroidCollection -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+        }
     }
 }

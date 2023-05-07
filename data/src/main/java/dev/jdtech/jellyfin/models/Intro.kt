@@ -14,3 +14,12 @@ data class Intro(
     @SerialName("HideSkipPromptAt")
     val hideSkipPromptAt: Double
 )
+
+fun IntroDto.toIntro(): Intro {
+    return Intro(
+        introStart = start,
+        introEnd = end,
+        showSkipPromptAt = showAt,
+        hideSkipPromptAt = hideAt,
+    )
+}

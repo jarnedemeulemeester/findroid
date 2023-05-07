@@ -5,6 +5,7 @@ androidx-activity = "1.7.1"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.10.0"
+androidx-hilt = "1.0.0"
 androidx-leanback = "1.2.0-alpha02"
 androidx-lifecycle = "2.6.1"
 androidx-media3 = "1.0.1"
@@ -15,6 +16,7 @@ androidx-recyclerview = "1.3.0"
 androidx-recyclerview-selection = "1.1.0"
 androidx-room = "2.5.1"
 androidx-swiperefreshlayout = "1.1.0"
+androidx-work = "2.8.1"
 glide = "4.15.1"
 hilt = "2.45"
 jellyfin = "1.4.1"
@@ -32,6 +34,8 @@ androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "androidx-hilt" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androidx-hilt" }
 androidx-leanback = { module = "androidx.leanback:leanback", version.ref = "androidx-leanback" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
@@ -50,6 +54,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
