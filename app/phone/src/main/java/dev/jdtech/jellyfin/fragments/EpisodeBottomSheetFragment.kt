@@ -336,7 +336,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun createErrorDialog(uiText: UiText) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder
-            .setTitle(CoreR.string.not_enough_storage)
+            .setTitle(CoreR.string.downloading_error)
             .setMessage(uiText.asString(requireContext().resources))
             .setPositiveButton(getString(CoreR.string.close)) { _, _ ->
             }

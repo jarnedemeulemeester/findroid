@@ -171,8 +171,8 @@
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
     <string name="mega_byte_suffix">%d MB</string>
-    <string name="not_enough_storage">Not enough storage space</string>
-    <string name="not_enough_storage_details">This item requires %d MB of free storage but only %d MB is available</string>
+    <string name="downloading_error">Error while downloading</string>
+    <string name="not_enough_storage">This item requires %d MB of free storage but only %d MB is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
     <string name="select_storage_location">Select storage location</string>
     <string name="storage_unavailable">Storage location is unavailable</string>
