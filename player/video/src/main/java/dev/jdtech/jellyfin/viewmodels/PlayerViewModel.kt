@@ -115,7 +115,7 @@ class PlayerViewModel @Inject internal constructor(
     ): List<PlayerItem> {
         // TODO Move user configuration to a separate class
         val userConfig = try {
-           repository.getUserConfiguration()
+            repository.getUserConfiguration()
         } catch (_: Exception) {
             null
         }
