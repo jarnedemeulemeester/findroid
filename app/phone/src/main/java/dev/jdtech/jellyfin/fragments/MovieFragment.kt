@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import com.google.android.material.R as MaterialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -52,6 +54,7 @@ class MovieFragment : Fragment() {
     private val args: MovieFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
+    private lateinit var downloadPreparingDialog: AlertDialog
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -85,6 +88,9 @@ class MovieFragment : Fragment() {
                 launch {
                     viewModel.downloadStatus.collect { (status, progress) ->
                         when (status) {
+                            10 -> {
+                                downloadPreparingDialog.dismiss()
+                            }
                             DownloadManager.STATUS_PENDING -> {
                                 binding.itemActions.downloadButton.isEnabled = false
                                 binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
@@ -208,6 +214,7 @@ class MovieFragment : Fragment() {
                                     viewModel.item,
                                     onItemSelected = { sourceIndex ->
                                         viewModel.download(sourceIndex, storageIndex)
+                                        createDownloadPreparingDialog()
                                     },
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
@@ -219,6 +226,7 @@ class MovieFragment : Fragment() {
                                 return@getStorageSelectionDialog
                             }
                             viewModel.download(storageIndex = storageIndex)
+                            createDownloadPreparingDialog()
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -235,6 +243,7 @@ class MovieFragment : Fragment() {
                         viewModel.item,
                         onItemSelected = { sourceIndex ->
                             viewModel.download(sourceIndex)
+                            createDownloadPreparingDialog()
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -246,6 +255,7 @@ class MovieFragment : Fragment() {
                     return@setOnClickListener
                 }
                 viewModel.download()
+                createDownloadPreparingDialog()
             }
         }
 
@@ -463,6 +473,16 @@ class MovieFragment : Fragment() {
         binding.itemActions.progressDownload.isVisible = false
         binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
         binding.itemActions.downloadButton.isEnabled = true
+    }
+
+    private fun createDownloadPreparingDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        downloadPreparingDialog = builder
+            .setTitle(CoreR.string.preparing_download)
+            .setView(R.layout.preparing_download_dialog)
+            .setCancelable(false)
+            .create()
+        downloadPreparingDialog.show()
     }
 
     private fun navigateToPlayerActivity(

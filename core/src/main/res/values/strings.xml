@@ -179,4 +179,5 @@
     <string name="internal">Internal</string>
     <string name="external">External</string>
     <string name="storage_name">%s (%d MB free)</string>
+    <string name="preparing_download">Preparing download</string>
 </resources>

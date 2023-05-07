@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -21,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
@@ -51,6 +53,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private val viewModel: EpisodeBottomSheetViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
 
+    private lateinit var downloadPreparingDialog: AlertDialog
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +84,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 launch {
                     viewModel.downloadStatus.collect { (status, progress) ->
                         when (status) {
+                            10 -> {
+                                downloadPreparingDialog.dismiss()
+                            }
                             DownloadManager.STATUS_PENDING -> {
                                 binding.itemActions.downloadButton.isEnabled = false
                                 binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
@@ -165,6 +172,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                     viewModel.item,
                                     onItemSelected = { sourceIndex ->
                                         viewModel.download(sourceIndex, storageIndex)
+                                        createDownloadPreparingDialog()
                                     },
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
@@ -176,6 +184,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                 return@getStorageSelectionDialog
                             }
                             viewModel.download(storageIndex = storageIndex)
+                            createDownloadPreparingDialog()
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -192,6 +201,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         viewModel.item,
                         onItemSelected = { sourceIndex ->
                             viewModel.download(sourceIndex)
+                            createDownloadPreparingDialog()
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
@@ -203,6 +213,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     return@setOnClickListener
                 }
                 viewModel.download()
+                createDownloadPreparingDialog()
             }
         }
 
@@ -344,6 +355,16 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.itemActions.progressDownload.isVisible = false
         binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
         binding.itemActions.downloadButton.isEnabled = true
+    }
+
+    private fun createDownloadPreparingDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        downloadPreparingDialog = builder
+            .setTitle(CoreR.string.preparing_download)
+            .setView(R.layout.preparing_download_dialog)
+            .setCancelable(false)
+            .create()
+        downloadPreparingDialog.show()
     }
 
     private fun navigateToPlayerActivity(

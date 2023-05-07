@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.utils.Downloader
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -325,6 +326,8 @@ constructor(
             if (result.second != null) {
                 _downloadError.emit(result.second!!)
             }
+            // Send one time signal to fragment that the download has been initiated
+            _downloadStatus.emit(Pair(10, Random.nextInt()))
             loadData(item.id)
         }
     }
