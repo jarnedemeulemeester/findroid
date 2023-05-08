@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
@@ -37,6 +38,13 @@ class EpisodeListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: FindroidEpisode) {
             binding.episode = episode
+
+            binding.episodeTitle.text = if (episode.indexNumberEnd == null) {
+                binding.root.context.getString(CoreR.string.episode_name, episode.indexNumber, episode.name)
+            } else {
+                binding.root.context.getString(CoreR.string.episode_name_with_end, episode.indexNumber, episode.indexNumberEnd, episode.name)
+            }
+
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,

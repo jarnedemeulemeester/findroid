@@ -245,8 +245,12 @@ constructor(
                     .let { item ->
                         if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
                         )
-                            _currentItemTitle.value =
+                            _currentItemTitle.value = if (item.indexNumberEnd == null) {
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                            } else {
+                                "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
+                            }
+
                         else
                             _currentItemTitle.value = item.name.orEmpty()
 

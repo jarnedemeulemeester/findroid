@@ -226,12 +226,23 @@ class ShowFragment : Fragment() {
             binding.writers.text = writersString
             binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
-            binding.nextUpName.text = getString(
-                CoreR.string.episode_name_extended,
-                nextUp?.parentIndexNumber,
-                nextUp?.indexNumber,
-                nextUp?.name
-            )
+            if (nextUp?.indexNumberEnd == null) {
+                binding.nextUpName.text = getString(
+                    CoreR.string.episode_name_extended,
+                    nextUp?.parentIndexNumber,
+                    nextUp?.indexNumber,
+                    nextUp?.name
+                )
+            } else {
+                binding.nextUpName.text = getString(
+                    CoreR.string.episode_name_extended_with_end,
+                    nextUp?.parentIndexNumber,
+                    nextUp?.indexNumber,
+                    nextUp?.indexNumberEnd,
+                    nextUp?.name
+                )
+            }
+
             binding.seasonsLayout.isVisible = seasons.isNotEmpty()
             val seasonsAdapter = binding.seasonsRecyclerView.adapter as ViewItemListAdapter
             seasonsAdapter.submitList(seasons)

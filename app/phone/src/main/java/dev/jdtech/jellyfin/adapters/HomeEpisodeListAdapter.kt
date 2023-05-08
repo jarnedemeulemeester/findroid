@@ -40,7 +40,11 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 }
                 is FindroidEpisode -> {
                     binding.primaryName.text = item.seriesName
-                    binding.secondaryName.text = parent.resources.getString(CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
+                    binding.secondaryName.text = if (item.indexNumberEnd == null) {
+                        parent.resources.getString(CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
+                    } else {
+                        parent.resources.getString(CoreR.string.episode_name_extended_with_end, item.parentIndexNumber, item.indexNumber, item.indexNumberEnd, item.name)
+                    }
                 }
             }
 

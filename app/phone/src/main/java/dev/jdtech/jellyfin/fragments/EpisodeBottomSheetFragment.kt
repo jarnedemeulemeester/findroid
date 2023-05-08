@@ -259,12 +259,23 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 false -> binding.itemActions.downloadButton.isVisible = false
             }
 
-            binding.episodeName.text = getString(
-                CoreR.string.episode_name_extended,
-                episode.parentIndexNumber,
-                episode.indexNumber,
-                episode.name
-            )
+            binding.episodeName.text = if (episode.indexNumberEnd == null) {
+                 getString(
+                    CoreR.string.episode_name_extended,
+                    episode.parentIndexNumber,
+                    episode.indexNumber,
+                    episode.name
+                )
+            } else {
+                getString(
+                    CoreR.string.episode_name_extended_with_end,
+                    episode.parentIndexNumber,
+                    episode.indexNumber,
+                    episode.indexNumberEnd,
+                    episode.name
+                )
+            }
+
             binding.seriesName.text = episode.seriesName
             binding.overview.text = episode.overview
             binding.year.text = formatDateTime(episode.premiereDate)
