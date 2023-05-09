@@ -4,5 +4,5 @@
     <string name="select_audio_track">Selecciona la pista de audio</string>
     <string name="select_subtile_track">Selecciona la pista de subtítulo</string>
     <string name="select_playback_speed">Selecciona la velocidad de reproducción</string>
-    <string name="external">Externo</string>
+    <string name="external"></string>
 </resources>
