@@ -165,4 +165,20 @@
     <string name="extra_info">Mostrar info extra</string>
     <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
     <string name="pref_player_trick_play_summary">Requiere que el plugin Jellyscrub de nicknsy esté instalado en el servidor</string>
+    <string name="offline_mode">Modo sin conexión</string>
+    <string name="external"></string>
+    <string name="offline_mode_icon">Icono de Modo sin conexión</string>
+    <string name="offline_mode_go_online">Conectarse</string>
+    <string name="mega_byte_suffix">%d MB</string>
+    <string name="downloading_error">Error al descargar</string>
+    <string name="not_enough_storage">Este elemento requiere %d MB libres en el almacenamiento pero solo hay disponibles %d MB</string>
+    <string name="no_server_connection">No se puede conectar con el servidor de Jellyfin, para ver sin conexión, activa el Modo sin conexión</string>
+    <string name="select_storage_location">Seleccionar ubicación de almacenamiento</string>
+    <string name="storage_unavailable">La ubicación de almacenamiento no está disponible</string>
+    <string name="preparing_download">Preparando la descarga</string>
+    <string name="cancel_download">Cancelar descarga</string>
+    <string name="cancel_download_message">¿Estás seguro de que quieres cancelar la descarga\?</string>
+    <string name="stop_download">Parar descarga</string>
+    <string name="title_storage">Almacenamiento</string>
+    <string name="downloaded_indicator">Indicador de elemento descargado</string>
 </resources>
