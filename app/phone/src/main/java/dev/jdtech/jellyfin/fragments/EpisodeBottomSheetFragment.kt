@@ -260,7 +260,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             binding.episodeName.text = if (episode.indexNumberEnd == null) {
-                 getString(
+                getString(
                     CoreR.string.episode_name_extended,
                     episode.parentIndexNumber,
                     episode.indexNumber,
