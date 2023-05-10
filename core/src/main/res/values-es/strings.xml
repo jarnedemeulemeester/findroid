@@ -180,4 +180,9 @@
     <string name="stop_download">Parar descarga</string>
     <string name="title_storage">Almacenamiento</string>
     <string name="downloaded_indicator">Indicador de elemento descargado</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="internal">Interno</string>
+    <string name="external">Externo</string>
+    <string name="storage_name">%s (%d MB libres)</string>
 </resources>
