@@ -151,4 +151,5 @@
     <string name="add">Agregar</string>
     <string name="remove_user">Quitar usuario</string>
     <string name="remove_user_dialog_text">Está seguro de querer quitar el usuario %1$s</string>
+    <string name="title_storage">Almacenamiento</string>
 </resources>
