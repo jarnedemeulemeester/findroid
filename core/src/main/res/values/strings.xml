@@ -161,6 +161,7 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="size">Size</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtitles</string>
@@ -174,7 +175,7 @@
     <string name="offline_mode_go_online">Go online</string>
     <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Error while downloading</string>
-    <string name="not_enough_storage">This item requires %d MB of free storage but only %d MB is available</string>
+    <string name="not_enough_storage">This item requires %s of free storage but only %s is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
     <string name="select_storage_location">Select storage location</string>
     <string name="storage_unavailable">Storage location is unavailable</string>
