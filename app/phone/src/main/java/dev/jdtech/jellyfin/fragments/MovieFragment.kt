@@ -309,18 +309,6 @@ class MovieFragment : Fragment() {
             }
             binding.officialRating.text = item.officialRating
             binding.communityRating.text = item.communityRating.toString()
-            binding.genresLayout.isVisible = item.genres.isNotEmpty()
-            binding.genres.text = genresString
-            binding.videoMeta.text = videoString
-            binding.audio.text = audioString
-            binding.subtitles.text = subtitleString
-            binding.subsChip.isVisible = subtitleString.isNotEmpty()
-
-            if (appPreferences.displayExtraInfo) {
-                binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
-                binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
-                binding.audioLayout.isVisible = audioString.isNotEmpty()
-            }
 
             videoMetadata.let {
                 with(binding) {
@@ -373,11 +361,26 @@ class MovieFragment : Fragment() {
                     }
                 }
             }
-            binding.directorLayout.isVisible = director != null
-            binding.director.text = director?.name
-            binding.writersLayout.isVisible = writers.isNotEmpty()
-            binding.writers.text = writersString
-            binding.description.text = item.overview
+
+            binding.subsChip.isVisible = subtitleString.isNotEmpty()
+
+            if (appPreferences.displayExtraInfo) {
+                binding.info.video.text = videoString
+                binding.info.videoGroup.isVisible = videoString.isNotEmpty()
+                binding.info.audio.text = audioString
+                binding.info.audioGroup.isVisible = audioString.isNotEmpty()
+                binding.info.subtitles.text = subtitleString
+                binding.info.subtitlesGroup.isVisible = subtitleString.isNotEmpty()
+            }
+
+            binding.info.description.text = item.overview
+            binding.info.genres.text = genresString
+            binding.info.genresGroup.isVisible = item.genres.isNotEmpty()
+            binding.info.director.text = director?.name
+            binding.info.directorGroup.isVisible = director != null
+            binding.info.writers.text = writersString
+            binding.info.writersGroup.isVisible = writers.isNotEmpty()
+
             val actorsAdapter = binding.peopleRecyclerView.adapter as PersonListAdapter
             actorsAdapter.submitList(actors)
             bindItemBackdropImage(binding.itemBanner, item)
