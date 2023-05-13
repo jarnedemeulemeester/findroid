@@ -44,7 +44,7 @@ class DownloaderImpl(
         storageIndex: Int,
     ): Pair<Long, UiText?> {
         try {
-            val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
+            val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val intro = jellyfinRepository.getIntroTimestamps(item.id)
             val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
             val trickPlayData = if (trickPlayManifest != null) {

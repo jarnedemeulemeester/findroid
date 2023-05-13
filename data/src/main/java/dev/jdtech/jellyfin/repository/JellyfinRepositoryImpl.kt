@@ -282,7 +282,7 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
+    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
             sources.addAll(
@@ -325,7 +325,8 @@ class JellyfinRepositoryImpl(
                 ).content.mediaSources.map {
                     it.toFindroidSource(
                         this@JellyfinRepositoryImpl,
-                        itemId
+                        itemId,
+                        includePath,
                     )
                 }
             )
