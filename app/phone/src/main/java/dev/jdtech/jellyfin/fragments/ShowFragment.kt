@@ -208,23 +208,15 @@ class ShowFragment : Fragment() {
             }
             binding.officialRating.text = item.officialRating
             binding.communityRating.text = item.communityRating.toString()
-            binding.genresLayout.isVisible = item.genres.isNotEmpty()
-            binding.genres.text = genresString
-            binding.videoMeta.text = videoString
-            binding.audio.text = audioString
-            binding.subtitles.text = subtitleString
 
-            if (appPreferences.displayExtraInfo) {
-                binding.subtitlesLayout.isVisible = subtitleString.isNotEmpty()
-                binding.videoMetaLayout.isVisible = videoString.isNotEmpty()
-                binding.audioLayout.isVisible = audioString.isNotEmpty()
-            }
+            binding.info.description.text = item.overview
+            binding.info.genres.text = genresString
+            binding.info.genresGroup.isVisible = item.genres.isNotEmpty()
+            binding.info.director.text = director?.name
+            binding.info.directorGroup.isVisible = director != null
+            binding.info.writers.text = writersString
+            binding.info.writersGroup.isVisible = writers.isNotEmpty()
 
-            binding.directorLayout.isVisible = director != null
-            binding.director.text = director?.name
-            binding.writersLayout.isVisible = writers.isNotEmpty()
-            binding.writers.text = writersString
-            binding.description.text = item.overview
             binding.nextUpLayout.isVisible = nextUp != null
             if (nextUp?.indexNumberEnd == null) {
                 binding.nextUpName.text = getString(

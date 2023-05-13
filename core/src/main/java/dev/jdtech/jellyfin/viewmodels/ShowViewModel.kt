@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
-import org.jellyfin.sdk.model.api.MediaStreamType
 
 @HiltViewModel
 class ShowViewModel
@@ -40,9 +38,6 @@ constructor(
             val writers: List<BaseItemPerson>,
             val writersString: String,
             val genresString: String,
-            val videoString: String,
-            val audioString: String,
-            val subtitleString: String,
             val runTime: String,
             val dateString: String,
             val nextUp: FindroidEpisode?,
@@ -61,9 +56,6 @@ constructor(
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
     private var genresString: String = ""
-    private var videoString: String = ""
-    private var audioString: String = ""
-    private var subtitleString: String = ""
     private var runTime: String = ""
     private var dateString: String = ""
     var nextUp: FindroidEpisode? = null
@@ -81,9 +73,6 @@ constructor(
                 writers = getWriters(item)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
                 genresString = item.genres.joinToString(separator = ", ")
-                videoString = getMediaString(item, MediaStreamType.VIDEO)
-                audioString = getMediaString(item, MediaStreamType.AUDIO)
-                subtitleString = getMediaString(item, MediaStreamType.SUBTITLE)
                 runTime = "${item.runtimeTicks.div(600000000)} min"
                 dateString = getDateString(item)
                 nextUp = getNextUp(itemId)
@@ -96,9 +85,6 @@ constructor(
                         writers,
                         writersString,
                         genresString,
-                        videoString,
-                        audioString,
-                        subtitleString,
                         runTime,
                         dateString,
                         nextUp,
@@ -136,14 +122,6 @@ constructor(
             writers = item.people.filter { it.type == "Writer" }
         }
         return writers
-    }
-
-    private suspend fun getMediaString(item: FindroidShow, type: MediaStreamType): String {
-        val streams: List<FindroidMediaStream>
-        withContext(Dispatchers.Default) {
-            streams = item.sources.getOrNull(0)?.mediaStreams?.filter { it.type == type } ?: emptyList()
-        }
-        return streams.map { it.displayTitle }.joinToString(separator = ", ")
     }
 
     private suspend fun getNextUp(seriesId: UUID): FindroidEpisode? {

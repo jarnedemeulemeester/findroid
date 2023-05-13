@@ -260,4 +260,13 @@ abstract class ServerDatabaseDao {
 
     @Query("UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId")
     abstract fun setUserDataToBeSynced(userId: UUID, itemId: UUID, toBeSynced: Boolean)
+
+    @Query("SELECT * FROM movies WHERE serverId = :serverId AND name LIKE '%' || :name || '%'")
+    abstract fun searchMovies(serverId: String, name: String): List<FindroidMovieDto>
+
+    @Query("SELECT * FROM shows WHERE serverId = :serverId AND name LIKE '%' || :name || '%'")
+    abstract fun searchShows(serverId: String, name: String): List<FindroidShowDto>
+
+    @Query("SELECT * FROM episodes WHERE serverId = :serverId AND name LIKE '%' || :name || '%'")
+    abstract fun searchEpisodes(serverId: String, name: String): List<FindroidEpisodeDto>
 }

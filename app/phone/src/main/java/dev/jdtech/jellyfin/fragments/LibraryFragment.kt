@@ -26,7 +26,7 @@ import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -218,7 +218,7 @@ class LibraryFragment : Fragment() {
                     )
                 )
             }
-            is FindroidCollection -> {
+            is FindroidBoxSet -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
                         item.id,
