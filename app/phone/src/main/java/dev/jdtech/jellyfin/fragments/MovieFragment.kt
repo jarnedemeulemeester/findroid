@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -267,6 +268,9 @@ class MovieFragment : Fragment() {
 
     private fun bindUiStateNormal(uiState: MovieViewModel.UiState.Normal) {
         uiState.apply {
+            val size = item.sources.getOrNull(0)?.size?.let {
+                Formatter.formatFileSize(requireContext(), it)
+            }
             val canDownload =
                 item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
             val canDelete = item.sources.any { it.type == FindroidSourceType.LOCAL }
@@ -371,6 +375,8 @@ class MovieFragment : Fragment() {
                 binding.info.audioGroup.isVisible = audioString.isNotEmpty()
                 binding.info.subtitles.text = subtitleString
                 binding.info.subtitlesGroup.isVisible = subtitleString.isNotEmpty()
+                size?.let { binding.info.size.text = it }
+                binding.info.sizeGroup.isVisible = size != null
             }
 
             binding.info.description.text = item.overview

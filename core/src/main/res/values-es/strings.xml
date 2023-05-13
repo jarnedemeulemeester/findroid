@@ -170,7 +170,7 @@
     <string name="offline_mode_go_online">Conectarse</string>
     <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Error al descargar</string>
-    <string name="not_enough_storage">Este elemento requiere %d MB libres en el almacenamiento pero solo hay disponibles %d MB</string>
+    <string name="not_enough_storage">Este elemento requiere %s libres en el almacenamiento pero solo hay disponibles %s</string>
     <string name="no_server_connection">No se puede conectar con el servidor de Jellyfin, para ver sin conexión, activa el Modo sin conexión</string>
     <string name="select_storage_location">Seleccionar ubicación de almacenamiento</string>
     <string name="storage_unavailable">La ubicación de almacenamiento no está disponible</string>

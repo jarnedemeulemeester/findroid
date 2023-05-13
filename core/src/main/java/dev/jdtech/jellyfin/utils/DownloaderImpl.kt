@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.os.StatFs
+import android.text.format.Formatter
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -66,8 +67,8 @@ class DownloaderImpl(
                     -1,
                     UiText.StringResource(
                         CoreR.string.not_enough_storage,
-                        source.size.div(1000000),
-                        stats.availableBytes.div(1000000)
+                        Formatter.formatFileSize(context, source.size),
+                        Formatter.formatFileSize(context, stats.availableBytes)
                     )
                 )
             }

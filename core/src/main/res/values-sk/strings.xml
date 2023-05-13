@@ -179,7 +179,7 @@
     <string name="offline_mode_go_online">Prejsť do online režimu</string>
     <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Chyba pri sťahovaní</string>
-    <string name="not_enough_storage">Táto položka potrebuje %d MB voľného miesta, dostupných je iba %d MB</string>
+    <string name="not_enough_storage">Táto položka potrebuje %s voľného miesta, dostupných je iba %s</string>
     <string name="select_storage_location">Vybrať úložisko</string>
     <string name="no_server_connection">Nepodarilo sa spojiť s Jellyfin serverom, pre sledovanie offline povoľte Offline Režim</string>
     <string name="title_storage">Pamäť</string>
