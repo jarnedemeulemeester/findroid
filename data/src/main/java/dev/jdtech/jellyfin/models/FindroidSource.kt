@@ -19,12 +19,13 @@ data class FindroidSource(
 
 suspend fun MediaSourceInfo.toFindroidSource(
     jellyfinRepository: JellyfinRepository,
-    itemId: UUID
+    itemId: UUID,
+    includePath: Boolean = false,
 ): FindroidSource {
     val path = when (protocol) {
         MediaProtocol.FILE -> {
             try {
-                jellyfinRepository.getStreamUrl(itemId, id.orEmpty())
+                if (includePath) jellyfinRepository.getStreamUrl(itemId, id.orEmpty()) else ""
             } catch (e: Exception) {
                 ""
             }

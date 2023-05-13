@@ -80,7 +80,7 @@ interface JellyfinRepository {
         offline: Boolean = false
     ): List<FindroidEpisode>
 
-    suspend fun getMediaSources(itemId: UUID): List<FindroidSource>
+    suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
