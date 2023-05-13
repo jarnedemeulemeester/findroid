@@ -137,9 +137,9 @@ class PlayerViewModel @Inject internal constructor(
         playbackPosition: Long
     ): PlayerItem {
         val mediaSource = if (mediaSourceIndex == null) {
-            repository.getMediaSources(id).firstOrNull { it.type == FindroidSourceType.LOCAL } ?: repository.getMediaSources(id)[0]
+            repository.getMediaSources(id, true).firstOrNull { it.type == FindroidSourceType.LOCAL } ?: repository.getMediaSources(id, true)[0]
         } else {
-            repository.getMediaSources(id)[mediaSourceIndex]
+            repository.getMediaSources(id, true)[mediaSourceIndex]
         }
         val externalSubtitles = mediaSource.mediaStreams
             .filter { mediaStream ->

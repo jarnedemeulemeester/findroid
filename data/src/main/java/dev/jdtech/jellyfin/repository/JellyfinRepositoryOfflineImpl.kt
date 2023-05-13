@@ -168,7 +168,7 @@ class JellyfinRepositoryOfflineImpl(
             database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
         }
 
-    override suspend fun getMediaSources(itemId: UUID): List<FindroidSource> =
+    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
