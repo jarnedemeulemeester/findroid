@@ -173,7 +173,7 @@
     <string name="offline_mode_go_online">Przejdź online</string>
     <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Błąd podczas pobierania</string>
-    <string name="not_enough_storage">Ten element wymaga %d MB wolnego miejsca, ale dostępne jest tylko %d MB</string>
+    <string name="not_enough_storage">Ten element wymaga %s wolnego miejsca, ale dostępne jest tylko %s</string>
     <string name="no_server_connection">Brak połączenia z serwerem Jellyfin, aby oglądać offline, włącz tryb offline</string>
     <string name="select_storage_location">Wybierz miejsce przechowywania</string>
     <string name="storage_unavailable">Lokalizacja przechowywania jest niedostępna</string>
