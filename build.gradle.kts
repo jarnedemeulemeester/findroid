@@ -36,5 +36,5 @@ tasks.create<Delete>("clean") {
     delete(rootProject.buildDir)
 }
 
-val appVersionCode by extra { 18 }
-val appVersionName by extra { "0.11.0" }
+val appVersionCode by extra { 19 }
+val appVersionName by extra { "0.11.1" }
