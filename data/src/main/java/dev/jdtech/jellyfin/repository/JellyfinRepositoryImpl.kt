@@ -74,7 +74,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId
-            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)
+            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
@@ -254,7 +254,7 @@ class JellyfinRepositoryImpl(
                 seriesId = seriesId?.toString(),
             ).content.items
                 .orEmpty()
-                .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
+                .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getEpisodes(
@@ -276,7 +276,7 @@ class JellyfinRepositoryImpl(
                     limit = limit,
                 ).content.items
                     .orEmpty()
-                    .map { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
+                    .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
             } else {
                 database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
             }
