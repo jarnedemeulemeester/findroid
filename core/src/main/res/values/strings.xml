@@ -60,6 +60,7 @@
     <string name="settings_category_language">Language</string>
     <string name="settings_preferred_audio_language">Preferred audio language</string>
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
+    <string name="app_language">App language</string>
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Player</string>
