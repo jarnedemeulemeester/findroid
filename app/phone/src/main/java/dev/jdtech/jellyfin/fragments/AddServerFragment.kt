@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,8 @@ class AddServerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
+
+        binding.privacyPolicyText.movementMethod = LinkMovementMethod.getInstance()
 
         (binding.editTextServerAddress as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
