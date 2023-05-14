@@ -165,7 +165,7 @@
     <string name="storage_unavailable">La ubicación de almacenamiento no está disponible</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
-    <string name="not_enough_storage">Éste elemento requiere %d MBs de almacenamiento pero solo hay disponible %d MBs</string>
+    <string name="not_enough_storage">Éste elemento requiere %s de almacenamiento pero solo hay disponible %s</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtítulos</string>
