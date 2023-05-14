@@ -18,12 +18,18 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = false
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
         }
+    }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre")
+        register("huawei")
     }
 
     compileOptions {
