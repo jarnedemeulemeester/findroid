@@ -165,7 +165,7 @@
     <string name="audio">Hang</string>
     <string name="subtitle">Feliratok</string>
     <string name="downloading_error">Hiba történt a letöltés közben</string>
-    <string name="not_enough_storage">A letöltéshez %d MB helyre lenne szükséged, de csak %d MB áll rendelkezésre</string>
+    <string name="not_enough_storage">A letöltéshez %s helyre lenne szükséged, de csak %s áll rendelkezésre</string>
     <string name="extra_info">Extra információk megjelenítése</string>
     <string name="extra_info_summary">Jeleníts meg extra infokat a hangról, a videóról és a feliratokról</string>
     <string name="offline_mode">Offline mód</string>
