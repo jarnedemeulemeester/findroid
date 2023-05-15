@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsLanguageFragment"
@@ -49,6 +50,11 @@
     <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
         app:title="@string/settings_category_cache" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        app:key="pref_offline_mode"
+        app:title="@string/offline_mode" />
 
     <PreferenceCategory app:title="@string/about">
 

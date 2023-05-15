@@ -159,7 +159,7 @@ class MPVPlayer(
         CopyOnWriteArraySet<Player.Listener>()
 
     // Internal state.
-    private var internalMediaItems: List<MediaItem> = emptyList()
+    private var internalMediaItems = mutableListOf<MediaItem>()
 
     @Player.State
     private var playbackState: Int = Player.STATE_IDLE
@@ -196,9 +196,9 @@ class MPVPlayer(
                     if (isPlayerReady) {
                         if (newTracks != tracks) {
                             tracks = newTracks
-                            listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-                                listener.onTracksChanged(currentTracks)
-                            }
+//                            listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
+//                                listener.onTracksChanged(currentTracks)
+//                            }
                         }
                     } else {
                         tracks = newTracks
@@ -583,7 +583,16 @@ class MPVPlayer(
      * @param mediaItems The [MediaItems][MediaItem] to add.
      */
     override fun addMediaItems(index: Int, mediaItems: MutableList<MediaItem>) {
-        TODO("Not yet implemented")
+        internalMediaItems.addAll(mediaItems)
+        mediaItems.forEach { mediaItem ->
+            MPVLib.command(
+                arrayOf(
+                    "loadfile",
+                    "${mediaItem.localConfiguration?.uri}",
+                    "append"
+                )
+            )
+        }
     }
 
     /**

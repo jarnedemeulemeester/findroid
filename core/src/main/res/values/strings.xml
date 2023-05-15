@@ -29,6 +29,7 @@
     <string name="title_favorite">Favorites</string>
     <string name="title_settings">Settings</string>
     <string name="title_download">Downloads</string>
+    <string name="title_storage">Storage</string>
     <string name="view_all">View all</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
@@ -42,8 +43,11 @@
     <string name="check_button_description">Mark as watched or unwatched</string>
     <string name="favorite_button_description">Favorite</string>
     <string name="episode_watched_indicator">Episode watched indicator</string>
+    <string name="downloaded_indicator">Downloaded indicator</string>
     <string name="episode_name">%1$d. %2$s</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
+    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="next_up">Next Up</string>
     <string name="continue_watching">Continue Watching</string>
     <string name="latest_library">Latest %1$s</string>
@@ -56,6 +60,7 @@
     <string name="settings_category_language">Language</string>
     <string name="settings_preferred_audio_language">Preferred audio language</string>
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
+    <string name="app_language">App language</string>
     <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Player</string>
@@ -150,11 +155,14 @@
     <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
     <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
+    <string name="pref_player_trick_play">Trick Play</string>
+    <string name="pref_player_trick_play_summary">Requires nicknsy\'s Jellyscrub plugin to be installed on the server</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="size">Size</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtitles</string>
@@ -163,4 +171,21 @@
     <string name="dolby_logo_desc">Dolby Logo</string>
     <string name="extra_info">Display Extra Info</string>
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
+    <string name="offline_mode">Offline Mode</string>
+    <string name="offline_mode_icon">Offline Mode icon</string>
+    <string name="offline_mode_go_online">Go online</string>
+    <string name="mega_byte_suffix">%d MB</string>
+    <string name="downloading_error">Error while downloading</string>
+    <string name="not_enough_storage">This item requires %s of free storage but only %s is available</string>
+    <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
+    <string name="select_storage_location">Select storage location</string>
+    <string name="storage_unavailable">Storage location is unavailable</string>
+    <string name="internal">Internal</string>
+    <string name="external">External</string>
+    <string name="storage_name">%s (%d MB free)</string>
+    <string name="preparing_download">Preparing download</string>
+    <string name="cancel_download">Cancel download</string>
+    <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
+    <string name="stop_download">Stop download</string>
+    <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
 </resources>

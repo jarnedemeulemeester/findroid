@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="episode"
-            type="org.jellyfin.sdk.model.api.BaseItemDto" />
+            name="item"
+            type="dev.jdtech.jellyfin.models.FindroidItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
-            app:baseItemImage="@{episode}"
+            app:cardItemImage="@{item}"
             app:layout_constraintDimensionRatio="H,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,12 +49,27 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{String.format(@string/episode_name_extended, episode.parentIndexNumber, episode.indexNumber, episode.name)}"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/primary_name"
             tools:text="The Girl Flautist" />
+
+        <ImageView
+            android:id="@+id/downloaded_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:contentDescription="@string/downloaded_indicator"
+            android:padding="4dp"
+            android:src="@drawable/ic_download"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/episode_image"
+            app:layout_constraintTop_toTopOf="@id/episode_image"
+            app:tint="?attr/colorOnPrimary"
+            tools:visibility="visible"/>
 
         <FrameLayout
             android:id="@+id/progress_bar"

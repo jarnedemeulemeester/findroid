@@ -20,19 +20,22 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidBoxSet
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.SortOrder
 
 @AndroidEntryPoint
@@ -63,12 +66,12 @@ class LibraryFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.library_menu, menu)
+                    menuInflater.inflate(CoreR.menu.library_menu, menu)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.action_sort_by -> {
+                        CoreR.id.action_sort_by -> {
                             SortDialogFragment(
                                 args.libraryId,
                                 args.libraryType,
@@ -80,7 +83,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
-                        R.id.action_sort_order -> {
+                        CoreR.id.action_sort_order -> {
                             SortDialogFragment(
                                 args.libraryId,
                                 args.libraryType,
@@ -114,9 +117,9 @@ class LibraryFragment : Fragment() {
             ViewItemPagingAdapter(
                 ViewItemPagingAdapter.OnClickListener { item ->
                     if (args.libraryType == CollectionType.BoxSets.type) {
-                        navigateToCollectionFragment(item)
+                        navigateToItem(item)
                     } else {
-                        navigateToMediaInfoFragment(item)
+                        navigateToItem(item)
                     }
                 }
             )
@@ -197,22 +200,32 @@ class LibraryFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type
-            )
-        )
-    }
-
-    private fun navigateToCollectionFragment(collection: BaseItemDto) {
-        findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
-                collection.id,
-                collection.name
-            )
-        )
+    private fun navigateToItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToMovieFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+            is FindroidBoxSet -> {
+                findNavController().navigate(
+                    LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
+                        item.id,
+                        item.name
+                    )
+                )
+            }
+        }
     }
 }

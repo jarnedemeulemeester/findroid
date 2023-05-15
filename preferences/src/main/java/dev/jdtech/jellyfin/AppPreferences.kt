@@ -21,6 +21,15 @@ constructor(
             }
         }
 
+    // Offline
+    var offlineMode
+        get() = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(Constants.PREF_OFFLINE_MODE, value)
+            }
+        }
+
     // Appearance
     val theme get() = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors get() = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
@@ -72,6 +81,7 @@ constructor(
     val playerMpvAo get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
     val playerMpvGpuApi get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_GPU_API, "opengl")!!
     val playerIntroSkipper get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_INTRO_SKIPPER, true)
+    val playerTrickPlay get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICK_PLAY, true)
 
     // Language
     val preferredAudioLanguage get() = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
@@ -133,5 +143,12 @@ constructor(
             sharedPreferences.edit {
                 putString(Constants.PREF_SORT_ORDER, value)
             }
+        }
+
+    // Temp
+    var downloadsMigrated
+        get() = sharedPreferences.getBoolean("downloadsMigrated", false)
+        set(value) = sharedPreferences.edit {
+            putBoolean("downloadsMigrated", value)
         }
 }

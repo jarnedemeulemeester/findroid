@@ -3,6 +3,8 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
@@ -44,8 +46,8 @@ class PersonDetailViewModel @Inject internal constructor(
                     recursive = true
                 )
 
-                val movies = items.filter { it.type == BaseItemKind.MOVIE }
-                val shows = items.filter { it.type == BaseItemKind.SERIES }
+                val movies = items.filterIsInstance<FindroidMovie>()
+                val shows = items.filterIsInstance<FindroidShow>()
 
                 val starredIn = StarredIn(movies, shows)
 
@@ -63,7 +65,7 @@ class PersonDetailViewModel @Inject internal constructor(
     )
 
     data class StarredIn(
-        val movies: List<BaseItemDto>,
-        val shows: List<BaseItemDto>
+        val movies: List<FindroidMovie>,
+        val shows: List<FindroidShow>
     )
 }

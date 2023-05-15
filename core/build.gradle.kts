@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -19,17 +18,23 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = false
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
         }
     }
 
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre")
+        register("huawei")
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -46,6 +51,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.hilt.work)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.navigation.fragment)
@@ -54,6 +61,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.work)
     implementation(libs.glide)
     kapt(libs.glide.compiler)
     implementation(libs.hilt.android)

@@ -15,15 +15,17 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -118,7 +120,7 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
-        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaInfoFragment(it) }
+        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) }
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {
@@ -126,24 +128,35 @@ internal class PersonDetailFragment : Fragment() {
             with(binding.overview) {
                 if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT) {
                     updateLayoutParams { height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT }
-                    binding.readAll.text = getString(R.string.view_all)
+                    binding.readAll.text = getString(CoreR.string.view_all)
                     binding.overviewGradient.isVisible = true
                 } else {
                     updateLayoutParams { height = ConstraintLayout.LayoutParams.WRAP_CONTENT }
-                    binding.readAll.text = getString(R.string.hide)
+                    binding.readAll.text = getString(CoreR.string.hide)
                     binding.overviewGradient.isVisible = false
                 }
             }
         }
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            PersonDetailFragmentDirections.actionPersonDetailFragmentToMediaInfoFragment(
-                itemId = item.id,
-                itemName = item.name,
-                itemType = item.type
-            )
-        )
+    private fun navigateToMediaItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
+                        itemId = item.id,
+                        itemName = item.name
+                    )
+                )
+            }
+        }
     }
 }

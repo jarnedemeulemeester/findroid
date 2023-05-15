@@ -7,11 +7,13 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +22,9 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
+import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import javax.inject.Inject
 import timber.log.Timber
@@ -106,7 +110,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
                         this,
-                        resources.getString(R.string.select_audio_track),
+                        resources.getString(PlayerVideoR.string.select_audio_track),
                         viewModel.player,
                         C.TRACK_TYPE_AUDIO
                     )
@@ -139,7 +143,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                     val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
                         this,
-                        resources.getString(R.string.select_subtile_track),
+                        resources.getString(PlayerVideoR.string.select_subtile_track),
                         viewModel.player,
                         C.TRACK_TYPE_TEXT
                     )
@@ -166,6 +170,19 @@ class PlayerActivity : BasePlayerActivity() {
             viewModel.currentIntro.value?.let {
                 binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
             }
+        }
+
+        if (appPreferences.playerTrickPlay) {
+            val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
+            val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+            val previewScrubListener = PreviewScrubListener(
+                imagePreview,
+                timeBar,
+                viewModel.player,
+                viewModel.currentTrickPlay
+            )
+
+            timeBar.addListener(previewScrubListener)
         }
 
         viewModel.fileLoaded.observe(this) {

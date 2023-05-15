@@ -4,57 +4,60 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
-import java.util.UUID
-import org.jellyfin.sdk.model.api.BaseItemDto
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.isDownloaded
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class EpisodeListAdapter(
     private val onClickListener: OnClickListener,
-    private val seriesId: UUID,
-    private val seriesName: String?,
-    private val seasonId: UUID,
-    private val seasonName: String?
 ) :
     ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class HeaderViewHolder(private var binding: SeasonHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(
-            seriesId: UUID,
-            seriesName: String?,
-            seasonId: UUID,
-            seasonName: String?
-        ) {
-            binding.seriesId = seriesId
-            binding.seasonId = seasonId
-            binding.seasonName.text = seasonName
-            binding.seriesName.text = seriesName
+        fun bind(header: EpisodeItem.Header) {
+            binding.seriesId = header.seriesId
+            binding.seasonId = header.seasonId
+            binding.seasonName.text = header.seasonName
+            binding.seriesName.text = header.seriesName
             binding.executePendingBindings()
         }
     }
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(episode: BaseItemDto) {
+        fun bind(episode: FindroidEpisode) {
             binding.episode = episode
-            if (episode.userData?.playedPercentage != null) {
+
+            binding.episodeTitle.text = if (episode.indexNumberEnd == null) {
+                binding.root.context.getString(CoreR.string.episode_name, episode.indexNumber, episode.name)
+            } else {
+                binding.root.context.getString(CoreR.string.episode_name_with_end, episode.indexNumber, episode.indexNumberEnd, episode.name)
+            }
+
+            if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(),
+                    (episode.playbackPositionTicks.div(episode.runtimeTicks.toFloat()).times(84)),
                     binding.progressBar.context.resources.displayMetrics
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             } else {
                 binding.progressBar.visibility = View.GONE
             }
+
+            binding.downloadedIcon.isVisible = episode.isDownloaded()
+
             binding.executePendingBindings()
         }
     }
@@ -96,7 +99,8 @@ class EpisodeListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_HEADER -> {
-                (holder as HeaderViewHolder).bind(seriesId, seriesName, seasonId, seasonName)
+                val item = getItem(position) as EpisodeItem.Header
+                (holder as HeaderViewHolder).bind(item)
             }
             ITEM_VIEW_TYPE_EPISODE -> {
                 val item = getItem(position) as EpisodeItem.Episode
@@ -115,7 +119,7 @@ class EpisodeListAdapter(
         }
     }
 
-    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
-        fun onClick(item: BaseItemDto) = clickListener(item)
+    class OnClickListener(val clickListener: (item: FindroidEpisode) -> Unit) {
+        fun onClick(item: FindroidEpisode) = clickListener(item)
     }
 }

@@ -114,7 +114,7 @@
     <string name="display_extended_title_summary">Zeige erweiterten Episodentitel inklusive der Staffel und Episodeninformationen (SXX:EXX - Episodenname).</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
-    <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen und auf der linken Seite, um gleiches mit der Helligkeit zu machen</string>
+    <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen, und auf der linken Seite, um die Helligkeit anzupassen</string>
     <string name="seeking">Suchen</string>
     <string name="subtitles">Untertitel</string>
     <string name="subtitles_summary">Untertitel anpassen</string>
@@ -125,7 +125,7 @@
     <string name="dynamic_colors_summary">Dynamische Farben nutzen (ab Android 12 verfügbar)</string>
     <string name="player_gestures_vb">Lautsärke und Helligkeits-Gesten</string>
     <string name="player_gestures_zoom">Zoom Geste</string>
-    <string name="player_gestures_zoom_summary">Ziehen um den Bildschirm zu füllen</string>
+    <string name="player_gestures_zoom_summary">Ziehen um das Video an den Bildschirm anzupassen</string>
     <string name="libraries">Bibliotheken</string>
     <string name="player_controls_skip_intro">Intro überspringen</string>
     <string name="remove_user">Benutzer entfernen</string>
@@ -143,11 +143,25 @@
     <string name="addresses">Adressen</string>
     <string name="seek_back_increment">Zurückspulstufe (ms)</string>
     <string name="users">Benutzer</string>
-    <string name="pref_player_intro_skipper">Intro Skipper</string>
+    <string name="pref_player_intro_skipper">Intro überspringen</string>
     <string name="pref_player_intro_skipper_summary">Benötigt ConfusedPolarBears Intro Skipper Plugin installiert auf dem Server</string>
     <string name="theme_system">Übernehme Systemeinstellung</string>
     <string name="pref_player_mpv_hwdec">Hardware-Dekodierung</string>
     <string name="pref_player_mpv_hwdec_codecs">Hardware-Dekodierung Codecs</string>
     <string name="pref_player_mpv_vo">Videoausgang</string>
     <string name="pref_player_mpv_ao">Audioausgang</string>
+    <string name="pref_player_trick_play">Trickspiel</string>
+    <string name="pref_player_trick_play_summary">Erfordert die Installation des Jellyscrub-Plugins von nicknsy auf dem Server</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="extra_info_summary">Anzeigen von detaillierten Infos zu Ton/Audio, Video und Untertiteln</string>
+    <string name="video">Video</string>
+    <string name="dolby_logo_desc">Dolby Symbol</string>
+    <string name="temp">temporär</string>
+    <string name="subtitle">Untertitel</string>
+    <string name="amoled_theme_summary">Verwenden Sie den Modus für AMOLED mit einem tiefschwarzen Hintergrund</string>
+    <string name="amoled_theme">Vollständig dunkler Modus (für AMOLED Bildschirme)</string>
+    <string name="audio">Ton/Audio</string>
+    <string name="player_gestures_seek_summary">Wischen Sie horizontal, um vorwärts oder rückwärts zu suchen</string>
+    <string name="player_gestures_seek">Suchgeste</string>
+    <string name="extra_info">Extra Infos anzeigen</string>
 </resources>
