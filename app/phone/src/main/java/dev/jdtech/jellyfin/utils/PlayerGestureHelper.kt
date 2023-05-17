@@ -18,6 +18,7 @@ import androidx.media3.ui.PlayerView
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import kotlin.math.abs
 import timber.log.Timber
@@ -90,6 +91,8 @@ class PlayerGestureHelper(
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
+                // Disables seek gestures if view is locked
+                if (isControlsLocked) return false
 
                 // Check whether swipe was oriented vertically
                 if (abs(distanceY / distanceX) < 2) {
@@ -128,6 +131,8 @@ class PlayerGestureHelper(
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
+                // Disables volume gestures when player is locked
+                if (isControlsLocked) return false
 
                 if (abs(distanceY / distanceX) < 2) return false
 
