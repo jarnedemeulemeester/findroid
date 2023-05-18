@@ -66,6 +66,8 @@ class PlayerGestureHelper(
             }
 
             override fun onDoubleTap(e: MotionEvent): Boolean {
+                // Disables double tap gestures if view is locked
+                if (isControlsLocked) return false
                 val viewCenterX = playerView.measuredWidth / 2
                 val currentPos = playerView.player?.currentPosition ?: 0
 
@@ -218,6 +220,8 @@ class PlayerGestureHelper(
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
             override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // Disables zoom gesture if view is locked
+                if (isControlsLocked) return false
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
                 if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
