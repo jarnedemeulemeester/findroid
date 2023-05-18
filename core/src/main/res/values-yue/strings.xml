@@ -16,4 +16,6 @@
     <string name="button_connect">连接</string>
     <string name="jellyfin_banner">Jellyfin横幅</string>
     <string name="add_server_error_version">唔支持嘅服务器版本：%1$s。唔该更新服务器</string>
+    <string name="app_description">第三方原生Jellyfin应用程式</string>
+    <string name="button_login">登录</string>
 </resources>
