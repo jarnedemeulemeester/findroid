@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,7 +43,7 @@ import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
@@ -75,7 +74,6 @@ fun AddServerScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddServerForm(
     uiState: AddServerViewModel.UiState,
@@ -95,7 +93,7 @@ fun AddServerForm(
         } else emptyList()
 
     Column(Modifier.width(320.dp)) {
-        Text(text = stringResource(id = R.string.add_server), style = Typography.headlineMedium)
+        Text(text = stringResource(id = CoreR.string.add_server), style = Typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
             Column {
@@ -116,12 +114,12 @@ fun AddServerForm(
             value = text,
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_server),
+                    painter = painterResource(id = CoreR.drawable.ic_server),
                     contentDescription = null
                 )
             },
             onValueChange = { text = it },
-            label = { Text(text = stringResource(id = R.string.edit_text_server_address_hint)) },
+            label = { Text(text = stringResource(id = CoreR.string.edit_text_server_address_hint)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
@@ -152,7 +150,7 @@ fun AddServerForm(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(id = R.string.button_connect))
+                Text(text = stringResource(id = CoreR.string.button_connect))
             }
             if (isLoading) {
                 CircularProgressIndicator(
@@ -187,7 +185,7 @@ fun DiscoveredServerComponent(
                 .background(MaterialTheme.colorScheme.primary)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_server),
+                painter = painterResource(id = CoreR.drawable.ic_server),
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
                 tint = MaterialTheme.colorScheme.onPrimary

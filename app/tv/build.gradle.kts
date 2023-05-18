@@ -27,10 +27,10 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
+        named("debug") {
             applicationIdSuffix = ".debug"
         }
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -38,9 +38,17 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
             applicationIdSuffix = ".staging"
+        }
+    }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre") {
+            dimension = "variant"
+            isDefault = true
         }
     }
 
@@ -54,8 +62,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -63,10 +71,10 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -110,6 +118,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.androidx.tv.foundation)
+    implementation(libs.androidx.tv.material)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

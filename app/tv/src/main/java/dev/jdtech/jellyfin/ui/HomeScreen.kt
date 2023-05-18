@@ -39,13 +39,16 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ImageType
 
 @RootNavGraph(start = true)
@@ -81,7 +84,7 @@ fun HomeScreen(
                     when (homeItem) {
                         is HomeItem.Libraries -> {
                             Text(
-                                text = homeItem.section.name,
+                                text = homeItem.section.name.asString(context.resources),
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
@@ -95,7 +98,7 @@ fun HomeScreen(
                                         modifier = Modifier
                                             .width(240.dp)
                                             .clickable {
-                                                navigator.navigate(LibraryScreenDestination(library.id, library.collectionType))
+                                                navigator.navigate(LibraryScreenDestination(library.id, (library as FindroidCollection).type))
                                             }
                                     ) {
                                         ItemPoster(
@@ -105,7 +108,7 @@ fun HomeScreen(
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = library.name.orEmpty(),
+                                            text = library.name,
                                             style = MaterialTheme.typography.bodyMedium
                                         )
                                     }
@@ -115,7 +118,7 @@ fun HomeScreen(
                         }
                         is HomeItem.Section -> {
                             Text(
-                                text = homeItem.homeSection.name,
+                                text = homeItem.homeSection.name.asString(context.resources),
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
@@ -143,9 +146,9 @@ fun HomeScreen(
                                                         modifier = Modifier
                                                             .height(4.dp)
                                                             .width(
-                                                                item.userData?.playedPercentage?.times(
+                                                                item.playbackPositionTicks.div(item.runtimeTicks.toFloat()).times(
                                                                     1.64
-                                                                )?.dp ?: 0.dp
+                                                                ).dp
                                                             )
                                                             .clip(MaterialTheme.shapes.extraSmall)
                                                             .background(MaterialTheme.colorScheme.primary)
@@ -156,14 +159,14 @@ fun HomeScreen(
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = if (item.type == BaseItemKind.EPISODE) item.seriesName.orEmpty() else item.name.orEmpty(),
+                                            text = if (item is FindroidEpisode) item.seriesName else item.name,
                                             style = MaterialTheme.typography.bodyMedium,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
-                                        if (item.type == BaseItemKind.EPISODE) {
+                                        if (item is FindroidEpisode) {
                                             Text(
-                                                text = stringResource(id = R.string.episode_name_extended, item.parentIndexNumber ?: 0, item.indexNumber ?: 0, item.name.orEmpty()),
+                                                text = stringResource(id = CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
@@ -198,7 +201,7 @@ fun HomeScreen(
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = item.name.orEmpty(),
+                                            text = item.name,
                                             style = MaterialTheme.typography.bodyMedium,
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
@@ -208,6 +211,7 @@ fun HomeScreen(
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                         }
+                        else -> Unit
                     }
                 }
             }
@@ -228,19 +232,11 @@ fun Header(modifier: Modifier = Modifier) {
             .height(80.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_banner),
+            painter = painterResource(id = CoreR.drawable.ic_banner),
             contentDescription = null,
             modifier = Modifier.height(40.dp)
         )
     }
-}
-
-fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
-    return !this.isNullOrEmpty()
-}
-
-fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
-    return !this.isNullOrEmpty()
 }
 
 enum class Direction {
@@ -248,34 +244,18 @@ enum class Direction {
 }
 
 @Composable
-fun ItemPoster(item: BaseItemDto, api: JellyfinApi, direction: Direction) {
+fun ItemPoster(item: FindroidItem, api: JellyfinApi, direction: Direction) {
     var itemId = item.id
     var imageType = ImageType.PRIMARY
 
     if (direction == Direction.HORIZONTAL) {
-        if (item.imageTags.isNotNullOrEmpty()) { // TODO: Downloadmetadata currently does not store imagetags, so it always uses the backdrop
-            when (item.type) {
-                BaseItemKind.MOVIE -> {
-                    if (item.backdropImageTags.isNotNullOrEmpty()) {
-                        imageType = ImageType.BACKDROP
-                    }
-                }
-                else -> {
-                    if (!item.imageTags!!.keys.contains(ImageType.PRIMARY)) {
-                        imageType = ImageType.BACKDROP
-                    }
-                }
-            }
-        } else {
-            if (item.type == BaseItemKind.EPISODE) {
-                itemId = item.seriesId!!
-                imageType = ImageType.BACKDROP
-            }
-        }
+        if (item is FindroidMovie) imageType = ImageType.BACKDROP
     } else {
-        itemId =
-            if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId
-                ?: item.id else item.id
+        itemId = when (item) {
+            is FindroidEpisode -> item.seriesId
+            is FindroidSeason -> item.seriesId
+            else -> item.id
+        }
     }
 
     AsyncImage(

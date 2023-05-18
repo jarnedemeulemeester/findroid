@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -47,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
@@ -88,7 +87,6 @@ fun LoginScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(
     uiState: LoginViewModel.UiState,
@@ -109,7 +107,7 @@ fun LoginForm(
         } else emptyList()
     val quickConnectValue = if (quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting) {
         quickConnectUiState.code
-    } else stringResource(id = R.string.quick_connect)
+    } else stringResource(id = CoreR.string.quick_connect)
 
     val isError = uiState is LoginViewModel.UiState.Error
     val isLoading = uiState is LoginViewModel.UiState.Loading
@@ -121,7 +119,7 @@ fun LoginForm(
     val requester = FocusRequester()
 
     Column(Modifier.width(320.dp)) {
-        Text(text = stringResource(id = R.string.login), style = Typography.headlineMedium)
+        Text(text = stringResource(id = CoreR.string.login), style = Typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = users.isNotEmpty()) {
             Column {
@@ -142,12 +140,12 @@ fun LoginForm(
             value = username,
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_user),
+                    painter = painterResource(id = CoreR.drawable.ic_user),
                     contentDescription = null
                 )
             },
             onValueChange = { username = it },
-            label = { Text(text = stringResource(id = R.string.edit_text_username_hint)) },
+            label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
@@ -163,12 +161,12 @@ fun LoginForm(
             value = password,
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_lock),
+                    painter = painterResource(id = CoreR.drawable.ic_lock),
                     contentDescription = null
                 )
             },
             onValueChange = { password = it },
-            label = { Text(text = stringResource(id = R.string.edit_text_password_hint)) },
+            label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
@@ -197,7 +195,7 @@ fun LoginForm(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(id = R.string.button_connect))
+                Text(text = stringResource(id = CoreR.string.button_connect))
             }
             if (isLoading) {
                 CircularProgressIndicator(
@@ -253,7 +251,7 @@ fun PublicUserComponent(
                 .background(MaterialTheme.colorScheme.primary)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_user),
+                painter = painterResource(id = CoreR.drawable.ic_user),
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
                 tint = MaterialTheme.colorScheme.onPrimary

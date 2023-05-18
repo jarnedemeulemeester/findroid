@@ -7,6 +7,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.lang.IllegalStateException
@@ -17,7 +18,7 @@ import org.jellyfin.sdk.model.api.SortOrder
 @AndroidEntryPoint
 class SortDialogFragment(
     private val parentId: UUID,
-    private val libraryType: String?,
+    private val libraryType: CollectionType,
     private val viewModel: LibraryViewModel,
     private val sortType: String
 ) : DialogFragment() {

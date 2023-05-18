@@ -24,6 +24,7 @@ import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.util.UUID
 
@@ -31,7 +32,7 @@ import java.util.UUID
 @Composable
 fun LibraryScreen(
     libraryId: UUID,
-    libraryType: String?,
+    libraryType: CollectionType,
     libraryViewModel: LibraryViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -70,7 +71,7 @@ fun LibraryScreen(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = item.name.orEmpty(),
+                                text = item.name,
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
