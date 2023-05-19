@@ -184,4 +184,7 @@
     <string name="no_server_connection">Nepodarilo sa spojiť s Jellyfin serverom, pre sledovanie offline povoľte Offline Režim</string>
     <string name="title_storage">Pamäť</string>
     <string name="downloaded_indicator">Indikátor sťahovania</string>
+    <string name="privacy_policy_notice">Používaním Findroid súhlasíte so <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">zásadami ochrany osobných údajov</a> podľa ktorých nezbierame žiadne údaje</string>
+    <string name="size">Veľkosť</string>
+    <string name="app_language">Jazyk aplikácie</string>
 </resources>
