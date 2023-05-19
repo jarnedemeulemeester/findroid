@@ -31,8 +31,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import javax.inject.Inject
 import timber.log.Timber
 
-var isControlsLocked : Boolean = false
-
+var isControlsLocked: Boolean = false
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
@@ -76,7 +75,6 @@ class PlayerActivity : BasePlayerActivity() {
             finish()
         }
 
-
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
         viewModel.currentItemTitle.observe(this) { title ->
@@ -89,7 +87,6 @@ class PlayerActivity : BasePlayerActivity() {
         val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
-
 
         audioButton.isEnabled = false
         audioButton.imageAlpha = 75
@@ -144,9 +141,9 @@ class PlayerActivity : BasePlayerActivity() {
         lockedLayout.visibility =View.GONE // Disabled by default
 
         lockButton.setOnClickListener {
-            when(viewModel.player){
+            when (viewModel.player) {
                 is MPVPlayer -> {
-                    if(!isControlsLocked){
+                    if (!isControlsLocked) {
                         exoPlayerControlView.visibility = View.GONE
                         lockedLayout.visibility = View.VISIBLE
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
@@ -160,7 +157,7 @@ class PlayerActivity : BasePlayerActivity() {
                 }
 
                 is ExoPlayer -> {
-                    if(!isControlsLocked){
+                    if (!isControlsLocked) {
                         exoPlayerControlView.visibility = View.GONE
                         lockedLayout.visibility = View.VISIBLE
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
@@ -176,7 +173,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         unlockButton.setOnClickListener {
-            when(viewModel.player){
+            when (viewModel.player) {
                 is MPVPlayer -> {
                     if (isControlsLocked) {
                         exoPlayerControlView.visibility = View.VISIBLE
@@ -207,8 +204,6 @@ class PlayerActivity : BasePlayerActivity() {
             }
 
         }
-
-
 
         subtitleButton.setOnClickListener {
             when (viewModel.player) {
