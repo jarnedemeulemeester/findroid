@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -34,8 +33,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
-import dev.jdtech.jellyfin.utils.setTintColor
-import dev.jdtech.jellyfin.utils.setTintColorAttribute
+import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.text.DateFormat
@@ -64,8 +62,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
         binding.itemActions.playButton.setOnClickListener {
-            binding.itemActions.playButton.setImageResource(AndroidR.color.transparent)
-            binding.itemActions.progressCircular.isVisible = true
+            binding.itemActions.playButton.isEnabled = false
+            binding.itemActions.playButton.setIconResource(AndroidR.color.transparent)
+            binding.itemActions.progressPlay.isVisible = true
             playerViewModel.loadPlayerItems(viewModel.item)
         }
 
@@ -89,12 +88,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                 downloadPreparingDialog.dismiss()
                             }
                             DownloadManager.STATUS_PENDING -> {
-                                binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
+                                binding.itemActions.downloadButton.setIconResource(AndroidR.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
                                 binding.itemActions.progressDownload.isVisible = true
                             }
+
                             DownloadManager.STATUS_RUNNING -> {
-                                binding.itemActions.downloadButton.setImageResource(AndroidR.color.transparent)
+                                binding.itemActions.downloadButton.setIconResource(AndroidR.color.transparent)
                                 binding.itemActions.progressDownload.isVisible = true
                                 if (progress < 5) {
                                     binding.itemActions.progressDownload.isIndeterminate = true
@@ -104,12 +104,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                 }
                             }
                             DownloadManager.STATUS_SUCCESSFUL -> {
-                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_trash)
                                 binding.itemActions.progressDownload.isVisible = false
                             }
                             else -> {
                                 binding.itemActions.progressDownload.isVisible = false
-                                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
                             }
                         }
                     }
@@ -153,11 +153,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.itemActions.downloadButton.setOnClickListener {
             if (viewModel.item.isDownloaded()) {
                 viewModel.deleteEpisode()
-                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
             } else if (viewModel.item.isDownloading()) {
                 createCancelDialog()
             } else {
-                binding.itemActions.downloadButton.setImageResource(android.R.color.transparent)
+                binding.itemActions.downloadButton.setIconResource(AndroidR.color.transparent)
                 binding.itemActions.progressDownload.isIndeterminate = true
                 binding.itemActions.progressDownload.isVisible = true
                 if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
@@ -174,7 +174,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                     },
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
-                                        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                                        binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
                                     }
                                 )
                                 dialog.show()
@@ -185,7 +185,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                            binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
                         }
                     )
                     storageDialog.show()
@@ -201,7 +201,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         },
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+                            binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
                         }
                     )
                     dialog.show()
@@ -242,16 +242,16 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.isVisible = true
             }
 
-            val canPlay = episode.canPlay && episode.sources.isNotEmpty()
-            binding.itemActions.playButton.isEnabled = canPlay
-            binding.itemActions.playButton.alpha = if (!canPlay) 0.5F else 1.0F
+            binding.itemActions.playButton.isEnabled = episode.canPlay && episode.sources.isNotEmpty()
+            binding.itemActions.checkButton.isEnabled = true
+            binding.itemActions.favoriteButton.isEnabled = true
 
             bindCheckButtonState(episode.played)
 
             bindFavoriteButtonState(episode.favorite)
 
             if (episode.isDownloaded()) {
-                binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_trash)
+                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_trash)
             }
 
             when (canDownload || canDelete) {
@@ -300,19 +300,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
         navigateToPlayerActivity(items.items.toTypedArray())
-        binding.itemActions.playButton.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireActivity(),
-                CoreR.drawable.ic_play
-            )
-        )
-        binding.itemActions.progressCircular.visibility = View.INVISIBLE
+        binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
+        binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
-            true -> binding.itemActions.checkButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.itemActions.checkButton.setTintColorAttribute(
+            true -> binding.itemActions.checkButton.setIconTintResource(
+                CoreR.color.red
+            )
+
+            false -> binding.itemActions.checkButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -324,10 +322,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             true -> CoreR.drawable.ic_heart_filled
             false -> CoreR.drawable.ic_heart
         }
-        binding.itemActions.favoriteButton.setImageResource(favoriteDrawable)
+        binding.itemActions.favoriteButton.setIconResource(favoriteDrawable)
         when (favorite) {
-            true -> binding.itemActions.favoriteButton.setTintColor(CoreR.color.red, requireActivity().theme)
-            false -> binding.itemActions.favoriteButton.setTintColorAttribute(
+            true -> binding.itemActions.favoriteButton.setIconTintResource(
+                CoreR.color.red
+            )
+
+            false -> binding.itemActions.favoriteButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
                 requireActivity().theme
             )
@@ -336,18 +337,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
         Timber.e(error.error.message)
-
         binding.playerItemsError.isVisible = true
-        binding.itemActions.playButton.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireActivity(),
-                CoreR.drawable.ic_play
-            )
-        )
-        binding.itemActions.progressCircular.visibility = View.INVISIBLE
+        playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {
             ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
+    }
+
+    private fun playButtonNormal() {
+        binding.itemActions.playButton.isEnabled = true
+        binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
+        binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
     private fun createErrorDialog(uiText: UiText) {
@@ -359,7 +359,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
         builder.show()
         binding.itemActions.progressDownload.isVisible = false
-        binding.itemActions.downloadButton.setImageResource(CoreR.drawable.ic_download)
+        binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
     }
 
     private fun createDownloadPreparingDialog() {
