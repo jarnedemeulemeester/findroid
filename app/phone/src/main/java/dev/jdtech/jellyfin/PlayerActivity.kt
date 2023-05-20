@@ -73,6 +73,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
             finish()
+            isControlsLocked = false
         }
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
@@ -133,12 +134,10 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
-
-
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
         val lockedLayout = findViewById<FrameLayout>(R.id.locked_player_view)
 
-        lockedLayout.visibility =View.GONE // Disabled by default
+        lockedLayout.visibility = View.GONE // Disabled by default
 
         lockButton.setOnClickListener {
             when (viewModel.player) {
@@ -202,7 +201,6 @@ class PlayerActivity : BasePlayerActivity() {
                     }
                 }
             }
-
         }
 
         subtitleButton.setOnClickListener {
