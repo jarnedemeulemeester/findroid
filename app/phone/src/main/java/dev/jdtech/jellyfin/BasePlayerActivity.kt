@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin
 
-import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -55,14 +54,6 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         if (isInPictureInPictureMode) {
             finish()
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
     }
 
     @Suppress("DEPRECATION")

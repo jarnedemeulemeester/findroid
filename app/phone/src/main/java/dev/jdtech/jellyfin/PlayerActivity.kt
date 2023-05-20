@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin
 
 import android.app.PictureInPictureParams
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
@@ -43,7 +44,6 @@ class PlayerActivity : BasePlayerActivity() {
     lateinit var binding: ActivityPlayerBinding
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
-    private val args: PlayerActivityArgs by navArgs()
 
     private val isPipSupported by lazy {
         packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
@@ -54,6 +54,8 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("Creating player activity")
+
+        val args: PlayerActivityArgs by navArgs()
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -239,6 +241,14 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.initializePlayer(args.items)
         hideSystemUI()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        val args: PlayerActivityArgs by navArgs()
+        viewModel.initializePlayer(args.items)
     }
 
     override fun onUserLeaveHint() {
