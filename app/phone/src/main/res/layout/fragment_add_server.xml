@@ -80,7 +80,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="12dp">
 
                 <Button
                     android:id="@+id/button_connect"
@@ -98,6 +99,13 @@
                     android:visibility="invisible" />
 
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/privacy_policy_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:text="@string/privacy_policy_notice" />
 
         </LinearLayout>
 

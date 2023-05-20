@@ -40,28 +40,28 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleDebug
         # Upload all build artifacts in separate steps. This can be shortened once https://github.com/actions/upload-artifact/pull/354 is merged.
-      - name: Upload artifact phone-universal-debug.apk
+      - name: Upload artifact phone-libre-universal-debug.apk
         uses: actions/upload-artifact@v3
         with:
-          name: phone-universal-debug.apk
-          path: ./app/phone/build/outputs/apk/debug/phone-universal-debug.apk
-      - name: Upload artifact phone-arm64-v8a-debug.apk
+          name: phone-libre-universal-debug.apk
+          path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-universal-debug.apk
+      - name: Upload artifact phone-libre-arm64-v8a-debug.apk
         uses: actions/upload-artifact@v3
         with:
-          name: phone-arm64-v8a-debug.apk
-          path: ./app/phone/build/outputs/apk/debug/phone-arm64-v8a-debug.apk
-      - name: Upload artifact phone-armeabi-v7a-debug.apk
+          name: phone-libre-arm64-v8a-debug.apk
+          path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-arm64-v8a-debug.apk
+      - name: Upload artifact phone-libre-armeabi-v7a-debug.apk
         uses: actions/upload-artifact@v3
         with:
-          name: phone-armeabi-v7a-debug.apk
-          path: ./app/phone/build/outputs/apk/debug/phone-armeabi-v7a-debug.apk
-      - name: Upload artifact phone-x86_64-debug.apk
+          name: phone-libre-armeabi-v7a-debug.apk
+          path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-armeabi-v7a-debug.apk
+      - name: Upload artifact phone-libre-x86_64-debug.apk
         uses: actions/upload-artifact@v3
         with:
-          name: phone-x86_64-debug.apk
-          path: ./app/phone/build/outputs/apk/debug/phone-x86_64-debug.apk
-      - name: Upload artifact phone-x86-debug.apk
+          name: phone-libre-x86_64-debug.apk
+          path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-x86_64-debug.apk
+      - name: Upload artifact phone-libre-x86-debug.apk
         uses: actions/upload-artifact@v3
         with:
-          name: phone-x86-debug.apk
-          path: ./app/phone/build/outputs/apk/debug/phone-x86-debug.apk
+          name: phone-libre-x86-debug.apk
+          path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-x86-debug.apk

@@ -27,10 +27,10 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
+        named("debug") {
             applicationIdSuffix = ".debug"
         }
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -38,9 +38,20 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
             applicationIdSuffix = ".staging"
+        }
+    }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre") {
+            dimension = "variant"
+            isDefault = true
+        }
+        register("huawei") {
+            dimension = "variant"
         }
     }
 
@@ -82,6 +93,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.exoplayer)
@@ -95,6 +107,7 @@ dependencies {
     implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.work)
     implementation(libs.glide)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

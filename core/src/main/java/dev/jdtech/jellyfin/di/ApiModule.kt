@@ -28,17 +28,16 @@ object ApiModule {
             socketTimeout = appPreferences.socketTimeout
         )
 
-        val serverId = appPreferences.currentServer
-        if (serverId != null) {
-            val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
-            val server = serverWithAddressesAndUsers.server
-            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
-            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
-            jellyfinApi.apply {
-                api.baseUrl = serverAddress.address
-                api.accessToken = user?.accessToken
-                userId = user?.id
-            }
+        val serverId = appPreferences.currentServer ?: return jellyfinApi
+
+        val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
+        val server = serverWithAddressesAndUsers.server
+        val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
+        val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
+        jellyfinApi.apply {
+            api.baseUrl = serverAddress.address
+            api.accessToken = user?.accessToken
+            userId = user?.id
         }
 
         return jellyfinApi

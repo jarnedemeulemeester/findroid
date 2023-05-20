@@ -164,4 +164,27 @@
     <string name="pref_player_trick_play_summary">需要在服务器上安装 nicknsy 的 Jellyscrub 插件</string>
     <string name="amoled_theme">AMOLED 深色模式</string>
     <string name="amoled_theme_summary">使用带有纯黑背景的 AMOLED 主题</string>
+    <string name="offline_mode_go_online">上线</string>
+    <string name="mega_byte_suffix">%d MB</string>
+    <string name="no_server_connection">未连接到 Jellyfin 服务器，要离线观看请启用离线模式</string>
+    <string name="select_storage_location">选择存储位置</string>
+    <string name="storage_unavailable">存储位置不可用</string>
+    <string name="stop_download">停止下载</string>
+    <string name="cancel_download_message">您确定要取消下载吗？</string>
+    <string name="downloading_error">下载时出错</string>
+    <string name="preparing_download">准备下载</string>
+    <string name="size">大小</string>
+    <string name="not_enough_storage">此项目需要%s的免费存储空间，但仅%s可用</string>
+    <string name="privacy_policy_notice">使用 Findroid 即表示您同意<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">隐私政策</a>其中声明我们不收集任何数据</string>
+    <string name="app_language">应用界面语言</string>
+    <string name="offline_mode">离线模式</string>
+    <string name="offline_mode_icon">离线模式图标</string>
+    <string name="internal">内部的</string>
+    <string name="storage_name">%s (%dMB免费）</string>
+    <string name="cancel_download">取消下载</string>
+    <string name="external">加载</string>
+    <string name="title_storage">存储</string>
+    <string name="downloaded_indicator">下载指示器</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
 </resources>

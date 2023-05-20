@@ -6,6 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
@@ -14,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemKind
 
 @HiltViewModel
 class FavoriteViewModel
@@ -41,18 +43,13 @@ constructor(
             try {
                 val items = jellyfinRepository.getFavoriteItems()
 
-                if (items.isEmpty()) {
-                    _uiState.emit(UiState.Normal(emptyList()))
-                    return@launch
-                }
-
                 val favoriteSections = mutableListOf<FavoriteSection>()
 
                 withContext(Dispatchers.Default) {
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(R.string.movies_label),
-                        items.filter { it.type == BaseItemKind.MOVIE }
+                        items.filterIsInstance<FindroidMovie>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
@@ -61,7 +58,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(R.string.shows_label),
-                        items.filter { it.type == BaseItemKind.SERIES }
+                        items.filterIsInstance<FindroidShow>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it
@@ -70,7 +67,7 @@ constructor(
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(R.string.episodes_label),
-                        items.filter { it.type == BaseItemKind.EPISODE }
+                        items.filterIsInstance<FindroidEpisode>()
                     ).let {
                         if (it.items.isNotEmpty()) favoriteSections.add(
                             it

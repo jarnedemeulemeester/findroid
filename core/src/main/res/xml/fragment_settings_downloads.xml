@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreferenceCompat
         android:defaultValue="false"
-        app:key="download_mobile_data"
+        app:key="pref_downloads_mobile_data"
         app:title="@string/download_mobile_data" />
     <SwitchPreferenceCompat
         android:defaultValue="false"
-        app:key="download_roaming"
+        app:key="pref_downloads_roaming"
         app:title="@string/download_roaming" />
 </PreferenceScreen>

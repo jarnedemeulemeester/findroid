@@ -5,6 +5,7 @@
     android:id="@+id/error_panel"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +17,6 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="4dp"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_alert_circle" />
@@ -24,19 +24,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:text="@string/error_loading_data"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        style="?android:attr/buttonBarStyle"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/error_details_button"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -44,7 +42,7 @@
 
         <Button
             android:id="@+id/error_retry_button"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/retry" />

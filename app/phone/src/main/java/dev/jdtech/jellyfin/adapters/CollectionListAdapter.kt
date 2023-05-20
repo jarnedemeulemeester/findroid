@@ -6,25 +6,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
-import org.jellyfin.sdk.model.api.BaseItemDto
+import dev.jdtech.jellyfin.models.FindroidCollection
 
 class CollectionListAdapter(
     private val onClickListener: OnClickListener
-) : ListAdapter<BaseItemDto, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
+) : ListAdapter<FindroidCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(collection: BaseItemDto) {
+        fun bind(collection: FindroidCollection) {
             binding.collection = collection
             binding.executePendingBindings()
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<BaseItemDto>() {
-        override fun areItemsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<FindroidCollection>() {
+        override fun areItemsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+        override fun areContentsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem == newItem
         }
     }
@@ -47,7 +47,7 @@ class CollectionListAdapter(
         holder.bind(collection)
     }
 
-    class OnClickListener(val clickListener: (collection: BaseItemDto) -> Unit) {
-        fun onClick(collection: BaseItemDto) = clickListener(collection)
+    class OnClickListener(val clickListener: (collection: FindroidCollection) -> Unit) {
+        fun onClick(collection: FindroidCollection) = clickListener(collection)
     }
 }

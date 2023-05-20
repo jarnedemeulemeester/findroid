@@ -13,7 +13,7 @@ sealed class UiText {
     fun asString(resources: Resources): String {
         return when (this) {
             is DynamicString -> return value
-            is StringResource -> resources.getString(resId, args)
+            is StringResource -> resources.getString(resId, *args)
         }
     }
 }
