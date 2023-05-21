@@ -165,7 +165,9 @@ class JellyfinRepositoryOfflineImpl(
         offline: Boolean,
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
-            database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            val items = database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            if (startItemId != null) return@withContext items.dropWhile { it.id != startItemId }
+            items
         }
 
     override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
