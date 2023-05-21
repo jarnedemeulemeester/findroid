@@ -99,7 +99,6 @@
     <string name="player_controls_skip">跳過</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">空的伺服器地址</string>
-    <string name="display_extended_title">顯示擴展標題</string>
     <string name="seeking">拖動條</string>
     <string name="seek_back_increment">尋回增量（毫秒）</string>
     <string name="dynamic_colors">動態色彩</string>
@@ -135,7 +134,6 @@
     <string name="sort_by">排序方式</string>
     <string name="player_gestures_vb">音量和亮度手勢</string>
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
-    <string name="display_extended_title_summary">顯示擴展影集標題，包括季和影集資訊 （第XX季：第XX集 - 影集名稱）。</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
     <string name="player_controls_skip_intro">跳過片頭</string>

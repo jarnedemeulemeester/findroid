@@ -148,8 +148,6 @@
     <string name="sort_by_options_5">Dátum vydania</string>
     <string name="player_controls_fast_forward">Pretočiť dopredu</string>
     <string name="player_controls_skip_intro">Preskočiť úvodnú zvučku</string>
-    <string name="display_extended_title_summary">Zobraziť rozšírený titul epizódy včetne série a čísla epizódy (SXX:EXX - NázovEpizódy).</string>
-    <string name="display_extended_title">Zobraziť rozšírený názov</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
     <string name="add_user">Pridať používateľa</string>
     <string name="video">Video</string>

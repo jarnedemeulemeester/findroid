@@ -91,7 +91,6 @@
     <string name="gestures">Gesten</string>
     <string name="player_gestures">Player-Gesten</string>
     <string name="add_server_empty_error">Leere Serveradresse</string>
-    <string name="display_extended_title">Zeige erweiterten Titel</string>
     <string name="image_description_poster">%1$s Poster</string>
     <string name="image_description_backdrop">%1$s Hintergrundbild</string>
     <string name="player_brightness_remember">Helligkeitsniveau beibehalten</string>
@@ -111,7 +110,6 @@
     <string name="player_controls_pause">Pausieren</string>
     <string name="player_controls_skip">Überspringen</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="display_extended_title_summary">Zeige erweiterten Episodentitel inklusive der Staffel und Episodeninformationen (SXX:EXX - Episodenname).</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
     <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen, und auf der linken Seite, um die Helligkeit anzupassen</string>

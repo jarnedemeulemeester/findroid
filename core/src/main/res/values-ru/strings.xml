@@ -107,8 +107,6 @@
     <string name="player_controls_skip">Пропустить</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Пустой адрес</string>
-    <string name="display_extended_title_summary">Показывать расширенное название, включающее сезон и эпизод (СXX:ЭXX - НазваниеЭпизода).</string>
-    <string name="display_extended_title">Показывать расширенное название</string>
     <string name="sort_by_options_1">Рейтингу IMDB</string>
     <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>

@@ -243,7 +243,7 @@ constructor(
             try {
                 items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
                     .let { item ->
-                        if (appPreferences.displayExtendedTitle && item.parentIndexNumber != null && item.indexNumber != null && item.name != null
+                        if (item.parentIndexNumber != null && item.indexNumber != null
                         )
                             _currentItemTitle.value = if (item.indexNumberEnd == null) {
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
@@ -252,7 +252,7 @@ constructor(
                             }
 
                         else
-                            _currentItemTitle.value = item.name.orEmpty()
+                            _currentItemTitle.value = item.name
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 

@@ -119,8 +119,6 @@
     <string name="player_controls_skip">Salta</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Indirizzo server vuoto</string>
-    <string name="display_extended_title">Mostra titolo esteso</string>
-    <string name="display_extended_title_summary">Mostra titoli degli episodi in modo esteso includendo informazioni su stagione ed episodio (SXX:EXX - Nome episodio).</string>
     <string name="subtitles">Sottotitoli</string>
     <string name="subtitles_summary">Personalizza lo stile dei sottotitoli</string>
     <string name="libraries">Librerie</string>

@@ -67,8 +67,6 @@
     <string name="player_controls_skip">Overslaan</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Leeg server adres</string>
-    <string name="display_extended_title_summary">Geef de uitgebreide titel van de aflevering weer, inclusief informatie over het seizoen en de aflevering (SXX:AXX - Afleveringnaam).</string>
-    <string name="display_extended_title">Geef de uitgebreide titel</string>
     <string name="settings_category_network">Netwerk</string>
     <string name="settings_request_timeout">Time-out verzoek (ms)</string>
     <string name="settings_connect_timeout">Verbinding time-out (ms)</string>

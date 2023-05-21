@@ -102,7 +102,6 @@
     <string name="player_controls_skip_intro">דלג פתיח</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">כתובת שרת ריקה</string>
-    <string name="display_extended_title">הצג כותרת מורחבת</string>
     <string name="dynamic_colors">צבעים דינמיים</string>
     <string name="subtitles">כתוביות</string>
     <string name="theme_light">בהיר</string>
@@ -159,7 +158,6 @@
     <string name="mpv_player_summary">השתמש בנגן mpv נסיוני כדי לנגן וידאו. ל-mpv יש תמיכה ביותר מפענחי וידאו, שמע וכתוביות.</string>
     <string name="player_gestures_vb_summary">החלק למעלה ולמטה בצידו הימני של המסך כדי לשנות את עוצמת השמע ובצידו השמאלי כדי לשנות את הבהירות</string>
     <string name="player_gestures_zoom_summary">צבוט כדי להציג את הוידאו במסך מלא</string>
-    <string name="display_extended_title_summary">הצג כותרת מורחבת לפרק הכוללת עונה ומידע על הפרק (עXX:פXX - שם הפרק).</string>
     <string name="seek_back_increment">גודל קפיצה אחורה (מילי שניות)</string>
     <string name="dynamic_colors_summary">השתמש בצבעים דינמיים של Material You (זמין רק בגרסת אנדרואיד 12 ומעלה)</string>
     <string name="pref_player_trick_play_summary">דורש תוסף Jellyscrub של nicknsy מותקן על השרת</string>
