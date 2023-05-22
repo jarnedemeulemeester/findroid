@@ -184,4 +184,5 @@
     <string name="stop_download">Download stoppen</string>
     <string name="title_storage">Speicher</string>
     <string name="downloaded_indicator">Download Indikator</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
 </resources>
