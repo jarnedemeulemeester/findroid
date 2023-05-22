@@ -140,67 +140,16 @@ class PlayerActivity : BasePlayerActivity() {
         lockedLayout.visibility = View.GONE // Disabled by default
 
         lockButton.setOnClickListener {
-            when (viewModel.player) {
-                is MPVPlayer -> {
-                    if (!isControlsLocked) {
-                        exoPlayerControlView.visibility = View.GONE
-                        lockedLayout.visibility = View.VISIBLE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
-                        isControlsLocked = true
-                    } else {
-                        exoPlayerControlView.visibility = View.VISIBLE
-                        lockedLayout.visibility = View.GONE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                        isControlsLocked = false
-                    }
-                }
-
-                is ExoPlayer -> {
-                    if (!isControlsLocked) {
-                        exoPlayerControlView.visibility = View.GONE
-                        lockedLayout.visibility = View.VISIBLE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
-                        isControlsLocked = true
-                    } else {
-                        exoPlayerControlView.visibility = View.VISIBLE
-                        lockedLayout.visibility = View.GONE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                        isControlsLocked = false
-                    }
-                }
-            }
+            exoPlayerControlView.visibility = View.GONE
+            lockedLayout.visibility = View.VISIBLE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+            isControlsLocked = true
         }
-
         unlockButton.setOnClickListener {
-            when (viewModel.player) {
-                is MPVPlayer -> {
-                    if (isControlsLocked) {
-                        exoPlayerControlView.visibility = View.VISIBLE
-                        lockedLayout.visibility = View.GONE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                        isControlsLocked = false
-                    } else {
-                        exoPlayerControlView.visibility = View.VISIBLE
-                        lockedLayout.visibility = View.VISIBLE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
-                        isControlsLocked = true
-                    }
-                }
-
-                is ExoPlayer -> {
-                    if (isControlsLocked) {
-                        exoPlayerControlView.visibility = View.VISIBLE
-                        lockedLayout.visibility = View.GONE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                        isControlsLocked = false
-                    } else {
-                        exoPlayerControlView.visibility = View.GONE
-                        lockedLayout.visibility = View.VISIBLE
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
-                        isControlsLocked = true
-                    }
-                }
-            }
+            exoPlayerControlView.visibility = View.VISIBLE
+            lockedLayout.visibility = View.GONE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            isControlsLocked = false
         }
 
         subtitleButton.setOnClickListener {
