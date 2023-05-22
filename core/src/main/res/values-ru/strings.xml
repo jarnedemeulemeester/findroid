@@ -144,7 +144,7 @@
     <string name="remove_user">Удалить пользователя</string>
     <string name="remove_user_dialog_text">Вы уверены, что хотите удалить пользователя %1$s</string>
     <string name="libraries">Медиатеки</string>
-    <string name="latest_library">Последние добавленные%1$s</string>
+    <string name="latest_library">Последние %1$s</string>
     <string name="settings_request_timeout">Время ожидания запроса (мс)</string>
     <string name="settings_connect_timeout">Время ожидания соединения (мс)</string>
     <string name="settings_socket_timeout">Время ожидания сокета (мс)</string>
@@ -182,4 +182,7 @@
     <string name="offline_mode_go_online">Перейти в Онлайн-Режим</string>
     <string name="title_storage">Память</string>
     <string name="downloaded_indicator">Индикатор скачивания</string>
+    <string name="size">Размер</string>
+    <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
+    <string name="app_language">Язык приложения</string>
 </resources>
