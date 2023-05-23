@@ -145,7 +145,7 @@ class PlayerActivity : BasePlayerActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
             isControlsLocked = true
         }
-        
+
         unlockButton.setOnClickListener {
             exoPlayerControlView.visibility = View.VISIBLE
             lockedLayout.visibility = View.GONE
