@@ -3,10 +3,10 @@ package dev.jdtech.jellyfin
 import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
-import android.content.pm.ActivityInfo
 import android.media.AudioManager
 import android.os.Bundle
 import android.util.Rational
@@ -30,12 +30,13 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
-import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
+
 
 var isControlsLocked: Boolean = false
 

@@ -107,10 +107,10 @@
         app:title="@string/pref_player_trick_play"
         app:widgetLayout="@layout/preference_material3_switch" />
 
-    <PreferenceCategory android:title="@string/picture_in_picture">
+    <PreferenceCategory app:title="@string/picture_in_picture">
         <SwitchPreferenceCompat
-            android:key="pref_player_picture_in_picture_gesture"
-            android:title="@string/picture_in_picture_gesture"
+            app:key="pref_player_picture_in_picture_gesture"
+            app:title="@string/picture_in_picture_gesture"
             app:summary="@string/picture_in_picture_gesture_summary" />
     </PreferenceCategory>
     
