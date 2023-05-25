@@ -51,7 +51,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         viewModel.player.playWhenReady = false
         mediaSession.release()
 
-        if (isInPictureInPictureMode) {
+        if (wasPip) {
             finish()
         }
     }

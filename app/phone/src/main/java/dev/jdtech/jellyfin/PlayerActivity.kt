@@ -37,7 +37,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
-
 var isControlsLocked: Boolean = false
 
 @AndroidEntryPoint
