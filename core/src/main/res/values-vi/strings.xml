@@ -96,7 +96,6 @@
     <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Địa chỉ máy chủ rỗng</string>
-    <string name="display_extended_title">Hiển thị tiêu đề được mở rộng</string>
     <string name="seeking">Tua</string>
     <string name="seek_back_increment">Gia số tua lùi (ms)</string>
     <string name="seek_forward_increment">Gia số tua tới (ms)</string>
@@ -149,7 +148,6 @@
     <string name="add_user">Thêm người dùng</string>
     <string name="pref_player_intro_skipper">Bỏ qua đoạn mở đầu</string>
     <string name="pref_player_intro_skipper_summary">Yêu cầu phần mở rộng \"Intro Skipper\" của ConfusedPolarBear đã được cài đặt trên máy chủ</string>
-    <string name="display_extended_title_summary">Hiển thị tiêu đề tập phim được mở rộng, bao gồm thông tin về mùa và tập phim (SXX:EXX - Tẻntậpphim).</string>
     <string name="player_gestures_seek_summary">Vuốt ngang để tua tới hoặc tua lui</string>
     <string name="player_gestures_seek">Cử chỉ tua</string>
 </resources>

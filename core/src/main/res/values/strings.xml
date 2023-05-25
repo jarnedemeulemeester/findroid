@@ -128,8 +128,6 @@
     <string name="player_controls_skip_intro">Skip Intro</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Empty server address</string>
-    <string name="display_extended_title_summary">Display extended episode title including season and episode information (SXX:EXX - EpisodeName).</string>
-    <string name="display_extended_title">Display extended title</string>
     <string name="seeking">Seeking</string>
     <string name="seek_back_increment">Seek back increment (ms)</string>
     <string name="seek_forward_increment">Seek forward increment (ms)</string>

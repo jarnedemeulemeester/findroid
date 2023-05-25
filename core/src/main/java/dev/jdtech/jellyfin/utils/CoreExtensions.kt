@@ -7,9 +7,8 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
-import android.widget.ImageButton
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
+import com.google.android.material.button.MaterialButton
 import dev.jdtech.jellyfin.models.View
 import java.io.Serializable
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -24,19 +23,10 @@ fun BaseItemDto.toView(): View {
 
 fun Resources.dip(px: Int) = (px * displayMetrics.density).toInt()
 
-fun ImageButton.setTintColor(@ColorRes colorId: Int, theme: Resources.Theme) {
-    this.imageTintList = ColorStateList.valueOf(
-        resources.getColor(
-            colorId,
-            theme
-        )
-    )
-}
-
-fun ImageButton.setTintColorAttribute(@AttrRes attributeId: Int, theme: Resources.Theme) {
+fun MaterialButton.setIconTintColorAttribute(@AttrRes attributeId: Int, theme: Resources.Theme) {
     val typedValue = TypedValue()
     theme.resolveAttribute(attributeId, typedValue, true)
-    this.imageTintList = ColorStateList.valueOf(
+    this.iconTint = ColorStateList.valueOf(
         resources.getColor(
             typedValue.resourceId,
             theme

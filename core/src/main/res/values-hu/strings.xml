@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="display_extended_title_summary">Bővített epizódcím megjelenítése, beleértve a szezon és epizódinformációt (SXX:EXX - EpizódCím).</string>
     <string name="jellyfin_banner">Jellyfin zászló</string>
     <string name="add_server">Szerver hozzáadása</string>
     <string name="add_server_error_outdated">Elavult szerver verzió: %1$s. Kérlek frissítsd a szervert</string>
@@ -65,7 +64,6 @@
     <string name="privacy_policy">Adatvédelmi nyilatkozat</string>
     <string name="app_info">Alkalmazás információ</string>
     <string name="unknown_error">Ismeretlen hiba</string>
-    <string name="display_extended_title">Bővített cím megjelenítése</string>
     <string name="app_description">Egy egyedi, natív Jellyfin alkalmazás</string>
     <string name="remove_server">Szerver törlése</string>
     <string name="mpv_player">mpv lejátszó</string>

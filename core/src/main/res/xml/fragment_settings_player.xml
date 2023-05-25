@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <SwitchPreferenceCompat
-        app:key="pref_player_display_extended_title"
-        app:summary="@string/display_extended_title_summary"
-        app:title="@string/display_extended_title"
-        app:widgetLayout="@layout/preference_material3_switch" />
-
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
         app:key="pref_player_subtitles"
         app:summary="@string/subtitles_summary"

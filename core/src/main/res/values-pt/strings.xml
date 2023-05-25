@@ -98,7 +98,6 @@
     <string name="player_gestures_zoom_summary">Clique para preencher o ecrã com o vídeo</string>
     <string name="add_server_empty_error">Servidores de endereço vazios</string>
     <string name="theme_system">Seguir sistema</string>
-    <string name="display_extended_title">Mostrar título alargado</string>
     <string name="seeking">Procura</string>
     <string name="subtitles">Legendas</string>
     <string name="dynamic_colors">Cores dinâmicas</string>
@@ -119,7 +118,6 @@
     <string name="player_controls_pause">Pausa</string>
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
-    <string name="display_extended_title_summary">Mostrar título de episódio alargado incluindo temporada e informação de episódio (SXX:EXX - EpisodeName).</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
     <string name="continue_watching">Continuar a ver</string>
     <string name="settings_category_language">Idioma</string>

@@ -110,8 +110,6 @@
     <string name="settings_category_download">Descargas</string>
     <string name="download_mobile_data">Descargar usando datos del celular</string>
     <string name="download_roaming">Descargar en itinerancia</string>
-    <string name="display_extended_title_summary">Mostrar títulos extendidos de episodios incluyendo temporada y episodio (TXX-EXX - NombreEpisodio).</string>
-    <string name="display_extended_title">Mostrar título extendido</string>
     <string name="player_gestures">Gestos del reproductor</string>
     <string name="player_brightness_remember">Recordar el nivel de brillo</string>
     <string name="gestures">Gestos</string>

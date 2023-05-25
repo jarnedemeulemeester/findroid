@@ -18,6 +18,7 @@ import androidx.media3.ui.PlayerView
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import kotlin.math.abs
 import timber.log.Timber
@@ -65,6 +66,8 @@ class PlayerGestureHelper(
             }
 
             override fun onDoubleTap(e: MotionEvent): Boolean {
+                // Disables double tap gestures if view is locked
+                if (isControlsLocked) return false
                 val viewCenterX = playerView.measuredWidth / 2
                 val currentPos = playerView.player?.currentPosition ?: 0
 
@@ -90,6 +93,8 @@ class PlayerGestureHelper(
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
+                // Disables seek gestures if view is locked
+                if (isControlsLocked) return false
 
                 // Check whether swipe was oriented vertically
                 if (abs(distanceY / distanceX) < 2) {
@@ -128,6 +133,8 @@ class PlayerGestureHelper(
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
+                // Disables volume gestures when player is locked
+                if (isControlsLocked) return false
 
                 if (abs(distanceY / distanceX) < 2) return false
 
@@ -213,6 +220,8 @@ class PlayerGestureHelper(
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
             override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // Disables zoom gesture if view is locked
+                if (isControlsLocked) return false
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
                 if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {

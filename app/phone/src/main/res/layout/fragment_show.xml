@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:id="@+id/year"
@@ -119,14 +119,13 @@
                 layout="@layout/item_actions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp" />
+                android:layout_marginHorizontal="20dp" />
 
             <LinearLayout
                 android:id="@+id/player_items_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="4dp"
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">

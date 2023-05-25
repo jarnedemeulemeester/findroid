@@ -48,8 +48,6 @@
     <string name="player_controls_pause">정지</string>
     <string name="player_controls_skip">스킵</string>
     <string name="add_server_empty_error">서버 주소가 비어 있음</string>
-    <string name="display_extended_title_summary">시즌 및 에피소드 정보를 포함한 확장 에피소드 제목(SXX:EXX - 에피소드 이름)을 표시합니다.</string>
-    <string name="display_extended_title">확장 제목 표시</string>
     <string name="seeking">탐색</string>
     <string name="seek_back_increment">되감기 시간 (ms)</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
