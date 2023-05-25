@@ -1,11 +1,13 @@
 package dev.jdtech.jellyfin
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,6 +30,8 @@ import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import javax.inject.Inject
 import timber.log.Timber
+
+var isControlsLocked: Boolean = false
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
@@ -67,6 +71,11 @@ class PlayerActivity : BasePlayerActivity() {
             finish()
         }
 
+        binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
+            finish()
+            isControlsLocked = false
+        }
+
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
         viewModel.currentItemTitle.observe(this) { title ->
@@ -77,9 +86,14 @@ class PlayerActivity : BasePlayerActivity() {
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
+        val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
+        val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
 
         audioButton.isEnabled = false
         audioButton.imageAlpha = 75
+
+        lockButton.isEnabled = false
+        lockButton.imageAlpha = 75
 
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
@@ -118,6 +132,23 @@ class PlayerActivity : BasePlayerActivity() {
                     trackSelectionDialog.show()
                 }
             }
+        }
+
+        val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
+        val lockedLayout = findViewById<FrameLayout>(R.id.locked_player_view)
+
+        lockButton.setOnClickListener {
+            exoPlayerControlView.visibility = View.GONE
+            lockedLayout.visibility = View.VISIBLE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+            isControlsLocked = true
+        }
+
+        unlockButton.setOnClickListener {
+            exoPlayerControlView.visibility = View.VISIBLE
+            lockedLayout.visibility = View.GONE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            isControlsLocked = false
         }
 
         subtitleButton.setOnClickListener {
@@ -189,6 +220,8 @@ class PlayerActivity : BasePlayerActivity() {
             if (it) {
                 audioButton.isEnabled = true
                 audioButton.imageAlpha = 255
+                lockButton.isEnabled = true
+                lockButton.imageAlpha = 255
                 subtitleButton.isEnabled = true
                 subtitleButton.imageAlpha = 255
                 speedButton.isEnabled = true
