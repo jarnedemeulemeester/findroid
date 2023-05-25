@@ -137,8 +137,6 @@ class PlayerActivity : BasePlayerActivity() {
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
         val lockedLayout = findViewById<FrameLayout>(R.id.locked_player_view)
 
-        lockedLayout.visibility = View.GONE // Disabled by default
-
         lockButton.setOnClickListener {
             exoPlayerControlView.visibility = View.GONE
             lockedLayout.visibility = View.VISIBLE
