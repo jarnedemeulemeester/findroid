@@ -18,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
@@ -61,6 +62,8 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.itemsRecyclerView.layoutManager = GridLayoutManager(context, preferences.spanCount)
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(

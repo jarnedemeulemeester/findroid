@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
         app:defaultValue="system"
         app:entries="@array/themes"
@@ -22,4 +23,12 @@
         app:key="pref_display_extra_info"
         app:summary="@string/extra_info_summary"
         app:title="@string/extra_info" />
+    <SeekBarPreference
+        app:defaultValue="2"
+        app:key="pref_span_count"
+        android:max="5"
+        app:seekBarIncrement="1"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:title="Number of rows in libraries view" />
 </PreferenceScreen>
