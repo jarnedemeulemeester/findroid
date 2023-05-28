@@ -4,13 +4,18 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.SvgDecoder
+import coil.disk.DiskCache
+import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import timber.log.Timber
 
 @HiltAndroidApp
-class BaseApplication : Application(), Configuration.Provider {
+class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactory {
     @Inject
     lateinit var appPreferences: AppPreferences
 
@@ -36,5 +41,20 @@ class BaseApplication : Application(), Configuration.Provider {
         }
 
         if (appPreferences.dynamicColors) DynamicColors.applyToActivitiesIfAvailable(this)
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .diskCachePolicy(if (appPreferences.imageCache) CachePolicy.ENABLED else CachePolicy.DISABLED)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(this.cacheDir.resolve("image_cache"))
+                    .maxSizeBytes(appPreferences.imageCacheSize * 1024L * 1024)
+                    .build()
+            }
+            .build()
     }
 }

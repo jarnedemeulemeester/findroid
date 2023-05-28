@@ -1,12 +1,13 @@
 package dev.jdtech.jellyfin.utils
 
+import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.media3.common.Player
 import androidx.media3.ui.TimeBar
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,8 @@ class PreviewScrubListener(
     private val currentTrickPlay: StateFlow<BifData?>
 ) : TimeBar.OnScrubListener {
 
-    private val roundedCorners = RoundedCorners(10)
+    private val roundedCorners = RoundedCornersTransformation(10f)
+    private var currentBitMap: Bitmap? = null
 
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
@@ -54,10 +56,12 @@ class PreviewScrubListener(
 
         scrubbingPreview.x = layoutX
 
-        Glide.with(scrubbingPreview)
-            .load(image)
-            .transform(roundedCorners)
-            .into(scrubbingPreview)
+        if (currentBitMap != image) {
+            scrubbingPreview.load(image) {
+                transformations(roundedCorners)
+            }
+            currentBitMap = image
+        }
     }
 
     override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {

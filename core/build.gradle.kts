@@ -62,8 +62,6 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.work)
-    implementation(libs.glide)
-    kapt(libs.glide.compiler)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
