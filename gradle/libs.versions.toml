@@ -17,7 +17,7 @@ androidx-recyclerview-selection = "1.1.0"
 androidx-room = "2.5.1"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-work = "2.8.1"
-glide = "4.15.1"
+coil = "2.4.0"
 hilt = "2.46.1"
 jellyfin = "1.4.2"
 kotlin = "1.8.21"
@@ -55,8 +55,8 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jellyfin" }
