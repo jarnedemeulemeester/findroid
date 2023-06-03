@@ -95,7 +95,6 @@
     <string name="player_controls_skip">Preskoči</string>
     <string name="player_controls_skip_intro">Preskoči uvod</string>
     <string name="add_server_empty_error">Prazen naslov strežnika</string>
-    <string name="display_extended_title">Prikaži razširjeni naslov</string>
     <string name="seeking">iskanje</string>
     <string name="seek_back_increment">Iskanja nazaj (ms)</string>
     <string name="seek_forward_increment">Iskanja naprej (ms)</string>
@@ -150,6 +149,5 @@
     <string name="sort_by_options_3">Datum dodajanja</string>
     <string name="runtime_minutes">%1$d min</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="display_extended_title_summary">Prikaži razširjene naslove epizod, vključno s podatki o sezoni in epizodi (SXX:EXX - EpizodaIme).</string>
     <string name="settings_connect_timeout">Časovna omejitev povezave (ms)</string>
 </resources>

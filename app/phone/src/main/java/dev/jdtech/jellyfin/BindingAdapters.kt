@@ -5,8 +5,7 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import coil.load
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -49,7 +48,6 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
 fun bindItemImage(imageView: ImageView, item: FindroidItem) {
     val itemId = when (item) {
         is FindroidEpisode -> item.seriesId
-//        is JellyfinSeasonItem && item.imageTags.isNullOrEmpty() -> item.seriesId
         else -> item.id
     }
 
@@ -111,18 +109,15 @@ fun bindUserImage(imageView: ImageView, user: User) {
 
 private fun ImageView.loadImage(
     url: String,
-    @DrawableRes placeholderId: Int = CoreR.color.neutral_800,
-    @DrawableRes errorPlaceHolderId: Int? = null
+    @DrawableRes placeholderId: Int = CoreR.color.neutral_800
 ): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 
-    Glide
-        .with(context)
-        .load("${api.api.baseUrl}$url")
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(placeholderId)
-        .error(errorPlaceHolderId)
-        .into(this)
+    this.load("${api.api.baseUrl}$url") {
+        crossfade(true)
+        placeholder(placeholderId)
+        error(placeholderId)
+    }
 
     return this
 }

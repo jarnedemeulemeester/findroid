@@ -86,8 +86,6 @@
     <string name="player_controls_skip">Hoppa över</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add_server_empty_error">Tom serveradress</string>
-    <string name="display_extended_title_summary">Visa utökad avsnittstitel som inkluderar information om säsong och avsnitt (SXX:EXX - Avsnittsnamn).</string>
-    <string name="display_extended_title">Visa utökad titel</string>
     <string name="seeking">Spolar</string>
     <string name="seek_back_increment">Spola bakåt intervall (ms)</string>
     <string name="seek_forward_increment">Spola framåt intervall (ms)</string>

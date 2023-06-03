@@ -1,7 +1,7 @@
 [versions]
-aboutlibraries = "10.6.3"
-android-plugin = "8.0.1"
-androidx-activity = "1.7.1"
+aboutlibraries = "10.7.0"
+android-plugin = "8.0.2"
+androidx-activity = "1.7.2"
 androidx-appcompat = "1.6.1"
 androidx-compose-material3 = "1.1.0"
 androidx-compose-ui = "1.4.3"
@@ -9,7 +9,7 @@ androidx-constraintlayout = "2.1.4"
 androidx-core = "1.10.1"
 androidx-hilt = "1.0.0"
 androidx-lifecycle = "2.6.1"
-androidx-media3 = "1.0.1"
+androidx-media3 = "1.0.2"
 androidx-navigation = "2.5.3"
 androidx-paging = "3.1.1"
 androidx-paging-compose = "1.0.0-alpha19"
@@ -20,9 +20,8 @@ androidx-room = "2.5.1"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-tv = "1.0.0-alpha06"
 androidx-work = "2.8.1"
-coil = "2.3.0"
+coil = "2.4.0"
 compose-destinations = "1.8.41-beta"
-glide = "4.15.1"
 hilt = "2.46.1"
 jellyfin = "1.4.2"
 kotlin = "1.8.21"
@@ -70,11 +69,11 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jellyfin" }

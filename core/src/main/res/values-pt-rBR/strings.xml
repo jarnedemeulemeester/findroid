@@ -107,8 +107,6 @@
     <string name="episodes_label">Episódios</string>
     <string name="player_gestures">Gestos do reprodutor</string>
     <string name="player_brightness_remember">Lembrar nível de brilho</string>
-    <string name="display_extended_title_summary">Exibe o título estendido do episódio, incluindo informações sobre a temporada e o episódio (TXX:EXX - NomeEpisódio).</string>
-    <string name="display_extended_title">Exibir título estendido</string>
     <string name="add_server_empty_error">Endereço de servidor vazio</string>
     <string name="sort_by_options_0">Título</string>
     <string name="dynamic_colors_summary">Usar cores dinâmicas do Material You (disponível apenas no Android 12+)</string>
@@ -184,4 +182,7 @@
     <string name="stop_download">Parar download</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="size">Tamanho</string>
+    <string name="privacy_policy_notice">Ao usar o Findroid, você concorda com a <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos nenhum dado</string>
+    <string name="app_language">Idioma do aplicativo</string>
 </resources>
