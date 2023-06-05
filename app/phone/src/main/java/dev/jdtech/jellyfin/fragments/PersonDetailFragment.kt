@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -26,7 +27,6 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 internal class PersonDetailFragment : Fragment() {
