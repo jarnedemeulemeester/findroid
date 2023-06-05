@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import androidx.media3.common.C.DEFAULT_SEEK_BACK_INCREMENT_MS
 import androidx.media3.common.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 class AppPreferences
 @Inject
@@ -34,7 +35,7 @@ constructor(
     val theme get() = sharedPreferences.getString(Constants.PREF_THEME, null)
     val dynamicColors get() = sharedPreferences.getBoolean(Constants.PREF_DYNAMIC_COLORS, true)
     val amoledTheme get() = sharedPreferences.getBoolean(Constants.PREF_AMOLED_THEME, false)
-    val spanCount get() = sharedPreferences.getInt(Constants.PREF_SPAN_NO, 2)
+    val spanCount get() = sharedPreferences.getInt(Constants.PREF_SPAN_NO, CoreR.integer.library_columns)
     var displayExtraInfo: Boolean
         get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTRA_INFO, false)
         set(value) {

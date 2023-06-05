@@ -26,6 +26,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre") {
+            dimension = "variant"
+            isDefault = true
+        }
+        register("huawei") {
+            dimension = "variant"
+        }
+    }
 }
 
 ktlint {
@@ -38,4 +49,5 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.media3.common)
     implementation(libs.hilt.android)
+    implementation(project(":core"))
 }
