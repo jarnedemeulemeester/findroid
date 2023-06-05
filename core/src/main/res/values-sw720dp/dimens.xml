@@ -2,4 +2,5 @@
 <resources>
     <item name="server_columns" type="integer">8</item>
     <item name="library_columns" type="integer">6</item>
+    <dimen name="layout_height_def">200dp</dimen>
 </resources>
