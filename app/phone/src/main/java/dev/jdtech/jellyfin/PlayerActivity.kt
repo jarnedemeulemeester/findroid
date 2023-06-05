@@ -292,10 +292,10 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun pipParams(): PictureInPictureParams {
         val aspectRatio = if (appPreferences.playerPipAspectRatio) {
-            if (binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!){
-                Rational(16,9)
+            if (binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!) {
+                Rational(16, 9)
             } else {
-                Rational(9,16)
+                Rational(9, 16)
             }
         } else {
             binding.playerView.player?.videoSize?.let {
