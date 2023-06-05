@@ -150,7 +150,7 @@ class MovieFragment : Fragment() {
             binding.itemActions.playButton.isEnabled = false
             binding.itemActions.playButton.setIconResource(android.R.color.transparent)
             binding.itemActions.progressPlay.isVisible = true
-            if (viewModel.item.sources.size > 1) {
+            if (viewModel.item.sources.filter { it.type == FindroidSourceType.REMOTE }.size > 1) {
                 val dialog = getVideoVersionDialog(
                     requireContext(), viewModel.item,
                     onItemSelected = {

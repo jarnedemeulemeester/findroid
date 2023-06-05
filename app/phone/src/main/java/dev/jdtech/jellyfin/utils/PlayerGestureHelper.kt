@@ -162,7 +162,9 @@ class PlayerGestureHelper(
                     activity.binding.gestureVolumeLayout.visibility = View.VISIBLE
                     activity.binding.gestureVolumeProgressBar.max = maxVolume
                     activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.toInt()
-                    activity.binding.gestureVolumeText.text = "${(swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()}%"
+                    val process = (swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()
+                    activity.binding.gestureVolumeText.text = "$process%"
+                    activity.binding.gestureVolumeImage.setImageLevel(process)
 
                     swipeGestureVolumeOpen = true
                 } else {
@@ -187,7 +189,9 @@ class PlayerGestureHelper(
                     activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
                     activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
                     activity.binding.gestureBrightnessProgressBar.progress = lp.screenBrightness.times(100).toInt()
-                    activity.binding.gestureBrightnessText.text = "${(lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()}%"
+                    val process = (lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()
+                    activity.binding.gestureBrightnessText.text = "$process%"
+                    activity.binding.gestureBrightnessImage.setImageLevel(process)
 
                     swipeGestureBrightnessOpen = true
                 }
