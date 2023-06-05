@@ -34,8 +34,8 @@ import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 var isControlsLocked: Boolean = false
 
@@ -291,8 +291,20 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun pipParams(): PictureInPictureParams {
-        val aspectRatio =
-            binding.playerView.player?.videoSize?.let { Rational(it.width.coerceAtMost((it.height * 2.39f).toInt()), it.height) }
+        val aspectRatio = if (appPreferences.playerPipAspectRatio) {
+            if (binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!){
+                Rational(16,9)
+            } else {
+                Rational(9,16)
+            }
+        } else {
+            binding.playerView.player?.videoSize?.let {
+                Rational(
+                    it.width.coerceAtMost((it.height * 2.39f).toInt()),
+                    it.height.coerceAtMost((it.width * 2.39f).toInt())
+                )
+            }
+        }
 
         return PictureInPictureParams.Builder()
             .setAspectRatio(aspectRatio)

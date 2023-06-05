@@ -163,6 +163,8 @@
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-picture home gesture</string>
     <string name="picture_in_picture_gesture_summary">Use Home button or gesture to enter picture-in-picture while the video is playing</string>
+    <string name="picture_in_picture_aspect_ratio">Picture-in-picture aspect ratio</string>
+    <string name="picture_in_picture_aspect_ratio_summary">Use the 16:9 aspect ratio for picture-in-picture</string>
     <string name="size">Size</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>

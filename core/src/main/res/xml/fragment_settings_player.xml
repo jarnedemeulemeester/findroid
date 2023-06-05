@@ -112,6 +112,10 @@
             app:key="pref_player_picture_in_picture_gesture"
             app:title="@string/picture_in_picture_gesture"
             app:summary="@string/picture_in_picture_gesture_summary" />
+        <SwitchPreferenceCompat
+            app:key="pref_player_picture_in_picture_aspect_ratio"
+            app:summary="@string/picture_in_picture_aspect_ratio_summary"
+            app:title="@string/picture_in_picture_aspect_ratio" />
     </PreferenceCategory>
     
 </PreferenceScreen>
