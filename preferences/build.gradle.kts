@@ -29,13 +29,8 @@ android {
 
     flavorDimensions += "variant"
     productFlavors {
-        register("libre") {
-            dimension = "variant"
-            isDefault = true
-        }
-        register("huawei") {
-            dimension = "variant"
-        }
+        register("libre")
+        register("huawei")
     }
 }
 
