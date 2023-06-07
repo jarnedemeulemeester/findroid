@@ -21,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
@@ -52,8 +53,6 @@ class PlayerActivity : BasePlayerActivity() {
     private val isPipSupported by lazy {
         packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
-
-    private val sourceRectHint = Rect()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,14 +92,6 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.currentItemTitle.observe(this) { title ->
             videoNameTextView.text = title
-        }
-
-        binding.playerView.addOnLayoutChangeListener { _: View?, _: Int,
-            _: Int, _: Int, _: Int, _: Int,
-            _:
-                Int,
-            _: Int, _: Int ->
-            binding.playerView.videoSurfaceView?.getGlobalVisibleRect(sourceRectHint)
         }
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
@@ -291,8 +282,12 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun pipParams(): PictureInPictureParams {
+
+        val landscape = binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!
+        val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
+
         val aspectRatio = if (appPreferences.playerPipAspectRatio) {
-            if (binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!) {
+            if (landscape) {
                 Rational(16, 9)
             } else {
                 Rational(9, 16)
@@ -304,6 +299,20 @@ class PlayerActivity : BasePlayerActivity() {
                     it.height.coerceAtMost((it.width * 2.39f).toInt())
                 )
             }
+        }
+
+        val sourceRectHint = if (aspectRatio!! > displayAspectRatio) {
+            val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+            Rect(0,
+                space,
+                binding.playerView.width,
+                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space)
+        } else {
+            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+            Rect(space,
+                0,
+                (binding.playerView.height.toFloat() / aspectRatio.toFloat()).toInt(),
+                binding.playerView.height + space)
         }
 
         return PictureInPictureParams.Builder()
@@ -318,6 +327,13 @@ class PlayerActivity : BasePlayerActivity() {
         }
         binding.playerView.useController = false
         binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
+
+        if (binding.playerView.player is MPVPlayer) {
+            (binding.playerView.player as MPVPlayer).updateZoomMode(false)
+        } else {
+            binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
+
         enterPictureInPictureMode(pipParams())
     }
 
