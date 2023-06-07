@@ -303,16 +303,20 @@ class PlayerActivity : BasePlayerActivity() {
 
         val sourceRectHint = if (aspectRatio!! > displayAspectRatio) {
             val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
-            Rect(0,
+            Rect(
+                0,
                 space,
                 binding.playerView.width,
-                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space)
+                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space
+            )
         } else {
             val space = ((binding.playerView.width - (binding.playerView.height.toFloat() / aspectRatio.toFloat())) / 2).toInt()
-            Rect(space,
+            Rect(
+                space,
                 0,
                 (binding.playerView.height.toFloat() / aspectRatio.toFloat()).toInt(),
-                binding.playerView.height + space)
+                binding.playerView.height + space
+            )
         }
 
         return PictureInPictureParams.Builder()
