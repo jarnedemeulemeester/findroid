@@ -86,11 +86,12 @@ class PlayerGestureHelper(
         object : GestureDetector.SimpleOnGestureListener() {
             @SuppressLint("SetTextI18n")
             override fun onScroll(
-                firstEvent: MotionEvent,
+                firstEvent: MotionEvent?,
                 currentEvent: MotionEvent,
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
+                if (firstEvent == null) return false
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
                 // Disables seek gestures if view is locked
@@ -126,11 +127,12 @@ class PlayerGestureHelper(
         object : GestureDetector.SimpleOnGestureListener() {
             @SuppressLint("SetTextI18n")
             override fun onScroll(
-                firstEvent: MotionEvent,
+                firstEvent: MotionEvent?,
                 currentEvent: MotionEvent,
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
+                if (firstEvent == null) return false
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
                 // Disables volume gestures when player is locked
