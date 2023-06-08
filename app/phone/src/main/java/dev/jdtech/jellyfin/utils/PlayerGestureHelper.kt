@@ -24,8 +24,8 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import timber.log.Timber
 import kotlin.math.abs
+import timber.log.Timber
 
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
