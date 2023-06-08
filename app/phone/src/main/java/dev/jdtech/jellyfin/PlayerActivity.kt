@@ -55,8 +55,10 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.player = viewModel.player
 
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
+        val lockedControls = binding.playerView.findViewById<View>(R.id.locked_player_view)
 
         configureInsets(playerControls)
+        configureInsets(lockedControls)
 
         if (appPreferences.playerGestures) {
             playerGestureHelper = PlayerGestureHelper(
