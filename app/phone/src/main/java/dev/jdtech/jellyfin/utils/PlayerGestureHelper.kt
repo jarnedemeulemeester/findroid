@@ -158,7 +158,6 @@ class PlayerGestureHelper(
         .setInterpolator(AccelerateInterpolator())
         .setDuration(150)
 
-
     private val seekGestureDetector = GestureDetector(
         playerView.context,
         object : GestureDetector.SimpleOnGestureListener() {
