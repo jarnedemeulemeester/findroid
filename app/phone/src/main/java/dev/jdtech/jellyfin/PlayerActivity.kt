@@ -57,6 +57,8 @@ class PlayerActivity : BasePlayerActivity() {
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
         val lockedControls = binding.playerView.findViewById<View>(R.id.locked_player_view)
 
+        isControlsLocked = false
+
         configureInsets(playerControls)
         configureInsets(lockedControls)
 
@@ -75,7 +77,6 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
             finish()
-            isControlsLocked = false
         }
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
