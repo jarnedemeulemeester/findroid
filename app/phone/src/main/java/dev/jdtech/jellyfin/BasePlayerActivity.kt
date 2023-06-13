@@ -47,8 +47,6 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        viewModel.playWhenReady = false
-        viewModel.player.playWhenReady = false
         mediaSession.release()
 
         if (wasPip) {
