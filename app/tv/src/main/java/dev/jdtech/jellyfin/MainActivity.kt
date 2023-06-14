@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.NonInteractiveSurfaceDefaults
 import androidx.tv.material3.Surface
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +47,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FindroidTheme {
                 Surface(
+                    colors = NonInteractiveSurfaceDefaults.colors(containerColor = MaterialTheme.colorScheme.background),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     DestinationsNavHost(
