@@ -15,12 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,13 +37,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
+import androidx.tv.material3.Button
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
-import dev.jdtech.jellyfin.ui.theme.Typography
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
 @Destination
@@ -74,6 +74,7 @@ fun AddServerScreen(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun AddServerForm(
     uiState: AddServerViewModel.UiState,
@@ -93,7 +94,7 @@ fun AddServerForm(
         } else emptyList()
 
     Column(Modifier.width(320.dp)) {
-        Text(text = stringResource(id = CoreR.string.add_server), style = Typography.headlineMedium)
+        Text(text = stringResource(id = CoreR.string.add_server), style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
             Column {
@@ -165,6 +166,7 @@ fun AddServerForm(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun DiscoveredServerComponent(
     discoveredServer: DiscoveredServer,
@@ -194,7 +196,7 @@ fun DiscoveredServerComponent(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = discoveredServer.name,
-            style = Typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )

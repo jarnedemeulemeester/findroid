@@ -1,33 +1,32 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
+import androidx.tv.material3.CompactCard
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import java.util.UUID
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun LibraryScreen(
@@ -59,24 +58,24 @@ fun LibraryScreen(
                 items(items.itemCount) { i ->
                     val item = items[i]
                     item?.let {
-                        Column(
-                            modifier = Modifier
-                                .width(120.dp)
-                                .clickable { }
-                        ) {
-                            ItemPoster(
-                                item = item,
-                                api = api,
-                                direction = Direction.VERTICAL
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = item.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+                        CompactCard(
+                            onClick = {  },
+                            image = {
+                                ItemPoster(
+                                    item = item,
+                                    api = api,
+                                    direction = Direction.VERTICAL
+                                )
+                            },
+                            title = {
+                                Text(
+                                    text = item.name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(8.dp),
+                                )
+                            },
+                            modifier = Modifier.width(120.dp)
+                        )
                     }
                 }
             }

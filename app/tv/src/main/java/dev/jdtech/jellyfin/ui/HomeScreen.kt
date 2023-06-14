@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,6 +33,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
+import androidx.tv.material3.CompactCard
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -51,6 +53,7 @@ import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import org.jellyfin.sdk.model.api.ImageType
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @RootNavGraph(start = true)
 @Destination
 @Composable
@@ -94,24 +97,31 @@ fun HomeScreen(
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
                                 items(homeItem.section.items) { library ->
-                                    Column(
-                                        modifier = Modifier
-                                            .width(240.dp)
-                                            .clickable {
-                                                navigator.navigate(LibraryScreenDestination(library.id, (library as FindroidCollection).type))
-                                            }
-                                    ) {
-                                        ItemPoster(
-                                            item = library,
-                                            api = api,
-                                            direction = Direction.HORIZONTAL
-                                        )
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text = library.name,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
+                                    CompactCard(
+                                        onClick = {
+                                            navigator.navigate(
+                                                LibraryScreenDestination(
+                                                    library.id,
+                                                    (library as FindroidCollection).type
+                                                )
+                                            )
+                                        },
+                                        image = {
+                                            ItemPoster(
+                                                item = library,
+                                                api = api,
+                                                direction = Direction.HORIZONTAL
+                                            )
+                                        },
+                                        title = {
+                                            Text(
+                                                text = library.name,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                modifier = Modifier.padding(8.dp),
+                                            )
+                                        },
+                                        modifier = Modifier.width(240.dp)
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
@@ -146,9 +156,11 @@ fun HomeScreen(
                                                         modifier = Modifier
                                                             .height(4.dp)
                                                             .width(
-                                                                item.playbackPositionTicks.div(item.runtimeTicks.toFloat()).times(
-                                                                    1.64
-                                                                ).dp
+                                                                item.playbackPositionTicks
+                                                                    .div(item.runtimeTicks.toFloat())
+                                                                    .times(
+                                                                        1.64
+                                                                    ).dp
                                                             )
                                                             .clip(MaterialTheme.shapes.extraSmall)
                                                             .background(MaterialTheme.colorScheme.primary)
@@ -243,6 +255,7 @@ enum class Direction {
     HORIZONTAL, VERTICAL
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun ItemPoster(item: FindroidItem, api: JellyfinApi, direction: Direction) {
     var itemId = item.id
@@ -265,7 +278,6 @@ fun ItemPoster(item: FindroidItem, api: JellyfinApi, direction: Direction) {
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
-            .clip(MaterialTheme.shapes.large)
             .background(
                 MaterialTheme.colorScheme.surface
             )
