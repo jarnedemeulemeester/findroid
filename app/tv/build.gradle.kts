@@ -112,6 +112,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.paging.compose)
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
     implementation(libs.hilt.android)
