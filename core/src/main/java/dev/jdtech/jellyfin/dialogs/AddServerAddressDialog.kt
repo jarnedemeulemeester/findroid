@@ -18,7 +18,7 @@ class AddServerAddressDialog(
         return activity?.let { activity ->
             val builder = MaterialAlertDialogBuilder(activity)
             builder
-                .setTitle("Add server address")
+                .setTitle(getString(R.string.add_server_address))
                 .setView(editText)
                 .setPositiveButton(getString(R.string.add)) { _, _ ->
                     viewModel.addAddress(editText.text.toString())

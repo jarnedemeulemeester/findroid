@@ -186,4 +186,6 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
+    <string name="remove_server_address">Remove server address</string>
+    <string name="remove_server_address_text">Are you sure you want to remove the server address? %1$s</string>
 </resources>
