@@ -149,9 +149,9 @@ class MediaFragment : Fragment() {
     private fun navigateToLibraryFragment(library: FindroidCollection) {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
-                library.id,
-                library.name,
-                library.type.type,
+                libraryId = library.id,
+                libraryName = library.name,
+                libraryType = library.type,
             )
         )
     }

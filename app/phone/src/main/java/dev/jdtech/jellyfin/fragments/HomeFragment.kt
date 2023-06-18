@@ -209,9 +209,9 @@ class HomeFragment : Fragment() {
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
         findNavController().navigate(
             HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
-                view.id,
-                view.name,
-                view.type
+                libraryId = view.id,
+                libraryName = view.name,
+                libraryType = view.type
             )
         )
     }
