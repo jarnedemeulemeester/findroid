@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -37,16 +38,16 @@ constructor(
 
     fun loadItems(
         parentId: UUID,
-        libraryType: String?,
+        libraryType: CollectionType,
         sortBy: SortBy = SortBy.defaultValue,
         sortOrder: SortOrder = SortOrder.ASCENDING
     ) {
         itemsloaded = true
         Timber.d("$libraryType")
         val itemType = when (libraryType) {
-            "movies" -> listOf(BaseItemKind.MOVIE)
-            "tvshows" -> listOf(BaseItemKind.SERIES)
-            "boxsets" -> listOf(BaseItemKind.BOX_SET)
+            CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
+            CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
+            CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
             else -> null
         }
         viewModelScope.launch {

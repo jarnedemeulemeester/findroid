@@ -25,7 +25,6 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
-import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -116,11 +115,7 @@ class LibraryFragment : Fragment() {
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
                 ViewItemPagingAdapter.OnClickListener { item ->
-                    if (args.libraryType == CollectionType.BoxSets.type) {
-                        navigateToItem(item)
-                    } else {
-                        navigateToItem(item)
-                    }
+                    navigateToItem(item)
                 }
             )
 

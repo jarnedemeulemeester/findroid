@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import com.google.android.material.button.MaterialButton
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.View
 import java.io.Serializable
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -16,8 +17,8 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 fun BaseItemDto.toView(): View {
     return View(
         id = id,
-        name = name,
-        type = collectionType
+        name = name ?: "",
+        type = valueOf(collectionType, CollectionType.Movies)
     )
 }
 
@@ -43,4 +44,16 @@ fun Activity.restart() {
     val intent = Intent(this, this::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
+}
+
+inline fun <reified T : Enum<T>> valueOf(type: String?, default: T): T {
+    if (type == null) {
+        return default
+    }
+
+    return try {
+        java.lang.Enum.valueOf(T::class.java, type)
+    } catch (e: Exception) {
+        default
+    }
 }
