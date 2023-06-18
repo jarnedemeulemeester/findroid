@@ -59,7 +59,7 @@ fun LibraryScreen(
                     val item = items[i]
                     item?.let {
                         CompactCard(
-                            onClick = {  },
+                            onClick = { },
                             image = {
                                 ItemPoster(
                                     item = item,

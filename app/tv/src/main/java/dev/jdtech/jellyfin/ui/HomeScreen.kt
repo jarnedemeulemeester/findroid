@@ -200,7 +200,7 @@ fun HomeScreen(
                         }
                         is HomeItem.ViewItem -> {
                             Text(
-                                text = homeItem.view.name.orEmpty(),
+                                text = homeItem.view.name,
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(start = 32.dp)
                             )
@@ -210,7 +210,7 @@ fun HomeScreen(
                                 contentPadding = PaddingValues(horizontal = 32.dp)
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
-                                    Card (
+                                    Card(
                                         colors = CardDefaults.colors(containerColor = Color.Transparent),
                                         onClick = { /*TODO*/ }
                                     ) {

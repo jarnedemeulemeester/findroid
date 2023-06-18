@@ -6,7 +6,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Typography
 
-
 val TypographyTv = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
