@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.CardOfflineBinding
 import dev.jdtech.jellyfin.databinding.NextUpSectionBinding
 import dev.jdtech.jellyfin.databinding.ViewItemBinding
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.models.View
+import dev.jdtech.jellyfin.core.R as CoreR
 
 private const val ITEM_VIEW_TYPE_NEXT_UP = 0
 private const val ITEM_VIEW_TYPE_VIEW = 1
@@ -20,7 +20,7 @@ class ViewListAdapter(
     private val onClickListener: OnClickListener,
     private val onItemClickListener: ViewItemListAdapter.OnClickListener,
     private val onNextUpClickListener: HomeEpisodeListAdapter.OnClickListener,
-    private val onOnlineClickListener: OnClickListenerOfflineCard
+    private val onOnlineClickListener: OnClickListenerOfflineCard,
 ) : ListAdapter<HomeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class ViewViewHolder(private var binding: ViewItemBinding) :
@@ -28,7 +28,7 @@ class ViewListAdapter(
         fun bind(
             dataItem: HomeItem.ViewItem,
             onClickListener: OnClickListener,
-            onItemClickListener: ViewItemListAdapter.OnClickListener
+            onItemClickListener: ViewItemListAdapter.OnClickListener,
         ) {
             val view = dataItem.view
             binding.view = view
@@ -75,25 +75,26 @@ class ViewListAdapter(
             ITEM_VIEW_TYPE_NEXT_UP -> NextUpViewHolder(
                 NextUpSectionBinding.inflate(
                     LayoutInflater.from(
-                        parent.context
+                        parent.context,
                     ),
-                    parent, false
-                )
+                    parent,
+                    false,
+                ),
             )
             ITEM_VIEW_TYPE_VIEW -> ViewViewHolder(
                 ViewItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false
-                )
+                    false,
+                ),
             )
             ITEM_VIEW_TYPE_OFFLINE_CARD -> {
                 OfflineCardViewHolder(
                     CardOfflineBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
             else -> throw ClassCastException("Unknown viewType $viewType")

@@ -1,8 +1,8 @@
 package dev.jdtech.jellyfin.models
 
 import android.os.Parcelable
-import java.util.UUID
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 @Parcelize
 data class PlayerItem(
@@ -14,5 +14,5 @@ data class PlayerItem(
     val parentIndexNumber: Int? = null,
     val indexNumber: Int? = null,
     val indexNumberEnd: Int? = null,
-    val externalSubtitles: List<ExternalSubtitle> = emptyList()
+    val externalSubtitles: List<ExternalSubtitle> = emptyList(),
 ) : Parcelable

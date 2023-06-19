@@ -2,9 +2,9 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
 
 interface FindroidItem {
     val id: UUID
@@ -23,7 +23,7 @@ interface FindroidItem {
 
 suspend fun BaseItemDto.toFindroidItem(
     jellyfinRepository: JellyfinRepository,
-    serverDatabase: ServerDatabaseDao? = null
+    serverDatabase: ServerDatabaseDao? = null,
 ): FindroidItem? {
     return when (type) {
         BaseItemKind.MOVIE -> toFindroidMovie(jellyfinRepository, serverDatabase)

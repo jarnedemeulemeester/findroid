@@ -241,7 +241,7 @@ abstract class ServerDatabaseDao {
                 itemId = itemId,
                 played = false,
                 favorite = false,
-                playbackPositionTicks = 0L
+                playbackPositionTicks = 0L,
             )
             insertUserData(userData)
         }

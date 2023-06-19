@@ -10,17 +10,17 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
+import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @BindingAdapter("servers")
 fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
@@ -109,7 +109,7 @@ fun bindUserImage(imageView: ImageView, user: User) {
 
 private fun ImageView.loadImage(
     url: String,
-    @DrawableRes placeholderId: Int = CoreR.color.neutral_800
+    @DrawableRes placeholderId: Int = CoreR.color.neutral_800,
 ): View {
     val api = JellyfinApi.getInstance(context.applicationContext)
 

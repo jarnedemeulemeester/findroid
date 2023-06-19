@@ -14,19 +14,19 @@ import java.util.UUID
             entity = FindroidSeasonDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seasonId"),
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = FindroidShowDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index("seasonId"),
         Index("seriesId"),
-    ]
+    ],
 )
 data class FindroidEpisodeDto(
     @PrimaryKey

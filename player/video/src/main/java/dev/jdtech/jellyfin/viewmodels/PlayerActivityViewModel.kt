@@ -25,8 +25,6 @@ import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -36,6 +34,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -84,18 +84,18 @@ constructor(
             player = MPVPlayer(
                 application,
                 false,
-                appPreferences
+                appPreferences,
             )
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON,
                 )
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
                     .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
-                    .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
+                    .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage),
             )
             player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
@@ -104,7 +104,8 @@ constructor(
                         .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                         .setUsage(C.USAGE_MEDIA)
                         .build(),
-                    /* handleAudioFocus = */ true
+                    /* handleAudioFocus = */
+                    true,
                 )
                 .setSeekBackIncrementMs(appPreferences.playerSeekBackIncrement)
                 .setSeekForwardIncrementMs(appPreferences.playerSeekForwardIncrement)
@@ -113,7 +114,7 @@ constructor(
     }
 
     fun initializePlayer(
-        items: Array<PlayerItem>
+        items: Array<PlayerItem>,
     ) {
         this.items = items
         player.addListener(this)
@@ -145,7 +146,7 @@ constructor(
                             .setMediaMetadata(
                                 MediaMetadata.Builder()
                                     .setTitle(item.name)
-                                    .build()
+                                    .build(),
                             )
                             .setSubtitleConfigurations(mediaSubtitles)
                             .build()
@@ -158,7 +159,7 @@ constructor(
             player.setMediaItems(
                 mediaItems,
                 currentMediaItemIndex,
-                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET
+                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET,
             )
             if (appPreferences.playerMpv) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
                 withContext(Dispatchers.IO) {
@@ -182,7 +183,7 @@ constructor(
                 jellyfinRepository.postPlaybackStop(
                     UUID.fromString(mediaId),
                     position.times(10000),
-                    position.div(duration.toFloat()).times(100).toInt()
+                    position.div(duration.toFloat()).times(100).toInt(),
                 )
             } catch (e: Exception) {
                 Timber.e(e)
@@ -207,7 +208,7 @@ constructor(
                             jellyfinRepository.postPlaybackProgress(
                                 itemId,
                                 player.currentPosition.times(10000),
-                                !player.isPlaying
+                                !player.isPlaying,
                             )
                         } catch (e: Exception) {
                             Timber.e(e)
@@ -244,14 +245,13 @@ constructor(
                 items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
                     .let { item ->
                         if (item.parentIndexNumber != null && item.indexNumber != null
-                        )
+                        ) {
                             _currentItemTitle.value = if (item.indexNumberEnd == null) {
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
                             } else {
                                 "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
                             }
-
-                        else
+                        } else
                             _currentItemTitle.value = item.name
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
@@ -333,7 +333,7 @@ constructor(
 
                 jellyfinRepository.getTrickPlayData(
                     itemId,
-                    widthResolution
+                    widthResolution,
                 )?.let { byteArray ->
                     val trickPlayData =
                         BifUtil.trickPlayDecode(byteArray, widthResolution)

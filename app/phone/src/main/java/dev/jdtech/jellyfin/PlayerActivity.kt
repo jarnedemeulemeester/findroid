@@ -24,12 +24,12 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
-import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
 var isControlsLocked: Boolean = false
 
@@ -63,7 +63,7 @@ class PlayerActivity : BasePlayerActivity() {
                 appPreferences,
                 this,
                 binding.playerView,
-                getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                getSystemService(Context.AUDIO_SERVICE) as AudioManager,
             )
         }
 
@@ -106,7 +106,7 @@ class PlayerActivity : BasePlayerActivity() {
                 is MPVPlayer -> {
                     TrackSelectionDialogFragment(TrackType.AUDIO, viewModel).show(
                         supportFragmentManager,
-                        "trackselectiondialog"
+                        "trackselectiondialog",
                     )
                 }
                 is ExoPlayer -> {
@@ -126,7 +126,7 @@ class PlayerActivity : BasePlayerActivity() {
                         this,
                         resources.getString(PlayerVideoR.string.select_audio_track),
                         viewModel.player,
-                        C.TRACK_TYPE_AUDIO
+                        C.TRACK_TYPE_AUDIO,
                     )
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
                     trackSelectionDialog.show()
@@ -156,7 +156,7 @@ class PlayerActivity : BasePlayerActivity() {
                 is MPVPlayer -> {
                     TrackSelectionDialogFragment(TrackType.SUBTITLE, viewModel).show(
                         supportFragmentManager,
-                        "trackselectiondialog"
+                        "trackselectiondialog",
                     )
                 }
                 is ExoPlayer -> {
@@ -176,7 +176,7 @@ class PlayerActivity : BasePlayerActivity() {
                         this,
                         resources.getString(PlayerVideoR.string.select_subtile_track),
                         viewModel.player,
-                        C.TRACK_TYPE_TEXT
+                        C.TRACK_TYPE_TEXT,
                     )
                     trackSelectionDialogBuilder.setShowDisableOption(true)
 
@@ -189,7 +189,7 @@ class PlayerActivity : BasePlayerActivity() {
         speedButton.setOnClickListener {
             SpeedSelectionDialogFragment(viewModel).show(
                 supportFragmentManager,
-                "speedselectiondialog"
+                "speedselectiondialog",
             )
         }
 
@@ -210,7 +210,7 @@ class PlayerActivity : BasePlayerActivity() {
                 imagePreview,
                 timeBar,
                 viewModel.player,
-                viewModel.currentTrickPlay
+                viewModel.currentTrickPlay,
             )
 
             timeBar.addListener(previewScrubListener)

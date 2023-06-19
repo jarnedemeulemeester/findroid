@@ -33,8 +33,8 @@ class PersonListAdapter(private val clickListener: (item: BaseItemPerson) -> Uni
             PersonItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

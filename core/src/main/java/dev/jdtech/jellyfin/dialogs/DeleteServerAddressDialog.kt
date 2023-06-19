@@ -11,7 +11,7 @@ import java.lang.IllegalStateException
 
 class DeleteServerAddressDialog(
     private val viewModel: ServerAddressesViewModel,
-    val address: ServerAddress
+    val address: ServerAddress,
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {

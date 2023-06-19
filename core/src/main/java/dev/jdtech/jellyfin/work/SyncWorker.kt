@@ -29,7 +29,7 @@ class SyncWorker @AssistedInject constructor(
             androidContext = context.applicationContext,
             requestTimeout = appPreferences.requestTimeout,
             connectTimeout = appPreferences.connectTimeout,
-            socketTimeout = appPreferences.socketTimeout
+            socketTimeout = appPreferences.socketTimeout,
         )
 
         return withContext(Dispatchers.IO) {
@@ -59,7 +59,7 @@ class SyncWorker @AssistedInject constructor(
     private suspend fun syncUserData(
         jellyfinApi: JellyfinApi,
         user: User,
-        items: List<FindroidItem>
+        items: List<FindroidItem>,
     ) {
         for (item in items) {
             val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue
