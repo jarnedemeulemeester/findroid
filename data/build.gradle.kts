@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.jellyfin.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
