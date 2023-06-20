@@ -22,6 +22,7 @@ hilt = "2.46.1"
 jellyfin = "1.4.2"
 kotlin = "1.8.22"
 kotlinx-serialization = "1.5.1"
+ksp = "1.8.22-1.0.11"
 ktlint = "11.4.0"
 libmpv = "0.1.2"
 material = "1.9.0"
@@ -75,4 +76,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
