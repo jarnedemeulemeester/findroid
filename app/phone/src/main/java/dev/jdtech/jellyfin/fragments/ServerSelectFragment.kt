@@ -26,7 +26,7 @@ class ServerSelectFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentServerSelectBinding.inflate(inflater)
 
@@ -42,10 +42,10 @@ class ServerSelectFragment : Fragment() {
                 ServerGridAdapter.OnLongClickListener { server ->
                     DeleteServerDialogFragment(viewModel, server).show(
                         parentFragmentManager,
-                        "deleteServer"
+                        "deleteServer",
                     )
                     true
-                }
+                },
             )
 
         binding.buttonAddServer.setOnClickListener {
@@ -67,7 +67,7 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToAddServerFragment() {
         findNavController().navigate(
-            ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment()
+            ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment(),
         )
     }
 

@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.models.Server
 
 class ServerGridAdapter(
     private val onClickListener: OnClickListener,
-    private val onLongClickListener: OnLongClickListener
+    private val onLongClickListener: OnLongClickListener,
 ) : ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
     class ServerViewHolder(private var binding: ServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,7 +32,7 @@ class ServerGridAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): ServerViewHolder {
         return ServerViewHolder(ServerItemBinding.inflate(LayoutInflater.from(parent.context)))
     }

@@ -11,14 +11,14 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 
 class FavoritesListAdapter(
     private val onClickListener: ViewItemListAdapter.OnClickListener,
-    private val onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener
+    private val onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener,
 ) : ListAdapter<FavoriteSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
     class SectionViewHolder(private var binding: FavoriteSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             section: FavoriteSection,
             onClickListener: ViewItemListAdapter.OnClickListener,
-            onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener
+            onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener,
         ) {
             binding.section = section
             if (section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) {
@@ -42,7 +42,7 @@ class FavoritesListAdapter(
 
         override fun areContentsTheSame(
             oldItem: FavoriteSection,
-            newItem: FavoriteSection
+            newItem: FavoriteSection,
         ): Boolean {
             return oldItem == newItem
         }
@@ -53,8 +53,8 @@ class FavoritesListAdapter(
             FavoriteSectionBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

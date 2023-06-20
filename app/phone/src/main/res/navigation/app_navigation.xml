@@ -98,9 +98,7 @@
             app:argType="java.util.UUID" />
         <argument
             android:name="libraryName"
-            android:defaultValue="Library"
-            app:argType="string"
-            app:nullable="true" />
+            app:argType="string" />
         <action
             android:id="@+id/action_libraryFragment_to_showFragment"
             app:destination="@id/showFragment"
@@ -124,9 +122,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="libraryType"
-            android:defaultValue="unknown"
-            app:argType="string"
-            app:nullable="true" />
+            app:argType="dev.jdtech.jellyfin.models.CollectionType" />
     </fragment>
     <fragment
         android:id="@+id/showFragment"

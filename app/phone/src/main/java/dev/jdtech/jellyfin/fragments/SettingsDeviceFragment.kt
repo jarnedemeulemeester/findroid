@@ -5,8 +5,8 @@ import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.viewmodels.SettingsDeviceViewModel
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 @Suppress("unused")

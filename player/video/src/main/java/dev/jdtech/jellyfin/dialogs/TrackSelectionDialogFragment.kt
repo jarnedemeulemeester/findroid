@@ -12,7 +12,7 @@ import java.lang.IllegalStateException
 
 class TrackSelectionDialogFragment(
     private val type: TrackType,
-    private val viewModel: PlayerActivityViewModel
+    private val viewModel: PlayerActivityViewModel,
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         when (type) {
@@ -22,11 +22,11 @@ class TrackSelectionDialogFragment(
                     builder.setTitle(getString(R.string.select_audio_track))
                         .setSingleChoiceItems(
                             getTrackNames(viewModel.currentAudioTracks),
-                            viewModel.currentAudioTracks.indexOfFirst { it.selected }
+                            viewModel.currentAudioTracks.indexOfFirst { it.selected },
                         ) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.AUDIO,
-                                viewModel.currentAudioTracks[which]
+                                viewModel.currentAudioTracks[which],
                             )
                             dialog.dismiss()
                         }
@@ -39,11 +39,11 @@ class TrackSelectionDialogFragment(
                     builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
                             getTrackNames(viewModel.currentSubtitleTracks),
-                            viewModel.currentSubtitleTracks.indexOfFirst { if (viewModel.disableSubtitle) it.ffIndex == -1 else it.selected }
+                            viewModel.currentSubtitleTracks.indexOfFirst { if (viewModel.disableSubtitle) it.ffIndex == -1 else it.selected },
                         ) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.SUBTITLE,
-                                viewModel.currentSubtitleTracks[which]
+                                viewModel.currentSubtitleTracks[which],
                             )
                             dialog.dismiss()
                         }

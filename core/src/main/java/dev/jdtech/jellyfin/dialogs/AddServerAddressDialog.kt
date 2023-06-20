@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import java.lang.IllegalStateException
 
 class AddServerAddressDialog(
-    private val viewModel: ServerAddressesViewModel
+    private val viewModel: ServerAddressesViewModel,
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val editText = EditText(this.context)

@@ -15,13 +15,13 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
@@ -31,7 +31,7 @@ class PlayerViewModel @Inject internal constructor(
     private val playerItems = MutableSharedFlow<PlayerItemState>(
         replay = 0,
         extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     fun onPlaybackRequested(scope: LifecycleCoroutineScope, collector: (PlayerItemState) -> Unit) {
@@ -40,7 +40,7 @@ class PlayerViewModel @Inject internal constructor(
 
     fun loadPlayerItems(
         item: FindroidItem,
-        mediaSourceIndex: Int? = null
+        mediaSourceIndex: Int? = null,
     ) {
         Timber.d("Loading player items for item ${item.id}")
 
@@ -61,7 +61,7 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun prepareMediaPlayerItems(
         item: FindroidItem,
         playbackPosition: Long,
-        mediaSourceIndex: Int?
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> = when (item) {
         is FindroidMovie -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
         is FindroidShow -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
@@ -73,13 +73,13 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun movieToPlayerItem(
         item: FindroidMovie,
         playbackPosition: Long,
-        mediaSourceIndex: Int?
+        mediaSourceIndex: Int?,
     ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
         item: FindroidShow,
         playbackPosition: Long,
-        mediaSourceIndex: Int?
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         val nextUp = repository.getNextUp(item.id)
 
@@ -95,13 +95,13 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun seasonToPlayerItems(
         item: FindroidSeason,
         playbackPosition: Long,
-        mediaSourceIndex: Int?
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         return repository
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.id,
-                fields = listOf(ItemFields.MEDIA_SOURCES)
+                fields = listOf(ItemFields.MEDIA_SOURCES),
             )
             .filter { it.sources.isNotEmpty() }
             .filter { !it.missing }
@@ -111,7 +111,7 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun episodeToPlayerItems(
         item: FindroidEpisode,
         playbackPosition: Long,
-        mediaSourceIndex: Int?
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         // TODO Move user configuration to a separate class
         val userConfig = try {
@@ -125,7 +125,7 @@ class PlayerViewModel @Inject internal constructor(
                 seasonId = item.seasonId,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
                 startItemId = item.id,
-                limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1
+                limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
             )
             .filter { it.sources.isNotEmpty() }
             .filter { !it.missing }
@@ -134,7 +134,7 @@ class PlayerViewModel @Inject internal constructor(
 
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
-        playbackPosition: Long
+        playbackPosition: Long,
     ): PlayerItem {
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource = if (mediaSourceIndex == null) {
@@ -163,7 +163,7 @@ class PlayerViewModel @Inject internal constructor(
                         "webvtt" -> MimeTypes.TEXT_VTT
                         "ass" -> MimeTypes.TEXT_SSA
                         else -> MimeTypes.TEXT_UNKNOWN
-                    }
+                    },
                 )
             }
         return PlayerItem(
@@ -175,7 +175,7 @@ class PlayerViewModel @Inject internal constructor(
             parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
-            externalSubtitles = externalSubtitles
+            externalSubtitles = externalSubtitles,
         )
     }
 

@@ -13,11 +13,11 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.io.File
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadReceiver : BroadcastReceiver() {
@@ -44,16 +44,16 @@ class DownloadReceiver : BroadcastReceiver() {
                     } else {
                         val items = mutableListOf<FindroidItem>()
                         items.addAll(
-                            database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) }
+                            database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) }
+                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) }
+                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) }
+                            database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) },
                         )
 
                         items.firstOrNull { it.id == source.itemId }?.let {

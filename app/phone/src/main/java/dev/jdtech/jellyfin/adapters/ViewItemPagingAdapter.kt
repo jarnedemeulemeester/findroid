@@ -7,11 +7,11 @@ import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.core.R as CoreR
 
 class ViewItemPagingAdapter(
     private val onClickListener: OnClickListener,
@@ -53,9 +53,9 @@ class ViewItemPagingAdapter(
             BaseItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
+                false,
             ),
-            parent
+            parent,
         )
     }
 

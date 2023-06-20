@@ -13,14 +13,14 @@ import java.util.UUID
             entity = Server::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("serverId"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class ServerAddress(
     @PrimaryKey
     val id: UUID,
     @ColumnInfo(index = true)
     val serverId: String,
-    val address: String
+    val address: String,
 )

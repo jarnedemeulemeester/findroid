@@ -30,7 +30,7 @@ class UsersFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentUsersBinding.inflate(inflater)
 
@@ -42,10 +42,10 @@ class UsersFragment : Fragment() {
                 { user ->
                     DeleteUserDialogFragment(viewModel, user).show(
                         parentFragmentManager,
-                        "deleteUser"
+                        "deleteUser",
                     )
                     true
-                }
+                },
             )
 
         binding.buttonAddUser.setOnClickListener {
@@ -90,7 +90,7 @@ class UsersFragment : Fragment() {
 
     private fun navigateToLoginFragment() {
         findNavController().navigate(
-            AppNavigationDirections.actionGlobalLoginFragment()
+            AppNavigationDirections.actionGlobalLoginFragment(),
         )
     }
 

@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.io.File
-import java.util.UUID
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import java.io.File
+import java.util.UUID
 
 data class FindroidSource(
     val id: String,
@@ -14,7 +14,7 @@ data class FindroidSource(
     val path: String,
     val size: Long,
     val mediaStreams: List<FindroidMediaStream>,
-    val downloadId: Long? = null
+    val downloadId: Long? = null,
 )
 
 suspend fun MediaSourceInfo.toFindroidSource(
@@ -39,7 +39,7 @@ suspend fun MediaSourceInfo.toFindroidSource(
         type = FindroidSourceType.REMOTE,
         path = path,
         size = size ?: 0,
-        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList()
+        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList(),
     )
 }
 

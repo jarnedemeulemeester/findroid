@@ -20,7 +20,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             app.applicationContext,
             ServerDatabase::class.java,
-            "servers"
+            "servers",
         )
             .fallbackToDestructiveMigration()
             .allowMainThreadQueries()

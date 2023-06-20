@@ -8,11 +8,16 @@ enum class CollectionType(val type: String) {
     Playlists("playlists"),
     Books("books"),
     LiveTv("livetv"),
-    BoxSets("boxsets");
+    BoxSets("boxsets"),
+    ;
 
     companion object {
         val unsupportedCollections = listOf(
-            HomeVideos, Music, Playlists, Books, LiveTv
+            HomeVideos,
+            Music,
+            Playlists,
+            Books,
+            LiveTv,
         )
     }
 }

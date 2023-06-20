@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.R as AndroidR
 import android.app.DownloadManager
 import android.os.Bundle
 import android.util.TypedValue
@@ -15,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.R as MaterialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,7 +21,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -36,13 +33,16 @@ import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.DateTime
+import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.UUID
-import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.DateTime
-import timber.log.Timber
+import android.R as AndroidR
+import com.google.android.material.R as MaterialR
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -57,7 +57,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
@@ -175,7 +175,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
                                         binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                                    }
+                                    },
                                 )
                                 dialog.show()
                                 return@getStorageSelectionDialog
@@ -186,7 +186,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        }
+                        },
                     )
                     storageDialog.show()
                     return@setOnClickListener
@@ -202,7 +202,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        }
+                        },
                     )
                     dialog.show()
                     return@setOnClickListener
@@ -237,7 +237,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     (episode.playbackPositionTicks.div(episode.runtimeTicks).times(1.26)).toFloat(),
-                    context?.resources?.displayMetrics
+                    context?.resources?.displayMetrics,
                 ).toInt()
                 binding.progressBar.isVisible = true
             }
@@ -264,7 +264,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     CoreR.string.episode_name_extended,
                     episode.parentIndexNumber,
                     episode.indexNumber,
-                    episode.name
+                    episode.name,
                 )
             } else {
                 getString(
@@ -272,7 +272,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     episode.parentIndexNumber,
                     episode.indexNumber,
                     episode.indexNumberEnd,
-                    episode.name
+                    episode.name,
                 )
             }
 
@@ -307,12 +307,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
             true -> binding.itemActions.checkButton.setIconTintResource(
-                CoreR.color.red
+                CoreR.color.red,
             )
 
             false -> binding.itemActions.checkButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -325,12 +325,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.itemActions.favoriteButton.setIconResource(favoriteDrawable)
         when (favorite) {
             true -> binding.itemActions.favoriteButton.setIconTintResource(
-                CoreR.color.red
+                CoreR.color.red,
             )
 
             false -> binding.itemActions.favoriteButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -392,7 +392,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
-            )
+            ),
         )
     }
 
@@ -400,8 +400,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToShowFragment(
                 itemId = id,
-                itemName = name
-            )
+                itemName = name,
+            ),
         )
     }
 
