@@ -7,13 +7,13 @@ data class VideoMetadata(
     val displayProfiles: List<DisplayProfile>,
     val audioChannels: List<AudioChannel>,
     val audioCodecs: List<AudioCodec>,
-    val isAtmos: List<Boolean>
+    val isAtmos: List<Boolean>,
 )
 
 enum class Resolution(val raw: String) {
     SD("SD"),
     HD("HD"),
-    UHD("4K");
+    UHD("4K"),
 }
 
 enum class DisplayProfile(val raw: String) {
@@ -21,14 +21,14 @@ enum class DisplayProfile(val raw: String) {
     HDR("HDR"),
     HDR10("HDR10"),
     DOLBY_VISION("Vision"),
-    HLG("HLG");
+    HLG("HLG"),
 }
 
 enum class AudioChannel(val raw: String) {
     CH_2_0("2.0"),
     CH_2_1("2.1"),
     CH_5_1("5.1"),
-    CH_7_1("7.1");
+    CH_7_1("7.1"),
 }
 
 enum class AudioCodec(val raw: String) {
@@ -40,7 +40,8 @@ enum class AudioCodec(val raw: String) {
     VORBIS("VORBIS"),
     DTS("DTS"),
     TRUEHD("TrueHD"),
-    OPUS("OPUS");
+    OPUS("OPUS"),
+    ;
 
     override fun toString() = super.toString().lowercase()
 }

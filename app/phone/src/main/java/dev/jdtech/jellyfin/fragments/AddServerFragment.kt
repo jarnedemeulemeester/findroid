@@ -30,7 +30,7 @@ class AddServerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
 
@@ -117,7 +117,7 @@ class AddServerFragment : Fragment() {
     }
 
     private fun bindDiscoveredServersStateServers(
-        serversState: AddServerViewModel.DiscoveredServersState.Servers
+        serversState: AddServerViewModel.DiscoveredServersState.Servers,
     ) {
         val servers = serversState.servers
         if (servers.isEmpty()) {

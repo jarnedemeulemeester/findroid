@@ -20,7 +20,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidCollection
@@ -28,6 +27,7 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class MediaFragment : Fragment() {
@@ -42,7 +42,7 @@ class MediaFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
@@ -50,7 +50,7 @@ class MediaFragment : Fragment() {
             CollectionListAdapter(
                 CollectionListAdapter.OnClickListener { library ->
                     navigateToLibraryFragment(library)
-                }
+                },
             )
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -108,7 +108,8 @@ class MediaFragment : Fragment() {
                     return true
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
         )
     }
 
@@ -149,16 +150,16 @@ class MediaFragment : Fragment() {
     private fun navigateToLibraryFragment(library: FindroidCollection) {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
-                library.id,
-                library.name,
-                library.type.type,
-            )
+                libraryId = library.id,
+                libraryName = library.name,
+                libraryType = library.type,
+            ),
         )
     }
 
     private fun navigateToSearchResultFragment(query: String) {
         findNavController().navigate(
-            MediaFragmentDirections.actionNavigationMediaToSearchResultFragment(query)
+            MediaFragmentDirections.actionNavigationMediaToSearchResultFragment(query),
         )
     }
 }

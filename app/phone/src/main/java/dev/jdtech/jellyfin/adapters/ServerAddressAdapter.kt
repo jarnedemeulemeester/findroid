@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.models.ServerAddress
 
 class ServerAddressAdapter(
     private val clickListener: (address: ServerAddress) -> Unit,
-    private val longClickListener: (address: ServerAddress) -> Boolean
+    private val longClickListener: (address: ServerAddress) -> Boolean,
 ) : ListAdapter<ServerAddress, ServerAddressAdapter.ServerAddressViewHolder>(DiffCallback) {
     class ServerAddressViewHolder(private var binding: ServerAddressListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,14 +32,14 @@ class ServerAddressAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): ServerAddressViewHolder {
         return ServerAddressViewHolder(
             ServerAddressListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

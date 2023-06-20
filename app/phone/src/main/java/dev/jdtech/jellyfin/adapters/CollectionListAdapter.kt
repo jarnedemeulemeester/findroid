@@ -9,7 +9,7 @@ import dev.jdtech.jellyfin.databinding.CollectionItemBinding
 import dev.jdtech.jellyfin.models.FindroidCollection
 
 class CollectionListAdapter(
-    private val onClickListener: OnClickListener
+    private val onClickListener: OnClickListener,
 ) : ListAdapter<FindroidCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -34,8 +34,8 @@ class CollectionListAdapter(
             CollectionItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

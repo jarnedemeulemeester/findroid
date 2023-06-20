@@ -11,13 +11,13 @@ import java.lang.IllegalStateException
 
 class DeleteServerAddressDialog(
     private val viewModel: ServerAddressesViewModel,
-    val address: ServerAddress
+    val address: ServerAddress,
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle("Remove server address")
-                .setMessage("Are you sure you want to remove the server addres? ${address.address}")
+                .setMessage("Are you sure you want to remove the server address? ${address.address}")
                 .setPositiveButton(getString(R.string.remove)) { _, _ ->
                     viewModel.deleteAddress(address)
                 }

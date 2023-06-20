@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.models
 
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.UUID
 
 data class FindroidBoxSet(
     override val id: UUID,

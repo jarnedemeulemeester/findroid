@@ -19,13 +19,13 @@ object ApiModule {
     fun provideJellyfinApi(
         @ApplicationContext application: Context,
         appPreferences: AppPreferences,
-        serverDatabase: ServerDatabaseDao
+        serverDatabase: ServerDatabaseDao,
     ): JellyfinApi {
         val jellyfinApi = JellyfinApi.getInstance(
             context = application,
             requestTimeout = appPreferences.requestTimeout,
             connectTimeout = appPreferences.connectTimeout,
-            socketTimeout = appPreferences.socketTimeout
+            socketTimeout = appPreferences.socketTimeout,
         )
 
         val serverId = appPreferences.currentServer ?: return jellyfinApi

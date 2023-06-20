@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.util.UUID
 
 @Entity(
-    tableName = "sources"
+    tableName = "sources",
 )
 data class FindroidSourceDto(
     @PrimaryKey

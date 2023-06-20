@@ -11,8 +11,8 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactory {

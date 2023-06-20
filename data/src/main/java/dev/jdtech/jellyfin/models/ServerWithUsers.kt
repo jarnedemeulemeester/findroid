@@ -8,7 +8,7 @@ data class ServerWithUsers(
     val server: Server,
     @Relation(
         parentColumn = "id",
-        entityColumn = "serverId"
+        entityColumn = "serverId",
     )
-    val users: List<User>
+    val users: List<User>,
 )

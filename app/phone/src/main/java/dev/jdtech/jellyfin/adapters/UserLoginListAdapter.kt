@@ -9,7 +9,7 @@ import dev.jdtech.jellyfin.databinding.UserItemBinding
 import dev.jdtech.jellyfin.models.User
 
 class UserLoginListAdapter(
-    private val clickListener: (user: User) -> Unit
+    private val clickListener: (user: User) -> Unit,
 ) : ListAdapter<User, UserLoginListAdapter.UserLoginViewHolder>(DiffCallback) {
     class UserLoginViewHolder(private var binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -31,14 +31,14 @@ class UserLoginListAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): UserLoginViewHolder {
         return UserLoginViewHolder(
             UserItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 
