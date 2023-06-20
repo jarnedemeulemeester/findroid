@@ -282,7 +282,6 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun pipParams(): PictureInPictureParams {
-
         val landscape = binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
@@ -296,7 +295,7 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.player?.videoSize?.let {
                 Rational(
                     it.width.coerceAtMost((it.height * 2.39f).toInt()),
-                    it.height.coerceAtMost((it.width * 2.39f).toInt())
+                    it.height.coerceAtMost((it.width * 2.39f).toInt()),
                 )
             }
         }
@@ -307,7 +306,7 @@ class PlayerActivity : BasePlayerActivity() {
                 0,
                 space,
                 binding.playerView.width,
-                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space
+                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
             )
         } else {
             val space = ((binding.playerView.width - (binding.playerView.height.toFloat() / aspectRatio.toFloat())) / 2).toInt()
@@ -315,7 +314,7 @@ class PlayerActivity : BasePlayerActivity() {
                 space,
                 0,
                 (binding.playerView.height.toFloat() / aspectRatio.toFloat()).toInt(),
-                binding.playerView.height + space
+                binding.playerView.height + space,
             )
         }
 
@@ -343,7 +342,7 @@ class PlayerActivity : BasePlayerActivity() {
 
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
-        newConfig: Configuration
+        newConfig: Configuration,
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (!isInPictureInPictureMode) {
