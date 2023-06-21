@@ -22,6 +22,8 @@
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove_user">Remove user</string>
     <string name="remove_user_dialog_text">Are you sure you want to remove the user %1$s</string>
+    <string name="remove_server_address">Remove server address</string>
+    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Home</string>

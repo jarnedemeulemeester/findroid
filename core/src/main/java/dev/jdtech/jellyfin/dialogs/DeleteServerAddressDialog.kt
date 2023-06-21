@@ -17,7 +17,7 @@ class DeleteServerAddressDialog(
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle(getString(R.string.remove_server_address))
-                .setMessage(getString(R.string.remove_server_address_text, address.address))
+                .setMessage(getString(R.string.remove_server_address_dialog_text, address.address))
                 .setPositiveButton(getString(R.string.remove)) { _, _ ->
                     viewModel.deleteAddress(address)
                 }
