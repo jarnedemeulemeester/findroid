@@ -9,10 +9,10 @@ import dev.jdtech.jellyfin.databinding.DiscoveredServerItemBinding
 import dev.jdtech.jellyfin.models.DiscoveredServer
 
 class DiscoveredServerListAdapter(
-    private val clickListener: (server: DiscoveredServer) -> Unit
+    private val clickListener: (server: DiscoveredServer) -> Unit,
 ) :
     ListAdapter<DiscoveredServer, DiscoveredServerListAdapter.DiscoveredServerViewHolder>(
-        DiffCallback
+        DiffCallback,
     ) {
     class DiscoveredServerViewHolder(private var binding: DiscoveredServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -25,14 +25,14 @@ class DiscoveredServerListAdapter(
     companion object DiffCallback : DiffUtil.ItemCallback<DiscoveredServer>() {
         override fun areItemsTheSame(
             oldItem: DiscoveredServer,
-            newItem: DiscoveredServer
+            newItem: DiscoveredServer,
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
             oldItem: DiscoveredServer,
-            newItem: DiscoveredServer
+            newItem: DiscoveredServer,
         ): Boolean {
             return oldItem == newItem
         }
@@ -40,14 +40,14 @@ class DiscoveredServerListAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): DiscoveredServerViewHolder {
         return DiscoveredServerViewHolder(
             DiscoveredServerItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

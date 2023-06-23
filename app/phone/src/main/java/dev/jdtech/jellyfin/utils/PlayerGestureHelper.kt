@@ -24,14 +24,14 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import kotlin.math.abs
 import timber.log.Timber
+import kotlin.math.abs
 
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,
     private val activity: PlayerActivity,
     private val playerView: PlayerView,
-    private val audioManager: AudioManager
+    private val audioManager: AudioManager,
 ) {
     /**
      * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
@@ -83,7 +83,7 @@ class PlayerGestureHelper(
                 }
                 return true
             }
-        }
+        },
     )
 
     private fun fastForward() {
@@ -166,7 +166,7 @@ class PlayerGestureHelper(
                 firstEvent: MotionEvent,
                 currentEvent: MotionEvent,
                 distanceX: Float,
-                distanceY: Float
+                distanceY: Float,
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
@@ -191,11 +191,13 @@ class PlayerGestureHelper(
                         swipeGestureValueTrackerProgress = newPos
                         swipeGestureProgressOpen = true
                         true
-                    } else false
+                    } else {
+                        false
+                    }
                 }
                 return true
             }
-        }
+        },
     )
 
     private val vbGestureDetector = GestureDetector(
@@ -206,7 +208,7 @@ class PlayerGestureHelper(
                 firstEvent: MotionEvent,
                 currentEvent: MotionEvent,
                 distanceX: Float,
-                distanceY: Float
+                distanceY: Float,
             ): Boolean {
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
@@ -215,8 +217,9 @@ class PlayerGestureHelper(
 
                 if (abs(distanceY / distanceX) < 2) return false
 
-                if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen)
+                if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen) {
                     return false
+                }
 
                 val viewCenterX = playerView.measuredWidth / 2
 
@@ -274,7 +277,7 @@ class PlayerGestureHelper(
                 }
                 return true
             }
-        }
+        },
     )
 
     private val hideGestureVolumeIndicatorOverlayAction = Runnable {
@@ -313,7 +316,7 @@ class PlayerGestureHelper(
             }
 
             override fun onScaleEnd(detector: ScaleGestureDetector) = Unit
-        }
+        },
     ).apply { isQuickScaleEnabled = false }
 
     private fun updateZoomMode(enabled: Boolean) {
@@ -371,14 +374,16 @@ class PlayerGestureHelper(
 
             if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right)) ||
                 (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom))
-            )
+            ) {
                 return true
+            }
         } else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
             firstEvent.y > screenHeight - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
             firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL) ||
             firstEvent.x > screenWidth - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL)
-        )
+        ) {
             return true
+        }
         return false
     }
 

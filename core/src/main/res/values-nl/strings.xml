@@ -148,7 +148,7 @@
     <string name="player_controls_skip_intro">Intro overslaan</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBears\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
-    <string name="subtitle">Ondertitels</string>
+    <string name="subtitle">Ondertiteling</string>
     <string name="extra_info">Extra informatie weergeven</string>
     <string name="size">Grootte</string>
     <string name="privacy_policy_notice">Door Findroid te gebruikt wordt ingestemd met de <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privacy Policy</a> welke noemt dat wij geen enkele data verzamelen</string>
@@ -167,11 +167,22 @@
     <string name="video">Video</string>
     <string name="cancel_download_message">Weet je zeker dat je de download wilt annuleren\?</string>
     <string name="stop_download">Download stoppen</string>
-    <string name="audio">Audio</string>
+    <string name="audio">Geluid</string>
     <string name="offline_mode">Offline Modus</string>
     <string name="app_language">App taal</string>
     <string name="amoled_theme">AMOLED donker thema</string>
     <string name="amoled_theme_summary">Gebruik AMOLED thema met een compleet zwarte achtergrond</string>
     <string name="downloading_error">Fout tijdens het downloaden</string>
     <string name="title_storage">Opslag</string>
+    <string name="pref_player_trick_play_summary">Verzoek voor nicknsy\'s Jellyscrub te installeren op de server</string>
+    <string name="temp">tijdelijk</string>
+    <string name="dolby_logo_desc">Dolby Logo</string>
+    <string name="pref_player_intro_skipper">Intro Overslaan</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="mega_byte_suffix">%d MB</string>
+    <string name="downloaded_indicator">Gedownloade indicator</string>
+    <string name="pref_player_trick_play">Trick Play</string>
+    <string name="player_gestures_seek">Zoek gebaar</string>
 </resources>

@@ -38,3 +38,5 @@
 #-keepnames class <1>$$serializer { # -keepnames suffices; class is kept when serializer() is kept.
 #    static <1>$$serializer INSTANCE;
 #}
+
+-keepnames class dev.jdtech.jellyfin.models.CollectionType

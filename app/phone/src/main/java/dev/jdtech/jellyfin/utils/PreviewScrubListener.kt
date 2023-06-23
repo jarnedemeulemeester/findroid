@@ -17,7 +17,7 @@ class PreviewScrubListener(
     private val scrubbingPreview: ImageView,
     private val timeBarView: View,
     private val player: Player,
-    private val currentTrickPlay: StateFlow<BifData?>
+    private val currentTrickPlay: StateFlow<BifData?>,
 ) : TimeBar.OnScrubListener {
 
     private val roundedCorners = RoundedCornersTransformation(10f)
@@ -26,8 +26,9 @@ class PreviewScrubListener(
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
-        if (currentTrickPlay.value == null)
+        if (currentTrickPlay.value == null) {
             return
+        }
 
         scrubbingPreview.visibility = View.VISIBLE
         onScrubMove(timeBar, position)

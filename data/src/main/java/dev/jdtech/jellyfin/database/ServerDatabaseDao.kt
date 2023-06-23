@@ -241,7 +241,7 @@ abstract class ServerDatabaseDao {
                 itemId = itemId,
                 played = false,
                 favorite = false,
-                playbackPositionTicks = 0L
+                playbackPositionTicks = 0L,
             )
             insertUserData(userData)
         }
@@ -255,7 +255,7 @@ abstract class ServerDatabaseDao {
     @Query("DELETE FROM userdata WHERE itemId = :itemId")
     abstract fun deleteUserData(itemId: UUID)
 
-    @Query("SELECT * FROM userdata WHERE userId = :userId AND itemId = :itemId AND toBeSynced = TRUE")
+    @Query("SELECT * FROM userdata WHERE userId = :userId AND itemId = :itemId AND toBeSynced = 1")
     abstract fun getUserDataToBeSynced(userId: UUID, itemId: UUID): FindroidUserDataDto?
 
     @Query("UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId")

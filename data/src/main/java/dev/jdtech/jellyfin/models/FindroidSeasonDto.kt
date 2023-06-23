@@ -13,12 +13,12 @@ import java.util.UUID
             entity = FindroidShowDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index("seriesId"),
-    ]
+    ],
 )
 data class FindroidSeasonDto(
     @PrimaryKey

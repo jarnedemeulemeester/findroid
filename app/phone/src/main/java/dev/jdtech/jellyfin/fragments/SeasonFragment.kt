@@ -37,7 +37,7 @@ class SeasonFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSeasonBinding.inflate(inflater, container, false)
         return binding.root
@@ -124,8 +124,8 @@ class SeasonFragment : Fragment() {
     private fun navigateToEpisodeBottomSheetFragment(episode: FindroidEpisode) {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
+                episode.id,
+            ),
         )
     }
 
@@ -134,8 +134,8 @@ class SeasonFragment : Fragment() {
     ) {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToPlayerActivity(
-                playerItems
-            )
+                playerItems,
+            ),
         )
     }
 }

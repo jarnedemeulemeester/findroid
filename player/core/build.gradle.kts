@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ktlint)
 }
 
@@ -31,9 +30,9 @@ android {
 }
 
 ktlint {
+    version.set("0.49.1")
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {
@@ -41,9 +40,6 @@ dependencies {
     implementation(project(":preferences"))
     implementation(libs.androidx.core)
     implementation(libs.androidx.preference)
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.jellyfin.core)
     implementation(libs.timber)
 }

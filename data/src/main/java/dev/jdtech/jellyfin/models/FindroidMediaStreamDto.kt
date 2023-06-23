@@ -2,11 +2,11 @@ package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
 import org.jellyfin.sdk.model.api.MediaStreamType
+import java.util.UUID
 
 @Entity(
-    tableName = "mediastreams"
+    tableName = "mediastreams",
 )
 data class FindroidMediaStreamDto(
     @PrimaryKey

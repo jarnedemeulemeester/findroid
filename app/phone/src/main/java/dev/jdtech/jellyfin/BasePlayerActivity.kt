@@ -59,7 +59,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     protected fun isRendererType(
         mappedTrackInfo: MappingTrackSelector.MappedTrackInfo,
         rendererIndex: Int,
-        type: Int
+        type: Int,
     ): Boolean {
         val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
         if (trackGroupArray.length == 0) {

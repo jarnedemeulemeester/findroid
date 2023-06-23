@@ -172,7 +172,7 @@
     <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info">Mostrar info extra</string>
     <string name="amoled_theme">Tema oscuro AMOLED</string>
-    <string name="amoled_theme_summary">Usa tema oscuro AMOLE con un fondo en negro puro</string>
+    <string name="amoled_theme_summary">Usa tema oscuro AMOLED con un fondo en negro puro</string>
     <string name="player_gestures_seek">Gesto de búsqueda</string>
     <string name="player_gestures_seek_summary">Deslizar horizontalmente para buscar adelante o atrás</string>
     <string name="title_storage">Almacenamiento</string>
@@ -183,4 +183,7 @@
     <string name="cancel_download">Cancelar descarga</string>
     <string name="cancel_download_message">¿Quiere cancelar la descarga\?</string>
     <string name="stop_download">Detener descarga</string>
+    <string name="size">Tamaño</string>
+    <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, la cual establece que no recopilamos ningún dato</string>
+    <string name="app_language">Idioma de la aplicación</string>
 </resources>
