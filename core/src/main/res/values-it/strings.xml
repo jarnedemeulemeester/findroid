@@ -177,4 +177,6 @@
     <string name="no_server_connection">Nessuna connessione con il server Jellyfin, attivare la Modalità Offline per vedere gli elementi scaricati</string>
     <string name="select_storage_location">Seleziona la posizione di archiviazione</string>
     <string name="downloaded_indicator">Indicatore scaricato</string>
+    <string name="remove_server_address">Rimuovi indirizzo server</string>
+    <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
 </resources>
