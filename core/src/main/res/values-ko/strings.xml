@@ -18,8 +18,6 @@
     <string name="mpv_player">mpv 플레이어</string>
     <string name="download_roaming">로밍 중에도 다운로드</string>
     <string name="download_button_description">다운로드</string>
-    <string name="delete_button_description">삭제</string>
-    <string name="error_getting_person_id">상세 정보 없음</string>
     <string name="person_detail_title">상세 정보</string>
     <string name="movies_label">영화</string>
     <string name="shows_label">TV 시리즈</string>
@@ -47,7 +45,6 @@
     <string name="player_controls_fast_forward">빨리 감기</string>
     <string name="player_controls_pause">정지</string>
     <string name="player_controls_skip">스킵</string>
-    <string name="add_server_empty_error">서버 주소가 비어 있음</string>
     <string name="seeking">탐색</string>
     <string name="seek_back_increment">되감기 시간 (ms)</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
@@ -55,7 +52,6 @@
     <string name="title_media">내 미디어</string>
     <string name="check_button_description">재생함 또는 재생하지 않음으로 표시</string>
     <string name="settings_category_download">다운로드</string>
-    <string name="manage_servers">서버 관리</string>
     <string name="settings_category_appearance">디자인</string>
     <string name="device_name">디바이스 이름</string>
     <string name="settings_category_device">디바이스</string>
@@ -101,7 +97,6 @@
     <string name="settings_category_language">언어</string>
     <string name="settings_preferred_audio_language">선호하는 오디오 언어</string>
     <string name="settings_preferred_subtitle_language">선호하는 자막 언어</string>
-    <string name="initializing">초기화 중…</string>
     <string name="settings_category_servers">서버</string>
     <string name="settings_category_player">플레이어</string>
     <string name="episode_name">%1$d. %2$s</string>

@@ -157,18 +157,6 @@
             android:contentDescription="@string/player_controls_play_pause" />
 
         <ImageButton
-            android:id="@+id/exo_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_background"
-            android:backgroundTint="@android:color/white"
-            android:padding="16dp"
-            android:src="@drawable/ic_pause"
-            android:visibility="gone"
-            app:tint="@android:color/black"
-            android:contentDescription="@string/player_controls_pause" />
-
-        <ImageButton
             android:id="@+id/exo_ffwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -10,7 +10,7 @@
     <Preference
         app:icon="@drawable/ic_server"
         app:key="switchServer"
-        app:title="@string/manage_servers" />
+        app:title="@string/settings_category_servers" />
 
     <Preference
         app:icon="@drawable/ic_user"
