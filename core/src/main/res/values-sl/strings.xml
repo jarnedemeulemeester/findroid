@@ -84,12 +84,6 @@
     <string name="ascending">Naraščajoče</string>
     <string name="descending">Padajoče</string>
     <string name="select_video_version_title">Izberi verzijo</string>
-    <string name="player_controls_exit">Izhod iz predvajalnika</string>
-    <string name="player_controls_rewind">Previj nazaj</string>
-    <string name="player_controls_fast_forward">Navijaj naprej</string>
-    <string name="player_controls_pause">Premor</string>
-    <string name="player_controls_skip">Preskoči</string>
-    <string name="player_controls_skip_intro">Preskoči uvod</string>
     <string name="seeking">iskanje</string>
     <string name="seek_back_increment">Iskanja nazaj (ms)</string>
     <string name="seek_forward_increment">Iskanja naprej (ms)</string>

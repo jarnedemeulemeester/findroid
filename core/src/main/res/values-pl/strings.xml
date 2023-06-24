@@ -99,11 +99,6 @@
     <string name="descending">Malejąco</string>
     <string name="runtime_minutes">%1$d minut</string>
     <string name="select_video_version_title">Wybierz wersję</string>
-    <string name="player_controls_exit">Zamknij odtwarzacz</string>
-    <string name="player_controls_rewind">Przewiń</string>
-    <string name="player_controls_fast_forward">Przewiń do przodu</string>
-    <string name="player_controls_pause">Pauzuj</string>
-    <string name="player_controls_skip">Pomiń</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="remove_server">Usuń serwer</string>
     <string name="error_loading_data">Błąd ładowania danych</string>
@@ -140,7 +135,6 @@
     <string name="add_server_address">Dodaj adres serwera</string>
     <string name="add">Dodaj</string>
     <string name="quick_connect">Szybkie połączenie</string>
-    <string name="player_controls_skip_intro">Pomiń czołówkę</string>
     <string name="pref_player_intro_skipper">Pomijać czołówek</string>
     <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki ConfusedPolarBear\'s Intro Skipper</string>
     <string name="player_gestures_seek">Gest przesuwania</string>

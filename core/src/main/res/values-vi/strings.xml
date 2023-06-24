@@ -85,12 +85,6 @@
     <string name="descending">Giảm dần</string>
     <string name="runtime_minutes">%1$d phút</string>
     <string name="select_video_version_title">Chọn phiên bản</string>
-    <string name="player_controls_exit">Thoát khỏi trình xem</string>
-    <string name="player_controls_rewind">Tua lùi</string>
-    <string name="player_controls_fast_forward">Tua tới</string>
-    <string name="player_controls_pause">Dừng</string>
-    <string name="player_controls_skip">Bỏ qua</string>
-    <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Tua</string>
     <string name="seek_back_increment">Gia số tua lùi (ms)</string>

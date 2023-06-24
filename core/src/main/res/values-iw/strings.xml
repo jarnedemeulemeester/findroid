@@ -90,12 +90,6 @@
     <string name="runtime_minutes">%1$d דקות</string>
     <string name="ascending">עולה</string>
     <string name="select_video_version_title">בחר גרסה</string>
-    <string name="player_controls_exit">צא מהנגן</string>
-    <string name="player_controls_rewind">הרצה אחורה</string>
-    <string name="player_controls_fast_forward">הרצה קדימה</string>
-    <string name="player_controls_pause">השהה</string>
-    <string name="player_controls_skip">דלג</string>
-    <string name="player_controls_skip_intro">דלג פתיח</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="dynamic_colors">צבעים דינמיים</string>
     <string name="subtitles">כתוביות</string>

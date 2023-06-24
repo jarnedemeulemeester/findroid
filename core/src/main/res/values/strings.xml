@@ -117,12 +117,6 @@
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
-    <string name="player_controls_exit">Exit player</string>
-    <string name="player_controls_rewind">Rewind</string>
-    <string name="player_controls_fast_forward">Fast forward</string>
-    <string name="player_controls_pause">Pause</string>
-    <string name="player_controls_skip">Skip</string>
-    <string name="player_controls_skip_intro">Skip Intro</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Seeking</string>
     <string name="seek_back_increment">Seek back increment (ms)</string>

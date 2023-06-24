@@ -41,10 +41,6 @@
     <string name="ascending">오름차순</string>
     <string name="runtime_minutes">%1$d 분</string>
     <string name="select_video_version_title">버전 선택</string>
-    <string name="player_controls_rewind">되감기</string>
-    <string name="player_controls_fast_forward">빨리 감기</string>
-    <string name="player_controls_pause">정지</string>
-    <string name="player_controls_skip">스킵</string>
     <string name="seeking">탐색</string>
     <string name="seek_back_increment">되감기 시간 (ms)</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
@@ -109,7 +105,6 @@
     <string name="player_gestures_vb_summary">화면 오른쪽을 위아래로 스와이프하여 볼륨을 변경하고 왼쪽을 스와이프하여 밝기 변경</string>
     <string name="sort_by_options_2">등급</string>
     <string name="descending">내림차순</string>
-    <string name="player_controls_exit">플레이어 나가기</string>
     <string name="seek_forward_increment">빨리 감기 시간 (ms)</string>
     <string name="dynamic_colors_summary">Material You 동적 색상 사용(Android 12 이상에서만 사용 가능)</string>
     <string name="add_server_error_version">%1$s 은(는) 지원되지 않는 버전입니다. 서버를 업데이트 해주십시오.</string>
@@ -140,7 +135,6 @@
     <string name="add_address">주소 추가</string>
     <string name="add">추가</string>
     <string name="quick_connect">Quick Connect</string>
-    <string name="player_controls_skip_intro">오프닝 스킵</string>
     <string name="pref_player_intro_skipper">Intro Skipper 기능</string>
     <string name="pref_player_intro_skipper_summary">서버에 ConfusedPolarBear의 Intro Skipper 플러그인이 설치되어 있어야 합니다.</string>
 </resources>

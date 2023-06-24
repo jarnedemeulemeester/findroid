@@ -108,11 +108,6 @@
     <string name="descending">Decrescente</string>
     <string name="runtime_minutes">%1$d minuti</string>
     <string name="select_video_version_title">Seleziona versione</string>
-    <string name="player_controls_exit">Esci dal player</string>
-    <string name="player_controls_rewind">Riavvolgi</string>
-    <string name="player_controls_fast_forward">Avanti veloce</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip">Salta</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="subtitles">Sottotitoli</string>
     <string name="subtitles_summary">Personalizza lo stile dei sottotitoli</string>
@@ -140,7 +135,6 @@
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
     <string name="quick_connect">Connessione Rapida</string>
-    <string name="player_controls_skip_intro">Salta intro</string>
     <string name="pref_player_intro_skipper">Salta intro</string>
     <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>

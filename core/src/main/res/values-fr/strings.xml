@@ -46,12 +46,7 @@
     <string name="ascending">Croissant</string>
     <string name="descending">Décroissant</string>
     <string name="runtime_minutes">%1$d minutes</string>
-    <string name="player_controls_exit">Quitter le lecteur</string>
-    <string name="player_controls_rewind">Rembobiner</string>
-    <string name="player_controls_fast_forward">Avance rapide</string>
-    <string name="player_controls_pause">Pause</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="player_controls_skip">Suivant</string>
     <string name="next_up">À suivre</string>
     <string name="continue_watching">Reprendre la lecture</string>
     <string name="no_favorites">Vous n\'avez aucun favoris</string>
@@ -131,7 +126,6 @@
     <string name="pref_player_mpv_hwdec_codecs">Décodages matériels supportés</string>
     <string name="quick_connect">Connexion rapide</string>
     <string name="pref_player_intro_skipper">Passer l\'introduction</string>
-    <string name="player_controls_skip_intro">Ignorer l\'introduction</string>
     <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de ConfusedPolarBear doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>
     <string name="video">Vidéo</string>

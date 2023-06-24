@@ -61,8 +61,6 @@
     <string name="player_gestures">Spelersgebaren</string>
     <string name="player_brightness_remember">Onthoud felheidsniveau</string>
     <string name="ascending">Oplopend</string>
-    <string name="player_controls_pause">Pauzeren</string>
-    <string name="player_controls_skip">Overslaan</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="settings_category_network">Netwerk</string>
     <string name="settings_request_timeout">Time-out verzoek (ms)</string>
@@ -77,10 +75,7 @@
     <string name="pref_player_mpv_ao">Audio uitvoer</string>
     <string name="libraries">Bibliotheken</string>
     <string name="search">Zoek</string>
-    <string name="player_controls_exit">Sluit speler</string>
-    <string name="player_controls_rewind">Terugspoelen</string>
     <string name="no_search_results">Geen zoekresultaten</string>
-    <string name="player_controls_fast_forward">Snel vooruit</string>
     <string name="add_user">Gebruiker toevoegen</string>
     <string name="settings_category_language">Taal</string>
     <string name="settings_preferred_audio_language">Gewenste audio taal</string>
@@ -140,7 +135,6 @@
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="quick_connect">Snel verbinden</string>
-    <string name="player_controls_skip_intro">Intro overslaan</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBears\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="subtitle">Ondertiteling</string>

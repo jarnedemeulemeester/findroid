@@ -89,11 +89,6 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分</string>
     <string name="select_video_version_title">選擇版本</string>
-    <string name="player_controls_exit">關閉播放器</string>
-    <string name="player_controls_rewind">倒帶</string>
-    <string name="player_controls_fast_forward">快轉</string>
-    <string name="player_controls_pause">暫停</string>
-    <string name="player_controls_skip">跳過</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">拖動條</string>
     <string name="seek_back_increment">尋回增量（毫秒）</string>
@@ -131,7 +126,6 @@
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
-    <string name="player_controls_skip_intro">跳過片頭</string>
     <string name="quick_connect">快速連接</string>
     <string name="pref_player_intro_skipper">片頭跳過器</string>
     <string name="pref_player_intro_skipper_summary">需要在服務器上安裝ConfusedPolarBear的Intro Skipper挿件</string>

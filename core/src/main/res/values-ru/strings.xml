@@ -98,15 +98,10 @@
     <string name="ascending">По возрастанию</string>
     <string name="descending">По убыванию</string>
     <string name="select_video_version_title">Выбрать версию</string>
-    <string name="player_controls_exit">Выйти из проигрывателя</string>
-    <string name="player_controls_pause">Пауза</string>
-    <string name="player_controls_skip">Пропустить</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="sort_by_options_1">Рейтингу IMDB</string>
     <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>
-    <string name="player_controls_rewind">Перемотка</string>
-    <string name="player_controls_fast_forward">Быстрая перемотка</string>
     <string name="quick_connect">Быстрое подключение</string>
     <string name="seek_forward_increment">Шаг перемотки вперёд (мс)</string>
     <string name="subtitles">Субтитры</string>
@@ -122,7 +117,6 @@
     <string name="add_address">Добавить адрес</string>
     <string name="add_server_address">Добавить адрес сервера</string>
     <string name="add">Добавить</string>
-    <string name="player_controls_skip_intro">Пропустить заставку</string>
     <string name="jellyfin_banner">Баннер Jellyfin</string>
     <string name="seek_back_increment">Шаг перемотки назад (мс)</string>
     <string name="settings_category_network">Сеть</string>

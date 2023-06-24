@@ -110,13 +110,8 @@
     <string name="player_gestures_zoom">Gestos de zoom</string>
     <string name="player_gestures_vb_summary">Deslize para cima e para baixo no lado direito da tela para alterar o volume e no lado esquerdo para alterar o brilho</string>
     <string name="player_gestures_zoom_summary">Aperte para preencher a tela com o vídeo</string>
-    <string name="player_controls_skip">Pular</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecione a versão</string>
-    <string name="player_controls_exit">Sair do reprodutor</string>
-    <string name="player_controls_rewind">Retroceder</string>
-    <string name="player_controls_fast_forward">Avanço rápido</string>
-    <string name="player_controls_pause">Pausar</string>
     <string name="users">Usuários</string>
     <string name="add_user">Adicionar usuário</string>
     <string name="pref_player_mpv_hwdec">Decodificação de hardware</string>
@@ -140,7 +135,6 @@
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
     <string name="quick_connect">Conexão Rápida</string>
-    <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do ConfusedPolarBear seja instalado no servidor</string>
     <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="video">Vídeo</string>

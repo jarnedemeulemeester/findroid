@@ -89,11 +89,6 @@
     <string name="descending">Csökkenő</string>
     <string name="runtime_minutes">%1$d perc</string>
     <string name="select_video_version_title">Verzió kiválasztása</string>
-    <string name="player_controls_exit">Kilépés a lejátszóból</string>
-    <string name="player_controls_rewind">Visszatekerés</string>
-    <string name="player_controls_fast_forward">Előrepörgetés</string>
-    <string name="player_controls_pause">Szünet</string>
-    <string name="player_controls_skip">Átugrás</string>
     <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
     <string name="title_download">Letöltések</string>
     <string name="play_button_description">Média lejátszása</string>
@@ -119,7 +114,6 @@
     <string name="add_server_address">Szerver címének hozzáadása</string>
     <string name="add">Hozzáadás</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBear Intro Skipper pluginja szükséges hogy telepítve legyen a szerveren</string>
-    <string name="player_controls_skip_intro">Intro kihagyása</string>
     <string name="episodes_label">Epizódok</string>
     <string name="player_gestures_vb">Hang és fény gesztusok</string>
     <string name="player_gestures_zoom">Zoom gesztus</string>

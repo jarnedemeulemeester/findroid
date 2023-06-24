@@ -96,11 +96,6 @@
     <string name="descending">Descendente</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecciona la versión</string>
-    <string name="player_controls_exit">Salir del reproductor</string>
-    <string name="player_controls_rewind">Rebobinar</string>
-    <string name="player_controls_fast_forward">Avance rápido</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip">Omitir</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="settings_category_download">Descargas</string>
     <string name="download_mobile_data">Descargar usando datos móviles</string>
@@ -137,7 +132,6 @@
     <string name="remove_user">Quitar usuario</string>
     <string name="remove_user_dialog_text">¿Quiere eliminar el usuario %1$s\?</string>
     <string name="quick_connect">Conexión rápida</string>
-    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="pref_player_intro_skipper">Saltador de intros</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
     <string name="addresses">Direcciones</string>

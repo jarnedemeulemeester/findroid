@@ -87,8 +87,6 @@
     <string name="settings_use_cache_summary">Кеширайте снимките на диска за да ускорите времето за зареждане. Ще има ефект след рестартиране на приложението.</string>
     <string name="settings_cache_size_message">Приложението ще използва това количество MB от вашето дисково пространство, за да съхранява изображения от сървъра на Jellyfin. По-големи стойности може да са от полза при по-бавни мрежи.</string>
     <string name="descending">Низходящ</string>
-    <string name="player_controls_pause">Пауза</string>
-    <string name="player_controls_skip">Пропуснете</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="runtime_minutes">%1$d мин</string>
 </resources>

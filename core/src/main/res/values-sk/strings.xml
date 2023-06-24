@@ -84,10 +84,6 @@
     <string name="descending">Zostupne</string>
     <string name="runtime_minutes">%1$d minút</string>
     <string name="select_video_version_title">Vybrať verziu</string>
-    <string name="player_controls_exit">Zavrieť prehrávač</string>
-    <string name="player_controls_rewind">Pretočiť dozadu</string>
-    <string name="player_controls_pause">Pauza</string>
-    <string name="player_controls_skip">Preskočiť</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Pretáčanie</string>
     <string name="seek_back_increment">Velkosť pretočenia dozadu (ms)</string>
@@ -141,8 +137,6 @@
     <string name="image_description_poster">%1$s plagát</string>
     <string name="player_gestures_vb_summary">Potiahnite prstom hore a dole na pravej strane obrazovky na nastavenie hlasitosti a na ľavej na zmenu jasu</string>
     <string name="sort_by_options_5">Dátum vydania</string>
-    <string name="player_controls_fast_forward">Pretočiť dopredu</string>
-    <string name="player_controls_skip_intro">Preskočiť úvodnú zvučku</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
     <string name="add_user">Pridať používateľa</string>
     <string name="video">Video</string>

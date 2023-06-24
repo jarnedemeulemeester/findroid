@@ -4,5 +4,9 @@
     <string name="select_audio_track">Selecciona la pista de audio</string>
     <string name="select_subtile_track">Selecciona la pista de subtitulo</string>
     <string name="select_playback_speed">Seleccionar la velocidad de reproducción</string>
+    <string name="player_controls_rewind">Atrasar</string>>
+    <string name="player_controls_exit">Salir de reproductor</string>
+    <string name="player_controls_fast_forward">Avanzar</string>
+    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="external">Externo</string>
 </resources>

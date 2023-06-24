@@ -81,10 +81,6 @@
     <string name="ascending">За зростанням</string>
     <string name="descending">За спаданням</string>
     <string name="runtime_minutes">%1$d хв</string>
-    <string name="player_controls_rewind">Відмотка</string>
-    <string name="player_controls_fast_forward">Швидке перемотування</string>
-    <string name="player_controls_pause">Пауза</string>
-    <string name="player_controls_skip">Пропустити</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Пошук (Перемотка)</string>
     <string name="seek_back_increment">Крок пошуку назад (мс)</string>
@@ -159,8 +155,6 @@
     <string name="sort_by_options_2">Батьківському рейтингу</string>
     <string name="sort_by_options_4">Дата перегляду</string>
     <string name="select_video_version_title">Виберіть версію</string>
-    <string name="player_controls_exit">Вийти з плеєра</string>
-    <string name="player_controls_skip_intro">Пропустити вступ</string>
     <string name="seek_forward_increment">Крок пошуку вперед (мс)</string>
     <string name="dynamic_colors">Динамічні кольори</string>
     <string name="dynamic_colors_summary">Використовувати кольори Material You (доступно лише на Android 12+)</string>

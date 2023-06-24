@@ -77,10 +77,6 @@
     <string name="ascending">Stigande</string>
     <string name="descending">Fallande</string>
     <string name="runtime_minutes">%1$d minuter</string>
-    <string name="player_controls_exit">Avsluta spelare</string>
-    <string name="player_controls_rewind">Spola tillbaka</string>
-    <string name="player_controls_fast_forward">Spola framåt</string>
-    <string name="player_controls_skip">Hoppa över</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Spolar</string>
     <string name="seek_back_increment">Spola bakåt intervall (ms)</string>
@@ -143,8 +139,6 @@
     <string name="sort_by_options_1">IMDB-betyg</string>
     <string name="sort_by_options_4">Datum spelat</string>
     <string name="select_video_version_title">Välj version</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip_intro">Hoppa över intro</string>
     <string name="dynamic_colors">Dynamiska färger</string>
     <string name="dynamic_colors_summary">Använd Material You dynamiska färger (endast tillgängligt på Android 12+)</string>
     <string name="subtitles_summary">Anpassa textningens utseende</string>
