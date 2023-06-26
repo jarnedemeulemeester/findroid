@@ -163,8 +163,8 @@ class PlayerGestureHelper(
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, swipeGestureValueTrackerVolume.toInt(), 0)
 
                     activity.binding.gestureVolumeLayout.visibility = View.VISIBLE
-                    activity.binding.gestureVolumeProgressBar.max = maxVolume
-                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.toInt()
+                    activity.binding.gestureVolumeProgressBar.max = maxVolume.times(100)
+                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.times(100).toInt()
                     val process = (swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()
                     activity.binding.gestureVolumeText.text = "$process%"
                     activity.binding.gestureVolumeImage.setImageLevel(process)

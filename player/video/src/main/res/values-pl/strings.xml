@@ -5,4 +5,8 @@
     <string name="select_subtile_track">Wybierz ścieżkę napisów</string>
     <string name="select_playback_speed">Wybierz prędkość odtwarzania</string>
     <string name="external">Zewnętrznie</string>
+    <string name="player_controls_exit">Zamknij odtwarzacz</string>
+    <string name="player_controls_rewind">Przewiń</string>
+    <string name="player_controls_fast_forward">Przewiń do przodu</string>
+    <string name="player_controls_skip_intro">Pomiń czołówkę</string>
 </resources>

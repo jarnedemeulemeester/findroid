@@ -43,9 +43,7 @@
     <string name="settings_category_language">Idioma</string>
     <string name="settings_preferred_audio_language">Idioma preferido de áudio</string>
     <string name="settings_preferred_subtitle_language">Idioma preferido de legenda</string>
-    <string name="initializing">Inicializando…</string>
     <string name="settings_category_player">Reprodutor</string>
-    <string name="manage_servers">Gerenciar servidores</string>
     <string name="settings_category_appearance">Aparência</string>
     <string name="device_name">Nome do dispositivo</string>
     <string name="settings_category_device">Dispositivo</string>
@@ -63,9 +61,7 @@
     <string name="mpv_player">Reprodutor mpv</string>
     <string name="download_mobile_data">Download usando dados móveis</string>
     <string name="download_button_description">Download</string>
-    <string name="delete_button_description">Excluir</string>
     <string name="person_detail_title">Detalhes</string>
-    <string name="error_getting_person_id">Detalhes indisponíveis</string>
     <string name="movies_label">Filmes</string>
     <string name="shows_label">Series de TV</string>
     <string name="hide">Esconder</string>
@@ -107,7 +103,6 @@
     <string name="episodes_label">Episódios</string>
     <string name="player_gestures">Gestos do reprodutor</string>
     <string name="player_brightness_remember">Lembrar nível de brilho</string>
-    <string name="add_server_empty_error">Endereço de servidor vazio</string>
     <string name="sort_by_options_0">Título</string>
     <string name="dynamic_colors_summary">Usar cores dinâmicas do Material You (disponível apenas no Android 12+)</string>
     <string name="dynamic_colors">Cores dinâmicas</string>
@@ -115,13 +110,8 @@
     <string name="player_gestures_zoom">Gestos de zoom</string>
     <string name="player_gestures_vb_summary">Deslize para cima e para baixo no lado direito da tela para alterar o volume e no lado esquerdo para alterar o brilho</string>
     <string name="player_gestures_zoom_summary">Aperte para preencher a tela com o vídeo</string>
-    <string name="player_controls_skip">Pular</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecione a versão</string>
-    <string name="player_controls_exit">Sair do reprodutor</string>
-    <string name="player_controls_rewind">Retroceder</string>
-    <string name="player_controls_fast_forward">Avanço rápido</string>
-    <string name="player_controls_pause">Pausar</string>
     <string name="users">Usuários</string>
     <string name="add_user">Adicionar usuário</string>
     <string name="pref_player_mpv_hwdec">Decodificação de hardware</string>
@@ -145,14 +135,12 @@
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
     <string name="quick_connect">Conexão Rápida</string>
-    <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do ConfusedPolarBear seja instalado no servidor</string>
     <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="video">Vídeo</string>
     <string name="audio">Áudio</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">Temporário</string>
-    <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="subtitle">Legendas</string>
     <string name="extra_info">Exibir informações extras</string>
@@ -162,14 +150,12 @@
     <string name="player_gestures_seek_summary">Deslize horizontalmente para buscar para frente ou para trás</string>
     <string name="pref_player_trick_play_summary">Requer que o plug-in Jellyscrub do nicknsy seja instalado no servidor</string>
     <string name="pref_player_trick_play">Miniatura de pré-visualização</string>
-    <string name="title_storage">Armazenamento</string>
     <string name="offline_mode_icon">Ícone do modo offline</string>
     <string name="not_enough_storage">Este item requer %s de armazenamento livre, mas apenas %s está disponível</string>
     <string name="cancel_download_message">Tem certeza de que deseja cancelar o download\?</string>
     <string name="downloaded_indicator">Indicador de download</string>
     <string name="offline_mode">Modo offline</string>
     <string name="offline_mode_go_online">Ficar online</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Erro no download</string>
     <string name="no_server_connection">Sem conexão com o servidor Jellyfin, para assistir offline habilite o Modo offline</string>
     <string name="select_storage_location">Selecione o local de armazenamento</string>
@@ -185,4 +171,6 @@
     <string name="size">Tamanho</string>
     <string name="privacy_policy_notice">Ao usar o Findroid, você concorda com a <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos nenhum dado</string>
     <string name="app_language">Idioma do aplicativo</string>
+    <string name="remove_server_address">Excluir endereço do servidor</string>
+    <string name="remove_server_address_dialog_text">Tem certeza de que deseja excluir o endereço do servidor %1$s</string>
 </resources>

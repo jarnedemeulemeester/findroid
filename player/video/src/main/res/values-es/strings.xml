@@ -5,4 +5,8 @@
     <string name="select_subtile_track">Selecciona la pista de subtítulo</string>
     <string name="select_playback_speed">Selecciona la velocidad de reproducción</string>
     <string name="external">Externo</string>
+    <string name="player_controls_exit">Salir del reproductor</string>
+    <string name="player_controls_rewind">Rebobinar</string>
+    <string name="player_controls_fast_forward">Avance rápido</string>
+    <string name="player_controls_skip_intro">Saltar intro</string>
 </resources>

@@ -43,11 +43,9 @@
     <string name="no_search_results">Ni rezultatov iskanja</string>
     <string name="settings_category_language">Jezik</string>
     <string name="settings_preferred_audio_language">Želen jezik zvoka</string>
-    <string name="initializing">inicializacija…</string>
     <string name="settings_category_servers">Strežniki</string>
     <string name="settings_category_player">Vido predvajalnik</string>
     <string name="settings_category_download">Prenosi</string>
-    <string name="manage_servers">Upravljanje strežnikov</string>
     <string name="settings_category_appearance">Videz</string>
     <string name="device_name">Naziv naprave</string>
     <string name="settings_cache_size">Velikost predpomnilnika (MB)</string>
@@ -61,9 +59,7 @@
     <string name="mpv_player">mpv player</string>
     <string name="download_roaming">Prenos med gostovanjem prenosnih podatkov</string>
     <string name="download_button_description">Prenesi</string>
-    <string name="delete_button_description">Izbriši</string>
     <string name="person_detail_title">Podrobnosti</string>
-    <string name="error_getting_person_id">Podrobnosti niso na voljo</string>
     <string name="movies_label">Filmi</string>
     <string name="episodes_label">Epizode</string>
     <string name="hide">Skrij</string>
@@ -88,13 +84,6 @@
     <string name="ascending">Naraščajoče</string>
     <string name="descending">Padajoče</string>
     <string name="select_video_version_title">Izberi verzijo</string>
-    <string name="player_controls_exit">Izhod iz predvajalnika</string>
-    <string name="player_controls_rewind">Previj nazaj</string>
-    <string name="player_controls_fast_forward">Navijaj naprej</string>
-    <string name="player_controls_pause">Premor</string>
-    <string name="player_controls_skip">Preskoči</string>
-    <string name="player_controls_skip_intro">Preskoči uvod</string>
-    <string name="add_server_empty_error">Prazen naslov strežnika</string>
     <string name="seeking">iskanje</string>
     <string name="seek_back_increment">Iskanja nazaj (ms)</string>
     <string name="seek_forward_increment">Iskanja naprej (ms)</string>

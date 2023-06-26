@@ -48,10 +48,8 @@
     <string name="settings_category_language">Jazyk</string>
     <string name="settings_preferred_audio_language">Preferovaný jazyk zvuku</string>
     <string name="settings_preferred_subtitle_language">Preferovaný jazyk titulků</string>
-    <string name="initializing">Inicializace…</string>
     <string name="settings_category_servers">Servery</string>
     <string name="settings_category_player">Přehrávač</string>
-    <string name="manage_servers">Spravovat servery</string>
     <string name="settings_category_appearance">Vzhled</string>
     <string name="device_name">Název zařízení</string>
     <string name="settings_category_device">Zařízení</string>

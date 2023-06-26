@@ -5,4 +5,8 @@
     <string name="select_playback_speed">Izberite hitrost predvajanja</string>
     <string name="select_a_version">Izberite različico</string>
     <string name="external">Zunanjo</string>
+    <string name="player_controls_exit">Izhod iz predvajalnika</string>
+    <string name="player_controls_rewind">Previj nazaj</string>
+    <string name="player_controls_fast_forward">Navijaj naprej</string>
+    <string name="player_controls_skip_intro">Preskoči uvod</string>
 </resources>

@@ -45,13 +45,11 @@
     <string name="no_search_results">אין תוצאות</string>
     <string name="settings_preferred_audio_language">שפת שמע מועדפת</string>
     <string name="settings_preferred_subtitle_language">שפת תרגום מועדפת</string>
-    <string name="initializing">טוען…</string>
     <string name="settings_category_servers">שרתים</string>
     <string name="settings_category_player">נגן</string>
     <string name="series_poster">כרזת סדרה</string>
     <string name="no_downloads">לא הורדת כלום</string>
     <string name="settings_category_download">הורדות</string>
-    <string name="manage_servers">נהל שרתים</string>
     <string name="settings_category_appearance">מראה</string>
     <string name="settings_category_device">מכשיר</string>
     <string name="device_name">שם מכשיר</string>
@@ -66,7 +64,6 @@
     <string name="search_hint">חפש סרטים, סדרות, פרקים…</string>
     <string name="download_roaming">הורד בנדידה</string>
     <string name="download_button_description">הורד</string>
-    <string name="delete_button_description">מחק</string>
     <string name="person_detail_title">פרטים</string>
     <string name="movies_label">סרטים</string>
     <string name="shows_label">סדרות</string>
@@ -77,7 +74,6 @@
     <string name="close">סגור</string>
     <string name="share">שתף</string>
     <string name="mpv_player">נגן mpv</string>
-    <string name="error_getting_person_id">פרטים אינם זמינים</string>
     <string name="image_description_poster">%1$s כרזה</string>
     <string name="player_gestures">מחוות נגן</string>
     <string name="image_description_backdrop">%1$s רקע</string>
@@ -94,14 +90,7 @@
     <string name="runtime_minutes">%1$d דקות</string>
     <string name="ascending">עולה</string>
     <string name="select_video_version_title">בחר גרסה</string>
-    <string name="player_controls_exit">צא מהנגן</string>
-    <string name="player_controls_rewind">הרצה אחורה</string>
-    <string name="player_controls_fast_forward">הרצה קדימה</string>
-    <string name="player_controls_pause">השהה</string>
-    <string name="player_controls_skip">דלג</string>
-    <string name="player_controls_skip_intro">דלג פתיח</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">כתובת שרת ריקה</string>
     <string name="dynamic_colors">צבעים דינמיים</string>
     <string name="subtitles">כתוביות</string>
     <string name="theme_light">בהיר</string>
@@ -135,7 +124,6 @@
     <string name="pref_player_intro_skipper_summary">דורש תוסף מדלג פתיחים של ConfusedPolarBear מותקן על השרת</string>
     <string name="subtitle_chip_text">כתוביות</string>
     <string name="temp">זמני</string>
-    <string name="dolby_logo_desc">לוגו Dolby</string>
     <string name="extra_info_summary">מציג מידע מפורט על שמע, וידאו וכתוביות</string>
     <string name="add_server">הוסף שרת</string>
     <string name="add_server_error_outdated">גרסת שרת ישנה: %1$s. אנא עדכן את השרת שלך</string>
@@ -174,7 +162,6 @@
     <string name="stop_download">עצור הורדה</string>
     <string name="offline_mode">מצב לא מקוון</string>
     <string name="offline_mode_go_online">עבור למצב מקוון</string>
-    <string name="mega_byte_suffix">%d מ\"ב</string>
     <string name="downloading_error">אירעה שגיאה במהלך ההורדה</string>
     <string name="no_server_connection">אין חיבור לשרת Jellyfin, כדי לצפות במצב לא מקוון, אפשר את מצב לא מקוון</string>
     <string name="privacy_policy_notice">בשימוש ב-Findroid הנך מסכים עם <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">מדיניות הפרטיות</a> אשר מצהירה שאנו לא שום מידע</string>
@@ -182,6 +169,5 @@
     <string name="episode_name_extended_with_end">ע%1$d:פ%2$d-%3$d - %4$s</string>
     <string name="storage_name">%s (%d מ\"ב פנויים)</string>
     <string name="app_language">שפת הממשק</string>
-    <string name="title_storage">אחסון</string>
     <string name="downloaded_indicator">מחוון הורדה</string>
 </resources>

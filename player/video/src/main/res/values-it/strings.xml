@@ -5,4 +5,14 @@
     <string name="select_subtile_track">Traccia dei sottotitoli</string>
     <string name="select_playback_speed">Velocità di riproduzione</string>
     <string name="external">Esterno</string>
+    <string name="player_controls_fast_forward">Avanti veloce</string>
+    <string name="player_controls_play_pause">Riproduci pausa</string>
+    <string name="player_controls_skip_back">Salta indietro</string>
+    <string name="player_controls_skip_forward">Salta avanti</string>
+    <string name="player_trickplay">Anteprima</string>
+    <string name="player_controls_progress">Barra di progresso</string>
+    <string name="player_controls_rewind">Riavvolgi</string>
+    <string name="player_controls_lock">Blocca il player</string>
+    <string name="player_controls_exit">Esci dal player</string>
+    <string name="player_controls_skip_intro">Salta intro</string>
 </resources>
