@@ -172,4 +172,6 @@
     <string name="size">Tamaño</string>
     <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, que recoge que no recopilamos ningún dato</string>
     <string name="app_language">Idioma de la aplicación</string>
+    <string name="remove_server_address">Eliminar dirección del servidor</string>
+    <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor\? %1$s</string>
 </resources>
