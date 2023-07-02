@@ -45,6 +45,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -126,7 +127,9 @@ fun ServerSelectScreen(
                     contentPadding = PaddingValues(24.dp)
                 ) {
                     items(servers) {
-                        Server(it)
+                        Server(it) { server ->
+                            navigator.navigate(UserSelectScreenDestination(serverId = server.id))
+                        }
                     }
                     items(discoveredServers) {
                         Server(it, discovered = true)
