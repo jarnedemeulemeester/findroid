@@ -54,10 +54,8 @@
     <string name="settings_category_language">Idioma</string>
     <string name="settings_preferred_audio_language">Idioma de audio preferido</string>
     <string name="settings_preferred_subtitle_language">Idioma de subtítulo preferido</string>
-    <string name="initializing">Iniciando…</string>
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_player">Reproductor</string>
-    <string name="manage_servers">Administrar servidores</string>
     <string name="settings_category_appearance">Apariencia</string>
     <string name="device_name">Nombre del dispositivo</string>
     <string name="settings_category_device">Dispositivo</string>
@@ -78,9 +76,7 @@
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor experimental MPV parar reproducir contenidos. MPV soporta mas códecs de vídeo, audio y subtítulos.</string>
     <string name="download_button_description">Descarga</string>
-    <string name="delete_button_description">Borrar</string>
     <string name="person_detail_title">Detalles</string>
-    <string name="error_getting_person_id">Detalle no disponible</string>
     <string name="movies_label">Películas</string>
     <string name="shows_label">Series</string>
     <string name="hide">Ocultar</string>
@@ -100,13 +96,7 @@
     <string name="descending">Descendente</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecciona la versión</string>
-    <string name="player_controls_exit">Salir del reproductor</string>
-    <string name="player_controls_rewind">Rebobinar</string>
-    <string name="player_controls_fast_forward">Avance rápido</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip">Omitir</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Dirección del servidor vacía</string>
     <string name="settings_category_download">Descargas</string>
     <string name="download_mobile_data">Descargar usando datos móviles</string>
     <string name="download_roaming">Descargar en itinerancia</string>
@@ -142,7 +132,6 @@
     <string name="remove_user">Quitar usuario</string>
     <string name="remove_user_dialog_text">¿Quiere eliminar el usuario %1$s\?</string>
     <string name="quick_connect">Conexión rápida</string>
-    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="pref_player_intro_skipper">Saltador de intros</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
     <string name="addresses">Direcciones</string>
@@ -158,7 +147,6 @@
     <string name="amoled_theme_summary">Usa un tema de fondo negro puro para pantallas AMOLED</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">Temp</string>
-    <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Muestra información detallada de audio, video y subtítulos</string>
     <string name="extra_info">Mostrar info extra</string>
     <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
@@ -166,7 +154,6 @@
     <string name="offline_mode">Modo sin conexión</string>
     <string name="offline_mode_icon">Icono de Modo sin conexión</string>
     <string name="offline_mode_go_online">Conectarse</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Error al descargar</string>
     <string name="not_enough_storage">Este elemento requiere %s libres en el almacenamiento pero solo hay disponibles %s</string>
     <string name="no_server_connection">No se puede conectar con el servidor de Jellyfin, para ver sin conexión, activa el Modo sin conexión</string>
@@ -176,7 +163,6 @@
     <string name="cancel_download">Cancelar descarga</string>
     <string name="cancel_download_message">¿Estás seguro de que quieres cancelar la descarga\?</string>
     <string name="stop_download">Parar descarga</string>
-    <string name="title_storage">Almacenamiento</string>
     <string name="downloaded_indicator">Indicador de elemento descargado</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
@@ -186,4 +172,6 @@
     <string name="size">Tamaño</string>
     <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, que recoge que no recopilamos ningún dato</string>
     <string name="app_language">Idioma de la aplicación</string>
+    <string name="remove_server_address">Eliminar dirección del servidor</string>
+    <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor\? %1$s</string>
 </resources>

@@ -10,7 +10,7 @@ import dev.jdtech.jellyfin.models.User
 
 class UserListAdapter(
     private val clickListener: (user: User) -> Unit,
-    private val longClickListener: (user: User) -> Boolean
+    private val longClickListener: (user: User) -> Boolean,
 ) : ListAdapter<User, UserListAdapter.UserViewHolder>(DiffCallback) {
     class UserViewHolder(private var binding: UserListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,14 +32,14 @@ class UserListAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): UserViewHolder {
         return UserViewHolder(
             UserListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 

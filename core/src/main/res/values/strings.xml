@@ -22,6 +22,8 @@
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove_user">Remove user</string>
     <string name="remove_user_dialog_text">Are you sure you want to remove the user %1$s</string>
+    <string name="remove_server_address">Remove server address</string>
+    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Home</string>
@@ -29,7 +31,6 @@
     <string name="title_favorite">Favorites</string>
     <string name="title_settings">Settings</string>
     <string name="title_download">Downloads</string>
-    <string name="title_storage">Storage</string>
     <string name="view_all">View all</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
@@ -61,11 +62,9 @@
     <string name="settings_preferred_audio_language">Preferred audio language</string>
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>
     <string name="app_language">App language</string>
-    <string name="initializing">Initializing…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Player</string>
     <string name="settings_category_download">Downloads</string>
-    <string name="manage_servers">Manage servers</string>
     <string name="settings_category_appearance">Appearance</string>
     <string name="device_name">Device name</string>
     <string name="settings_category_device">Device</string>
@@ -88,9 +87,7 @@
     <string name="download_roaming">Download when roaming</string>
     <string name="mpv_player_summary">Use the experimental mpv player to play videos. mpv has support for more video, audio and subtitle codecs.</string>
     <string name="download_button_description">Download</string>
-    <string name="delete_button_description">Delete</string>
     <string name="person_detail_title">Details</string>
-    <string name="error_getting_person_id">Detail unavailable</string>
     <string name="movies_label">Movies</string>
     <string name="shows_label">TV Shows</string>
     <string name="episodes_label">Episodes</string>
@@ -120,14 +117,7 @@
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
-    <string name="player_controls_exit">Exit player</string>
-    <string name="player_controls_rewind">Rewind</string>
-    <string name="player_controls_fast_forward">Fast forward</string>
-    <string name="player_controls_pause">Pause</string>
-    <string name="player_controls_skip">Skip</string>
-    <string name="player_controls_skip_intro">Skip Intro</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Empty server address</string>
     <string name="seeking">Seeking</string>
     <string name="seek_back_increment">Seek back increment (ms)</string>
     <string name="seek_forward_increment">Seek forward increment (ms)</string>
@@ -166,13 +156,11 @@
     <string name="subtitle">Subtitles</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temp</string>
-    <string name="dolby_logo_desc">Dolby Logo</string>
     <string name="extra_info">Display Extra Info</string>
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
     <string name="offline_mode">Offline Mode</string>
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Error while downloading</string>
     <string name="not_enough_storage">This item requires %s of free storage but only %s is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>

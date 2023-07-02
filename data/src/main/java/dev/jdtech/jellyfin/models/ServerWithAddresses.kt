@@ -8,12 +8,12 @@ data class ServerWithAddresses(
     val server: Server,
     @Relation(
         parentColumn = "id",
-        entityColumn = "serverId"
+        entityColumn = "serverId",
     )
     val addresses: List<ServerAddress>,
     @Relation(
         parentColumn = "currentUserId",
-        entityColumn = "id"
+        entityColumn = "id",
     )
-    val user: User?
+    val user: User?,
 )

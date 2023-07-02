@@ -23,7 +23,7 @@
     <string name="title_media">Én médiám</string>
     <string name="title_favorite">Kedvencek</string>
     <string name="title_settings">Beállítások</string>
-    <string name="view_all">Mind megtekintése</string>
+    <string name="view_all">Összes megtekintése</string>
     <string name="error_loading_data">Hiba az adatok betöltése közben</string>
     <string name="retry">Újra</string>
     <string name="genres">Műfajok</string>
@@ -46,11 +46,9 @@
     <string name="settings_category_language">Nyelv</string>
     <string name="settings_preferred_audio_language">Preferált beszéd nyelv</string>
     <string name="settings_preferred_subtitle_language">Preferált felirat nyelv</string>
-    <string name="initializing">Felkészülés…</string>
     <string name="settings_category_servers">Szerverek</string>
     <string name="settings_category_player">Lejátszó</string>
     <string name="settings_category_download">Letöltések</string>
-    <string name="manage_servers">Szerverek kezelése</string>
     <string name="device_name">Eszköz neve</string>
     <string name="settings_category_device">Eszköz</string>
     <string name="settings_category_cache">Gyorsítótár</string>
@@ -69,9 +67,7 @@
     <string name="mpv_player">mpv lejátszó</string>
     <string name="download_roaming">Letöltés roaming közben</string>
     <string name="download_button_description">Letöltés</string>
-    <string name="delete_button_description">Törlés</string>
     <string name="person_detail_title">Részletek</string>
-    <string name="error_getting_person_id">Részletek nem elérhetőek</string>
     <string name="movies_label">Filmek</string>
     <string name="shows_label">TV Sorozatok</string>
     <string name="hide">Elrejtés</string>
@@ -93,12 +89,6 @@
     <string name="descending">Csökkenő</string>
     <string name="runtime_minutes">%1$d perc</string>
     <string name="select_video_version_title">Verzió kiválasztása</string>
-    <string name="player_controls_exit">Kilépés a lejátszóból</string>
-    <string name="player_controls_rewind">Visszatekerés</string>
-    <string name="player_controls_fast_forward">Előrepörgetés</string>
-    <string name="player_controls_pause">Szünet</string>
-    <string name="player_controls_skip">Átugrás</string>
-    <string name="add_server_empty_error">Üres szervercím</string>
     <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
     <string name="title_download">Letöltések</string>
     <string name="play_button_description">Média lejátszása</string>
@@ -124,7 +114,6 @@
     <string name="add_server_address">Szerver címének hozzáadása</string>
     <string name="add">Hozzáadás</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBear Intro Skipper pluginja szükséges hogy telepítve legyen a szerveren</string>
-    <string name="player_controls_skip_intro">Intro kihagyása</string>
     <string name="episodes_label">Epizódok</string>
     <string name="player_gestures_vb">Hang és fény gesztusok</string>
     <string name="player_gestures_zoom">Zoom gesztus</string>
@@ -148,12 +137,10 @@
     <string name="remove_user">Felhasználó eltávolítása</string>
     <string name="libraries">Könyvtárak</string>
     <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
-    <string name="title_storage">Tárhely</string>
     <string name="downloaded_indicator">Letöltött indikátor</string>
     <string name="pref_player_trick_play_summary">nicknsy Jellyscrub bővítményének telepítve kell legyen a szerveren</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="offline_mode_go_online">Váltás online módra</string>
     <string name="player_gestures_seek_summary">Húzd az ujjad jobbra vagy balra az előre, illetve vissza ugráshoz</string>
     <string name="amoled_theme">AMOLED sötét mód</string>
@@ -169,7 +156,6 @@
     <string name="offline_mode">Offline mód</string>
     <string name="offline_mode_icon">Offline mód ikon</string>
     <string name="temp">átmeneti</string>
-    <string name="dolby_logo_desc">Dolby logó</string>
     <string name="no_server_connection">Nem sikerült kapcsolódni a Jellyfin szerverhez, engedélyezd az offline módot a letöltött tartalmak nézéséhez</string>
     <string name="select_storage_location">Letöltés helye</string>
     <string name="storage_unavailable">A letöltések helye nem elérhető</string>
@@ -180,4 +166,9 @@
     <string name="cancel_download">Letöltés leállítása</string>
     <string name="cancel_download_message">Biztosan le akarod állítani a letöltést\?</string>
     <string name="stop_download">Letöltés leállítása</string>
+    <string name="size">Méret</string>
+    <string name="privacy_policy_notice">A Findroid használatával elfogadod az <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
+    <string name="subtitle_chip_text">Felirat</string>
+    <string name="remove_server_address">Szerver címének eltávolítása</string>
+    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
 </resources>

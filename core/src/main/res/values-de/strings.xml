@@ -38,10 +38,8 @@
     <string name="no_search_results">Keine Suchergebnisse</string>
     <string name="settings_category_language">Sprache</string>
     <string name="settings_preferred_audio_language">Bevorzugte Audiosprache</string>
-    <string name="initializing">Initializiere…</string>
     <string name="settings_category_servers">Server</string>
     <string name="settings_category_download">Downloads</string>
-    <string name="manage_servers">Server verwalten</string>
     <string name="device_name">Gerätename</string>
     <string name="settings_category_device">Gerät</string>
     <string name="settings_category_cache">Cache</string>
@@ -78,9 +76,7 @@
     <string name="settings_category_player">Player</string>
     <string name="mpv_player_summary">Benutze den experimentellen MPV-Player. Dieser unterstützt mehr Codecs in Bezug auf sowohl Video, Audio als auch Untertitel.</string>
     <string name="download_button_description">Herunterladen</string>
-    <string name="delete_button_description">Löschen</string>
     <string name="person_detail_title">Details</string>
-    <string name="error_getting_person_id">Detail nicht verfügbar</string>
     <string name="movies_label">Filme</string>
     <string name="shows_label">Fernsehsendungen</string>
     <string name="hide">Verstecken</string>
@@ -90,7 +86,6 @@
     <string name="share">Teilen</string>
     <string name="gestures">Gesten</string>
     <string name="player_gestures">Player-Gesten</string>
-    <string name="add_server_empty_error">Leere Serveradresse</string>
     <string name="image_description_poster">%1$s Poster</string>
     <string name="image_description_backdrop">%1$s Hintergrundbild</string>
     <string name="player_brightness_remember">Helligkeitsniveau beibehalten</string>
@@ -104,11 +99,6 @@
     <string name="descending">Absteigend</string>
     <string name="runtime_minutes">%1$d Minuten</string>
     <string name="select_video_version_title">Version auswählen</string>
-    <string name="player_controls_exit">Player verlassen</string>
-    <string name="player_controls_rewind">Wiederholen</string>
-    <string name="player_controls_fast_forward">Vorspulen</string>
-    <string name="player_controls_pause">Pausieren</string>
-    <string name="player_controls_skip">Überspringen</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
@@ -125,7 +115,6 @@
     <string name="player_gestures_zoom">Zoom Geste</string>
     <string name="player_gestures_zoom_summary">Ziehen um das Video an den Bildschirm anzupassen</string>
     <string name="libraries">Bibliotheken</string>
-    <string name="player_controls_skip_intro">Intro überspringen</string>
     <string name="remove_user">Benutzer entfernen</string>
     <string name="remove_user_dialog_text">Bist du sicher, dass du den Benutzer %1$s löschen möchtest</string>
     <string name="seek_forward_increment">Weiter suchen inkrement (ms)</string>
@@ -153,7 +142,6 @@
     <string name="subtitle_chip_text">CC</string>
     <string name="extra_info_summary">Anzeigen von detaillierten Infos zu Ton/Audio, Video und Untertiteln</string>
     <string name="video">Video</string>
-    <string name="dolby_logo_desc">Dolby Symbol</string>
     <string name="temp">temporär</string>
     <string name="subtitle">Untertitel</string>
     <string name="amoled_theme_summary">Verwenden Sie den Modus für AMOLED mit einem tiefschwarzen Hintergrund</string>
@@ -169,7 +157,6 @@
     <string name="offline_mode_go_online">Online gehen</string>
     <string name="cancel_download_message">Sind Sie sicher, dass Sie den Download abbrechen möchten\?</string>
     <string name="app_language">App Sprache</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Fehler beim Herunterladen</string>
     <string name="offline_mode">Offline-Modus</string>
     <string name="offline_mode_icon">Offline-Modus Icon</string>
@@ -182,7 +169,6 @@
     <string name="storage_name">%s (%d MB frei)</string>
     <string name="preparing_download">Download wird vorbereitet</string>
     <string name="stop_download">Download stoppen</string>
-    <string name="title_storage">Speicher</string>
     <string name="downloaded_indicator">Download Indikator</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
 </resources>

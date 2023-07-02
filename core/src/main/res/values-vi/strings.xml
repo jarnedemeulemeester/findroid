@@ -44,11 +44,9 @@
     <string name="no_search_results">Không có kết quả</string>
     <string name="settings_category_language">Ngôn ngữ</string>
     <string name="settings_preferred_audio_language">Ưu tiên ngôn ngữ âm thanh</string>
-    <string name="initializing">Đang khởi tạo…</string>
     <string name="settings_category_servers">Máy chủ</string>
     <string name="settings_category_player">Trình xem</string>
     <string name="settings_category_download">Tải về</string>
-    <string name="manage_servers">Quản lí máy chủ</string>
     <string name="settings_category_appearance">Diện mạo</string>
     <string name="device_name">Tên thiết bị</string>
     <string name="settings_category_device">Thiết bị</string>
@@ -66,7 +64,6 @@
     <string name="download_roaming">Tải về trong khi chuyển vung</string>
     <string name="download_button_description">Tải về</string>
     <string name="person_detail_title">Chi tiết</string>
-    <string name="error_getting_person_id">Chi tiết không có sẵn</string>
     <string name="movies_label">Phim</string>
     <string name="shows_label">Phim truyền hình</string>
     <string name="episodes_label">Tập</string>
@@ -88,14 +85,7 @@
     <string name="descending">Giảm dần</string>
     <string name="runtime_minutes">%1$d phút</string>
     <string name="select_video_version_title">Chọn phiên bản</string>
-    <string name="player_controls_exit">Thoát khỏi trình xem</string>
-    <string name="player_controls_rewind">Tua lùi</string>
-    <string name="player_controls_fast_forward">Tua tới</string>
-    <string name="player_controls_pause">Dừng</string>
-    <string name="player_controls_skip">Bỏ qua</string>
-    <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Địa chỉ máy chủ rỗng</string>
     <string name="seeking">Tua</string>
     <string name="seek_back_increment">Gia số tua lùi (ms)</string>
     <string name="seek_forward_increment">Gia số tua tới (ms)</string>
@@ -136,7 +126,6 @@
     <string name="privacy_policy">Chính sách về quyền riêng tư</string>
     <string name="download_mobile_data">Tải về sử dụng mạng dữ liệu</string>
     <string name="mpv_player_summary">Dùng trình phát mpv thử nghiệm để phát video. mpv hỗ trợ nhiều bộ giải mã hình ảnh, âm thanh và phụ đề hơn.</string>
-    <string name="delete_button_description">Xoá</string>
     <string name="sort_order">Sắp xếp theo thứ tự</string>
     <string name="player_gestures">Cử chỉ trong trình xem</string>
     <string name="player_gestures_vb_summary">Vuốt lên và xuống ở phía bên phải màn hình để điều chỉnh âm lượng, và ở bên trái đề điều chỉnh độ sáng màn hình</string>

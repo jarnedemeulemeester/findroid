@@ -5,4 +5,8 @@
     <string name="select_a_version">Välj en version</string>
     <string name="external">Extern</string>
     <string name="select_audio_track">Välj ljudspår</string>
+    <string name="player_controls_exit">Avsluta spelare</string>
+    <string name="player_controls_rewind">Spola tillbaka</string>
+    <string name="player_controls_fast_forward">Spola framåt</string>
+    <string name="player_controls_skip_intro">Hoppa över intro</string>
 </resources>

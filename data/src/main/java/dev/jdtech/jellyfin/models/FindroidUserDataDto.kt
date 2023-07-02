@@ -5,7 +5,7 @@ import java.util.UUID
 
 @Entity(
     tableName = "userdata",
-    primaryKeys = ["userId", "itemId"]
+    primaryKeys = ["userId", "itemId"],
 )
 data class FindroidUserDataDto(
     val userId: UUID,

@@ -6,5 +6,5 @@ data class View(
     val id: UUID,
     val name: String,
     var items: List<FindroidItem>? = null,
-    val type: CollectionType
+    val type: CollectionType,
 )

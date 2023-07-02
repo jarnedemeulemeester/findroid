@@ -7,5 +7,5 @@ data class BifData(
     val timestampMultiplier: Int,
     val imageCount: Int,
     val images: Map<Int, Bitmap>,
-    val imageWidth: Int
+    val imageWidth: Int,
 )

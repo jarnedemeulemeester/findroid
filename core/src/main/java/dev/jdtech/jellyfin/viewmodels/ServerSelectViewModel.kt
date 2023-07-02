@@ -9,13 +9,13 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.UiText
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ServerSelectViewModel
@@ -23,7 +23,7 @@ class ServerSelectViewModel
 constructor(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()

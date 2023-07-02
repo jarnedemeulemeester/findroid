@@ -41,4 +41,7 @@
     <color name="red">#EB5757</color>
     <color name="yellow">#F2C94C</color>
     <color name="player_background">#AA000000</color>
+
+    <color name="logo_primary">#FF3DDC84</color>
+    <color name="logo_secondary">#FF00A4DC</color>
 </resources>

@@ -5,4 +5,7 @@
     <string name="select_subtile_track">Seleccione as legendas</string>
     <string name="select_playback_speed">Seleccionar velocidade de reprodução</string>
     <string name="external">Externo</string>
+    <string name="player_controls_rewind">Voltar</string>
+    <string name="player_controls_exit">Sair do Reprodutor</string>
+    <string name="player_controls_fast_forward">Avançar rapidamente</string>
 </resources>

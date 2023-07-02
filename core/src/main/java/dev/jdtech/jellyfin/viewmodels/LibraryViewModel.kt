@@ -9,8 +9,6 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,12 +16,14 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
 import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -40,7 +40,7 @@ constructor(
         parentId: UUID,
         libraryType: CollectionType,
         sortBy: SortBy = SortBy.defaultValue,
-        sortOrder: SortOrder = SortOrder.ASCENDING
+        sortOrder: SortOrder = SortOrder.ASCENDING,
     ) {
         itemsloaded = true
         Timber.d("$libraryType")
@@ -58,7 +58,7 @@ constructor(
                     includeTypes = itemType,
                     recursive = true,
                     sortBy = sortBy,
-                    sortOrder = sortOrder
+                    sortOrder = sortOrder,
                 ).cachedIn(viewModelScope)
                 _uiState.emit(UiState.Normal(items))
             } catch (e: Exception) {

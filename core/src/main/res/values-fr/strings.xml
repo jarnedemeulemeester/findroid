@@ -46,12 +46,7 @@
     <string name="ascending">Croissant</string>
     <string name="descending">Décroissant</string>
     <string name="runtime_minutes">%1$d minutes</string>
-    <string name="player_controls_exit">Quitter le lecteur</string>
-    <string name="player_controls_rewind">Rembobiner</string>
-    <string name="player_controls_fast_forward">Avance rapide</string>
-    <string name="player_controls_pause">Pause</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="player_controls_skip">Suivant</string>
     <string name="next_up">À suivre</string>
     <string name="continue_watching">Reprendre la lecture</string>
     <string name="no_favorites">Vous n\'avez aucun favoris</string>
@@ -60,10 +55,8 @@
     <string name="settings_category_language">Langue</string>
     <string name="settings_preferred_audio_language">Langue audio préférée</string>
     <string name="settings_preferred_subtitle_language">Langue préférée pour les sous-titres</string>
-    <string name="initializing">Initialisation…</string>
     <string name="settings_category_servers">Serveurs</string>
     <string name="settings_category_player">Lecteur</string>
-    <string name="manage_servers">Gérer les serveurs</string>
     <string name="settings_category_appearance">Apparence</string>
     <string name="device_name">Nom de l\'appareil</string>
     <string name="settings_category_device">Appareil</string>
@@ -77,7 +70,6 @@
     <string name="mpv_player">Lecteur MPV</string>
     <string name="download_mobile_data">Télécharger via données mobiles</string>
     <string name="download_button_description">Télécharger</string>
-    <string name="delete_button_description">Supprimer</string>
     <string name="movies_label">Films</string>
     <string name="latest_library">Derniers %1$s</string>
     <string name="search_hint">Rechercher…</string>
@@ -101,7 +93,6 @@
     <string name="player_gestures">Gestes du lecteur</string>
     <string name="player_gestures_vb_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
     <string name="select_video_version_title">Choisissez une version</string>
-    <string name="add_server_empty_error">Adresse du serveur vide</string>
     <string name="episode_watched_indicator">Indicateur d\'épisode vu</string>
     <string name="series_poster">Affiche des séries</string>
     <string name="settings_category_cache">Cache</string>
@@ -112,7 +103,6 @@
     <string name="error_preparing_player_items">Erreur lors de la préparation de la lecture de vos médias.</string>
     <string name="download_roaming">Télécharger en itinérance</string>
     <string name="person_detail_title">Détails</string>
-    <string name="error_getting_person_id">Détails indisponibles</string>
     <string name="player_gestures_vb">Gestes de volume et de luminosité</string>
     <string name="player_gestures_zoom">Geste de zoom</string>
     <string name="player_gestures_zoom_summary">Pincez pour remplir l\'écran avec la vidéo</string>
@@ -136,7 +126,6 @@
     <string name="pref_player_mpv_hwdec_codecs">Décodages matériels supportés</string>
     <string name="quick_connect">Connexion rapide</string>
     <string name="pref_player_intro_skipper">Passer l\'introduction</string>
-    <string name="player_controls_skip_intro">Ignorer l\'introduction</string>
     <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de ConfusedPolarBear doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>
     <string name="video">Vidéo</string>
@@ -156,7 +145,6 @@
     <string name="add">Ajouter</string>
     <string name="pref_player_trick_play_summary">Le plugin Jellyscrub de nicknsy doit être installé sur le serveur</string>
     <string name="temp">temporaire</string>
-    <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="player_gestures_seek">Déplacement du curseur de lecture</string>
     <string name="amoled_theme">Thème foncé OLED</string>
@@ -169,7 +157,6 @@
     <string name="select_storage_location">Choisissez un emplacement de stockage</string>
     <string name="storage_unavailable">L\'emplacement de stockage est indisponible</string>
     <string name="storage_name">%s (%d MB disponible)</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="offline_mode_icon">Icône du mode hors-ligne</string>
     <string name="offline_mode_go_online">Se connecter au réseau</string>
     <string name="downloading_error">Erreur lors du téléchargement</string>
@@ -183,6 +170,5 @@
     <string name="pref_player_trick_play">Lecture Spéciale</string>
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="preparing_download">Préparation du téléchargement</string>
-    <string name="title_storage">Stockage</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>
 </resources>

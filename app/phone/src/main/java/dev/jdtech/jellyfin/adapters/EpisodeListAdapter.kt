@@ -8,12 +8,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.core.R as CoreR
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
@@ -49,7 +49,7 @@ class EpisodeListAdapter(
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     (episode.playbackPositionTicks.div(episode.runtimeTicks.toFloat()).times(84)),
-                    binding.progressBar.context.resources.displayMetrics
+                    binding.progressBar.context.resources.displayMetrics,
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             } else {
@@ -79,8 +79,8 @@ class EpisodeListAdapter(
                     SeasonHeaderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
             ITEM_VIEW_TYPE_EPISODE -> {
@@ -88,8 +88,8 @@ class EpisodeListAdapter(
                     EpisodeItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
             else -> throw ClassCastException("Unknown viewType $viewType")

@@ -5,4 +5,8 @@
     <string name="select_a_version">Выбрать версию</string>
     <string name="select_audio_track">Выбрать аудиодорожку</string>
     <string name="external">Внешнее</string>
+    <string name="player_controls_exit">Выйти из проигрывателя</string>
+    <string name="player_controls_rewind">Перемотка</string>
+    <string name="player_controls_fast_forward">Быстрая перемотка</string>
+    <string name="player_controls_skip_intro">Пропустить заставку</string>
 </resources>

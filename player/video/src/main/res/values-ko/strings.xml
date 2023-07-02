@@ -5,4 +5,8 @@
     <string name="select_subtile_track">자막 트랙 선택</string>
     <string name="select_playback_speed">재생 속도 선택</string>
     <string name="external">외부</string>
+    <string name="player_controls_rewind">되감기</string>
+    <string name="player_controls_fast_forward">빨리 감기</string>
+    <string name="player_controls_exit">플레이어 나가기</string>
+    <string name="player_controls_skip_intro">오프닝 스킵</string>
 </resources>

@@ -5,4 +5,8 @@
     <string name="external">חיצוני</string>
     <string name="select_a_version">בחר גרסה</string>
     <string name="select_subtile_track">בחר רצועת כתוביות</string>
+    <string name="player_controls_exit">צא מהנגן</string>
+    <string name="player_controls_rewind">הרצה אחורה</string>
+    <string name="player_controls_fast_forward">הרצה קדימה</string>
+    <string name="player_controls_skip_intro">דלג פתיח</string>
 </resources>

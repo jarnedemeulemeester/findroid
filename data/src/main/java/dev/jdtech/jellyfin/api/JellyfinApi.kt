@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.api
 import android.content.Context
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.data.BuildConfig
-import java.util.UUID
 import org.jellyfin.sdk.api.client.HttpClientOptions
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
@@ -19,6 +18,7 @@ import org.jellyfin.sdk.api.client.extensions.userViewsApi
 import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
+import java.util.UUID
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
@@ -31,7 +31,7 @@ class JellyfinApi(
     androidContext: Context,
     requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
     connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
-    socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
+    socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT,
 ) {
     val jellyfin = createJellyfin {
         clientInfo =
@@ -42,8 +42,8 @@ class JellyfinApi(
         httpClientOptions = HttpClientOptions(
             requestTimeout = requestTimeout,
             connectTimeout = connectTimeout,
-            socketTimeout = socketTimeout
-        )
+            socketTimeout = socketTimeout,
+        ),
     )
     var userId: UUID? = null
 
@@ -68,7 +68,7 @@ class JellyfinApi(
             context: Context,
             requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
             connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
-            socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
+            socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT,
         ): JellyfinApi {
             synchronized(this) {
                 var instance = INSTANCE
@@ -77,7 +77,7 @@ class JellyfinApi(
                         androidContext = context.applicationContext,
                         requestTimeout = requestTimeout,
                         connectTimeout = connectTimeout,
-                        socketTimeout = socketTimeout
+                        socketTimeout = socketTimeout,
                     )
                     INSTANCE = instance
                 }

@@ -41,9 +41,7 @@
     <string name="series_poster">Cartaz de Séries</string>
     <string name="no_favorites">Não tem favoritos</string>
     <string name="search">Procurar</string>
-    <string name="initializing">Inicializar…</string>
     <string name="settings_preferred_subtitle_language">Preferir idioma legenda</string>
-    <string name="manage_servers">Gerir servidores</string>
     <string name="settings_category_player">Reprodutor</string>
     <string name="settings_use_cache_title">Imagens em cache</string>
     <string name="settings_category_appearance">Aspecto</string>
@@ -68,7 +66,6 @@
     <string name="hide">Esconder</string>
     <string name="share">Partilhar</string>
     <string name="close">Fechar</string>
-    <string name="delete_button_description">Apagar</string>
     <string name="download_button_description">Transferir</string>
     <string name="mpv_player_summary">Utilize o leitor experimental de MPV para reproduzir vídeos. MPV tem suporte de vários codecs de vídeo, áudio e subtítulos.</string>
     <string name="player_gestures_zoom">Gestor de Zoom</string>
@@ -78,14 +75,10 @@
     <string name="player_gestures_vb">Gestor de volume e luminosidade</string>
     <string name="sort_by">Ordenar por</string>
     <string name="sort_order">Ordenar por ordem</string>
-    <string name="error_getting_person_id">Detalhes indisponíveis</string>
     <string name="person_detail_title">Detalhes</string>
     <string name="player_gestures">Gestor de reprodução</string>
     <string name="ascending">Ascendente</string>
-    <string name="player_controls_skip">Avançar</string>
-    <string name="player_controls_rewind">Voltar</string>
     <string name="select_video_version_title">Selecionar versão</string>
-    <string name="player_controls_exit">Sair do Reprodutor</string>
     <string name="descending">Decrescente</string>
     <string name="sort_by_options_0">Título</string>
     <string name="sort_by_options_1">Classificação IMDB</string>
@@ -94,9 +87,7 @@
     <string name="sort_by_options_4">Data de Reproduzido</string>
     <string name="sort_by_options_5">Data de Lançamento</string>
     <string name="player_brightness_remember">Lembrar o nível de brilho</string>
-    <string name="player_controls_fast_forward">Avançar rapidamente</string>
     <string name="player_gestures_zoom_summary">Clique para preencher o ecrã com o vídeo</string>
-    <string name="add_server_empty_error">Servidores de endereço vazios</string>
     <string name="theme_system">Seguir sistema</string>
     <string name="seeking">Procura</string>
     <string name="subtitles">Legendas</string>
@@ -115,7 +106,6 @@
     <string name="director">Diretor</string>
     <string name="cast_amp_crew">Elenco e Equipa</string>
     <string name="trailer_button_description">Ver o trailer</string>
-    <string name="player_controls_pause">Pausa</string>
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
