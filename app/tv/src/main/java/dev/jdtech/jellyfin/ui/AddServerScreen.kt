@@ -1,14 +1,9 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,18 +20,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
@@ -45,11 +39,10 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.models.DiscoveredServer
-import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun AddServerScreen(
@@ -57,30 +50,11 @@ fun AddServerScreen(
     addServerViewModel: AddServerViewModel = hiltViewModel()
 ) {
     val uiState by addServerViewModel.uiState.collectAsState()
-    val discoveredServerState by addServerViewModel.discoveredServersState.collectAsState()
     val navigateToLogin by addServerViewModel.navigateToLogin.collectAsState(initial = false)
     if (navigateToLogin) {
         navigator.navigate(LoginScreenDestination)
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Banner()
-        AddServerForm(uiState = uiState, discoveredServerState = discoveredServerState) {
-            addServerViewModel.checkServer(it)
-        }
-    }
-}
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun AddServerForm(
-    uiState: AddServerViewModel.UiState,
-    discoveredServerState: AddServerViewModel.DiscoveredServersState,
-    onSubmit: (String) -> Unit
-) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -88,138 +62,78 @@ fun AddServerForm(
     val isLoading = uiState is AddServerViewModel.UiState.Loading
     val context = LocalContext.current
 
-    val discoveredServers =
-        if (discoveredServerState is AddServerViewModel.DiscoveredServersState.Servers) {
-            discoveredServerState.servers
-        } else {
-            emptyList()
-        }
-
-    Column(Modifier.width(320.dp)) {
-        Text(
-            text = stringResource(id = CoreR.string.add_server),
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
-            Column {
-                TvLazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(discoveredServers) { discoveredServer ->
-                        DiscoveredServerComponent(discoveredServer = discoveredServer) {
-                            text = it.address
-                            onSubmit(it.address)
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-        }
-        OutlinedTextField(
-            value = text,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = CoreR.drawable.ic_server),
-                    contentDescription = null
-                )
-            },
-            onValueChange = { text = it },
-            label = { Text(text = stringResource(id = CoreR.string.edit_text_server_address_hint)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = KeyboardType.Uri,
-                imeAction = ImeAction.Go
-            ),
-            isError = isError,
-            enabled = !isLoading,
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-        )
-        Text(
-            text = if (isError) {
-                (uiState as AddServerViewModel.UiState.Error).message.joinToString {
-                    it.asString(
-                        context.resources
+                .align(Alignment.Center)
+        ) {
+            Text(
+                text = stringResource(id = CoreR.string.add_server),
+                fontSize = 48.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedTextField(
+                value = text,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = CoreR.drawable.ic_server),
+                        contentDescription = null
+                    )
+                },
+                onValueChange = { text = it },
+                label = { Text(text = stringResource(id = CoreR.string.edit_text_server_address_hint)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Uri,
+                    imeAction = ImeAction.Go
+                ),
+                isError = isError,
+                enabled = !isLoading,
+                supportingText = {
+                    if (isError) {
+                        Text(
+                            text = (uiState as AddServerViewModel.UiState.Error).message.joinToString {
+                                it.asString(
+                                    context.resources
+                                )
+                            },
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .width(360.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Box {
+                Button(
+                    onClick = {
+                        addServerViewModel.checkServer(text)
+                    },
+                    enabled = !isLoading,
+                    modifier = Modifier.width(360.dp)
+                ) {
+                    Text(text = stringResource(id = CoreR.string.button_connect))
+                }
+                // TODO better progress indicator
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .width(48.dp)
+                            .height(48.dp)
+                            .padding(8.dp)
                     )
                 }
-            } else {
-                ""
-            },
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Box {
-            Button(
-                onClick = {
-                    onSubmit(text)
-                },
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = CoreR.string.button_connect))
-            }
-            if (isLoading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .width(48.dp)
-                        .height(48.dp)
-                        .padding(8.dp)
-                )
             }
         }
     }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun DiscoveredServerComponent(
-    discoveredServer: DiscoveredServer,
-    onClick: (DiscoveredServer) -> Unit = {}
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(64.dp)
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onClick(discoveredServer) }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.small)
-                .background(MaterialTheme.colorScheme.primary)
-        ) {
-            Icon(
-                painter = painterResource(id = CoreR.drawable.ic_server),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.Center),
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = discoveredServer.name,
-            style = MaterialTheme.typography.bodyMedium,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-    }
-}
-
-@Preview
-@Composable
-fun DiscoveredServerComponentPreview() {
-    DiscoveredServerComponent(
-        discoveredServer = DiscoveredServer(
-            "e9179766-1da2-4cea-98a4-e4e51fa7fbd0",
-            "server",
-            "server.local"
-        )
-    )
 }

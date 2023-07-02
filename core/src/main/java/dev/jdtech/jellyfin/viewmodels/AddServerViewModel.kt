@@ -222,7 +222,7 @@ constructor(
                     UiText.StringResource(R.string.add_server_error_outdated, it.version)
                 }
                 is RecommendedServerIssue.InvalidProductName -> {
-                    UiText.StringResource(R.string.add_server_error_not_jellyfin, it.productName)
+                    UiText.StringResource(R.string.add_server_error_not_jellyfin, it.productName ?: "")
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
                     UiText.StringResource(R.string.add_server_error_version, it.version)
