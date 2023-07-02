@@ -114,15 +114,23 @@ fun ServerSelectScreen(
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
-            TvLazyRow(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(24.dp)
-            ) {
-                items(servers) {
-                    Server(it)
-                }
-                items(discoveredServers) {
-                    Server(it, discovered = true, onClick = {})
+            if (servers.isEmpty() && discoveredServers.isEmpty()) {
+                Text(
+                    text = stringResource(id = CoreR.string.no_servers_found),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            } else {
+                TvLazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(24.dp)
+                ) {
+                    items(servers) {
+                        Server(it)
+                    }
+                    items(discoveredServers) {
+                        Server(it, discovered = true)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
