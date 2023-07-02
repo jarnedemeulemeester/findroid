@@ -30,9 +30,6 @@ constructor(
     private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
     val discoveredServersState = _discoveredServersState.asStateFlow()
 
-    // TODO get rid of livedata
-    val servers = database.getAllServers()
-
     // TODO states may need to be merged / cleaned up
     sealed class UiState {
         data class Normal(val servers: List<Server>) : UiState()
