@@ -76,8 +76,8 @@ constructor(
                     DiscoveredServer(
                         serverDiscoveryInfo.id,
                         serverDiscoveryInfo.name,
-                        serverDiscoveryInfo.address
-                    )
+                        serverDiscoveryInfo.address,
+                    ),
                 )
                 _discoveredServersState.emit(DiscoveredServersState.Servers(ArrayList(discoveredServers)))
             }

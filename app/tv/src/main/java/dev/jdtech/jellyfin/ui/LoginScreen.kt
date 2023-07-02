@@ -61,7 +61,9 @@ fun LoginScreen(
 ) {
     val uiState by loginViewModel.uiState.collectAsState()
     val usersState by loginViewModel.usersState.collectAsState()
-    val quickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(initial = LoginViewModel.QuickConnectUiState.Disabled)
+    val quickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(
+        initial = LoginViewModel.QuickConnectUiState.Disabled
+    )
 
     val navigateToHome by loginViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToHome) {
@@ -105,10 +107,14 @@ fun LoginForm(
     val users =
         if (usersState is LoginViewModel.UsersState.Users) {
             usersState.users
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     val quickConnectValue = if (quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting) {
         quickConnectUiState.code
-    } else stringResource(id = CoreR.string.quick_connect)
+    } else {
+        stringResource(id = CoreR.string.quick_connect)
+    }
 
     val isError = uiState is LoginViewModel.UiState.Error
     val isLoading = uiState is LoginViewModel.UiState.Loading
@@ -120,7 +126,10 @@ fun LoginForm(
     val requester = FocusRequester()
 
     Column(Modifier.width(320.dp)) {
-        Text(text = stringResource(id = CoreR.string.login), style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = CoreR.string.login),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = users.isNotEmpty()) {
             Column {
@@ -182,7 +191,13 @@ fun LoginForm(
                 .focusRequester(requester)
         )
         Text(
-            text = if (isError) (uiState as LoginViewModel.UiState.Error).message.asString(context.resources) else "",
+            text = if (isError) {
+                (uiState as LoginViewModel.UiState.Error).message.asString(
+                    context.resources
+                )
+            } else {
+                ""
+            },
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
@@ -208,7 +223,9 @@ fun LoginForm(
                 )
             }
         }
-        AnimatedVisibility(visible = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled) {
+        AnimatedVisibility(
+            visible = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
+        ) {
             Box {
                 OutlinedButton(
                     onClick = {

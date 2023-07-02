@@ -41,11 +41,11 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
@@ -108,14 +108,15 @@ fun ServerSelectScreen(
                             id = CoreR.plurals.discovered_servers,
                             count = discoveredServers.count(),
                             discoveredServers.count()
-                        ), color = Color(0xFFBDBDBD)
+                        ),
+                        color = Color(0xFFBDBDBD)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
             TvLazyRow(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(24.dp),
+                contentPadding = PaddingValues(24.dp)
             ) {
                 items(servers) {
                     Server(it)
@@ -128,7 +129,7 @@ fun ServerSelectScreen(
             OutlinedButton(
                 onClick = {
                     navigator.navigate(AddServerScreenDestination)
-                },
+                }
             ) {
                 Text(text = stringResource(id = CoreR.string.add_server))
             }
@@ -157,7 +158,8 @@ fun Server(
                 BorderStroke(
                     4.dp,
                     Color.White
-                ), shape = RoundedCornerShape(16.dp)
+                ),
+                shape = RoundedCornerShape(16.dp)
             )
         ),
         modifier = Modifier
@@ -170,13 +172,13 @@ fun Server(
                     painter = painterResource(id = CoreR.drawable.ic_sparkles),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp),
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp)
                 )
             }
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
             ) {
                 Text(
                     text = server.name,

@@ -52,7 +52,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             FindroidTheme {
                 Surface(
-                    colors = NonInteractiveSurfaceDefaults.colors(containerColor = MaterialTheme.colorScheme.background),
+                    colors = NonInteractiveSurfaceDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
                     shape = RectangleShape,
                     modifier = Modifier.fillMaxSize()
                 ) {

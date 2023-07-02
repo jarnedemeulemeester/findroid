@@ -119,7 +119,7 @@ fun HomeScreen(
                                             Text(
                                                 text = library.name,
                                                 style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(8.dp),
+                                                modifier = Modifier.padding(8.dp)
                                             )
                                         },
                                         modifier = Modifier.width(240.dp)
@@ -141,7 +141,9 @@ fun HomeScreen(
                             ) {
                                 items(homeItem.homeSection.items) { item ->
                                     Card(
-                                        colors = CardDefaults.colors(containerColor = Color.Transparent),
+                                        colors = CardDefaults.colors(
+                                            containerColor = Color.Transparent
+                                        ),
                                         onClick = { /*TODO*/ }
                                     ) {
                                         Column(
@@ -154,7 +156,9 @@ fun HomeScreen(
                                                     api = api,
                                                     direction = Direction.HORIZONTAL
                                                 )
-                                                Column(modifier = Modifier.align(Alignment.BottomStart)) {
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.BottomStart)
+                                                ) {
                                                     Row {
                                                         Spacer(modifier = Modifier.width(8.dp))
                                                         Box(
@@ -162,13 +166,19 @@ fun HomeScreen(
                                                                 .height(4.dp)
                                                                 .width(
                                                                     item.playbackPositionTicks
-                                                                        .div(item.runtimeTicks.toFloat())
+                                                                        .div(
+                                                                            item.runtimeTicks.toFloat()
+                                                                        )
                                                                         .times(
                                                                             1.64
                                                                         ).dp
                                                                 )
-                                                                .clip(MaterialTheme.shapes.extraSmall)
-                                                                .background(MaterialTheme.colorScheme.primary)
+                                                                .clip(
+                                                                    MaterialTheme.shapes.extraSmall
+                                                                )
+                                                                .background(
+                                                                    MaterialTheme.colorScheme.primary
+                                                                )
                                                         )
                                                     }
                                                     Spacer(modifier = Modifier.height(8.dp))
@@ -184,7 +194,12 @@ fun HomeScreen(
                                             )
                                             if (item is FindroidEpisode) {
                                                 Text(
-                                                    text = stringResource(id = CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name),
+                                                    text = stringResource(
+                                                        id = CoreR.string.episode_name_extended,
+                                                        item.parentIndexNumber,
+                                                        item.indexNumber,
+                                                        item.name
+                                                    ),
                                                     style = MaterialTheme.typography.bodySmall,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
@@ -211,7 +226,9 @@ fun HomeScreen(
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
                                     Card(
-                                        colors = CardDefaults.colors(containerColor = Color.Transparent),
+                                        colors = CardDefaults.colors(
+                                            containerColor = Color.Transparent
+                                        ),
                                         onClick = { /*TODO*/ }
                                     ) {
                                         Column(

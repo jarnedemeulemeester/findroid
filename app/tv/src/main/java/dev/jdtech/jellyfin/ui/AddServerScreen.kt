@@ -91,10 +91,15 @@ fun AddServerForm(
     val discoveredServers =
         if (discoveredServerState is AddServerViewModel.DiscoveredServersState.Servers) {
             discoveredServerState.servers
-        } else emptyList()
+        } else {
+            emptyList()
+        }
 
     Column(Modifier.width(320.dp)) {
-        Text(text = stringResource(id = CoreR.string.add_server), style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = CoreR.string.add_server),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Spacer(modifier = Modifier.height(32.dp))
         AnimatedVisibility(visible = discoveredServers.isNotEmpty()) {
             Column {
@@ -133,11 +138,15 @@ fun AddServerForm(
                 .fillMaxWidth()
         )
         Text(
-            text = if (isError) (uiState as AddServerViewModel.UiState.Error).message.joinToString {
-                it.asString(
-                    context.resources
-                )
-            } else "",
+            text = if (isError) {
+                (uiState as AddServerViewModel.UiState.Error).message.joinToString {
+                    it.asString(
+                        context.resources
+                    )
+                }
+            } else {
+                ""
+            },
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)

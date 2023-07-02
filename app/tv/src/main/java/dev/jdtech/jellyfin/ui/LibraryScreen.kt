@@ -71,7 +71,7 @@ fun LibraryScreen(
                                 Text(
                                     text = item.name,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(8.dp),
+                                    modifier = Modifier.padding(8.dp)
                                 )
                             },
                             modifier = Modifier.width(120.dp)
