@@ -127,12 +127,12 @@ fun ServerSelectScreen(
                     contentPadding = PaddingValues(24.dp)
                 ) {
                     items(servers) {
-                        Server(it) { server ->
+                        ServerComponent(it) { server ->
                             navigator.navigate(UserSelectScreenDestination(serverId = server.id))
                         }
                     }
                     items(discoveredServers) {
-                        Server(it, discovered = true)
+                        ServerComponent(it, discovered = true)
                     }
                 }
             }
@@ -150,7 +150,7 @@ fun ServerSelectScreen(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun Server(
+fun ServerComponent(
     server: DiscoveredServer,
     discovered: Boolean = false,
     onClick: (DiscoveredServer) -> Unit = {}
@@ -160,8 +160,8 @@ fun Server(
             onClick(server)
         },
         colors = ClickableSurfaceDefaults.colors(
-            containerColor = Color(0xFF21232D),
-            focusedContainerColor = Color(0xFF21232D)
+            containerColor = Color(0xFF132026),
+            focusedContainerColor = Color(0xFF132026)
         ),
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(16.dp)),
         border = ClickableSurfaceDefaults.border(
@@ -213,7 +213,7 @@ fun Server(
 @Preview
 @Composable
 fun ServerPreview() {
-    Server(
+    ServerComponent(
         DiscoveredServer(
             id = "",
             name = "Demo server",
