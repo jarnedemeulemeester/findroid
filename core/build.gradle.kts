@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":player:core"))
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     kapt(libs.androidx.hilt.compiler)
