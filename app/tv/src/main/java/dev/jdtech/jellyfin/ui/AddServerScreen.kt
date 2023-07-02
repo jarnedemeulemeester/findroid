@@ -88,7 +88,11 @@ fun AddServerScreen(
                     )
                 },
                 onValueChange = { text = it },
-                label = { Text(text = stringResource(id = CoreR.string.edit_text_server_address_hint)) },
+                label = {
+                    Text(
+                        text = stringResource(id = CoreR.string.edit_text_server_address_hint)
+                    )
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
