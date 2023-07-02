@@ -50,8 +50,8 @@ import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
-import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
+import org.jellyfin.sdk.model.api.ImageType
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination

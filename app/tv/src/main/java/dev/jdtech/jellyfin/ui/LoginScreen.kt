@@ -1,21 +1,14 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -27,41 +20,40 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.ui.components.Banner
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    val uiState by loginViewModel.uiState.collectAsState()
-    val usersState by loginViewModel.usersState.collectAsState()
-    val quickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(
+    val delegatedUiState by loginViewModel.uiState.collectAsState()
+    val delegatedQuickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(
         initial = LoginViewModel.QuickConnectUiState.Disabled
     )
 
@@ -69,219 +61,155 @@ fun LoginScreen(
     if (navigateToHome) {
         navigator.navigate(HomeScreenDestination)
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Banner()
-        LoginForm(
-            uiState = uiState,
-            usersState = usersState,
-            quickConnectUiState = quickConnectUiState,
-            onSubmit = { username, password ->
-                loginViewModel.login(username, password)
-            },
-            onQuickConnect = {
-                loginViewModel.useQuickConnect()
-            }
-        )
-    }
-}
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun LoginForm(
-    uiState: LoginViewModel.UiState,
-    usersState: LoginViewModel.UsersState,
-    quickConnectUiState: LoginViewModel.QuickConnectUiState,
-    onSubmit: (String, String) -> Unit,
-    onQuickConnect: () -> Unit
-) {
     var username by rememberSaveable {
         mutableStateOf("")
     }
     var password by rememberSaveable {
         mutableStateOf("")
     }
-    val users =
-        if (usersState is LoginViewModel.UsersState.Users) {
-            usersState.users
-        } else {
-            emptyList()
+
+    var quickConnectValue = stringResource(id = CoreR.string.quick_connect)
+
+    when (val quickConnectUiState = delegatedQuickConnectUiState) {
+        is LoginViewModel.QuickConnectUiState.Waiting -> {
+            quickConnectValue = quickConnectUiState.code
         }
-    val quickConnectValue = if (quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting) {
-        quickConnectUiState.code
-    } else {
-        stringResource(id = CoreR.string.quick_connect)
+        else -> Unit
     }
 
-    val isError = uiState is LoginViewModel.UiState.Error
-    val isLoading = uiState is LoginViewModel.UiState.Loading
+    val isError = delegatedUiState is LoginViewModel.UiState.Error
+    val isLoading = delegatedUiState is LoginViewModel.UiState.Loading
 
-    val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
+    val quickConnectEnabled = delegatedQuickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
+    val isWaiting = delegatedQuickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
 
-    val context = LocalContext.current
-
-    val requester = FocusRequester()
-
-    Column(Modifier.width(320.dp)) {
-        Text(
-            text = stringResource(id = CoreR.string.login),
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        AnimatedVisibility(visible = users.isNotEmpty()) {
-            Column {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+        ) {
+            Text(
+                text = stringResource(id = CoreR.string.login),
+                fontSize = 48.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedTextField(
+                value = username,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = CoreR.drawable.ic_user),
+                        contentDescription = null
+                    )
+                },
+                onValueChange = { username = it },
+                label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                isError = isError,
+                enabled = !isLoading,
+                modifier = Modifier
+                    .width(360.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = password,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = CoreR.drawable.ic_lock),
+                        contentDescription = null
+                    )
+                },
+                onValueChange = { password = it },
+                label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Go
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                isError = isError,
+                enabled = !isLoading,
+                supportingText = {
+                    if (isError) {
+                        // TODO fix `asString()` composable not working
+                        Text(
+                            text = (delegatedUiState as LoginViewModel.UiState.Error).message.asString(
+                                LocalContext.current.resources
+                            ),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .width(360.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Box {
+                Button(
+                    onClick = {
+                        loginViewModel.login(username, password)
+                    },
+                    enabled = !isLoading,
+                    modifier = Modifier.width(360.dp)
                 ) {
-                    itemsIndexed(users) { _, user ->
-                        PublicUserComponent(user = user) {
-                            username = it.name
-                            requester.requestFocus()
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = LocalContentColor.current,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = CoreR.string.button_login),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+            }
+            if (quickConnectEnabled) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Box {
+                    OutlinedButton(
+                        onClick = {
+                            loginViewModel.useQuickConnect()
+                        },
+                        modifier = Modifier.width(360.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (isWaiting) {
+                                CircularProgressIndicator(
+                                    color = LocalContentColor.current,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .align(Alignment.CenterStart)
+                                )
+                            }
+                            Text(
+                                text = quickConnectValue,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
-        OutlinedTextField(
-            value = username,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = CoreR.drawable.ic_user),
-                    contentDescription = null
-                )
-            },
-            onValueChange = { username = it },
-            label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            isError = isError,
-            enabled = !isLoading,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = password,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = CoreR.drawable.ic_lock),
-                    contentDescription = null
-                )
-            },
-            onValueChange = { password = it },
-            label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Go
-            ),
-            visualTransformation = PasswordVisualTransformation(),
-            isError = isError,
-            enabled = !isLoading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(requester)
-        )
-        Text(
-            text = if (isError) {
-                (uiState as LoginViewModel.UiState.Error).message.asString(
-                    context.resources
-                )
-            } else {
-                ""
-            },
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Box {
-            Button(
-                onClick = {
-                    onSubmit(username, password)
-                },
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = CoreR.string.button_connect))
-            }
-            if (isLoading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .width(48.dp)
-                        .height(48.dp)
-                        .padding(8.dp)
-                )
-            }
-        }
-        AnimatedVisibility(
-            visible = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
-        ) {
-            Box {
-                OutlinedButton(
-                    onClick = {
-                        onQuickConnect()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = quickConnectValue)
-                }
-                if (isWaiting) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .width(48.dp)
-                            .height(48.dp)
-                            .padding(8.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun PublicUserComponent(
-    user: User,
-    onClick: (User) -> Unit = {}
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(64.dp)
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onClick(user) }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.small)
-                .background(MaterialTheme.colorScheme.primary)
-        ) {
-            Icon(
-                painter = painterResource(id = CoreR.drawable.ic_user),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.Center),
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = user.name,
-            style = MaterialTheme.typography.bodyMedium,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
     }
 }
