@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,14 +39,18 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
+import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -136,6 +142,8 @@ private fun UserComponent(
     user: User,
     onClick: (User) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val api = JellyfinApi.getInstance(context)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -169,6 +177,15 @@ private fun UserComponent(
                     .width(48.dp)
                     .height(48.dp)
                     .align(Alignment.Center)
+            )
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data("${api.api.baseUrl}/users/${user.id}/Images/${ImageType.PRIMARY}")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
