@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
@@ -125,17 +126,22 @@ fun AddServerScreen(
                     enabled = !isLoading,
                     modifier = Modifier.width(360.dp)
                 ) {
-                    Text(text = stringResource(id = CoreR.string.button_connect))
-                }
-                // TODO better progress indicator
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .width(48.dp)
-                            .height(48.dp)
-                            .padding(8.dp)
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = LocalContentColor.current,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .align(Alignment.CenterStart)
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = CoreR.string.button_connect),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
             }
         }

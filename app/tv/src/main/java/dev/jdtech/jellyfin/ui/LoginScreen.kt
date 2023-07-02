@@ -173,6 +173,7 @@ fun LoginScreen(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
                                     .size(24.dp)
+                                    .align(Alignment.CenterStart)
                             )
                         }
                         Text(
