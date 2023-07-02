@@ -285,11 +285,10 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun pipParams(): PictureInPictureParams {
-        val landscape = binding.playerView.player?.videoSize?.width!! > binding.playerView.player?.videoSize?.height!!
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio = if (appPreferences.playerPipAspectRatio) {
-            if (landscape) {
+            if (binding.playerView.player?.videoSize?.width!! >= binding.playerView.player?.videoSize?.height!!) {
                 Rational(16, 9)
             } else {
                 Rational(9, 16)
@@ -303,7 +302,7 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
-        val sourceRectHint = if (aspectRatio!! > displayAspectRatio) {
+        val sourceRectHint = if (displayAspectRatio < aspectRatio!!) {
             val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 0,
@@ -312,12 +311,12 @@ class PlayerActivity : BasePlayerActivity() {
                 (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
             )
         } else {
-            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 space,
                 0,
-                (binding.playerView.height.toFloat() / aspectRatio.toFloat()).toInt(),
-                binding.playerView.height + space,
+                (binding.playerView.height.toFloat() * aspectRatio.toFloat()).toInt() + space,
+                binding.playerView.height,
             )
         }
 
