@@ -6,7 +6,7 @@
     <string name="jellyfin_banner">באנר Jellyfin</string>
     <string name="add_server_error_slow">השרת איטי מכדי להגיב: %1$s</string>
     <string name="add_server_error_not_found">שרת לא נמצא</string>
-    <string name="add_server_error_no_id">לשרת אין מזהה, ככל כנראה משהו בשרת אינו תקין</string>
+    <string name="add_server_error_no_id">לשרת אין מזהה, ככל הנראה משהו בשרת אינו תקין</string>
     <string name="login">התחברות</string>
     <string name="login_error_wrong_username_password">שם משתמש או סיסמה שגויים</string>
     <string name="select_server">בחר שרת</string>
@@ -15,8 +15,8 @@
     <string name="edit_text_password_hint">סיסמה</string>
     <string name="button_connect">התחבר</string>
     <string name="remove_server">שרת מרוחק</string>
-    <string name="remove_user">מחק משתמש</string>
-    <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה למחוק את המשתמש %1$s</string>
+    <string name="remove_user">הסר משתמש</string>
+    <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה להסיר את המשתמש %1$s</string>
     <string name="remove">מחק</string>
     <string name="cancel">ביטול</string>
     <string name="title_media">המדיה שלי</string>
@@ -126,9 +126,9 @@
     <string name="temp">זמני</string>
     <string name="extra_info_summary">מציג מידע מפורט על שמע, וידאו וכתוביות</string>
     <string name="add_server">הוסף שרת</string>
-    <string name="add_server_error_outdated">גרסת שרת ישנה: %1$s. אנא עדכן את השרת שלך</string>
-    <string name="button_login">התחברות</string>
-    <string name="remove_server_dialog_text">האם אתה בטוח שברצונך למחוק את השרת %1$s</string>
+    <string name="add_server_error_outdated">גרסת שרת מיושנת: %1$s. אנא עדכן את השרת שלך</string>
+    <string name="button_login">התחבר</string>
+    <string name="remove_server_dialog_text">האם אתה בטוח שברצונך להסיר את השרת %1$s</string>
     <string name="title_home">בית</string>
     <string name="check_button_description">סמן כנצפה או לא נצפה</string>
     <string name="settings_category_language">שפה</string>
