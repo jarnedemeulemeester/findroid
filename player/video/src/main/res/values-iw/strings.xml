@@ -14,4 +14,5 @@
     <string name="player_controls_skip_back">דלג אחורה</string>
     <string name="player_controls_play_pause">הפעל השהה</string>
     <string name="player_controls_progress">סרגל התקדמות</string>
+    <string name="player_trickplay">Trickplay</string>
 </resources>
