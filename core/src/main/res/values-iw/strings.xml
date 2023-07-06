@@ -170,4 +170,6 @@
     <string name="storage_name">%s (%d מ\"ב פנויים)</string>
     <string name="app_language">שפת הממשק</string>
     <string name="downloaded_indicator">מחוון הורדה</string>
+    <string name="remove_server_address">מחק כתובת שרת</string>
+    <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך למחוק את כתובת השרת %1$s</string>
 </resources>
