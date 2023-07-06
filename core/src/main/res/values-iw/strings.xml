@@ -4,7 +4,7 @@
     <string name="add_server_error_empty_address">כתובת שרת ריקה</string>
     <string name="app_description">אפליקציית צד-שלישי ל-Jellyfin</string>
     <string name="jellyfin_banner">באנר Jellyfin</string>
-    <string name="add_server_error_slow">השרת איטי מכדי להגיב: %1$s</string>
+    <string name="add_server_error_slow">השרת מגיב באיטיות: %1$s</string>
     <string name="add_server_error_not_found">שרת לא נמצא</string>
     <string name="add_server_error_no_id">לשרת אין מזהה, ככל הנראה משהו בשרת אינו תקין</string>
     <string name="login">התחברות</string>
@@ -34,8 +34,8 @@
     <string name="continue_watching">המשך לצפות</string>
     <string name="libraries">ספריות</string>
     <string name="genres">ז\'אנרים</string>
-    <string name="play_button_description">הפעל את המדיה</string>
-    <string name="trailer_button_description">צפה בטריילר</string>
+    <string name="play_button_description">נגן את המדיה</string>
+    <string name="trailer_button_description">צפה בקדימון</string>
     <string name="episode_watched_indicator">מחוון צפייה בפרק</string>
     <string name="episode_name_extended">ע%1$d:פ%2$d - %3$s</string>
     <string name="next_up">הבא בתור</string>
@@ -48,7 +48,7 @@
     <string name="settings_category_servers">שרתים</string>
     <string name="settings_category_player">נגן</string>
     <string name="series_poster">כרזת סדרה</string>
-    <string name="no_downloads">לא הורדת כלום</string>
+    <string name="no_downloads">אין לך הורדות</string>
     <string name="settings_category_download">הורדות</string>
     <string name="settings_category_appearance">מראה</string>
     <string name="settings_category_device">מכשיר</string>
