@@ -9,4 +9,9 @@
     <string name="player_controls_rewind">הרצה אחורה</string>
     <string name="player_controls_fast_forward">הרצה קדימה</string>
     <string name="player_controls_skip_intro">דלג פתיח</string>
+    <string name="player_controls_skip_forward">דלג קדימה</string>
+    <string name="player_controls_lock">נועל את הנגן</string>
+    <string name="player_controls_skip_back">דלג אחורה</string>
+    <string name="player_controls_play_pause">הפעל השהה</string>
+    <string name="player_controls_progress">סרגל התקדמות</string>
 </resources>
