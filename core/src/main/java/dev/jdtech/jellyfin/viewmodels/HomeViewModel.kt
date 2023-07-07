@@ -27,7 +27,7 @@ class HomeViewModel @Inject internal constructor(
 
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
