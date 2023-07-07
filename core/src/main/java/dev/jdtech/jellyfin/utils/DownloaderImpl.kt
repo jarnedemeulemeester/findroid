@@ -210,6 +210,37 @@ class DownloaderImpl(
         return Pair(downloadStatus, progress)
     }
 
+    override fun requeuePendingItems() {
+        val query = DownloadManager.Query()
+            .setFilterByStatus(DownloadManager.STATUS_PENDING)
+
+        downloadManager.query(query).use { cursor ->
+            while (cursor.moveToNext()) {
+                // Get item download information
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_ID))
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TITLE))
+                val downloadUri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_URI))
+                val source = database.getSourceByDownloadId(id)!!
+
+                // Remove it from queue
+                downloadManager.remove(id)
+
+                // Re-queue it with the new downloads preferences
+                val request = DownloadManager.Request(downloadUri.toUri())
+                    .setTitle(title)
+                    .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                    .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationUri(Uri.fromFile(File(source.path)))
+
+                val downloadId = downloadManager.enqueue(request)
+
+                // Update the database with the new downloadId
+                database.setSourceDownloadId(source.id, downloadId)
+            }
+        }
+    }
+
     private fun downloadExternalMediaStreams(
         item: FindroidItem,
         source: FindroidSource,

@@ -10,7 +10,7 @@ import javax.inject.Inject
 class AppPreferences
 @Inject
 constructor(
-    private val sharedPreferences: SharedPreferences,
+    val sharedPreferences: SharedPreferences,
 ) {
     // Server
     var currentServer: String?
