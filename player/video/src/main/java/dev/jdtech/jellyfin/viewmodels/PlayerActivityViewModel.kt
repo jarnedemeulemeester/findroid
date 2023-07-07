@@ -251,8 +251,9 @@ constructor(
                             } else {
                                 "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
                             }
-                        } else
+                        } else {
                             _currentItemTitle.value = item.name
+                        }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 

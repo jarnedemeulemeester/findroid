@@ -126,9 +126,11 @@ constructor(
                 val message =
                     if (e.message?.contains("401") == true) {
                         UiText.StringResource(R.string.login_error_wrong_username_password)
-                    } else UiText.StringResource(
-                        R.string.unknown_error,
-                    )
+                    } else {
+                        UiText.StringResource(
+                            R.string.unknown_error,
+                        )
+                    }
                 _uiState.emit(UiState.Error(message))
             }
         }
