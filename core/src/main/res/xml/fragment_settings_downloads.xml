@@ -9,4 +9,8 @@
         android:defaultValue="false"
         app:key="pref_downloads_roaming"
         app:title="@string/download_roaming" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        app:key="pref_downloads_prompt_pending"
+        app:title="@string/download_prompt_pending" />
 </PreferenceScreen>

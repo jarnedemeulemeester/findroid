@@ -173,5 +173,11 @@
     <string name="cancel_download">Cancel download</string>
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
+    <string name="download_is_pending">Your download is pending</string>
+    <string name="pending_download_message">Go to Downloads settings to change preferences</string>
+    <string name="go_to_download_settings">Go to settings</string>
+    <string name="wait_for_download">Wait for download</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
+    <string name="download_prompt_pending">Don\'t ask again</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
 </resources>

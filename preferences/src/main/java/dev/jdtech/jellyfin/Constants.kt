@@ -39,6 +39,7 @@ object Constants {
     const val PREF_NETWORK_SOCKET_TIMEOUT = "pref_network_socket_timeout"
     const val PREF_DOWNLOADS_MOBILE_DATA = "pref_downloads_mobile_data"
     const val PREF_DOWNLOADS_ROAMING = "pref_downloads_roaming"
+    const val PREF_PROMPT_PENDING_DOWNLOADS = "pref_downloads_prompt_pending"
     const val PREF_SORT_BY = "pref_sort_by"
     const val PREF_SORT_ORDER = "pref_sort_order"
     const val PREF_DISPLAY_EXTRA_INFO = "pref_display_extra_info"

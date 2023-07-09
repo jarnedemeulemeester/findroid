@@ -220,6 +220,13 @@
         <action
             android:id="@+id/action_episodeBottomSheetFragment_to_showFragment"
             app:destination="@id/showFragment" />
+        <action
+            android:id="@+id/action_episodeBottomSheetFragment_to_settingsFragment"
+            app:destination="@id/twoPaneSettingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </dialog>
     <fragment
         android:id="@+id/favoriteFragment"

@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
@@ -40,6 +41,7 @@ import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.UUID
+import javax.inject.Inject
 import android.R as AndroidR
 import com.google.android.material.R as MaterialR
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -53,6 +55,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private val playerViewModel: PlayerViewModel by viewModels()
 
     private lateinit var downloadPreparingDialog: AlertDialog
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,6 +96,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                 binding.itemActions.downloadButton.setIconResource(AndroidR.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
                                 binding.itemActions.progressDownload.isVisible = true
+
+                                if (appPreferences.promptPendingDownloads) {
+                                    createPendingDownloadDialog()
+                                }
                             }
 
                             DownloadManager.STATUS_RUNNING -> {
@@ -386,6 +395,24 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         dialog.show()
     }
 
+    private fun createPendingDownloadDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialog = builder
+            .setTitle(CoreR.string.download_is_pending)
+            .setMessage(CoreR.string.pending_download_message)
+            .setPositiveButton(CoreR.string.go_to_download_settings) { _, _ ->
+                navigateToSettings()
+            }
+            .setNegativeButton(CoreR.string.dont_ask_again) { _, _ ->
+                appPreferences.promptPendingDownloads = false
+            }
+            .setNegativeButton(CoreR.string.wait_for_download) { _, _ ->
+                // Close
+            }
+            .create()
+        dialog.show()
+    }
+
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
@@ -393,6 +420,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
             ),
+        )
+    }
+    private fun navigateToSettings() {
+        findNavController().navigate(
+            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToSettingsFragment(),
         )
     }
 
