@@ -27,7 +27,6 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
@@ -46,7 +45,6 @@ class PlayerActivity : BasePlayerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("Creating player activity")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)

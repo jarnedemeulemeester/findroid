@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
@@ -44,6 +45,7 @@ constructor(
     private val application: Application,
     private val jellyfinRepository: JellyfinRepository,
     private val appPreferences: AppPreferences,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
     val player: Player
 
@@ -71,8 +73,8 @@ constructor(
 
     val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
-    private var currentMediaItemIndex = 0
-    private var playbackPosition: Long = 0
+    private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
+    private var playbackPosition: Long = savedStateHandle["position"] ?: 0
 
     var playbackSpeed: Float = 1f
     var disableSubtitle: Boolean = false
@@ -116,6 +118,10 @@ constructor(
     fun initializePlayer(
         items: Array<PlayerItem>,
     ) {
+        // Skip initialization when there are already items
+        if (this.items.isNotEmpty()) {
+            return
+        }
         this.items = items
         player.addListener(this)
 
@@ -156,10 +162,16 @@ constructor(
                 Timber.e(e)
             }
 
+            val startPosition = if (playbackPosition == 0L) {
+                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET
+            } else {
+                playbackPosition
+            }
+
             player.setMediaItems(
                 mediaItems,
                 currentMediaItemIndex,
-                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET,
+                startPosition,
             )
             if (appPreferences.playerMpv) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
                 withContext(Dispatchers.IO) {
@@ -191,9 +203,9 @@ constructor(
         }
 
         _currentTrickPlay.value = null
-        playWhenReady = player.playWhenReady
-        playbackPosition = position
-        currentMediaItemIndex = player.currentMediaItemIndex
+        playWhenReady = false
+        playbackPosition = 0L
+        currentMediaItemIndex = 0
         player.removeListener(this)
         player.release()
     }
@@ -201,6 +213,7 @@ constructor(
     private fun pollPosition(player: Player) {
         val playbackProgressRunnable = object : Runnable {
             override fun run() {
+                savedStateHandle["position"] = player.currentPosition
                 viewModelScope.launch {
                     if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                         val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
@@ -240,6 +253,7 @@ constructor(
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
+        savedStateHandle["mediaItemIndex"] = player.currentMediaItemIndex
         viewModelScope.launch {
             try {
                 items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
