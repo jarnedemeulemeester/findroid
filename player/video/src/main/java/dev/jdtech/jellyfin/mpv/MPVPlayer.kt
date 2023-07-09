@@ -631,7 +631,7 @@ class MPVPlayer(
     override fun replaceMediaItems(
         fromIndex: Int,
         toIndex: Int,
-        mediaItems: MutableList<MediaItem>
+        mediaItems: MutableList<MediaItem>,
     ) {
         TODO("Not yet implemented")
     }
