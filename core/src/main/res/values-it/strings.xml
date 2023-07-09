@@ -54,13 +54,13 @@
     <string name="view_details">Mostra dettagli</string>
     <string name="view_details_underlined"><u>Vedi dettagli</u></string>
     <string name="app_description">Applicazione nativa di terze parti per Jellyfin</string>
-    <string name="add_server_error_outdated">Versione del server non supportata: %1$s. Per favore aggiorna il tuo server</string>
+    <string name="add_server_error_outdated">Versione del server obsoleta: %1$s. Aggiorna il tuo server</string>
     <string name="no_favorites">Non hai nessun preferito</string>
     <string name="add_server_error_not_found">Server non trovato</string>
     <string name="no_downloads">Non hai scaricato ancora nulla</string>
     <string name="add_server_error_no_id">Il server non ha un ID, c\'è qualcosa di strano con questo server</string>
     <string name="device_name">Nome del dispositivo</string>
-    <string name="add_server_error_version">Versione del server non supportata: %1$s. Per favore aggiorna il tuo server</string>
+    <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
     <string name="settings_category_cache">Cache</string>
     <string name="error_loading_data">Errore nel caricamento dei dati</string>
     <string name="settings_use_cache_summary">La cache delle immagini permette di ridurre i tempi di caricamento. Dovrai riavviare l\'app.</string>

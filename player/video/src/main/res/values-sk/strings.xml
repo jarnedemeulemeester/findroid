@@ -9,4 +9,10 @@
     <string name="player_controls_rewind">Pretočiť dozadu</string>
     <string name="player_controls_fast_forward">Pretočiť dopredu</string>
     <string name="player_controls_skip_intro">Preskočiť úvodnú zvučku</string>
+    <string name="player_controls_lock">Zamkne prehrávač</string>
+    <string name="player_controls_skip_back">Preskočiť späť</string>
+    <string name="player_controls_skip_forward">Preskočiť dopredu</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_progress">Časová os</string>
+    <string name="player_controls_play_pause">Prehrať pozastaviť</string>
 </resources>

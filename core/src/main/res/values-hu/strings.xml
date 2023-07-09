@@ -23,7 +23,7 @@
     <string name="title_media">Én médiám</string>
     <string name="title_favorite">Kedvencek</string>
     <string name="title_settings">Beállítások</string>
-    <string name="view_all">Mind megtekintése</string>
+    <string name="view_all">Összes megtekintése</string>
     <string name="error_loading_data">Hiba az adatok betöltése közben</string>
     <string name="retry">Újra</string>
     <string name="genres">Műfajok</string>
@@ -169,4 +169,6 @@
     <string name="size">Méret</string>
     <string name="privacy_policy_notice">A Findroid használatával elfogadod az <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
     <string name="subtitle_chip_text">Felirat</string>
+    <string name="remove_server_address">Szerver címének eltávolítása</string>
+    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
 </resources>
