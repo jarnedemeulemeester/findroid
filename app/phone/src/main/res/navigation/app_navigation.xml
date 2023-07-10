@@ -172,6 +172,9 @@
         <action
             android:id="@+id/action_movieFragment_to_personDetailFragment"
             app:destination="@id/personDetailFragment" />
+        <action
+            android:id="@+id/action_movieFragment_to_settingsFragment"
+            app:destination="@id/twoPaneSettingsFragment" />
     </fragment>
 
     <fragment
