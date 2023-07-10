@@ -168,4 +168,9 @@
     <string name="cancel_download">Anuluj pobieranie</string>
     <string name="cancel_download_message">Czy na pewno chcesz anulować pobieranie\?</string>
     <string name="stop_download">Zatrzymaj pobieranie</string>
+    <string name="size">Rozmiar</string>
+    <string name="privacy_policy_notice">Korzystając z Findroid zgadzasz się z <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Polityką Prywatności</a>, zgodnie z którą nie zbieramy żadnych danych</string>
+    <string name="app_language">Język aplikacji</string>
+    <string name="remove_server_address">Usuń adres serwera</string>
+    <string name="remove_server_address_dialog_text">Czy na pewno chcesz usunąć adres serwera %1$s</string>
 </resources>
