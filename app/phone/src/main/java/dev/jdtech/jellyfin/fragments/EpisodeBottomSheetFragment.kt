@@ -403,10 +403,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             .setPositiveButton(CoreR.string.go_to_download_settings) { _, _ ->
                 navigateToSettings()
             }
-            .setNegativeButton(CoreR.string.dont_ask_again) { _, _ ->
-                appPreferences.promptPendingDownloads = false
-            }
-            .setNegativeButton(CoreR.string.wait_for_download) { _, _ ->
+            .setNeutralButton(CoreR.string.dismiss) { _, _ ->
                 // Close
             }
             .create()
