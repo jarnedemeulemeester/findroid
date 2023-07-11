@@ -73,6 +73,9 @@
         android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
         android:label="@string/title_settings">
         <action
+            android:id="@+id/action_navigation_settings_to_SettingsLanguageFragment"
+            app:destination="@id/serverSelectFragment" />
+        <action
             android:id="@+id/action_navigation_settings_to_serverSelectFragment"
             app:destination="@id/serverSelectFragment" />
         <action
@@ -81,6 +84,24 @@
         <action
             android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
             app:destination="@id/serverAddressesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsAppearanceFragment"
+            app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsDownloadsFragment"
+            app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsPlayerFragment"
+            app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsDeviceFragment"
+            app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsNetworkFragment"
+            app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsFragment_to_SettingsCacheFragment"
+            app:destination="@id/about_libraries" />
         <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
