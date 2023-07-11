@@ -37,7 +37,7 @@ constructor(
             try {
                 val items = jellyfinRepository.getLibraries()
                 val collections =
-                    items.filter { collection -> CollectionType.unsupportedCollections.none { it == collection.type } }
+                    items.filter { collection -> collection.type in CollectionType.supported }
                 _uiState.emit(UiState.Normal(collections))
             } catch (e: Exception) {
                 _uiState.emit(
