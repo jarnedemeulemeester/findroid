@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
@@ -93,11 +95,12 @@ fun ServerSelectScreen(
         ) {
             Text(
                 text = stringResource(id = CoreR.string.select_server),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displayMedium
             )
             if (discoveredServers.isNotEmpty()) {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_sparkles),
                         contentDescription = null,
@@ -110,6 +113,7 @@ fun ServerSelectScreen(
                             count = discoveredServers.count(),
                             discoveredServers.count()
                         ),
+                        style = MaterialTheme.typography.titleMedium,
                         color = Color(0xFFBDBDBD)
                     )
                 }
@@ -123,8 +127,8 @@ fun ServerSelectScreen(
                 )
             } else {
                 TvLazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    contentPadding = PaddingValues(24.dp)
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    contentPadding = PaddingValues(horizontal = 24.dp)
                 ) {
                     items(servers) {
                         ServerComponent(it) { server ->
@@ -187,21 +191,22 @@ fun ServerComponent(
                 )
             }
             Column(
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
+                    .fillMaxHeight()
                     .align(Alignment.Center)
                     .padding(vertical = 24.dp, horizontal = 16.dp)
             ) {
                 Text(
                     text = server.name,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
-                    fontSize = 24.sp,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = server.address,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFFBDBDBD),
-                    fontSize = 18.sp,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -219,5 +224,18 @@ fun ServerPreview() {
             name = "Demo server",
             address = "https://demo.jellyfin.org/stable"
         )
+    )
+}
+
+@Preview
+@Composable
+fun ServerPreviewDiscovered() {
+    ServerComponent(
+        DiscoveredServer(
+            id = "",
+            name = "Demo server",
+            address = "https://demo.jellyfin.org/stable"
+        ),
+        true
     )
 }
