@@ -42,7 +42,7 @@ class ServerSelectFragment : Fragment() {
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
                 ServerGridAdapter.OnClickListener { server ->
-                    database.getServerCurrentUser(server.id)?.let{
+                    database.getServerCurrentUser(server.id)?.let {
                         viewModel.connectToServer(server)
                         return@OnClickListener
                     }
