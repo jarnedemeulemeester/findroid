@@ -12,13 +12,18 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
+
+    @Inject
+    lateinit var database: ServerDatabaseDao
 
     private lateinit var binding: FragmentServerSelectBinding
     private val viewModel: ServerSelectViewModel by viewModels()
@@ -37,7 +42,11 @@ class ServerSelectFragment : Fragment() {
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
                 ServerGridAdapter.OnClickListener { server ->
-                    viewModel.connectToServer(server)
+                    database.getServerCurrentUser(server.id)?.let{
+                        viewModel.connectToServer(server)
+                        return@OnClickListener
+                    }
+                    navigateToLoginFragment()
                 },
                 ServerGridAdapter.OnLongClickListener { server ->
                     DeleteServerDialogFragment(viewModel, server).show(
@@ -73,5 +82,9 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToMainActivity() {
         findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
+    }
+
+    private fun navigateToLoginFragment() {
+        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
     }
 }
