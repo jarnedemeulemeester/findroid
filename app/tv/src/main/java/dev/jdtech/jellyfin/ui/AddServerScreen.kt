@@ -25,11 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -76,8 +74,7 @@ fun AddServerScreen(
         ) {
             Text(
                 text = stringResource(id = CoreR.string.add_server),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displayMedium
             )
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(

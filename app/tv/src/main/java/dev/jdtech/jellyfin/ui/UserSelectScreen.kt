@@ -25,10 +25,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
@@ -36,6 +34,7 @@ import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
@@ -96,12 +95,12 @@ fun UserSelectScreen(
         ) {
             Text(
                 text = stringResource(id = CoreR.string.select_user),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displayMedium
             )
             server?.let {
                 Text(
                     text = "Server: ${it.name}",
+                    style = MaterialTheme.typography.titleMedium,
                     color = Color(0xFFBDBDBD)
                 )
             }
@@ -109,8 +108,7 @@ fun UserSelectScreen(
             if (users.isEmpty()) {
                 Text(
                     text = stringResource(id = CoreR.string.no_users_found),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.bodyMedium
                 )
             } else {
                 TvLazyRow(
@@ -191,8 +189,7 @@ private fun UserComponent(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = user.name,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
