@@ -93,9 +93,9 @@ kotlin {
 }
 
 ktlint {
+    version.set("0.49.1")
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {
