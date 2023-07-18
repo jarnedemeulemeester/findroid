@@ -93,7 +93,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
                         colors = TabDefaults.pillIndicatorTabColors(
-                            selectedContentColor = MaterialTheme.colorScheme.onPrimary
+                            selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
                             focusedTabIndex = index

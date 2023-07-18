@@ -86,10 +86,10 @@ private fun HomeScreenLayout(
                         is HomeItem.Section -> {
                             Text(
                                 text = homeItem.homeSection.name.asString(),
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.headlineMedium,
                                 modifier = Modifier.padding(start = 32.dp),
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp),
@@ -98,15 +98,15 @@ private fun HomeScreenLayout(
                                     ItemCard(item = item, baseUrl = baseUrl, onClick = {})
                                 }
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(32.dp))
                         }
                         is HomeItem.ViewItem -> {
                             Text(
                                 text = homeItem.view.name,
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.headlineMedium,
                                 modifier = Modifier.padding(start = 32.dp),
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 contentPadding = PaddingValues(horizontal = 32.dp),
@@ -140,7 +140,7 @@ private fun HomeScreenLayout(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(32.dp))
                         }
                         else -> Unit
                     }

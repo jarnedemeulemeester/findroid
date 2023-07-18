@@ -37,7 +37,7 @@ import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 fun ItemCard(
     item: FindroidItem,
     baseUrl: String,
-    onClick: (FindroidItem) -> Unit
+    onClick: (FindroidItem) -> Unit,
 ) {
     val width = 260
     Column(
@@ -90,7 +90,6 @@ fun ItemCard(
                     )
                 }
             }
-
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -125,7 +124,7 @@ private fun ItemCardPreviewMovie() {
             ItemCard(
                 item = dummyMovie,
                 baseUrl = "https://demo.jellyfin.org/stable",
-                onClick = {}
+                onClick = {},
             )
         }
     }
@@ -140,7 +139,7 @@ private fun ItemCardPreviewEpisode() {
             ItemCard(
                 item = dummyEpisode,
                 baseUrl = "https://demo.jellyfin.org/stable",
-                onClick = {}
+                onClick = {},
             )
         }
     }
