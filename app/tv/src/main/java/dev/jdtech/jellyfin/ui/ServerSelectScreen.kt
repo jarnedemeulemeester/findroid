@@ -69,12 +69,14 @@ fun ServerSelectScreen(
         uiState = delegatedUiState,
         discoveredServersState = delegatedDiscoveredServersState,
         onServerClick = { server ->
-            serverSelectViewModel.connectToServer(Server(
-                id = server.id,
-                name = server.name,
-                currentUserId = null,
-                currentServerAddressId = null,
-            ))
+            serverSelectViewModel.connectToServer(
+                Server(
+                    id = server.id,
+                    name = server.name,
+                    currentUserId = null,
+                    currentServerAddressId = null,
+                ),
+            )
         },
         onAddServerClick = {
             navigator.navigate(AddServerScreenDestination)

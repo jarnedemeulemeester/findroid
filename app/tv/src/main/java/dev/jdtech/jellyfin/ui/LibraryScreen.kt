@@ -27,6 +27,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.ui.components.Direction
+import dev.jdtech.jellyfin.ui.components.ItemPoster
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel

@@ -18,6 +18,10 @@ val TypographyTv = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
     ),
+    titleSmall = TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+    ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,

@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var startRoute: DirectionDestination = HomeScreenDestination
+        var startRoute = NavGraphs.root.startRoute
         if (checkServersEmpty()) {
             startRoute = AddServerScreenDestination
         } else if (checkUser()) {

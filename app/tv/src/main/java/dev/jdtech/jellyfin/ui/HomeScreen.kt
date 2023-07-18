@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,25 +38,21 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.HomeItem
+import dev.jdtech.jellyfin.ui.components.Direction
+import dev.jdtech.jellyfin.ui.components.ItemPoster
 import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
-import org.jellyfin.sdk.model.api.ImageType
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@RootNavGraph(start = true)
 @Destination
 @Composable
 fun HomeScreen(
@@ -67,7 +61,7 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
-        homeViewModel.loadData(includeLibraries = true)
+        homeViewModel.loadData()
     }
 
     val api = JellyfinApi.getInstance(context)
@@ -104,14 +98,10 @@ private fun HomeScreenLayout(
                 contentPadding = PaddingValues(bottom = 32.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                item {
-                    Header(
-                        modifier = Modifier.padding(horizontal = 32.dp),
-                    )
-                }
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
                         is HomeItem.Libraries -> {
+                            println("DRAWING LIBRARIES")
                             Text(
                                 text = homeItem.section.name.asString(),
                                 style = MaterialTheme.typography.titleLarge,
@@ -313,37 +303,4 @@ fun Header(modifier: Modifier = Modifier) {
             modifier = Modifier.height(40.dp),
         )
     }
-}
-
-enum class Direction {
-    HORIZONTAL, VERTICAL
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun ItemPoster(item: FindroidItem, baseUrl: String, direction: Direction) {
-    var itemId = item.id
-    var imageType = ImageType.PRIMARY
-
-    if (direction == Direction.HORIZONTAL) {
-        if (item is FindroidMovie) imageType = ImageType.BACKDROP
-    } else {
-        itemId = when (item) {
-            is FindroidEpisode -> item.seriesId
-            is FindroidSeason -> item.seriesId
-            else -> item.id
-        }
-    }
-
-    AsyncImage(
-        model = "$baseUrl/items/$itemId/Images/$imageType",
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
-            .background(
-                MaterialTheme.colorScheme.surface,
-            ),
-    )
 }
