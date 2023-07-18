@@ -22,12 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
@@ -36,14 +36,16 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
+import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
@@ -60,6 +62,26 @@ fun LoginScreen(
         navigator.navigate(HomeScreenDestination)
     }
 
+    LoginScreenLayout(
+        uiState = delegatedUiState,
+        quickConnectUiState = delegatedQuickConnectUiState,
+        onLoginClick = { username, password ->
+            loginViewModel.login(username, password)
+        },
+        onQuickConnectClick = {
+            loginViewModel.useQuickConnect()
+        }
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun LoginScreenLayout(
+    uiState: LoginViewModel.UiState,
+    quickConnectUiState: LoginViewModel.QuickConnectUiState,
+    onLoginClick: (String, String) -> Unit,
+    onQuickConnectClick: () -> Unit,
+) {
     var username by rememberSaveable {
         mutableStateOf("")
     }
@@ -69,18 +91,18 @@ fun LoginScreen(
 
     var quickConnectValue = stringResource(id = CoreR.string.quick_connect)
 
-    when (val quickConnectUiState = delegatedQuickConnectUiState) {
+    when (quickConnectUiState) {
         is LoginViewModel.QuickConnectUiState.Waiting -> {
             quickConnectValue = quickConnectUiState.code
         }
         else -> Unit
     }
 
-    val isError = delegatedUiState is LoginViewModel.UiState.Error
-    val isLoading = delegatedUiState is LoginViewModel.UiState.Loading
+    val isError = uiState is LoginViewModel.UiState.Error
+    val isLoading = uiState is LoginViewModel.UiState.Loading
 
-    val quickConnectEnabled = delegatedQuickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
-    val isWaiting = delegatedQuickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
+    val quickConnectEnabled = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
+    val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
 
     Box(
         modifier = Modifier
@@ -141,11 +163,8 @@ fun LoginScreen(
                 enabled = !isLoading,
                 supportingText = {
                     if (isError) {
-                        // TODO fix `asString()` composable not working
                         Text(
-                            text = (delegatedUiState as LoginViewModel.UiState.Error).message.asString(
-                                LocalContext.current.resources,
-                            ),
+                            text = (uiState as LoginViewModel.UiState.Error).message.asString(),
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
@@ -157,7 +176,7 @@ fun LoginScreen(
             Box {
                 Button(
                     onClick = {
-                        loginViewModel.login(username, password)
+                        onLoginClick(username, password)
                     },
                     enabled = !isLoading,
                     modifier = Modifier.width(360.dp),
@@ -185,7 +204,7 @@ fun LoginScreen(
                 Box {
                     OutlinedButton(
                         onClick = {
-                            loginViewModel.useQuickConnect()
+                            onQuickConnectClick()
                         },
                         modifier = Modifier.width(360.dp),
                     ) {
@@ -208,6 +227,38 @@ fun LoginScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun LoginScreenLayoutPreview() {
+    FindroidTheme {
+        Surface {
+            LoginScreenLayout(
+                uiState = LoginViewModel.UiState.Normal,
+                quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
+                onLoginClick = { _, _ -> },
+                onQuickConnectClick = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun LoginScreenLayoutPreviewError() {
+    FindroidTheme {
+        Surface {
+            LoginScreenLayout(
+                uiState = LoginViewModel.UiState.Error(UiText.DynamicString("Invalid username or password")),
+                quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
+                onLoginClick = { _, _ -> },
+                onQuickConnectClick = {}
+            )
         }
     }
 }
