@@ -82,7 +82,7 @@ fun UserSelectScreen(
         },
         onAddUserClick = {
             navigator.navigate(LoginScreenDestination)
-        }
+        },
     )
 }
 
@@ -141,7 +141,7 @@ private fun UserSelectScreenLayout(
                     items(users) {
                         UserComponent(
                             user = it,
-                            baseUrl = baseUrl
+                            baseUrl = baseUrl,
                         ) { user ->
                             onUserClick(user)
                         }
@@ -260,7 +260,7 @@ private fun UserComponentPreview() {
         Surface {
             UserComponent(
                 user = dummyUser,
-                baseUrl = "https://demo.jellyfin.org/stable"
+                baseUrl = "https://demo.jellyfin.org/stable",
             )
         }
     }

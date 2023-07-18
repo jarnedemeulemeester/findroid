@@ -6,7 +6,7 @@ import java.util.UUID
 val dummyUser = User(
     id = UUID.randomUUID(),
     name = "Username",
-    serverId = ""
+    serverId = "",
 )
 
 val dummyUsers = listOf(dummyUser)

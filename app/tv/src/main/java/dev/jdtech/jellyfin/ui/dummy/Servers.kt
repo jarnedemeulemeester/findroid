@@ -16,7 +16,7 @@ val dummyServer = Server(
     id = "",
     name = "Demo server",
     currentServerAddressId = UUID.randomUUID(),
-    currentUserId = UUID.randomUUID()
+    currentUserId = UUID.randomUUID(),
 )
 
 val dummyServers = listOf(dummyServer)

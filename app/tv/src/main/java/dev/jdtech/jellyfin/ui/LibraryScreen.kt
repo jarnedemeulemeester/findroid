@@ -52,7 +52,7 @@ fun LibraryScreen(
 
     LibraryScreenLayout(
         uiState = delegatedUiState,
-        baseUrl = api.api.baseUrl ?: ""
+        baseUrl = api.api.baseUrl ?: "",
     )
 }
 
@@ -113,7 +113,7 @@ private fun LibraryScreenLayoutPreview() {
         Surface {
             LibraryScreenLayout(
                 uiState = LibraryViewModel.UiState.Normal(data),
-                baseUrl = "https://demo.jellyfin.org/stable"
+                baseUrl = "https://demo.jellyfin.org/stable",
             )
         }
     }

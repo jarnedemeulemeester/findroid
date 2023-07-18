@@ -68,12 +68,12 @@ fun ServerSelectScreen(
     ServerSelectScreenLayout(
         uiState = delegatedUiState,
         discoveredServersState = delegatedDiscoveredServersState,
-        onServerClick = {server ->
+        onServerClick = { server ->
             navigator.navigate(UserSelectScreenDestination(serverId = server.id))
         },
         onAddServerClick = {
             navigator.navigate(AddServerScreenDestination)
-        }
+        },
     )
 }
 
@@ -83,7 +83,7 @@ private fun ServerSelectScreenLayout(
     uiState: ServerSelectViewModel.UiState,
     discoveredServersState: ServerSelectViewModel.DiscoveredServersState,
     onServerClick: (DiscoveredServer) -> Unit,
-    onAddServerClick: () -> Unit
+    onAddServerClick: () -> Unit,
 ) {
     var servers = emptyList<DiscoveredServer>()
     var discoveredServers = emptyList<DiscoveredServer>()
@@ -178,10 +178,10 @@ private fun ServerSelectScreenLayoutPreview() {
             ServerSelectScreenLayout(
                 uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
                 discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    dummyDiscoveredServers
+                    dummyDiscoveredServers,
                 ),
                 onServerClick = {},
-                onAddServerClick = {}
+                onAddServerClick = {},
             )
         }
     }
@@ -196,10 +196,10 @@ private fun ServerSelectScreenLayoutPreviewNoDiscovered() {
             ServerSelectScreenLayout(
                 uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
                 discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    emptyList()
+                    emptyList(),
                 ),
                 onServerClick = {},
-                onAddServerClick = {}
+                onAddServerClick = {},
             )
         }
     }
@@ -214,10 +214,10 @@ private fun ServerSelectScreenLayoutPreviewNoServers() {
             ServerSelectScreenLayout(
                 uiState = ServerSelectViewModel.UiState.Normal(emptyList()),
                 discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    emptyList()
+                    emptyList(),
                 ),
                 onServerClick = {},
-                onAddServerClick = {}
+                onAddServerClick = {},
             )
         }
     }

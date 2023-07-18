@@ -60,7 +60,7 @@ fun AddServerScreen(
         uiState = uiState,
         onConnectClick = { serverAddress ->
             addServerViewModel.checkServer(serverAddress)
-        }
+        },
     )
 }
 
@@ -68,7 +68,7 @@ fun AddServerScreen(
 @Composable
 private fun AddServerScreenLayout(
     uiState: AddServerViewModel.UiState,
-    onConnectClick: (String) -> Unit
+    onConnectClick: (String) -> Unit,
 ) {
     var serverAddress by rememberSaveable {
         mutableStateOf("")
@@ -161,7 +161,6 @@ private fun AddServerScreenLayout(
     }
 }
 
-
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Preview(widthDp = 960, heightDp = 540)
 @Composable
@@ -170,7 +169,7 @@ private fun AddServerScreenLayoutPreview() {
         Surface {
             AddServerScreenLayout(
                 uiState = AddServerViewModel.UiState.Normal,
-                onConnectClick = {}
+                onConnectClick = {},
             )
         }
     }

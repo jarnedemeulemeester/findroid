@@ -70,7 +70,7 @@ fun LoginScreen(
         },
         onQuickConnectClick = {
             loginViewModel.useQuickConnect()
-        }
+        },
     )
 }
 
@@ -241,7 +241,7 @@ private fun LoginScreenLayoutPreview() {
                 uiState = LoginViewModel.UiState.Normal,
                 quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
                 onLoginClick = { _, _ -> },
-                onQuickConnectClick = {}
+                onQuickConnectClick = {},
             )
         }
     }
@@ -257,7 +257,7 @@ private fun LoginScreenLayoutPreviewError() {
                 uiState = LoginViewModel.UiState.Error(UiText.DynamicString("Invalid username or password")),
                 quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
                 onLoginClick = { _, _ -> },
-                onQuickConnectClick = {}
+                onQuickConnectClick = {},
             )
         }
     }
