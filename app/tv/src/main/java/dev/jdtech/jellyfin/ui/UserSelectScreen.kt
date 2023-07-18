@@ -47,12 +47,14 @@ import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.ui.dummy.dummyServer
+import dev.jdtech.jellyfin.ui.dummy.dummyUser
+import dev.jdtech.jellyfin.ui.dummy.dummyUsers
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
 import org.jellyfin.sdk.model.api.ImageType
-import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun UserSelectScreen(
@@ -60,26 +62,47 @@ fun UserSelectScreen(
     navigator: DestinationsNavigator,
     userSelectViewModel: UserSelectViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val api = JellyfinApi.getInstance(context)
     val delegatedUiState by userSelectViewModel.uiState.collectAsState()
     val navigateToHome by userSelectViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToHome) {
         navigator.navigate(HomeScreenDestination)
     }
 
+    LaunchedEffect(key1 = true) {
+        userSelectViewModel.loadUsers(serverId)
+    }
+
+    UserSelectScreenLayout(
+        uiState = delegatedUiState,
+        baseUrl = api.api.baseUrl ?: "",
+        onUserClick = { user ->
+            userSelectViewModel.loginAsUser(user)
+        },
+        onAddUserClick = {
+            navigator.navigate(LoginScreenDestination)
+        }
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun UserSelectScreenLayout(
+    uiState: UserSelectViewModel.UiState,
+    baseUrl: String,
+    onUserClick: (User) -> Unit,
+    onAddUserClick: () -> Unit,
+) {
     var server: Server? = null
     var users: List<User> = emptyList()
 
-    when (val uiState = delegatedUiState) {
+    when (uiState) {
         is UserSelectViewModel.UiState.Normal -> {
             server = uiState.server
             users = uiState.users
         }
-
         else -> Unit
-    }
-
-    LaunchedEffect(key1 = true) {
-        userSelectViewModel.loadUsers(serverId)
     }
 
     Box(
@@ -116,8 +139,11 @@ fun UserSelectScreen(
                     contentPadding = PaddingValues(24.dp),
                 ) {
                     items(users) {
-                        UserComponent(it) { user ->
-                            userSelectViewModel.loginAsUser(user)
+                        UserComponent(
+                            user = it,
+                            baseUrl = baseUrl
+                        ) { user ->
+                            onUserClick(user)
                         }
                     }
                 }
@@ -125,7 +151,7 @@ fun UserSelectScreen(
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedButton(
                 onClick = {
-                    navigator.navigate(LoginScreenDestination)
+                    onAddUserClick()
                 },
             ) {
                 Text(text = stringResource(id = CoreR.string.add_user))
@@ -135,13 +161,45 @@ fun UserSelectScreen(
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun UserSelectScreenLayoutPreview() {
+    FindroidTheme {
+        Surface {
+            UserSelectScreenLayout(
+                uiState = UserSelectViewModel.UiState.Normal(dummyServer, dummyUsers),
+                baseUrl = "https://demo.jellyfin.org/stable",
+                onUserClick = {},
+                onAddUserClick = {},
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun UserSelectScreenLayoutPreviewNoUsers() {
+    FindroidTheme {
+        Surface {
+            UserSelectScreenLayout(
+                uiState = UserSelectViewModel.UiState.Normal(dummyServer, emptyList()),
+                baseUrl = "https://demo.jellyfin.org/stable",
+                onUserClick = {},
+                onAddUserClick = {},
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun UserComponent(
     user: User,
+    baseUrl: String,
     onClick: (User) -> Unit = {},
 ) {
     val context = LocalContext.current
-    val api = JellyfinApi.getInstance(context)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -178,7 +236,7 @@ private fun UserComponent(
             )
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data("${api.api.baseUrl}/users/${user.id}/Images/${ImageType.PRIMARY}")
+                    .data("$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}")
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -194,8 +252,16 @@ private fun UserComponent(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
-private fun UserPreview() {
-    UserComponent(user = User(id = UUID.randomUUID(), name = "Bob", serverId = ""))
+private fun UserComponentPreview() {
+    FindroidTheme {
+        Surface {
+            UserComponent(
+                user = dummyUser,
+                baseUrl = "https://demo.jellyfin.org/stable"
+            )
+        }
+    }
 }
