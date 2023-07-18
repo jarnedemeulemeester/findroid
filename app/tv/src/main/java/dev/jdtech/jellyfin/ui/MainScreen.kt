@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +36,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -67,9 +70,18 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
     ) {
         Box(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 24.dp),
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(horizontal = 24.dp),
         ) {
+            Icon(
+                painter = painterResource(id = CoreR.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.CenterStart),
+            )
             TabRow(
                 selectedTabIndex = focusedTabIndex,
                 indicator = { tabPositions ->
@@ -87,6 +99,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         inactiveColor = MaterialTheme.colorScheme.primary,
                     )
                 },
+                modifier = Modifier.align(Alignment.Center)
             ) {
                 TabDestination.values().forEachIndexed { index, tab ->
                     Tab(
@@ -114,9 +127,13 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     }
                 }
             }
+            ProfileButton(
+                onClick = {},
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+            )
         }
         when (activeTabIndex) {
-            0 -> {}
             1 -> {
                 HomeScreen(navigator = navigator)
             }
