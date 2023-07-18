@@ -32,7 +32,7 @@ import java.util.UUID
 fun LibraryScreen(
     libraryId: UUID,
     libraryType: CollectionType,
-    libraryViewModel: LibraryViewModel = hiltViewModel()
+    libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
@@ -50,7 +50,7 @@ fun LibraryScreen(
                 columns = TvGridCells.Fixed(6),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(start = 32.dp, end = 32.dp, bottom = 32.dp)
+                contentPadding = PaddingValues(start = 32.dp, end = 32.dp, bottom = 32.dp),
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
                     Header()
@@ -63,18 +63,18 @@ fun LibraryScreen(
                             image = {
                                 ItemPoster(
                                     item = item,
-                                    api = api,
-                                    direction = Direction.VERTICAL
+                                    baseUrl = api.api.baseUrl ?: "",
+                                    direction = Direction.VERTICAL,
                                 )
                             },
                             title = {
                                 Text(
                                     text = item.name,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(8.dp),
                                 )
                             },
-                            modifier = Modifier.width(120.dp)
+                            modifier = Modifier.width(120.dp),
                         )
                     }
                 }

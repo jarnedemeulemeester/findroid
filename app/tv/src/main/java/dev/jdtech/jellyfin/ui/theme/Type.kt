@@ -8,22 +8,22 @@ import androidx.tv.material3.Typography
 val TypographyTv = Typography(
     displayMedium = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 48.sp
+        fontSize = 48.sp,
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 24.sp
+        fontSize = 24.sp,
     ),
     titleMedium = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp
+        fontSize = 18.sp,
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
+        fontSize = 18.sp,
     ),
     labelMedium = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
+        fontSize = 12.sp,
+    ),
 )

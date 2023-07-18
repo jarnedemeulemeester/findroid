@@ -12,18 +12,18 @@ private val ColorSchemeTv = darkColorScheme(
     primaryContainer = PrimaryContainerDark,
     onPrimaryContainer = OnPrimaryContainerDark,
     surface = Neutral900,
-    background = Neutral1000
+    background = Neutral1000,
 )
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun FindroidTheme(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colorScheme = ColorSchemeTv,
         typography = TypographyTv,
         shapes = shapesTv,
-        content = content
+        content = content,
     )
 }

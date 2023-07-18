@@ -39,20 +39,20 @@ import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by loginViewModel.uiState.collectAsState()
     val delegatedQuickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(
-        initial = LoginViewModel.QuickConnectUiState.Disabled
+        initial = LoginViewModel.QuickConnectUiState.Disabled,
     )
 
     val navigateToHome by loginViewModel.navigateToMain.collectAsState(initial = false)
@@ -85,17 +85,17 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = CoreR.string.login),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
@@ -103,7 +103,7 @@ fun LoginScreen(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_user),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
                 onValueChange = { username = it },
@@ -112,12 +112,12 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Next,
                 ),
                 isError = isError,
                 enabled = !isLoading,
                 modifier = Modifier
-                    .width(360.dp)
+                    .width(360.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -125,7 +125,7 @@ fun LoginScreen(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_lock),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
                 onValueChange = { password = it },
@@ -134,7 +134,7 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Go
+                    imeAction = ImeAction.Go,
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = isError,
@@ -144,14 +144,14 @@ fun LoginScreen(
                         // TODO fix `asString()` composable not working
                         Text(
                             text = (delegatedUiState as LoginViewModel.UiState.Error).message.asString(
-                                LocalContext.current.resources
+                                LocalContext.current.resources,
                             ),
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 },
                 modifier = Modifier
-                    .width(360.dp)
+                    .width(360.dp),
             )
             Spacer(modifier = Modifier.height(24.dp))
             Box {
@@ -160,22 +160,22 @@ fun LoginScreen(
                         loginViewModel.login(username, password)
                     },
                     enabled = !isLoading,
-                    modifier = Modifier.width(360.dp)
+                    modifier = Modifier.width(360.dp),
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         if (isLoading) {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .align(Alignment.CenterStart)
+                                    .align(Alignment.CenterStart),
                             )
                         }
                         Text(
                             text = stringResource(id = CoreR.string.button_login),
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
                         )
                     }
                 }
@@ -187,22 +187,22 @@ fun LoginScreen(
                         onClick = {
                             loginViewModel.useQuickConnect()
                         },
-                        modifier = Modifier.width(360.dp)
+                        modifier = Modifier.width(360.dp),
                     ) {
                         Box(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
                             if (isWaiting) {
                                 CircularProgressIndicator(
                                     color = LocalContentColor.current,
                                     modifier = Modifier
                                         .size(24.dp)
-                                        .align(Alignment.CenterStart)
+                                        .align(Alignment.CenterStart),
                                 )
                             }
                             Text(
                                 text = quickConnectValue,
-                                modifier = Modifier.align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.Center),
                             )
                         }
                     }

@@ -37,16 +37,16 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun AddServerScreen(
     navigator: DestinationsNavigator,
-    addServerViewModel: AddServerViewModel = hiltViewModel()
+    addServerViewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val uiState by addServerViewModel.uiState.collectAsState()
     val navigateToLogin by addServerViewModel.navigateToLogin.collectAsState(initial = false)
@@ -64,17 +64,17 @@ fun AddServerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = CoreR.string.add_server),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
@@ -82,20 +82,20 @@ fun AddServerScreen(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_server),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
                 onValueChange = { text = it },
                 label = {
                     Text(
-                        text = stringResource(id = CoreR.string.edit_text_server_address_hint)
+                        text = stringResource(id = CoreR.string.edit_text_server_address_hint),
                     )
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
                     keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Go
+                    imeAction = ImeAction.Go,
                 ),
                 isError = isError,
                 enabled = !isLoading,
@@ -104,15 +104,15 @@ fun AddServerScreen(
                         Text(
                             text = (uiState as AddServerViewModel.UiState.Error).message.joinToString {
                                 it.asString(
-                                    context.resources
+                                    context.resources,
                                 )
                             },
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 },
                 modifier = Modifier
-                    .width(360.dp)
+                    .width(360.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Box {
@@ -121,22 +121,22 @@ fun AddServerScreen(
                         addServerViewModel.checkServer(text)
                     },
                     enabled = !isLoading,
-                    modifier = Modifier.width(360.dp)
+                    modifier = Modifier.width(360.dp),
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         if (isLoading) {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .align(Alignment.CenterStart)
+                                    .align(Alignment.CenterStart),
                             )
                         }
                         Text(
                             text = stringResource(id = CoreR.string.button_connect),
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
                         )
                     }
                 }

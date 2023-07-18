@@ -41,19 +41,19 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun ServerSelectScreen(
     navigator: DestinationsNavigator,
-    serverSelectViewModel: ServerSelectViewModel = hiltViewModel()
+    serverSelectViewModel: ServerSelectViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by serverSelectViewModel.uiState.collectAsState()
     val delegatedDiscoveredServersState by serverSelectViewModel.discoveredServersState.collectAsState()
@@ -83,36 +83,36 @@ fun ServerSelectScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = CoreR.string.select_server),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             if (discoveredServers.isNotEmpty()) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_sparkles),
                         contentDescription = null,
-                        tint = Color(0xFFBDBDBD)
+                        tint = Color(0xFFBDBDBD),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = pluralStringResource(
                             id = CoreR.plurals.discovered_servers,
                             count = discoveredServers.count(),
-                            discoveredServers.count()
+                            discoveredServers.count(),
                         ),
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFFBDBDBD)
+                        color = Color(0xFFBDBDBD),
                     )
                 }
             }
@@ -120,12 +120,12 @@ fun ServerSelectScreen(
             if (servers.isEmpty() && discoveredServers.isEmpty()) {
                 Text(
                     text = stringResource(id = CoreR.string.no_servers_found),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
                 TvLazyRow(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    contentPadding = PaddingValues(horizontal = 24.dp)
+                    contentPadding = PaddingValues(horizontal = 24.dp),
                 ) {
                     items(servers) {
                         ServerComponent(it) { server ->
@@ -141,7 +141,7 @@ fun ServerSelectScreen(
             OutlinedButton(
                 onClick = {
                     navigator.navigate(AddServerScreenDestination)
-                }
+                },
             ) {
                 Text(text = stringResource(id = CoreR.string.add_server))
             }
@@ -154,7 +154,7 @@ fun ServerSelectScreen(
 fun ServerComponent(
     server: DiscoveredServer,
     discovered: Boolean = false,
-    onClick: (DiscoveredServer) -> Unit = {}
+    onClick: (DiscoveredServer) -> Unit = {},
 ) {
     Surface(
         onClick = {
@@ -162,21 +162,21 @@ fun ServerComponent(
         },
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color(0xFF132026),
-            focusedContainerColor = Color(0xFF132026)
+            focusedContainerColor = Color(0xFF132026),
         ),
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(16.dp)),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
-                    Color.White
+                    Color.White,
                 ),
-                shape = RoundedCornerShape(16.dp)
-            )
+                shape = RoundedCornerShape(16.dp),
+            ),
         ),
         modifier = Modifier
             .width(270.dp)
-            .height(115.dp)
+            .height(115.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (discovered) {
@@ -184,7 +184,7 @@ fun ServerComponent(
                     painter = painterResource(id = CoreR.drawable.ic_sparkles),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp)
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp),
                 )
             }
             Column(
@@ -192,20 +192,20 @@ fun ServerComponent(
                 modifier = Modifier
                     .fillMaxHeight()
                     .align(Alignment.Center)
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
+                    .padding(vertical = 24.dp, horizontal = 16.dp),
             ) {
                 Text(
                     text = server.name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
                 Text(
                     text = server.address,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFFBDBDBD),
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
         }
@@ -219,8 +219,8 @@ fun ServerPreview() {
         DiscoveredServer(
             id = "",
             name = "Demo server",
-            address = "https://demo.jellyfin.org/stable"
-        )
+            address = "https://demo.jellyfin.org/stable",
+        ),
     )
 }
 
@@ -231,8 +231,8 @@ fun ServerPreviewDiscovered() {
         DiscoveredServer(
             id = "",
             name = "Demo server",
-            address = "https://demo.jellyfin.org/stable"
+            address = "https://demo.jellyfin.org/stable",
         ),
-        true
+        true,
     )
 }

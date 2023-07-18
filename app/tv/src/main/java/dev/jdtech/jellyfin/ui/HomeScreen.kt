@@ -38,13 +38,13 @@ import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.CompactCard
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -52,16 +52,18 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
+import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import org.jellyfin.sdk.model.api.ImageType
+import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @RootNavGraph(start = true)
 @Destination
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
@@ -71,58 +73,73 @@ fun HomeScreen(
     val api = JellyfinApi.getInstance(context)
 
     val delegatedUiState by homeViewModel.uiState.collectAsState()
-    when (val uiState = delegatedUiState) {
+
+    HomeScreenLayout(
+        uiState = delegatedUiState,
+        baseUrl = api.api.baseUrl ?: "",
+        onLibraryClick = { library ->
+            navigator.navigate(
+                LibraryScreenDestination(
+                    library.id,
+                    (library as FindroidCollection).type,
+                ),
+            )
+        },
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun HomeScreenLayout(
+    uiState: HomeViewModel.UiState,
+    baseUrl: String,
+    onLibraryClick: (FindroidItem) -> Unit,
+) {
+    when (uiState) {
         is HomeViewModel.UiState.Loading -> {
             Text(text = "LOADING")
         }
         is HomeViewModel.UiState.Normal -> {
             TvLazyColumn(
                 contentPadding = PaddingValues(bottom = 32.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 item {
                     Header(
-                        modifier = Modifier.padding(horizontal = 32.dp)
+                        modifier = Modifier.padding(horizontal = 32.dp),
                     )
                 }
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
                         is HomeItem.Libraries -> {
                             Text(
-                                text = homeItem.section.name.asString(context.resources),
+                                text = homeItem.section.name.asString(),
                                 style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(start = 32.dp)
+                                modifier = Modifier.padding(start = 32.dp),
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp)
+                                contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.section.items) { library ->
                                     CompactCard(
-                                        onClick = {
-                                            navigator.navigate(
-                                                LibraryScreenDestination(
-                                                    library.id,
-                                                    (library as FindroidCollection).type
-                                                )
-                                            )
-                                        },
+                                        onClick = { onLibraryClick(library) },
                                         image = {
                                             ItemPoster(
                                                 item = library,
-                                                api = api,
-                                                direction = Direction.HORIZONTAL
+                                                baseUrl = baseUrl,
+                                                direction = Direction.HORIZONTAL,
                                             )
                                         },
                                         title = {
                                             Text(
                                                 text = library.name,
                                                 style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(8.dp)
+                                                modifier = Modifier.padding(8.dp),
                                             )
                                         },
-                                        modifier = Modifier.width(240.dp)
+                                        modifier = Modifier.width(240.dp),
                                     )
                                 }
                             }
@@ -130,34 +147,34 @@ fun HomeScreen(
                         }
                         is HomeItem.Section -> {
                             Text(
-                                text = homeItem.homeSection.name.asString(context.resources),
+                                text = homeItem.homeSection.name.asString(),
                                 style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(start = 32.dp)
+                                modifier = Modifier.padding(start = 32.dp),
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp)
+                                contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.homeSection.items) { item ->
                                     Card(
                                         colors = CardDefaults.colors(
-                                            containerColor = Color.Transparent
+                                            containerColor = Color.Transparent,
                                         ),
-                                        onClick = { /*TODO*/ }
+                                        onClick = { /*TODO*/ },
                                     ) {
                                         Column(
                                             modifier = Modifier
-                                                .width(180.dp)
+                                                .width(180.dp),
                                         ) {
                                             Box {
                                                 ItemPoster(
                                                     item = item,
-                                                    api = api,
-                                                    direction = Direction.HORIZONTAL
+                                                    baseUrl = baseUrl,
+                                                    direction = Direction.HORIZONTAL,
                                                 )
                                                 Column(
-                                                    modifier = Modifier.align(Alignment.BottomStart)
+                                                    modifier = Modifier.align(Alignment.BottomStart),
                                                 ) {
                                                     Row {
                                                         Spacer(modifier = Modifier.width(8.dp))
@@ -167,18 +184,18 @@ fun HomeScreen(
                                                                 .width(
                                                                     item.playbackPositionTicks
                                                                         .div(
-                                                                            item.runtimeTicks.toFloat()
+                                                                            item.runtimeTicks.toFloat(),
                                                                         )
                                                                         .times(
-                                                                            1.64
-                                                                        ).dp
+                                                                            1.64,
+                                                                        ).dp,
                                                                 )
                                                                 .clip(
-                                                                    MaterialTheme.shapes.extraSmall
+                                                                    MaterialTheme.shapes.extraSmall,
                                                                 )
                                                                 .background(
-                                                                    MaterialTheme.colorScheme.primary
-                                                                )
+                                                                    MaterialTheme.colorScheme.primary,
+                                                                ),
                                                         )
                                                     }
                                                     Spacer(modifier = Modifier.height(8.dp))
@@ -190,7 +207,7 @@ fun HomeScreen(
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.padding(horizontal = 4.dp)
+                                                modifier = Modifier.padding(horizontal = 4.dp),
                                             )
                                             if (item is FindroidEpisode) {
                                                 Text(
@@ -198,12 +215,12 @@ fun HomeScreen(
                                                         id = CoreR.string.episode_name_extended,
                                                         item.parentIndexNumber,
                                                         item.indexNumber,
-                                                        item.name
+                                                        item.name,
                                                     ),
                                                     style = MaterialTheme.typography.bodySmall,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                                    modifier = Modifier.padding(horizontal = 4.dp),
                                                 )
                                             }
                                             Spacer(modifier = Modifier.height(4.dp))
@@ -217,28 +234,28 @@ fun HomeScreen(
                             Text(
                                 text = homeItem.view.name,
                                 style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(start = 32.dp)
+                                modifier = Modifier.padding(start = 32.dp),
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             TvLazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp)
+                                contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
                                     Card(
                                         colors = CardDefaults.colors(
-                                            containerColor = Color.Transparent
+                                            containerColor = Color.Transparent,
                                         ),
-                                        onClick = { /*TODO*/ }
+                                        onClick = { /*TODO*/ },
                                     ) {
                                         Column(
                                             modifier = Modifier
-                                                .width(120.dp)
+                                                .width(120.dp),
                                         ) {
                                             ItemPoster(
                                                 item = item,
-                                                api = api,
-                                                direction = Direction.VERTICAL
+                                                baseUrl = baseUrl,
+                                                direction = Direction.VERTICAL,
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
@@ -246,7 +263,7 @@ fun HomeScreen(
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 maxLines = 2,
                                                 overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.padding(horizontal = 4.dp)
+                                                modifier = Modifier.padding(horizontal = 4.dp),
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                         }
@@ -266,6 +283,21 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun HomeScreenLayoutPreview() {
+    FindroidTheme {
+        Surface {
+            HomeScreenLayout(
+                uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
+                baseUrl = "https://demo.jellyfin.org/stable",
+                onLibraryClick = {},
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun Header(modifier: Modifier = Modifier) {
@@ -273,12 +305,12 @@ fun Header(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(80.dp),
     ) {
         Image(
             painter = painterResource(id = CoreR.drawable.ic_banner),
             contentDescription = null,
-            modifier = Modifier.height(40.dp)
+            modifier = Modifier.height(40.dp),
         )
     }
 }
@@ -289,7 +321,7 @@ enum class Direction {
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun ItemPoster(item: FindroidItem, api: JellyfinApi, direction: Direction) {
+fun ItemPoster(item: FindroidItem, baseUrl: String, direction: Direction) {
     var itemId = item.id
     var imageType = ImageType.PRIMARY
 
@@ -304,14 +336,14 @@ fun ItemPoster(item: FindroidItem, api: JellyfinApi, direction: Direction) {
     }
 
     AsyncImage(
-        model = "${api.api.baseUrl}/items/$itemId/Images/$imageType",
+        model = "$baseUrl/items/$itemId/Images/$imageType",
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
             .background(
-                MaterialTheme.colorScheme.surface
-            )
+                MaterialTheme.colorScheme.surface,
+            ),
     )
 }

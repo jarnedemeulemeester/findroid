@@ -43,14 +43,14 @@ import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
-import java.util.UUID
 import org.jellyfin.sdk.model.api.ImageType
+import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
@@ -58,7 +58,7 @@ import org.jellyfin.sdk.model.api.ImageType
 fun UserSelectScreen(
     serverId: String,
     navigator: DestinationsNavigator,
-    userSelectViewModel: UserSelectViewModel = hiltViewModel()
+    userSelectViewModel: UserSelectViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by userSelectViewModel.uiState.collectAsState()
     val navigateToHome by userSelectViewModel.navigateToMain.collectAsState(initial = false)
@@ -85,35 +85,35 @@ fun UserSelectScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = CoreR.string.select_user),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             server?.let {
                 Text(
                     text = "Server: ${it.name}",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color(0xFFBDBDBD)
+                    color = Color(0xFFBDBDBD),
                 )
             }
             Spacer(modifier = Modifier.height(32.dp))
             if (users.isEmpty()) {
                 Text(
                     text = stringResource(id = CoreR.string.no_users_found),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
                 TvLazyRow(
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    contentPadding = PaddingValues(24.dp)
+                    contentPadding = PaddingValues(24.dp),
                 ) {
                     items(users) {
                         UserComponent(it) { user ->
@@ -126,7 +126,7 @@ fun UserSelectScreen(
             OutlinedButton(
                 onClick = {
                     navigator.navigate(LoginScreenDestination)
-                }
+                },
             ) {
                 Text(text = stringResource(id = CoreR.string.add_user))
             }
@@ -138,14 +138,14 @@ fun UserSelectScreen(
 @Composable
 private fun UserComponent(
     user: User,
-    onClick: (User) -> Unit = {}
+    onClick: (User) -> Unit = {},
 ) {
     val context = LocalContext.current
     val api = JellyfinApi.getInstance(context)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .width(120.dp)
+            .width(120.dp),
     ) {
         Surface(
             onClick = {
@@ -153,19 +153,19 @@ private fun UserComponent(
             },
             colors = ClickableSurfaceDefaults.colors(
                 containerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent
+                focusedContainerColor = Color.Transparent,
             ),
             border = ClickableSurfaceDefaults.border(
                 border = Border(BorderStroke(1.dp, Color.White), shape = CircleShape),
-                focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape)
+                focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape),
             ),
             shape = ClickableSurfaceDefaults.shape(
                 shape = CircleShape,
-                focusedShape = CircleShape
+                focusedShape = CircleShape,
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
+                .aspectRatio(1f),
         ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_user),
@@ -174,7 +174,7 @@ private fun UserComponent(
                 modifier = Modifier
                     .width(48.dp)
                     .height(48.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             )
             AsyncImage(
                 model = ImageRequest.Builder(context)
@@ -183,13 +183,13 @@ private fun UserComponent(
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = user.name,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

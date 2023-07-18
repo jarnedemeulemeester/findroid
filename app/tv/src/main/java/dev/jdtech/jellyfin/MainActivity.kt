@@ -53,14 +53,14 @@ class MainActivity : ComponentActivity() {
             FindroidTheme {
                 Surface(
                     colors = NonInteractiveSurfaceDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.background
+                        containerColor = MaterialTheme.colorScheme.background,
                     ),
                     shape = RectangleShape,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
-                        startRoute = startRoute
+                        startRoute = startRoute,
                     )
                 }
             }

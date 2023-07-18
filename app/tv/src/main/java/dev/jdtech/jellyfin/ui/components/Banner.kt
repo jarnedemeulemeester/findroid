@@ -19,6 +19,6 @@ fun Banner() {
         painter = painterResource(id = R.drawable.ic_banner),
         contentDescription = null,
         tint = Color.Unspecified,
-        modifier = Modifier.width(320.dp)
+        modifier = Modifier.width(320.dp),
     )
 }
