@@ -65,7 +65,7 @@ private fun ProfileButtonPreview() {
     FindroidTheme {
         Surface {
             ProfileButton(
-                onClick = {}
+                onClick = {},
             )
         }
     }

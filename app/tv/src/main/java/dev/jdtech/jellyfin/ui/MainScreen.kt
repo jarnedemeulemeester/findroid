@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,7 +68,9 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
     var activeTabIndex by remember { mutableIntStateOf(focusedTabIndex) }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
     ) {
         Box(
             modifier = Modifier
@@ -99,7 +103,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         inactiveColor = MaterialTheme.colorScheme.primary,
                     )
                 },
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center),
             ) {
                 TabDestination.values().forEachIndexed { index, tab ->
                     Tab(
@@ -130,7 +134,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
             ProfileButton(
                 onClick = {},
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.CenterEnd),
             )
         }
         when (activeTabIndex) {
