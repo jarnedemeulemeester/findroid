@@ -42,8 +42,8 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.DiscoveredServer
+import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
@@ -62,14 +62,19 @@ fun ServerSelectScreen(
     val delegatedDiscoveredServersState by serverSelectViewModel.discoveredServersState.collectAsState()
     val navigateToLogin by serverSelectViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToLogin) {
-        navigator.navigate(LoginScreenDestination)
+        navigator.navigate(UserSelectScreenDestination(serverSelectViewModel.currentServerId ?: ""))
     }
 
     ServerSelectScreenLayout(
         uiState = delegatedUiState,
         discoveredServersState = delegatedDiscoveredServersState,
         onServerClick = { server ->
-            navigator.navigate(UserSelectScreenDestination(serverId = server.id))
+            serverSelectViewModel.connectToServer(Server(
+                id = server.id,
+                name = server.name,
+                currentUserId = null,
+                currentServerAddressId = null,
+            ))
         },
         onAddServerClick = {
             navigator.navigate(AddServerScreenDestination)

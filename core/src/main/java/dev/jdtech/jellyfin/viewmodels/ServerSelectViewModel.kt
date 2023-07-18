@@ -30,6 +30,8 @@ constructor(
     private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
     val discoveredServersState = _discoveredServersState.asStateFlow()
 
+    var currentServerId: String? = appPreferences.currentServer
+
     // TODO states may need to be merged / cleaned up
     sealed class UiState {
         data class Normal(val servers: List<Server>) : UiState()
@@ -95,8 +97,8 @@ constructor(
     fun connectToServer(server: Server) {
         viewModelScope.launch {
             val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)!!
-            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
-            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
+            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: serverWithAddressesAndUsers.addresses.first()
+            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: serverWithAddressesAndUsers.users.first()
 
             jellyfinApi.apply {
                 api.baseUrl = serverAddress.address
@@ -105,6 +107,7 @@ constructor(
             }
 
             appPreferences.currentServer = server.id
+            currentServerId = server.id
 
             _navigateToMain.emit(true)
         }
