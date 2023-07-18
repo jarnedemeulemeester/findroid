@@ -45,10 +45,13 @@ import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
+import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
+import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
+import dev.jdtech.jellyfin.ui.dummy.dummyServers
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun ServerSelectScreen(
@@ -61,10 +64,31 @@ fun ServerSelectScreen(
     if (navigateToLogin) {
         navigator.navigate(LoginScreenDestination)
     }
+
+    ServerSelectScreenLayout(
+        uiState = delegatedUiState,
+        discoveredServersState = delegatedDiscoveredServersState,
+        onServerClick = {server ->
+            navigator.navigate(UserSelectScreenDestination(serverId = server.id))
+        },
+        onAddServerClick = {
+            navigator.navigate(AddServerScreenDestination)
+        }
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun ServerSelectScreenLayout(
+    uiState: ServerSelectViewModel.UiState,
+    discoveredServersState: ServerSelectViewModel.DiscoveredServersState,
+    onServerClick: (DiscoveredServer) -> Unit,
+    onAddServerClick: () -> Unit
+) {
     var servers = emptyList<DiscoveredServer>()
     var discoveredServers = emptyList<DiscoveredServer>()
 
-    when (val uiState = delegatedUiState) {
+    when (uiState) {
         is ServerSelectViewModel.UiState.Normal -> {
             servers =
                 uiState.servers.map { DiscoveredServer(id = it.id, name = it.name, address = "") }
@@ -72,7 +96,7 @@ fun ServerSelectScreen(
 
         else -> Unit
     }
-    when (val discoveredServersState = delegatedDiscoveredServersState) {
+    when (discoveredServersState) {
         is ServerSelectViewModel.DiscoveredServersState.Servers -> {
             discoveredServers = discoveredServersState.servers
         }
@@ -127,10 +151,8 @@ fun ServerSelectScreen(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
                     contentPadding = PaddingValues(horizontal = 24.dp),
                 ) {
-                    items(servers) {
-                        ServerComponent(it) { server ->
-                            navigator.navigate(UserSelectScreenDestination(serverId = server.id))
-                        }
+                    items(servers) { server ->
+                        ServerComponent(server) { onServerClick(it) }
                     }
                     items(discoveredServers) {
                         ServerComponent(it, discovered = true)
@@ -139,9 +161,7 @@ fun ServerSelectScreen(
             }
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedButton(
-                onClick = {
-                    navigator.navigate(AddServerScreenDestination)
-                },
+                onClick = { onAddServerClick() },
             ) {
                 Text(text = stringResource(id = CoreR.string.add_server))
             }
@@ -150,8 +170,62 @@ fun ServerSelectScreen(
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
 @Composable
-fun ServerComponent(
+private fun ServerSelectScreenLayoutPreview() {
+    FindroidTheme {
+        Surface {
+            ServerSelectScreenLayout(
+                uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
+                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                    dummyDiscoveredServers
+                ),
+                onServerClick = {},
+                onAddServerClick = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun ServerSelectScreenLayoutPreviewNoDiscovered() {
+    FindroidTheme {
+        Surface {
+            ServerSelectScreenLayout(
+                uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
+                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                    emptyList()
+                ),
+                onServerClick = {},
+                onAddServerClick = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun ServerSelectScreenLayoutPreviewNoServers() {
+    FindroidTheme {
+        Surface {
+            ServerSelectScreenLayout(
+                uiState = ServerSelectViewModel.UiState.Normal(emptyList()),
+                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                    emptyList()
+                ),
+                onServerClick = {},
+                onAddServerClick = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun ServerComponent(
     server: DiscoveredServer,
     discovered: Boolean = false,
     onClick: (DiscoveredServer) -> Unit = {},
@@ -212,27 +286,27 @@ fun ServerComponent(
     }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
-fun ServerPreview() {
-    ServerComponent(
-        DiscoveredServer(
-            id = "",
-            name = "Demo server",
-            address = "https://demo.jellyfin.org/stable",
-        ),
-    )
+private fun ServerComponentPreview() {
+    FindroidTheme {
+        Surface {
+            ServerComponent(dummyDiscoveredServer)
+        }
+    }
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
-fun ServerPreviewDiscovered() {
-    ServerComponent(
-        DiscoveredServer(
-            id = "",
-            name = "Demo server",
-            address = "https://demo.jellyfin.org/stable",
-        ),
-        true,
-    )
+private fun ServerComponentPreviewDiscovered() {
+    FindroidTheme {
+        Surface {
+            ServerComponent(
+                server = dummyDiscoveredServer,
+                discovered = true,
+            )
+        }
+    }
 }
