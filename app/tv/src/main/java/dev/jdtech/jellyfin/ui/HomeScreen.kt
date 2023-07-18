@@ -1,9 +1,7 @@
 package dev.jdtech.jellyfin.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,11 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,10 +38,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.components.Direction
+import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.components.ItemPoster
 import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
@@ -147,75 +143,7 @@ private fun HomeScreenLayout(
                                 contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.homeSection.items) { item ->
-                                    Card(
-                                        colors = CardDefaults.colors(
-                                            containerColor = Color.Transparent,
-                                        ),
-                                        onClick = { /*TODO*/ },
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .width(180.dp),
-                                        ) {
-                                            Box {
-                                                ItemPoster(
-                                                    item = item,
-                                                    baseUrl = baseUrl,
-                                                    direction = Direction.HORIZONTAL,
-                                                )
-                                                Column(
-                                                    modifier = Modifier.align(Alignment.BottomStart),
-                                                ) {
-                                                    Row {
-                                                        Spacer(modifier = Modifier.width(8.dp))
-                                                        Box(
-                                                            modifier = Modifier
-                                                                .height(4.dp)
-                                                                .width(
-                                                                    item.playbackPositionTicks
-                                                                        .div(
-                                                                            item.runtimeTicks.toFloat(),
-                                                                        )
-                                                                        .times(
-                                                                            1.64,
-                                                                        ).dp,
-                                                                )
-                                                                .clip(
-                                                                    MaterialTheme.shapes.extraSmall,
-                                                                )
-                                                                .background(
-                                                                    MaterialTheme.colorScheme.primary,
-                                                                ),
-                                                        )
-                                                    }
-                                                    Spacer(modifier = Modifier.height(8.dp))
-                                                }
-                                            }
-                                            Spacer(modifier = Modifier.height(4.dp))
-                                            Text(
-                                                text = if (item is FindroidEpisode) item.seriesName else item.name,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.padding(horizontal = 4.dp),
-                                            )
-                                            if (item is FindroidEpisode) {
-                                                Text(
-                                                    text = stringResource(
-                                                        id = CoreR.string.episode_name_extended,
-                                                        item.parentIndexNumber,
-                                                        item.indexNumber,
-                                                        item.name,
-                                                    ),
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                                )
-                                            }
-                                            Spacer(modifier = Modifier.height(4.dp))
-                                        }
-                                    }
+                                    ItemCard(item = item, baseUrl = baseUrl, onClick = {})
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
