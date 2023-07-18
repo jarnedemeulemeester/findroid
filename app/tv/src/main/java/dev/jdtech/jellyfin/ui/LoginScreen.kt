@@ -41,7 +41,7 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.UiText
-import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
+import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -59,7 +59,7 @@ fun LoginScreen(
 
     val navigateToHome by loginViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToHome) {
-        navigator.navigate(HomeScreenDestination)
+        navigator.navigate(MainScreenDestination)
     }
 
     LoginScreenLayout(

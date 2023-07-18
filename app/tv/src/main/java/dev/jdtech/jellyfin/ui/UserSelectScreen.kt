@@ -45,8 +45,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.dummy.dummyUsers
@@ -67,7 +67,7 @@ fun UserSelectScreen(
     val delegatedUiState by userSelectViewModel.uiState.collectAsState()
     val navigateToHome by userSelectViewModel.navigateToMain.collectAsState(initial = false)
     if (navigateToHome) {
-        navigator.navigate(HomeScreenDestination)
+        navigator.navigate(MainScreenDestination)
     }
 
     LaunchedEffect(key1 = true) {
