@@ -26,6 +26,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Tab
+import androidx.tv.material3.TabDefaults
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
 import androidx.tv.material3.Text
@@ -82,8 +83,8 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     // SelectedTab's indicator
                     TabRowDefaults.PillIndicator(
                         currentTabPosition = tabPositions[activeTabIndex],
-                        activeColor = Color(0xFF003A55),
-                        inactiveColor = Color(0xFF003A55),
+                        activeColor = MaterialTheme.colorScheme.primary,
+                        inactiveColor = MaterialTheme.colorScheme.primary,
                     )
                 },
             ) {
@@ -91,6 +92,9 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     Tab(
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
+                        colors = TabDefaults.pillIndicatorTabColors(
+                            selectedContentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
                         onClick = {
                             focusedTabIndex = index
                             activeTabIndex = index
