@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
@@ -34,14 +35,15 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination
 @Composable
 fun AddServerScreen(
@@ -54,7 +56,21 @@ fun AddServerScreen(
         navigator.navigate(LoginScreenDestination)
     }
 
-    var text by rememberSaveable {
+    AddServerScreenLayout(
+        uiState = uiState,
+        onConnectClick = { serverAddress ->
+            addServerViewModel.checkServer(serverAddress)
+        }
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun AddServerScreenLayout(
+    uiState: AddServerViewModel.UiState,
+    onConnectClick: (String) -> Unit
+) {
+    var serverAddress by rememberSaveable {
         mutableStateOf("")
     }
     val isError = uiState is AddServerViewModel.UiState.Error
@@ -78,14 +94,14 @@ fun AddServerScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
-                value = text,
+                value = serverAddress,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_server),
                         contentDescription = null,
                     )
                 },
-                onValueChange = { text = it },
+                onValueChange = { serverAddress = it },
                 label = {
                     Text(
                         text = stringResource(id = CoreR.string.edit_text_server_address_hint),
@@ -118,7 +134,7 @@ fun AddServerScreen(
             Box {
                 Button(
                     onClick = {
-                        addServerViewModel.checkServer(text)
+                        onConnectClick(serverAddress)
                     },
                     enabled = !isLoading,
                     modifier = Modifier.width(360.dp),
@@ -141,6 +157,21 @@ fun AddServerScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview(widthDp = 960, heightDp = 540)
+@Composable
+private fun AddServerScreenLayoutPreview() {
+    FindroidTheme {
+        Surface {
+            AddServerScreenLayout(
+                uiState = AddServerViewModel.UiState.Normal,
+                onConnectClick = {}
+            )
         }
     }
 }
