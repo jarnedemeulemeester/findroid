@@ -16,8 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.ui.NavGraphs
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.DirectionDestination
-import dev.jdtech.jellyfin.ui.destinations.HomeScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.ServerSelectScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme

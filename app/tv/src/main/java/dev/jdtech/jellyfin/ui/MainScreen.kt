@@ -51,7 +51,8 @@ enum class TabDestination(
 ) {
     Search(CoreR.drawable.ic_search, CoreR.string.search),
     Home(CoreR.drawable.ic_home, CoreR.string.title_home),
-    Libraries(CoreR.drawable.ic_library, CoreR.string.title_media),
+    Libraries(CoreR.drawable.ic_library, CoreR.string.libraries),
+    // LiveTV(CoreR.drawable.ic_tv, CoreR.string.live_tv)
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
