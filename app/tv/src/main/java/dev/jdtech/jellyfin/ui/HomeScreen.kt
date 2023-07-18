@@ -29,7 +29,6 @@ import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
-import androidx.tv.material3.CompactCard
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
@@ -37,13 +36,10 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.components.ItemPoster
-import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
@@ -67,14 +63,6 @@ fun HomeScreen(
     HomeScreenLayout(
         uiState = delegatedUiState,
         baseUrl = api.api.baseUrl ?: "",
-        onLibraryClick = { library ->
-            navigator.navigate(
-                LibraryScreenDestination(
-                    library.id,
-                    (library as FindroidCollection).type,
-                ),
-            )
-        },
     )
 }
 
@@ -83,7 +71,6 @@ fun HomeScreen(
 private fun HomeScreenLayout(
     uiState: HomeViewModel.UiState,
     baseUrl: String,
-    onLibraryClick: (FindroidItem) -> Unit,
 ) {
     when (uiState) {
         is HomeViewModel.UiState.Loading -> {
@@ -96,41 +83,6 @@ private fun HomeScreenLayout(
             ) {
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
-                        is HomeItem.Libraries -> {
-                            println("DRAWING LIBRARIES")
-                            Text(
-                                text = homeItem.section.name.asString(),
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(start = 32.dp),
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            TvLazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp),
-                            ) {
-                                items(homeItem.section.items) { library ->
-                                    CompactCard(
-                                        onClick = { onLibraryClick(library) },
-                                        image = {
-                                            ItemPoster(
-                                                item = library,
-                                                baseUrl = baseUrl,
-                                                direction = Direction.HORIZONTAL,
-                                            )
-                                        },
-                                        title = {
-                                            Text(
-                                                text = library.name,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(8.dp),
-                                            )
-                                        },
-                                        modifier = Modifier.width(240.dp),
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
                         is HomeItem.Section -> {
                             Text(
                                 text = homeItem.homeSection.name.asString(),
@@ -210,7 +162,6 @@ private fun HomeScreenLayoutPreview() {
             HomeScreenLayout(
                 uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
                 baseUrl = "https://demo.jellyfin.org/stable",
-                onLibraryClick = {},
             )
         }
     }
