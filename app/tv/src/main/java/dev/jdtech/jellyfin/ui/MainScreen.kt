@@ -92,15 +92,15 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     // FocusedTab's indicator
                     TabRowDefaults.PillIndicator(
                         currentTabPosition = tabPositions[focusedTabIndex],
-                        activeColor = Color.White.copy(alpha = 0.7f),
+                        activeColor = Color.White,
                         inactiveColor = Color.Transparent,
                     )
 
                     // SelectedTab's indicator
                     TabRowDefaults.PillIndicator(
                         currentTabPosition = tabPositions[activeTabIndex],
-                        activeColor = MaterialTheme.colorScheme.primary,
-                        inactiveColor = MaterialTheme.colorScheme.primary,
+                        activeColor = Color.White,
+                        inactiveColor = Color.White,
                     )
                 },
                 modifier = Modifier.align(Alignment.Center),
@@ -110,7 +110,10 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
                         colors = TabDefaults.pillIndicatorTabColors(
+                            activeContentColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                             selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                            focusedContentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
                             focusedTabIndex = index
