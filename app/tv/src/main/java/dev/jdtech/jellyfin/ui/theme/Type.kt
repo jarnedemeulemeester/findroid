@@ -16,7 +16,7 @@ val TypographyTv = Typography(
     ),
     titleMedium = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
     ),
     titleSmall = TextStyle(
         fontWeight = FontWeight.Medium,
@@ -24,7 +24,7 @@ val TypographyTv = Typography(
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontSize = 14.sp,
     ),
     labelMedium = TextStyle(
         fontWeight = FontWeight.Normal,

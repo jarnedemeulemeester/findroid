@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,26 +9,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
-import androidx.tv.material3.Card
-import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
@@ -40,7 +34,6 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
-import dev.jdtech.jellyfin.ui.components.ItemPoster
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
@@ -96,7 +89,12 @@ private fun HomeScreenLayout(
                                 contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.homeSection.items) { item ->
-                                    ItemCard(item = item, baseUrl = baseUrl, onClick = {})
+                                    ItemCard(
+                                        item = item,
+                                        baseUrl = baseUrl,
+                                        direction = Direction.HORIZONTAL,
+                                        onClick = {},
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(32.dp))
@@ -113,32 +111,12 @@ private fun HomeScreenLayout(
                                 contentPadding = PaddingValues(horizontal = 32.dp),
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
-                                    Card(
-                                        colors = CardDefaults.colors(
-                                            containerColor = Color.Transparent,
-                                        ),
-                                        onClick = { /*TODO*/ },
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .width(120.dp),
-                                        ) {
-                                            ItemPoster(
-                                                item = item,
-                                                baseUrl = baseUrl,
-                                                direction = Direction.VERTICAL,
-                                            )
-                                            Spacer(modifier = Modifier.height(4.dp))
-                                            Text(
-                                                text = item.name,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                maxLines = 2,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.padding(horizontal = 4.dp),
-                                            )
-                                            Spacer(modifier = Modifier.height(4.dp))
-                                        }
-                                    }
+                                    ItemCard(
+                                        item = item,
+                                        baseUrl = baseUrl,
+                                        direction = Direction.VERTICAL,
+                                        onClick = {},
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(32.dp))

@@ -37,9 +37,13 @@ import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 fun ItemCard(
     item: FindroidItem,
     baseUrl: String,
+    direction: Direction,
     onClick: (FindroidItem) -> Unit,
 ) {
-    val width = 260
+    val width = when (direction) {
+        Direction.HORIZONTAL -> 260
+        Direction.VERTICAL -> 150
+    }
     Column(
         modifier = Modifier
             .width(width.dp),
@@ -62,7 +66,7 @@ fun ItemCard(
                 ItemPoster(
                     item = item,
                     baseUrl = baseUrl,
-                    direction = Direction.HORIZONTAL,
+                    direction = direction,
                 )
                 Column(
                     modifier = Modifier
@@ -95,7 +99,7 @@ fun ItemCard(
         Text(
             text = if (item is FindroidEpisode) item.seriesName else item.name,
             style = MaterialTheme.typography.titleMedium,
-            maxLines = 1,
+            maxLines = if (direction == Direction.HORIZONTAL) 1 else 2,
             overflow = TextOverflow.Ellipsis,
         )
         if (item is FindroidEpisode) {
@@ -106,7 +110,7 @@ fun ItemCard(
                     item.indexNumber,
                     item.name,
                 ),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -124,6 +128,23 @@ private fun ItemCardPreviewMovie() {
             ItemCard(
                 item = dummyMovie,
                 baseUrl = "https://demo.jellyfin.org/stable",
+                direction = Direction.HORIZONTAL,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview
+@Composable
+private fun ItemCardPreviewMovieVertical() {
+    FindroidTheme {
+        Surface {
+            ItemCard(
+                item = dummyMovie,
+                baseUrl = "https://demo.jellyfin.org/stable",
+                direction = Direction.VERTICAL,
                 onClick = {},
             )
         }
@@ -139,6 +160,7 @@ private fun ItemCardPreviewEpisode() {
             ItemCard(
                 item = dummyEpisode,
                 baseUrl = "https://demo.jellyfin.org/stable",
+                direction = Direction.HORIZONTAL,
                 onClick = {},
             )
         }
