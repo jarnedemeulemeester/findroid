@@ -144,6 +144,9 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
             1 -> {
                 HomeScreen(navigator = navigator)
             }
+            2 -> {
+                LibrariesScreen(navigator = navigator)
+            }
         }
     }
 }
