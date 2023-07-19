@@ -15,7 +15,7 @@
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
     <string name="title_media">我的媒体</string>
-    <string name="title_favorite">我的最爱</string>
+    <string name="title_favorite">收藏</string>
     <string name="title_settings">设置</string>
     <string name="title_download">下载</string>
     <string name="view_all">查看所有</string>
@@ -171,4 +171,6 @@
     <string name="downloaded_indicator">下载指示器</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="remove_server_address">移除服务器地址</string>
+    <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
 </resources>
