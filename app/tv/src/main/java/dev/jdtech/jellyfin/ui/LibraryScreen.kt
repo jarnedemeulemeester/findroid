@@ -1,14 +1,16 @@
 package dev.jdtech.jellyfin.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,7 +20,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
-import androidx.tv.material3.CompactCard
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
@@ -28,7 +29,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.ui.components.Direction
-import dev.jdtech.jellyfin.ui.components.ItemPoster
+import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -58,7 +59,6 @@ fun LibraryScreen(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LibraryScreenLayout(
     uiState: LibraryViewModel.UiState,
@@ -69,34 +69,28 @@ private fun LibraryScreenLayout(
         is LibraryViewModel.UiState.Normal -> {
             val items = uiState.items.collectAsLazyPagingItems()
             TvLazyVerticalGrid(
-                columns = TvGridCells.Fixed(6),
+                columns = TvGridCells.Fixed(5),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(start = 32.dp, end = 32.dp, bottom = 32.dp),
+                contentPadding = PaddingValues(start = 48.dp, top = 32.dp, end = 48.dp, bottom = 32.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
-                    Header()
+                    Text(
+                        text = "Movies",
+                        style = MaterialTheme.typography.displayMedium
+                    )
                 }
                 items(items.itemCount) { i ->
                     val item = items[i]
                     item?.let {
-                        CompactCard(
-                            onClick = { },
-                            image = {
-                                ItemPoster(
-                                    item = item,
-                                    baseUrl = baseUrl,
-                                    direction = Direction.VERTICAL,
-                                )
-                            },
-                            title = {
-                                Text(
-                                    text = item.name,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(8.dp),
-                                )
-                            },
-                            modifier = Modifier.width(120.dp),
+                        ItemCard(
+                            item = item,
+                            baseUrl = baseUrl,
+                            direction = Direction.VERTICAL,
+                            onClick = {}
                         )
                     }
                 }
