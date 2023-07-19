@@ -47,13 +47,13 @@ constructor(
     private var serverFound = false
 
     sealed class UiState {
-        object Normal : UiState()
-        object Loading : UiState()
+        data object Normal : UiState()
+        data object Loading : UiState()
         data class Error(val message: Collection<UiText>) : UiState()
     }
 
     sealed class DiscoveredServersState {
-        object Loading : DiscoveredServersState()
+        data object Loading : DiscoveredServersState()
         data class Servers(val servers: List<DiscoveredServer>) : DiscoveredServersState()
     }
 

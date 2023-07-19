@@ -44,19 +44,19 @@ constructor(
     private var quickConnectJob: Job? = null
 
     sealed class UiState {
-        object Normal : UiState()
-        object Loading : UiState()
+        data object Normal : UiState()
+        data object Loading : UiState()
         data class Error(val message: UiText) : UiState()
     }
 
     sealed class UsersState {
-        object Loading : UsersState()
+        data object Loading : UsersState()
         data class Users(val users: List<User>) : UsersState()
     }
 
     sealed class QuickConnectUiState {
-        object Disabled : QuickConnectUiState()
-        object Normal : QuickConnectUiState()
+        data object Disabled : QuickConnectUiState()
+        data object Normal : QuickConnectUiState()
         data class Waiting(val code: String) : QuickConnectUiState()
     }
 
@@ -126,9 +126,11 @@ constructor(
                 val message =
                     if (e.message?.contains("401") == true) {
                         UiText.StringResource(R.string.login_error_wrong_username_password)
-                    } else UiText.StringResource(
-                        R.string.unknown_error,
-                    )
+                    } else {
+                        UiText.StringResource(
+                            R.string.unknown_error,
+                        )
+                    }
                 _uiState.emit(UiState.Error(message))
             }
         }

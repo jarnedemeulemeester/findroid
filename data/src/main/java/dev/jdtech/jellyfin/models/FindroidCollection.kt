@@ -20,14 +20,15 @@ data class FindroidCollection(
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidCollection(): FindroidCollection? {
-    val type = CollectionType.values().firstOrNull { it.type == collectionType }
-    return if (type != null) {
-        FindroidCollection(
-            id = id,
-            name = name.orEmpty(),
-            type = type,
-        )
-    } else {
-        null
+    val type = CollectionType.fromString(collectionType)
+
+    if (type !in CollectionType.supported) {
+        return null
     }
+
+    return FindroidCollection(
+        id = id,
+        name = name.orEmpty(),
+        type = type,
+    )
 }

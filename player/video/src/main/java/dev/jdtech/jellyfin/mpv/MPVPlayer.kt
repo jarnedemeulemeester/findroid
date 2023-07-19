@@ -628,6 +628,14 @@ class MPVPlayer(
         TODO("Not yet implemented")
     }
 
+    override fun replaceMediaItems(
+        fromIndex: Int,
+        toIndex: Int,
+        mediaItems: MutableList<MediaItem>,
+    ) {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Removes a range of media items from the playlist.
      *
@@ -931,11 +939,6 @@ class MPVPlayer(
         MPVLib.command(arrayOf("stop", "keep-playlist"))
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun stop(reset: Boolean) {
-        MPVLib.command(arrayOf("stop", "keep-playlist"))
-    }
-
     /**
      * Releases the player. This method must be called when the player is no longer required. The
      * player must not be used after calling this method.
@@ -1217,7 +1220,10 @@ class MPVPlayer(
 
     /** Gets the device information.  */
     override fun getDeviceInfo(): DeviceInfo {
-        return DeviceInfo(DeviceInfo.PLAYBACK_TYPE_LOCAL, 0, 100)
+        return DeviceInfo.Builder(DeviceInfo.PLAYBACK_TYPE_LOCAL)
+            .setMaxVolume(0)
+            .setMaxVolume(100)
+            .build()
     }
 
     /**
@@ -1247,23 +1253,43 @@ class MPVPlayer(
      *
      * @param volume The volume to set.
      */
+    @Deprecated("Deprecated in Java")
     override fun setDeviceVolume(volume: Int) {
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
+    override fun setDeviceVolume(volume: Int, flags: Int) {
+        MPVLib.setPropertyInt("volume", volume)
+    }
+
     /** Increases the volume of the device.  */
+    @Deprecated("Deprecated in Java")
     override fun increaseDeviceVolume() {
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
+    override fun increaseDeviceVolume(flags: Int) {
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
+    }
+
     /** Decreases the volume of the device.  */
+    @Deprecated("Deprecated in Java")
     override fun decreaseDeviceVolume() {
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
     }
 
+    override fun decreaseDeviceVolume(flags: Int) {
+        throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
+    }
+
     /** Sets the mute state of the device.  */
+    @Deprecated("Deprecated in Java")
     override fun setDeviceMuted(muted: Boolean) {
         throw IllegalArgumentException("You should use global volume controls. Check out AUDIO_SERVICE.")
+    }
+
+    override fun setDeviceMuted(muted: Boolean, flags: Int) {
+        return MPVLib.setPropertyBoolean("mute", muted)
     }
 
     fun updateZoomMode(enabled: Boolean) {
@@ -1289,7 +1315,7 @@ class MPVPlayer(
                 COMMAND_PLAY_PAUSE,
                 COMMAND_SET_SPEED_AND_PITCH,
                 COMMAND_GET_CURRENT_MEDIA_ITEM,
-                COMMAND_GET_MEDIA_ITEMS_METADATA,
+                COMMAND_GET_METADATA,
                 COMMAND_CHANGE_MEDIA_ITEMS,
                 COMMAND_SET_VIDEO_SURFACE,
             )

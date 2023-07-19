@@ -33,7 +33,7 @@ constructor(
 
     sealed class UiState {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 

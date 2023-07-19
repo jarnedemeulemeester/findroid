@@ -171,4 +171,6 @@
     <string name="privacy_policy_notice">Používaním Findroid súhlasíte so <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">zásadami ochrany osobných údajov</a> podľa ktorých nezbierame žiadne údaje</string>
     <string name="size">Veľkosť</string>
     <string name="app_language">Jazyk aplikácie</string>
+    <string name="remove_server_address">Odstrániť adresu serveru</string>
+    <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
 </resources>
