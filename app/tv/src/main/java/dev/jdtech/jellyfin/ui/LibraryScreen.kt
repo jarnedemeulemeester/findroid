@@ -20,6 +20,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
+import androidx.tv.material3.CompactCard
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
@@ -32,6 +33,7 @@ import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -61,6 +63,7 @@ fun LibraryScreen(
     )
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
@@ -73,9 +76,9 @@ private fun LibraryScreenLayout(
             val items = uiState.items.collectAsLazyPagingItems()
             TvLazyVerticalGrid(
                 columns = TvGridCells.Fixed(5),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(start = 48.dp, top = 32.dp, end = 48.dp, bottom = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                contentPadding = PaddingValues(vertical = MaterialTheme.spacings.default * 2, horizontal = MaterialTheme.spacings.large,),
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),

@@ -36,6 +36,7 @@ import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -72,7 +73,7 @@ private fun HomeScreenLayout(
         }
         is HomeViewModel.UiState.Normal -> {
             TvLazyColumn(
-                contentPadding = PaddingValues(bottom = 32.dp),
+                contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
@@ -81,12 +82,12 @@ private fun HomeScreenLayout(
                             Text(
                                 text = homeItem.homeSection.name.asString(),
                                 style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(start = 32.dp),
+                                modifier = Modifier.padding(start = MaterialTheme.spacings.large),
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                             TvLazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp),
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
                             ) {
                                 items(homeItem.homeSection.items) { item ->
                                     ItemCard(
@@ -97,18 +98,18 @@ private fun HomeScreenLayout(
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
                         }
                         is HomeItem.ViewItem -> {
                             Text(
                                 text = stringResource(id = CoreR.string.latest_library, homeItem.view.name),
                                 style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(start = 32.dp),
+                                modifier = Modifier.padding(start = MaterialTheme.spacings.large),
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                             TvLazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                contentPadding = PaddingValues(horizontal = 32.dp),
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
                             ) {
                                 items(homeItem.view.items.orEmpty()) { item ->
                                     ItemCard(
@@ -119,7 +120,7 @@ private fun HomeScreenLayout(
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
                         }
                         else -> Unit
                     }

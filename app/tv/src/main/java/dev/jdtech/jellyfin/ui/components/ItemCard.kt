@@ -31,6 +31,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.ui.dummy.dummyEpisode
 import dev.jdtech.jellyfin.ui.dummy.dummyMovie
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -71,7 +72,7 @@ fun ItemCard(
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(8.dp),
+                        .padding(MaterialTheme.spacings.small),
                 ) {
                     Box(
                         modifier = Modifier
