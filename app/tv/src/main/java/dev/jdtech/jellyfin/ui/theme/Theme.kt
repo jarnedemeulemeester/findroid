@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.ui.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.darkColorScheme
@@ -20,10 +21,14 @@ private val ColorSchemeTv = darkColorScheme(
 fun FindroidTheme(
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = ColorSchemeTv,
-        typography = TypographyTv,
-        shapes = shapesTv,
-        content = content,
-    )
+    CompositionLocalProvider(
+            LocalSpacings provides Spacings()
+    ) {
+        MaterialTheme(
+                colorScheme = ColorSchemeTv,
+                typography = TypographyTv,
+                shapes = shapesTv,
+                content = content,
+        )
+    }
 }
