@@ -41,6 +41,7 @@ import java.util.UUID
 @Composable
 fun LibraryScreen(
     libraryId: UUID,
+    libraryName: String,
     libraryType: CollectionType,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
@@ -54,6 +55,7 @@ fun LibraryScreen(
     val delegatedUiState by libraryViewModel.uiState.collectAsState()
 
     LibraryScreenLayout(
+        libraryName = libraryName,
         uiState = delegatedUiState,
         baseUrl = api.api.baseUrl ?: "",
     )
@@ -61,6 +63,7 @@ fun LibraryScreen(
 
 @Composable
 private fun LibraryScreenLayout(
+    libraryName: String,
     uiState: LibraryViewModel.UiState,
     baseUrl: String,
 ) {
@@ -75,12 +78,12 @@ private fun LibraryScreenLayout(
                 contentPadding = PaddingValues(start = 48.dp, top = 32.dp, end = 48.dp, bottom = 32.dp),
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
                     Text(
-                        text = "Movies",
-                        style = MaterialTheme.typography.displayMedium
+                        text = libraryName,
+                        style = MaterialTheme.typography.displayMedium,
                     )
                 }
                 items(items.itemCount) { i ->
@@ -90,7 +93,7 @@ private fun LibraryScreenLayout(
                             item = item,
                             baseUrl = baseUrl,
                             direction = Direction.VERTICAL,
-                            onClick = {}
+                            onClick = {},
                         )
                     }
                 }
@@ -108,6 +111,7 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         Surface {
             LibraryScreenLayout(
+                libraryName = "Movies",
                 uiState = LibraryViewModel.UiState.Normal(data),
                 baseUrl = "https://demo.jellyfin.org/stable",
             )

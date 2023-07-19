@@ -31,7 +31,7 @@ import java.util.UUID
 @Composable
 fun LibrariesScreen(
     navigator: DestinationsNavigator,
-    mediaViewModel: MediaViewModel = hiltViewModel()
+    mediaViewModel: MediaViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val api = JellyfinApi.getInstance(context)
@@ -41,9 +41,9 @@ fun LibrariesScreen(
     LibrariesScreenLayout(
         uiState = delegatedUiState,
         baseUrl = api.api.baseUrl ?: "",
-        onClick = { libraryId, libraryType ->
-            navigator.navigate(LibraryScreenDestination(libraryId, libraryType))
-        }
+        onClick = { libraryId, libraryName, libraryType ->
+            navigator.navigate(LibraryScreenDestination(libraryId, libraryName, libraryType))
+        },
     )
 }
 
@@ -51,7 +51,7 @@ fun LibrariesScreen(
 private fun LibrariesScreenLayout(
     uiState: MediaViewModel.UiState,
     baseUrl: String,
-    onClick: (UUID, CollectionType) -> Unit,
+    onClick: (UUID, String, CollectionType) -> Unit,
 ) {
     when (uiState) {
         is MediaViewModel.UiState.Loading -> Text(text = "LOADING")
@@ -68,8 +68,8 @@ private fun LibrariesScreenLayout(
                         baseUrl = baseUrl,
                         direction = Direction.HORIZONTAL,
                         onClick = {
-                            onClick(collection.id, collection.type)
-                        }
+                            onClick(collection.id, collection.name, collection.type)
+                        },
                     )
                 }
             }
@@ -87,7 +87,7 @@ private fun LibrariesScreenLayoutPreview() {
             LibrariesScreenLayout(
                 uiState = MediaViewModel.UiState.Normal(dummyCollections),
                 baseUrl = "https://demo.jellyfin.org/stable",
-                onClick = { _, _ -> },
+                onClick = { _, _, _ -> },
             )
         }
     }
