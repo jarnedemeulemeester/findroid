@@ -76,6 +76,21 @@ fun MovieScreen(
     MovieScreenLayout(
         uiState = delegatedUiState,
         baseUrl = api.api.baseUrl ?: "",
+        onPlayClick = {},
+        onTrailerClick = { trailerUri ->
+            try {
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(trailerUri),
+                ).also {
+                    context.startActivity(it)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+        },
+        onPlayedClick = {},
+        onFavoriteClick = {},
     )
 }
 
@@ -84,11 +99,15 @@ fun MovieScreen(
 private fun MovieScreenLayout(
     uiState: MovieViewModel.UiState,
     baseUrl: String,
+    onPlayClick: () -> Unit,
+    onTrailerClick: (String) -> Unit,
+    onPlayedClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
 ) {
-    val context = LocalContext.current
     when (uiState) {
         is MovieViewModel.UiState.Loading -> Text(text = "LOADING")
         is MovieViewModel.UiState.Normal -> {
+            val item = uiState.item
             var size by remember {
                 mutableStateOf(Size.Zero)
             }
@@ -100,7 +119,7 @@ private fun MovieScreenLayout(
                     },
             ) {
                 AsyncImage(
-                    model = "$baseUrl/items/${uiState.item.id}/Images/Backdrop",
+                    model = "$baseUrl/items/${item.id}/Images/Backdrop",
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -124,11 +143,11 @@ private fun MovieScreenLayout(
                         .padding(start = 48.dp, top = 112.dp, end = 48.dp),
                 ) {
                     Text(
-                        text = uiState.item.name,
+                        text = item.name,
                         style = MaterialTheme.typography.displayMedium,
                     )
-                    if (uiState.item.originalTitle != uiState.item.name) {
-                        uiState.item.originalTitle?.let { originalTitle ->
+                    if (item.originalTitle != item.name) {
+                        item.originalTitle?.let { originalTitle ->
                             Text(
                                 text = originalTitle,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -147,13 +166,13 @@ private fun MovieScreenLayout(
                             text = uiState.runTime,
                             style = MaterialTheme.typography.labelMedium,
                         )
-                        uiState.item.officialRating?.let {
+                        item.officialRating?.let {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.labelMedium,
                             )
                         }
-                        uiState.item.communityRating?.let {
+                        item.communityRating?.let {
                             Row {
                                 Icon(
                                     painter = painterResource(id = CoreR.drawable.ic_star),
@@ -163,7 +182,7 @@ private fun MovieScreenLayout(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = String.format("%.1f", uiState.item.communityRating),
+                                    text = String.format("%.1f", item.communityRating),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                             }
@@ -171,7 +190,7 @@ private fun MovieScreenLayout(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = uiState.item.overview,
+                        text = item.overview,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis,
@@ -191,19 +210,10 @@ private fun MovieScreenLayout(
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(text = stringResource(id = CoreR.string.play))
                         }
-                        uiState.item.trailer?.let { trailerUri ->
+                        item.trailer?.let { trailerUri ->
                             Button(
                                 onClick = {
-                                    try {
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(trailerUri),
-                                        ).also {
-                                            context.startActivity(it)
-                                        }
-                                    } catch (e: Exception) {
-                                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                                    }
+                                    onTrailerClick(trailerUri)
                                 },
                             ) {
                                 Icon(
@@ -319,6 +329,10 @@ private fun MovieScreenLayoutPreview() {
                     dateString = "2019",
                 ),
                 baseUrl = "https://demo.jellyfin.org/stable",
+                onPlayClick = {},
+                onTrailerClick = {},
+                onPlayedClick = {},
+                onFavoriteClick = {},
             )
         }
     }
