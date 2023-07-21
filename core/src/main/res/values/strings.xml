@@ -178,4 +178,10 @@
     <string name="no_users_found">No users found</string>
     <string name="select_user">Select user</string>
     <string name="live_tv">Live TV</string>
+    <string name="play">Play</string>
+    <string name="watch_trailer">Watch trailer</string>
+    <string name="mark_as_played">Mark as played</string>
+    <string name="unmark_as_played">Unmark as played</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="remove_from_fravorites">Remove from favorites</string>
 </resources>

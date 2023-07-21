@@ -31,9 +31,12 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
+import dev.jdtech.jellyfin.ui.destinations.MovieScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
@@ -57,14 +60,21 @@ fun HomeScreen(
     HomeScreenLayout(
         uiState = delegatedUiState,
         baseUrl = api.api.baseUrl ?: "",
+        onClick = { item ->
+            when (item) {
+                is FindroidMovie -> {
+                    navigator.navigate(MovieScreenDestination(item.id))
+                }
+            }
+        },
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun HomeScreenLayout(
     uiState: HomeViewModel.UiState,
     baseUrl: String,
+    onClick: (FindroidItem) -> Unit,
 ) {
     when (uiState) {
         is HomeViewModel.UiState.Loading -> {
@@ -93,7 +103,9 @@ private fun HomeScreenLayout(
                                         item = item,
                                         baseUrl = baseUrl,
                                         direction = Direction.HORIZONTAL,
-                                        onClick = {},
+                                        onClick = {
+                                            onClick(it)
+                                        },
                                     )
                                 }
                             }
@@ -115,7 +127,9 @@ private fun HomeScreenLayout(
                                         item = item,
                                         baseUrl = baseUrl,
                                         direction = Direction.VERTICAL,
-                                        onClick = {},
+                                        onClick = {
+                                            onClick(it)
+                                        },
                                     )
                                 }
                             }
@@ -141,6 +155,7 @@ private fun HomeScreenLayoutPreview() {
             HomeScreenLayout(
                 uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
                 baseUrl = "https://demo.jellyfin.org/stable",
+                onClick = {},
             )
         }
     }
