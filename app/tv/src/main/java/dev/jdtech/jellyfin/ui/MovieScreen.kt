@@ -1,5 +1,8 @@
 package dev.jdtech.jellyfin.ui
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,6 +85,7 @@ private fun MovieScreenLayout(
     uiState: MovieViewModel.UiState,
     baseUrl: String,
 ) {
+    val context = LocalContext.current
     when (uiState) {
         is MovieViewModel.UiState.Loading -> Text(text = "LOADING")
         is MovieViewModel.UiState.Normal -> {
@@ -187,15 +191,28 @@ private fun MovieScreenLayout(
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(text = stringResource(id = CoreR.string.play))
                         }
-                        Button(
-                            onClick = { },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = CoreR.drawable.ic_film),
-                                contentDescription = null,
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = stringResource(id = CoreR.string.watch_trailer))
+                        uiState.item.trailer?.let { trailerUri ->
+                            Button(
+                                onClick = {
+                                    try {
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(trailerUri),
+                                        ).also {
+                                            context.startActivity(it)
+                                        }
+                                    } catch (e: Exception) {
+                                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = CoreR.drawable.ic_film),
+                                    contentDescription = null,
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = stringResource(id = CoreR.string.watch_trailer))
+                            }
                         }
                         Button(
                             onClick = { },
