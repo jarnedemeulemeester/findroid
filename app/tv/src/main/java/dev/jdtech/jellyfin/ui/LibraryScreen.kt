@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,7 +25,6 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -49,19 +47,15 @@ fun LibraryScreen(
     libraryType: CollectionType,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         libraryViewModel.loadItems(libraryId, libraryType)
     }
-
-    val api = JellyfinApi.getInstance(context)
 
     val delegatedUiState by libraryViewModel.uiState.collectAsState()
 
     LibraryScreenLayout(
         libraryName = libraryName,
         uiState = delegatedUiState,
-        baseUrl = api.api.baseUrl ?: "",
         onClick = { item ->
             when (item) {
                 is FindroidMovie -> {
@@ -76,7 +70,6 @@ fun LibraryScreen(
 private fun LibraryScreenLayout(
     libraryName: String,
     uiState: LibraryViewModel.UiState,
-    baseUrl: String,
     onClick: (FindroidItem) -> Unit,
 ) {
     when (uiState) {
@@ -103,7 +96,6 @@ private fun LibraryScreenLayout(
                     item?.let {
                         ItemCard(
                             item = item,
-                            baseUrl = baseUrl,
                             direction = Direction.VERTICAL,
                             onClick = {
                                 onClick(item)
@@ -127,7 +119,6 @@ private fun LibraryScreenLayoutPreview() {
             LibraryScreenLayout(
                 libraryName = "Movies",
                 uiState = LibraryViewModel.UiState.Normal(data),
-                baseUrl = "https://demo.jellyfin.org/stable",
                 onClick = {},
             )
         }

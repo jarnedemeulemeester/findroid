@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,7 +16,6 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -33,14 +31,10 @@ fun LibrariesScreen(
     navigator: DestinationsNavigator,
     mediaViewModel: MediaViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
-    val api = JellyfinApi.getInstance(context)
-
     val delegatedUiState by mediaViewModel.uiState.collectAsState()
 
     LibrariesScreenLayout(
         uiState = delegatedUiState,
-        baseUrl = api.api.baseUrl ?: "",
         onClick = { libraryId, libraryName, libraryType ->
             navigator.navigate(LibraryScreenDestination(libraryId, libraryName, libraryType))
         },
@@ -50,7 +44,6 @@ fun LibrariesScreen(
 @Composable
 private fun LibrariesScreenLayout(
     uiState: MediaViewModel.UiState,
-    baseUrl: String,
     onClick: (UUID, String, CollectionType) -> Unit,
 ) {
     when (uiState) {
@@ -65,7 +58,6 @@ private fun LibrariesScreenLayout(
                 items(uiState.collections) { collection ->
                     ItemCard(
                         item = collection,
-                        baseUrl = baseUrl,
                         direction = Direction.HORIZONTAL,
                         onClick = {
                             onClick(collection.id, collection.name, collection.type)
@@ -86,7 +78,6 @@ private fun LibrariesScreenLayoutPreview() {
         Surface {
             LibrariesScreenLayout(
                 uiState = MediaViewModel.UiState.Normal(dummyCollections),
-                baseUrl = "https://demo.jellyfin.org/stable",
                 onClick = { _, _, _ -> },
             )
         }

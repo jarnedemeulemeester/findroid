@@ -44,7 +44,6 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
@@ -69,13 +68,10 @@ fun MovieScreen(
         movieViewModel.loadData(itemId)
     }
 
-    val api = JellyfinApi.getInstance(context)
-
     val delegatedUiState by movieViewModel.uiState.collectAsState()
 
     MovieScreenLayout(
         uiState = delegatedUiState,
-        baseUrl = api.api.baseUrl ?: "",
         onPlayClick = {},
         onTrailerClick = { trailerUri ->
             try {
@@ -98,7 +94,6 @@ fun MovieScreen(
 @Composable
 private fun MovieScreenLayout(
     uiState: MovieViewModel.UiState,
-    baseUrl: String,
     onPlayClick: () -> Unit,
     onTrailerClick: (String) -> Unit,
     onPlayedClick: () -> Unit,
@@ -119,7 +114,7 @@ private fun MovieScreenLayout(
                     },
             ) {
                 AsyncImage(
-                    model = "$baseUrl/items/${item.id}/Images/Backdrop",
+                    model = item.images.backdrop,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -328,7 +323,6 @@ private fun MovieScreenLayoutPreview() {
                     runTime = "121 min",
                     dateString = "2019",
                 ),
-                baseUrl = "https://demo.jellyfin.org/stable",
                 onPlayClick = {},
                 onTrailerClick = {},
                 onPlayedClick = {},

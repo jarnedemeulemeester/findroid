@@ -36,7 +36,6 @@ import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 @Composable
 fun ItemCard(
     item: FindroidItem,
-    baseUrl: String,
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
 ) {
@@ -65,7 +64,6 @@ fun ItemCard(
             Box {
                 ItemPoster(
                     item = item,
-                    baseUrl = baseUrl,
                     direction = direction,
                 )
                 Column(
@@ -127,7 +125,6 @@ private fun ItemCardPreviewMovie() {
         Surface {
             ItemCard(
                 item = dummyMovie,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.HORIZONTAL,
                 onClick = {},
             )
@@ -143,7 +140,6 @@ private fun ItemCardPreviewMovieVertical() {
         Surface {
             ItemCard(
                 item = dummyMovie,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.VERTICAL,
                 onClick = {},
             )
@@ -159,7 +155,6 @@ private fun ItemCardPreviewEpisode() {
         Surface {
             ItemCard(
                 item = dummyEpisode,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.HORIZONTAL,
                 onClick = {},
             )

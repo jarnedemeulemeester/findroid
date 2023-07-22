@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.ui.dummy
 
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.FindroidSourceType
@@ -52,6 +53,7 @@ val dummyEpisode = FindroidEpisode(
     seriesId = UUID.randomUUID(),
     seasonId = UUID.randomUUID(),
     communityRating = 9.2f,
+    images = FindroidImages(),
 )
 
 val dummyEpisodes = listOf(
