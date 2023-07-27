@@ -64,6 +64,7 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun HomeScreenLayout(
     uiState: HomeViewModel.UiState,

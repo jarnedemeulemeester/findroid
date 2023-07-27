@@ -66,6 +66,7 @@ fun LibraryScreen(
     )
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,

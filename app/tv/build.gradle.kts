@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = 33
+    compileSdk = 34
     buildToolsVersion = "33.0.2"
 
     defaultConfig {

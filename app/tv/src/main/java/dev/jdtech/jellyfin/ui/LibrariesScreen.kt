@@ -41,6 +41,7 @@ fun LibrariesScreen(
     )
 }
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LibrariesScreenLayout(
     uiState: MediaViewModel.UiState,
