@@ -22,7 +22,7 @@ allprojects {
     }
 
     val configureAndroid = { _: AppliedPlugin ->
-        extensions.configure<CommonExtension<*, *, *, *>>("android") {
+        extensions.configure<CommonExtension<*, *, *, *, *>>("android") {
             lint {
                 informational += "MissingTranslation"
             }
