@@ -119,7 +119,6 @@
         android:layout_height="50dp"
         android:layout_gravity="center_vertical|end"
         android:alpha="0"
-        android:gravity="center_vertical"
         android:src="@drawable/transparent_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +132,19 @@
         android:layout_height="50dp"
         android:layout_gravity="center_vertical|start"
         android:alpha="0"
-        android:gravity="center_vertical"
+        android:src="@drawable/transparent_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/image_playback_animation_ripple"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:alpha="0"
         android:src="@drawable/transparent_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

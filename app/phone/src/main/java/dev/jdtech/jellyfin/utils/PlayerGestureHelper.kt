@@ -76,8 +76,6 @@ class PlayerGestureHelper(
                 val viewWidth = playerView.measuredWidth
                 val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
 
-                val currentPos = playerView.player?.currentPosition ?: 0
-
                 // Define the areas and their boundaries
                 val leftmostAreaStart = 0
                 val middleAreaStart = areaWidth * 2
@@ -91,7 +89,8 @@ class PlayerGestureHelper(
                     }
                     in middleAreaStart until rightmostAreaStart -> {
                         // Tapped on the middle area (toggle pause/unpause)
-                        playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
+                        togglePlayback()
+                        animatePlaybackRipple()
                     }
                     in rightmostAreaStart until viewWidth -> {
                         // Tapped on the rightmost area (seek forward)
@@ -116,6 +115,10 @@ class PlayerGestureHelper(
         seekTo(rewindPosition.coerceAtLeast(0))
     }
 
+    private fun togglePlayback() {
+        playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
+    }
+
     private fun seekTo(position: Long) {
         playerView.player?.seekTo(position)
     }
@@ -133,6 +136,14 @@ class PlayerGestureHelper(
             .animateSeekingRippleStart()
             .withEndAction {
                 resetRewindRippleImage()
+            }.start()
+    }
+
+    private fun animatePlaybackRipple() {
+        activity.binding.imagePlaybackAnimationRipple
+            .animateSeekingRippleStart()
+            .withEndAction {
+                resetPlaybackRippleImage()
             }.start()
     }
 
@@ -163,6 +174,16 @@ class PlayerGestureHelper(
 
     private fun resetRewindRippleImage() {
         val image = activity.binding.imageRewindAnimationRipple
+        image.animateSeekingRippleEnd()
+            .withEndAction {
+                image.scaleX = 1f
+                image.scaleY = 1f
+            }
+            .start()
+    }
+
+    private fun resetPlaybackRippleImage() {
+        val image = activity.binding.imagePlaybackAnimationRipple
         image.animateSeekingRippleEnd()
             .withEndAction {
                 image.scaleX = 1f
