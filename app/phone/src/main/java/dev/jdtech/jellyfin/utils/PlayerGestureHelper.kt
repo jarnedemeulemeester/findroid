@@ -76,22 +76,19 @@ class PlayerGestureHelper(
 
                 // Define the areas and their boundaries
                 val leftmostAreaStart = 0
-                val leftmostAreaEnd = areaWidth * 2
-                val middleAreaStart = leftmostAreaEnd
-                val middleAreaEnd = middleAreaStart + areaWidth
-                val rightmostAreaStart = middleAreaEnd
-                val rightmostAreaEnd = viewWidth
+                val middleAreaStart = areaWidth * 2
+                val rightmostAreaStart = middleAreaStart + areaWidth
 
-                when {
-                    e.x.toInt() in leftmostAreaStart until leftmostAreaEnd -> {
+                when (e.x.toInt()) {
+                    in leftmostAreaStart until middleAreaStart -> {
                         // Tapped on the leftmost area (seek backward)
                         playerView.player?.seekTo((currentPos - appPreferences.playerSeekBackIncrement).coerceAtLeast(0))
                     }
-                    e.x.toInt() in middleAreaStart until middleAreaEnd -> {
+                    in middleAreaStart until rightmostAreaStart -> {
                         // Tapped on the middle area (toggle pause/unpause)
                         playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
                     }
-                    e.x.toInt() in rightmostAreaStart until rightmostAreaEnd -> {
+                    in rightmostAreaStart until viewWidth -> {
                         // Tapped on the rightmost area (seek forward)
                         playerView.player?.seekTo(currentPos + appPreferences.playerSeekForwardIncrement)
                     }
