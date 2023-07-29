@@ -120,10 +120,6 @@
         android:layout_gravity="center_vertical|end"
         android:alpha="0"
         android:src="@drawable/transparent_circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <ImageView
@@ -133,10 +129,6 @@
         android:layout_gravity="center_vertical|start"
         android:alpha="0"
         android:src="@drawable/transparent_circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <ImageView
@@ -146,9 +138,5 @@
         android:layout_gravity="center"
         android:alpha="0"
         android:src="@drawable/transparent_circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 </FrameLayout>

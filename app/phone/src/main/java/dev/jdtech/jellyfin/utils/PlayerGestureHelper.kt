@@ -85,17 +85,14 @@ class PlayerGestureHelper(
                     in leftmostAreaStart until middleAreaStart -> {
                         // Tapped on the leftmost area (seek backward)
                         rewind()
-                        animateRewindRipple()
                     }
                     in middleAreaStart until rightmostAreaStart -> {
                         // Tapped on the middle area (toggle pause/unpause)
                         togglePlayback()
-                        animatePlaybackRipple()
                     }
                     in rightmostAreaStart until viewWidth -> {
                         // Tapped on the rightmost area (seek forward)
                         fastForward()
-                        animateFastForwardRipple()
                     }
                 }
                 return true
@@ -107,44 +104,32 @@ class PlayerGestureHelper(
         val currentPosition = playerView.player?.currentPosition ?: 0
         val fastForwardPosition = currentPosition + appPreferences.playerSeekForwardIncrement
         seekTo(fastForwardPosition)
+        animateRipple(activity.binding.imageFfwdAnimationRipple)
     }
 
     private fun rewind() {
         val currentPosition = playerView.player?.currentPosition ?: 0
         val rewindPosition = currentPosition - appPreferences.playerSeekBackIncrement
         seekTo(rewindPosition.coerceAtLeast(0))
+        animateRipple(activity.binding.imageRewindAnimationRipple)
     }
 
     private fun togglePlayback() {
         playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
+        animateRipple(activity.binding.imagePlaybackAnimationRipple)
     }
 
     private fun seekTo(position: Long) {
         playerView.player?.seekTo(position)
     }
 
-    private fun animateFastForwardRipple() {
-        activity.binding.imageFfwdAnimationRipple
+    private fun animateRipple(image: ImageView) {
+        image
             .animateSeekingRippleStart()
             .withEndAction {
-                resetFastForwardRippleImage()
-            }.start()
-    }
-
-    private fun animateRewindRipple() {
-        activity.binding.imageRewindAnimationRipple
-            .animateSeekingRippleStart()
-            .withEndAction {
-                resetRewindRippleImage()
-            }.start()
-    }
-
-    private fun animatePlaybackRipple() {
-        activity.binding.imagePlaybackAnimationRipple
-            .animateSeekingRippleStart()
-            .withEndAction {
-                resetPlaybackRippleImage()
-            }.start()
+                resetRippleImage(image)
+            }
+            .start()
     }
 
     private fun ImageView.animateSeekingRippleStart(): ViewPropertyAnimator {
@@ -162,29 +147,9 @@ class PlayerGestureHelper(
             .setInterpolator(DecelerateInterpolator())
     }
 
-    private fun resetFastForwardRippleImage() {
-        val image = activity.binding.imageFfwdAnimationRipple
-        image.animateSeekingRippleEnd()
-            .withEndAction {
-                image.scaleX = 1f
-                image.scaleY = 1f
-            }
-            .start()
-    }
-
-    private fun resetRewindRippleImage() {
-        val image = activity.binding.imageRewindAnimationRipple
-        image.animateSeekingRippleEnd()
-            .withEndAction {
-                image.scaleX = 1f
-                image.scaleY = 1f
-            }
-            .start()
-    }
-
-    private fun resetPlaybackRippleImage() {
-        val image = activity.binding.imagePlaybackAnimationRipple
-        image.animateSeekingRippleEnd()
+    private fun resetRippleImage(image: ImageView) {
+        image
+            .animateSeekingRippleEnd()
             .withEndAction {
                 image.scaleX = 1f
                 image.scaleY = 1f
@@ -194,8 +159,8 @@ class PlayerGestureHelper(
 
     private fun ImageView.animateSeekingRippleEnd() = animate()
         .alpha(0f)
-        .setInterpolator(AccelerateInterpolator())
         .setDuration(150)
+        .setInterpolator(AccelerateInterpolator())
 
     private val seekGestureDetector = GestureDetector(
         playerView.context,
