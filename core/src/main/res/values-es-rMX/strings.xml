@@ -54,10 +54,8 @@
     <string name="settings_category_language">Idioma</string>
     <string name="settings_preferred_audio_language">Idioma de audio preferido</string>
     <string name="settings_preferred_subtitle_language">Idioma de subtitulo preferido</string>
-    <string name="initializing">Iniciando…</string>
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_player">Reproductor</string>
-    <string name="manage_servers">Administrar servidores</string>
     <string name="settings_category_appearance">Apariencia</string>
     <string name="device_name">Nombre del dispositivo</string>
     <string name="settings_category_device">Dispositivo</string>
@@ -78,9 +76,7 @@
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor experimental MPV para reproducir contenidos. MPV soporta más códecs de vídeo, audio y subtítulos.</string>
     <string name="download_button_description">Descarga</string>
-    <string name="delete_button_description">Borrar</string>
     <string name="person_detail_title">Detalles</string>
-    <string name="error_getting_person_id">Detalle no disponible</string>
     <string name="movies_label">Películas</string>
     <string name="shows_label">Series</string>
     <string name="hide">Ocultar</string>
@@ -100,13 +96,7 @@
     <string name="descending">Descendente</string>
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Selecciona versón</string>
-    <string name="player_controls_exit">Salir de reproductor</string>
-    <string name="player_controls_rewind">Atrasar</string>
-    <string name="player_controls_fast_forward">Avanzar</string>
-    <string name="player_controls_pause">Pausar</string>
-    <string name="player_controls_skip">Saltar</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Dirección del servidor vacía</string>
     <string name="settings_category_download">Descargas</string>
     <string name="download_mobile_data">Descargar usando datos del celular</string>
     <string name="download_roaming">Descargar en itinerancia</string>
@@ -130,7 +120,6 @@
     <string name="theme_dark">Oscuro</string>
     <string name="episodes_label">Episodios</string>
     <string name="quick_connect">Conexión rápida</string>
-    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
     <string name="settings_category_network">Red</string>
@@ -149,7 +138,6 @@
     <string name="add">Agregar</string>
     <string name="remove_user">Quitar usuario</string>
     <string name="remove_user_dialog_text">Está seguro de querer quitar el usuario %1$s</string>
-    <string name="title_storage">Almacenamiento</string>
     <string name="amoled_theme_summary">Usa un tema de fondo negro puro para pantallas AMOLED</string>
     <string name="size">Tamaño</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
@@ -169,7 +157,6 @@
     <string name="subtitle">Subtítulos</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temp</string>
-    <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="downloaded_indicator">Indicador de descargado</string>
     <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
     <string name="preparing_download">Preparando la descarga</string>
@@ -184,6 +171,5 @@
     <string name="offline_mode">Modo desconectado</string>
     <string name="offline_mode_icon">Icono de modo desconectado</string>
     <string name="offline_mode_go_online">Cambiar a Conectado</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Ocurrió un error al descargar</string>
 </resources>

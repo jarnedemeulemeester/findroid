@@ -5,4 +5,13 @@
     <string name="select_subtile_track">Felirat kiválasztása</string>
     <string name="select_playback_speed">Lejátszási sebesség kiválasztása</string>
     <string name="external">Külső</string>
+    <string name="player_controls_exit">Kilépés a lejátszóból</string>
+    <string name="player_controls_rewind">Visszatekerés</string>
+    <string name="player_controls_fast_forward">Előrepörgetés</string>
+    <string name="player_controls_skip_intro">Intro kihagyása</string>
+    <string name="player_controls_lock">Zárolja a lejátszót</string>
+    <string name="player_controls_skip_back">Ugrás vissza</string>
+    <string name="player_controls_skip_forward">Ugrás előre</string>
+    <string name="player_controls_play_pause">Lejátsz Megállít</string>
+    <string name="player_controls_progress">Idővonal</string>
 </resources>

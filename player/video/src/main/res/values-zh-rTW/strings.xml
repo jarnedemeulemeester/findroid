@@ -5,4 +5,8 @@
     <string name="select_subtile_track">選擇字幕軌道</string>
     <string name="select_playback_speed">選擇播放速度</string>
     <string name="external">外部的</string>
+    <string name="player_controls_exit">關閉播放器</string>
+    <string name="player_controls_rewind">倒帶</string>
+    <string name="player_controls_fast_forward">快轉</string>
+    <string name="player_controls_skip_intro">跳過片頭</string>
 </resources>

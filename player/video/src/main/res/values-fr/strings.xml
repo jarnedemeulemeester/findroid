@@ -5,4 +5,8 @@
     <string name="select_subtile_track">Choix de la piste des sous-titres</string>
     <string name="select_playback_speed">Vitesse de lecture</string>
     <string name="external">Externe</string>
+    <string name="player_controls_exit">Quitter le lecteur</string>
+    <string name="player_controls_rewind">Rembobiner</string>
+    <string name="player_controls_fast_forward">Avance rapide</string>
+    <string name="player_controls_skip_intro">Ignorer l\'introduction</string>
 </resources>

@@ -41,11 +41,9 @@
     <string name="settings_category_language">Jazyk</string>
     <string name="settings_preferred_audio_language">Preferovaný jazyk zvuku</string>
     <string name="settings_preferred_subtitle_language">Preferovaný jazyk titulkov</string>
-    <string name="initializing">Inicializácia…</string>
     <string name="settings_category_servers">Servery</string>
     <string name="settings_category_player">Prehrávač</string>
     <string name="settings_category_download">Stiahnuté</string>
-    <string name="manage_servers">Spravovať servery</string>
     <string name="device_name">Názov zariadenia</string>
     <string name="settings_category_device">Zariadenie</string>
     <string name="settings_category_cache">Vyrovnávacia pamäť</string>
@@ -60,9 +58,7 @@
     <string name="mpv_player">Prehrávač mpv</string>
     <string name="download_roaming">Sťahovať počas roamingu</string>
     <string name="download_button_description">Stiahnuť</string>
-    <string name="delete_button_description">Vymazať</string>
     <string name="person_detail_title">Detaily</string>
-    <string name="error_getting_person_id">Detail nie je dostupný</string>
     <string name="movies_label">Filmy</string>
     <string name="shows_label">Seriály</string>
     <string name="episodes_label">Epizódy</string>
@@ -88,12 +84,7 @@
     <string name="descending">Zostupne</string>
     <string name="runtime_minutes">%1$d minút</string>
     <string name="select_video_version_title">Vybrať verziu</string>
-    <string name="player_controls_exit">Zavrieť prehrávač</string>
-    <string name="player_controls_rewind">Pretočiť dozadu</string>
-    <string name="player_controls_pause">Pauza</string>
-    <string name="player_controls_skip">Preskočiť</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Prázdna adresa servera</string>
     <string name="seeking">Pretáčanie</string>
     <string name="seek_back_increment">Velkosť pretočenia dozadu (ms)</string>
     <string name="seek_forward_increment">Velkosť pretočenia dopredu (ms)</string>
@@ -146,15 +137,12 @@
     <string name="image_description_poster">%1$s plagát</string>
     <string name="player_gestures_vb_summary">Potiahnite prstom hore a dole na pravej strane obrazovky na nastavenie hlasitosti a na ľavej na zmenu jasu</string>
     <string name="sort_by_options_5">Dátum vydania</string>
-    <string name="player_controls_fast_forward">Pretočiť dopredu</string>
-    <string name="player_controls_skip_intro">Preskočiť úvodnú zvučku</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
     <string name="add_user">Pridať používateľa</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Titulky</string>
     <string name="subtitle_chip_text">CC</string>
-    <string name="dolby_logo_desc">logo Dolby</string>
     <string name="extra_info">Zobraziť doplnkové informácie</string>
     <string name="extra_info_summary">Zobraziť detailné informácie o zvuku, videu a titulkoch</string>
     <string name="temp">dočasné</string>
@@ -175,14 +163,14 @@
     <string name="cancel_download_message">Naozaj chcete zrušiť sťahovanie\?</string>
     <string name="stop_download">Zastaviť sťahovanie</string>
     <string name="offline_mode_go_online">Prejsť do online režimu</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Chyba pri sťahovaní</string>
     <string name="not_enough_storage">Táto položka potrebuje %s voľného miesta, dostupných je iba %s</string>
     <string name="select_storage_location">Vybrať úložisko</string>
     <string name="no_server_connection">Nepodarilo sa spojiť s Jellyfin serverom, pre sledovanie offline povoľte Offline Režim</string>
-    <string name="title_storage">Pamäť</string>
     <string name="downloaded_indicator">Indikátor sťahovania</string>
     <string name="privacy_policy_notice">Používaním Findroid súhlasíte so <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">zásadami ochrany osobných údajov</a> podľa ktorých nezbierame žiadne údaje</string>
     <string name="size">Veľkosť</string>
     <string name="app_language">Jazyk aplikácie</string>
+    <string name="remove_server_address">Odstrániť adresu serveru</string>
+    <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
 </resources>

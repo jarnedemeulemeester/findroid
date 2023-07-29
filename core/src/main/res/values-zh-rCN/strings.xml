@@ -15,7 +15,7 @@
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
     <string name="title_media">我的媒体</string>
-    <string name="title_favorite">我的最爱</string>
+    <string name="title_favorite">收藏</string>
     <string name="title_settings">设置</string>
     <string name="title_download">下载</string>
     <string name="view_all">查看所有</string>
@@ -40,11 +40,9 @@
     <string name="settings_category_language">语言</string>
     <string name="settings_preferred_audio_language">偏好音频语言</string>
     <string name="settings_preferred_subtitle_language">偏好字幕语言</string>
-    <string name="initializing">加载中…</string>
     <string name="settings_category_servers">服务器</string>
     <string name="settings_category_player">播放器</string>
     <string name="settings_category_download">下载</string>
-    <string name="manage_servers">管理服务器</string>
     <string name="settings_category_appearance">外观</string>
     <string name="device_name">设备名</string>
     <string name="settings_category_device">设备</string>
@@ -63,9 +61,7 @@
     <string name="download_mobile_data">使用移动数据下载</string>
     <string name="download_roaming">漫游时下载</string>
     <string name="download_button_description">下载</string>
-    <string name="delete_button_description">删除</string>
     <string name="person_detail_title">详情</string>
-    <string name="error_getting_person_id">详情不可用</string>
     <string name="movies_label">电影</string>
     <string name="shows_label">节目</string>
     <string name="hide">隐藏</string>
@@ -87,15 +83,10 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分钟</string>
     <string name="select_video_version_title">选择版本</string>
-    <string name="player_controls_exit">退出播放器</string>
-    <string name="player_controls_rewind">快退</string>
-    <string name="player_controls_pause">暂停</string>
-    <string name="player_controls_skip">跳过</string>
     <string name="add_server_error_no_id">服务器没有id，它可能出了问题</string>
     <string name="trailer_button_description">观看宣传片</string>
     <string name="mpv_player_summary">使用实验性的mpv播放器播放视频。mpv支持更多视频、音频和字幕格式。</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">服务器地址为空</string>
     <string name="app_description">第三方原生Jellyfin app</string>
     <string name="login_error_wrong_username_password">用户名或密码错误</string>
     <string name="latest_library">最新%1$s</string>
@@ -107,7 +98,6 @@
     <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级您的服务器</string>
     <string name="button_login">登录</string>
     <string name="settings_use_cache_summary">把图片缓存到磁盘上来加快加载时间。将会在应用程序重启后生效。</string>
-    <string name="player_controls_fast_forward">快进</string>
     <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
     <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
     <string name="settings_cache_size">缓存大小 (MB)</string>
@@ -145,7 +135,6 @@
     <string name="add_server_address">添加服务器地址</string>
     <string name="add">添加</string>
     <string name="quick_connect">快速连接</string>
-    <string name="player_controls_skip_intro">跳过片头</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
     <string name="pref_player_intro_skipper_summary">需要在服务器上安装 ConfusedPolarBear 的 Intro Skipper 插件</string>
     <string name="player_gestures_seek">搜索手势</string>
@@ -154,7 +143,6 @@
     <string name="audio">音频</string>
     <string name="subtitle">字幕</string>
     <string name="subtitle_chip_text">隐藏式字幕</string>
-    <string name="dolby_logo_desc">杜比徽标</string>
     <string name="extra_info">显示额外信息</string>
     <string name="extra_info_summary">显示关于音频、视频和字幕的详细信息</string>
     <string name="temp">temp</string>
@@ -163,7 +151,6 @@
     <string name="amoled_theme">AMOLED 深色模式</string>
     <string name="amoled_theme_summary">使用带有纯黑背景的 AMOLED 主题</string>
     <string name="offline_mode_go_online">上线</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="no_server_connection">未连接到 Jellyfin 服务器，要离线观看请启用离线模式</string>
     <string name="select_storage_location">选择存储位置</string>
     <string name="storage_unavailable">存储位置不可用</string>
@@ -181,8 +168,9 @@
     <string name="storage_name">%s (%dMB免费）</string>
     <string name="cancel_download">取消下载</string>
     <string name="external">加载</string>
-    <string name="title_storage">存储</string>
     <string name="downloaded_indicator">下载指示器</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="remove_server_address">移除服务器地址</string>
+    <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
 </resources>

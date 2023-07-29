@@ -27,7 +27,7 @@ class HomeViewModel @Inject internal constructor(
 
     sealed class UiState {
         data class Normal(val homeItems: List<HomeItem>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -72,7 +72,7 @@ class HomeViewModel @Inject internal constructor(
     private suspend fun loadLibraries(): HomeItem {
         val items = repository.getLibraries()
         val collections =
-            items.filter { collection -> CollectionType.unsupportedCollections.none { it == collection.type } }
+            items.filter { collection -> collection.type in CollectionType.supported }
         return HomeItem.Libraries(
             HomeSection(
                 uuidLibraries,
@@ -112,7 +112,7 @@ class HomeViewModel @Inject internal constructor(
 
     private suspend fun loadViews() = repository
         .getUserViews()
-        .filter { view -> CollectionType.unsupportedCollections.none { it.type == view.collectionType } }
+        .filter { view -> CollectionType.supported.any { it.type == view.collectionType } }
         .map { view -> view to repository.getLatestMedia(view.id) }
         .filter { (_, latest) -> latest.isNotEmpty() }
         .map { (view, latest) -> view.toView().apply { items = latest } }

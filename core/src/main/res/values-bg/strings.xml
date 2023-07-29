@@ -48,7 +48,6 @@
     <string name="settings_category_language">Език</string>
     <string name="settings_preferred_audio_language">Предпочитан аудо език</string>
     <string name="settings_preferred_subtitle_language">Предпочитан език на субтитрите</string>
-    <string name="initializing">Инициализиране…</string>
     <string name="settings_category_servers">Сървъри</string>
     <string name="settings_category_player">Плейър</string>
     <string name="close">Затворете</string>
@@ -61,7 +60,6 @@
     <string name="download_mobile_data">Свалете с мобилна дата</string>
     <string name="ascending">Възходящ</string>
     <string name="mpv_player">mpv плейър</string>
-    <string name="delete_button_description">Изтрийте</string>
     <string name="download_button_description">Свалете</string>
     <string name="settings_category_appearance">Външен вид</string>
     <string name="device_name">Име на устройството</string>
@@ -86,13 +84,9 @@
     <string name="series_poster">Постер на сериала</string>
     <string name="no_search_results">Няма резултати от търсенето</string>
     <string name="settings_category_download">Свалени</string>
-    <string name="manage_servers">Оправляване на сървърите</string>
     <string name="settings_use_cache_summary">Кеширайте снимките на диска за да ускорите времето за зареждане. Ще има ефект след рестартиране на приложението.</string>
     <string name="settings_cache_size_message">Приложението ще използва това количество MB от вашето дисково пространство, за да съхранява изображения от сървъра на Jellyfin. По-големи стойности може да са от полза при по-бавни мрежи.</string>
     <string name="descending">Низходящ</string>
-    <string name="player_controls_pause">Пауза</string>
-    <string name="player_controls_skip">Пропуснете</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Празен адрес на сървъра</string>
     <string name="runtime_minutes">%1$d мин</string>
 </resources>

@@ -30,6 +30,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+
         viewModel.playWhenReady = viewModel.player.playWhenReady == true
         viewModel.player.playWhenReady = false
     }

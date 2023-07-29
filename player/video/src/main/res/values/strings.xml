@@ -4,4 +4,14 @@
     <string name="select_playback_speed">Select playback speed</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
+    <string name="player_controls_lock">Locks the player</string>
+    <string name="player_controls_skip_back">Skip back</string>
+    <string name="player_controls_play_pause">Play pause</string>
+    <string name="player_controls_rewind">Rewind</string>
+    <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_skip_intro">Skip Intro</string>
+    <string name="player_controls_fast_forward">Fast forward</string>
+    <string name="player_controls_skip_forward">Skip forward</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_progress">Progress bar</string>
 </resources>

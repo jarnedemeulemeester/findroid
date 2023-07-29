@@ -16,7 +16,6 @@
     <string name="title_home">Головна</string>
     <string name="title_favorite">Вибране</string>
     <string name="title_download">Завантаження</string>
-    <string name="title_storage">Пам\'ять</string>
     <string name="view_all">Переглянути все</string>
     <string name="error_loading_data">Помилка при завантаженні даних</string>
     <string name="retry">Повторити</string>
@@ -43,10 +42,8 @@
     <string name="settings_category_language">Мова</string>
     <string name="settings_preferred_subtitle_language">Бажана мова субтитрів</string>
     <string name="app_language">Мова додатку</string>
-    <string name="initializing">Ініціалізація…</string>
     <string name="settings_category_servers">Сервера</string>
     <string name="settings_category_download">Завантаження</string>
-    <string name="manage_servers">Керування серверами</string>
     <string name="settings_category_appearance">Зовнішній вигляд</string>
     <string name="device_name">Назва пристрою</string>
     <string name="settings_category_cache">Кеш</string>
@@ -62,7 +59,6 @@
     <string name="mpv_player">mpv плеєр</string>
     <string name="download_roaming">Завантажувати в роумінгу</string>
     <string name="download_button_description">Завантажити</string>
-    <string name="delete_button_description">Видалити</string>
     <string name="person_detail_title">Деталі</string>
     <string name="movies_label">Фільми</string>
     <string name="shows_label">Телевізійні шоу</string>
@@ -85,12 +81,7 @@
     <string name="ascending">За зростанням</string>
     <string name="descending">За спаданням</string>
     <string name="runtime_minutes">%1$d хв</string>
-    <string name="player_controls_rewind">Відмотка</string>
-    <string name="player_controls_fast_forward">Швидке перемотування</string>
-    <string name="player_controls_pause">Пауза</string>
-    <string name="player_controls_skip">Пропустити</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Пуста адреса сервера</string>
     <string name="seeking">Пошук (Перемотка)</string>
     <string name="seek_back_increment">Крок пошуку назад (мс)</string>
     <string name="amoled_theme">Темна тема AMOLED</string>
@@ -119,11 +110,9 @@
     <string name="video">Відео</string>
     <string name="subtitle_chip_text">Приховані субтитри</string>
     <string name="temp">temp</string>
-    <string name="dolby_logo_desc">Логотип Dolby</string>
     <string name="extra_info">Відображати додаткову інформацію</string>
     <string name="offline_mode">Автономний режим</string>
     <string name="offline_mode_go_online">Вийти з автономного режиму</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Помилка під час завантаження</string>
     <string name="no_server_connection">Немає мережі з сервером Jellyfin, перейдіть в автономний режим для перегляду</string>
     <string name="storage_unavailable">Місце зберігання недоступне</string>
@@ -158,7 +147,6 @@
     <string name="app_info">Інформація про додаток</string>
     <string name="download_mobile_data">Завантажувати за допомогою мобільного зв\'язку</string>
     <string name="mpv_player_summary">Для відтворення відео використовувати експериментальний програвач mpv. mpv підтримує більше відео-, аудіо- та субтитрів.</string>
-    <string name="error_getting_person_id">Детальна інформація недоступна</string>
     <string name="share">Поділіться</string>
     <string name="image_description_backdrop">%1$s задник</string>
     <string name="player_gestures_zoom">Жест масштабування</string>
@@ -167,8 +155,6 @@
     <string name="sort_by_options_2">Батьківському рейтингу</string>
     <string name="sort_by_options_4">Дата перегляду</string>
     <string name="select_video_version_title">Виберіть версію</string>
-    <string name="player_controls_exit">Вийти з плеєра</string>
-    <string name="player_controls_skip_intro">Пропустити вступ</string>
     <string name="seek_forward_increment">Крок пошуку вперед (мс)</string>
     <string name="dynamic_colors">Динамічні кольори</string>
     <string name="dynamic_colors_summary">Використовувати кольори Material You (доступно лише на Android 12+)</string>

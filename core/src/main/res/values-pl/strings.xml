@@ -33,11 +33,9 @@
     <string name="no_search_results">Nie znaleziono</string>
     <string name="settings_category_language">Język</string>
     <string name="settings_preferred_subtitle_language">Preferowany język napisów</string>
-    <string name="initializing">Inicjalizacja…</string>
     <string name="settings_category_servers">Serwery</string>
     <string name="settings_category_player">Odtwarzacz</string>
     <string name="settings_category_download">Pobrane</string>
-    <string name="manage_servers">Zarządzaj serwerami</string>
     <string name="settings_category_appearance">Wygląd</string>
     <string name="device_name">Nazwa urządzenia</string>
     <string name="settings_category_device">Urządzenie</string>
@@ -78,9 +76,7 @@
     <string name="mpv_player">Odtwarzacz MPV</string>
     <string name="download_roaming">Pobieraj w roamingu</string>
     <string name="download_button_description">Pobierz</string>
-    <string name="delete_button_description">Usuń</string>
     <string name="person_detail_title">Szczegóły</string>
-    <string name="error_getting_person_id">Informacje niedostępne</string>
     <string name="movies_label">Filmy</string>
     <string name="shows_label">Seriale</string>
     <string name="hide">Ukryj</string>
@@ -103,13 +99,7 @@
     <string name="descending">Malejąco</string>
     <string name="runtime_minutes">%1$d minut</string>
     <string name="select_video_version_title">Wybierz wersję</string>
-    <string name="player_controls_exit">Zamknij odtwarzacz</string>
-    <string name="player_controls_rewind">Przewiń</string>
-    <string name="player_controls_fast_forward">Przewiń do przodu</string>
-    <string name="player_controls_pause">Pauzuj</string>
-    <string name="player_controls_skip">Pomiń</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Pusty adres serwera</string>
     <string name="remove_server">Usuń serwer</string>
     <string name="error_loading_data">Błąd ładowania danych</string>
     <string name="check_button_description">Oznacz jako obejrzane lub nieobejrzane</string>
@@ -145,7 +135,6 @@
     <string name="add_server_address">Dodaj adres serwera</string>
     <string name="add">Dodaj</string>
     <string name="quick_connect">Szybkie połączenie</string>
-    <string name="player_controls_skip_intro">Pomiń czołówkę</string>
     <string name="pref_player_intro_skipper">Pomijać czołówek</string>
     <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki ConfusedPolarBear\'s Intro Skipper</string>
     <string name="player_gestures_seek">Gest przesuwania</string>
@@ -153,7 +142,6 @@
     <string name="audio">Audio</string>
     <string name="subtitle">Napisy</string>
     <string name="subtitle_chip_text">CC</string>
-    <string name="dolby_logo_desc">logo Dolby</string>
     <string name="extra_info">Wyświetl dodatkowe informacje</string>
     <string name="temp">temp</string>
     <string name="video">Wideo</string>
@@ -167,9 +155,7 @@
     <string name="offline_mode">Tryb offline</string>
     <string name="offline_mode_icon">Ikona trybu offline</string>
     <string name="downloaded_indicator">Wskaźnik pobierania</string>
-    <string name="title_storage">Przechowywanie</string>
     <string name="offline_mode_go_online">Przejdź online</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Błąd podczas pobierania</string>
     <string name="not_enough_storage">Ten element wymaga %s wolnego miejsca, ale dostępne jest tylko %s</string>
     <string name="no_server_connection">Brak połączenia z serwerem Jellyfin, aby oglądać offline, włącz tryb offline</string>
@@ -182,4 +168,9 @@
     <string name="cancel_download">Anuluj pobieranie</string>
     <string name="cancel_download_message">Czy na pewno chcesz anulować pobieranie\?</string>
     <string name="stop_download">Zatrzymaj pobieranie</string>
+    <string name="size">Rozmiar</string>
+    <string name="privacy_policy_notice">Korzystając z Findroid zgadzasz się z <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Polityką Prywatności</a>, zgodnie z którą nie zbieramy żadnych danych</string>
+    <string name="app_language">Język aplikacji</string>
+    <string name="remove_server_address">Usuń adres serwera</string>
+    <string name="remove_server_address_dialog_text">Czy na pewno chcesz usunąć adres serwera %1$s</string>
 </resources>

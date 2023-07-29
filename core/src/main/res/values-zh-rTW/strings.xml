@@ -48,7 +48,6 @@
     <string name="settings_category_servers">伺服器</string>
     <string name="settings_category_player">撥放器</string>
     <string name="settings_category_download">下載</string>
-    <string name="manage_servers">管理伺服器</string>
     <string name="settings_category_appearance">外觀</string>
     <string name="device_name">裝置名稱</string>
     <string name="settings_category_device">裝置</string>
@@ -65,9 +64,7 @@
     <string name="download_roaming">漫遊時下載</string>
     <string name="mpv_player">mpv 播放器</string>
     <string name="download_button_description">下載</string>
-    <string name="delete_button_description">刪除</string>
     <string name="person_detail_title">詳情</string>
-    <string name="error_getting_person_id">詳情不可用</string>
     <string name="movies_label">電影</string>
     <string name="shows_label">電視節目</string>
     <string name="episodes_label">影集</string>
@@ -92,13 +89,7 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分</string>
     <string name="select_video_version_title">選擇版本</string>
-    <string name="player_controls_exit">關閉播放器</string>
-    <string name="player_controls_rewind">倒帶</string>
-    <string name="player_controls_fast_forward">快轉</string>
-    <string name="player_controls_pause">暫停</string>
-    <string name="player_controls_skip">跳過</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">空的伺服器地址</string>
     <string name="seeking">拖動條</string>
     <string name="seek_back_increment">尋回增量（毫秒）</string>
     <string name="dynamic_colors">動態色彩</string>
@@ -124,7 +115,6 @@
     <string name="episode_watched_indicator">影集觀看指標</string>
     <string name="continue_watching">繼續觀看</string>
     <string name="no_downloads">你還沒有下載任何東西</string>
-    <string name="initializing">正在初始化…</string>
     <string name="settings_use_cache_summary">在磁碟上快取圖片以減少載入時間。 將在應用程式重新啟動後生效。</string>
     <string name="settings_cache_size_message">應用程式將使用此大小的磁碟空間儲存來自 Jellyfin 伺服器的圖片。 較大的值可能對較慢的網路有益。</string>
     <string name="view_details">查看詳情</string>
@@ -136,7 +126,6 @@
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
-    <string name="player_controls_skip_intro">跳過片頭</string>
     <string name="quick_connect">快速連接</string>
     <string name="pref_player_intro_skipper">片頭跳過器</string>
     <string name="pref_player_intro_skipper_summary">需要在服務器上安裝ConfusedPolarBear的Intro Skipper挿件</string>
@@ -153,7 +142,6 @@
     <string name="pref_player_trick_play_summary">需要在服務器上安裝 nicknsy 的 Jellyscrub 插件</string>
     <string name="downloading_error">下載時出錯</string>
     <string name="size">大小</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="no_server_connection">未連接到 Jellyfin 服務器，要離線觀看請啟用離線模式</string>
     <string name="not_enough_storage">此項目需要 %s 的免費儲存空間，但只有 %s 可用</string>
     <string name="select_storage_location">選擇儲存位置</string>
@@ -164,7 +152,6 @@
     <string name="stop_download">停止下載</string>
     <string name="subtitle">字幕</string>
     <string name="subtitle_chip_text">隱藏式字幕</string>
-    <string name="dolby_logo_desc">杜比標誌</string>
     <string name="extra_info">顯示額外信息</string>
     <string name="video">視頻</string>
     <string name="audio">音頻</string>
@@ -176,7 +163,6 @@
     <string name="amoled_theme">AMOLED 深色主題</string>
     <string name="app_language">程式界面語言</string>
     <string name="extra_info_summary">顯示有關音頻、視頻和字幕的詳細信息</string>
-    <string name="title_storage">大小</string>
     <string name="downloaded_indicator">下載指示器</string>
     <string name="offline_mode">離線模式</string>
     <string name="offline_mode_icon">離線模式圖標</string>

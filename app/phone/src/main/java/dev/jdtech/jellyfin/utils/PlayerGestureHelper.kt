@@ -72,14 +72,32 @@ class PlayerGestureHelper(
             override fun onDoubleTap(e: MotionEvent): Boolean {
                 // Disables double tap gestures if view is locked
                 if (isControlsLocked) return false
-                val viewCenterX = playerView.measuredWidth / 2
-                val isFastForward = e.x.toInt() > viewCenterX
-                if (isFastForward) {
-                    fastForward()
-                    animateFastForwardRipple()
-                } else {
-                    rewind()
-                    animateRewindRipple()
+
+                val viewWidth = playerView.measuredWidth
+                val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
+
+                val currentPos = playerView.player?.currentPosition ?: 0
+
+                // Define the areas and their boundaries
+                val leftmostAreaStart = 0
+                val middleAreaStart = areaWidth * 2
+                val rightmostAreaStart = middleAreaStart + areaWidth
+
+                when (e.x.toInt()) {
+                    in leftmostAreaStart until middleAreaStart -> {
+                        // Tapped on the leftmost area (seek backward)
+                        rewind()
+                        animateRewindRipple()
+                    }
+                    in middleAreaStart until rightmostAreaStart -> {
+                        // Tapped on the middle area (toggle pause/unpause)
+                        playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
+                    }
+                    in rightmostAreaStart until viewWidth -> {
+                        // Tapped on the rightmost area (seek forward)
+                        fastForward()
+                        animateFastForwardRipple()
+                    }
                 }
                 return true
             }
@@ -240,8 +258,8 @@ class PlayerGestureHelper(
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, swipeGestureValueTrackerVolume.toInt(), 0)
 
                     activity.binding.gestureVolumeLayout.visibility = View.VISIBLE
-                    activity.binding.gestureVolumeProgressBar.max = maxVolume
-                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.toInt()
+                    activity.binding.gestureVolumeProgressBar.max = maxVolume.times(100)
+                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.times(100).toInt()
                     val process = (swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()
                     activity.binding.gestureVolumeText.text = "$process%"
                     activity.binding.gestureVolumeImage.setImageLevel(process)

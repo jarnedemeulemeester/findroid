@@ -5,4 +5,8 @@
     <string name="select_subtile_track">Selecteer ondertiteling</string>
     <string name="select_playback_speed">Selecteer afspeelsnelheid</string>
     <string name="external">Extern</string>
+    <string name="player_controls_exit">Sluit speler</string>
+    <string name="player_controls_rewind">Terugspoelen</string>
+    <string name="player_controls_fast_forward">Snel vooruit</string>
+    <string name="player_controls_skip_intro">Intro overslaan</string>
 </resources>

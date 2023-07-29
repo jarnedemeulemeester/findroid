@@ -46,7 +46,6 @@
     <string name="settings_category_servers">Server</string>
     <string name="settings_category_player">Player</string>
     <string name="settings_category_download">Download</string>
-    <string name="manage_servers">Gestisci i server</string>
     <string name="settings_category_appearance">Stile</string>
     <string name="settings_category_device">Dispositivo</string>
     <string name="settings_use_cache_title">Cache delle immagini</string>
@@ -55,13 +54,13 @@
     <string name="view_details">Mostra dettagli</string>
     <string name="view_details_underlined"><u>Vedi dettagli</u></string>
     <string name="app_description">Applicazione nativa di terze parti per Jellyfin</string>
-    <string name="add_server_error_outdated">Versione del server non supportata: %1$s. Per favore aggiorna il tuo server</string>
+    <string name="add_server_error_outdated">Versione del server obsoleta: %1$s. Aggiorna il tuo server</string>
     <string name="no_favorites">Non hai nessun preferito</string>
     <string name="add_server_error_not_found">Server non trovato</string>
     <string name="no_downloads">Non hai scaricato ancora nulla</string>
     <string name="add_server_error_no_id">Il server non ha un ID, c\'è qualcosa di strano con questo server</string>
     <string name="device_name">Nome del dispositivo</string>
-    <string name="add_server_error_version">Versione del server non supportata: %1$s. Per favore aggiorna il tuo server</string>
+    <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
     <string name="settings_category_cache">Cache</string>
     <string name="error_loading_data">Errore nel caricamento dei dati</string>
     <string name="settings_use_cache_summary">La cache delle immagini permette di ridurre i tempi di caricamento. Dovrai riavviare l\'app.</string>
@@ -73,7 +72,6 @@
     <string name="seek_forward_increment">Salta avanti di (ms)</string>
     <string name="person_detail_title">Dettagli</string>
     <string name="player_gestures_vb">Gesti volume e luminosità</string>
-    <string name="initializing">Inizializzazione…</string>
     <string name="player_gestures_vb_summary">Scorri su e giù nel lato destro dello schermo per cambiare il volume, a sinistra per cambiare la luminosità</string>
     <string name="sort_by_options_2">Classificazione per età</string>
     <string name="about">Info</string>
@@ -86,8 +84,6 @@
     <string name="download_roaming">Scarica in roaming</string>
     <string name="seeking">Avanti/Indietro rapido</string>
     <string name="download_button_description">Download</string>
-    <string name="delete_button_description">Cancella</string>
-    <string name="error_getting_person_id">Dettagli non disponibili</string>
     <string name="movies_label">Film</string>
     <string name="shows_label">Serie TV</string>
     <string name="hide">Nascondi</string>
@@ -112,13 +108,7 @@
     <string name="descending">Decrescente</string>
     <string name="runtime_minutes">%1$d minuti</string>
     <string name="select_video_version_title">Seleziona versione</string>
-    <string name="player_controls_exit">Esci dal player</string>
-    <string name="player_controls_rewind">Riavvolgi</string>
-    <string name="player_controls_fast_forward">Avanti veloce</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip">Salta</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Indirizzo server vuoto</string>
     <string name="subtitles">Sottotitoli</string>
     <string name="subtitles_summary">Personalizza lo stile dei sottotitoli</string>
     <string name="libraries">Librerie</string>
@@ -145,7 +135,6 @@
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
     <string name="quick_connect">Connessione Rapida</string>
-    <string name="player_controls_skip_intro">Salta intro</string>
     <string name="pref_player_intro_skipper">Salta intro</string>
     <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
@@ -153,7 +142,6 @@
     <string name="audio">Audio</string>
     <string name="subtitle">Sottotitoli</string>
     <string name="subtitle_chip_text">CC</string>
-    <string name="dolby_logo_desc">Logo Dolby</string>
     <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
     <string name="temp">temporaneo</string>
     <string name="video">Video</string>
@@ -178,11 +166,11 @@
     <string name="cancel_download_message">Sei sicuro di voler annullare il download\?</string>
     <string name="stop_download">Interrompi download</string>
     <string name="app_language">Lingua applicazione</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloading_error">Errore nel download</string>
     <string name="not_enough_storage">Questo elemento richiede %s di spazio libero, ma sono disponibili solo %s</string>
     <string name="no_server_connection">Nessuna connessione con il server Jellyfin, attivare la Modalità Offline per vedere gli elementi scaricati</string>
     <string name="select_storage_location">Seleziona la posizione di archiviazione</string>
-    <string name="title_storage">Archiviazione</string>
     <string name="downloaded_indicator">Indicatore scaricato</string>
+    <string name="remove_server_address">Rimuovi indirizzo server</string>
+    <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
 </resources>

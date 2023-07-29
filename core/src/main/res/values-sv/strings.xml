@@ -41,7 +41,6 @@
     <string name="settings_category_servers">Servrar</string>
     <string name="settings_category_player">Spelare</string>
     <string name="settings_category_download">Nedladdningar</string>
-    <string name="initializing">Startar…</string>
     <string name="settings_category_appearance">Utseende</string>
     <string name="device_name">Enhetsnamn</string>
     <string name="settings_category_device">Enhet</string>
@@ -57,9 +56,7 @@
     <string name="download_mobile_data">Ladda ner med mobildata</string>
     <string name="download_roaming">Ladda ner vid roaming</string>
     <string name="download_button_description">Ladda ner</string>
-    <string name="delete_button_description">Ta bort</string>
     <string name="person_detail_title">Information</string>
-    <string name="error_getting_person_id">Information otillgänglig</string>
     <string name="episodes_label">Avsnitt</string>
     <string name="hide">Göm</string>
     <string name="sort_by">Sortera efter</string>
@@ -80,12 +77,7 @@
     <string name="ascending">Stigande</string>
     <string name="descending">Fallande</string>
     <string name="runtime_minutes">%1$d minuter</string>
-    <string name="player_controls_exit">Avsluta spelare</string>
-    <string name="player_controls_rewind">Spola tillbaka</string>
-    <string name="player_controls_fast_forward">Spola framåt</string>
-    <string name="player_controls_skip">Hoppa över</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Tom serveradress</string>
     <string name="seeking">Spolar</string>
     <string name="seek_back_increment">Spola bakåt intervall (ms)</string>
     <string name="seek_forward_increment">Spola framåt intervall (ms)</string>
@@ -131,7 +123,6 @@
     <string name="no_favorites">Du har inga favoriter</string>
     <string name="no_search_results">Inga sökresultat</string>
     <string name="settings_preferred_subtitle_language">Föredraget textningsspråk</string>
-    <string name="manage_servers">Hantera servrar</string>
     <string name="settings_use_cache_title">Lagra bilder</string>
     <string name="settings_use_cache_summary">Lagra bilder på disk för att snabba upp laddningstider. Tar effekt efter appen har startats om.</string>
     <string name="settings_cache_size_message">Appen kommer att använda detta antal MB av ditt lagringsutrymme för att lagra bilder från Jellyfin-servern. Större värden kan vara fördelaktiga på långsammare nätverk.</string>
@@ -148,8 +139,6 @@
     <string name="sort_by_options_1">IMDB-betyg</string>
     <string name="sort_by_options_4">Datum spelat</string>
     <string name="select_video_version_title">Välj version</string>
-    <string name="player_controls_pause">Pausa</string>
-    <string name="player_controls_skip_intro">Hoppa över intro</string>
     <string name="dynamic_colors">Dynamiska färger</string>
     <string name="dynamic_colors_summary">Använd Material You dynamiska färger (endast tillgängligt på Android 12+)</string>
     <string name="subtitles_summary">Anpassa textningens utseende</string>
@@ -159,7 +148,6 @@
     <string name="pref_player_intro_skipper">Introskippare</string>
     <string name="pref_player_intro_skipper_summary">Kräver ConfusedPolarBears Intro Skipper-plugin installerat på servern</string>
     <string name="pref_player_trick_play_summary">Kräver nicknsys Jellyscrub-plugin installerat på servern</string>
-    <string name="dolby_logo_desc">Dolby-logotyp</string>
     <string name="add_server_error_outdated">Serverversionen är ej aktuell: %1$s. Vänligen uppdatera din server</string>
     <string name="add_server_error_version">Serverversion stöds ej: %1$s Vänligen uppdatera din server</string>
 </resources>

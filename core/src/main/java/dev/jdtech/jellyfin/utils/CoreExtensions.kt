@@ -18,7 +18,7 @@ fun BaseItemDto.toView(): View {
     return View(
         id = id,
         name = name ?: "",
-        type = valueOf(collectionType, CollectionType.Movies),
+        type = CollectionType.fromString(collectionType),
     )
 }
 
@@ -47,16 +47,4 @@ fun Activity.restart() {
     val intent = Intent(this, this::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
-}
-
-inline fun <reified T : Enum<T>> valueOf(type: String?, default: T): T {
-    if (type == null) {
-        return default
-    }
-
-    return try {
-        java.lang.Enum.valueOf(T::class.java, type)
-    } catch (e: Exception) {
-        default
-    }
 }

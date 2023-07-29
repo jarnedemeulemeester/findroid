@@ -5,4 +5,12 @@
     <string name="select_subtile_track">选择字幕轨</string>
     <string name="select_playback_speed">选择播放速度</string>
     <string name="external">加载</string>
+    <string name="player_controls_exit">退出播放器</string>
+    <string name="player_controls_rewind">快退</string>
+    <string name="player_controls_fast_forward">快进</string>
+    <string name="player_controls_skip_intro">跳过片头</string>
+    <string name="player_controls_lock">锁定播放器</string>
+    <string name="player_controls_skip_back">跳回</string>
+    <string name="player_controls_play_pause">播放暂停</string>
+    <string name="player_controls_skip_forward">跳前</string>
 </resources>

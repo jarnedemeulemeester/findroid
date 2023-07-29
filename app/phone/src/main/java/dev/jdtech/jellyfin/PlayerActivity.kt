@@ -27,7 +27,6 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
@@ -46,7 +45,6 @@ class PlayerActivity : BasePlayerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("Creating player activity")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -55,8 +53,12 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.player = viewModel.player
 
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
+        val lockedControls = binding.playerView.findViewById<View>(R.id.locked_player_view)
+
+        isControlsLocked = false
 
         configureInsets(playerControls)
+        configureInsets(lockedControls)
 
         if (appPreferences.playerGestures) {
             playerGestureHelper = PlayerGestureHelper(
@@ -73,7 +75,6 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
             finish()
-            isControlsLocked = false
         }
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)

@@ -22,7 +22,6 @@
     <string name="title_favorite">Favorieten</string>
     <string name="add_server_error_no_id">Server heeft geen id, er lijkt iets miss te zijn met de server</string>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
-    <string name="initializing">Initialiseren…</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Speler</string>
     <string name="remove_server_dialog_text">Weet je zeker dat je de server wilt verwijderen %1$s</string>
@@ -50,7 +49,6 @@
     <string name="player_gestures_vb_summary">Veeg aan de rechterkant van het scherm omhoog en omlaag om het volume te wijzigen en aan de linkerkant om de helderheid te wijzigen</string>
     <string name="player_gestures_zoom_summary">Zoomen om het scherm te vullen met de video</string>
     <string name="person_detail_title">Details</string>
-    <string name="error_getting_person_id">Detail niet beschikbaar</string>
     <string name="shows_label">Series</string>
     <string name="hide">Verbergen</string>
     <string name="sort_by">Sorteer op</string>
@@ -63,10 +61,7 @@
     <string name="player_gestures">Spelersgebaren</string>
     <string name="player_brightness_remember">Onthoud felheidsniveau</string>
     <string name="ascending">Oplopend</string>
-    <string name="player_controls_pause">Pauzeren</string>
-    <string name="player_controls_skip">Overslaan</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="add_server_empty_error">Leeg server adres</string>
     <string name="settings_category_network">Netwerk</string>
     <string name="settings_request_timeout">Time-out verzoek (ms)</string>
     <string name="settings_connect_timeout">Verbinding time-out (ms)</string>
@@ -80,10 +75,7 @@
     <string name="pref_player_mpv_ao">Audio uitvoer</string>
     <string name="libraries">Bibliotheken</string>
     <string name="search">Zoek</string>
-    <string name="player_controls_exit">Sluit speler</string>
-    <string name="player_controls_rewind">Terugspoelen</string>
     <string name="no_search_results">Geen zoekresultaten</string>
-    <string name="player_controls_fast_forward">Snel vooruit</string>
     <string name="add_user">Gebruiker toevoegen</string>
     <string name="settings_category_language">Taal</string>
     <string name="settings_preferred_audio_language">Gewenste audio taal</string>
@@ -118,7 +110,6 @@
     <string name="no_favorites">Jij hebt geen favoriten</string>
     <string name="no_downloads">Jij hebt niks gedownload</string>
     <string name="settings_category_download">Downloads</string>
-    <string name="manage_servers">Beheer servers</string>
     <string name="settings_category_appearance">Uiterlijk</string>
     <string name="device_name">Apparaatnaam</string>
     <string name="settings_category_device">Apparaat</string>
@@ -138,14 +129,12 @@
     <string name="search_hint">Zoek films, series, afleveringen…</string>
     <string name="mpv_player_summary">Gebruik de experimentele mpv speler om videos af te spelen. mpv heeft ondersteuning voor meer video, audio en ondertiteling codecs.</string>
     <string name="download_button_description">Download</string>
-    <string name="delete_button_description">Verwijderen</string>
     <string name="movies_label">Films</string>
     <string name="addresses">Adressen</string>
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="quick_connect">Snel verbinden</string>
-    <string name="player_controls_skip_intro">Intro overslaan</string>
     <string name="pref_player_intro_skipper_summary">ConfusedPolarBears\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="subtitle">Ondertiteling</string>
@@ -173,15 +162,12 @@
     <string name="amoled_theme">AMOLED donker thema</string>
     <string name="amoled_theme_summary">Gebruik AMOLED thema met een compleet zwarte achtergrond</string>
     <string name="downloading_error">Fout tijdens het downloaden</string>
-    <string name="title_storage">Opslag</string>
     <string name="pref_player_trick_play_summary">Verzoek voor nicknsy\'s Jellyscrub te installeren op de server</string>
     <string name="temp">tijdelijk</string>
-    <string name="dolby_logo_desc">Dolby Logo</string>
     <string name="pref_player_intro_skipper">Intro Overslaan</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="mega_byte_suffix">%d MB</string>
     <string name="downloaded_indicator">Gedownloade indicator</string>
     <string name="pref_player_trick_play">Trick Play</string>
     <string name="player_gestures_seek">Zoek gebaar</string>
