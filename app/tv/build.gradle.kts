@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,7 +11,7 @@ plugins {
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = 34
-    buildToolsVersion = "33.0.2"
+    buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
@@ -81,17 +80,6 @@ android {
     }
 }
 
-kotlin {
-    sourceSets {
-        debug {
-            kotlin.srcDir("build/generated/ksp/debug/kotlin")
-        }
-        release {
-            kotlin.srcDir("build/generated/ksp/release/kotlin")
-        }
-    }
-}
-
 ktlint {
     version.set("0.50.0")
     android.set(true)
@@ -102,7 +90,6 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":data"))
     implementation(project(":preferences"))
-    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.core)
