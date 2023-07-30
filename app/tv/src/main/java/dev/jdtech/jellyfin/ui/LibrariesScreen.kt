@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.foundation.lazy.grid.items
 import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyCollections
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import java.util.UUID
 
@@ -52,9 +53,14 @@ private fun LibrariesScreenLayout(
         is MediaViewModel.UiState.Normal -> {
             TvLazyVerticalGrid(
                 columns = TvGridCells.Fixed(3),
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp),
-                contentPadding = PaddingValues(start = 32.dp, top = 8.dp, end = 32.dp, bottom = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
+                contentPadding = PaddingValues(
+                    start = MaterialTheme.spacings.large,
+                    top = MaterialTheme.spacings.small,
+                    end = MaterialTheme.spacings.large,
+                    bottom = MaterialTheme.spacings.large
+                ),
             ) {
                 items(uiState.collections) { collection ->
                     ItemCard(
