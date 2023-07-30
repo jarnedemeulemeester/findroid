@@ -37,7 +37,6 @@ import dev.jdtech.jellyfin.ui.theme.spacings
 @Composable
 fun ItemCard(
     item: FindroidItem,
-    baseUrl: String,
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
 ) {
@@ -66,33 +65,34 @@ fun ItemCard(
             Box {
                 ItemPoster(
                     item = item,
-                    baseUrl = baseUrl,
                     direction = direction,
                 )
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(MaterialTheme.spacings.small),
-                ) {
-                    Box(
+                if (direction == Direction.HORIZONTAL) {
+                    Column(
                         modifier = Modifier
-                            .height(4.dp)
-                            .width(
-                                item.playbackPositionTicks
-                                    .div(
-                                        item.runtimeTicks.toFloat(),
-                                    )
-                                    .times(
-                                        width - 16,
-                                    ).dp,
-                            )
-                            .clip(
-                                MaterialTheme.shapes.extraSmall,
-                            )
-                            .background(
-                                MaterialTheme.colorScheme.primary,
-                            ),
-                    )
+                            .align(Alignment.BottomStart)
+                            .padding(MaterialTheme.spacings.small),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .height(4.dp)
+                                .width(
+                                    item.playbackPositionTicks
+                                        .div(
+                                            item.runtimeTicks.toFloat(),
+                                        )
+                                        .times(
+                                            width - 16,
+                                        ).dp,
+                                )
+                                .clip(
+                                    MaterialTheme.shapes.extraSmall,
+                                )
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                ),
+                        )
+                    }
                 }
             }
         }
@@ -128,7 +128,6 @@ private fun ItemCardPreviewMovie() {
         Surface {
             ItemCard(
                 item = dummyMovie,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.HORIZONTAL,
                 onClick = {},
             )
@@ -144,7 +143,6 @@ private fun ItemCardPreviewMovieVertical() {
         Surface {
             ItemCard(
                 item = dummyMovie,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.VERTICAL,
                 onClick = {},
             )
@@ -160,7 +158,6 @@ private fun ItemCardPreviewEpisode() {
         Surface {
             ItemCard(
                 item = dummyEpisode,
-                baseUrl = "https://demo.jellyfin.org/stable",
                 direction = Direction.HORIZONTAL,
                 onClick = {},
             )

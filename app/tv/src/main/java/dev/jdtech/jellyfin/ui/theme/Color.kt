@@ -8,3 +8,5 @@ val PrimaryContainerDark = Color(0xff004884)
 val OnPrimaryContainerDark = Color(0xffd3e4ff)
 val Neutral900 = Color(0xff121A21)
 val Neutral1000 = Color(0xff000000)
+
+val Yellow = Color(0xFFF2C94C)

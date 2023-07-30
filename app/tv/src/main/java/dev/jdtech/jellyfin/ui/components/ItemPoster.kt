@@ -13,7 +13,6 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
-import org.jellyfin.sdk.model.api.ImageType
 
 enum class Direction {
     HORIZONTAL, VERTICAL
@@ -21,22 +20,23 @@ enum class Direction {
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun ItemPoster(item: FindroidItem, baseUrl: String, direction: Direction) {
-    var itemId = item.id
-    var imageType = ImageType.PRIMARY
+fun ItemPoster(item: FindroidItem, direction: Direction) {
+    var imageUri = item.images.primary
 
-    if (direction == Direction.HORIZONTAL) {
-        if (item is FindroidMovie) imageType = ImageType.BACKDROP
-    } else {
-        itemId = when (item) {
-            is FindroidEpisode -> item.seriesId
-            is FindroidSeason -> item.seriesId
-            else -> item.id
+    when (direction) {
+        Direction.HORIZONTAL -> {
+            if (item is FindroidMovie) imageUri = item.images.backdrop
+        }
+        Direction.VERTICAL -> {
+            when (item) {
+                is FindroidEpisode -> imageUri = item.images.showPrimary
+                is FindroidSeason -> imageUri = item.images.showPrimary
+            }
         }
     }
 
     AsyncImage(
-        model = "$baseUrl/items/$itemId/Images/$imageType",
+        model = imageUri,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier

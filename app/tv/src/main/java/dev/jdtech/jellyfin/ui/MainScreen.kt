@@ -89,12 +89,13 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
             )
             TabRow(
                 selectedTabIndex = focusedTabIndex,
-                indicator = { tabPositions ->
+                indicator = { tabPositions, isActivated ->
                     // FocusedTab's indicator
                     TabRowDefaults.PillIndicator(
                         currentTabPosition = tabPositions[focusedTabIndex],
                         activeColor = Color.White,
                         inactiveColor = Color.Transparent,
+                        isActivated = isActivated,
                     )
 
                     // SelectedTab's indicator
@@ -102,6 +103,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         currentTabPosition = tabPositions[activeTabIndex],
                         activeColor = Color.White,
                         inactiveColor = Color.White,
+                        isActivated = isActivated,
                     )
                 },
                 modifier = Modifier.align(Alignment.Center),
@@ -111,7 +113,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
                         colors = TabDefaults.pillIndicatorTabColors(
-                            activeContentColor = MaterialTheme.colorScheme.onBackground,
+                            // activeContentColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                             selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                             focusedContentColor = MaterialTheme.colorScheme.onPrimary,

@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,11 +25,13 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.jdtech.jellyfin.api.JellyfinApi
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
+import dev.jdtech.jellyfin.ui.destinations.MovieScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
@@ -42,24 +43,28 @@ import java.util.UUID
 @Destination
 @Composable
 fun LibraryScreen(
+    navigator: DestinationsNavigator,
     libraryId: UUID,
     libraryName: String,
     libraryType: CollectionType,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         libraryViewModel.loadItems(libraryId, libraryType)
     }
-
-    val api = JellyfinApi.getInstance(context)
 
     val delegatedUiState by libraryViewModel.uiState.collectAsState()
 
     LibraryScreenLayout(
         libraryName = libraryName,
         uiState = delegatedUiState,
-        baseUrl = api.api.baseUrl ?: "",
+        onClick = { item ->
+            when (item) {
+                is FindroidMovie -> {
+                    navigator.navigate(MovieScreenDestination(item.id))
+                }
+            }
+        },
     )
 }
 
@@ -68,7 +73,7 @@ fun LibraryScreen(
 private fun LibraryScreenLayout(
     libraryName: String,
     uiState: LibraryViewModel.UiState,
-    baseUrl: String,
+    onClick: (FindroidItem) -> Unit,
 ) {
     when (uiState) {
         is LibraryViewModel.UiState.Loading -> Text(text = "LOADING")
@@ -94,9 +99,10 @@ private fun LibraryScreenLayout(
                     item?.let {
                         ItemCard(
                             item = item,
-                            baseUrl = baseUrl,
                             direction = Direction.VERTICAL,
-                            onClick = {},
+                            onClick = {
+                                onClick(item)
+                            },
                         )
                     }
                 }
@@ -116,7 +122,7 @@ private fun LibraryScreenLayoutPreview() {
             LibraryScreenLayout(
                 libraryName = "Movies",
                 uiState = LibraryViewModel.UiState.Normal(data),
-                baseUrl = "https://demo.jellyfin.org/stable",
+                onClick = {},
             )
         }
     }

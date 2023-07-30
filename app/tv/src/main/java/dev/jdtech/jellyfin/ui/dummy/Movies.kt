@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui.dummy
 
+import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
@@ -53,6 +54,7 @@ val dummyMovie = FindroidMovie(
     productionYear = 2019,
     endDate = null,
     trailer = "https://www.youtube.com/watch?v=puKWa8hrvA8",
+    images = FindroidImages(),
 )
 
 val dummyMovies = listOf(
