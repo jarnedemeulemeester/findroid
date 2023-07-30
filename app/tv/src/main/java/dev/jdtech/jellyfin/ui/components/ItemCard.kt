@@ -66,30 +66,32 @@ fun ItemCard(
                     item = item,
                     direction = direction,
                 )
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(8.dp),
-                ) {
-                    Box(
+                if (direction == Direction.HORIZONTAL) {
+                    Column(
                         modifier = Modifier
-                            .height(4.dp)
-                            .width(
-                                item.playbackPositionTicks
-                                    .div(
-                                        item.runtimeTicks.toFloat(),
-                                    )
-                                    .times(
-                                        width - 16,
-                                    ).dp,
-                            )
-                            .clip(
-                                MaterialTheme.shapes.extraSmall,
-                            )
-                            .background(
-                                MaterialTheme.colorScheme.primary,
-                            ),
-                    )
+                            .align(Alignment.BottomStart)
+                            .padding(8.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .height(4.dp)
+                                .width(
+                                    item.playbackPositionTicks
+                                        .div(
+                                            item.runtimeTicks.toFloat(),
+                                        )
+                                        .times(
+                                            width - 16,
+                                        ).dp,
+                                )
+                                .clip(
+                                    MaterialTheme.shapes.extraSmall,
+                                )
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                ),
+                        )
+                    }
                 }
             }
         }
