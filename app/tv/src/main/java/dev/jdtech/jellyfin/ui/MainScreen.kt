@@ -122,7 +122,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                             focusedTabIndex = index
                             activeTabIndex = index
                         },
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacings.large / 2, vertical = MaterialTheme.spacings.small),
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacings.default / 2, vertical = MaterialTheme.spacings.small),
                     ) {
                         Icon(
                             painter = painterResource(id = tab.icon),

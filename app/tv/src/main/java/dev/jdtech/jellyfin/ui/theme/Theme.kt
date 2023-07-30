@@ -22,13 +22,13 @@ fun FindroidTheme(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
-            LocalSpacings provides Spacings()
+        LocalSpacings provides Spacings(),
     ) {
         MaterialTheme(
-                colorScheme = ColorSchemeTv,
-                typography = TypographyTv,
-                shapes = shapesTv,
-                content = content,
+            colorScheme = ColorSchemeTv,
+            typography = TypographyTv,
+            shapes = shapesTv,
+            content = content,
         )
     }
 }
