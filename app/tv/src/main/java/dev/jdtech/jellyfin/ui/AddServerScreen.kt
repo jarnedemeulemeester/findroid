@@ -41,6 +41,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -92,7 +93,7 @@ private fun AddServerScreenLayout(
                 text = stringResource(id = CoreR.string.add_server),
                 style = MaterialTheme.typography.displayMedium,
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedTextField(
                 value = serverAddress,
                 leadingIcon = {
@@ -130,7 +131,7 @@ private fun AddServerScreenLayout(
                 modifier = Modifier
                     .width(360.dp),
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Box {
                 Button(
                     onClick = {

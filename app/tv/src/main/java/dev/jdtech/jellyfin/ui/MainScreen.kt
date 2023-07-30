@@ -40,6 +40,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @RootNavGraph(start = true)
@@ -76,7 +77,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = MaterialTheme.spacings.default),
         ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_launcher_foreground),
@@ -121,14 +122,14 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                             focusedTabIndex = index
                             activeTabIndex = index
                         },
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacings.default / 2, vertical = MaterialTheme.spacings.small),
                     ) {
                         Icon(
                             painter = painterResource(id = tab.icon),
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                         Text(
                             text = stringResource(id = tab.label),
                             style = MaterialTheme.typography.titleSmall,

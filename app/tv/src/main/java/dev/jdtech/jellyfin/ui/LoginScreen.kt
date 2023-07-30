@@ -43,6 +43,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -119,7 +120,7 @@ private fun LoginScreenLayout(
                 text = stringResource(id = CoreR.string.login),
                 style = MaterialTheme.typography.displayMedium,
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedTextField(
                 value = username,
                 leadingIcon = {
@@ -141,7 +142,7 @@ private fun LoginScreenLayout(
                 modifier = Modifier
                     .width(360.dp),
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             OutlinedTextField(
                 value = password,
                 leadingIcon = {
@@ -172,7 +173,7 @@ private fun LoginScreenLayout(
                 modifier = Modifier
                     .width(360.dp),
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             Box {
                 Button(
                     onClick = {
@@ -200,7 +201,7 @@ private fun LoginScreenLayout(
                 }
             }
             if (quickConnectEnabled) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Box {
                     OutlinedButton(
                         onClick = {

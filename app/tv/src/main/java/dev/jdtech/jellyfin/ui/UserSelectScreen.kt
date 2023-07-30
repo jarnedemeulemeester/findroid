@@ -51,6 +51,7 @@ import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.dummy.dummyUsers
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
 import org.jellyfin.sdk.model.api.ImageType
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -127,7 +128,7 @@ private fun UserSelectScreenLayout(
                     color = Color(0xFFBDBDBD),
                 )
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             if (users.isEmpty()) {
                 Text(
                     text = stringResource(id = CoreR.string.no_users_found),
@@ -135,8 +136,8 @@ private fun UserSelectScreenLayout(
                 )
             } else {
                 TvLazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    contentPadding = PaddingValues(24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                    contentPadding = PaddingValues(MaterialTheme.spacings.default),
                 ) {
                     items(users) {
                         UserComponent(
@@ -148,7 +149,7 @@ private fun UserSelectScreenLayout(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(
                 onClick = {
                     onAddUserClick()
@@ -244,7 +245,7 @@ private fun UserComponent(
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
         Text(
             text = user.name,
             style = MaterialTheme.typography.titleMedium,

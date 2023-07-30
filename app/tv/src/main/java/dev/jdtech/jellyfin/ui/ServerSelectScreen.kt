@@ -49,6 +49,7 @@ import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
 import dev.jdtech.jellyfin.ui.dummy.dummyServers
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -135,7 +136,7 @@ private fun ServerSelectScreenLayout(
                         contentDescription = null,
                         tint = Color(0xFFBDBDBD),
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                     Text(
                         text = pluralStringResource(
                             id = CoreR.plurals.discovered_servers,
@@ -147,7 +148,7 @@ private fun ServerSelectScreenLayout(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             if (servers.isEmpty() && discoveredServers.isEmpty()) {
                 Text(
                     text = stringResource(id = CoreR.string.no_servers_found),
@@ -155,8 +156,8 @@ private fun ServerSelectScreenLayout(
                 )
             } else {
                 TvLazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    contentPadding = PaddingValues(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
                 ) {
                     items(servers) { server ->
                         ServerComponent(server) { onServerClick(it) }
@@ -166,7 +167,7 @@ private fun ServerSelectScreenLayout(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(
                 onClick = { onAddServerClick() },
             ) {
@@ -265,7 +266,7 @@ private fun ServerComponent(
                     painter = painterResource(id = CoreR.drawable.ic_sparkles),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp),
+                    modifier = Modifier.padding(start = MaterialTheme.spacings.default / 2, top = MaterialTheme.spacings.default / 2),
                 )
             }
             Column(
@@ -273,7 +274,7 @@ private fun ServerComponent(
                 modifier = Modifier
                     .fillMaxHeight()
                     .align(Alignment.Center)
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
+                    .padding(vertical = MaterialTheme.spacings.default, horizontal = MaterialTheme.spacings.medium),
             ) {
                 Text(
                     text = server.name,

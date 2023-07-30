@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -33,6 +32,7 @@ import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.destinations.MovieScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -79,9 +79,9 @@ private fun LibraryScreenLayout(
             val items = uiState.items.collectAsLazyPagingItems()
             TvLazyVerticalGrid(
                 columns = TvGridCells.Fixed(5),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(start = 48.dp, top = 32.dp, end = 48.dp, bottom = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
