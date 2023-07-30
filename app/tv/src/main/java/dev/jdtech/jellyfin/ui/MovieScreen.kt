@@ -52,6 +52,7 @@ import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.ui.dummy.dummyMovie
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.Yellow
+import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.MovieViewModel
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import java.util.UUID
@@ -135,7 +136,7 @@ private fun MovieScreenLayout(
                 }
                 Column(
                     modifier = Modifier
-                        .padding(start = 48.dp, top = 112.dp, end = 48.dp),
+                        .padding(start = MaterialTheme.spacings.default * 2, top = 112.dp, end = MaterialTheme.spacings.default * 2),
                 ) {
                     Text(
                         text = item.name,
@@ -149,9 +150,9 @@ private fun MovieScreenLayout(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                     ) {
                         Text(
                             text = uiState.dateString,
@@ -175,7 +176,7 @@ private fun MovieScreenLayout(
                                     tint = Yellow,
                                     modifier = Modifier.size(16.dp),
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                                 Text(
                                     text = String.format("%.1f", item.communityRating),
                                     style = MaterialTheme.typography.labelMedium,
@@ -183,7 +184,7 @@ private fun MovieScreenLayout(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                     Text(
                         text = item.overview,
                         style = MaterialTheme.typography.bodyMedium,
@@ -191,9 +192,9 @@ private fun MovieScreenLayout(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.width(640.dp),
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     ) {
                         Button(
                             onClick = { },
@@ -240,9 +241,9 @@ private fun MovieScreenLayout(
                             Text(text = stringResource(id = CoreR.string.add_to_favorites))
                         }
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(32.dp),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
                     ) {
                         Column {
                             Text(
@@ -280,7 +281,7 @@ private fun MovieScreenLayout(
                             )
                         }
                     }
-//                    Spacer(modifier = Modifier.height(32.dp))
+//                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
 //                    Text(
 //                        text = stringResource(id = CoreR.string.cast_amp_crew),
 //                        style = MaterialTheme.typography.headlineMedium,
