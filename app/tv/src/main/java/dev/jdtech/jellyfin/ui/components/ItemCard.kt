@@ -96,7 +96,7 @@ fun ItemCard(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
         Text(
             text = if (item is FindroidEpisode) item.seriesName else item.name,
             style = MaterialTheme.typography.titleMedium,
