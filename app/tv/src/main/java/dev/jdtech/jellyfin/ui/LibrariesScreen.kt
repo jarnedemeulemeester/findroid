@@ -59,7 +59,7 @@ private fun LibrariesScreenLayout(
                     start = MaterialTheme.spacings.large,
                     top = MaterialTheme.spacings.small,
                     end = MaterialTheme.spacings.large,
-                    bottom = MaterialTheme.spacings.large
+                    bottom = MaterialTheme.spacings.large,
                 ),
             ) {
                 items(uiState.collections) { collection ->
