@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 27
+        minSdk = 28
         targetSdk = 34
 
         val appVersionCode: Int by rootProject.extra

@@ -12,7 +12,7 @@ android {
     buildToolsVersion = "34.0.0"
 
     defaultConfig {
-        minSdk = 27
+        minSdk = 28
 
         val appVersionCode: Int by rootProject.extra
         val appVersionName: String by rootProject.extra
