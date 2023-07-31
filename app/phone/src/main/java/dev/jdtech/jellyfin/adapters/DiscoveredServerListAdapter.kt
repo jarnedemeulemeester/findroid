@@ -17,8 +17,7 @@ class DiscoveredServerListAdapter(
     class DiscoveredServerViewHolder(private var binding: DiscoveredServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(server: DiscoveredServer) {
-            binding.server = server
-            binding.executePendingBindings()
+            binding.serverName.text = server.name
         }
     }
 
