@@ -4,10 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -19,12 +16,6 @@ import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
-
-@BindingAdapter("items")
-fun bindItems(recyclerView: RecyclerView, data: List<FindroidItem>?) {
-    val adapter = recyclerView.adapter as ViewItemListAdapter
-    adapter.submitList(data)
-}
 
 @BindingAdapter("itemImage")
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
@@ -67,12 +58,6 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
         .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.person_placeholder)
         .posterDescription(person.name)
-}
-
-@BindingAdapter("homeEpisodes")
-fun bindHomeEpisodes(recyclerView: RecyclerView, data: List<FindroidItem>?) {
-    val adapter = recyclerView.adapter as HomeEpisodeListAdapter
-    adapter.submitList(data)
 }
 
 @BindingAdapter("cardItemImage")

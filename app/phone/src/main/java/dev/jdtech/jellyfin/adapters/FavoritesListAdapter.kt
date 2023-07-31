@@ -20,7 +20,6 @@ class FavoritesListAdapter(
             onClickListener: ViewItemListAdapter.OnClickListener,
             onEpisodeClickListener: HomeEpisodeListAdapter.OnClickListener,
         ) {
-            binding.section = section
             if (section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) {
                 binding.itemsRecyclerView.adapter =
                     ViewItemListAdapter(onClickListener, fixedWidth = true)
@@ -31,7 +30,6 @@ class FavoritesListAdapter(
                 (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.items)
             }
             binding.sectionName.text = section.name.asString(binding.root.resources)
-            binding.executePendingBindings()
         }
     }
 
