@@ -104,7 +104,6 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)
     implementation(libs.coil)
