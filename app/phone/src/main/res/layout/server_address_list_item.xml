@@ -1,34 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_background">
 
-    <data>
-
-        <variable
-            name="address"
-            type="dev.jdtech.jellyfin.models.ServerAddress" />
-    </data>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/server_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="@drawable/ripple_background">
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@{address.address}"
-            android:layout_margin="12dp"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            tools:text="https://..." />
-    </LinearLayout>
-
-</layout>
+        android:layout_margin="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+        tools:text="https://..." />
+</LinearLayout>
