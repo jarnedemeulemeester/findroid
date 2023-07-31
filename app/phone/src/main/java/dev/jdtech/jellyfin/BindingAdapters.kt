@@ -7,13 +7,11 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -21,12 +19,6 @@ import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
-
-@BindingAdapter("servers")
-fun bindServers(recyclerView: RecyclerView, data: List<Server>?) {
-    val adapter = recyclerView.adapter as ServerGridAdapter
-    adapter.submitList(data)
-}
 
 @BindingAdapter("items")
 fun bindItems(recyclerView: RecyclerView, data: List<FindroidItem>?) {
