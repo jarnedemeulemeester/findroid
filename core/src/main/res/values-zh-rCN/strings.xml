@@ -159,13 +159,13 @@
     <string name="downloading_error">下载时出错</string>
     <string name="preparing_download">准备下载</string>
     <string name="size">大小</string>
-    <string name="not_enough_storage">此项目需要%s的免费存储空间，但仅%s可用</string>
+    <string name="not_enough_storage">此项目需要%1$s的免费存储空间，但仅%2$s可用</string>
     <string name="privacy_policy_notice">使用 Findroid 即表示您同意<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">隐私政策</a>其中声明我们不收集任何数据</string>
     <string name="app_language">应用界面语言</string>
     <string name="offline_mode">离线模式</string>
     <string name="offline_mode_icon">离线模式图标</string>
     <string name="internal">内部的</string>
-    <string name="storage_name">%s (%dMB免费）</string>
+    <string name="storage_name">%1$s (%2$dMB免费）</string>
     <string name="cancel_download">取消下载</string>
     <string name="external">加载</string>
     <string name="downloaded_indicator">下载指示器</string>
