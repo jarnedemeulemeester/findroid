@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import androidx.databinding.BindingAdapter
 import coil.load
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -17,7 +16,6 @@ import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@BindingAdapter("itemImage")
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
     val itemId =
         if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
@@ -27,7 +25,6 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
         .posterDescription(item.name)
 }
 
-@BindingAdapter("itemImage")
 fun bindItemImage(imageView: ImageView, item: FindroidItem) {
     val itemId = when (item) {
         is FindroidEpisode -> item.seriesId
@@ -39,7 +36,6 @@ fun bindItemImage(imageView: ImageView, item: FindroidItem) {
         .posterDescription(item.name)
 }
 
-@BindingAdapter("itemBackdropImage")
 fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
     if (item == null) return
 
@@ -48,19 +44,16 @@ fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
         .backdropDescription(item.name)
 }
 
-@BindingAdapter("itemBackdropById")
 fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
     imageView.loadImage("/items/$itemId/Images/${ImageType.BACKDROP}")
 }
 
-@BindingAdapter("personImage")
 fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
         .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.person_placeholder)
         .posterDescription(person.name)
 }
 
-@BindingAdapter("cardItemImage")
 fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
     val imageType = when (item) {
         is FindroidMovie -> ImageType.BACKDROP
@@ -72,12 +65,10 @@ fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
         .posterDescription(item.name)
 }
 
-@BindingAdapter("seasonPoster")
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
     imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}")
 }
 
-@BindingAdapter("userImage")
 fun bindUserImage(imageView: ImageView, user: User) {
     imageView
         .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.user_placeholder)

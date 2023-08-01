@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
 import dev.jdtech.jellyfin.models.FindroidCollection
 
@@ -14,8 +15,8 @@ class CollectionListAdapter(
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(collection: FindroidCollection) {
-            binding.collection = collection
-            binding.executePendingBindings()
+            binding.collectionName.text = collection.name
+            bindCardItemImage(binding.collectionImage, collection)
         }
     }
 
