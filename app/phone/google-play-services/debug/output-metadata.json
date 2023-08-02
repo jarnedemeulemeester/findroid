@@ -1,0 +1,72 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "dev.jdtech.jellyfin.debug",
+  "variantName": "google-play-servicesDebug",
+  "elements": [
+    {
+      "type": "UNIVERSAL",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 20,
+      "versionName": "0.12.0",
+      "outputFile": "phone-google-play-services-universal-debug.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 20,
+      "versionName": "0.12.0",
+      "outputFile": "phone-google-play-services-arm64-v8a-debug.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 20,
+      "versionName": "0.12.0",
+      "outputFile": "phone-google-play-services-x86-debug.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 20,
+      "versionName": "0.12.0",
+      "outputFile": "phone-google-play-services-x86_64-debug.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 20,
+      "versionName": "0.12.0",
+      "outputFile": "phone-google-play-services-armeabi-v7a-debug.apk"
+    }
+  ],
+  "elementType": "File"
+}

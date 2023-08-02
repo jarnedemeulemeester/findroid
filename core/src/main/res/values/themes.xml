@@ -51,6 +51,17 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
+        <!-- Cast SDK -->
+        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>
+        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>
+    </style>
+
+    <style name="CustomCastMiniController" parent="CastMiniController">
+        <item name="castProgressBarColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="CustomCastExpandedController" parent="CastExpandedController">
+        <item name="castSeekBarProgressAndThumbColor">?attr/colorPrimary</item>
     </style>
 
     <string-array name="themes">

@@ -25,6 +25,8 @@ ktlint = "11.6.1"
 libmpv = "0.1.3"
 material = "1.10.0"
 timber = "5.0.1"
+androidx-mediarouter = "1.3.1"
+play-services-cast-framework = "21.2.0"
 
 [libraries]
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
@@ -58,6 +60,8 @@ hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hil
 jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jellyfin" }
 libmpv = { module = "dev.jdtech.mpv:libmpv", version.ref = "libmpv" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "androidx-mediarouter" }
+playServicesCastFramework = { module = "com.google.android.gms:play-services-cast-framework", version.ref = "play-services-cast-framework"}
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

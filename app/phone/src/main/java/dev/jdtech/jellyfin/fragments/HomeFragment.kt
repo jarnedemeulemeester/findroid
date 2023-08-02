@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.cast.framework.CastButtonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
@@ -69,6 +70,11 @@ class HomeFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(CoreR.menu.home_menu, menu)
+                    CastButtonFactory.setUpMediaRouteButton(
+                        requireContext(),
+                        menu,
+                        CoreR.id.media_route_menu_item
+                    )
                     val settings = menu.findItem(CoreR.id.action_settings)
                     val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
