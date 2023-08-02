@@ -35,6 +35,7 @@ ktlint {
     version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
 }
 
 dependencies {

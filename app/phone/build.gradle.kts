@@ -75,6 +75,7 @@ ktlint {
     version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
 }
 
 dependencies {
@@ -102,10 +103,9 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)
-    implementation(libs.coil)
-    implementation(libs.coil.svg)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
     implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
     kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)

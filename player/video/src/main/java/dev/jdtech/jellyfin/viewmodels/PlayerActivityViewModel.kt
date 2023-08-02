@@ -126,6 +126,10 @@ constructor(
     fun initializePlayer(
         items: Array<PlayerItem>,
     ) {
+        // Skip initialization when there are already items
+        if (this.items.isNotEmpty()) {
+            return
+        }
         this.items = items
         player.addListener(this)
 
