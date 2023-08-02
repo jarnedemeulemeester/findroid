@@ -55,6 +55,22 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
+
+        <activity
+            android:name=".chromecast.ExpandedControlsActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:parentActivityName=".PlayerActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="dev.jdtech.jellyfin.chromecast.CastOptionsProvider" />
+
     </application>
 
 </manifest>

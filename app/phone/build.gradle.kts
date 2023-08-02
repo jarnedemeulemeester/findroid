@@ -109,6 +109,8 @@ dependencies {
     implementation(libs.coil.svg)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
+    kapt(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
