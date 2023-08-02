@@ -47,6 +47,9 @@ import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.UUID
+import android.R as AndroidR
+import com.google.android.material.R as MaterialR
+import dev.jdtech.jellyfin.core.R as CoreR
 import javax.inject.Inject
 import android.R as AndroidR
 import com.google.android.material.R as MaterialR
