@@ -67,16 +67,15 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     }
 
     protected fun configureInsets(playerControls: View) {
-        playerControls
-            .setOnApplyWindowInsetsListener { _, windowInsets ->
-                val cutout = windowInsets.displayCutout
-                playerControls.updatePadding(
-                    left = cutout?.safeInsetLeft ?: 0,
-                    top = cutout?.safeInsetTop ?: 0,
-                    right = cutout?.safeInsetRight ?: 0,
-                    bottom = cutout?.safeInsetBottom ?: 0,
-                )
-                return@setOnApplyWindowInsetsListener windowInsets
-            }
+        playerControls.setOnApplyWindowInsetsListener { _, windowInsets ->
+            val cutout = windowInsets.displayCutout
+            playerControls.updatePadding(
+                left = cutout?.safeInsetLeft ?: 0,
+                top = cutout?.safeInsetTop ?: 0,
+                right = cutout?.safeInsetRight ?: 0,
+                bottom = cutout?.safeInsetBottom ?: 0,
+            )
+            return@setOnApplyWindowInsetsListener windowInsets
+        }
     }
 }
