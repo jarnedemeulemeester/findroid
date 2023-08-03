@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.ImageType
+import org.jellyfin.sdk.model.api.ImageType.PRIMARY
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
@@ -239,16 +239,15 @@ class PlayerViewModel @Inject internal constructor(
 
                                 newIndex =
                                     (mediaStatus.activeTrackIds!!.get(0)).toInt()
-                                if(newIndex < subtitlesOffset){
+                                if (newIndex < subtitlesOffset) {
                                     newAudioIndex = newIndex
-                                }
-                                else{
+                                } else {
                                     subtitleIndex = newIndex
                                 }
 
                             }
                             val newUrl =
-                                jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex="+ newAudioIndex+"&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=119872000&AudioBitrate=128000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=40&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                                jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=12000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 
                             val newMediaInfo = buildMediaInfo(newUrl, item, episode)
 
@@ -289,13 +288,35 @@ class PlayerViewModel @Inject internal constructor(
 
     }
 
-    private fun buildMediaInfo(streamUrl: String, item: PlayerItem, episode: BaseItemDto): MediaInfo {
+    private fun buildMediaInfo(
+        streamUrl: String,
+        item: PlayerItem,
+        episode: BaseItemDto
+    ): MediaInfo {
 
         val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
-        val thumbnailUrl = episode.seasonId?.let { jellyfinApi.api.imageApi.getItemImageUrl(it, imageType = ImageType.PRIMARY) }
-        val thumbnailImage = WebImage(Uri.parse(thumbnailUrl))
+        val thumbnailUrl = episode.seasonId?.let {
+            jellyfinApi.api.imageApi.getItemImageUrl(
+                it,
+                imageType = PRIMARY
+            )
+        }
 
-        mediaMetadata.addImage(thumbnailImage)
+        if (thumbnailUrl != null) {
+            var thumbnailImage = WebImage(Uri.parse(thumbnailUrl))
+            mediaMetadata.addImage(thumbnailImage)
+        } else {
+            var thumbnailImage = WebImage(
+                Uri.parse(
+                    jellyfinApi.api.imageApi.getItemImageUrl(
+                        item.itemId,
+                        imageType = PRIMARY
+                    )
+                )
+            )
+            mediaMetadata.addImage(thumbnailImage)
+        }
+
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, item.name)
 
         val mediaSubtitles = episode.mediaStreams?.mapIndexed { index, externalSubtitle ->
