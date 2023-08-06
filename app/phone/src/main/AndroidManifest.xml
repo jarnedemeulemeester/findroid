@@ -28,7 +28,6 @@
             android:screenOrientation="sensorLandscape"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
-            android:resizeableActivity="true"
             android:autoRemoveFromRecents="true"/>
 
         <activity
