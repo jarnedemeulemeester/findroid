@@ -115,7 +115,7 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Intro button
-                            skipIntroButton.isVisible = currentIntro != null
+                            skipIntroButton.isVisible = !isInPictureInPictureMode && currentIntro != null
                             skipIntroButton.setOnClickListener {
                                 currentIntro?.let {
                                     binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
