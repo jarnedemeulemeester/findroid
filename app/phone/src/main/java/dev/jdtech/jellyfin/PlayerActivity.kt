@@ -19,6 +19,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -34,6 +37,8 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
@@ -48,6 +53,7 @@ class PlayerActivity : BasePlayerActivity() {
     lateinit var binding: ActivityPlayerBinding
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
+    private var previewScrubListener: PreviewScrubListener? = null
 
     private val isPipSupported by lazy {
         packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
@@ -91,10 +97,6 @@ class PlayerActivity : BasePlayerActivity() {
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
-        viewModel.currentItemTitle.observe(this) { title ->
-            videoNameTextView.text = title
-        }
-
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
@@ -102,6 +104,53 @@ class PlayerActivity : BasePlayerActivity() {
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        uiState.apply {
+                            // Title
+                            videoNameTextView.text = currentItemTitle
+
+                            // Skip Intro button
+                            skipIntroButton.isVisible = currentIntro != null
+                            skipIntroButton.setOnClickListener {
+                                currentIntro?.let {
+                                    binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                                }
+                            }
+
+                            // Trick Play
+                            previewScrubListener?.let {
+                                it.currentTrickPlay = currentTrickPlay
+                            }
+
+                            // File Loaded
+                            if (fileLoaded) {
+                                audioButton.isEnabled = true
+                                audioButton.imageAlpha = 255
+                                lockButton.isEnabled = true
+                                lockButton.imageAlpha = 255
+                                subtitleButton.isEnabled = true
+                                subtitleButton.imageAlpha = 255
+                                speedButton.isEnabled = true
+                                speedButton.imageAlpha = 255
+                                pipButton.isEnabled = true
+                                pipButton.imageAlpha = 255
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.navigateBack.collect {
+                        if (it) finish()
+                    }
+                }
+            }
+        }
 
         audioButton.isEnabled = false
         audioButton.imageAlpha = 75
@@ -218,50 +267,16 @@ class PlayerActivity : BasePlayerActivity() {
             pictureInPicture()
         }
 
-        viewModel.currentIntro.observe(this) {
-            if (!isInPictureInPictureMode) {
-                skipIntroButton.isVisible = it != null
-            }
-        }
-
-        skipIntroButton.setOnClickListener {
-            viewModel.currentIntro.value?.let {
-                binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
-            }
-        }
-
         if (appPreferences.playerTrickPlay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
-            val previewScrubListener = PreviewScrubListener(
+            previewScrubListener = PreviewScrubListener(
                 imagePreview,
                 timeBar,
                 viewModel.player,
-                viewModel.currentTrickPlay,
             )
 
-            timeBar.addListener(previewScrubListener)
-        }
-
-        viewModel.fileLoaded.observe(this) {
-            if (it) {
-                audioButton.isEnabled = true
-                audioButton.imageAlpha = 255
-                lockButton.isEnabled = true
-                lockButton.imageAlpha = 255
-                subtitleButton.isEnabled = true
-                subtitleButton.imageAlpha = 255
-                speedButton.isEnabled = true
-                speedButton.imageAlpha = 255
-                pipButton.isEnabled = true
-                pipButton.imageAlpha = 255
-            }
-        }
-
-        viewModel.navigateBack.observe(this) {
-            if (it) {
-                finish()
-            }
+            timeBar.addListener(previewScrubListener!!)
         }
 
         viewModel.initializePlayer(args.items)

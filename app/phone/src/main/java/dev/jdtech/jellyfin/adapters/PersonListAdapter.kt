@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindPersonImage
 import dev.jdtech.jellyfin.databinding.PersonItemBinding
 import org.jellyfin.sdk.model.api.BaseItemPerson
 
@@ -13,8 +14,9 @@ class PersonListAdapter(private val clickListener: (item: BaseItemPerson) -> Uni
     class PersonViewHolder(private var binding: PersonItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(person: BaseItemPerson) {
-            binding.person = person
-            binding.executePendingBindings()
+            binding.personName.text = person.name
+            binding.personRole.text = person.role
+            bindPersonImage(binding.personImage, person)
         }
     }
 

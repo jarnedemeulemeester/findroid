@@ -150,7 +150,7 @@
     <string name="audio">Hang</string>
     <string name="subtitle">Feliratok</string>
     <string name="downloading_error">Hiba történt a letöltés közben</string>
-    <string name="not_enough_storage">A letöltéshez %s helyre lenne szükséged, de csak %s áll rendelkezésre</string>
+    <string name="not_enough_storage">A letöltéshez %1$s helyre lenne szükséged, de csak %2$s áll rendelkezésre</string>
     <string name="extra_info">Extra információk megjelenítése</string>
     <string name="extra_info_summary">Jeleníts meg extra infokat a hangról, a videóról és a feliratokról</string>
     <string name="offline_mode">Offline mód</string>
@@ -161,7 +161,7 @@
     <string name="storage_unavailable">A letöltések helye nem elérhető</string>
     <string name="external">Külső</string>
     <string name="internal">Belső</string>
-    <string name="storage_name">%s (%d MB szabad)</string>
+    <string name="storage_name">%1$s (%2$d MB szabad)</string>
     <string name="preparing_download">Letöltés előkészítése</string>
     <string name="cancel_download">Letöltés leállítása</string>
     <string name="cancel_download_message">Biztosan le akarod állítani a letöltést\?</string>

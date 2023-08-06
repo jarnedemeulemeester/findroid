@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -58,9 +57,6 @@ abstract class ServerDatabaseDao {
 
     @Query("DELETE FROM servers")
     abstract fun clear()
-
-    @Query("SELECT * FROM servers")
-    abstract fun getAllServers(): LiveData<List<Server>>
 
     @Query("SELECT * FROM servers")
     abstract fun getAllServersSync(): List<Server>

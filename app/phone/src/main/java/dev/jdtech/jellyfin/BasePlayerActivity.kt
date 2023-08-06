@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin
 
-import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -64,10 +63,8 @@ abstract class BasePlayerActivity : AppCompatActivity() {
             )
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            window.attributes.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        }
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
     }
 
     protected fun isRendererType(
@@ -84,18 +81,16 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     }
 
     protected fun configureInsets(playerControls: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            playerControls
-                .setOnApplyWindowInsetsListener { _, windowInsets ->
-                    val cutout = windowInsets.displayCutout
-                    playerControls.updatePadding(
-                        left = cutout?.safeInsetLeft ?: 0,
-                        top = cutout?.safeInsetTop ?: 0,
-                        right = cutout?.safeInsetRight ?: 0,
-                        bottom = cutout?.safeInsetBottom ?: 0,
-                    )
-                    return@setOnApplyWindowInsetsListener windowInsets
-                }
-        }
+        playerControls
+            .setOnApplyWindowInsetsListener { _, windowInsets ->
+                val cutout = windowInsets.displayCutout
+                playerControls.updatePadding(
+                    left = cutout?.safeInsetLeft ?: 0,
+                    top = cutout?.safeInsetTop ?: 0,
+                    right = cutout?.safeInsetRight ?: 0,
+                    bottom = cutout?.safeInsetBottom ?: 0,
+                )
+                return@setOnApplyWindowInsetsListener windowInsets
+            }
     }
 }

@@ -15,8 +15,7 @@ class ServerAddressAdapter(
     class ServerAddressViewHolder(private var binding: ServerAddressListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(address: ServerAddress) {
-            binding.address = address
-            binding.executePendingBindings()
+            binding.serverAddress.text = address.address
         }
     }
 
