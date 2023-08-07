@@ -172,7 +172,6 @@ class PlayerViewModel @Inject internal constructor(
                     deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.srt")
                 }
 
-
                 ExternalSubtitle(
                     mediaStream.title,
                     mediaStream.language,
@@ -209,10 +208,8 @@ class PlayerViewModel @Inject internal constructor(
         mediaInfo: MediaInfo,
         streamUrl: String,
         item: PlayerItem,
-        episode: BaseItemDto
+        episode: BaseItemDto,
     ) {
-
-
         if (mCastSession == null) {
             return
         }
@@ -226,7 +223,6 @@ class PlayerViewModel @Inject internal constructor(
             override fun onStatusUpdated() {
                 val mediaStatus = remoteMediaClient.mediaStatus
                 val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
-
                 val subtitlesOffset =
                     mediaInfo?.mediaTracks!!.size - item.externalSubtitles.size
                 val mediaInfo = mediaStatus?.mediaInfo
@@ -235,8 +231,6 @@ class PlayerViewModel @Inject internal constructor(
                     if (previousSubtitleTrackIds != mediaStatus.activeTrackIds && previousSubtitleTrackIds != null) {
                         if (activeSubtitleTrackIds != null) {
                             if (activeSubtitleTrackIds.isNotEmpty()) {
-
-
                                 newIndex =
                                     (mediaStatus.activeTrackIds!!.get(0)).toInt()
                                 if (newIndex < subtitlesOffset) {
@@ -244,7 +238,6 @@ class PlayerViewModel @Inject internal constructor(
                                 } else {
                                     subtitleIndex = newIndex
                                 }
-
                             }
                             val newUrl =
                                 jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
@@ -259,20 +252,12 @@ class PlayerViewModel @Inject internal constructor(
                                     .build()
                             )
                         }
-
-
                     }
-
                 }
                 previousSubtitleTrackIds = mediaStatus?.activeTrackIds
-
             }
-
         }
-
         remoteMediaClient.registerCallback(callback)
-
-
         remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
@@ -280,12 +265,8 @@ class PlayerViewModel @Inject internal constructor(
                 .setCurrentTime(position.toLong()).build()
 
         )
-
-
         val mediaStatus = remoteMediaClient.mediaStatus
         val activeMediaTracks = mediaStatus?.activeTrackIds
-
-
     }
 
     private fun buildMediaInfo(
@@ -293,7 +274,6 @@ class PlayerViewModel @Inject internal constructor(
         item: PlayerItem,
         episode: BaseItemDto
     ): MediaInfo {
-
         val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
         val thumbnailUrl = episode.seasonId?.let {
             jellyfinApi.api.imageApi.getItemImageUrl(
@@ -301,7 +281,6 @@ class PlayerViewModel @Inject internal constructor(
                 imageType = PRIMARY
             )
         }
-
         if (thumbnailUrl != null) {
             var thumbnailImage = WebImage(Uri.parse(thumbnailUrl))
             mediaMetadata.addImage(thumbnailImage)
@@ -311,8 +290,8 @@ class PlayerViewModel @Inject internal constructor(
                     jellyfinApi.api.imageApi.getItemImageUrl(
                         item.itemId,
                         imageType = PRIMARY
-                    )
-                )
+                    ),
+                ),
             )
             mediaMetadata.addImage(thumbnailImage)
         }
