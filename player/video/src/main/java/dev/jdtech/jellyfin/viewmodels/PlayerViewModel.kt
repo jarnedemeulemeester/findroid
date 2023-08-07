@@ -36,7 +36,6 @@ import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
 
-
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
@@ -249,7 +248,7 @@ class PlayerViewModel @Inject internal constructor(
                                     .setMediaInfo(newMediaInfo)
                                     .setAutoplay(true)
                                     .setCurrentTime(mediaStatus.streamPosition.toInt().toLong())
-                                    .build()
+                                    .build(),
                             )
                         }
                     }
@@ -262,8 +261,7 @@ class PlayerViewModel @Inject internal constructor(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
                 .setAutoplay(true)
-                .setCurrentTime(position.toLong()).build()
-
+                .setCurrentTime(position.toLong()).build(),
         )
         val mediaStatus = remoteMediaClient.mediaStatus
         val activeMediaTracks = mediaStatus?.activeTrackIds
@@ -272,13 +270,13 @@ class PlayerViewModel @Inject internal constructor(
     private fun buildMediaInfo(
         streamUrl: String,
         item: PlayerItem,
-        episode: BaseItemDto
+        episode: BaseItemDto,
     ): MediaInfo {
         val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
         val thumbnailUrl = episode.seasonId?.let {
             jellyfinApi.api.imageApi.getItemImageUrl(
                 it,
-                imageType = PRIMARY
+                imageType = PRIMARY,
             )
         }
         if (thumbnailUrl != null) {
@@ -289,7 +287,7 @@ class PlayerViewModel @Inject internal constructor(
                 Uri.parse(
                     jellyfinApi.api.imageApi.getItemImageUrl(
                         item.itemId,
-                        imageType = PRIMARY
+                        imageType = PRIMARY,
                     ),
                 ),
             )
@@ -301,13 +299,10 @@ class PlayerViewModel @Inject internal constructor(
         val mediaSubtitles = episode.mediaStreams?.mapIndexed { index, externalSubtitle ->
             MediaTrack.Builder(index.toLong(), MediaTrack.TYPE_TEXT)
                 .setName(externalSubtitle.displayTitle + " " + externalSubtitle.type)
-                //.setContentId(jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=" + index + "&VideoBitrate=119872000&AudioBitrate=128000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=40&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
                 .setContentType("text/vtt")
                 .setLanguage(externalSubtitle.language)
                 .build()
         }
-
-
 
         return MediaInfo.Builder(streamUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -324,15 +319,10 @@ class PlayerViewModel @Inject internal constructor(
                 val item = items.first()
                 val streamUrl =
                     repository.getStreamCastUrl(items.first().itemId, items.first().mediaSourceId)
-
                 val episode = repository.getItem(item.itemId)
-
-
                 if (session != null) {
                     val mediaInfo = buildMediaInfo(streamUrl, item, episode)
-
                     loadRemoteMedia(0, session, mediaInfo, streamUrl, item, episode)
-
                 }
             } catch (e: Exception) {
                 Timber.e(e)
