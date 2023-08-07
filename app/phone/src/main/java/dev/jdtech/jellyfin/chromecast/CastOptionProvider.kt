@@ -9,7 +9,6 @@ import com.google.android.gms.cast.framework.media.NotificationOptions
 class CastOptionProvider : OptionsProvider {
 
     override fun getCastOptions(context: Context): CastOptions {
-
         val notificationOptions = NotificationOptions.Builder()
             .setTargetActivityClassName(ExpandedControlsActivity::class.java.name)
             .build()
@@ -23,7 +22,6 @@ class CastOptionProvider : OptionsProvider {
             .setReceiverApplicationId("49B291C0")
             .setCastMediaOptions(mediaOptions)
             .build()
-        //            .setSupportedNamespaces(supportedNamespaces)
     }
 
     override fun getAdditionalSessionProviders(p0: Context): MutableList<SessionProvider>? {
