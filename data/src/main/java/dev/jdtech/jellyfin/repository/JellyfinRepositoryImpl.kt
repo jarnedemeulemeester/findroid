@@ -59,8 +59,7 @@ class JellyfinRepositoryImpl(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
-
-    ) : JellyfinRepository {
+) : JellyfinRepository {
 
     private val playSessionIds = mutableMapOf<UUID, String?>()
     override suspend fun getPublicSystemInfo(): PublicSystemInfo = withContext(Dispatchers.IO) {
@@ -409,12 +408,13 @@ class JellyfinRepositoryImpl(
     override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
-                jellyfinApi.api.createUrl("/videos/"+ itemId + "/master.m3u8?DeviceId="+ jellyfinApi.api.deviceInfo.id +"&MediaSourceId=" + mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId="+playSessionIds[itemId]+"&api_key="+jellyfinApi.api.accessToken+"&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
             } catch (e: Exception) {
                 Timber.e(e)
                 "l"
             }
-    }
+        }
+
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
