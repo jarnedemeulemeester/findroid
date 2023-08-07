@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
                     CastButtonFactory.setUpMediaRouteButton(
                         requireContext(),
                         menu,
-                        CoreR.id.media_route_menu_item
+                        CoreR.id.media_route_menu_item,
                     )
                     val settings = menu.findItem(CoreR.id.action_settings)
                     val search = menu.findItem(CoreR.id.action_search)

@@ -21,7 +21,6 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.google.android.material.R as MaterialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
@@ -507,9 +506,9 @@ class MovieFragment : Fragment() {
             findNavController().navigate(
                 MovieFragmentDirections.actionMovieFragmentToPlayerActivity(
                     playerItems,
-                )
+                ),
             )
-        }else {
+        } else {
             val remoteMediaClient = session.remoteMediaClient ?: return
             remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
                 override fun onStatusUpdated() {
