@@ -171,4 +171,6 @@
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
     <string name="app_language">Язык приложения</string>
+    <string name="remove_server_address">Удалить адрес сервера</string>
+    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
 </resources>
