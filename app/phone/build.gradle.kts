@@ -50,6 +50,9 @@ android {
             dimension = "variant"
             isDefault = true
         }
+        register("libre"){
+            dimension = "variant"
+        }
         register("huawei") {
             dimension = "variant"
         }
