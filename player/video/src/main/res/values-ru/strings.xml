@@ -9,4 +9,10 @@
     <string name="player_controls_rewind">Перемотка</string>
     <string name="player_controls_fast_forward">Быстрая перемотка</string>
     <string name="player_controls_skip_intro">Пропустить заставку</string>
+    <string name="player_controls_lock">Блокировка</string>
+    <string name="player_controls_skip_back">Перейти назад</string>
+    <string name="player_controls_play_pause">Плей пауза</string>
+    <string name="player_trickplay">Предпросмотр</string>
+    <string name="player_controls_skip_forward">Перейти вперёд</string>
+    <string name="player_controls_progress">Прогресс-бар</string>
 </resources>
