@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.mpv.MPVLib
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -111,6 +112,34 @@ class PlayerGestureHelper(
                     }
                 }
                 return true
+            }
+
+            override fun onLongPress(e: MotionEvent) {
+                // Disables double tap gestures if view is locked
+                if (isControlsLocked) return
+
+                val viewWidth = playerView.measuredWidth
+                val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
+
+                // Define the areas and their boundaries
+                val leftmostAreaStart = 0
+                val middleAreaStart = areaWidth * 2
+                val rightmostAreaStart = middleAreaStart + areaWidth
+
+                val player = (playerView.player as MPVPlayer)
+                when (e.x.toInt()) {
+                    in leftmostAreaStart until middleAreaStart -> {
+                        player.previousChapter()
+                    }
+                    in rightmostAreaStart until viewWidth -> {
+                        player.nextChapter()
+                    }
+                    else -> return@onLongPress
+                }
+
+                // Show chapter title
+                activity.binding.progressScrubberLayout.visibility = View.VISIBLE
+                activity.binding.progressScrubberText.text = player.getChapterTitle(player.getCurrentChapter())
             }
         },
     )
