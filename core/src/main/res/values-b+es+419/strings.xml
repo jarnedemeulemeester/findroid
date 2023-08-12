@@ -151,7 +151,7 @@
     <string name="storage_unavailable">La ubicación de almacenamiento no está disponible</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
-    <string name="not_enough_storage">Éste elemento requiere %s de almacenamiento pero solo hay disponible %s</string>
+    <string name="not_enough_storage">Éste elemento requiere %1$s de almacenamiento pero solo hay disponible %2$s</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Subtítulos</string>
@@ -164,7 +164,7 @@
     <string name="player_gestures_seek_summary">Deslizar horizontalmente para buscar adelante o atrás</string>
     <string name="downloaded_indicator">Indicador de descargado</string>
     <string name="pref_player_trick_play">Trick Play</string>
-    <string name="storage_name">%s (%d MB libres)</string>
+    <string name="storage_name">%1$s (%2$d MB libres)</string>
     <string name="preparing_download">Preparando descarga</string>
     <string name="cancel_download">Cancelar descarga</string>
     <string name="cancel_download_message">¿Quiere cancelar la descarga\?</string>

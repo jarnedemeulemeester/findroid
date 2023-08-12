@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_background"
+    android:orientation="vertical"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="24dp">
 
-    <data>
+    <FrameLayout
+        android:id="@+id/server_icon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_setup_background"
+        app:layout_constraintBottom_toTopOf="@id/server_name"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <variable
-            name="server"
-            type="dev.jdtech.jellyfin.models.Server" />
-    </data>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_server"
+            app:tint="?attr/colorOnPrimary" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/server_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="@drawable/ripple_background"
-        android:orientation="vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="24dp">
-
-        <FrameLayout
-            android:id="@+id/server_icon"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_setup_background"
-            app:layout_constraintBottom_toTopOf="@id/server_name"
-            app:layout_constraintDimensionRatio="w,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                app:srcCompat="@drawable/ic_server"
-                app:tint="?attr/colorOnPrimary" />
-
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/server_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{server.name}"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/server_icon"
-            tools:text="JDTech" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/server_icon"
+        tools:text="JDTech" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,7 @@ import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
@@ -34,10 +35,6 @@ class ServerSelectFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentServerSelectBinding.inflate(inflater)
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.viewModel = viewModel
 
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
@@ -63,15 +60,31 @@ class ServerSelectFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToMainActivity()
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is ServerSelectViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is ServerSelectViewModel.UiState.Loading -> Unit
+                            is ServerSelectViewModel.UiState.Error -> Unit
+                        }
+                    }
+                }
+                launch {
+                    viewModel.navigateToMain.collect {
+                        if (it) navigateToMainActivity()
                     }
                 }
             }
         }
 
         return binding.root
+    }
+
+    private fun bindUiStateNormal(uiState: ServerSelectViewModel.UiState.Normal) {
+        uiState.apply {
+            (binding.serversRecyclerView.adapter as ServerGridAdapter).submitList(servers)
+        }
     }
 
     private fun navigateToAddServerFragment() {

@@ -1,88 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="240dp"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_background">
 
-    <data>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/episode_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
-        <variable
-            name="item"
-            type="dev.jdtech.jellyfin.models.FindroidItem" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="240dp"
+    <TextView
+        android:id="@+id/primary_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="@drawable/ripple_background">
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/episode_image"
+        tools:text="Wonder Egg Priority" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/episode_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:cardItemImage="@{item}"
-            app:layout_constraintDimensionRatio="H,16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
+    <TextView
+        android:id="@+id/secondary_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/primary_name"
+        tools:text="The Girl Flautist" />
 
-        <TextView
-            android:id="@+id/primary_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/episode_image"
-            tools:text="Wonder Egg Priority" />
+    <ImageView
+        android:id="@+id/downloaded_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="@string/downloaded_indicator"
+        android:padding="4dp"
+        android:src="@drawable/ic_download"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image"
+        app:tint="?attr/colorOnPrimary"
+        tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/secondary_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/primary_name"
-            tools:text="The Girl Flautist" />
+    <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_setup_background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/episode_image"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_width="50dp"
+        tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/downloaded_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_background"
-            android:contentDescription="@string/downloaded_indicator"
-            android:padding="4dp"
-            android:src="@drawable/ic_download"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/episode_image"
-            app:layout_constraintTop_toTopOf="@id/episode_image"
-            app:tint="?attr/colorOnPrimary"
-            tools:visibility="visible"/>
-
-        <FrameLayout
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="4dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_setup_background"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/episode_image"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_width="50dp"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

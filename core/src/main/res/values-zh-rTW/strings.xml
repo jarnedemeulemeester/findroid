@@ -143,10 +143,10 @@
     <string name="downloading_error">下載時出錯</string>
     <string name="size">大小</string>
     <string name="no_server_connection">未連接到 Jellyfin 服務器，要離線觀看請啟用離線模式</string>
-    <string name="not_enough_storage">此項目需要 %s 的免費儲存空間，但只有 %s 可用</string>
+    <string name="not_enough_storage">此項目需要 %1$s 的免費儲存空間，但只有 %2$s 可用</string>
     <string name="select_storage_location">選擇儲存位置</string>
     <string name="storage_unavailable">儲存位置不可用</string>
-    <string name="storage_name">%s (%d MB 空閒)</string>
+    <string name="storage_name">%1$s (%2$d MB 空閒)</string>
     <string name="internal">內部的</string>
     <string name="preparing_download">準備下載</string>
     <string name="stop_download">停止下載</string>

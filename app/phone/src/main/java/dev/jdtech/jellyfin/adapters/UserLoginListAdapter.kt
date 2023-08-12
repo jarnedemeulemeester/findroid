@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindUserImage
 import dev.jdtech.jellyfin.databinding.UserItemBinding
 import dev.jdtech.jellyfin.models.User
 
@@ -14,8 +15,8 @@ class UserLoginListAdapter(
     class UserLoginViewHolder(private var binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
-            binding.user = user
-            binding.executePendingBindings()
+            binding.userName.text = user.name
+            bindUserImage(binding.userImage, user)
         }
     }
 
