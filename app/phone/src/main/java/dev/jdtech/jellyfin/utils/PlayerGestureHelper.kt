@@ -24,7 +24,6 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.mpv.MPVLib
 import timber.log.Timber
 import kotlin.math.abs
 
