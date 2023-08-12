@@ -162,7 +162,7 @@ class PlayerActivity : BasePlayerActivity() {
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
 
-                                if (true) { // appPreferences.showChapterMarkers TODO: Implement preference for chapter markers
+                                if (appPreferences.showChapterMarkers) {
                                     val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
                                     val chapters: LongArray = when (viewModel.player) {
                                         is MPVPlayer -> {
