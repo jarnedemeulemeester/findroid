@@ -169,9 +169,6 @@ class PlayerActivity : BasePlayerActivity() {
                                             val player = (viewModel.player as MPVPlayer)
                                             LongArray(player.getNumberOfChapters()) { index -> player.getChapterTime(index).toLong() * 1000 }
                                         }
-                                        is ExoPlayer -> {
-                                            LongArray(0)
-                                        }
                                         else -> LongArray(0)
                                     }
 

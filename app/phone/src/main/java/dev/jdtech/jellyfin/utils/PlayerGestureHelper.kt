@@ -114,8 +114,8 @@ class PlayerGestureHelper(
             }
 
             override fun onLongPress(e: MotionEvent) {
-                // Disables double tap gestures if view is locked
-                if (isControlsLocked || !appPreferences.playerGesturesChapterSkip) return
+                if (isControlsLocked || !appPreferences.playerGesturesChapterSkip || playerView.player !is MPVPlayer)
+                    return
 
                 val viewWidth = playerView.measuredWidth
                 val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
@@ -133,7 +133,7 @@ class PlayerGestureHelper(
                     in rightmostAreaStart until viewWidth -> {
                         player.nextChapter()
                     }
-                    else -> return@onLongPress
+                    else -> return
                 }
 
                 // Show chapter title
