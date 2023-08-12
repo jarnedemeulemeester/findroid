@@ -257,7 +257,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         // Set marker color
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
-        timeBar.setAdMarkerColor(Color.WHITE) // TODO: Use device color?
+        timeBar.setAdMarkerColor(Color.WHITE)
 
         if (appPreferences.playerTrickPlay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
