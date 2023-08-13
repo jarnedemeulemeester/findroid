@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,11 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     abstract val viewModel: PlayerActivityViewModel
 
     private lateinit var mediaSession: MediaSession
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+    }
 
     override fun onStart() {
         super.onStart()
