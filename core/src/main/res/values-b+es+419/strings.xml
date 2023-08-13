@@ -94,7 +94,7 @@
     <string name="sort_by_options_5">Fecha de estreno</string>
     <string name="ascending">Ascendente</string>
     <string name="descending">Descendente</string>
-    <string name="runtime_minutes">%1$d mins</string>
+    <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecciona versón</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="settings_category_download">Descargas</string>
@@ -129,7 +129,7 @@
     <string name="add_server_address">Agregar dirección del servidor</string>
     <string name="add">Agregar</string>
     <string name="remove_user">Remover usuario</string>
-    <string name="remove_user_dialog_text">Está seguro de que desea remover el usuario %1$s</string>
+    <string name="remove_user_dialog_text">¿Está seguro de querer remover el usuario %1$s</string>
     <string name="settings_request_timeout">Tiempo de espera de solicitud (ms)</string>
     <string name="settings_connect_timeout">Tiempo de espera de conexión (ms)</string>
     <string name="settings_socket_timeout">Tiempo de espera del socket (ms)</string>
@@ -163,7 +163,7 @@
     <string name="player_gestures_seek">Gesto de búsqueda</string>
     <string name="player_gestures_seek_summary">Deslizar horizontalmente para buscar adelante o atrás</string>
     <string name="downloaded_indicator">Indicador de descargado</string>
-    <string name="pref_player_trick_play">Trick Play</string>
+    <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
     <string name="storage_name">%1$s (%2$d MB libres)</string>
     <string name="preparing_download">Preparando descarga</string>
     <string name="cancel_download">Cancelar descarga</string>
@@ -172,4 +172,6 @@
     <string name="size">Tamaño</string>
     <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, la cual establece que no recopilamos ningún dato</string>
     <string name="app_language">Idioma de la aplicación</string>
+    <string name="remove_server_address">Remover dirección del servidor</string>
+    <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
 </resources>
