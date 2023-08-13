@@ -271,8 +271,6 @@ class PlayerGestureHelper(
                     val lp = window.attributes
                     lp.screenBrightness = swipeGestureValueTrackerBrightness
                     window.attributes = lp
-                    // fixes a bug which makes the action bar reappear after changing the brightness
-                    activity.swipeToShowStatusBars()
 
                     activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
                     activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
