@@ -130,12 +130,12 @@
     <string name="pref_player_mpv_vo">Salida de video</string>
     <string name="pref_player_mpv_ao">Salida de audio</string>
     <string name="remove_user">Quitar usuario</string>
-    <string name="remove_user_dialog_text">¿Quiere eliminar el usuario %1$s\?</string>
+    <string name="remove_user_dialog_text">¿Está seguro de querer eliminar el usuario %1$s</string>
     <string name="quick_connect">Conexión rápida</string>
     <string name="pref_player_intro_skipper">Saltador de intros</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
     <string name="addresses">Direcciones</string>
-    <string name="add_address">Agregar dirección</string>
+    <string name="add_address">Añadir dirección</string>
     <string name="add_server_address">Agregar dirección de servidor</string>
     <string name="add">Agregar</string>
     <string name="player_gestures_seek">Gesto de búsqueda</string>
@@ -146,7 +146,7 @@
     <string name="amoled_theme">Tema oscuro AMOLED</string>
     <string name="amoled_theme_summary">Usa un tema de fondo negro puro para pantallas AMOLED</string>
     <string name="subtitle_chip_text">CC</string>
-    <string name="temp">Temp</string>
+    <string name="temp">temporáneo</string>
     <string name="extra_info_summary">Muestra información detallada de audio, video y subtítulos</string>
     <string name="extra_info">Mostrar info extra</string>
     <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
@@ -173,5 +173,5 @@
     <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, que recoge que no recopilamos ningún dato</string>
     <string name="app_language">Idioma de la aplicación</string>
     <string name="remove_server_address">Eliminar dirección del servidor</string>
-    <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor\? %1$s</string>
+    <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor con dirección %1$s</string>
 </resources>
