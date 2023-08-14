@@ -138,7 +138,7 @@
     <string name="settings_connect_timeout">Время ожидания соединения (мс)</string>
     <string name="settings_socket_timeout">Время ожидания сокета (мс)</string>
     <string name="pref_player_trick_play_summary">Требуется, чтобы на сервере был установлен плагин Jellyscrub от nicknsy</string>
-    <string name="pref_player_trick_play">Миниатюры предварительного просмотра (Trick Play)</string>
+    <string name="pref_player_trick_play">Миниатюры предпросмотра (Trick Play)</string>
     <string name="subtitle">Субтитры</string>
     <string name="extra_info_summary">Показывает дополнительную информацию о Аудио, Видео и Субтитрах</string>
     <string name="extra_info">Показывать дополнительную информацию</string>
@@ -171,4 +171,6 @@
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
     <string name="app_language">Язык приложения</string>
+    <string name="remove_server_address">Удалить адрес сервера</string>
+    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
 </resources>

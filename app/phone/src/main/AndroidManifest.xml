@@ -28,7 +28,8 @@
             android:screenOrientation="sensorLandscape"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
-            android:autoRemoveFromRecents="true"/>
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/Theme.Findroid.Player" />
 
         <activity
             android:name=".MainActivity"
