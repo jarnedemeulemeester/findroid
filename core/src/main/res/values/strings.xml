@@ -150,6 +150,9 @@
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="quick_connect">Quick Connect</string>
+    <string name="picture_in_picture">Picture-in-picture</string>
+    <string name="picture_in_picture_gesture">Picture-in-picture home gesture</string>
+    <string name="picture_in_picture_gesture_summary">Use home button or gesture to enter picture-in-picture while the video is playing</string>
     <string name="size">Size</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>

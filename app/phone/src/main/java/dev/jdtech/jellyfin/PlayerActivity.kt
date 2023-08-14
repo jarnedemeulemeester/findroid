@@ -1,9 +1,15 @@
 package dev.jdtech.jellyfin
 
+import android.app.PictureInPictureParams
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -18,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.TrackSelectionDialogBuilder
@@ -47,11 +54,16 @@ class PlayerActivity : BasePlayerActivity() {
     lateinit var binding: ActivityPlayerBinding
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
-    private val args: PlayerActivityArgs by navArgs()
     private var previewScrubListener: PreviewScrubListener? = null
+
+    private val isPipSupported by lazy {
+        packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val args: PlayerActivityArgs by navArgs()
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -97,6 +109,7 @@ class PlayerActivity : BasePlayerActivity() {
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
+        val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
 
@@ -110,7 +123,7 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Intro button
-                            skipIntroButton.isVisible = currentIntro != null
+                            skipIntroButton.isVisible = !isInPictureInPictureMode && currentIntro != null
                             skipIntroButton.setOnClickListener {
                                 currentIntro?.let {
                                     binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
@@ -132,6 +145,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 subtitleButton.imageAlpha = 255
                                 speedButton.isEnabled = true
                                 speedButton.imageAlpha = 255
+                                pipButton.isEnabled = true
+                                pipButton.imageAlpha = 255
                             }
                         }
                     }
@@ -156,6 +171,13 @@ class PlayerActivity : BasePlayerActivity() {
 
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
+
+        if (isPipSupported) {
+            pipButton.isEnabled = false
+            pipButton.imageAlpha = 75
+        } else {
+            pipButton.isVisible = false
+        }
 
         audioButton.setOnClickListener {
             when (viewModel.player) {
@@ -249,6 +271,10 @@ class PlayerActivity : BasePlayerActivity() {
             )
         }
 
+        pipButton.setOnClickListener {
+            pictureInPicture()
+        }
+
         if (appPreferences.playerTrickPlay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
@@ -263,5 +289,79 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.initializePlayer(args.items)
         hideSystemUI()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        val args: PlayerActivityArgs by navArgs()
+        viewModel.initializePlayer(args.items)
+    }
+
+    override fun onUserLeaveHint() {
+        if (appPreferences.playerPipGesture && viewModel.player.isPlaying && !isControlsLocked) {
+            pictureInPicture()
+        }
+    }
+
+    private fun pipParams(): PictureInPictureParams {
+        val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
+
+        val aspectRatio = binding.playerView.player?.videoSize?.let {
+            Rational(
+                it.width.coerceAtMost((it.height * 2.39f).toInt()),
+                it.height.coerceAtMost((it.width * 2.39f).toInt()),
+            )
+        }
+
+        val sourceRectHint = if (displayAspectRatio < aspectRatio!!) {
+            val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+            Rect(
+                0,
+                space,
+                binding.playerView.width,
+                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
+            )
+        } else {
+            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
+            Rect(
+                space,
+                0,
+                (binding.playerView.height.toFloat() * aspectRatio.toFloat()).toInt() + space,
+                binding.playerView.height,
+            )
+        }
+
+        return PictureInPictureParams.Builder()
+            .setAspectRatio(aspectRatio)
+            .setSourceRectHint(sourceRectHint)
+            .build()
+    }
+
+    private fun pictureInPicture() {
+        if (!isPipSupported) {
+            return
+        }
+        binding.playerView.useController = false
+        binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
+
+        if (binding.playerView.player is MPVPlayer) {
+            (binding.playerView.player as MPVPlayer).updateZoomMode(false)
+        } else {
+            binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
+
+        enterPictureInPictureMode(pipParams())
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (!isInPictureInPictureMode) {
+            binding.playerView.useController = true
+        }
     }
 }
