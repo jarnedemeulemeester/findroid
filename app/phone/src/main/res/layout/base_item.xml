@@ -59,11 +59,13 @@
 
         <TextView
             android:id="@+id/item_count"
-            android:layout_width="24dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/circle_background"
+            android:background="@drawable/bg_rounded_rect_12dp"
             android:gravity="center"
+            android:minWidth="24dp"
+            android:paddingHorizontal="8dp"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"
