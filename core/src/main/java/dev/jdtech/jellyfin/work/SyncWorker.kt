@@ -75,7 +75,7 @@ class SyncWorker @AssistedInject constructor(
                     false -> jellyfinApi.userLibraryApi.unmarkFavoriteItem(user.id, item.id)
                 }
 
-                jellyfinApi.playStateApi.onPlaybackProgress(
+                jellyfinApi.playStateApi.onPlaybackStopped(
                     userId = user.id,
                     itemId = item.id,
                     positionTicks = userData.playbackPositionTicks,
