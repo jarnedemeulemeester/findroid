@@ -15,4 +15,5 @@
     <string name="player_controls_skip_forward">Skocz do przodu</string>
     <string name="player_controls_progress">Pasek postępu</string>
     <string name="player_controls_play_pause">Odtwórz/wstrzymaj</string>
+    <string name="player_controls_picture_in_picture">Wejdź w tryb obrazu w obrazie</string>
 </resources>
