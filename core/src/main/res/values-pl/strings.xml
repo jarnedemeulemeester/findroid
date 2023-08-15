@@ -173,4 +173,7 @@
     <string name="app_language">Język aplikacji</string>
     <string name="remove_server_address">Usuń adres serwera</string>
     <string name="remove_server_address_dialog_text">Czy na pewno chcesz usunąć adres serwera %1$s</string>
+    <string name="picture_in_picture_gesture">Gest domowy obrazu w obrazie</string>
+    <string name="picture_in_picture">Obraz w obrazie</string>
+    <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
 </resources>
