@@ -39,11 +39,11 @@ constructor(
             }
         }
 
-    private var _isOffline = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false);
+    private var _isOffline = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false)
     var isOffline
-        get() = _isOffline;
+        get() = _isOffline
         set(value) {
-            _isOffline = value;
+            _isOffline = value
         }
 
     // Appearance
