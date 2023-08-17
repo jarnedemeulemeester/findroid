@@ -9,6 +9,7 @@ import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,7 @@ constructor(
             _uiState.emit(UiState.Loading)
 
             try {
-                val items = jellyfinRepository.getItems(parentId = parentId)
+                val items = jellyfinRepository.getItems(parentId = parentId, sortBy = SortBy.RELEASE_DATE)
 
                 if (items.isEmpty()) {
                     _uiState.emit(UiState.Normal(emptyList()))
