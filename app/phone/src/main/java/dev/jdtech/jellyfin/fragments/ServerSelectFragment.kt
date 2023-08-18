@@ -17,8 +17,8 @@ import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
