@@ -173,4 +173,7 @@
     <string name="downloaded_indicator">Indicatore scaricato</string>
     <string name="remove_server_address">Rimuovi indirizzo server</string>
     <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
+    <string name="picture_in_picture">Immagine nell\'immagine</string>
+    <string name="picture_in_picture_gesture">Gesto/pulsante home</string>
+    <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
 </resources>
