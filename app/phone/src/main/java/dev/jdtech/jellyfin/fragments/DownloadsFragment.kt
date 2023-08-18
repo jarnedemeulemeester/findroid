@@ -58,7 +58,7 @@ class DownloadsFragment : Fragment() {
                 launch {
                     viewModel.connectionError.collect {
                         Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
-                            .setAnchorView(requireActivity().findViewById(R.id.nav_view))
+                            .setTextMaxLines(2)
                             .setAction(CoreR.string.offline_mode) {
                                 appPreferences.offlineMode = true
                                 activity?.restart()
