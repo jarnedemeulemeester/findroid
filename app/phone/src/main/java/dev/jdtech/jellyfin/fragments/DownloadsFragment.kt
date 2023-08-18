@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
