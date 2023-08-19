@@ -32,6 +32,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.get
+import org.jellyfin.sdk.api.client.extensions.libraryApi
+import org.jellyfin.sdk.api.client.extensions.universalAudioApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -336,7 +338,7 @@ class JellyfinRepositoryImpl(
             sources
         }
 
-    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
+    override suspend fun getVideoStreamUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
                 jellyfinApi.videosApi.getVideoStreamUrl(
@@ -349,6 +351,17 @@ class JellyfinRepositoryImpl(
                 ""
             }
         }
+
+    override suspend fun getUniversalAudioStreamUrl(itemId: UUID): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                jellyfinApi.api.universalAudioApi.getUniversalAudioStreamUrl(itemId)
+            } catch (e: Exception) {
+                Timber.e(e)
+                ""
+            }
+        }
+    }
 
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
@@ -416,6 +429,24 @@ class JellyfinRepositoryImpl(
                 return@withContext null
             }
         }
+
+    override suspend fun getThemeSong(itemId: UUID): FindroidSource? {
+        return withContext(Dispatchers.IO) {
+            val content = try {
+                jellyfinApi.api.libraryApi.getThemeSongs(itemId).content
+            } catch (e: Exception) {
+                Timber.e(e, "Error while loading theme song")
+                return@withContext null
+            }
+            content.items
+                ?.flatMap { item ->
+                    item.mediaSources?.map { mediaSourceInfo ->
+                        mediaSourceInfo.toFindroidSource(this@JellyfinRepositoryImpl, itemId)
+                    } ?: emptyList()
+                }
+                ?.firstOrNull()
+        }
+    }
 
     override suspend fun postCapabilities() {
         Timber.d("Sending capabilities")

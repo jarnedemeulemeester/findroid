@@ -175,7 +175,11 @@ class JellyfinRepositoryOfflineImpl(
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
 
-    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
+    override suspend fun getUniversalAudioStreamUrl(itemId: UUID): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getVideoStreamUrl(itemId: UUID, mediaSourceId: String): String {
         TODO("Not yet implemented")
     }
 
@@ -200,6 +204,10 @@ class JellyfinRepositoryOfflineImpl(
             }
             null
         }
+
+    override suspend fun getThemeSong(itemId: UUID): FindroidSource? {
+        return null
+    }
 
     override suspend fun postCapabilities() {}
 

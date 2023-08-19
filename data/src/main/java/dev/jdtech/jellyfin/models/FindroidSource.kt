@@ -4,6 +4,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.serializer.toUUID
 import java.io.File
 import java.util.UUID
 
@@ -25,7 +26,14 @@ suspend fun MediaSourceInfo.toFindroidSource(
     val path = when (protocol) {
         MediaProtocol.FILE -> {
             try {
-                if (includePath) jellyfinRepository.getStreamUrl(itemId, id.orEmpty()) else ""
+                when (container) {
+                    "mp3" -> {
+                        jellyfinRepository.getUniversalAudioStreamUrl(requireNotNull(id).toUUID())
+                    }
+                    else -> {
+                        if (includePath) jellyfinRepository.getVideoStreamUrl(itemId, id.orEmpty()) else ""
+                    }
+                }
             } catch (e: Exception) {
                 ""
             }

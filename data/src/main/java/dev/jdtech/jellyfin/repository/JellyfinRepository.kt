@@ -82,13 +82,17 @@ interface JellyfinRepository {
 
     suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>
 
-    suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
+    suspend fun getVideoStreamUrl(itemId: UUID, mediaSourceId: String): String
+
+    suspend fun getUniversalAudioStreamUrl(itemId: UUID): String
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
 
     suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?
 
     suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray?
+
+    suspend fun getThemeSong(itemId: UUID): FindroidSource?
 
     suspend fun postCapabilities()
 
