@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.themesong.ThemeSongPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ class ShowViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
+    private val themeSongPlayer: ThemeSongPlayer,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -77,6 +79,11 @@ constructor(
                 dateString = getDateString(item)
                 nextUp = getNextUp(itemId)
                 seasons = jellyfinRepository.getSeasons(itemId, offline)
+                val themeSong = jellyfinRepository.getThemeSong(itemId)
+                themeSong?.path?.let {
+                    themeSongPlayer.play(it)
+                }
+
                 _uiState.emit(
                     UiState.Normal(
                         item,
@@ -187,5 +194,10 @@ constructor(
         }
         if (dateRange.count() > 1 && dateRange[0] == dateRange[1]) return dateRange[0]
         return dateRange.joinToString(separator = " - ")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        themeSongPlayer.stop()
     }
 }

@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.themesong.ThemeSongPlayer
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
+    private val themeSongPlayer: ThemeSongPlayer,
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -42,6 +44,8 @@ class PlayerViewModel @Inject internal constructor(
         item: FindroidItem,
         mediaSourceIndex: Int? = null,
     ) {
+        themeSongPlayer.stop()
+
         Timber.d("Loading player items for item ${item.id}")
 
         viewModelScope.launch {
