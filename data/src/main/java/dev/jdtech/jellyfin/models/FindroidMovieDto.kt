@@ -37,6 +37,6 @@ fun FindroidMovie.toFindroidMovieDto(serverId: String? = null): FindroidMovieDto
         status = status,
         productionYear = productionYear,
         endDate = endDate,
-        tagline = tagline
+        tagline = tagline,
     )
 }
