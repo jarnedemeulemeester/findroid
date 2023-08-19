@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "3cb9aaa3295b9e461cb94dfc708258ed",
+    "identityHash": "97a942e26f179d579ae8196871c9b7eb",
     "entities": [
       {
         "tableName": "servers",
@@ -158,7 +158,7 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, `tagline` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -230,6 +230,12 @@
             "fieldPath": "endDate",
             "columnName": "endDate",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tagline",
+            "columnName": "tagline",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -813,7 +819,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cb9aaa3295b9e461cb94dfc708258ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97a942e26f179d579ae8196871c9b7eb')"
     ]
   }
 }

@@ -37,6 +37,7 @@
     <string name="genres">Genres</string>
     <string name="director">Director</string>
     <string name="writers">Writers</string>
+    <string name="tags">Tags</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Seasons</string>
     <string name="play_button_description">Play the media</string>

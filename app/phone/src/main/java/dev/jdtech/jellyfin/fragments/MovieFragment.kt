@@ -273,6 +273,7 @@ class MovieFragment : Fragment() {
                 item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
             val canDelete = item.sources.any { it.type == FindroidSourceType.LOCAL }
 
+            binding.tagline.isVisible = !item.tagline.isNullOrEmpty()
             binding.originalTitle.isVisible = item.originalTitle != item.name
             if (item.trailer != null) {
                 binding.itemActions.trailerButton.isVisible = true
@@ -298,6 +299,7 @@ class MovieFragment : Fragment() {
             }
 
             binding.name.text = item.name
+            binding.tagline.text = item.tagline
             binding.originalTitle.text = item.originalTitle
             if (dateString.isEmpty()) {
                 binding.year.isVisible = false
