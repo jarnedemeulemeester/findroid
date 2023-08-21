@@ -145,6 +145,7 @@
     <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
     <string name="pref_player_trick_play">Trick Play</string>
     <string name="pref_player_trick_play_summary">Requires nicknsy\'s Jellyscrub plugin to be installed on the server</string>
+    <string name="pref_tv_theme_songs">TV Shows Theme Songs</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>

@@ -145,6 +145,15 @@ constructor(
             }
         }
 
+    // TV Theme Songs
+    var tvThemeSongs
+        get() = sharedPreferences.getBoolean(Constants.PREF_TV_THEME_SONGS, false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(Constants.PREF_TV_THEME_SONGS, value)
+            }
+        }
+
     // Temp
     var downloadsMigrated
         get() = sharedPreferences.getBoolean("downloadsMigrated", false)

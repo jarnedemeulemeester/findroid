@@ -63,4 +63,7 @@ object Constants {
     // This values must correspond to a SortString from [SortBy]
     const val DEFAULT_SORT_BY = "SortName"
     const val DEFAULT_SORT_ORDER = "Ascending"
+
+    // tv theme songs
+    const val PREF_TV_THEME_SONGS = "pref_tv_theme_songs"
 }

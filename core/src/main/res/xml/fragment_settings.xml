@@ -47,6 +47,12 @@
         app:title="@string/settings_category_network"
         app:icon="@drawable/ic_network"/>
 
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        app:key="pref_tv_theme_songs"
+        app:icon="@drawable/ic_music_note"
+        app:title="@string/pref_tv_theme_songs" />
+
     <Preference
         app:fragment="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
         app:title="@string/settings_category_cache" />
