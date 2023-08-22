@@ -32,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.get
+import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -408,7 +409,35 @@ class JellyfinRepositoryImpl(
     override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
-                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                //jellyfinApi.api.dynamicHlsApi.getLiveHlsStreamUrl(itemId = itemId, container = "mp4", includeCredentials = true, static = false, mediaSourceId = mediaSourceId, playSessionId = playSessionIds[itemId], segmentContainer = "m4t")
+                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                //"https://wolf.techkit.xyz/j/videos/33d3aaac-debe-c4fc-f90d-fbc94710ffa5/master.m3u8?DeviceId=9ba8e6377689062e&MediaSourceId=33d3aaacdebec4fcf90dfbc94710ffa5&VideoCodec=mpeg4,mpeg4&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=b826c346b90641c89e18baa9b019cd1e&api_key=8d5e30c766a84d62b7a4a43ace4837e0&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported"
+                val item = jellyfinApi.userLibraryApi.getItem(
+                    userId = jellyfinApi.userId!!,
+                    itemId = itemId
+                ).content.mediaSources?.firstOrNull()?.mediaStreams
+                print(item)
+
+                val isSupported = true
+
+                if (item?.get(0)?.codec != "hevc") {
+                    jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                } else {
+                    jellyfinApi.api.videosApi.getVideoStreamByContainerUrl(
+                        static = true,
+                        container = "mp4",
+                        subtitleMethod = SubtitleDeliveryMethod.EMBED,
+                        subtitleStreamIndex = 0,
+                        itemId = itemId,
+                        playSessionId = playSessionIds[itemId],
+                        includeCredentials = true,
+                        segmentContainer = "mp4",
+                        mediaSourceId = mediaSourceId,
+                        audioCodec = "mp3",
+                        context = EncodingContext.STREAMING,
+                        videoCodec = "h265"
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 "l"
