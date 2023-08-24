@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
@@ -8,7 +9,9 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.util.Rational
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +19,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Space
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -57,7 +61,19 @@ class PlayerActivity : BasePlayerActivity() {
     private var previewScrubListener: PreviewScrubListener? = null
 
     private val isPipSupported by lazy {
-        packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+        // Check if device has PiP feature
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            return@lazy false
+        }
+
+        // Check if PiP is enabled for the app
+        val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            appOps?.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+        } else {
+            @Suppress("DEPRECATION")
+            appOps?.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,7 +192,9 @@ class PlayerActivity : BasePlayerActivity() {
             pipButton.isEnabled = false
             pipButton.imageAlpha = 75
         } else {
+            val pipSpace = binding.playerView.findViewById<Space>(R.id.space_pip)
             pipButton.isVisible = false
+            pipSpace.isVisible = false
         }
 
         audioButton.setOnClickListener {
