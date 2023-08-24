@@ -66,4 +66,15 @@
         app:layout_constraintStart_toEndOf="@id/season_poster"
         tools:text="Season 1" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/episode_order_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon="@drawable/ic_arrow_down_0_1"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
