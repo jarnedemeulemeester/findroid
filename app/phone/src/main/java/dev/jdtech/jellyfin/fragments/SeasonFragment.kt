@@ -82,7 +82,7 @@ class SeasonFragment : Fragment() {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED
+            Lifecycle.State.RESUMED,
         )
         return binding.root
     }
