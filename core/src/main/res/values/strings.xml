@@ -165,6 +165,10 @@
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
     <string name="downloading_error">Error while downloading</string>
+    <string name="download_season_dialog_title">Download Season</string>
+    <string name="download_season_dialog_question">Which episodes do you want to download?</string>
+    <string name="download_season_dialog_download_all">All Episodes</string>
+    <string name="download_season_dialog_download_unwatched">Unwatched Episodes</string>
     <string name="not_enough_storage">This item requires %1$s of free storage but only %2$s is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
     <string name="select_storage_location">Select storage location</string>

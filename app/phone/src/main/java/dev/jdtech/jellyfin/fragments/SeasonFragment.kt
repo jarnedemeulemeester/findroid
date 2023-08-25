@@ -65,17 +65,15 @@ class SeasonFragment : Fragment() {
                                 val storageDialog = getStorageSelectionDialog(
                                     requireContext(),
                                     onItemSelected = { storageIndex ->
-                                        createDownloadPreparingDialog()
-                                        viewModel.download(storageIndex = storageIndex)
+                                        createEpisodesToDownloadDialog(storageIndex)
                                     },
                                     onCancel = {
                                     },
                                 )
-                                viewModel.download()
                                 return true
                             }
-                            createDownloadPreparingDialog()
-                            true
+                            createEpisodesToDownloadDialog()
+                            return true
                         }
                         else -> false
                     }
@@ -199,6 +197,23 @@ class SeasonFragment : Fragment() {
             .setPositiveButton(getString(dev.jdtech.jellyfin.core.R.string.close)) { _, _ ->
             }
         builder.show()
+    }
+
+    private fun createEpisodesToDownloadDialog(storageIndex: Int = 0) {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialog = builder
+            .setTitle(dev.jdtech.jellyfin.core.R.string.download_season_dialog_title)
+            .setMessage(dev.jdtech.jellyfin.core.R.string.download_season_dialog_question)
+            .setPositiveButton(dev.jdtech.jellyfin.core.R.string.download_season_dialog_download_all) { _, _ ->
+                createDownloadPreparingDialog()
+                viewModel.download(storageIndex = storageIndex, downloadWatched = true)
+            }
+            .setNegativeButton(dev.jdtech.jellyfin.core.R.string.download_season_dialog_download_unwatched) { _, _ ->
+                createDownloadPreparingDialog()
+                viewModel.download(storageIndex = storageIndex, downloadWatched = false)
+            }
+            .create()
+        dialog.show()
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: FindroidEpisode) {

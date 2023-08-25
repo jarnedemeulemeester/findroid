@@ -61,10 +61,12 @@ constructor(
         }
     }
 
-    fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
+    fun download(sourceIndex: Int = 0, storageIndex: Int = 0, downloadWatched: Boolean = false) {
         viewModelScope.launch {
             for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id)) {
                 val item = jellyfinRepository.getEpisode(episode.id)
+                if (item.played && !downloadWatched)
+                    continue
                 val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
                 if (result.second != null) {
                     _downloadError.emit(result.second!!)
