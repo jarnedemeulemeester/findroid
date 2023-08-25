@@ -200,12 +200,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp" />
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="8dp" />
+
             <TextView
                 android:id="@+id/tagline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:textAppearance="@style/TextAppearance.Material3.ActionBar.Subtitle"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="Her Legend Begins." />
