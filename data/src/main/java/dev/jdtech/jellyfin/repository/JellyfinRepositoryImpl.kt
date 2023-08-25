@@ -411,7 +411,7 @@ class JellyfinRepositoryImpl(
             try {
                 val item = jellyfinApi.userLibraryApi.getItem(
                     userId = jellyfinApi.userId!!,
-                    itemId = itemId
+                    itemId = itemId,
                 ).content.mediaSources?.firstOrNull()?.mediaStreams
 
                 if (item?.get(0)?.codec != "hevc") {
@@ -429,7 +429,7 @@ class JellyfinRepositoryImpl(
                         mediaSourceId = mediaSourceId,
                         audioCodec = "mp3",
                         context = EncodingContext.STREAMING,
-                        videoCodec = "h265"
+                        videoCodec = "h265",
                     )
                 }
             } catch (e: Exception) {
