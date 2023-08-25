@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -70,7 +69,7 @@ class SeasonFragment : Fragment() {
                                 when (ascendingEpisodeOrder) {
                                     true -> CoreR.drawable.ic_arrow_down_0_1
                                     false -> CoreR.drawable.ic_arrow_down_1_0
-                                }
+                                },
                             )
 
                             viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline, ascendingEpisodeOrder)
