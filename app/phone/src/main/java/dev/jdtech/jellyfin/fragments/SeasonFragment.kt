@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.app.DownloadManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -82,7 +81,8 @@ class SeasonFragment : Fragment() {
                     }
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
         )
         return binding.root
     }
@@ -104,37 +104,11 @@ class SeasonFragment : Fragment() {
                 }
 
                 launch {
-
                     viewModel.downloadStatus.collect { (status, progress) ->
                         when (status) {
                             10 -> {
                                 downloadPreparingDialog.dismiss()
                             }
-                            /* TODO Fix the ui feedback for this stuff
-                            DownloadManager.STATUS_PENDING -> {
-                                binding.itemActions.downloadButton.setIconResource(android.R.color.transparent)
-                                binding.itemActions.progressDownload.isIndeterminate = true
-                                binding.itemActions.progressDownload.isVisible = true
-                            }
-
-                            DownloadManager.STATUS_RUNNING -> {
-                                binding.itemActions.downloadButton.setIconResource(android.R.color.transparent)
-                                binding.itemActions.progressDownload.isVisible = true
-                                if (progress < 5) {
-                                    binding.itemActions.progressDownload.isIndeterminate = true
-                                } else {
-                                    binding.itemActions.progressDownload.isIndeterminate = false
-                                    binding.itemActions.progressDownload.setProgressCompat(progress, true)
-                                }
-                            }
-                            DownloadManager.STATUS_SUCCESSFUL -> {
-                                binding.itemActions.downloadButton.setIconResource(dev.jdtech.jellyfin.core.R.drawable.ic_trash)
-                                binding.itemActions.progressDownload.isVisible = false
-                            }
-                            else -> {
-                                binding.itemActions.progressDownload.isVisible = false
-                                binding.itemActions.downloadButton.setIconResource(dev.jdtech.jellyfin.core.R.drawable.ic_download)
-                            } */
                         }
                     }
                 }
