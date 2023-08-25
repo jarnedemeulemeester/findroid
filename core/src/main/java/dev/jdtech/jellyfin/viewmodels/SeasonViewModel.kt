@@ -24,7 +24,7 @@ class SeasonViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val downloader: Downloader,
-    ) : ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -61,7 +61,7 @@ constructor(
         }
     }
 
-    fun download(sourceIndex: Int = 0, storageIndex: Int = 0){
+    fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
         viewModelScope.launch {
             for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id)) {
                 val item = jellyfinRepository.getEpisode(episode.id)
