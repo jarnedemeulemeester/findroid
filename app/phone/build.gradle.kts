@@ -47,7 +47,7 @@ android {
             dimension = "variant"
             isDefault = true
         }
-        register("libre"){
+        register("libre") {
             dimension = "variant"
         }
         register("huawei") {
