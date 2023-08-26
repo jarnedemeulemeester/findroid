@@ -56,7 +56,7 @@
                 <TextView
                     android:id="@+id/overview"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/layout_height_def"
+                    android:layout_height="@dimen/person_detail_overview_height"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="16dp"
                     android:ellipsize="end"
