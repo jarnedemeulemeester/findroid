@@ -6,17 +6,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailViewModel @Inject internal constructor(
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -24,7 +24,7 @@ class PersonDetailViewModel @Inject internal constructor(
 
     sealed class UiState {
         data class Normal(val data: PersonOverview, val starredIn: StarredIn) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -37,13 +37,13 @@ class PersonDetailViewModel @Inject internal constructor(
                 val data = PersonOverview(
                     name = personDetail.name.orEmpty(),
                     overview = personDetail.overview.orEmpty(),
-                    dto = personDetail
+                    dto = personDetail,
                 )
 
                 val items = jellyfinRepository.getPersonItems(
                     personIds = listOf(personId),
                     includeTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
-                    recursive = true
+                    recursive = true,
                 )
 
                 val movies = items.filterIsInstance<FindroidMovie>()
@@ -61,11 +61,11 @@ class PersonDetailViewModel @Inject internal constructor(
     data class PersonOverview(
         val name: String,
         val overview: String,
-        val dto: BaseItemDto
+        val dto: BaseItemDto,
     )
 
     data class StarredIn(
         val movies: List<FindroidMovie>,
-        val shows: List<FindroidShow>
+        val shows: List<FindroidShow>,
     )
 }

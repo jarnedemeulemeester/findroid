@@ -30,7 +30,7 @@ class ServerAddressesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentServerAddressesBinding.inflate(inflater)
 
@@ -42,16 +42,16 @@ class ServerAddressesFragment : Fragment() {
                 { address ->
                     DeleteServerAddressDialog(viewModel, address).show(
                         parentFragmentManager,
-                        "deleteServerAddress"
+                        "deleteServerAddress",
                     )
                     true
-                }
+                },
             )
 
         binding.buttonAddAddress.setOnClickListener {
             AddServerAddressDialog(viewModel).show(
                 parentFragmentManager,
-                "addServerAddress"
+                "addServerAddress",
             )
         }
 

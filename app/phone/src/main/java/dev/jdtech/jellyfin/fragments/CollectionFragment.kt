@@ -38,7 +38,7 @@ class CollectionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
@@ -48,7 +48,7 @@ class CollectionFragment : Fragment() {
             },
             HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToMediaItem(item)
-            }
+            },
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -112,23 +112,23 @@ class CollectionFragment : Fragment() {
                 findNavController().navigate(
                     CollectionFragmentDirections.actionCollectionFragmentToMovieFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidShow -> {
                 findNavController().navigate(
                     CollectionFragmentDirections.actionCollectionFragmentToShowFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidEpisode -> {
                 findNavController().navigate(
                     CollectionFragmentDirections.actionCollectionFragmentToEpisodeBottomSheetFragment(
-                        item.id
-                    )
+                        item.id,
+                    ),
                 )
             }
         }

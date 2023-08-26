@@ -9,8 +9,6 @@ import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
-import javax.inject.Inject
-import kotlin.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -23,6 +21,8 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.authenticateWithQuickConnect
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import org.jellyfin.sdk.model.api.AuthenticationResult
+import javax.inject.Inject
+import kotlin.Exception
 
 @HiltViewModel
 class LoginViewModel
@@ -30,7 +30,7 @@ class LoginViewModel
 constructor(
     private val appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
-    private val database: ServerDatabaseDao
+    private val database: ServerDatabaseDao,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
     val uiState = _uiState.asStateFlow()
@@ -44,19 +44,19 @@ constructor(
     private var quickConnectJob: Job? = null
 
     sealed class UiState {
-        object Normal : UiState()
-        object Loading : UiState()
+        data object Normal : UiState()
+        data object Loading : UiState()
         data class Error(val message: UiText) : UiState()
     }
 
     sealed class UsersState {
-        object Loading : UsersState()
+        data object Loading : UsersState()
         data class Users(val users: List<User>) : UsersState()
     }
 
     sealed class QuickConnectUiState {
-        object Disabled : QuickConnectUiState()
-        object Normal : QuickConnectUiState()
+        data object Disabled : QuickConnectUiState()
+        data object Normal : QuickConnectUiState()
         data class Waiting(val code: String) : QuickConnectUiState()
     }
 
@@ -114,8 +114,8 @@ constructor(
                 val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
                     data = AuthenticateUserByName(
                         username = username,
-                        pw = password
-                    )
+                        pw = password,
+                    ),
                 )
 
                 saveAuthenticationResult(authenticationResult)
@@ -124,9 +124,13 @@ constructor(
                 _navigateToMain.emit(true)
             } catch (e: Exception) {
                 val message =
-                    if (e.message?.contains("401") == true) UiText.StringResource(R.string.login_error_wrong_username_password) else UiText.StringResource(
-                        R.string.unknown_error
-                    )
+                    if (e.message?.contains("401") == true) {
+                        UiText.StringResource(R.string.login_error_wrong_username_password)
+                    } else {
+                        UiText.StringResource(
+                            R.string.unknown_error,
+                        )
+                    }
                 _uiState.emit(UiState.Error(message))
             }
         }
@@ -147,7 +151,7 @@ constructor(
                     delay(5000L)
                 }
                 val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
-                    secret = quickConnectState.secret
+                    secret = quickConnectState.secret,
                 )
 
                 saveAuthenticationResult(authenticationResult)
@@ -167,7 +171,7 @@ constructor(
             id = authenticationResult.user!!.id,
             name = authenticationResult.user!!.name!!,
             serverId = serverInfo.id!!,
-            accessToken = authenticationResult.accessToken!!
+            accessToken = authenticationResult.accessToken!!,
         )
 
         insertUser(appPreferences.currentServer!!, user)

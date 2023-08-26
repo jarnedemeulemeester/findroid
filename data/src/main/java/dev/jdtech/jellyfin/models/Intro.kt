@@ -12,7 +12,7 @@ data class Intro(
     @SerialName("ShowSkipPromptAt")
     val showSkipPromptAt: Double,
     @SerialName("HideSkipPromptAt")
-    val hideSkipPromptAt: Double
+    val hideSkipPromptAt: Double,
 )
 
 fun IntroDto.toIntro(): Intro {

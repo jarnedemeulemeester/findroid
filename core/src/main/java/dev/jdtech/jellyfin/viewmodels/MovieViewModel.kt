@@ -19,10 +19,6 @@ import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
-import java.io.File
-import java.util.UUID
-import javax.inject.Inject
-import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,6 +30,10 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
+import java.io.File
+import java.util.UUID
+import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class MovieViewModel
@@ -41,7 +41,7 @@ class MovieViewModel
 constructor(
     private val repository: JellyfinRepository,
     private val database: ServerDatabaseDao,
-    private val downloader: Downloader
+    private val downloader: Downloader,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -73,7 +73,7 @@ constructor(
             val dateString: String,
         ) : UiState()
 
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -111,7 +111,7 @@ constructor(
                         getMediaString(item, MediaStreamType.SUBTITLE),
                         runTime,
                         getDateString(item),
-                    )
+                    ),
                 )
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
@@ -175,7 +175,7 @@ constructor(
                                 AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
                                 AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
                                 else -> AudioChannel.CH_2_0
-                            }
+                            },
                         )
 
                         /**
@@ -199,7 +199,7 @@ constructor(
                                 AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
                                 AudioCodec.DTS.toString() -> AudioCodec.DTS
                                 else -> AudioCodec.MP3
-                            }
+                            },
                         )
                         true
                     }
@@ -217,12 +217,14 @@ constructor(
                                  */
                                 if (stream.videoDoViTitle != null) {
                                     DisplayProfile.DOLBY_VISION
-                                } else when (videoRangeType) {
-                                    DisplayProfile.HDR.raw -> DisplayProfile.HDR
-                                    DisplayProfile.HDR10.raw -> DisplayProfile.HDR10
-                                    DisplayProfile.HLG.raw -> DisplayProfile.HLG
-                                    else -> DisplayProfile.SDR
-                                }
+                                } else {
+                                    when (videoRangeType) {
+                                        DisplayProfile.HDR.raw -> DisplayProfile.HDR
+                                        DisplayProfile.HDR10.raw -> DisplayProfile.HDR10
+                                        DisplayProfile.HLG.raw -> DisplayProfile.HLG
+                                        else -> DisplayProfile.SDR
+                                    }
+                                },
                             )
 
                             /**
@@ -240,7 +242,7 @@ constructor(
                                     }
 
                                     else -> Resolution.SD
-                                }
+                                },
                             )
                         }
                         true
@@ -256,7 +258,7 @@ constructor(
             displayProfile.toSet().toList(),
             audioChannels.toSet().toList(),
             audioCodecs.toSet().toList(),
-            isAtmosAudio
+            isAtmosAudio,
         )
     }
 

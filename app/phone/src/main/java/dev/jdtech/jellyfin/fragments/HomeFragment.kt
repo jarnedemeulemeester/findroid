@@ -23,7 +23,6 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -33,9 +32,10 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
                                 settings.isVisible = true
                                 return true
                             }
-                        }
+                        },
                     )
 
                     searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -114,7 +114,8 @@ class HomeFragment : Fragment() {
                     }
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
         )
     }
 
@@ -155,7 +156,7 @@ class HomeFragment : Fragment() {
             onOnlineClickListener = ViewListAdapter.OnClickListenerOfflineCard {
                 appPreferences.offlineMode = false
                 activity?.restart()
-            }
+            },
         )
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
@@ -209,10 +210,10 @@ class HomeFragment : Fragment() {
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
         findNavController().navigate(
             HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
-                view.id,
-                view.name,
-                view.type
-            )
+                libraryId = view.id,
+                libraryName = view.name,
+                libraryType = view.type,
+            ),
         )
     }
 
@@ -222,23 +223,23 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToMovieFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidShow -> {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToShowFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidEpisode -> {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
-                        item.id
-                    )
+                        item.id,
+                    ),
                 )
             }
         }
@@ -246,13 +247,13 @@ class HomeFragment : Fragment() {
 
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+            HomeFragmentDirections.actionHomeFragmentToSettingsFragment(),
         )
     }
 
     private fun navigateToSearchResultFragment(query: String) {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query)
+            HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query),
         )
     }
 }

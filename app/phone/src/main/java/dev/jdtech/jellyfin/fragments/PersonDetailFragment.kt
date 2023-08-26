@@ -17,7 +17,6 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindItemImage
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -27,6 +26,7 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 internal class PersonDetailFragment : Fragment() {
@@ -41,7 +41,7 @@ internal class PersonDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentPersonDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -120,7 +120,7 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
-        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) }
+        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) },
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {
@@ -145,16 +145,16 @@ internal class PersonDetailFragment : Fragment() {
                 findNavController().navigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
                         itemId = item.id,
-                        itemName = item.name
-                    )
+                        itemName = item.name,
+                    ),
                 )
             }
             is FindroidShow -> {
                 findNavController().navigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
                         itemId = item.id,
-                        itemName = item.name
-                    )
+                        itemName = item.name,
+                    ),
                 )
             }
         }

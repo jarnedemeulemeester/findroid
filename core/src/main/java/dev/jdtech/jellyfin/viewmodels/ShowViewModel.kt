@@ -7,8 +7,6 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class ShowViewModel
@@ -44,7 +44,7 @@ constructor(
             val seasons: List<FindroidSeason>,
         ) : UiState()
 
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -89,7 +89,7 @@ constructor(
                         dateString,
                         nextUp,
                         seasons,
-                    )
+                    ),
                 )
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)

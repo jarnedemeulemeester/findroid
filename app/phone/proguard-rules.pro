@@ -21,7 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 -keepnames class dev.jdtech.jellyfin.models.PlayerItem
--keepnames class dev.jdtech.jellyfin.models.DownloadSeriesMetadata
 
 # ProGuard thinks all SettingsFragments are unused
 -keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment

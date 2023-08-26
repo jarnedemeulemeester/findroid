@@ -8,7 +8,6 @@ import android.os.StatFs
 import android.text.format.Formatter
 import androidx.core.net.toUri
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -29,6 +28,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
+import dev.jdtech.jellyfin.core.R as CoreR
 
 class DownloaderImpl(
     private val context: Context,
@@ -50,7 +50,7 @@ class DownloaderImpl(
             val trickPlayData = if (trickPlayManifest != null) {
                 jellyfinRepository.getTrickPlayData(
                     item.id,
-                    trickPlayManifest.widthResolutions.max()
+                    trickPlayManifest.widthResolutions.max(),
                 )
             } else {
                 null
@@ -68,8 +68,8 @@ class DownloaderImpl(
                     UiText.StringResource(
                         CoreR.string.not_enough_storage,
                         Formatter.formatFileSize(context, source.size),
-                        Formatter.formatFileSize(context, stats.availableBytes)
-                    )
+                        Formatter.formatFileSize(context, stats.availableBytes),
+                    ),
                 )
             }
             when (item) {
@@ -98,10 +98,10 @@ class DownloaderImpl(
                 is FindroidEpisode -> {
                     database.insertShow(
                         jellyfinRepository.getShow(item.seriesId)
-                            .toFindroidShowDto(appPreferences.currentServer!!)
+                            .toFindroidShowDto(appPreferences.currentServer!!),
                     )
                     database.insertSeason(
-                        jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto()
+                        jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto(),
                     )
                     database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
@@ -189,8 +189,8 @@ class DownloaderImpl(
         if (cursor.moveToFirst()) {
             downloadStatus = cursor.getInt(
                 cursor.getColumnIndexOrThrow(
-                    DownloadManager.COLUMN_STATUS
-                )
+                    DownloadManager.COLUMN_STATUS,
+                ),
             )
             when (downloadStatus) {
                 DownloadManager.STATUS_RUNNING -> {
@@ -222,7 +222,8 @@ class DownloaderImpl(
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
             val request = DownloadManager.Request(Uri.parse(mediaStream.path))
                 .setTitle(mediaStream.title)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                 .setDestinationUri(streamPath)
             val downloadId = downloadManager.enqueue(request)
@@ -233,7 +234,7 @@ class DownloaderImpl(
     private fun downloadTrickPlay(
         item: FindroidItem,
         trickPlayManifest: TrickPlayManifest,
-        byteArray: ByteArray
+        byteArray: ByteArray,
     ) {
         database.insertTrickPlayManifest(trickPlayManifest.toTrickPlayManifestDto(item.id))
         File(context.filesDir, "trickplay").mkdirs()

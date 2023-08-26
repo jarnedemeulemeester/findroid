@@ -20,8 +20,8 @@ class SettingsLanguageFragment : PreferenceFragmentCompat() {
                 startActivity(
                     Intent(
                         Settings.ACTION_APP_LOCALE_SETTINGS,
-                        Uri.parse("package:${requireContext().packageName}")
-                    )
+                        Uri.parse("package:${requireContext().packageName}"),
+                    ),
                 )
                 true
             }

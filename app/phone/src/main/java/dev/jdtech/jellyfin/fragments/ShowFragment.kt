@@ -22,7 +22,6 @@ import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -34,10 +33,11 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.ShowViewModel
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class ShowFragment : Fragment() {
@@ -55,7 +55,7 @@ class ShowFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentShowBinding.inflate(inflater, container, false)
 
@@ -104,7 +104,7 @@ class ShowFragment : Fragment() {
             viewModel.item.trailer.let { trailerUri ->
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(trailerUri)
+                    Uri.parse(trailerUri),
                 )
                 try {
                     startActivity(intent)
@@ -123,7 +123,7 @@ class ShowFragment : Fragment() {
                 ViewItemListAdapter.OnClickListener { season ->
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
-                fixedWidth = true
+                fixedWidth = true,
             )
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
@@ -183,9 +183,11 @@ class ShowFragment : Fragment() {
                     binding.itemActions.downloadButton.isVisible = true
                     binding.itemActions.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) binding.itemActions.downloadButton.setIconTintResource(
-                        CoreR.color.red
-                    )
+                    if (downloaded) {
+                        binding.itemActions.downloadButton.setIconTintResource(
+                            CoreR.color.red,
+                        )
+                    }
                 }
 
                 false -> {
@@ -222,7 +224,7 @@ class ShowFragment : Fragment() {
                     CoreR.string.episode_name_extended,
                     nextUp?.parentIndexNumber,
                     nextUp?.indexNumber,
-                    nextUp?.name
+                    nextUp?.name,
                 )
             } else {
                 binding.nextUpName.text = getString(
@@ -230,7 +232,7 @@ class ShowFragment : Fragment() {
                     nextUp?.parentIndexNumber,
                     nextUp?.indexNumber,
                     nextUp?.indexNumberEnd,
-                    nextUp?.name
+                    nextUp?.name,
                 )
             }
 
@@ -265,7 +267,7 @@ class ShowFragment : Fragment() {
             true -> binding.itemActions.checkButton.setIconTintResource(CoreR.color.red)
             false -> binding.itemActions.checkButton.setIconTintColorAttribute(
                 R.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -280,7 +282,7 @@ class ShowFragment : Fragment() {
             true -> binding.itemActions.favoriteButton.setIconTintResource(CoreR.color.red)
             false -> binding.itemActions.favoriteButton.setIconTintColorAttribute(
                 R.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -310,8 +312,8 @@ class ShowFragment : Fragment() {
     private fun navigateToEpisodeBottomSheetFragment(episode: FindroidItem) {
         findNavController().navigate(
             ShowFragmentDirections.actionShowFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
+                episode.id,
+            ),
         )
     }
 
@@ -322,8 +324,8 @@ class ShowFragment : Fragment() {
                 season.id,
                 season.seriesName,
                 season.name,
-                args.offline
-            )
+                args.offline,
+            ),
         )
     }
 
@@ -332,14 +334,14 @@ class ShowFragment : Fragment() {
     ) {
         findNavController().navigate(
             ShowFragmentDirections.actionShowFragmentToPlayerActivity(
-                playerItems
-            )
+                playerItems,
+            ),
         )
     }
 
     private fun navigateToPersonDetail(personId: UUID) {
         findNavController().navigate(
-            ShowFragmentDirections.actionShowFragmentToPersonDetailFragment(personId)
+            ShowFragmentDirections.actionShowFragmentToPersonDetailFragment(personId),
         )
     }
 }

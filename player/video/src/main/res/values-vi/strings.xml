@@ -5,4 +5,8 @@
     <string name="select_a_version">Chọn phiên bản</string>
     <string name="external">Ngoại</string>
     <string name="select_audio_track">Chọn dòng âm thanh</string>
+    <string name="player_controls_exit">Thoát khỏi trình xem</string>
+    <string name="player_controls_rewind">Tua lùi</string>
+    <string name="player_controls_fast_forward">Tua tới</string>
+    <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
 </resources>

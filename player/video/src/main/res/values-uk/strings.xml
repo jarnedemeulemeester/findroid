@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_audio_track">Вибрати звукову доріжку</string>
+    <string name="select_subtile_track">Вибрати доріжку субтитрів</string>
+    <string name="select_playback_speed">Вибрати швидкість перегляду</string>
+    <string name="select_a_version">Вибрати версію</string>
+    <string name="external">Зовнішнє</string>
+    <string name="player_controls_rewind">Відмотка</string>
+    <string name="player_controls_fast_forward">Швидке перемотування</string>
+    <string name="player_controls_exit">Вийти з плеєра</string>
+    <string name="player_controls_skip_intro">Пропустити вступ</string>
+</resources>

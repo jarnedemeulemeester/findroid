@@ -6,16 +6,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class MediaViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -23,7 +23,7 @@ constructor(
 
     sealed class UiState {
         data class Normal(val collections: List<FindroidCollection>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -37,11 +37,11 @@ constructor(
             try {
                 val items = jellyfinRepository.getLibraries()
                 val collections =
-                    items.filter { collection -> CollectionType.unsupportedCollections.none { it == collection.type } }
+                    items.filter { collection -> collection.type in CollectionType.supported }
                 _uiState.emit(UiState.Normal(collections))
             } catch (e: Exception) {
                 _uiState.emit(
-                    UiState.Error(e)
+                    UiState.Error(e),
                 )
             }
         }

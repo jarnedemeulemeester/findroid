@@ -5,4 +5,8 @@
     <string name="select_subtile_track">Wähle eine Untertitelspur</string>
     <string name="select_playback_speed">Wähle Wiedergabegeschwindigkeit</string>
     <string name="external">Extern</string>
+    <string name="player_controls_exit">Player verlassen</string>
+    <string name="player_controls_rewind">Wiederholen</string>
+    <string name="player_controls_fast_forward">Vorspulen</string>
+    <string name="player_controls_skip_intro">Intro überspringen</string>
 </resources>

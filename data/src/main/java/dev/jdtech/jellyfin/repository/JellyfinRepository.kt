@@ -11,7 +11,6 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -19,6 +18,7 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
+import java.util.UUID
 
 interface JellyfinRepository {
     suspend fun getPublicSystemInfo(): PublicSystemInfo
@@ -50,13 +50,13 @@ interface JellyfinRepository {
         includeTypes: List<BaseItemKind>? = null,
         recursive: Boolean = false,
         sortBy: SortBy = SortBy.defaultValue,
-        sortOrder: SortOrder = SortOrder.ASCENDING
+        sortOrder: SortOrder = SortOrder.ASCENDING,
     ): Flow<PagingData<FindroidItem>>
 
     suspend fun getPersonItems(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>? = null,
-        recursive: Boolean = true
+        recursive: Boolean = true,
     ): List<FindroidItem>
 
     suspend fun getFavoriteItems(): List<FindroidItem>
@@ -77,7 +77,7 @@ interface JellyfinRepository {
         fields: List<ItemFields>? = null,
         startItemId: UUID? = null,
         limit: Int? = null,
-        offline: Boolean = false
+        offline: Boolean = false,
     ): List<FindroidEpisode>
 
     suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>

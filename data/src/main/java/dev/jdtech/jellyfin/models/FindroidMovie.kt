@@ -2,11 +2,11 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import java.util.UUID
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.PlayAccess
+import java.util.UUID
 
 data class FindroidMovie(
     override val id: UUID,
@@ -34,7 +34,7 @@ data class FindroidMovie(
 
 suspend fun BaseItemDto.toFindroidMovie(
     jellyfinRepository: JellyfinRepository,
-    serverDatabase: ServerDatabaseDao? = null
+    serverDatabase: ServerDatabaseDao? = null,
 ): FindroidMovie {
     val sources = mutableListOf<FindroidSource>()
     sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())

@@ -7,6 +7,5 @@
     <item name="server_columns" type="integer">3</item>
     <item name="collection_columns" type="integer">2</item>
     <item name="library_columns" type="integer">2</item>
-    <item name="recyclerview_animation_duration" type="integer">250</item>
     <dimen name="layout_height_def">72dp</dimen>
 </resources>

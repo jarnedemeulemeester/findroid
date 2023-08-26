@@ -8,25 +8,26 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.core.R as CoreR
 
 class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
-        private val parent: ViewGroup
+        private val parent: ViewGroup,
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FindroidItem) {
-            binding.item = item
             if (item.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (item.playbackPositionTicks.div(item.runtimeTicks.toFloat()).times(224)), binding.progressBar.context.resources.displayMetrics
+                    (item.playbackPositionTicks.div(item.runtimeTicks.toFloat()).times(224)),
+                    binding.progressBar.context.resources.displayMetrics,
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             }
@@ -48,7 +49,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 }
             }
 
-            binding.executePendingBindings()
+            bindCardItemImage(binding.episodeImage, item)
         }
     }
 
@@ -67,9 +68,9 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
             HomeEpisodeItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
+                false,
             ),
-            parent
+            parent,
         )
     }
 

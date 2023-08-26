@@ -1,8 +1,8 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.R as AndroidR
 import android.app.DownloadManager
 import android.os.Bundle
+import android.text.format.Formatter
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +15,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.R as MaterialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -36,13 +35,17 @@ import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.DateTime
+import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.UUID
-import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.DateTime
-import timber.log.Timber
+import javax.inject.Inject
+import android.R as AndroidR
+import com.google.android.material.R as MaterialR
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -54,10 +57,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var downloadPreparingDialog: AlertDialog
 
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = EpisodeBottomSheetBinding.inflate(inflater, container, false)
 
@@ -175,7 +181,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                     onCancel = {
                                         binding.itemActions.progressDownload.isVisible = false
                                         binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                                    }
+                                    },
                                 )
                                 dialog.show()
                                 return@getStorageSelectionDialog
@@ -186,7 +192,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        }
+                        },
                     )
                     storageDialog.show()
                     return@setOnClickListener
@@ -202,7 +208,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                         onCancel = {
                             binding.itemActions.progressDownload.isVisible = false
                             binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        }
+                        },
                     )
                     dialog.show()
                     return@setOnClickListener
@@ -230,6 +236,9 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun bindUiStateNormal(uiState: EpisodeBottomSheetViewModel.UiState.Normal) {
         uiState.apply {
+            val size = episode.sources.getOrNull(0)?.size?.let {
+                Formatter.formatFileSize(requireContext(), it)
+            }
             val canDownload = episode.canDownload && episode.sources.any { it.type == FindroidSourceType.REMOTE }
             val canDelete = episode.sources.any { it.type == FindroidSourceType.LOCAL }
 
@@ -237,7 +246,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     (episode.playbackPositionTicks.div(episode.runtimeTicks).times(1.26)).toFloat(),
-                    context?.resources?.displayMetrics
+                    context?.resources?.displayMetrics,
                 ).toInt()
                 binding.progressBar.isVisible = true
             }
@@ -264,7 +273,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     CoreR.string.episode_name_extended,
                     episode.parentIndexNumber,
                     episode.indexNumber,
-                    episode.name
+                    episode.name,
                 )
             } else {
                 getString(
@@ -272,7 +281,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     episode.parentIndexNumber,
                     episode.indexNumber,
                     episode.indexNumberEnd,
-                    episode.name
+                    episode.name,
                 )
             }
 
@@ -283,6 +292,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.communityRating.isVisible = episode.communityRating != null
             binding.communityRating.text = episode.communityRating.toString()
             binding.missingIcon.isVisible = false
+
+            if (appPreferences.displayExtraInfo) {
+                size?.let { binding.size.text = it }
+                binding.size.isVisible = size != null
+            }
 
             bindCardItemImage(binding.episodeImage, episode)
         }
@@ -307,12 +321,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun bindCheckButtonState(played: Boolean) {
         when (played) {
             true -> binding.itemActions.checkButton.setIconTintResource(
-                CoreR.color.red
+                CoreR.color.red,
             )
 
             false -> binding.itemActions.checkButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -325,12 +339,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.itemActions.favoriteButton.setIconResource(favoriteDrawable)
         when (favorite) {
             true -> binding.itemActions.favoriteButton.setIconTintResource(
-                CoreR.color.red
+                CoreR.color.red,
             )
 
             false -> binding.itemActions.favoriteButton.setIconTintColorAttribute(
                 MaterialR.attr.colorOnSecondaryContainer,
-                requireActivity().theme
+                requireActivity().theme,
             )
         }
     }
@@ -392,7 +406,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
-            )
+            ),
         )
     }
 
@@ -400,8 +414,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         findNavController().navigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToShowFragment(
                 itemId = id,
-                itemName = name
-            )
+                itemName = name,
+            ),
         )
     }
 

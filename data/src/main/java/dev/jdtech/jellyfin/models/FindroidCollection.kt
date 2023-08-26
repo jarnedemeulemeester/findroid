@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.models
 
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
+import java.util.UUID
 
 data class FindroidCollection(
     override val id: UUID,
@@ -16,18 +16,19 @@ data class FindroidCollection(
     override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int? = null,
-    val type: CollectionType
+    val type: CollectionType,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidCollection(): FindroidCollection? {
-    val type = CollectionType.values().firstOrNull { it.type == collectionType }
-    return if (type != null) {
-        FindroidCollection(
-            id = id,
-            name = name.orEmpty(),
-            type = type,
-        )
-    } else {
-        null
+    val type = CollectionType.fromString(collectionType)
+
+    if (type !in CollectionType.supported) {
+        return null
     }
+
+    return FindroidCollection(
+        id = id,
+        name = name.orEmpty(),
+        type = type,
+    )
 }

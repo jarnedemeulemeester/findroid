@@ -39,7 +39,7 @@ class SearchResultFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
 
@@ -49,7 +49,7 @@ class SearchResultFragment : Fragment() {
             },
             HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToMediaItem(item)
-            }
+            },
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -113,23 +113,23 @@ class SearchResultFragment : Fragment() {
                 findNavController().navigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToMovieFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidShow -> {
                 findNavController().navigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToShowFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidEpisode -> {
                 findNavController().navigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToEpisodeBottomSheetFragment(
-                        item.id
-                    )
+                        item.id,
+                    ),
                 )
             }
         }

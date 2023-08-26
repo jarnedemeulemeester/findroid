@@ -21,8 +21,8 @@ import dev.jdtech.jellyfin.models.User
     entities = [Server::class, ServerAddress::class, User::class, FindroidMovieDto::class, FindroidShowDto::class, FindroidSeasonDto::class, FindroidEpisodeDto::class, FindroidSourceDto::class, FindroidMediaStreamDto::class, TrickPlayManifestDto::class, IntroDto::class, FindroidUserDataDto::class],
     version = 3,
     autoMigrations = [
-        AutoMigration(from = 2, to = 3)
-    ]
+        AutoMigration(from = 2, to = 3),
+    ],
 )
 @TypeConverters(Converters::class)
 abstract class ServerDatabase : RoomDatabase() {

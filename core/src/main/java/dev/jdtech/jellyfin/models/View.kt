@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class View(
     val id: UUID,
-    val name: String?,
+    val name: String,
     var items: List<FindroidItem>? = null,
-    val type: String?
+    val type: CollectionType,
 )

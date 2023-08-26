@@ -2,17 +2,17 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
 }
 
 android {
     namespace = "dev.jdtech.jellyfin.data"
-    compileSdk = 33
-    buildToolsVersion = "33.0.2"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
 
     defaultConfig {
-        minSdk = 27
+        minSdk = 28
 
         val appVersionCode: Int by rootProject.extra
         val appVersionName: String by rootProject.extra
@@ -21,10 +21,8 @@ android {
 
         consumerProguardFile("proguard-rules.pro")
 
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -44,17 +42,16 @@ android {
 }
 
 ktlint {
+    version.set("0.50.0")
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {
     implementation(project(":preferences"))
     implementation(libs.androidx.paging)
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)

@@ -37,7 +37,7 @@ class FavoriteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
@@ -47,7 +47,7 @@ class FavoriteFragment : Fragment() {
             },
             HomeEpisodeListAdapter.OnClickListener { item ->
                 navigateToMediaItem(item)
-            }
+            },
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -105,23 +105,23 @@ class FavoriteFragment : Fragment() {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidShow -> {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
                         item.id,
-                        item.name
-                    )
+                        item.name,
+                    ),
                 )
             }
             is FindroidEpisode -> {
                 findNavController().navigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
-                        item.id
-                    )
+                        item.id,
+                    ),
                 )
             }
         }

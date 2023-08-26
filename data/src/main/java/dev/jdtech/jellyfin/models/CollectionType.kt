@@ -8,11 +8,29 @@ enum class CollectionType(val type: String) {
     Playlists("playlists"),
     Books("books"),
     LiveTv("livetv"),
-    BoxSets("boxsets");
+    BoxSets("boxsets"),
+    Unknown("unknown"),
+    ;
 
     companion object {
-        val unsupportedCollections = listOf(
-            HomeVideos, Music, Playlists, Books, LiveTv
+        val defaultValue = Unknown
+
+        val supported = listOf(
+            Movies,
+            TvShows,
+            BoxSets,
         )
+
+        fun fromString(string: String?): CollectionType {
+            if (string == null) {
+                return defaultValue
+            }
+
+            return try {
+                entries.first { it.type == string }
+            } catch (e: NoSuchElementException) {
+                defaultValue
+            }
+        }
     }
 }

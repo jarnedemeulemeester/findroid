@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.androidx.navigation.safeargs) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.aboutlibraries) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.ktlint) apply false
 }
 
@@ -21,7 +22,7 @@ allprojects {
     }
 
     val configureAndroid = { _: AppliedPlugin ->
-        extensions.configure<CommonExtension<*, *, *, *>>("android") {
+        extensions.configure<CommonExtension<*, *, *, *, *>>("android") {
             lint {
                 informational += "MissingTranslation"
             }
@@ -33,7 +34,7 @@ allprojects {
 }
 
 tasks.create<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 val appVersionCode by extra { 20 }
