@@ -65,8 +65,8 @@
                     app:layout_constraintBottom_toTopOf="@id/read_all"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.666"
-                    app:layout_constraintStart_toEndOf="@+id/person_image"
-                    app:layout_constraintTop_toBottomOf="@+id/name" />
+                    app:layout_constraintStart_toEndOf="@id/person_image"
+                    app:layout_constraintTop_toBottomOf="@id/name" />
 
                 <Button
                     android:id="@+id/read_all"

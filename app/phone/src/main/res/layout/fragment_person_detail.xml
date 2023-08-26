@@ -50,7 +50,7 @@
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/person_image"
+                    app:layout_constraintTop_toBottomOf="@id/person_image"
                     tools:text="Actor/Actress name" />
 
                 <TextView
@@ -61,10 +61,10 @@
                     android:layout_marginTop="16dp"
                     android:ellipsize="end"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    app:layout_constraintBottom_toTopOf="@+id/read_all"
+                    app:layout_constraintBottom_toTopOf="@id/read_all"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name" />
+                    app:layout_constraintTop_toBottomOf="@id/name" />
 
                 <FrameLayout
                     android:id="@+id/overview_gradient"
