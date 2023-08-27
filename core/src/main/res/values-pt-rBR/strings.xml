@@ -173,4 +173,7 @@
     <string name="app_language">Idioma do aplicativo</string>
     <string name="remove_server_address">Excluir endereço do servidor</string>
     <string name="remove_server_address_dialog_text">Tem certeza de que deseja excluir o endereço do servidor %1$s</string>
+    <string name="picture_in_picture">Picture-in-picture</string>
+    <string name="picture_in_picture_gesture">Picture-in-Picture</string>
+    <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
 </resources>
