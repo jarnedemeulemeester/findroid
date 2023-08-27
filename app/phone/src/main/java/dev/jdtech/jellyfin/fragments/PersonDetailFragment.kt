@@ -127,7 +127,7 @@ internal class PersonDetailFragment : Fragment() {
         binding.readAll.setOnClickListener {
             with(binding.overview) {
                 if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT) {
-                    updateLayoutParams { height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT }
+                    updateLayoutParams { height = resources.getDimension(CoreR.dimen.person_detail_overview_height).toInt() }
                     binding.readAll.text = getString(CoreR.string.view_all)
                     binding.overviewGradient.isVisible = true
                 } else {
