@@ -65,8 +65,9 @@ constructor(
         viewModelScope.launch {
             for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id)) {
                 val item = jellyfinRepository.getEpisode(episode.id)
-                if (item.played && !downloadWatched)
+                if (item.played && !downloadWatched) {
                     continue
+                }
                 val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
                 if (result.second != null) {
                     _downloadError.emit(result.second!!)
