@@ -361,7 +361,6 @@ class PlayerViewModel @Inject internal constructor(
                 if (session != null) {
                     val mediaInfo = buildMediaInfo(streamUrl, item, episode)
                     loadRemoteMedia(0, session, mediaInfo, streamUrl, item, episode)
-
                 }
             } catch (e: Exception) {
                 Timber.e(e)
