@@ -34,6 +34,7 @@ import org.jellyfin.sdk.model.api.ImageType.PRIMARY
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -219,7 +220,36 @@ class PlayerViewModel @Inject internal constructor(
         var newAudioIndex = 1
 
         val callback = object : RemoteMediaClient.Callback() {
+
+            override fun onSendingRemoteMediaRequest() {
+                val test = remoteMediaClient.approximateStreamPosition
+                viewModelScope.launch {
+                    try {
+                        repository.postPlaybackProgress(
+                            item.itemId,
+                            test.times(10000),
+                            remoteMediaClient.isPaused,
+                        )
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
+            }
+
             override fun onStatusUpdated() {
+                val test = remoteMediaClient.approximateStreamPosition
+                viewModelScope.launch {
+                    try {
+                        repository.postPlaybackProgress(
+                            item.itemId,
+                            test.times(10000),
+                            remoteMediaClient.isPaused,
+                        )
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
+
                 val mediaStatus = remoteMediaClient.mediaStatus
                 val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
                 val subtitlesOffset =
@@ -265,6 +295,14 @@ class PlayerViewModel @Inject internal constructor(
         )
         val mediaStatus = remoteMediaClient.mediaStatus
         val activeMediaTracks = mediaStatus?.activeTrackIds
+    }
+
+    private suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+    ) {
+        repository.postPlaybackProgress(itemId, positionTicks, isPaused)
     }
 
     private fun buildMediaInfo(
@@ -323,6 +361,7 @@ class PlayerViewModel @Inject internal constructor(
                 if (session != null) {
                     val mediaInfo = buildMediaInfo(streamUrl, item, episode)
                     loadRemoteMedia(0, session, mediaInfo, streamUrl, item, episode)
+
                 }
             } catch (e: Exception) {
                 Timber.e(e)
