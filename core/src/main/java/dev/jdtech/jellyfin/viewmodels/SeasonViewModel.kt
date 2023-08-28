@@ -6,6 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -66,6 +68,9 @@ constructor(
             for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id)) {
                 val item = jellyfinRepository.getEpisode(episode.id)
                 if (item.played && !downloadWatched) {
+                    continue
+                }
+                if (item.isDownloaded() || item.isDownloading()) {
                     continue
                 }
                 val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
