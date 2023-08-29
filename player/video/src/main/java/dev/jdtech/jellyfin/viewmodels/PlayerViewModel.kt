@@ -25,6 +25,8 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -42,6 +44,8 @@ class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
     private val jellyfinApi: JellyfinApi,
 ) : ViewModel() {
+
+    private val progressListeners: MutableList<MyProgressListener> = mutableListOf()
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
         replay = 0,
@@ -202,6 +206,32 @@ class PlayerViewModel @Inject internal constructor(
     data class PlayerItemError(val error: Exception) : PlayerItemState()
     data class PlayerItems(val items: List<PlayerItem>) : PlayerItemState()
 
+    class MyProgressListener(
+        private val test: JellyfinApi,
+        private val item: PlayerItem,
+        private val repository: JellyfinRepository,
+        private val remoteMediaClient: RemoteMediaClient,
+    ) : RemoteMediaClient.ProgressListener {
+
+        private val progressScope =
+            CoroutineScope(Dispatchers.Main) // Manually create a coroutine scope
+
+        override fun onProgressUpdated(progress: Long, duration: Long) {
+
+            progressScope.launch {
+                try {
+                    repository.postPlaybackProgress(
+                        item.itemId,
+                        progress * 10000,
+                        remoteMediaClient.isPaused,
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+        }
+    }
+
     private fun loadRemoteMedia(
         position: Int,
         mCastSession: CastSession,
@@ -213,6 +243,7 @@ class PlayerViewModel @Inject internal constructor(
         if (mCastSession == null) {
             return
         }
+
         val remoteMediaClient = mCastSession.remoteMediaClient ?: return
         var previousSubtitleTrackIds: LongArray? = null
         var newIndex = -1
@@ -225,10 +256,10 @@ class PlayerViewModel @Inject internal constructor(
                 val test = remoteMediaClient.approximateStreamPosition
                 viewModelScope.launch {
                     try {
-                        repository.postPlaybackProgress(
+                        repository.postPlaybackStop(
                             item.itemId,
                             test.times(10000),
-                            remoteMediaClient.isPaused,
+                            80,
                         )
                     } catch (e: Exception) {
                         Timber.e(e)
@@ -237,18 +268,6 @@ class PlayerViewModel @Inject internal constructor(
             }
 
             override fun onStatusUpdated() {
-                val test = remoteMediaClient.approximateStreamPosition
-                viewModelScope.launch {
-                    try {
-                        repository.postPlaybackProgress(
-                            item.itemId,
-                            test.times(10000),
-                            remoteMediaClient.isPaused,
-                        )
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
 
                 val mediaStatus = remoteMediaClient.mediaStatus
                 val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
@@ -286,18 +305,26 @@ class PlayerViewModel @Inject internal constructor(
                 previousSubtitleTrackIds = mediaStatus?.activeTrackIds
             }
         }
+
+        val myProgressListener =
+            MyProgressListener(jellyfinApi, item, repository, remoteMediaClient)
+        progressListeners.add(myProgressListener)
+
         remoteMediaClient.registerCallback(callback)
+        remoteMediaClient.addProgressListener(myProgressListener, 50000)
         remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
                 .setAutoplay(true)
                 .setCurrentTime(position.toLong()).build(),
         )
+
         val mediaStatus = remoteMediaClient.mediaStatus
         val activeMediaTracks = mediaStatus?.activeTrackIds
     }
 
-    private suspend fun postPlaybackProgress(
+
+    public suspend fun postPlaybackProgress(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
@@ -360,7 +387,14 @@ class PlayerViewModel @Inject internal constructor(
                 val episode = repository.getItem(item.itemId)
                 if (session != null) {
                     val mediaInfo = buildMediaInfo(streamUrl, item, episode)
-                    loadRemoteMedia(0, session, mediaInfo, streamUrl, item, episode)
+                    loadRemoteMedia(
+                        (item.playbackPosition).toInt(),
+                        session,
+                        mediaInfo,
+                        streamUrl,
+                        item,
+                        episode
+                    )
                 }
             } catch (e: Exception) {
                 Timber.e(e)
