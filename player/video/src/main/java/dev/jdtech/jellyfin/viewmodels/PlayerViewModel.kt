@@ -217,7 +217,6 @@ class PlayerViewModel @Inject internal constructor(
             CoroutineScope(Dispatchers.Main) // Manually create a coroutine scope
 
         override fun onProgressUpdated(progress: Long, duration: Long) {
-
             progressScope.launch {
                 try {
                     repository.postPlaybackProgress(
@@ -268,7 +267,6 @@ class PlayerViewModel @Inject internal constructor(
             }
 
             override fun onStatusUpdated() {
-
                 val mediaStatus = remoteMediaClient.mediaStatus
                 val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
                 val subtitlesOffset =
@@ -322,7 +320,6 @@ class PlayerViewModel @Inject internal constructor(
         val mediaStatus = remoteMediaClient.mediaStatus
         val activeMediaTracks = mediaStatus?.activeTrackIds
     }
-
 
     public suspend fun postPlaybackProgress(
         itemId: UUID,
@@ -393,7 +390,7 @@ class PlayerViewModel @Inject internal constructor(
                         mediaInfo,
                         streamUrl,
                         item,
-                        episode
+                        episode,
                     )
                 }
             } catch (e: Exception) {
