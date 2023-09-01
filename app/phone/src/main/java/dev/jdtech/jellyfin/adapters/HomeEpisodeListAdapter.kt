@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -22,7 +23,6 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FindroidItem) {
-            binding.item = item
             if (item.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
@@ -49,7 +49,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 }
             }
 
-            binding.executePendingBindings()
+            bindCardItemImage(binding.episodeImage, item)
         }
     }
 

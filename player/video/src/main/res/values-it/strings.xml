@@ -15,4 +15,5 @@
     <string name="player_controls_lock">Blocca il player</string>
     <string name="player_controls_exit">Esci dal player</string>
     <string name="player_controls_skip_intro">Salta intro</string>
+    <string name="player_controls_picture_in_picture">Attiva picture in picture</string>
 </resources>

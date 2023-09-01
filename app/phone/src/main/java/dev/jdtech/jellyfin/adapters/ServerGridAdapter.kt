@@ -15,8 +15,7 @@ class ServerGridAdapter(
     class ServerViewHolder(private var binding: ServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(server: Server) {
-            binding.server = server
-            binding.executePendingBindings()
+            binding.serverName.text = server.name
         }
     }
 

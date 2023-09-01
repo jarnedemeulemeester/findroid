@@ -10,23 +10,21 @@ import coil.load
 import coil.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.utils.bif.BifData
 import dev.jdtech.jellyfin.utils.bif.BifUtil
-import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 class PreviewScrubListener(
     private val scrubbingPreview: ImageView,
     private val timeBarView: View,
     private val player: Player,
-    private val currentTrickPlay: StateFlow<BifData?>,
 ) : TimeBar.OnScrubListener {
-
+    var currentTrickPlay: BifData? = null
     private val roundedCorners = RoundedCornersTransformation(10f)
     private var currentBitMap: Bitmap? = null
 
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
-        if (currentTrickPlay.value == null) {
+        if (currentTrickPlay == null) {
             return
         }
 
@@ -37,7 +35,7 @@ class PreviewScrubListener(
     override fun onScrubMove(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing to $position")
 
-        val currentBifData = currentTrickPlay.value ?: return
+        val currentBifData = currentTrickPlay ?: return
         val image = BifUtil.getTrickPlayFrame(position.toInt(), currentBifData) ?: return
 
         val parent = scrubbingPreview.parent as ViewGroup

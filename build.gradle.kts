@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
-    alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.androidx.navigation.safeargs) apply false
     alias(libs.plugins.hilt) apply false
@@ -34,8 +33,8 @@ allprojects {
 }
 
 tasks.create<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
-val appVersionCode by extra { 20 }
-val appVersionName by extra { "0.12.0" }
+val appVersionCode by extra { 21 }
+val appVersionName by extra { "0.13.0" }

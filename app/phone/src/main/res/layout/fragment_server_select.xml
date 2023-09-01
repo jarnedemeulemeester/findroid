@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AddServerFragment">
 
+
     <ImageView
         android:id="@+id/image_banner"
         android:layout_width="268dp"
@@ -31,12 +32,12 @@
 
         <TextView
             android:id="@+id/text_add_server"
-            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginBottom="32dp"
             android:text="@string/select_server"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
             android:textColor="?android:textColorPrimary" />
 
         <androidx.recyclerview.widget.RecyclerView

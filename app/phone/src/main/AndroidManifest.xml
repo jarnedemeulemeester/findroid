@@ -25,7 +25,11 @@
         <activity
             android:name=".PlayerActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/Theme.Findroid.Player" />
 
         <activity
             android:name=".MainActivity"

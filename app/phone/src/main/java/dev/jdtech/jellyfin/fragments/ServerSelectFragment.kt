@@ -51,9 +51,19 @@ class ServerSelectFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToMainActivity()
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is ServerSelectViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is ServerSelectViewModel.UiState.Loading -> Unit
+                            is ServerSelectViewModel.UiState.Error -> Unit
+                        }
+                    }
+                }
+                launch {
+                    viewModel.navigateToMain.collect {
+                        if (it) navigateToMainActivity()
                     }
                 }
             }
@@ -62,25 +72,10 @@ class ServerSelectFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is ServerSelectViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is ServerSelectViewModel.UiState.Loading -> Unit
-                        is ServerSelectViewModel.UiState.Error -> Unit
-                    }
-                }
-            }
+    private fun bindUiStateNormal(uiState: ServerSelectViewModel.UiState.Normal) {
+        uiState.apply {
+            (binding.serversRecyclerView.adapter as ServerGridAdapter).submitList(servers)
         }
-    }
-
-    fun bindUiStateNormal(uiState: ServerSelectViewModel.UiState.Normal) {
-        (binding.serversRecyclerView.adapter as ServerGridAdapter).submitList(uiState.servers)
     }
 
     private fun navigateToAddServerFragment() {

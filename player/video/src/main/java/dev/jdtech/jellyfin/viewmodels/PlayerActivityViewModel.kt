@@ -3,8 +3,6 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,8 +28,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -49,25 +50,32 @@ constructor(
 ) : ViewModel(), Player.Listener {
     val player: Player
 
-    private val _navigateBack = MutableLiveData<Boolean>()
-    val navigateBack: LiveData<Boolean> = _navigateBack
+    private val _uiState = MutableStateFlow(
+        UiState(
+            currentItemTitle = "",
+            currentIntro = null,
+            currentTrickPlay = null,
+            fileLoaded = false,
+        ),
+    )
+    val uiState = _uiState.asStateFlow()
 
-    private val _currentItemTitle = MutableLiveData<String>()
-    val currentItemTitle: LiveData<String> = _currentItemTitle
+    private val _navigateBack = MutableSharedFlow<Boolean>()
+    val navigateBack = _navigateBack.asSharedFlow()
 
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
-    private val _currentIntro = MutableLiveData<Intro?>(null)
-    val currentIntro: LiveData<Intro?> = _currentIntro
 
     private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
-    private val _currentTrickPlay = MutableStateFlow<BifData?>(null)
-    val currentTrickPlay = _currentTrickPlay.asStateFlow()
 
     var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
     var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
 
-    private val _fileLoaded = MutableLiveData(false)
-    val fileLoaded: LiveData<Boolean> = _fileLoaded
+    data class UiState(
+        val currentItemTitle: String,
+        val currentIntro: Intro?,
+        val currentTrickPlay: BifData?,
+        val fileLoaded: Boolean,
+    )
 
     private var items: Array<PlayerItem> = arrayOf()
 
@@ -118,10 +126,6 @@ constructor(
     fun initializePlayer(
         items: Array<PlayerItem>,
     ) {
-        // Skip initialization when there are already items
-        if (this.items.isNotEmpty()) {
-            return
-        }
         this.items = items
         player.addListener(this)
 
@@ -202,7 +206,7 @@ constructor(
             }
         }
 
-        _currentTrickPlay.value = null
+        _uiState.update { it.copy(currentTrickPlay = null) }
         playWhenReady = false
         playbackPosition = 0L
         currentMediaItemIndex = 0
@@ -238,10 +242,10 @@ constructor(
                     intros[itemId]?.let { intro ->
                         val seconds = player.currentPosition / 1000.0
                         if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
-                            _currentIntro.value = intro
+                            _uiState.update { it.copy(currentIntro = intro) }
                             return@let
                         }
-                        _currentIntro.value = null
+                        _uiState.update { it.copy(currentIntro = null) }
                     }
                 }
                 handler.postDelayed(this, 1000L)
@@ -258,16 +262,16 @@ constructor(
             try {
                 items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
                     .let { item ->
-                        if (item.parentIndexNumber != null && item.indexNumber != null
-                        ) {
-                            _currentItemTitle.value = if (item.indexNumberEnd == null) {
+                        val itemTitle = if (item.parentIndexNumber != null && item.indexNumber != null) {
+                            if (item.indexNumberEnd == null) {
                                 "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
                             } else {
                                 "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
                             }
                         } else {
-                            _currentItemTitle.value = item.name
+                            item.name
                         }
+                        _uiState.update { it.copy(currentItemTitle = itemTitle) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
@@ -309,11 +313,11 @@ constructor(
                         }
                     }
                 }
-                _fileLoaded.value = true
+                _uiState.update { it.copy(fileLoaded = true) }
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
-                _navigateBack.value = true
+                _navigateBack.tryEmit(true)
             }
         }
         Timber.d("Changed player state to $stateString")
@@ -356,7 +360,7 @@ constructor(
                     trickPlayData?.let { bifData ->
                         Timber.d("Trickplay Images: ${bifData.imageCount}")
                         trickPlays[itemId] = bifData
-                        _currentTrickPlay.value = trickPlays[itemId]
+                        _uiState.update { it.copy(currentTrickPlay = trickPlays[itemId]) }
                     }
                 }
             }

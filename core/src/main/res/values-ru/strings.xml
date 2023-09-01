@@ -138,7 +138,7 @@
     <string name="settings_connect_timeout">Время ожидания соединения (мс)</string>
     <string name="settings_socket_timeout">Время ожидания сокета (мс)</string>
     <string name="pref_player_trick_play_summary">Требуется, чтобы на сервере был установлен плагин Jellyscrub от nicknsy</string>
-    <string name="pref_player_trick_play">Миниатюры предварительного просмотра (Trick Play)</string>
+    <string name="pref_player_trick_play">Миниатюры предпросмотра (Trick Play)</string>
     <string name="subtitle">Субтитры</string>
     <string name="extra_info_summary">Показывает дополнительную информацию о Аудио, Видео и Субтитрах</string>
     <string name="extra_info">Показывать дополнительную информацию</string>
@@ -151,7 +151,7 @@
     <string name="amoled_theme">Тёмная тема AMOLED</string>
     <string name="amoled_theme_summary">Использовать тему AMOLED с чистым чёрным фоном</string>
     <string name="downloading_error">Ошибка во время скачивания</string>
-    <string name="not_enough_storage">Для этого элемента требуется %s свободного места, но доступно только %s</string>
+    <string name="not_enough_storage">Для этого элемента требуется %1$s свободного места, но доступно только %2$s</string>
     <string name="no_server_connection">Нет соединения с сервером Jellyfin, для просмотра в автономном режиме включите Офлайн-Режим</string>
     <string name="episode_name_extended_with_end">С%1$d:Э%2$d-%3$d - %4$s</string>
     <string name="episode_name_with_end">%1$d:%2$d. %3$s</string>
@@ -161,7 +161,7 @@
     <string name="offline_mode">Офлайн-Режим</string>
     <string name="offline_mode_icon">Иконка Офлайн-Режима</string>
     <string name="external">Внешнее</string>
-    <string name="storage_name">%s (%d МБ свободно)</string>
+    <string name="storage_name">%1$s (%2$d МБ свободно)</string>
     <string name="preparing_download">Подготовка к скачиванию</string>
     <string name="cancel_download">Отменить скачивание</string>
     <string name="cancel_download_message">Вы уверены, что хотите отменить скачивание\?</string>
@@ -171,4 +171,6 @@
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
     <string name="app_language">Язык приложения</string>
+    <string name="remove_server_address">Удалить адрес сервера</string>
+    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
 </resources>

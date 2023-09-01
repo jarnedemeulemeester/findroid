@@ -31,24 +31,22 @@ class ViewListAdapter(
             onItemClickListener: ViewItemListAdapter.OnClickListener,
         ) {
             val view = dataItem.view
-            binding.view = view
             binding.viewName.text = binding.viewName.context.resources.getString(CoreR.string.latest_library, view.name)
             binding.itemsRecyclerView.adapter =
                 ViewItemListAdapter(onItemClickListener, fixedWidth = true)
+            (binding.itemsRecyclerView.adapter as ViewItemListAdapter).submitList(view.items)
             binding.viewAll.setOnClickListener {
                 onClickListener.onClick(view)
             }
-            binding.executePendingBindings()
         }
     }
 
     class NextUpViewHolder(private var binding: NextUpSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(section: HomeItem.Section, onClickListener: HomeEpisodeListAdapter.OnClickListener) {
-            binding.section = section.homeSection
             binding.sectionName.text = section.homeSection.name.asString(binding.sectionName.context.resources)
             binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener)
-            binding.executePendingBindings()
+            (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.homeSection.items)
         }
     }
 

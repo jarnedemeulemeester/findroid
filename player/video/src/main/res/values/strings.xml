@@ -4,6 +4,7 @@
     <string name="select_playback_speed">Select playback speed</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
+    <string name="player_controls_picture_in_picture">Enter picture-in-picture</string>
     <string name="player_controls_lock">Locks the player</string>
     <string name="player_controls_skip_back">Skip back</string>
     <string name="player_controls_play_pause">Play pause</string>

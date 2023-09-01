@@ -1,8 +1,12 @@
 package dev.jdtech.jellyfin
 
+import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.media3.exoplayer.trackselection.MappingTrackSelector
 import androidx.media3.session.MediaSession
@@ -13,6 +17,12 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     abstract val viewModel: PlayerActivityViewModel
 
     private lateinit var mediaSession: MediaSession
+    private var wasPip: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -23,33 +33,41 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.player.playWhenReady = viewModel.playWhenReady
+        if (wasPip) {
+            wasPip = false
+        } else {
+            viewModel.player.playWhenReady = viewModel.playWhenReady
+        }
         hideSystemUI()
     }
 
     override fun onPause() {
         super.onPause()
 
-        viewModel.playWhenReady = viewModel.player.playWhenReady == true
-        viewModel.player.playWhenReady = false
+        if (isInPictureInPictureMode) {
+            wasPip = true
+        } else {
+            viewModel.playWhenReady = viewModel.player.playWhenReady == true
+            viewModel.player.playWhenReady = false
+        }
     }
 
     override fun onStop() {
         super.onStop()
 
         mediaSession.release()
+
+        if (wasPip) {
+            finish()
+        }
     }
 
-    @Suppress("DEPRECATION")
     protected fun hideSystemUI() {
-        // These methods are deprecated but we still use them because the new WindowInsetsControllerCompat has a bug which makes the action bar reappear
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            )
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.systemBars())
+        }
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.attributes.layoutInDisplayCutoutMode =
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
     }
@@ -68,16 +86,15 @@ abstract class BasePlayerActivity : AppCompatActivity() {
     }
 
     protected fun configureInsets(playerControls: View) {
-        playerControls
-            .setOnApplyWindowInsetsListener { _, windowInsets ->
-                val cutout = windowInsets.displayCutout
-                playerControls.updatePadding(
-                    left = cutout?.safeInsetLeft ?: 0,
-                    top = cutout?.safeInsetTop ?: 0,
-                    right = cutout?.safeInsetRight ?: 0,
-                    bottom = cutout?.safeInsetBottom ?: 0,
-                )
-                return@setOnApplyWindowInsetsListener windowInsets
-            }
+        playerControls.setOnApplyWindowInsetsListener { _, windowInsets ->
+            val cutout = windowInsets.displayCutout
+            playerControls.updatePadding(
+                left = cutout?.safeInsetLeft ?: 0,
+                top = cutout?.safeInsetTop ?: 0,
+                right = cutout?.safeInsetRight ?: 0,
+                bottom = cutout?.safeInsetBottom ?: 0,
+            )
+            return@setOnApplyWindowInsetsListener windowInsets
+        }
     }
 }

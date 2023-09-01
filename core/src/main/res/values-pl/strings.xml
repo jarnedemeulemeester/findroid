@@ -157,13 +157,13 @@
     <string name="downloaded_indicator">Wskaźnik pobierania</string>
     <string name="offline_mode_go_online">Przejdź online</string>
     <string name="downloading_error">Błąd podczas pobierania</string>
-    <string name="not_enough_storage">Ten element wymaga %s wolnego miejsca, ale dostępne jest tylko %s</string>
+    <string name="not_enough_storage">Ten element wymaga %1$s wolnego miejsca, ale dostępne jest tylko %2$s</string>
     <string name="no_server_connection">Brak połączenia z serwerem Jellyfin, aby oglądać offline, włącz tryb offline</string>
     <string name="select_storage_location">Wybierz miejsce przechowywania</string>
     <string name="storage_unavailable">Lokalizacja przechowywania jest niedostępna</string>
     <string name="internal">Wewnętrznie</string>
     <string name="external">Zewnętrznie</string>
-    <string name="storage_name">%s (%d MB wolnych)</string>
+    <string name="storage_name">%1$s (%2$d MB wolnych)</string>
     <string name="preparing_download">Przygotowanie do pobrania</string>
     <string name="cancel_download">Anuluj pobieranie</string>
     <string name="cancel_download_message">Czy na pewno chcesz anulować pobieranie\?</string>
@@ -173,4 +173,7 @@
     <string name="app_language">Język aplikacji</string>
     <string name="remove_server_address">Usuń adres serwera</string>
     <string name="remove_server_address_dialog_text">Czy na pewno chcesz usunąć adres serwera %1$s</string>
+    <string name="picture_in_picture_gesture">Gest domowy obrazu w obrazie</string>
+    <string name="picture_in_picture">Obraz w obrazie</string>
+    <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
 </resources>
