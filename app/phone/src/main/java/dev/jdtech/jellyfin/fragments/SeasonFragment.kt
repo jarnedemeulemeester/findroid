@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -60,7 +61,7 @@ class SeasonFragment : Fragment() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        dev.jdtech.jellyfin.core.R.id.action_download_season -> {
+                        CoreR.id.action_download_season -> {
                             if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
                                 val storageDialog = getStorageSelectionDialog(
                                     requireContext(),
@@ -182,7 +183,7 @@ class SeasonFragment : Fragment() {
     private fun createDownloadPreparingDialog() {
         val builder = MaterialAlertDialogBuilder(requireContext())
         downloadPreparingDialog = builder
-            .setTitle(dev.jdtech.jellyfin.core.R.string.preparing_download)
+            .setTitle(CoreR.string.preparing_download)
             .setView(R.layout.preparing_download_dialog)
             .setCancelable(false)
             .create()
@@ -192,7 +193,7 @@ class SeasonFragment : Fragment() {
     private fun createErrorDialog(uiText: UiText) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder
-            .setTitle(dev.jdtech.jellyfin.core.R.string.downloading_error)
+            .setTitle(CoreR.string.downloading_error)
             .setMessage(uiText.asString(requireContext().resources))
             .setPositiveButton(getString(dev.jdtech.jellyfin.core.R.string.close)) { _, _ ->
             }
@@ -202,13 +203,13 @@ class SeasonFragment : Fragment() {
     private fun createEpisodesToDownloadDialog(storageIndex: Int = 0) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         val dialog = builder
-            .setTitle(dev.jdtech.jellyfin.core.R.string.download_season_dialog_title)
-            .setMessage(dev.jdtech.jellyfin.core.R.string.download_season_dialog_question)
-            .setPositiveButton(dev.jdtech.jellyfin.core.R.string.download_season_dialog_download_all) { _, _ ->
+            .setTitle(CoreR.string.download_season_dialog_title)
+            .setMessage(CoreR.string.download_season_dialog_question)
+            .setPositiveButton(CoreR.string.download_season_dialog_download_all) { _, _ ->
                 createDownloadPreparingDialog()
                 viewModel.download(storageIndex = storageIndex, downloadWatched = true)
             }
-            .setNegativeButton(dev.jdtech.jellyfin.core.R.string.download_season_dialog_download_unwatched) { _, _ ->
+            .setNegativeButton(CoreR.string.download_season_dialog_download_unwatched) { _, _ ->
                 createDownloadPreparingDialog()
                 viewModel.download(storageIndex = storageIndex, downloadWatched = false)
             }
