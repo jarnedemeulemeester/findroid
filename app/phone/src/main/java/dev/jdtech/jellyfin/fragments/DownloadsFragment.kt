@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
@@ -58,7 +57,7 @@ class DownloadsFragment : Fragment() {
                 launch {
                     viewModel.connectionError.collect {
                         Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
-                            .setAnchorView(requireActivity().findViewById(R.id.nav_view))
+                            .setTextMaxLines(2)
                             .setAction(CoreR.string.offline_mode) {
                                 appPreferences.offlineMode = true
                                 activity?.restart()
