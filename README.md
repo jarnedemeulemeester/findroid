@@ -33,7 +33,7 @@ I am developing this application in my spare time.
   - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
-- Picture in picture mode
+- Picture-in-picture mode
 
 ## Planned features
 - Android TV
