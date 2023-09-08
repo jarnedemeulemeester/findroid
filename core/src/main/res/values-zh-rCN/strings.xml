@@ -173,4 +173,7 @@
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="remove_server_address">移除服务器地址</string>
     <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
+    <string name="picture_in_picture">画中画</string>
+    <string name="picture_in_picture_gesture_summary">在视频播放时使用主页按钮或手势进入画中画模式</string>
+    <string name="picture_in_picture_gesture">画中画返回手势</string>
 </resources>

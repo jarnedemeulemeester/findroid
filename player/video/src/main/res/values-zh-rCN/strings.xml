@@ -15,4 +15,5 @@
     <string name="player_controls_skip_forward">跳前</string>
     <string name="player_controls_progress">进度条</string>
     <string name="player_trickplay">特技播放</string>
+    <string name="player_controls_picture_in_picture">进入画中画</string>
 </resources>
