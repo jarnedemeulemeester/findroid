@@ -15,9 +15,6 @@
         <!-- Surface -->
         <item name="android:colorBackground">@color/neutral_1000</item>
         <item name="colorSurface">@color/neutral_900</item>
-
-        <!-- Extra -->
-        <item name="dolbyColor">#FFF</item>
     </style>
 
     <style name="Theme.FindroidAMOLED" parent="">
