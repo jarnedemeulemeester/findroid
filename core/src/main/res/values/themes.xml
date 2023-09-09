@@ -1,6 +1,6 @@
 <resources>
     <!-- Player theme -->
-    <style name="Theme.Findroid.Player" parent="Base.Theme.Findroid">
+    <style name="Theme.Findroid.Player" parent="Theme.Findroid">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
