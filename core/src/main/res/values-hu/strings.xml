@@ -117,7 +117,7 @@
     <string name="episodes_label">Epizódok</string>
     <string name="player_gestures_vb">Hang és fény gesztusok</string>
     <string name="player_gestures_zoom">Zoom gesztus</string>
-    <string name="player_gestures_zoom_summary">Húzással töltsd ki a kijelzőt</string>
+    <string name="player_gestures_zoom_summary">Nagyítással töltsd ki a kijelzőt</string>
     <string name="subtitles_summary">Szabd testre a feliratok megjelenését</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark">Sötét</string>
