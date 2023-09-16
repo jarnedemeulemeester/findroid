@@ -19,9 +19,9 @@
     <string name="remove_user_dialog_text">Ali ste prepričani, da želite odstraniti uporabnika %1$s</string>
     <string name="remove">Odstrani</string>
     <string name="cancel">Prekliči</string>
-    <string name="title_home">Domov</string>
+    <string name="title_home">Dom</string>
     <string name="title_media">Moja medija</string>
-    <string name="title_favorite">Priljubljeni</string>
+    <string name="title_favorite">Priljubljeno</string>
     <string name="title_settings">Nastavitve</string>
     <string name="title_download">Prenosi</string>
     <string name="view_all">Poglej vse</string>
@@ -139,4 +139,34 @@
     <string name="runtime_minutes">%1$d min</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="settings_connect_timeout">Časovna omejitev povezave (ms)</string>
+    <string name="cancel_download_message">Ali ste prepričani, da želite preklicati prenos\?</string>
+    <string name="pref_player_trick_play_summary">Zahteva namestitev vtičnika nicknsy Jellyscrub na strežniku</string>
+    <string name="size">Velikost</string>
+    <string name="offline_mode">Način brez povezave</string>
+    <string name="offline_mode_go_online">izhod iz načina brez povezave</string>
+    <string name="downloading_error">Napaka med prenosom</string>
+    <string name="internal">Notranjo</string>
+    <string name="external">Zunanjo</string>
+    <string name="not_enough_storage">Ta element zahteva %1$s prostega prostora za shranjevanje, vendar je na voljo samo %2$s</string>
+    <string name="no_server_connection">Ni povezave s strežnikom Jellyfin, za gledanje brez povezave omogočite način brez povezave</string>
+    <string name="storage_name">%1$s (%2$d MB prosto)</string>
+    <string name="video">Video</string>
+    <string name="audio">Zvok</string>
+    <string name="subtitle">Podnapisi</string>
+    <string name="subtitle_chip_text">Podnapisi</string>
+    <string name="temp">začasno</string>
+    <string name="select_storage_location">Izberite lokacijo shranjevanja</string>
+    <string name="extra_info">Prikaži dodatne informacije</string>
+    <string name="extra_info_summary">Prikaže podrobne informacije o zvoku, videu in podnapisih</string>
+    <string name="storage_unavailable">Lokacija shranjevanja ni na voljo</string>
+    <string name="cancel_download">Prekliči prenos</string>
+    <string name="remove_server_address">Odstrani naslov strežnika</string>
+    <string name="remove_server_address_dialog_text">Ali ste prepričani, da želite odstraniti naslov strežnika %1$s</string>
+    <string name="privacy_policy_notice">Z uporabo Findroid-a se strinjate s <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">pravilnikom o zasebnosti</a>, ki določa, da ne zbiramo nobenih podatkov</string>
+    <string name="stop_download">Ustavi prenos</string>
+    <string name="app_language">Jezik aplikacije</string>
+    <string name="amoled_theme">AMOLED temni način</string>
+    <string name="amoled_theme_summary">Uporabite temo AMOLED s čisto črnim ozadjem</string>
+    <string name="preparing_download">Priprava prenosa</string>
+    <string name="picture_in_picture">Slika v sliki</string>
 </resources>
