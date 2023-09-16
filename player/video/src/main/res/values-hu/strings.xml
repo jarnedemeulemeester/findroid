@@ -14,4 +14,6 @@
     <string name="player_controls_skip_forward">Ugrás előre</string>
     <string name="player_controls_play_pause">Lejátsz Megállít</string>
     <string name="player_controls_progress">Idővonal</string>
+    <string name="player_trickplay">Trükkös játék</string>
+    <string name="player_controls_picture_in_picture">Belépés kép a képben</string>
 </resources>
