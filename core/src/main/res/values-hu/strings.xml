@@ -171,4 +171,9 @@
     <string name="subtitle_chip_text">Felirat</string>
     <string name="remove_server_address">Szerver címének eltávolítása</string>
     <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
+    <string name="pref_player_trick_play">Trükkös játék</string>
+    <string name="player_gestures_seek">Gesztus keresése</string>
+    <string name="picture_in_picture">Kép a képben</string>
+    <string name="picture_in_picture_gesture">Kép a képben otthoni gesztus</string>
+    <string name="picture_in_picture_gesture_summary">A home gomb vagy a gesztus használatával lépjen be a kép-a-képbe a videó lejátszása közben</string>
 </resources>
