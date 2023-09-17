@@ -15,4 +15,5 @@
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Časová os</string>
     <string name="player_controls_play_pause">Prehrať pozastaviť</string>
+    <string name="player_controls_picture_in_picture">Zapnúť obraz v obraze</string>
 </resources>
