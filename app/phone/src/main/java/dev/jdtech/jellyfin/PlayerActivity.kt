@@ -464,7 +464,7 @@ class PlayerActivity : BasePlayerActivity() {
         wasDialogShown = true
         builder.create().show()
     }
-
+    
     private fun disableSleepMode () {
         binding.playerView.player?.playWhenReady = true
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
