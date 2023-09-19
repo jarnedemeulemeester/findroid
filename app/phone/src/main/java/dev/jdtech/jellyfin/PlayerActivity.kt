@@ -21,6 +21,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Space
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -33,6 +34,7 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
@@ -42,7 +44,7 @@ import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
@@ -59,6 +61,9 @@ class PlayerActivity : BasePlayerActivity() {
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
+    private var sleepJob: Job? = null
+    private var wasDialogShown : Boolean = false
+    private var isSleepModeEnabled: Boolean = false
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -127,7 +132,9 @@ class PlayerActivity : BasePlayerActivity() {
         val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
+        val sleepModeButton = binding.playerView.findViewById<ImageButton>(R.id.btn_sleep_mode)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
+        val sleepModeUnlockButton = binding.playerView.findViewById<ImageButton>(R.id.sleep_mode_unlock)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -163,6 +170,13 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
+                                if(appPreferences.sleepMode) {
+                                    sleepModeButton.isEnabled = true
+                                    sleepModeButton.imageAlpha = 255
+                                } else {
+                                    sleepModeButton.isEnabled = false
+                                    sleepModeButton.imageAlpha = 0
+                                }
                             }
                         }
                     }
@@ -293,6 +307,27 @@ class PlayerActivity : BasePlayerActivity() {
             pictureInPicture()
         }
 
+        sleepModeButton.setOnClickListener {
+            if (isSleepModeEnabled) {
+                // Check if the sleep timer is currently running
+                if (sleepJob?.isActive == true) {
+                    sleepJob?.cancel()
+                    Toast.makeText(applicationContext, "Sleep Mode timer has been disabled!", Toast.LENGTH_SHORT).show()
+                }
+                isSleepModeEnabled = false
+            } else {
+                isSleepModeEnabled = false
+                wasDialogShown = true
+                showSleepTimerDurationDialog()
+            }
+        }
+
+
+        sleepModeUnlockButton.setOnClickListener{
+            disableSleepMode()
+            isSleepModeEnabled = false
+        }
+
         if (appPreferences.playerTrickPlay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
@@ -382,6 +417,74 @@ class PlayerActivity : BasePlayerActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (!isInPictureInPictureMode) {
             binding.playerView.useController = true
+        }
+    }
+
+    private fun startSleepTimer(timerDuration: Long) {
+        sleepJob?.cancel() // Cancel any existing timer job
+        sleepJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(timerDuration)
+            binding.playerView.player?.playWhenReady = !binding.playerView.player?.playWhenReady!!
+            binding.playerView.findViewById<FrameLayout>(R.id.player_controls).visibility = View.GONE
+            binding.playerView.findViewById<FrameLayout>(R.id.sleep_mode_view).visibility = View.VISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            isControlsLocked = true
+        }
+        Toast.makeText(applicationContext, formatTimerMessage(timerDuration), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSleepTimerDurationDialog() {
+        val timerTexts = listOf("1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour", "2 hours")
+        val durationValues = longArrayOf(60000L, 300000L, 600000L, 1800000L, 3600000L, 7200000L)
+        var selectedDuration = durationValues[2] // Default: 10 minutes in milliseconds
+
+        val builder = MaterialAlertDialogBuilder(this)
+        builder.setTitle("Select Sleep Timer Duration")
+            .setSingleChoiceItems(
+                timerTexts.toTypedArray(),
+                timerTexts.indexOf("${selectedDuration / 60000} minutes")
+            ) { _, which ->
+                selectedDuration = durationValues[which]
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+                wasDialogShown = false
+            }
+            .setPositiveButton("OK") { dialog, _ ->
+                // Start the sleep timer with the selected duration
+                startSleepTimer(selectedDuration)
+                isSleepModeEnabled = true
+                dialog.dismiss()
+            }
+            .setCancelable(true)
+            wasDialogShown = true
+
+        builder.create().show()
+    }
+
+    private fun disableSleepMode () {
+        binding.playerView.player?.playWhenReady = true
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        binding.playerView.findViewById<FrameLayout>(R.id.sleep_mode_view).visibility = View.GONE
+        binding.playerView.findViewById<FrameLayout>(R.id.player_controls).visibility = View.VISIBLE
+        isControlsLocked = false
+        isSleepModeEnabled = false
+    }
+
+    private fun formatTimerMessage(timerDuration: Long): String {
+        val hours = timerDuration / 3600000L
+        val minutes = (timerDuration % 3600000L) / 60000L
+
+        val hourText = if (hours == 1L) "hour" else "hours"
+        val minuteText = if (minutes == 1L) "minute" else "minutes"
+
+        return when {
+            hours > 0 && minutes > 0 ->
+                "Sleep Mode will be enabled in $hours $hourText and $minutes $minuteText"
+            hours > 0 ->
+                "Sleep Mode will be enabled in $hours $hourText"
+            else ->
+                "Sleep Mode will be enabled in $minutes $minuteText"
         }
     }
 }

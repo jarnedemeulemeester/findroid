@@ -57,6 +57,18 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
+                android:id="@+id/btn_sleep_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/enable_sleep_mode"
+                android:padding="16dp"
+                android:src="@drawable/ic_sleep_mode"
+                app:tint="@android:color/white" />
+
+            <ImageButton
                 android:id="@+id/btn_lockview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

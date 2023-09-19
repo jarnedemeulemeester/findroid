@@ -83,6 +83,8 @@ constructor(
 
     val playerPipGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_GESTURE, false)
 
+    val sleepMode get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_SLEEP_MODE, false)
+
     // Language
     val preferredAudioLanguage get() = sharedPreferences.getString(Constants.PREF_AUDIO_LANGUAGE, "")!!
     val preferredSubtitleLanguage get() = sharedPreferences.getString(Constants.PREF_SUBTITLE_LANGUAGE, "")!!
