@@ -66,7 +66,7 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var sleepJob: Job? = null
-    private var wasDialogShown : Boolean = false
+    private var wasDialogShown: Boolean = false
     private var isSleepModeEnabled: Boolean = false
 
     private val isPipSupported by lazy {
@@ -174,7 +174,7 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
-                                if(appPreferences.sleepMode) {
+                                if (appPreferences.sleepMode) {
                                     sleepModeButton.isEnabled = true
                                     sleepModeButton.imageAlpha = 255
                                 } else {
@@ -326,7 +326,6 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
-
         sleepModeUnlockButton.setOnClickListener{
             disableSleepMode()
             isSleepModeEnabled = false
@@ -447,7 +446,7 @@ class PlayerActivity : BasePlayerActivity() {
         builder.setTitle("Select Sleep Timer Duration")
             .setSingleChoiceItems(
                 timerTexts.toTypedArray(),
-                timerTexts.indexOf("${selectedDuration / 60000} minutes")
+                timerTexts.indexOf("${selectedDuration / 60000} minutes"),
             ) { _, which ->
                 selectedDuration = durationValues[which]
             }
