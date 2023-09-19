@@ -45,7 +45,7 @@
             android:id="@+id/sleepModeDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sleep_mode_description"
+            android:text="@string/sleep_mode_enabled_description"
             android:textAlignment="center"
             android:textColor="@color/neutral_200"
             android:textSize="24sp"

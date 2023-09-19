@@ -117,10 +117,10 @@
     <PreferenceCategory
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:title="Sleep Mode">
+        app:title="@string/sleep_mode">
             <SwitchPreferenceCompat
                 app:key="pref_sleep_mode_toggle"
-                app:summary="Toggle Sleep Mode. When toggled on, the app will stop the video playback."
+                app:summary="@string/sleep_mode_summary"
                 app:title="Sleep Mode" />
     </PreferenceCategory>
 
