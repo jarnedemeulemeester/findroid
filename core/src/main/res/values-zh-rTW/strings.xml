@@ -167,4 +167,11 @@
     <string name="offline_mode">離線模式</string>
     <string name="offline_mode_icon">離線模式圖標</string>
     <string name="offline_mode_go_online">聯機</string>
+    <string name="external">外部的</string>
+    <string name="player_gestures_seek">搜尋手勢</string>
+    <string name="picture_in_picture">畫中畫</string>
+    <string name="picture_in_picture_gesture">畫中畫首頁手勢</string>
+    <string name="picture_in_picture_gesture_summary">影片播放時使用主頁按鈕或手勢進入畫中畫</string>
+    <string name="remove_server_address">刪除伺服器位址</string>
+    <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
 </resources>
