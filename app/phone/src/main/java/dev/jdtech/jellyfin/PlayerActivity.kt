@@ -438,7 +438,8 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun showSleepTimerDurationDialog() {
-        val timerTexts = listOf("1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour", "2 hours")
+        val timerTexts =
+            listOf("1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour", "2 hours")
         val durationValues = longArrayOf(60000L, 300000L, 600000L, 1800000L, 3600000L, 7200000L)
         var selectedDuration = durationValues[2] // Default: 10 minutes in milliseconds
 
@@ -461,8 +462,7 @@ class PlayerActivity : BasePlayerActivity() {
                 dialog.dismiss()
             }
             .setCancelable(true)
-            wasDialogShown = true
-
+        wasDialogShown = true
         builder.create().show()
     }
 
