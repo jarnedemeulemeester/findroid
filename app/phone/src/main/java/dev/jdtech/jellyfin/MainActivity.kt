@@ -43,34 +43,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
-    @OptIn(NavigationUiSaveStateControl::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scheduleUserDataSync()
+        cleanUpOldDownloads()
+        applyTheme()
+        setupActivity()
+    }
 
-        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(
-                        NetworkType.CONNECTED,
-                    )
-                    .build(),
-            )
-            .build()
-
-        val workManager = WorkManager.getInstance(applicationContext)
-
-        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest).enqueue()
-
-        if (!appPreferences.downloadsMigrated) {
-            cleanUpOldDownloads()
-        }
-
-        if (appPreferences.amoledTheme) {
-            setTheme(CoreR.style.Theme_FindroidAMOLED)
-        }
-
+    @OptIn(NavigationUiSaveStateControl::class)
+    private fun setupActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
         val navHostFragment =
@@ -129,8 +112,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkServersEmpty(graph: NavGraph, onServersEmpty: () -> Unit = {}) {
         if (!viewModel.startDestinationChanged) {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
+            val numOfServers = database.getServersCount()
+            if (numOfServers < 1) {
                 graph.setStartDestination(R.id.addServerFragment)
                 viewModel.startDestinationChanged = true
                 onServersEmpty()
@@ -143,7 +126,7 @@ class MainActivity : AppCompatActivity() {
             appPreferences.currentServer?.let {
                 val currentUser = database.getServerCurrentUser(it)
                 if (currentUser == null) {
-                    graph.setStartDestination(R.id.loginFragment)
+                    graph.setStartDestination(R.id.serverSelectFragment)
                     viewModel.startDestinationChanged = true
                     onNoUser()
                 }
@@ -155,6 +138,10 @@ class MainActivity : AppCompatActivity() {
      * Temp to remove old downloads, will be removed in a future version
      */
     private fun cleanUpOldDownloads() {
+        if (appPreferences.downloadsMigrated) {
+            return
+        }
+
         lifecycleScope.launch {
             val oldDir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
             if (oldDir == null) {
@@ -169,6 +156,29 @@ class MainActivity : AppCompatActivity() {
             } catch (_: Exception) {}
 
             appPreferences.downloadsMigrated = true
+        }
+    }
+
+    private fun scheduleUserDataSync() {
+        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(
+                        NetworkType.CONNECTED,
+                    )
+                    .build(),
+            )
+            .build()
+
+        val workManager = WorkManager.getInstance(applicationContext)
+
+        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
+            .enqueue()
+    }
+
+    private fun applyTheme() {
+        if (appPreferences.amoledTheme) {
+            setTheme(CoreR.style.Theme_FindroidAMOLED)
         }
     }
 }
