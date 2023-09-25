@@ -37,9 +37,13 @@ constructor(
 
     init {
         viewModelScope.launch {
-            val servers = database.getAllServersSync()
-            _uiState.emit(UiState.Normal(servers))
+            loadServers()
         }
+    }
+
+    private suspend fun loadServers() {
+        val servers = database.getAllServersSync()
+        _uiState.emit(UiState.Normal(servers))
     }
 
     /**
@@ -50,12 +54,13 @@ constructor(
     fun deleteServer(server: Server) {
         viewModelScope.launch(Dispatchers.IO) {
             database.delete(server.id)
+            loadServers()
         }
     }
 
     fun connectToServer(server: Server) {
         viewModelScope.launch {
-            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)!!
+            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id) ?: return@launch
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
             val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
 
