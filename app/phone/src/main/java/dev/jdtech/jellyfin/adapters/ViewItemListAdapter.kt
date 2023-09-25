@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -14,14 +15,13 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class ViewItemListAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (item: FindroidItem) -> Unit,
     private val fixedWidth: Boolean = false,
 ) : ListAdapter<FindroidItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FindroidItem, fixedWidth: Boolean) {
-            binding.item = item
             binding.itemName.text = if (item is FindroidEpisode) item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.unplayedItemCount != null && item.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
@@ -31,9 +31,11 @@ class ViewItemListAdapter(
                 (binding.itemLayout.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 0
             }
 
+            binding.itemCount.text = item.unplayedItemCount.toString()
+            binding.playedIcon.isVisible = item.played
             binding.downloadedIcon.isVisible = item.isDownloaded()
 
-            binding.executePendingBindings()
+            bindItemImage(binding.itemImage, item)
         }
     }
 
@@ -61,12 +63,8 @@ class ViewItemListAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+            onClickListener(item)
         }
         holder.bind(item, fixedWidth)
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
-        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

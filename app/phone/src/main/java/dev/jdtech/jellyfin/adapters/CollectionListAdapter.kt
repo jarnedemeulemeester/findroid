@@ -5,17 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
 import dev.jdtech.jellyfin.models.FindroidCollection
 
 class CollectionListAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (collection: FindroidCollection) -> Unit,
 ) : ListAdapter<FindroidCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(collection: FindroidCollection) {
-            binding.collection = collection
-            binding.executePendingBindings()
+            binding.collectionName.text = collection.name
+            bindCardItemImage(binding.collectionImage, collection)
         }
     }
 
@@ -42,12 +43,8 @@ class CollectionListAdapter(
     override fun onBindViewHolder(holder: CollectionViewHolder, position: Int) {
         val collection = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(collection)
+            onClickListener(collection)
         }
         holder.bind(collection)
-    }
-
-    class OnClickListener(val clickListener: (collection: FindroidCollection) -> Unit) {
-        fun onClick(collection: FindroidCollection) = clickListener(collection)
     }
 }

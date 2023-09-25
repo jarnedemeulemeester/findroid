@@ -9,14 +9,13 @@ import dev.jdtech.jellyfin.databinding.ServerItemBinding
 import dev.jdtech.jellyfin.models.Server
 
 class ServerGridAdapter(
-    private val onClickListener: OnClickListener,
-    private val onLongClickListener: OnLongClickListener,
+    private val onClickListener: (server: Server) -> Unit,
+    private val onLongClickListener: (server: Server) -> Boolean,
 ) : ListAdapter<Server, ServerGridAdapter.ServerViewHolder>(DiffCallback) {
     class ServerViewHolder(private var binding: ServerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(server: Server) {
-            binding.server = server
-            binding.executePendingBindings()
+            binding.serverName.text = server.name
         }
     }
 
@@ -40,19 +39,11 @@ class ServerGridAdapter(
     override fun onBindViewHolder(holder: ServerViewHolder, position: Int) {
         val server = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(server)
+            onClickListener(server)
         }
         holder.itemView.setOnLongClickListener {
-            onLongClickListener.onLongClick(server)
+            onLongClickListener(server)
         }
         holder.bind(server)
-    }
-
-    class OnClickListener(val clickListener: (server: Server) -> Unit) {
-        fun onClick(server: Server) = clickListener(server)
-    }
-
-    class OnLongClickListener(val clickListener: (server: Server) -> Boolean) {
-        fun onLongClick(server: Server) = clickListener(server)
     }
 }

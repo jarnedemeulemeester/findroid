@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -15,14 +16,13 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
-class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+class HomeEpisodeListAdapter(private val onClickListener: (item: FindroidItem) -> Unit) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
         private val parent: ViewGroup,
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FindroidItem) {
-            binding.item = item
             if (item.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
@@ -49,7 +49,7 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
                 }
             }
 
-            binding.executePendingBindings()
+            bindCardItemImage(binding.episodeImage, item)
         }
     }
 
@@ -77,12 +77,8 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+            onClickListener(item)
         }
         holder.bind(item)
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
-        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

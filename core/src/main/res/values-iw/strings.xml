@@ -151,7 +151,7 @@
     <string name="pref_player_trick_play_summary">דורש תוסף Jellyscrub של nicknsy מותקן על השרת</string>
     <string name="size">גודל</string>
     <string name="offline_mode_icon">סמל מצב לא מקוון</string>
-    <string name="not_enough_storage">פריט זה דורש %s של מקום פנוי אבל רק %s זמינים</string>
+    <string name="not_enough_storage">פריט זה דורש %1$s של מקום פנוי אבל רק %2$s זמינים</string>
     <string name="select_storage_location">בחר מיקום אחסון</string>
     <string name="storage_unavailable">מיקום אחסון לא זמין</string>
     <string name="external">חיצוני</string>
@@ -167,10 +167,12 @@
     <string name="privacy_policy_notice">על ידי שימוש ב-Findroid הנך מסכים עם <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">מדיניות הפרטיות</a> אשר מציינת כי איננו אוספים שום נתונים</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">ע%1$d:פ%2$d-%3$d - %4$s</string>
-    <string name="storage_name">%s (%d מ\"ב פנויים)</string>
+    <string name="storage_name">%1$s (%2$d מ\"ב פנויים)</string>
     <string name="app_language">שפת היישומון</string>
     <string name="downloaded_indicator">מחוון הורדה</string>
     <string name="remove_server_address">הסר כתובת שרת</string>
     <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך להסיר את כתובת השרת %1$s</string>
     <string name="pref_player_trick_play">Trick Play</string>
+    <string name="picture_in_picture">תמונה-בתוך-תמונה</string>
+    <string name="picture_in_picture_gesture_summary">השתמש בכפתור הבית או במחווה כדי להכנס למצב תמונה-בתוך-תמונה כאשר הוידאו פועל</string>
 </resources>

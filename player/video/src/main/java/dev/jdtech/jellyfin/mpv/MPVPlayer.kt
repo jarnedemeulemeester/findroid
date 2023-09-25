@@ -590,6 +590,7 @@ class MPVPlayer(
         startWindowIndex: Int,
         startPositionMs: Long,
     ) {
+        MPVLib.command(arrayOf("playlist-clear"))
         internalMediaItems = mediaItems
         currentIndex = startWindowIndex
         initialSeekTo = startPositionMs / 1000
@@ -706,12 +707,12 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems.forEach { mediaItem ->
+        internalMediaItems.forEachIndexed { index, mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
-                    "append",
+                    if (index == 0) "replace" else "append",
                 ),
             )
         }
@@ -1201,7 +1202,10 @@ class MPVPlayer(
      * @see androidx.media3.common.Player.Listener.onVideoSizeChanged
      */
     override fun getVideoSize(): VideoSize {
-        return VideoSize.UNKNOWN
+        val width = MPVLib.getPropertyInt("width")
+        val height = MPVLib.getPropertyInt("height")
+        if (width == null || height == null) return VideoSize.UNKNOWN
+        return VideoSize(width, height)
     }
 
     override fun getSurfaceSize(): Size {

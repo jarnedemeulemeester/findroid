@@ -1,4 +1,10 @@
 <resources>
+    <!-- Player theme -->
+    <style name="Theme.Findroid.Player" parent="Theme.Findroid">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.Findroid" parent="Base.Theme.Findroid" />
 
@@ -45,7 +51,6 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
-        <item name="dolbyColor">#000</item>
     </style>
 
     <string-array name="themes">

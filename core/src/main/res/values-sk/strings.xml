@@ -157,14 +157,14 @@
     <string name="storage_unavailable">Úložisko nie je dostupné</string>
     <string name="internal">Vnútorné</string>
     <string name="external">Externé</string>
-    <string name="storage_name">%s (%d voľných MB)</string>
+    <string name="storage_name">%1$s (%2$d voľných MB)</string>
     <string name="preparing_download">Príprava sťahovania</string>
     <string name="cancel_download">Zrušiť sťahovanie</string>
     <string name="cancel_download_message">Naozaj chcete zrušiť sťahovanie\?</string>
     <string name="stop_download">Zastaviť sťahovanie</string>
     <string name="offline_mode_go_online">Prejsť do online režimu</string>
     <string name="downloading_error">Chyba pri sťahovaní</string>
-    <string name="not_enough_storage">Táto položka potrebuje %s voľného miesta, dostupných je iba %s</string>
+    <string name="not_enough_storage">Táto položka potrebuje %1$s voľného miesta, dostupných je iba %2$s</string>
     <string name="select_storage_location">Vybrať úložisko</string>
     <string name="no_server_connection">Nepodarilo sa spojiť s Jellyfin serverom, pre sledovanie offline povoľte Offline Režim</string>
     <string name="downloaded_indicator">Indikátor sťahovania</string>
@@ -173,4 +173,7 @@
     <string name="app_language">Jazyk aplikácie</string>
     <string name="remove_server_address">Odstrániť adresu serveru</string>
     <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
+    <string name="picture_in_picture">Obraz v obraze</string>
+    <string name="picture_in_picture_gesture">Gesto domov obrazu v obraze</string>
+    <string name="picture_in_picture_gesture_summary">Použi tlačidlo domov alebo gesto na prechod do režimu obrazu v obraze počas prehrávania videa</string>
 </resources>

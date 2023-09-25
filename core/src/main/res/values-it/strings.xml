@@ -157,9 +157,9 @@
     <string name="offline_mode_icon">Icona modalità Offline</string>
     <string name="offline_mode_go_online">Vai online</string>
     <string name="offline_mode">Modalità Offline</string>
-    <string name="storage_name">%s (%d MB liberi)</string>
+    <string name="storage_name">%1$s (%2$d MB liberi)</string>
     <string name="preparing_download">Preparazione del download</string>
-    <string name="cancel_download">Cancella il download</string>
+    <string name="cancel_download">Annulla il download</string>
     <string name="external">Esterno</string>
     <string name="storage_unavailable">Il percorso di archiviazione non è disponibile</string>
     <string name="internal">Interno</string>
@@ -167,10 +167,13 @@
     <string name="stop_download">Interrompi download</string>
     <string name="app_language">Lingua applicazione</string>
     <string name="downloading_error">Errore nel download</string>
-    <string name="not_enough_storage">Questo elemento richiede %s di spazio libero, ma sono disponibili solo %s</string>
+    <string name="not_enough_storage">Questo elemento richiede %1$s di spazio libero, ma sono disponibili solo %2$s</string>
     <string name="no_server_connection">Nessuna connessione con il server Jellyfin, attivare la Modalità Offline per vedere gli elementi scaricati</string>
     <string name="select_storage_location">Seleziona la posizione di archiviazione</string>
     <string name="downloaded_indicator">Indicatore scaricato</string>
     <string name="remove_server_address">Rimuovi indirizzo server</string>
     <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
+    <string name="picture_in_picture">Immagine nell\'immagine</string>
+    <string name="picture_in_picture_gesture">Gesto/pulsante home</string>
+    <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
 </resources>

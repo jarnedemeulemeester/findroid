@@ -99,7 +99,7 @@
         app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
         app:widgetLayout="@layout/preference_material3_switch" />
-
+        
     <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="pref_player_trick_play"
@@ -107,4 +107,11 @@
         app:title="@string/pref_player_trick_play"
         app:widgetLayout="@layout/preference_material3_switch" />
 
+    <PreferenceCategory app:title="@string/picture_in_picture">
+        <SwitchPreferenceCompat
+            app:key="pref_player_picture_in_picture_gesture"
+            app:title="@string/picture_in_picture_gesture"
+            app:summary="@string/picture_in_picture_gesture_summary" />
+    </PreferenceCategory>
+    
 </PreferenceScreen>

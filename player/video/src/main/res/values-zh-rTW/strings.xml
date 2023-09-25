@@ -9,4 +9,11 @@
     <string name="player_controls_rewind">倒帶</string>
     <string name="player_controls_fast_forward">快轉</string>
     <string name="player_controls_skip_intro">跳過片頭</string>
+    <string name="player_controls_lock">鎖定播放器</string>
+    <string name="player_controls_skip_back">跳回</string>
+    <string name="player_controls_play_pause">播放暫停</string>
+    <string name="player_controls_skip_forward">向前跳</string>
+    <string name="player_controls_picture_in_picture">輸入畫中畫</string>
+    <string name="player_trickplay">特技播放</string>
+    <string name="player_controls_progress">進度條</string>
 </resources>

@@ -154,11 +154,19 @@
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
             android:gravity="bottom"
+            android:layout_marginEnd="8dp"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:drawableStartCompat="@drawable/ic_star"
             app:drawableTint="@color/yellow"
             tools:text="8.8" />
 
+        <TextView
+            android:id="@+id/size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:visibility="gone"
+            tools:text="42.42 TB" />
     </LinearLayout>
 
     <include

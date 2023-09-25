@@ -151,7 +151,7 @@
     <string name="pref_player_trick_play_summary">Requer que o plug-in Jellyscrub do nicknsy seja instalado no servidor</string>
     <string name="pref_player_trick_play">Miniatura de pré-visualização</string>
     <string name="offline_mode_icon">Ícone do modo offline</string>
-    <string name="not_enough_storage">Este item requer %s de armazenamento livre, mas apenas %s está disponível</string>
+    <string name="not_enough_storage">Este item requer %1$s de armazenamento livre, mas apenas %2$s está disponível</string>
     <string name="cancel_download_message">Tem certeza de que deseja cancelar o download\?</string>
     <string name="downloaded_indicator">Indicador de download</string>
     <string name="offline_mode">Modo offline</string>
@@ -162,7 +162,7 @@
     <string name="storage_unavailable">O local de armazenamento não está disponível</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
-    <string name="storage_name">%s (%d MB livre)</string>
+    <string name="storage_name">%1$s (%2$d MB livre)</string>
     <string name="preparing_download">Preparando o download</string>
     <string name="cancel_download">Cancelar download</string>
     <string name="stop_download">Parar download</string>
@@ -173,4 +173,7 @@
     <string name="app_language">Idioma do aplicativo</string>
     <string name="remove_server_address">Excluir endereço do servidor</string>
     <string name="remove_server_address_dialog_text">Tem certeza de que deseja excluir o endereço do servidor %1$s</string>
+    <string name="picture_in_picture">Picture-in-picture</string>
+    <string name="picture_in_picture_gesture">Picture-in-Picture</string>
+    <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
 </resources>

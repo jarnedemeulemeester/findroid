@@ -9,7 +9,9 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,10 +23,28 @@ constructor(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : ViewModel() {
-    val servers = database.getAllServers()
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
+
+    sealed class UiState {
+        data class Normal(val servers: List<Server>) : UiState()
+        data object Loading : UiState()
+        data class Error(val error: Exception) : UiState()
+    }
+
+    init {
+        viewModelScope.launch {
+            loadServers()
+        }
+    }
+
+    private suspend fun loadServers() {
+        val servers = database.getAllServersSync()
+        _uiState.emit(UiState.Normal(servers))
+    }
 
     /**
      * Delete server from database
@@ -34,12 +54,13 @@ constructor(
     fun deleteServer(server: Server) {
         viewModelScope.launch(Dispatchers.IO) {
             database.delete(server.id)
+            loadServers()
         }
     }
 
     fun connectToServer(server: Server) {
         viewModelScope.launch {
-            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id)!!
+            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id) ?: return@launch
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
             val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
 

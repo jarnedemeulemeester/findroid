@@ -7,11 +7,12 @@
     <string name="external">Externo</string>
     <string name="player_controls_exit">Salir del reproductor</string>
     <string name="player_controls_rewind">Rebobinar</string>
-    <string name="player_controls_fast_forward">Avance rápido</string>
-    <string name="player_controls_skip_intro">Saltar intro</string>
+    <string name="player_controls_fast_forward">Avanzar</string>
+    <string name="player_controls_skip_intro">Saltar introducción</string>
     <string name="player_controls_skip_forward">Saltar adelante</string>
-    <string name="player_controls_lock">Bloquear reproductor</string>
-    <string name="player_controls_play_pause">Play pause</string>
-    <string name="player_controls_skip_back">Volver atrás</string>
+    <string name="player_controls_lock">Bloquea el reproductor</string>
+    <string name="player_controls_play_pause">Reproducir pausar</string>
+    <string name="player_controls_skip_back">Saltar atrás</string>
     <string name="player_controls_progress">Barra de progreso</string>
+    <string name="player_trickplay">Avance</string>
 </resources>

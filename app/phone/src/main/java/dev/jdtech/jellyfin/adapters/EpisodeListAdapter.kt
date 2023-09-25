@@ -8,6 +8,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
+import dev.jdtech.jellyfin.bindItemBackdropById
+import dev.jdtech.jellyfin.bindSeasonPoster
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
@@ -19,31 +22,30 @@ private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class EpisodeListAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (item: FindroidEpisode) -> Unit,
 ) :
     ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class HeaderViewHolder(private var binding: SeasonHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(header: EpisodeItem.Header) {
-            binding.seriesId = header.seriesId
-            binding.seasonId = header.seasonId
             binding.seasonName.text = header.seasonName
             binding.seriesName.text = header.seriesName
-            binding.executePendingBindings()
+            bindItemBackdropById(binding.itemBanner, header.seriesId)
+            bindSeasonPoster(binding.seasonPoster, header.seasonId)
         }
     }
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(episode: FindroidEpisode) {
-            binding.episode = episode
-
             binding.episodeTitle.text = if (episode.indexNumberEnd == null) {
                 binding.root.context.getString(CoreR.string.episode_name, episode.indexNumber, episode.name)
             } else {
                 binding.root.context.getString(CoreR.string.episode_name_with_end, episode.indexNumber, episode.indexNumberEnd, episode.name)
             }
+
+            binding.episodeOverview.text = episode.overview
 
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
@@ -56,9 +58,11 @@ class EpisodeListAdapter(
                 binding.progressBar.visibility = View.GONE
             }
 
+            binding.playedIcon.isVisible = episode.played
+            binding.missingIcon.isVisible = episode.missing
             binding.downloadedIcon.isVisible = episode.isDownloaded()
 
-            binding.executePendingBindings()
+            bindCardItemImage(binding.episodeImage, episode)
         }
     }
 
@@ -105,7 +109,7 @@ class EpisodeListAdapter(
             ITEM_VIEW_TYPE_EPISODE -> {
                 val item = getItem(position) as EpisodeItem.Episode
                 holder.itemView.setOnClickListener {
-                    onClickListener.onClick(item.episode)
+                    onClickListener(item.episode)
                 }
                 (holder as EpisodeViewHolder).bind(item.episode)
             }
@@ -117,9 +121,5 @@ class EpisodeListAdapter(
             is EpisodeItem.Header -> ITEM_VIEW_TYPE_HEADER
             is EpisodeItem.Episode -> ITEM_VIEW_TYPE_EPISODE
         }
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidEpisode) -> Unit) {
-        fun onClick(item: FindroidEpisode) = clickListener(item)
     }
 }
