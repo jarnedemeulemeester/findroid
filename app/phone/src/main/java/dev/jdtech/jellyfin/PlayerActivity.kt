@@ -465,7 +465,7 @@ class PlayerActivity : BasePlayerActivity() {
         builder.create().show()
     }
 
-    private fun disableSleepMode () {
+    private fun disableSleepMode() {
         binding.playerView.player?.playWhenReady = true
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         binding.playerView.findViewById<FrameLayout>(R.id.sleep_mode_view).visibility = View.GONE
