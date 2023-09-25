@@ -370,7 +370,9 @@ class PlayerActivity : BasePlayerActivity() {
             binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
         }
 
-        enterPictureInPictureMode(pipParams())
+        try {
+            enterPictureInPictureMode(pipParams())
+        } catch (_: IllegalArgumentException) { }
     }
 
     override fun onPictureInPictureModeChanged(
