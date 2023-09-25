@@ -22,7 +22,7 @@ private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class EpisodeListAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (item: FindroidEpisode) -> Unit,
 ) :
     ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
@@ -109,7 +109,7 @@ class EpisodeListAdapter(
             ITEM_VIEW_TYPE_EPISODE -> {
                 val item = getItem(position) as EpisodeItem.Episode
                 holder.itemView.setOnClickListener {
-                    onClickListener.onClick(item.episode)
+                    onClickListener(item.episode)
                 }
                 (holder as EpisodeViewHolder).bind(item.episode)
             }
@@ -121,9 +121,5 @@ class EpisodeListAdapter(
             is EpisodeItem.Header -> ITEM_VIEW_TYPE_HEADER
             is EpisodeItem.Episode -> ITEM_VIEW_TYPE_EPISODE
         }
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidEpisode) -> Unit) {
-        fun onClick(item: FindroidEpisode) = clickListener(item)
     }
 }

@@ -33,10 +33,10 @@ class ServerSelectFragment : Fragment() {
 
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
-                ServerGridAdapter.OnClickListener { server ->
+                onClickListener = { server ->
                     viewModel.connectToServer(server)
                 },
-                ServerGridAdapter.OnLongClickListener { server ->
+                onLongClickListener = { server ->
                     DeleteServerDialogFragment(viewModel, server).show(
                         parentFragmentManager,
                         "deleteServer",

@@ -115,7 +115,7 @@ class LibraryFragment : Fragment() {
 
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
-                ViewItemPagingAdapter.OnClickListener { item ->
+                { item ->
                     navigateToItem(item)
                 },
             )

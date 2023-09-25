@@ -15,7 +15,7 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class ViewItemListAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (item: FindroidItem) -> Unit,
     private val fixedWidth: Boolean = false,
 ) : ListAdapter<FindroidItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
@@ -63,12 +63,8 @@ class ViewItemListAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+            onClickListener(item)
         }
         holder.bind(item, fixedWidth)
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
-        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }
