@@ -29,6 +29,9 @@ constructor(
     private val _navigateToMain = MutableSharedFlow<Boolean>()
     val navigateToMain = _navigateToMain.asSharedFlow()
 
+    private val _navigateToLogin = MutableSharedFlow<Boolean>()
+    val navigateToLogin = _navigateToLogin.asSharedFlow()
+
     sealed class UiState {
         data class Normal(val servers: List<Server>) : UiState()
         data object Loading : UiState()
@@ -62,7 +65,19 @@ constructor(
         viewModelScope.launch {
             val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id) ?: return@launch
             val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
-            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId } ?: return@launch
+            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
+
+            // If server has no selected user, navigate to login fragment
+            if (user == null) {
+                jellyfinApi.apply {
+                    api.baseUrl = serverAddress.address
+                    api.accessToken = null
+                    userId = null
+                }
+                appPreferences.currentServer = server.id
+                _navigateToLogin.emit(true)
+                return@launch
+            }
 
             jellyfinApi.apply {
                 api.baseUrl = serverAddress.address
