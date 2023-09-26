@@ -118,4 +118,8 @@
     <string name="settings_cache_size_message">A App irá utilizar esta quantidade de MB do seu espaço em disco para armazenar imagens do servidor Jellyfin. Valores maiores podem ser benéficos em redes mais lentas.</string>
     <string name="settings_preferred_audio_language">Preferir idioma audio</string>
     <string name="settings_use_cache_summary">Cache de imagens em memória para acelerar o tempo de carregamento. Terá efeito após o reinício da aplicação.</string>
+    <string name="remove_server_address">Remover endereço do servidor</string>
+    <string name="external">Externo</string>
+    <string name="remove_user">Remover usuário</string>
+    <string name="remove_user_dialog_text">Tem certeza de que deseja remover o usuário %1$s</string>
 </resources>
