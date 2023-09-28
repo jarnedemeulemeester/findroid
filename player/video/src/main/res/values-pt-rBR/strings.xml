@@ -9,4 +9,11 @@
     <string name="player_controls_rewind">Retroceder</string>
     <string name="player_controls_fast_forward">Avanço rápido</string>
     <string name="player_controls_skip_intro">Pular introdução</string>
+    <string name="player_controls_lock">Bloqueia o reprodutor</string>
+    <string name="player_controls_skip_back">Saltar para trás</string>
+    <string name="player_trickplay">Miniatura de pré-visualização</string>
+    <string name="player_controls_play_pause">Reproduzir pausar</string>
+    <string name="player_controls_skip_forward">Saltar para a frente</string>
+    <string name="player_controls_progress">Barra de progresso</string>
+    <string name="player_controls_picture_in_picture">Entrar no picture-in-picture</string>
 </resources>
