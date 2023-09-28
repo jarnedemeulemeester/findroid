@@ -1,11 +1,9 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
@@ -24,7 +22,6 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -46,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         scheduleUserDataSync()
-        cleanUpOldDownloads()
         applyTheme()
         setupActivity()
     }
@@ -131,31 +127,6 @@ class MainActivity : AppCompatActivity() {
                     onNoUser()
                 }
             }
-        }
-    }
-
-    /**
-     * Temp to remove old downloads, will be removed in a future version
-     */
-    private fun cleanUpOldDownloads() {
-        if (appPreferences.downloadsMigrated) {
-            return
-        }
-
-        lifecycleScope.launch {
-            val oldDir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-            if (oldDir == null) {
-                appPreferences.downloadsMigrated = true
-                return@launch
-            }
-
-            try {
-                for (file in oldDir.listFiles()!!) {
-                    file.delete()
-                }
-            } catch (_: Exception) {}
-
-            appPreferences.downloadsMigrated = true
         }
     }
 
