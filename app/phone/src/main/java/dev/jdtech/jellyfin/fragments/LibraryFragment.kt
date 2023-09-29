@@ -28,11 +28,14 @@ import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.SortOrder
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -42,6 +45,7 @@ class LibraryFragment : Fragment() {
 
     private lateinit var binding: FragmentLibraryBinding
     private val viewModel: LibraryViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
     private val args: LibraryFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
@@ -115,9 +119,8 @@ class LibraryFragment : Fragment() {
 
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
-                { item ->
-                    navigateToItem(item)
-                },
+                onClickListener =  { item -> navigateToItem(item) },
+                onLongClickListener = { item -> playerViewModel.loadPlayerItems(item) },
             )
 
         (binding.itemsRecyclerView.adapter as ViewItemPagingAdapter).addLoadStateListener {
@@ -167,6 +170,21 @@ class LibraryFragment : Fragment() {
                 )
             }
         }
+
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+        }
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     private fun bindUiStateNormal(uiState: LibraryViewModel.UiState.Normal) {
@@ -223,5 +241,15 @@ class LibraryFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun navigateToPlayerActivity(
+        playerItems: Array<PlayerItem>,
+    ) {
+        findNavController().navigate(
+            LibraryFragmentDirections.actionLibraryFragmentToPlayerActivity(
+                playerItems,
+            ),
+        )
     }
 }
