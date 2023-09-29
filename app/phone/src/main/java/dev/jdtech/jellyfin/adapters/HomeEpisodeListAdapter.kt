@@ -16,7 +16,10 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
-class HomeEpisodeListAdapter(private val onClickListener: (item: FindroidItem) -> Unit) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+class HomeEpisodeListAdapter(
+    private val onClickListener: (item: FindroidItem) -> Unit,
+    private val onItemLongClickListener: (item: FindroidItem) -> Unit = {},
+) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
         private val parent: ViewGroup,
@@ -39,12 +42,24 @@ class HomeEpisodeListAdapter(private val onClickListener: (item: FindroidItem) -
                     binding.primaryName.text = item.name
                     binding.secondaryName.visibility = View.GONE
                 }
+
                 is FindroidEpisode -> {
                     binding.primaryName.text = item.seriesName
                     binding.secondaryName.text = if (item.indexNumberEnd == null) {
-                        parent.resources.getString(CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
+                        parent.resources.getString(
+                            CoreR.string.episode_name_extended,
+                            item.parentIndexNumber,
+                            item.indexNumber,
+                            item.name
+                        )
                     } else {
-                        parent.resources.getString(CoreR.string.episode_name_extended_with_end, item.parentIndexNumber, item.indexNumber, item.indexNumberEnd, item.name)
+                        parent.resources.getString(
+                            CoreR.string.episode_name_extended_with_end,
+                            item.parentIndexNumber,
+                            item.indexNumber,
+                            item.indexNumberEnd,
+                            item.name
+                        )
                     }
                 }
             }
@@ -78,6 +93,10 @@ class HomeEpisodeListAdapter(private val onClickListener: (item: FindroidItem) -
         val item = getItem(position)
         holder.itemView.setOnClickListener {
             onClickListener(item)
+        }
+        holder.itemView.setOnLongClickListener {
+            onItemLongClickListener(item)
+            true
         }
         holder.bind(item)
     }

@@ -49,6 +49,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
 
     <fragment
