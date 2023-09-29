@@ -50,7 +50,7 @@ class HomeEpisodeListAdapter(
                             CoreR.string.episode_name_extended,
                             item.parentIndexNumber,
                             item.indexNumber,
-                            item.name
+                            item.name,
                         )
                     } else {
                         parent.resources.getString(
@@ -58,7 +58,7 @@ class HomeEpisodeListAdapter(
                             item.parentIndexNumber,
                             item.indexNumber,
                             item.indexNumberEnd,
-                            item.name
+                            item.name,
                         )
                     }
                 }
