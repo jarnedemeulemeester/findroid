@@ -20,7 +20,9 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SearchResultViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,6 +32,7 @@ class SearchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchResultBinding
     private val viewModel: SearchResultViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
     private val args: SearchResultFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
@@ -41,9 +44,10 @@ class SearchResultFragment : Fragment() {
     ): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
 
-        binding.searchResultsRecyclerView.adapter = FavoritesListAdapter { item ->
-            navigateToMediaItem(item)
-        }
+        binding.searchResultsRecyclerView.adapter = FavoritesListAdapter(
+            onItemClickListener = { item -> navigateToMediaItem(item) },
+            onItemLongClickListener = { item -> playerViewModel.loadPlayerItems(item) }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -72,7 +76,22 @@ class SearchResultFragment : Fragment() {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+        }
+
         return binding.root
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     private fun bindUiStateNormal(uiState: SearchResultViewModel.UiState.Normal) {
@@ -126,5 +145,15 @@ class SearchResultFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun navigateToPlayerActivity(
+        playerItems: Array<PlayerItem>,
+    ) {
+        findNavController().navigate(
+            SearchResultFragmentDirections.actionSearchResultFragmentToPlayerActivity(
+                playerItems,
+            ),
+        )
     }
 }
