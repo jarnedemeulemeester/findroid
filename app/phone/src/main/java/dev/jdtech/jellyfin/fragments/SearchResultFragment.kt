@@ -46,7 +46,7 @@ class SearchResultFragment : Fragment() {
 
         binding.searchResultsRecyclerView.adapter = FavoritesListAdapter(
             onItemClickListener = { item -> navigateToMediaItem(item) },
-            onItemLongClickListener = { item -> playerViewModel.loadPlayerItems(item) }
+            onItemLongClickListener = { item -> playerViewModel.loadPlayerItems(item) },
         )
 
         viewLifecycleOwner.lifecycleScope.launch {

@@ -119,7 +119,7 @@ class LibraryFragment : Fragment() {
 
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
-                onClickListener =  { item -> navigateToItem(item) },
+                onClickListener = { item -> navigateToItem(item) },
                 onLongClickListener = { item -> playerViewModel.loadPlayerItems(item) },
             )
 
