@@ -30,11 +30,12 @@ class ViewListAdapter(
             dataItem: HomeItem.ViewItem,
             onClickListener: (view: View) -> Unit,
             onItemClickListener: (item: FindroidItem) -> Unit,
+            onItemLongClickListener: (item: FindroidItem) -> Unit,
         ) {
             val view = dataItem.view
             binding.viewName.text = binding.viewName.context.resources.getString(CoreR.string.latest_library, view.name)
             binding.itemsRecyclerView.adapter =
-                ViewItemListAdapter(onItemClickListener, fixedWidth = true)
+                ViewItemListAdapter(onItemClickListener, onItemLongClickListener, fixedWidth = true)
             (binding.itemsRecyclerView.adapter as ViewItemListAdapter).submitList(view.items)
             binding.viewAll.setOnClickListener {
                 onClickListener(view)
@@ -112,7 +113,7 @@ class ViewListAdapter(
             }
             ITEM_VIEW_TYPE_VIEW -> {
                 val view = getItem(position) as HomeItem.ViewItem
-                (holder as ViewViewHolder).bind(view, onClickListener, onItemClickListener)
+                (holder as ViewViewHolder).bind(view, onClickListener, onItemClickListener, onItemLongClickListener)
             }
             ITEM_VIEW_TYPE_OFFLINE_CARD -> {
                 (holder as OfflineCardViewHolder).bind(onOnlineClickListener)
