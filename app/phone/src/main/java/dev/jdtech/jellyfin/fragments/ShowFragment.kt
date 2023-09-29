@@ -118,6 +118,11 @@ class ShowFragment : Fragment() {
             navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
         }
 
+        binding.nextUp.setOnLongClickListener {
+            playerViewModel.loadPlayerItems(viewModel.nextUp!!)
+            true
+        }
+
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
                 { season ->
