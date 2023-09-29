@@ -123,6 +123,13 @@ class ShowFragment : Fragment() {
                 { season ->
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
+                onItemLongClickListener = { season ->
+                    // Loads the "Next Up" episode if it's matching the selected season,
+                    // otherwise just starts the first episode.
+                    playerViewModel.loadPlayerItems(
+                        viewModel.nextUp?.takeIf { it.seasonId == season.id } ?: season,
+                    )
+                },
                 fixedWidth = true,
             )
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
