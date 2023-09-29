@@ -123,6 +123,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_libraryFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
         <argument
             android:name="libraryType"
             app:argType="dev.jdtech.jellyfin.models.CollectionType" />
@@ -238,6 +241,9 @@
         <action
             android:id="@+id/action_favoriteFragment_to_movieFragment"
             app:destination="@id/movieFragment" />
+        <action
+            android:id="@+id/action_favoriteFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
     <fragment
         android:id="@+id/collectionFragment"
@@ -261,6 +267,9 @@
         <action
             android:id="@+id/action_collectionFragment_to_movieFragment"
             app:destination="@id/movieFragment" />
+        <action
+            android:id="@+id/action_collectionFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
@@ -276,6 +285,9 @@
         <action
             android:id="@+id/action_searchResultFragment_to_movieFragment"
             app:destination="@id/movieFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
         <argument
             android:name="query"
             app:argType="string" />
@@ -407,6 +419,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_downloadsFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
 
 </navigation>
