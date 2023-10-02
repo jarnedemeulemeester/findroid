@@ -152,6 +152,7 @@ class HomeFragment : Fragment() {
                 navigateToMediaItem(it)
             },
             onItemLongClickListener = {
+                binding.loadingIndicator.isVisible = true
                 playerViewModel.loadPlayerItems(it)
             },
             onOnlineClickListener = {
@@ -173,6 +174,7 @@ class HomeFragment : Fragment() {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
+            binding.loadingIndicator.isVisible = false
         }
     }
 
