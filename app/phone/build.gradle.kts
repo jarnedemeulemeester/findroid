@@ -46,7 +46,7 @@ android {
 
     flavorDimensions += "variant"
     productFlavors {
-        register("libre") {
+        register("google-play-services") {
             dimension = "variant"
             isDefault = true
         }
@@ -109,6 +109,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)
+    implementation(libs.coil)
+    implementation(libs.coil.svg)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
