@@ -29,8 +29,8 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
+import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
