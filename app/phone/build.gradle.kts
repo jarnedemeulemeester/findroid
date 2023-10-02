@@ -110,7 +110,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
     implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
