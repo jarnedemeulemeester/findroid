@@ -88,7 +88,7 @@ class SeasonFragment : Fragment() {
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(
                 onClickListener = { episode -> navigateToEpisodeBottomSheetFragment(episode) },
-                onLongClickListener =  { episode ->
+                onLongClickListener = { episode ->
                     binding.loadingIndicator.isVisible = true
                     playerViewModel.loadPlayerItems(episode)
                 },
