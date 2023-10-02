@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
@@ -73,10 +74,8 @@ class SeasonFragment : Fragment() {
 
         playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
             when (playerItems) {
-                is PlayerViewModel.PlayerItems -> {
-                    navigateToPlayerActivity(playerItems.items.toTypedArray())
-                }
-                is PlayerViewModel.PlayerItemError -> {}
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
             binding.loadingIndicator.isVisible = false
         }
@@ -93,6 +92,15 @@ class SeasonFragment : Fragment() {
                     playerViewModel.loadPlayerItems(episode)
                 },
             )
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+        playerErrorDialogSnackbar(parentFragmentManager, binding.root, error)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     override fun onResume() {

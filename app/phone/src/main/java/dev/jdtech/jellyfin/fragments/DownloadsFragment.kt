@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.restart
+import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
@@ -91,6 +92,7 @@ class DownloadsFragment : Fragment() {
 
     private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
         Timber.e(error.error.message)
+        playerErrorDialogSnackbar(parentFragmentManager, binding.root, error)
     }
 
     private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
