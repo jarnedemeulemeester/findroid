@@ -45,7 +45,10 @@ class CollectionFragment : Fragment() {
 
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
             onItemClickListener = { item -> navigateToMediaItem(item) },
-            onItemLongClickListener = { item -> playerViewModel.loadPlayerItems(item) },
+            onItemLongClickListener = { item ->
+                binding.loadingIndicator.isVisible = true
+                playerViewModel.loadPlayerItems(item)
+            },
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -80,6 +83,7 @@ class CollectionFragment : Fragment() {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
+            binding.loadingIndicator.isVisible = false
         }
 
         return binding.root

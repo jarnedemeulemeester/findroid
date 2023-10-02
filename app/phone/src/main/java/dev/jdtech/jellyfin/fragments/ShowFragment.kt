@@ -98,6 +98,7 @@ class ShowFragment : Fragment() {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
+            binding.loadingIndicator.isVisible = false
         }
 
         binding.itemActions.trailerButton.setOnClickListener {
@@ -119,6 +120,7 @@ class ShowFragment : Fragment() {
         }
 
         binding.nextUp.setOnLongClickListener {
+            binding.loadingIndicator.isVisible = true
             playerViewModel.loadPlayerItems(viewModel.nextUp!!)
             true
         }

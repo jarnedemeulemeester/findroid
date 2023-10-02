@@ -120,7 +120,10 @@ class LibraryFragment : Fragment() {
         binding.itemsRecyclerView.adapter =
             ViewItemPagingAdapter(
                 onClickListener = { item -> navigateToItem(item) },
-                onLongClickListener = { item -> playerViewModel.loadPlayerItems(item) },
+                onLongClickListener = { item ->
+                    binding.loadingIndicator.isVisible = true
+                    playerViewModel.loadPlayerItems(item)
+                },
             )
 
         (binding.itemsRecyclerView.adapter as ViewItemPagingAdapter).addLoadStateListener {
@@ -176,6 +179,7 @@ class LibraryFragment : Fragment() {
                 is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
                 is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
+            binding.loadingIndicator.isVisible = false
         }
     }
 

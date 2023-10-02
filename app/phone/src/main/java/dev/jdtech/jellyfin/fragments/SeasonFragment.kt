@@ -78,6 +78,7 @@ class SeasonFragment : Fragment() {
                 }
                 is PlayerViewModel.PlayerItemError -> {}
             }
+            binding.loadingIndicator.isVisible = false
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
@@ -87,7 +88,10 @@ class SeasonFragment : Fragment() {
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter(
                 onClickListener = { episode -> navigateToEpisodeBottomSheetFragment(episode) },
-                onLongClickListener = { episode -> playerViewModel.loadPlayerItems(episode) },
+                onLongClickListener =  { episode ->
+                    binding.loadingIndicator.isVisible = true
+                    playerViewModel.loadPlayerItems(episode)
+                },
             )
     }
 
