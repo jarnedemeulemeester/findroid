@@ -52,8 +52,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
 var isControlsLocked: Boolean = false
 
@@ -464,7 +464,7 @@ class PlayerActivity : BasePlayerActivity() {
         wasDialogShown = true
         builder.create().show()
     }
-    
+
     private fun disableSleepMode() {
         binding.playerView.player?.playWhenReady = true
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -482,35 +482,35 @@ class PlayerActivity : BasePlayerActivity() {
         val hourText = resources.getQuantityString(
             CoreR.plurals.hour,
             hours.toInt(),
-            hours
+            hours,
         )
 
         val minuteText = resources.getQuantityString(
             CoreR.plurals.minute,
             minutes.toInt(),
-            minutes
+            minutes,
         )
 
         return when {
             hours > 0 && minutes > 0 ->
                 getString(
                     CoreR.string.sleep_mode_enabled_hours_and_minutes,
-                    hours, // %1$s
-                    hourText, // %2$s
-                    minutes, // %3$s
-                    minuteText // %4$s
+                    hours,
+                    hourText,
+                    minutes,
+                    minuteText,
                 )
             hours > 0 ->
                 getString(
                     CoreR.string.sleep_mode_enabled_hours,
-                    hours, // %1$s
-                    hourText // %2$s
+                    hours,
+                    hourText,
                 )
             else ->
                 getString(
                     CoreR.string.sleep_mode_enabled_minutes,
-                    minutes, // %1$s
-                    minuteText // %2$s
+                    minutes,
+                    minuteText,
                 )
         }
     }
