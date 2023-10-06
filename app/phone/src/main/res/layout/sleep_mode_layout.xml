@@ -32,7 +32,7 @@
             android:id="@+id/sleepModeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sleep_mode_enabled"
+            android:text="@string/sleep_mode_enabled_title"
             android:textColor="@color/neutral_200"
             android:textSize="60sp"
             app:layout_constraintBottom_toBottomOf="parent"

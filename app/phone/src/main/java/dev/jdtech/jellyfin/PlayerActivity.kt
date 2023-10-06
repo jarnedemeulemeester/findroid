@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
@@ -52,6 +53,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
+import dev.jdtech.jellyfin.core.R as CoreR
 
 var isControlsLocked: Boolean = false
 
@@ -315,7 +317,7 @@ class PlayerActivity : BasePlayerActivity() {
                 // Check if the sleep timer is currently running
                 if (sleepJob?.isActive == true) {
                     sleepJob?.cancel()
-                    Toast.makeText(applicationContext, "Sleep Mode timer has been disabled!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, CoreR.string.sleep_mode_disabled, Toast.LENGTH_SHORT).show()
                 }
                 isSleepModeEnabled = false
             } else {
@@ -436,24 +438,23 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun showSleepTimerDurationDialog() {
-        val timerTexts =
-            listOf("1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour", "2 hours")
+        val timerTexts = resources.getStringArray(CoreR.array.sleep_timer_durations)
         val durationValues = longArrayOf(60000L, 300000L, 600000L, 1800000L, 3600000L, 7200000L)
         var selectedDuration = durationValues[2] // Default: 10 minutes in milliseconds
 
         val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle("Select Sleep Timer Duration")
+        builder.setTitle(CoreR.string.select_sleep_timer_duration)
             .setSingleChoiceItems(
-                timerTexts.toTypedArray(),
-                timerTexts.indexOf("${selectedDuration / 60000} minutes"),
+                timerTexts,
+                timerTexts.indexOf("${selectedDuration / 60000} ${resources.getString(CoreR.string.minutes)}"),
             ) { _, which ->
                 selectedDuration = durationValues[which]
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(CoreR.string.cancel) { dialog, _ ->
                 dialog.dismiss()
                 wasDialogShown = false
             }
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(CoreR.string.set) { dialog, _ ->
                 // Start the sleep timer with the selected duration
                 startSleepTimer(selectedDuration)
                 isSleepModeEnabled = true
@@ -463,7 +464,7 @@ class PlayerActivity : BasePlayerActivity() {
         wasDialogShown = true
         builder.create().show()
     }
-
+    
     private fun disableSleepMode() {
         binding.playerView.player?.playWhenReady = true
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -473,20 +474,44 @@ class PlayerActivity : BasePlayerActivity() {
         isSleepModeEnabled = false
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun formatTimerMessage(timerDuration: Long): String {
         val hours = timerDuration / 3600000L
         val minutes = (timerDuration % 3600000L) / 60000L
 
-        val hourText = if (hours == 1L) "hour" else "hours"
-        val minuteText = if (minutes == 1L) "minute" else "minutes"
+        val hourText = resources.getQuantityString(
+            CoreR.plurals.hour,
+            hours.toInt(),
+            hours
+        )
+
+        val minuteText = resources.getQuantityString(
+            CoreR.plurals.minute,
+            minutes.toInt(),
+            minutes
+        )
 
         return when {
             hours > 0 && minutes > 0 ->
-                "Sleep Mode will be enabled in $hours $hourText and $minutes $minuteText"
+                getString(
+                    CoreR.string.sleep_mode_enabled_hours_and_minutes,
+                    hours, // %1$s
+                    hourText, // %2$s
+                    minutes, // %3$s
+                    minuteText // %4$s
+                )
             hours > 0 ->
-                "Sleep Mode will be enabled in $hours $hourText"
+                getString(
+                    CoreR.string.sleep_mode_enabled_hours,
+                    hours, // %1$s
+                    hourText // %2$s
+                )
             else ->
-                "Sleep Mode will be enabled in $minutes $minuteText"
+                getString(
+                    CoreR.string.sleep_mode_enabled_minutes,
+                    minutes, // %1$s
+                    minuteText // %2$s
+                )
         }
     }
 }
