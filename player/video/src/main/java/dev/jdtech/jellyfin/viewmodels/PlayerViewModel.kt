@@ -249,67 +249,9 @@ class PlayerViewModel @Inject internal constructor(
         var subtitleIndex = -1
         var newAudioIndex = 1
 
-        val callback = object : RemoteMediaClient.Callback() {
 
-            override fun onSendingRemoteMediaRequest() {
-                val test = remoteMediaClient.approximateStreamPosition
-                viewModelScope.launch {
-                    try {
-                        repository.postPlaybackStop(
-                            item.itemId,
-                            test.times(10000),
-                            80,
-                        )
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
-            }
 
-            override fun onStatusUpdated() {
-                val mediaStatus = remoteMediaClient.mediaStatus
-                val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
-                val subtitlesOffset =
-                    mediaInfo?.mediaTracks!!.size - item.externalSubtitles.size
-                val mediaInfo = mediaStatus?.mediaInfo
-                val externalSubtitleCount = mediaInfo?.textTrackStyle?.describeContents()
-                if (mediaStatus != null) {
-                    if (previousSubtitleTrackIds != mediaStatus.activeTrackIds && previousSubtitleTrackIds != null) {
-                        if (activeSubtitleTrackIds != null) {
-                            if (activeSubtitleTrackIds.isNotEmpty()) {
-                                newIndex =
-                                    (mediaStatus.activeTrackIds!!.get(0)).toInt()
-                                if (newIndex < subtitlesOffset) {
-                                    newAudioIndex = newIndex
-                                } else {
-                                    subtitleIndex = newIndex
-                                }
-                            }
-                            val newUrl =
-                                jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 
-                            val newMediaInfo = buildMediaInfo(newUrl, item, episode)
-
-                            remoteMediaClient.load(
-                                MediaLoadRequestData.Builder()
-                                    .setMediaInfo(newMediaInfo)
-                                    .setAutoplay(true)
-                                    .setCurrentTime(mediaStatus.streamPosition.toInt().toLong())
-                                    .build(),
-                            )
-                        }
-                    }
-                }
-                previousSubtitleTrackIds = mediaStatus?.activeTrackIds
-            }
-        }
-
-        val myProgressListener =
-            MyProgressListener(jellyfinApi, item, repository, remoteMediaClient)
-        progressListeners.add(myProgressListener)
-
-        remoteMediaClient.registerCallback(callback)
-        remoteMediaClient.addProgressListener(myProgressListener, 50000)
         remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
@@ -317,8 +259,6 @@ class PlayerViewModel @Inject internal constructor(
                 .setCurrentTime(position.toLong()).build(),
         )
 
-        val mediaStatus = remoteMediaClient.mediaStatus
-        val activeMediaTracks = mediaStatus?.activeTrackIds
     }
 
     public suspend fun postPlaybackProgress(
@@ -359,12 +299,36 @@ class PlayerViewModel @Inject internal constructor(
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, item.name)
 
         val mediaSubtitles = episode.mediaStreams?.mapIndexed { index, externalSubtitle ->
-            MediaTrack.Builder(index.toLong(), MediaTrack.TYPE_TEXT)
+            MediaTrack.Builder(index.toLong(), if(externalSubtitle.type == MediaStreamType.AUDIO){ MediaTrack.TYPE_AUDIO} else{MediaTrack.TYPE_TEXT})
                 .setName(externalSubtitle.displayTitle + " " + externalSubtitle.type)
-                .setContentType("text/vtt")
-                .setLanguage(externalSubtitle.language)
+                //.setContentId(externalSubtitle.displayTitle + index)
+                .setRoles(emptyList())
+                .setLanguage("en-AU")
                 .build()
         }
+
+
+        val audioTracks: MutableList<MediaTrack> = ArrayList<MediaTrack>()
+
+        val audioTracks2 = episode.mediaStreams?.mapIndexed{index, mediaStream ->
+            if(!mediaStream.isTextSubtitleStream){
+                MediaTrack.Builder(index.toLong(), MediaTrack.TYPE_AUDIO)
+                    .setName(mediaStream.title)
+                    .setLanguage(mediaStream.language)
+                    .setContentId(mediaStream.deliveryUrl)
+                    .build()
+            }
+        }
+        val frenchAudio = MediaTrack.Builder(5, MediaTrack.TYPE_AUDIO)
+            .setLanguage("en-AU")
+            .setRoles(emptyList())
+            .build()
+        val engAudio = MediaTrack.Builder(3, MediaTrack.TYPE_AUDIO)
+            .setLanguage("en-AU")
+            .setRoles(emptyList())
+            .build()
+        audioTracks.add(frenchAudio)
+        audioTracks.add(engAudio)
 
         return MediaInfo.Builder(streamUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
