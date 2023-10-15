@@ -14,10 +14,8 @@ android {
     defaultConfig {
         minSdk = 28
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-        buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
+        buildConfigField("int", "VERSION_CODE", Versions.appCode.toString())
+        buildConfigField("String", "VERSION_NAME", "\"${Versions.appName}\"")
 
         consumerProguardFile("proguard-rules.pro")
 
@@ -42,7 +40,7 @@ android {
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }

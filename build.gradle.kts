@@ -37,6 +37,3 @@ allprojects {
 tasks.create<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-
-val appVersionCode by extra { 22 }
-val appVersionName by extra { "0.13.1" }
