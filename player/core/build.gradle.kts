@@ -30,7 +30,7 @@ android {
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }

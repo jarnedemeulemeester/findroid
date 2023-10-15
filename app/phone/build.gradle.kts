@@ -19,11 +19,8 @@ android {
         minSdk = 28
         targetSdk = 34
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-
-        versionCode = appVersionCode
-        versionName = appVersionName
+        versionCode = Versions.appCode
+        versionName = Versions.appName
     }
 
     buildTypes {
@@ -75,7 +72,7 @@ android {
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }
