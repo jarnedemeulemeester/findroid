@@ -479,6 +479,7 @@ class JellyfinRepositoryImpl(
                 r = r.replace(Regex("AudioStreamIndex=\\d+"), "AudioStreamIndex=-1")
                 r = r.replace(Regex("SubtitleStreamIndex=\\d+"), "SubtitleStreamIndex=-1")
                 r
+
             } catch (e: Exception) {
                 Timber.e(e)
                 "l"

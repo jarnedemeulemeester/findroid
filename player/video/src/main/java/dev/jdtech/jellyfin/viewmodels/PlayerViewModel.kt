@@ -275,24 +275,46 @@ class PlayerViewModel @Inject internal constructor(
                     mediaInfo?.mediaTracks!!.size - item.externalSubtitles.size
                 val mediaInfo = mediaStatus?.mediaInfo
                 val externalSubtitleCount = mediaInfo?.textTrackStyle?.describeContents()
+                var newAudioIndex = -1
+                var subtitleIndex = -1
                 var newUrl = ""
                 if (mediaStatus != null) {
                     if (!previousSubtitleTrackIds.contentEquals(mediaStatus.activeTrackIds) && previousSubtitleTrackIds != null) {
                         if (activeSubtitleTrackIds != null) {
-                            //val newUrl = repository.getStreamCastUrl()
-                            val subtitleIndex = if (activeSubtitleTrackIds.size >= 2) {
-                                activeSubtitleTrackIds[1]
-                            } else {
-                                activeSubtitleTrackIds[0]
+                            if (activeSubtitleTrackIds.isNotEmpty()) {
+                                newIndex =
+                                    (mediaStatus.activeTrackIds!!.get(0)).toInt()
+                                if (newIndex < subtitlesOffset) {
+                                    newAudioIndex = newIndex
+                                } else {
+                                    subtitleIndex = newIndex
+                                }
                             }
-                            var newAudioIndex = activeSubtitleTrackIds[0]
-                            val newUrl =
+                            if(activeSubtitleTrackIds.size > 1){
+                                if(subtitleIndex != newIndex){
+                                    subtitleIndex = mediaStatus.activeTrackIds!!.get(1).toInt()
+                                }
+                                else{
+                                    newAudioIndex = mediaStatus.activeTrackIds!!.get(1).toInt()
+                                }
+                            }
+                            /*if (activeSubtitleTrackIds.isNotEmpty()) {
+                                newIndex =
+                                    (mediaStatus.activeTrackIds!!.get(0)).toInt()
+                                if (mediaInfo!!.mediaTracks!![newIndex].type == (MediaTrack.TYPE_AUDIO)) {
+                                    newAudioIndex = newIndex
+                                    subtitleIndex = -1
+                                } else {
+                                    subtitleIndex = newIndex
+                                    newAudioIndex = -1
+                                }
+                            }*/
+                            /*val newUrl =
                                 jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
-
-                            if(activeSubtitleTrackIds.get(0).equals(0)){
-
-                            }
-
+*/                          var newUrl = mediaInfo?.contentUrl
+                            newUrl = newUrl!!.replace(Regex("AudioStreamIndex=-?\\d+"), "AudioStreamIndex="+newAudioIndex)
+                            newUrl = newUrl.replace(Regex("SubtitleStreamIndex=-?\\d+"), "SubtitleStreamIndex="+subtitleIndex)
+                            newUrl = newUrl.replace(Regex("PlaySessionId=[\\w&]+"), "PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key")
                             val newMediaInfo = buildMediaInfo(newUrl, item, episode)
 
                             remoteMediaClient.load(
