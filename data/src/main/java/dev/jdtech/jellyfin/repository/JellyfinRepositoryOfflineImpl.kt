@@ -295,7 +295,11 @@ class JellyfinRepositoryOfflineImpl(
         return jellyfinApi.userId!!
     }
 
-    override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String {
+    override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String{
+        TODO("Not yet implemented")
+    }
+
+    override fun getChromeCastUrls(itemId: UUID, mediaSourceId: String, subIndex: Int, audioIndex: Int): String {
         TODO("Not yet implemented")
     }
 }

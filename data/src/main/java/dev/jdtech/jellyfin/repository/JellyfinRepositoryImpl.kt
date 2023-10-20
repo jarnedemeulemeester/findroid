@@ -32,7 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.get
-import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -409,31 +408,77 @@ class JellyfinRepositoryImpl(
     override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
-                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 
-                val item = jellyfinApi.userLibraryApi.getItem(
-                    userId = jellyfinApi.userId!!,
-                    itemId = itemId,
-                ).content.mediaSources?.firstOrNull()?.mediaStreams
+                //this is needed in order to create a transcoding url
+                val item = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                    itemId,
+                    PlaybackInfoDto(
+                        userId = jellyfinApi.userId!!,
+                        deviceProfile = DeviceProfile(
+                            name = "Direct play all",
+                            maxStaticBitrate = 1_000_000_000,
+                            maxStreamingBitrate = 1_000_000_000,
+                            codecProfiles = emptyList(),
+                            containerProfiles = emptyList(),
+                            directPlayProfiles = listOf(
 
-                if (item?.get(0)?.codec != "hevc") {
-                    jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
-                } else {
-                    jellyfinApi.api.videosApi.getVideoStreamByContainerUrl(
-                        static = true,
-                        container = "mp4",
-                        subtitleMethod = SubtitleDeliveryMethod.EMBED,
-                        subtitleStreamIndex = 0,
-                        itemId = itemId,
-                        playSessionId = playSessionIds[itemId],
-                        includeCredentials = true,
-                        segmentContainer = "mp4",
-                        mediaSourceId = mediaSourceId,
-                        audioCodec = "mp3",
-                        context = EncodingContext.STREAMING,
-                        videoCodec = "h265",
-                    )
-                }
+                            ),
+                            transcodingProfiles = listOf(
+                                TranscodingProfile(
+                                    type = DlnaProfileType.VIDEO,
+                                    container = "mp4",
+                                    videoCodec = "h265",
+                                    audioCodec = "aac",
+                                    context = EncodingContext.STREAMING,
+                                    protocol = "hls",
+
+                                    // TODO: remove redundant defaults after API/SDK is fixed
+                                    estimateContentLength = false,
+                                    enableMpegtsM2TsMode = false,
+                                    maxAudioChannels = "2",
+                                    transcodeSeekInfo = TranscodeSeekInfo.AUTO,
+                                    copyTimestamps = true,
+                                    enableSubtitlesInManifest = true,
+                                    minSegments = 1,
+                                    segmentLength = 0,
+                                    breakOnNonKeyFrames = false,
+                                    conditions = emptyList(),
+                                ),
+                            ),
+                            responseProfiles = emptyList(),
+                            subtitleProfiles = listOf(
+                                SubtitleProfile("vtt", SubtitleDeliveryMethod.EMBED),
+
+                            ),
+                            xmlRootAttributes = emptyList(),
+                            supportedMediaTypes = "",
+                            enableAlbumArtInDidl = false,
+                            enableMsMediaReceiverRegistrar = false,
+                            enableSingleAlbumArtLimit = false,
+                            enableSingleSubtitleLimit = false,
+                            ignoreTranscodeByteRangeRequests = false,
+                            maxAlbumArtHeight = 1_000_000_000,
+                            maxAlbumArtWidth = 1_000_000_000,
+                            requiresPlainFolders = false,
+                            requiresPlainVideoItems = false,
+                            timelineOffsetSeconds = 0,
+                        ),
+                        maxStreamingBitrate = 1_000_000_000,
+                        audioStreamIndex = -1,
+                        subtitleStreamIndex = -1,
+                        enableTranscoding = true,
+                        enableDirectPlay = true,
+                        enableDirectStream = true,
+                    ),
+                ).content
+                var r = jellyfinApi.api.createUrl(item.mediaSources.get(0).transcodingUrl!!)
+
+                //we must replace the audio stream index, for some reason jellyfin overrides it with the default audio index
+                //otherwise, the video will not direct play and you will lose hdr
+                r = r.replace(Regex("AudioStreamIndex=\\d+"), "AudioStreamIndex=-1")
+                r = r.replace(Regex("SubtitleStreamIndex=\\d+"), "SubtitleStreamIndex=-1")
+                r
             } catch (e: Exception) {
                 Timber.e(e)
                 "l"
@@ -684,4 +729,9 @@ class JellyfinRepositoryImpl(
     override fun getUserId(): UUID {
         return jellyfinApi.userId!!
     }
+
+    override fun getChromeCastUrls(itemId: UUID, mediaSourceId: String, subIndex: Int, audioIndex: Int): String {
+        TODO("Not yet implemented")
+    }
+
 }
