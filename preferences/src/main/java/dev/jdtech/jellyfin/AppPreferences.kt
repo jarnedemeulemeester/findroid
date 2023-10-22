@@ -47,9 +47,6 @@ constructor(
         Constants.PREF_PLAYER_PREFERRED_QUALITY,
         "Original"
     )!!
-
-    val displayExtendedTitle get() = sharedPreferences.getBoolean(Constants.PREF_DISPLAY_EXTENDED_TITLE, false)
-
     val playerGestures get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
     val playerGesturesVB get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
