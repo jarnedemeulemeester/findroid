@@ -8,11 +8,6 @@
         app:summary="@string/preferred_quality"
         app:title="@string/quality" />
 
-    <SwitchPreferenceCompat
-        app:key="pref_player_display_extended_title"
-        app:summary="@string/display_extended_title_summary"
-        app:title="@string/display_extended_title" />
-
     <Preference
         app:key="pref_player_subtitles"
         app:summary="@string/subtitles_summary"

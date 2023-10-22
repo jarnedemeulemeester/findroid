@@ -288,44 +288,45 @@ class JellyfinRepositoryImpl(
     override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
-            sources.addAll(
-                jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                    itemId,
-                    PlaybackInfoDto(
-                        userId = jellyfinApi.userId!!,
-                        deviceProfile = DeviceProfile(
-                            name = "Direct play all",
-                            maxStaticBitrate = 1_000_000_000,
-                            maxStreamingBitrate = 1_000_000_000,
-                            codecProfiles = emptyList(),
-                            containerProfiles = emptyList(),
-                            directPlayProfiles = listOf(
-                                DirectPlayProfile(type = DlnaProfileType.VIDEO),
-                                DirectPlayProfile(type = DlnaProfileType.AUDIO),
-                            ),
-                            transcodingProfiles = emptyList(),
-                            responseProfiles = emptyList(),
-                            subtitleProfiles = listOf(
-                                SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                                SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
-                                SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                            ),
-                            xmlRootAttributes = emptyList(),
-                            supportedMediaTypes = "",
-                            enableAlbumArtInDidl = false,
-                            enableMsMediaReceiverRegistrar = false,
-                            enableSingleAlbumArtLimit = false,
-                            enableSingleSubtitleLimit = false,
-                            ignoreTranscodeByteRangeRequests = false,
-                            maxAlbumArtHeight = 1_000_000_000,
-                            maxAlbumArtWidth = 1_000_000_000,
-                            requiresPlainFolders = false,
-                            requiresPlainVideoItems = false,
-                            timelineOffsetSeconds = 0,
-                        ),
+            val playbackInfo = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                itemId,
+                PlaybackInfoDto(
+                    userId = jellyfinApi.userId!!,
+                    deviceProfile = DeviceProfile(
+                        name = "Direct play all",
+                        maxStaticBitrate = 1_000_000_000,
                         maxStreamingBitrate = 1_000_000_000,
+                        codecProfiles = emptyList(),
+                        containerProfiles = emptyList(),
+                        directPlayProfiles = listOf(
+                            DirectPlayProfile(type = DlnaProfileType.VIDEO),
+                            DirectPlayProfile(type = DlnaProfileType.AUDIO),
+                        ),
+                        transcodingProfiles = emptyList(),
+                        responseProfiles = emptyList(),
+                        subtitleProfiles = listOf(
+                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                        ),
+                        xmlRootAttributes = emptyList(),
+                        supportedMediaTypes = "",
+                        enableAlbumArtInDidl = false,
+                        enableMsMediaReceiverRegistrar = false,
+                        enableSingleAlbumArtLimit = false,
+                        enableSingleSubtitleLimit = false,
+                        ignoreTranscodeByteRangeRequests = false,
+                        maxAlbumArtHeight = 1_000_000_000,
+                        maxAlbumArtWidth = 1_000_000_000,
+                        requiresPlainFolders = false,
+                        requiresPlainVideoItems = false,
+                        timelineOffsetSeconds = 0,
                     ),
-                ).content.mediaSources.map {
+                    maxStreamingBitrate = 1_000_000_000,
+                ),
+            ).content
+            playSessionIds[itemId] = playbackInfo.playSessionId
+            sources.addAll(playbackInfo.mediaSources.map {
                     it.toFindroidSource(
                         this@JellyfinRepositoryImpl,
                         itemId,

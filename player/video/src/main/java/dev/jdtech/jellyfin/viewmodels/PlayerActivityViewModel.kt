@@ -145,7 +145,6 @@ constructor(
             val mediaItems = mutableListOf<MediaItem>()
             try {
                 for (item in items) {
-                    val streamUrl = item.mediaSourceUri
                     val transcodeResolution = getTranscodeResolution(appPreferences.playerPreferredQuality)
                     val streamUrl = when {
                         item.mediaSourceUri.isNotEmpty() -> item.mediaSourceUri

@@ -20,7 +20,6 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
@@ -139,7 +138,8 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
-        val mediaSources = repository.getMediaSources(id, true)
+        val shouldTranscode = appPreferences.playerPreferredQuality != "Original"
+        val mediaSources = repository.getMediaSources(id, !shouldTranscode)
         val mediaSource = if (mediaSourceIndex == null) {
             mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
         } else {
@@ -172,30 +172,7 @@ class PlayerViewModel @Inject internal constructor(
                     },
                 )
             }
-        return when (mediaSource.protocol) {
-            MediaProtocol.FILE -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id,
-                mediaSourceUri = mediaSource.path,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-                indexNumber = if (this is FindroidEpisode) indexNumber else null,
-                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
-                externalSubtitles = externalSubtitles
-            )
-            MediaProtocol.HTTP -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id,
-                mediaSourceUri = mediaSource.path,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-                indexNumber = if (this is FindroidEpisode) indexNumber else null,
-                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
-                externalSubtitles = externalSubtitles
-            )
-            else -> PlayerItem(
+        return PlayerItem(
                 name = name,
                 itemId = id,
                 mediaSourceId = mediaSource.id,
@@ -206,7 +183,6 @@ class PlayerViewModel @Inject internal constructor(
                 indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
                 externalSubtitles = externalSubtitles,
             )
-        }
     }
 
     sealed class PlayerItemState
