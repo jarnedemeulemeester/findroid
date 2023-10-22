@@ -30,7 +30,7 @@
     <string name="edit_text_server_address_hint">Adresse du serveur</string>
     <string name="edit_text_password_hint">Mot de passe</string>
     <string name="button_connect">Connexion</string>
-    <string name="edit_text_username_hint">Utilisateur</string>
+    <string name="edit_text_username_hint">Nom d\'utilisateur</string>
     <string name="hide">Cacher</string>
     <string name="sort_by">Trier par</string>
     <string name="sort_order">Ordre de tri</string>
@@ -75,7 +75,7 @@
     <string name="search_hint">Rechercher…</string>
     <string name="jellyfin_banner">Bannière Jellyfin</string>
     <string name="add_server_error_version">Version du serveur non supportée : %1$s. Veuillez mettre à jour le serveur</string>
-    <string name="login">Authentification</string>
+    <string name="login">Se connecter</string>
     <string name="button_login">Authentification</string>
     <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>
     <string name="check_button_description">Marquer comme vu / non vu</string>
@@ -171,4 +171,6 @@
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="preparing_download">Préparation du téléchargement</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>
+    <string name="remove_server_address">Supprimer l\'adresse du serveur</string>
+    <string name="remove_server_address_dialog_text">Êtes vous sur de vouloir retirer l\'adresse %1$s \?</string>
 </resources>
