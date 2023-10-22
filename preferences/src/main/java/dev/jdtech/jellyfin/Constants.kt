@@ -13,7 +13,6 @@ object Constants {
     const val PREF_CURRENT_SERVER = "pref_current_server"
     const val PREF_OFFLINE_MODE = "pref_offline_mode"
     const val PREF_PLAYER_PREFERRED_QUALITY = "pref_player_preferred_quality"
-    const val PREF_DISPLAY_EXTENDED_TITLE = "pref_player_display_extended_title"
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_GESTURES_VB = "pref_player_gestures_vb"
     const val PREF_PLAYER_GESTURES_ZOOM = "pref_player_gestures_zoom"
