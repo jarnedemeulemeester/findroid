@@ -173,16 +173,16 @@ class PlayerViewModel @Inject internal constructor(
                 )
             }
         return PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id,
-                mediaSourceUri = mediaSource.path,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-                indexNumber = if (this is FindroidEpisode) indexNumber else null,
-                indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
-                externalSubtitles = externalSubtitles,
-            )
+            name = name,
+            itemId = id,
+            mediaSourceId = mediaSource.id,
+            mediaSourceUri = mediaSource.path,
+            playbackPosition = playbackPosition,
+            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+            indexNumber = if (this is FindroidEpisode) indexNumber else null,
+            indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            externalSubtitles = externalSubtitles,
+        )
     }
 
     sealed class PlayerItemState
