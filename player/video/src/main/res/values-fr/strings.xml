@@ -3,10 +3,17 @@
     <string name="select_a_version">Choisissez une version</string>
     <string name="select_audio_track">Choix de la piste audio</string>
     <string name="select_subtile_track">Choix de la piste des sous-titres</string>
-    <string name="select_playback_speed">Vitesse de lecture</string>
+    <string name="select_playback_speed">Choisir la vitesse de lecture</string>
     <string name="external">Externe</string>
     <string name="player_controls_exit">Quitter le lecteur</string>
     <string name="player_controls_rewind">Rembobiner</string>
     <string name="player_controls_fast_forward">Avance rapide</string>
     <string name="player_controls_skip_intro">Ignorer l\'introduction</string>
+    <string name="player_controls_lock">Verrouille le lecteur</string>
+    <string name="player_controls_play_pause">Lecture / Pause</string>
+    <string name="player_controls_skip_back">Retour en arrière</string>
+    <string name="player_trickplay">Trucage</string>
+    <string name="player_controls_skip_forward">Avancer</string>
+    <string name="player_controls_progress">Barre de progression</string>
+    <string name="player_controls_picture_in_picture">Détacher la fenêtre flottante</string>
 </resources>
