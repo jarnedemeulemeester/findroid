@@ -79,7 +79,7 @@
     <string name="button_login">Authentification</string>
     <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>
     <string name="check_button_description">Marquer comme vu / non vu</string>
-    <string name="favorite_button_description">Favoris</string>
+    <string name="favorite_button_description">Favori</string>
     <string name="no_downloads">Vous n\'avez aucun téléchargement</string>
     <string name="settings_category_download">Téléchargements</string>
     <string name="privacy_policy">Politique de confidentialité</string>
@@ -92,7 +92,7 @@
     <string name="gestures">Gestes</string>
     <string name="player_gestures">Gestes du lecteur</string>
     <string name="player_gestures_vb_summary">Glissez vers le haut ou vers le bas sur le côté droit de l\'écran pour modifier le volume et sur le côté gauche de l\'écran pour modifier la luminosité</string>
-    <string name="select_video_version_title">Choisissez une version</string>
+    <string name="select_video_version_title">Sélectionner une version</string>
     <string name="episode_watched_indicator">Indicateur d\'épisode vu</string>
     <string name="series_poster">Affiche des séries</string>
     <string name="settings_category_cache">Cache</string>
@@ -172,8 +172,8 @@
     <string name="preparing_download">Préparation du téléchargement</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>
     <string name="remove_server_address">Supprimer l\'adresse du serveur</string>
-    <string name="remove_server_address_dialog_text">Êtes vous sûr de vouloir retirer l\'adresse %1$s \?</string>
-    <string name="picture_in_picture">Picture-in-picture</string>
-    <string name="picture_in_picture_gesture">Geste de l\'accueil depuis Picture-in-picture</string>
-    <string name="picture_in_picture_gesture_summary">Utilisez le bouton Menu ou la navigation gestuelle pour entrer dans le mode picture-in-picture</string>
+    <string name="remove_server_address_dialog_text">Êtes vous sûr de vouloir retirer le serveur à l\'adresse %1$s</string>
+    <string name="picture_in_picture">Fenêtre flottante</string>
+    <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
+    <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
 </resources>
