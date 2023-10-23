@@ -172,7 +172,7 @@
     <string name="preparing_download">Préparation du téléchargement</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>
     <string name="remove_server_address">Supprimer l\'adresse du serveur</string>
-    <string name="remove_server_address_dialog_text">"Êtes vous sûr de vouloir retirer le serveur à l\'adresse  %1$s \?"</string>
+    <string name="remove_server_address_dialog_text">Êtes vous sûr de vouloir retirer l\'adresse %1$s \?</string>
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Geste de l\'accueil depuis Picture-in-picture</string>
     <string name="picture_in_picture_gesture_summary">Utilisez le bouton Menu ou la navigation gestuelle pour entrer dans le mode picture-in-picture</string>
