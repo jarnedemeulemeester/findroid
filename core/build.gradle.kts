@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin.core"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
-        minSdk = 28
+        minSdk = Versions.minSdk
     }
 
     buildTypes {
@@ -33,8 +33,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 }
 
