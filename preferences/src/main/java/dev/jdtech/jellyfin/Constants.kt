@@ -29,7 +29,6 @@ object Constants {
     const val PREF_PLAYER_INTRO_SKIPPER = "pref_player_intro_skipper"
     const val PREF_PLAYER_TRICK_PLAY = "pref_player_trick_play"
     const val PREF_PLAYER_PIP_GESTURE = "pref_player_picture_in_picture_gesture"
-    const val PREF_PLAYER_PIP_ASPECT_RATIO = "pref_player_picture_in_picture_aspect_ratio"
     const val PREF_AUDIO_LANGUAGE = "pref_audio_language"
     const val PREF_SUBTITLE_LANGUAGE = "pref_subtitle_language"
     const val PREF_IMAGE_CACHE = "pref_image_cache"
