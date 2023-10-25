@@ -7,7 +7,6 @@ import androidx.preference.PreferenceFragmentCompat
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Suppress("unused")
 class SettingsNetworkFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(CoreR.xml.fragment_settings_network, rootKey)

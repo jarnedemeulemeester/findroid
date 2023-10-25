@@ -45,7 +45,7 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    lateinit var season: FindroidSeason
+    private lateinit var season: FindroidSeason
 
     fun loadEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean) {
         viewModelScope.launch {

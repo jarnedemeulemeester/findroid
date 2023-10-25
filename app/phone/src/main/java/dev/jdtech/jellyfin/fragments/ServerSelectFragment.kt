@@ -20,7 +20,6 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
-
     private lateinit var binding: FragmentServerSelectBinding
     private val viewModel: ServerSelectViewModel by viewModels()
 
@@ -33,10 +32,10 @@ class ServerSelectFragment : Fragment() {
 
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
-                ServerGridAdapter.OnClickListener { server ->
+                onClickListener = { server ->
                     viewModel.connectToServer(server)
                 },
-                ServerGridAdapter.OnLongClickListener { server ->
+                onLongClickListener = { server ->
                     DeleteServerDialogFragment(viewModel, server).show(
                         parentFragmentManager,
                         "deleteServer",
@@ -66,6 +65,11 @@ class ServerSelectFragment : Fragment() {
                         if (it) navigateToMainActivity()
                     }
                 }
+                launch {
+                    viewModel.navigateToLogin.collect {
+                        if (it) navigateToLoginFragment()
+                    }
+                }
             }
         }
 
@@ -86,5 +90,9 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToMainActivity() {
         findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
+    }
+
+    private fun navigateToLoginFragment() {
+        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
     }
 }

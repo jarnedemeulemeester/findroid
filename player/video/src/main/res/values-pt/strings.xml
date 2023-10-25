@@ -8,4 +8,12 @@
     <string name="player_controls_rewind">Voltar</string>
     <string name="player_controls_exit">Sair do Reprodutor</string>
     <string name="player_controls_fast_forward">Avançar rapidamente</string>
+    <string name="player_controls_lock">Bloqueia o reprodutor</string>
+    <string name="player_trickplay">Truques</string>
+    <string name="player_controls_play_pause">Pausa na reprodução</string>
+    <string name="player_controls_progress">Barra de progresso</string>
+    <string name="player_controls_skip_forward">Avançar</string>
+    <string name="player_controls_skip_back">Pular para trás</string>
+    <string name="player_controls_skip_intro">Pular introdução</string>
+    <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
 </resources>

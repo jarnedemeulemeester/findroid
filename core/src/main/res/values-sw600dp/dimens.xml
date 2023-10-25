@@ -4,4 +4,5 @@
     <item name="server_columns" type="integer">6</item>
     <item name="collection_columns" type="integer">3</item>
     <item name="library_columns" type="integer">4</item>
+    <dimen name="person_detail_overview_height">124dp</dimen>
 </resources>

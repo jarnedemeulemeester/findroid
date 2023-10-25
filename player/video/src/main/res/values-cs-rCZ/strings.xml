@@ -1,4 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="select_audio_track">Vyberte zvukovou stopu</string>
     <string name="select_subtile_track">Vyberte titulky</string>
+    <string name="select_playback_speed">Zvolte rychlost přehrávání</string>
+    <string name="select_a_version">Vybrat verzi</string>
+    <string name="external">Externí</string>
+    <string name="player_controls_lock">Uzamkne přehrávač</string>
+    <string name="player_controls_skip_back">Přeskočit zpět</string>
+    <string name="player_controls_play_pause">Přehrát pauza</string>
+    <string name="player_controls_rewind">Přetočit</string>
+    <string name="player_controls_skip_intro">Přeskočit úvod</string>
+    <string name="player_controls_exit">Ukončit přehrávač</string>
+    <string name="player_controls_fast_forward">Rychlý posun vpřed</string>
+    <string name="player_controls_skip_forward">Přeskočit vpřed</string>
+    <string name="player_controls_picture_in_picture">Vstoupit do režimu obraz v obraze</string>
+    <string name="player_controls_progress">Ukazatel průběhu</string>
 </resources>

@@ -47,11 +47,9 @@ class MediaFragment : Fragment() {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
         binding.viewsRecyclerView.adapter =
-            CollectionListAdapter(
-                CollectionListAdapter.OnClickListener { library ->
-                    navigateToLibraryFragment(library)
-                },
-            )
+            CollectionListAdapter { library ->
+                navigateToLibraryFragment(library)
+            }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

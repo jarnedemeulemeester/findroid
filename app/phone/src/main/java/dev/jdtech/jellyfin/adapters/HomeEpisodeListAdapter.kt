@@ -16,7 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
-class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+class HomeEpisodeListAdapter(private val onClickListener: (item: FindroidItem) -> Unit) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
         private val parent: ViewGroup,
@@ -77,12 +77,8 @@ class HomeEpisodeListAdapter(private val onClickListener: OnClickListener) : Lis
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(item)
+            onClickListener(item)
         }
         holder.bind(item)
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
-        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

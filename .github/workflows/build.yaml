@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Set up JDK 17
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Set up JDK 17

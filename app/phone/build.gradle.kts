@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
     alias(libs.plugins.aboutlibraries)
@@ -11,19 +11,16 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 28
-        targetSdk = 34
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-
-        versionCode = appVersionCode
-        versionName = appVersionName
+        versionCode = Versions.appCode
+        versionName = Versions.appName
     }
 
     buildTypes {
@@ -65,8 +62,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
     buildFeatures {
@@ -75,7 +72,7 @@ android {
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }
@@ -108,7 +105,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.svg)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)

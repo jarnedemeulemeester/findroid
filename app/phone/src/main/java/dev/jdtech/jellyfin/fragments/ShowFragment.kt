@@ -120,7 +120,7 @@ class ShowFragment : Fragment() {
 
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
-                ViewItemListAdapter.OnClickListener { season ->
+                { season ->
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
                 fixedWidth = true,

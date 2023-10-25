@@ -144,11 +144,9 @@ class SeasonFragment : Fragment() {
         }
 
         binding.episodesRecyclerView.adapter =
-            EpisodeListAdapter(
-                EpisodeListAdapter.OnClickListener { episode ->
-                    navigateToEpisodeBottomSheetFragment(episode)
-                },
-            )
+            EpisodeListAdapter { episode ->
+                navigateToEpisodeBottomSheetFragment(episode)
+            }
     }
 
     override fun onResume() {

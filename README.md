@@ -27,27 +27,25 @@ I am developing this application in my spare time.
     - Support provided by ExoPlayer FFmpeg extension
   - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
     - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
-- **NEW** MPV Player
+- mpv
   - Container formats: mkv, mov, mp4, avi
   - Video codecs: H.264, H.265, VP8, VP9, AV1
   - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
-
+- Picture-in-picture mode
 
 ## Planned features
 - Android TV
 - Websocket connection (Syncplay)
-- Picture in picture mode
 - Chromecast support
 
 ## Translating
 [JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
+[![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\
 We have a Discord server to discuss future development or ask general questions.
-Click [here](https://discord.gg/tg5VvTFwTV) to join.
-
 
 ## License
 This project is licensed under [GPLv3](LICENSE).
