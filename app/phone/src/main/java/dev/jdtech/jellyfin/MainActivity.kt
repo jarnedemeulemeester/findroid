@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var database: ServerDatabaseDao
 
     @Inject
-    lateinit var jellyfinRepository: JellyfinRepository;
+    lateinit var jellyfinRepository: JellyfinRepository
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -193,15 +193,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testServerConnection() {
-        val activity = this;
+        val activity = this
         lifecycleScope.launch {
             try {
                 jellyfinRepository.getPublicSystemInfo()
                 // Give the UI a chance to load
                 delay(100)
             } catch (e: Exception) {
-                appPreferences.isOffline = true;
-                activity.restart();
+                appPreferences.isOffline = true
+                activity.restart()
             }
         }
     }
