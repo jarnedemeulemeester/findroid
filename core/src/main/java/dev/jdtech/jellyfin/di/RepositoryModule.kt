@@ -47,8 +47,8 @@ object RepositoryModule {
         jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
         appPreferences: AppPreferences,
     ): JellyfinRepository {
-        println("Creating new JellyfinRepository")
-        return when (appPreferences.offlineMode) {
+        println("Creating new JellyfinRepository, is offline: ${appPreferences.isOffline}")
+        return when (appPreferences.isOffline) {
             true -> jellyfinRepositoryOfflineImpl
             false -> jellyfinRepositoryImpl
         }

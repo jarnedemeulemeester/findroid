@@ -25,9 +25,25 @@ constructor(
     var offlineMode
         get() = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false)
         set(value) {
+            isOffline = value
             sharedPreferences.edit {
                 putBoolean(Constants.PREF_OFFLINE_MODE, value)
             }
+        }
+
+    var autoOffline
+        get() = sharedPreferences.getBoolean(Constants.PREF_AUTO_OFFLINE, false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(Constants.PREF_AUTO_OFFLINE, value)
+            }
+        }
+
+    private var _isOffline = sharedPreferences.getBoolean(Constants.PREF_OFFLINE_MODE, false);
+    var isOffline
+        get() = _isOffline;
+        set(value) {
+            _isOffline = value;
         }
 
     // Appearance
