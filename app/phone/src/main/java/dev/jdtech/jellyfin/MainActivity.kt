@@ -6,7 +6,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
@@ -29,7 +28,6 @@ import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -202,7 +200,6 @@ class MainActivity : AppCompatActivity() {
                 // Give the UI a chance to load
                 delay(100)
             } catch (e: Exception) {
-                Timber.d("------------------- Failed to be online")
                 appPreferences.isOffline = true;
                 activity.restart();
             }
