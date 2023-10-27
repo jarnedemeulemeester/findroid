@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (!appPreferences.isOffline && appPreferences.autoOffline) {
-            testServerConnection();
+            testServerConnection()
         }
 
         setSupportActionBar(binding.mainToolbar)
