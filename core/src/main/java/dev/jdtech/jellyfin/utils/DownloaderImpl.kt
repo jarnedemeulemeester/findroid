@@ -152,9 +152,11 @@ class DownloaderImpl(
                 val remainingEpisodes = database.getEpisodesBySeasonId(item.seasonId)
                 if (remainingEpisodes.isEmpty()) {
                     database.deleteSeason(item.seasonId)
+                    database.deleteUserData(item.seasonId)
                     val remainingSeasons = database.getSeasonsByShowId(item.seriesId)
                     if (remainingSeasons.isEmpty()) {
                         database.deleteShow(item.seriesId)
+                        database.deleteUserData(item.seriesId)
                     }
                 }
             }
