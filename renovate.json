@@ -3,6 +3,7 @@
   "labels": ["dependencies"],
   "extends": [
     "config:base",
+    "schedule:weekly",
     ":semanticCommits"
   ]
 }
