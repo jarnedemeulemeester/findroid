@@ -25,6 +25,6 @@ object DatabaseModule {
             .fallbackToDestructiveMigration()
             .allowMainThreadQueries()
             .build()
-            .serverDatabaseDao
+            .getServerDatabaseDao()
     }
 }
