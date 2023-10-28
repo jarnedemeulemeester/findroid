@@ -77,6 +77,10 @@ class MainActivity : AppCompatActivity() {
 
         val navView: NavigationBarView = binding.navView as NavigationBarView
 
+        if (appPreferences.offlineMode) {
+            appPreferences.isOffline = true
+        }
+        
         if (appPreferences.isOffline) {
             navView.menu.clear()
             navView.inflateMenu(CoreR.menu.bottom_nav_menu_offline)
