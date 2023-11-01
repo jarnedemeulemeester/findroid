@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <include layout="@layout/exo_main_controls"/>
+    <include layout="@layout/sleep_mode_layout"/>
 
     <include
         layout="@layout/exo_locked_controls"

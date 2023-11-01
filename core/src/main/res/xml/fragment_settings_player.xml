@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
         app:key="pref_player_subtitles"
         app:summary="@string/subtitles_summary"
@@ -113,5 +114,14 @@
             app:title="@string/picture_in_picture_gesture"
             app:summary="@string/picture_in_picture_gesture_summary" />
     </PreferenceCategory>
-    
+    <PreferenceCategory
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:title="@string/sleep_mode">
+            <SwitchPreferenceCompat
+                app:key="pref_sleep_mode_toggle"
+                app:summary="@string/sleep_mode_summary"
+                app:title="Sleep Mode" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

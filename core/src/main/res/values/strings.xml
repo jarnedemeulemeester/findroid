@@ -26,6 +26,8 @@
     <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
+    <string name="set">Set</string>
+    <string name="minutes">Minutes</string>
     <string name="title_home">Home</string>
     <string name="title_media">My media</string>
     <string name="title_favorite">Favorites</string>
@@ -177,4 +179,30 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
+    <string name="enable_sleep_mode">Enable Sleep Mode</string>
+    <string name="sleep_mode_enabled_title">Sleep Mode Enabled</string>
+    <string name="sleep_mode_enabled_description">To preserve battery and prevent accidental interactions \nSleep Mode has been activated. \nYour media playback has been paused. \nTo disable Sleep Mode, press the unlock button below.</string>
+    <string name="sleep_mode">Sleep Mode</string>
+    <string name="sleep_mode_summary">Toggle Sleep Mode. When toggled on, the app will stop the video playback after a specified amount of time.</string>
+    <plurals name="hour">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
+    <plurals name="minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+    <string name="sleep_mode_enabled_hours_and_minutes">Sleep Mode will be enabled in %1$s %2$s and %3$s %4$s</string>
+    <string name="sleep_mode_enabled_hours">Sleep Mode will be enabled in %1$s %2$s</string>
+    <string name="sleep_mode_enabled_minutes">Sleep Mode will be enabled in %1$s %2$s</string>
+    <string name="sleep_mode_disabled">Sleep Mode has been disabled</string>
+    <string name="select_sleep_timer_duration">Select Sleep Timer Duration</string>
+    <string-array name="sleep_timer_durations">
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+    </string-array>
 </resources>
