@@ -66,7 +66,14 @@
                 android:contentDescription="@string/enable_sleep_mode"
                 android:padding="16dp"
                 android:src="@drawable/ic_sleep_mode"
-                app:tint="@android:color/white" />
+                android:visibility="gone"
+                app:tint="@android:color/white"
+                tools:visibility="visible" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <ImageButton
                 android:id="@+id/btn_lockview"
@@ -159,9 +166,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:background="@drawable/transparent_circle_background"
+            android:contentDescription="@string/player_controls_skip_back"
             android:padding="16dp"
-            android:src="@drawable/ic_skip_back"
-            android:contentDescription="@string/player_controls_skip_back" />
+            android:src="@drawable/ic_skip_back" />
 
         <ImageButton
             android:id="@+id/exo_rew"
@@ -169,9 +176,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:background="@drawable/transparent_circle_background"
+            android:contentDescription="@string/player_controls_rewind"
             android:padding="16dp"
-            android:src="@drawable/ic_rewind"
-            android:contentDescription="@string/player_controls_rewind" />
+            android:src="@drawable/ic_rewind" />
 
         <ImageButton
             android:id="@+id/exo_play_pause"
@@ -179,10 +186,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circle_background"
             android:backgroundTint="@android:color/white"
+            android:contentDescription="@string/player_controls_play_pause"
             android:padding="16dp"
             android:src="@drawable/ic_play"
-            app:tint="@android:color/black"
-            android:contentDescription="@string/player_controls_play_pause" />
+            app:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/exo_ffwd"
@@ -190,9 +197,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:background="@drawable/transparent_circle_background"
+            android:contentDescription="@string/player_controls_fast_forward"
             android:padding="16dp"
-            android:src="@drawable/ic_fast_forward"
-            android:contentDescription="@string/player_controls_fast_forward" />
+            android:src="@drawable/ic_fast_forward" />
 
         <ImageButton
             android:id="@+id/exo_next"
@@ -200,9 +207,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:background="@drawable/transparent_circle_background"
+            android:contentDescription="@string/player_controls_skip_forward"
             android:padding="16dp"
-            android:src="@drawable/ic_skip_forward"
-            android:contentDescription="@string/player_controls_skip_forward" />
+            android:src="@drawable/ic_skip_forward" />
     </LinearLayout>
 
     <LinearLayout
@@ -218,9 +225,9 @@
             android:layout_height="90dp"
             android:layout_gravity="start"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/player_trickplay"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:contentDescription="@string/player_trickplay" />
+            tools:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -11,12 +11,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/sleep_mode_background">
+        android:background="@color/player_background">
 
         <ImageButton
             android:id="@+id/sleep_mode_unlock"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
             android:layout_gravity="end"
             android:background="@drawable/rounded_corner"
             android:contentDescription="@string/select_playback_speed"
@@ -25,35 +25,33 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sleepModeDescription"
+            app:layout_constraintTop_toBottomOf="@+id/sleep_mode_description"
             app:tint="@android:color/white" />
 
         <TextView
-            android:id="@+id/sleepModeTitle"
+            android:id="@+id/sleep_mode_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sleep_mode_enabled_title"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Material3.DisplayMedium"
             android:textColor="@color/neutral_200"
-            android:textSize="60sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sleep_mode_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.129" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/sleepModeDescription"
+            android:id="@+id/sleep_mode_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sleep_mode_enabled_description"
             android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textColor="@color/neutral_200"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sleep_mode_unlock"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sleepModeTitle"
-            app:layout_constraintVertical_bias="0.139" />
+            app:layout_constraintTop_toBottomOf="@+id/sleep_mode_title" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

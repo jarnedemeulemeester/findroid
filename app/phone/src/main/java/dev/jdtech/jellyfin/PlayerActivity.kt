@@ -176,12 +176,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
-                                sleepModeButton.isEnabled = appPreferences.sleepMode
-                                sleepModeButton.imageAlpha = if (appPreferences.sleepMode) {
-                                    255
-                                } else {
-                                    0
-                                }
+                                sleepModeButton.isVisible = appPreferences.sleepMode
+                                sleepModeButton.imageAlpha = 255
                             }
                         }
                     }
@@ -327,7 +323,7 @@ class PlayerActivity : BasePlayerActivity() {
             }
         }
 
-        sleepModeUnlockButton.setOnClickListener{
+        sleepModeUnlockButton.setOnClickListener {
             disableSleepMode()
             isSleepModeEnabled = false
         }
