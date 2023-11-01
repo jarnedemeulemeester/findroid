@@ -197,6 +197,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private class SessionManagerListenerImpl(private val mainActivity: MainActivity) :
+            SessionManagerListener<CastSession> {
+            override fun onSessionStarted(session: CastSession, sessionId: String) {
+                mainActivity.invalidateOptionsMenu()
+//                val thing =
+//                    "{\"options\":{},\"command\":\"Identify\",\"userId\":\"${mainActivity.jellyfinApi.userId}\",\"deviceId\":\"${mainActivity.jellyfinApi.api.deviceInfo.id}\",\"accessToken\":\"${mainActivity.jellyfinApi.api.accessToken}\",\"serverAddress\":\"${mainActivity.jellyfinApi.api.baseUrl}\",\"serverId\":\"\",\"serverVersion\":\"\",\"receiverName\":\"\"}"
+//                session.sendMessage("urn:x-cast:com.connectsdk", thing)
+//                session.setMessageReceivedCallbacks(
+//                    "urn:x-cast:com.connectsdk"
+//                ) { _, _, message -> Timber.i(message) }
+            }
+
+            override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
+                mainActivity.invalidateOptionsMenu()
+            }
+
+            override fun onSessionEnded(session: CastSession, error: Int) {
+                //            finish()
+            }
+
+            override fun onSessionEnding(p0: CastSession) {
+            }
+
+            override fun onSessionResumeFailed(p0: CastSession, p1: Int) {
+            }
+
+            override fun onSessionResuming(p0: CastSession, p1: String) {
+            }
+
+            override fun onSessionStartFailed(p0: CastSession, p1: Int) {
+            }
+
+            override fun onSessionStarting(p0: CastSession) {
+            }
+
+            override fun onSessionSuspended(p0: CastSession, p1: Int) {
+            }
+        }
+    }
+
     private fun scheduleUserDataSync() {
         val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
             .setConstraints(
