@@ -223,6 +223,9 @@
         <action
             android:id="@+id/action_episodeBottomSheetFragment_to_showFragment"
             app:destination="@id/showFragment" />
+        <action
+            android:id="@+id/action_episodeBottomSheetFragment_to_seasonFragment"
+            app:destination="@id/seasonFragment" />
     </dialog>
     <fragment
         android:id="@+id/favoriteFragment"
