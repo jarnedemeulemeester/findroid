@@ -11,11 +11,11 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.authenticateWithQuickConnect
@@ -38,8 +38,9 @@ constructor(
     val usersState = _usersState.asStateFlow()
     private val _quickConnectUiState = MutableStateFlow<QuickConnectUiState>(QuickConnectUiState.Disabled)
     val quickConnectUiState = _quickConnectUiState.asStateFlow()
-    private val _navigateToMain = MutableSharedFlow<Boolean>()
-    val navigateToMain = _navigateToMain.asSharedFlow()
+
+    private val eventsChannel = Channel<LoginEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private var quickConnectJob: Job? = null
 
@@ -121,7 +122,7 @@ constructor(
                 saveAuthenticationResult(authenticationResult)
 
                 _uiState.emit(UiState.Normal)
-                _navigateToMain.emit(true)
+                eventsChannel.send(LoginEvent.NavigateToHome)
             } catch (e: Exception) {
                 val message =
                     if (e.message?.contains("401") == true) {
@@ -157,7 +158,7 @@ constructor(
                 saveAuthenticationResult(authenticationResult)
 
                 _quickConnectUiState.emit(QuickConnectUiState.Normal)
-                _navigateToMain.emit(true)
+                eventsChannel.send(LoginEvent.NavigateToHome)
             } catch (_: Exception) {
                 _quickConnectUiState.emit(QuickConnectUiState.Normal)
             }
@@ -188,4 +189,8 @@ constructor(
             database.updateServerCurrentUser(serverId, user.id)
         }
     }
+}
+
+sealed interface LoginEvent {
+    data object NavigateToHome : LoginEvent
 }

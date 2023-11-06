@@ -7,10 +7,10 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.User
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,8 +31,8 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    private val _navigateToMain = MutableSharedFlow<Boolean>()
-    val navigateToMain = _navigateToMain.asSharedFlow()
+    private val eventsChannel = Channel<UsersEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private var currentServerId: String = ""
 
@@ -77,7 +77,11 @@ constructor(
                 userId = user.id
             }
 
-            _navigateToMain.emit(true)
+            eventsChannel.send(UsersEvent.NavigateToHome)
         }
     }
+}
+
+sealed interface UsersEvent {
+    data object NavigateToHome : UsersEvent
 }

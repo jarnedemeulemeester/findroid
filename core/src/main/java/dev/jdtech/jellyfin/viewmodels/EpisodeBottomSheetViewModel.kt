@@ -13,10 +13,10 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
@@ -37,11 +37,8 @@ constructor(
     private val _downloadStatus = MutableStateFlow(Pair(0, 0))
     val downloadStatus = _downloadStatus.asStateFlow()
 
-    private val _downloadError = MutableSharedFlow<UiText>()
-    val downloadError = _downloadError.asSharedFlow()
-
-    private val _navigateBack = MutableSharedFlow<Boolean>()
-    val navigateBack = _navigateBack.asSharedFlow()
+    private val eventsChannel = Channel<EpisodeBottomSheetEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -75,7 +72,7 @@ constructor(
                 )
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
-                _navigateBack.emit(true)
+                eventsChannel.send(EpisodeBottomSheetEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
@@ -133,7 +130,7 @@ constructor(
             _downloadStatus.emit(Pair(10, Random.nextInt()))
 
             if (result.second != null) {
-                _downloadError.emit(result.second!!)
+                eventsChannel.send(EpisodeBottomSheetEvent.DownloadError(result.second!!))
             }
 
             loadEpisode(item.id)
@@ -187,4 +184,9 @@ constructor(
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
+}
+
+sealed interface EpisodeBottomSheetEvent {
+    data object NavigateBack : EpisodeBottomSheetEvent
+    data class DownloadError(val uiText: UiText) : EpisodeBottomSheetEvent
 }
