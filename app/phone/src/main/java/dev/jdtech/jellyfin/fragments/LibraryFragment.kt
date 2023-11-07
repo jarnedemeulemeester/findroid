@@ -18,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
@@ -61,6 +62,7 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val gridLayoutManager = GridLayoutManager(context, preferences.columnSize)
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(
             object : MenuProvider {
@@ -94,6 +96,18 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
+                        CoreR.id.action_column_size -> {
+                            SortDialogFragment(
+                                args.libraryId,
+                                args.libraryType,
+                                viewModel,
+                                "columnSize",
+                            ).show(
+                                parentFragmentManager,
+                                "sortdialog",
+                            )
+                            true
+                        }
                         else -> false
                     }
                 }
@@ -113,12 +127,15 @@ class LibraryFragment : Fragment() {
             )
         }
 
-        binding.itemsRecyclerView.adapter =
-            ViewItemPagingAdapter(
-                { item ->
-                    navigateToItem(item)
-                },
-            )
+        binding.itemsRecyclerView.apply {
+            layoutManager = gridLayoutManager
+            adapter =
+                ViewItemPagingAdapter(
+                    { item ->
+                        navigateToItem(item)
+                    },
+                )
+        }
 
         (binding.itemsRecyclerView.adapter as ViewItemPagingAdapter).addLoadStateListener {
             when (it.refresh) {
@@ -131,6 +148,14 @@ class LibraryFragment : Fragment() {
                 }
                 is LoadState.NotLoading -> {
                     binding.loadingIndicator.isVisible = false
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.columnFlow.collect {
+                    gridLayoutManager.spanCount = it
                 }
             }
         }
