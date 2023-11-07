@@ -19,6 +19,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
+import dev.jdtech.jellyfin.viewmodels.LoginEvent
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -123,9 +124,9 @@ class LoginFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToHomeFragment()
+                viewModel.eventsChannelFlow.collect { event ->
+                    when (event) {
+                        is LoginEvent.NavigateToHome -> navigateToHomeFragment()
                     }
                 }
             }

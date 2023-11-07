@@ -8,10 +8,10 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,11 +26,8 @@ constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _navigateToMain = MutableSharedFlow<Boolean>()
-    val navigateToMain = _navigateToMain.asSharedFlow()
-
-    private val _navigateToLogin = MutableSharedFlow<Boolean>()
-    val navigateToLogin = _navigateToLogin.asSharedFlow()
+    private val eventsChannel = Channel<ServerSelectEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
         data class Normal(val servers: List<Server>) : UiState()
@@ -75,7 +72,7 @@ constructor(
                     userId = null
                 }
                 appPreferences.currentServer = server.id
-                _navigateToLogin.emit(true)
+                eventsChannel.send(ServerSelectEvent.NavigateToLogin)
                 return@launch
             }
 
@@ -87,7 +84,12 @@ constructor(
 
             appPreferences.currentServer = server.id
 
-            _navigateToMain.emit(true)
+            eventsChannel.send(ServerSelectEvent.NavigateToHome)
         }
     }
+}
+
+sealed interface ServerSelectEvent {
+    data object NavigateToHome : ServerSelectEvent
+    data object NavigateToLogin : ServerSelectEvent
 }

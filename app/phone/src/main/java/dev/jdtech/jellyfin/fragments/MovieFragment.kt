@@ -41,6 +41,7 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
+import dev.jdtech.jellyfin.viewmodels.MovieEvent
 import dev.jdtech.jellyfin.viewmodels.MovieViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
@@ -122,14 +123,11 @@ class MovieFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.downloadError.collect { uiText ->
-                        createErrorDialog(uiText)
-                    }
-                }
-
-                launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is MovieEvent.NavigateBack -> findNavController().navigateUp()
+                            is MovieEvent.DownloadError -> createErrorDialog(event.uiText)
+                        }
                     }
                 }
             }
