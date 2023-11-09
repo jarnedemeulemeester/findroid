@@ -267,9 +267,7 @@ class PlayerViewModel @Inject internal constructor(
             }
 
             override fun onStatusUpdated() {
-
                 val mediaStatus = remoteMediaClient.mediaStatus
-
                 val activeSubtitleTrackIds = mediaStatus?.activeTrackIds
                 val subtitlesOffset =
                     mediaInfo?.mediaTracks!!.size - item.externalSubtitles.size
@@ -282,19 +280,29 @@ class PlayerViewModel @Inject internal constructor(
                     if (!previousSubtitleTrackIds.contentEquals(mediaStatus.activeTrackIds) && previousSubtitleTrackIds != null) {
                         if (activeSubtitleTrackIds != null) {
                             if (activeSubtitleTrackIds.isNotEmpty()) {
-                                newIndex =
+                                /*newIndex =
                                     (mediaStatus.activeTrackIds!!.get(0)).toInt()
                                 if (newIndex < subtitlesOffset) {
                                     newAudioIndex = newIndex
                                 } else {
                                     subtitleIndex = newIndex
+                                }*/
+
+                                for (track in activeSubtitleTrackIds) {
+                                    if (mediaInfo?.mediaTracks?.get(track.toInt())?.type?.equals(
+                                            MediaTrack.TYPE_AUDIO,
+                                        ) == true
+                                    ) {
+                                        newAudioIndex = track.toInt()
+                                    } else {
+                                        subtitleIndex = track.toInt()
+                                    }
                                 }
                             }
-                            if(activeSubtitleTrackIds.size > 1){
-                                if(subtitleIndex != newIndex){
+                            if (activeSubtitleTrackIds.size > 1) {
+                                if (subtitleIndex != newIndex) {
                                     subtitleIndex = mediaStatus.activeTrackIds!!.get(1).toInt()
-                                }
-                                else{
+                                } else {
                                     newAudioIndex = mediaStatus.activeTrackIds!!.get(1).toInt()
                                 }
                             }
@@ -311,10 +319,20 @@ class PlayerViewModel @Inject internal constructor(
                             }*/
                             /*val newUrl =
                                 jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
-*/                          var newUrl = mediaInfo?.contentUrl
-                            newUrl = newUrl!!.replace(Regex("AudioStreamIndex=-?\\d+"), "AudioStreamIndex="+newAudioIndex)
-                            newUrl = newUrl.replace(Regex("SubtitleStreamIndex=-?\\d+"), "SubtitleStreamIndex="+subtitleIndex)
-                            newUrl = newUrl.replace(Regex("PlaySessionId=[\\w&]+"), "PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key")
+*/
+                            var newUrl = mediaInfo?.contentUrl
+                            newUrl = newUrl!!.replace(
+                                Regex("AudioStreamIndex=-?\\d+"),
+                                "AudioStreamIndex=" + newAudioIndex,
+                            )
+                            newUrl = newUrl.replace(
+                                Regex("SubtitleStreamIndex=-?\\d+"),
+                                "SubtitleStreamIndex=" + subtitleIndex,
+                            )
+                            newUrl = newUrl.replace(
+                                Regex("PlaySessionId=[\\w&]+"),
+                                "PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key",
+                            )
                             val newMediaInfo = buildMediaInfo(newUrl, item, episode)
 
                             remoteMediaClient.load(
@@ -325,11 +343,8 @@ class PlayerViewModel @Inject internal constructor(
                                     .setCurrentTime(mediaStatus!!.streamPosition.toInt().toLong())
                                     .build(),
                             )
-
-
                         }
                     }
-
                 }
                 previousSubtitleTrackIds = mediaStatus?.activeTrackIds
             }
@@ -338,22 +353,16 @@ class PlayerViewModel @Inject internal constructor(
         val myProgressListener =
             MyProgressListener(jellyfinApi, item, repository, remoteMediaClient)
         progressListeners.add(myProgressListener)
-
         remoteMediaClient.registerCallback(callback)
         remoteMediaClient.addProgressListener(myProgressListener, 50000)
         remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
                 .setAutoplay(true)
-                //.setActiveTrackIds(longArrayOf(0,2))
                 .setCurrentTime(position.toLong()).build(),
         )
-
-
         val mediaStatus = remoteMediaClient.mediaStatus
-
         val activeMediaTracks = mediaStatus?.activeTrackIds
-        //previousSubtitleTrackIds = mediaStatus?.activeTrackIds
     }
 
     public suspend fun postPlaybackProgress(
@@ -396,29 +405,24 @@ class PlayerViewModel @Inject internal constructor(
         val mediaSubtitles = episode.mediaStreams?.mapIndexed { index, externalSubtitle ->
 
             MediaTrack.Builder(
-                index.toLong(), if (externalSubtitle.type == MediaStreamType.AUDIO) {
+                index.toLong(),
+                if (externalSubtitle.type == MediaStreamType.AUDIO) {
                     MediaTrack.TYPE_AUDIO
                 } else {
                     MediaTrack.TYPE_TEXT
-                }
+                },
             )
                 .setName(externalSubtitle.displayTitle + " " + externalSubtitle.type)
-                //.setContentId(streamUrl)
                 .setLanguage(externalSubtitle.language)
                 .build()
         }
-
         val copy = mediaSubtitles?.drop(1)
-
-
         val audioTracks: MutableList<MediaTrack> = ArrayList<MediaTrack>()
-
         val audioTracks2 = episode.mediaStreams?.mapIndexed { index, mediaStream ->
             if (!mediaStream.isTextSubtitleStream) {
                 MediaTrack.Builder(index.toLong(), MediaTrack.TYPE_AUDIO)
                     .setName(mediaStream.title)
                     .setLanguage(mediaStream.language)
-                    //.setContentId(mediaStream.deliveryUrl)
                     .build()
             }
         }
@@ -434,13 +438,12 @@ class PlayerViewModel @Inject internal constructor(
             .build()
         audioTracks.add(frenchAudio)
         audioTracks.add(engAudio)
-
         return MediaInfo.Builder(streamUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
             .setContentType(MimeTypes.VIDEO_MP4)
             .setContentUrl(streamUrl)
             .setMediaTracks(mediaSubtitles)
-            //.setMetadata(mediaMetadata)
+            .setMetadata(mediaMetadata)
             .build()
     }
 
@@ -452,7 +455,7 @@ class PlayerViewModel @Inject internal constructor(
                 val streamUrl =
                     repository.getStreamCastUrl(
                         items.first().itemId,
-                        items.first().mediaSourceId
+                        items.first().mediaSourceId,
                     )
                 val episode = repository.getItem(item.itemId)
                 if (session != null) {

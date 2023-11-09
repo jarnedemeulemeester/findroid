@@ -121,6 +121,6 @@ interface JellyfinRepository {
         itemId: UUID,
         mediaSourceId: String,
         subIndex: Int,
-        audioIndex: Int
+        audioIndex: Int,
     ): String
 }

@@ -410,7 +410,7 @@ class JellyfinRepositoryImpl(
             try {
                 jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 
-                //this is needed in order to create a transcoding url
+                // this is needed in order to create a transcoding url
                 val item = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
                     itemId,
                     PlaybackInfoDto(
@@ -421,9 +421,7 @@ class JellyfinRepositoryImpl(
                             maxStreamingBitrate = 1_000_000_000,
                             codecProfiles = emptyList(),
                             containerProfiles = emptyList(),
-                            directPlayProfiles = listOf(
-
-                            ),
+                            directPlayProfiles = listOf(),
                             transcodingProfiles = listOf(
                                 TranscodingProfile(
                                     type = DlnaProfileType.VIDEO,
@@ -474,12 +472,11 @@ class JellyfinRepositoryImpl(
                 ).content
                 var r = jellyfinApi.api.createUrl(item.mediaSources.get(0).transcodingUrl!!)
 
-                //we must replace the audio stream index, for some reason jellyfin overrides it with the default audio index
-                //otherwise, the video will not direct play and you will lose hdr
+                // we must replace the audio stream index, for some reason jellyfin overrides it with the default audio index
+                // otherwise, the video will not direct play and you will lose hdr
                 r = r.replace(Regex("AudioStreamIndex=\\d+"), "AudioStreamIndex=-1")
                 r = r.replace(Regex("SubtitleStreamIndex=\\d+"), "SubtitleStreamIndex=-1")
                 r
-
             } catch (e: Exception) {
                 Timber.e(e)
                 "l"
@@ -734,5 +731,4 @@ class JellyfinRepositoryImpl(
     override fun getChromeCastUrls(itemId: UUID, mediaSourceId: String, subIndex: Int, audioIndex: Int): String {
         TODO("Not yet implemented")
     }
-
 }
