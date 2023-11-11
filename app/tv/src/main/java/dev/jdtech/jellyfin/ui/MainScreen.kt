@@ -95,7 +95,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         currentTabPosition = tabPositions[focusedTabIndex],
                         activeColor = Color.White,
                         inactiveColor = Color.Transparent,
-                        isActivated = isActivated,
+                        doesTabRowHaveFocus = isActivated,
                     )
 
                     // SelectedTab's indicator
@@ -103,7 +103,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         currentTabPosition = tabPositions[activeTabIndex],
                         activeColor = Color.White,
                         inactiveColor = Color.White,
-                        isActivated = isActivated,
+                        doesTabRowHaveFocus = isActivated,
                     )
                 },
                 modifier = Modifier.align(Alignment.Center),

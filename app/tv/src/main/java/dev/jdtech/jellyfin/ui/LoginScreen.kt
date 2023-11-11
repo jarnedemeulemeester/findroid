@@ -44,6 +44,8 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.viewmodels.LoginEvent
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -58,9 +60,12 @@ fun LoginScreen(
         initial = LoginViewModel.QuickConnectUiState.Disabled,
     )
 
-    val navigateToHome by loginViewModel.navigateToMain.collectAsState(initial = false)
-    if (navigateToHome) {
-        navigator.navigate(MainScreenDestination)
+    ObserveAsEvents(loginViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is LoginEvent.NavigateToHome -> {
+                navigator.navigate(MainScreenDestination)
+            }
+        }
     }
 
     LoginScreenLayout(

@@ -44,12 +44,15 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
+import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
 import dev.jdtech.jellyfin.ui.dummy.dummyServers
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -61,9 +64,16 @@ fun ServerSelectScreen(
 ) {
     val delegatedUiState by serverSelectViewModel.uiState.collectAsState()
     val delegatedDiscoveredServersState by serverSelectViewModel.discoveredServersState.collectAsState()
-    val navigateToLogin by serverSelectViewModel.navigateToMain.collectAsState(initial = false)
-    if (navigateToLogin) {
-        navigator.navigate(UserSelectScreenDestination(serverSelectViewModel.currentServerId ?: ""))
+
+    ObserveAsEvents(serverSelectViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            ServerSelectEvent.NavigateToLogin -> {
+                navigator.navigate(UserSelectScreenDestination(serverSelectViewModel.currentServerId ?: ""))
+            }
+            ServerSelectEvent.NavigateToHome -> {
+                navigator.navigate(MainScreenDestination)
+            }
+        }
     }
 
     ServerSelectScreenLayout(
@@ -274,7 +284,10 @@ private fun ServerComponent(
                 modifier = Modifier
                     .fillMaxHeight()
                     .align(Alignment.Center)
-                    .padding(vertical = MaterialTheme.spacings.default, horizontal = MaterialTheme.spacings.medium),
+                    .padding(
+                        vertical = MaterialTheme.spacings.default,
+                        horizontal = MaterialTheme.spacings.medium,
+                    ),
             ) {
                 Text(
                     text = server.name,

@@ -42,6 +42,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.viewmodels.AddServerEvent
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -52,9 +54,13 @@ fun AddServerScreen(
     addServerViewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val uiState by addServerViewModel.uiState.collectAsState()
-    val navigateToLogin by addServerViewModel.navigateToLogin.collectAsState(initial = false)
-    if (navigateToLogin) {
-        navigator.navigate(LoginScreenDestination)
+
+    ObserveAsEvents(addServerViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is AddServerEvent.NavigateToLogin -> {
+                navigator.navigate(LoginScreenDestination)
+            }
+        }
     }
 
     AddServerScreenLayout(

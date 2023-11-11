@@ -37,12 +37,12 @@ constructor(
     // TODO states may need to be merged / cleaned up
     sealed class UiState {
         data class Normal(val servers: List<Server>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val message: Collection<UiText>) : UiState()
     }
 
     sealed class DiscoveredServersState {
-        object Loading : DiscoveredServersState()
+        data object Loading : DiscoveredServersState()
         data class Servers(val servers: List<DiscoveredServer>) : DiscoveredServersState()
     }
 
@@ -95,7 +95,7 @@ constructor(
     fun connectToServer(server: Server) {
         viewModelScope.launch {
             val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id) ?: return@launch
-            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return@launch
+            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == serverWithAddressesAndUsers.server.currentServerAddressId } ?: return@launch
             val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
 
             // If server has no selected user, navigate to login fragment
