@@ -7,10 +7,10 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,12 +24,12 @@ constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _navigateToMain = MutableSharedFlow<Boolean>()
-    val navigateToMain = _navigateToMain.asSharedFlow()
+    private val eventsChannel = Channel<UserSelectEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
         data class Normal(val server: Server, val users: List<User>) : UiState()
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
@@ -69,7 +69,11 @@ constructor(
                 userId = user.id
             }
 
-            _navigateToMain.emit(true)
+            eventsChannel.send(UserSelectEvent.NavigateToMain)
         }
     }
+}
+
+sealed interface UserSelectEvent {
+    data object NavigateToMain : UserSelectEvent
 }

@@ -52,6 +52,8 @@ import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.dummy.dummyUsers
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.viewmodels.UserSelectEvent
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel
 import org.jellyfin.sdk.model.api.ImageType
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -66,9 +68,13 @@ fun UserSelectScreen(
     val context = LocalContext.current
     val api = JellyfinApi.getInstance(context)
     val delegatedUiState by userSelectViewModel.uiState.collectAsState()
-    val navigateToHome by userSelectViewModel.navigateToMain.collectAsState(initial = false)
-    if (navigateToHome) {
-        navigator.navigate(MainScreenDestination)
+
+    ObserveAsEvents(userSelectViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is UserSelectEvent.NavigateToMain -> {
+                navigator.navigate(MainScreenDestination)
+            }
+        }
     }
 
     LaunchedEffect(key1 = true) {
