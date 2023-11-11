@@ -13,8 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -41,14 +39,9 @@ class FavoriteFragment : Fragment() {
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
-            ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaItem(item)
-            },
-            HomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToMediaItem(item)
-            },
-        )
+        binding.favoritesRecyclerView.adapter = FavoritesListAdapter { item ->
+            navigateToMediaItem(item)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

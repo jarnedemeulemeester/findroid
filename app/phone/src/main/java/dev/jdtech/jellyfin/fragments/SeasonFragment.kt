@@ -20,6 +20,7 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -60,8 +61,10 @@ class SeasonFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is SeasonEvent.NavigateBack -> findNavController().navigateUp()
+                        }
                     }
                 }
             }
@@ -85,11 +88,9 @@ class SeasonFragment : Fragment() {
         }
 
         binding.episodesRecyclerView.adapter =
-            EpisodeListAdapter(
-                EpisodeListAdapter.OnClickListener { episode ->
-                    navigateToEpisodeBottomSheetFragment(episode)
-                },
-            )
+            EpisodeListAdapter { episode ->
+                navigateToEpisodeBottomSheetFragment(episode)
+            }
     }
 
     override fun onResume() {

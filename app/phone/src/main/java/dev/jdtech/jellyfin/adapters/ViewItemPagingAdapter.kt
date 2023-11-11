@@ -15,7 +15,7 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class ViewItemPagingAdapter(
-    private val onClickListener: OnClickListener,
+    private val onClickListener: (item: FindroidItem) -> Unit,
     private val fixedWidth: Boolean = false,
 ) : PagingDataAdapter<FindroidItem, ViewItemPagingAdapter.ItemViewHolder>(DiffCallback) {
 
@@ -65,13 +65,9 @@ class ViewItemPagingAdapter(
         val item = getItem(position)
         if (item != null) {
             holder.itemView.setOnClickListener {
-                onClickListener.onClick(item)
+                onClickListener(item)
             }
             holder.bind(item, fixedWidth)
         }
-    }
-
-    class OnClickListener(val clickListener: (item: FindroidItem) -> Unit) {
-        fun onClick(item: FindroidItem) = clickListener(item)
     }
 }

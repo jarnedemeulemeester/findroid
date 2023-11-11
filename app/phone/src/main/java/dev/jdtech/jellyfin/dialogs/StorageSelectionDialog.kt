@@ -22,7 +22,7 @@ fun getStorageSelectionDialog(
         .setItems(locations) { _, which ->
             onItemSelected(which)
         }
-        .setOnCancelListener() {
+        .setOnCancelListener {
             onCancel()
         }.create()
     return dialog

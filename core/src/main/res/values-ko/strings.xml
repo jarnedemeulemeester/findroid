@@ -142,7 +142,7 @@
     <string name="internal">내부</string>
     <string name="storage_name">%1$s (%2$d MB 사용 가능)</string>
     <string name="external">외부</string>
-    <string name="size">사이즈</string>
+    <string name="size">크기</string>
     <string name="not_enough_storage">%1$s 의 저장 공간이 필요하지만, %2$s 만 사용 가능합니다</string>
     <string name="select_storage_location">저장 위치 선택</string>
     <string name="offline_mode_go_online">온라인으로 변경</string>
@@ -171,4 +171,9 @@
     <string name="remove_server_address_dialog_text">서버 주소 %1$s를 제거하는것이 확실합니까\?</string>
     <string name="downloaded_indicator">다운로드된 표시기</string>
     <string name="remove_server_address">서버 주소 제</string>
+    <string name="temp">임시</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="picture_in_picture_gesture">Picture-in-picture 홈 제스쳐</string>
+    <string name="picture_in_picture_gesture_summary">영상 재생 중 홈 버튼 또는 제스쳐를 이용해 picture-in-picture 변경</string>
+    <string name="picture_in_picture">Picture-in-picture 기능</string>
 </resources>

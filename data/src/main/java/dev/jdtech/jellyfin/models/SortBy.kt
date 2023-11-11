@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.models
 
-enum class SortBy(val SortString: String) {
+enum class SortBy(val sortString: String) {
     NAME("SortName"),
     IMDB_RATING("CommunityRating"),
     PARENTAL_RATING("CriticRating"),

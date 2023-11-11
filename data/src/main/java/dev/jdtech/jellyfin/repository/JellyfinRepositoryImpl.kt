@@ -125,7 +125,7 @@ class JellyfinRepositoryImpl(
                 parentId = parentId,
                 includeItemTypes = includeTypes,
                 recursive = recursive,
-                sortBy = listOf(sortBy.SortString),
+                sortBy = listOf(sortBy.sortString),
                 sortOrder = listOf(sortOrder),
                 startIndex = startIndex,
                 limit = limit,

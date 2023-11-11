@@ -1,11 +1,9 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
@@ -24,7 +22,6 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -43,36 +40,16 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
-    @OptIn(NavigationUiSaveStateControl::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scheduleUserDataSync()
+        applyTheme()
+        setupActivity()
+    }
 
-        print("OnCreate LOOOOOL")
-
-        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(
-                        NetworkType.CONNECTED,
-                    )
-                    .build(),
-            )
-            .build()
-
-        val workManager = WorkManager.getInstance(applicationContext)
-
-        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest).enqueue()
-
-        if (!appPreferences.downloadsMigrated) {
-            cleanUpOldDownloads()
-        }
-
-        if (appPreferences.amoledTheme) {
-            setTheme(CoreR.style.Theme_FindroidAMOLED)
-        }
-
+    @OptIn(NavigationUiSaveStateControl::class)
+    private fun setupActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
         val navHostFragment =
@@ -131,8 +108,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkServersEmpty(graph: NavGraph, onServersEmpty: () -> Unit = {}) {
         if (!viewModel.startDestinationChanged) {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
+            val numOfServers = database.getServersCount()
+            if (numOfServers < 1) {
                 graph.setStartDestination(R.id.addServerFragment)
                 viewModel.startDestinationChanged = true
                 onServersEmpty()
@@ -145,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             appPreferences.currentServer?.let {
                 val currentUser = database.getServerCurrentUser(it)
                 if (currentUser == null) {
-                    graph.setStartDestination(R.id.loginFragment)
+                    graph.setStartDestination(R.id.serverSelectFragment)
                     viewModel.startDestinationChanged = true
                     onNoUser()
                 }
@@ -153,24 +130,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Temp to remove old downloads, will be removed in a future version
-     */
-    private fun cleanUpOldDownloads() {
-        lifecycleScope.launch {
-            val oldDir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-            if (oldDir == null) {
-                appPreferences.downloadsMigrated = true
-                return@launch
-            }
+    private fun scheduleUserDataSync() {
+        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(
+                        NetworkType.CONNECTED,
+                    )
+                    .build(),
+            )
+            .build()
 
-            try {
-                for (file in oldDir.listFiles()!!) {
-                    file.delete()
-                }
-            } catch (_: Exception) {}
+        val workManager = WorkManager.getInstance(applicationContext)
 
-            appPreferences.downloadsMigrated = true
+        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
+            .enqueue()
+    }
+
+    private fun applyTheme() {
+        if (appPreferences.amoledTheme) {
+            setTheme(CoreR.style.Theme_FindroidAMOLED)
         }
     }
 }

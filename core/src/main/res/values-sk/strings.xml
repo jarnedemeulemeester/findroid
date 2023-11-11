@@ -173,4 +173,7 @@
     <string name="app_language">Jazyk aplikácie</string>
     <string name="remove_server_address">Odstrániť adresu serveru</string>
     <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
+    <string name="picture_in_picture">Obraz v obraze</string>
+    <string name="picture_in_picture_gesture">Gesto domov obrazu v obraze</string>
+    <string name="picture_in_picture_gesture_summary">Použi tlačidlo domov alebo gesto na prechod do režimu obrazu v obraze počas prehrávania videa</string>
 </resources>

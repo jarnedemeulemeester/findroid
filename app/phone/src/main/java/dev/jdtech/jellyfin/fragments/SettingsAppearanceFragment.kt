@@ -7,7 +7,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Suppress("unused")
 class SettingsAppearanceFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(CoreR.xml.fragment_settings_appearance, rootKey)

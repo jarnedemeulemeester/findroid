@@ -29,6 +29,4 @@
         <item name="chipStrokeWidth">0dp</item>
     </style>
 
-    <attr name="dolbyColor" format="reference|color" />
-
 </resources>

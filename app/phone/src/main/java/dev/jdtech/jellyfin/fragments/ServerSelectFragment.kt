@@ -14,13 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
+import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class ServerSelectFragment : Fragment() {
-
     private lateinit var binding: FragmentServerSelectBinding
     private val viewModel: ServerSelectViewModel by viewModels()
 
@@ -33,10 +33,10 @@ class ServerSelectFragment : Fragment() {
 
         binding.serversRecyclerView.adapter =
             ServerGridAdapter(
-                ServerGridAdapter.OnClickListener { server ->
+                onClickListener = { server ->
                     viewModel.connectToServer(server)
                 },
-                ServerGridAdapter.OnLongClickListener { server ->
+                onLongClickListener = { server ->
                     DeleteServerDialogFragment(viewModel, server).show(
                         parentFragmentManager,
                         "deleteServer",
@@ -62,8 +62,11 @@ class ServerSelectFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.navigateToMain.collect {
-                        if (it) navigateToMainActivity()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is ServerSelectEvent.NavigateToHome -> navigateToMainActivity()
+                            is ServerSelectEvent.NavigateToLogin -> navigateToLoginFragment()
+                        }
                     }
                 }
             }
@@ -86,5 +89,9 @@ class ServerSelectFragment : Fragment() {
 
     private fun navigateToMainActivity() {
         findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
+    }
+
+    private fun navigateToLoginFragment() {
+        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
     }
 }

@@ -120,7 +120,7 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
-        onClickListener = ViewItemListAdapter.OnClickListener { navigateToMediaItem(it) },
+        onClickListener = { navigateToMediaItem(it) },
     )
 
     private fun setupOverviewExpansion() = binding.overview.post {

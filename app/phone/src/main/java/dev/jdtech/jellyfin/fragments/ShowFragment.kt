@@ -32,6 +32,7 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.viewmodels.ShowEvent
 import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -79,8 +80,10 @@ class ShowFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is ShowEvent.NavigateBack -> findNavController().navigateUp()
+                        }
                     }
                 }
             }
@@ -120,7 +123,7 @@ class ShowFragment : Fragment() {
 
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
-                ViewItemListAdapter.OnClickListener { season ->
+                { season ->
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
                 fixedWidth = true,

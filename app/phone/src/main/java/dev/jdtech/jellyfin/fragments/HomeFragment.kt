@@ -20,8 +20,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -146,14 +144,11 @@ class HomeFragment : Fragment() {
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
-            onClickListener = ViewListAdapter.OnClickListener { navigateToLibraryFragment(it) },
-            onItemClickListener = ViewItemListAdapter.OnClickListener {
+            onClickListener = { navigateToLibraryFragment(it) },
+            onItemClickListener = {
                 navigateToMediaItem(it)
             },
-            onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToMediaItem(item)
-            },
-            onOnlineClickListener = ViewListAdapter.OnClickListenerOfflineCard {
+            onOnlineClickListener = {
                 appPreferences.offlineMode = false
                 activity?.restart()
             },

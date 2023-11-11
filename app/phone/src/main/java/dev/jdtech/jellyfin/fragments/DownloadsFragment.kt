@@ -15,13 +15,12 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.restart
+import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -43,26 +42,25 @@ class DownloadsFragment : Fragment() {
     ): View {
         binding = FragmentDownloadsBinding.inflate(inflater, container, false)
 
-        binding.downloadsRecyclerView.adapter = FavoritesListAdapter(
-            ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaItem(item)
-            },
-            HomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToMediaItem(item)
-            },
-        )
+        binding.downloadsRecyclerView.adapter = FavoritesListAdapter { item ->
+            navigateToMediaItem(item)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.connectionError.collect {
-                        Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
-                            .setTextMaxLines(2)
-                            .setAction(CoreR.string.offline_mode) {
-                                appPreferences.offlineMode = true
-                                activity?.restart()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is DownloadsEvent.ConnectionError -> {
+                                Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
+                                    .setTextMaxLines(2)
+                                    .setAction(CoreR.string.offline_mode) {
+                                        appPreferences.offlineMode = true
+                                        activity?.restart()
+                                    }
+                                    .show()
                             }
-                            .show()
+                        }
                     }
                 }
                 launch {
