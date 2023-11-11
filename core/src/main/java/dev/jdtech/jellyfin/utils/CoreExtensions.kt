@@ -13,6 +13,7 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.View
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.io.Serializable
+import dev.jdtech.jellyfin.core.R as CoreR
 
 fun BaseItemDto.toView(): View {
     return View(
@@ -47,4 +48,38 @@ fun Activity.restart() {
     val intent = Intent(this, this::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
+}
+
+fun Long.formatDuration(resources: Resources): String {
+    val hours = (this / 3600L).toInt()
+    val minutes = ((this % 3600L) / 60L).toInt()
+    val seconds = ((this % 3600L) % 60L).toInt()
+
+    val stringParts = mutableListOf<String>()
+
+    if (hours > 0) {
+        val hourText = resources.getQuantityString(
+            CoreR.plurals.hour,
+            hours,
+        )
+        stringParts.add("$hours $hourText")
+    }
+
+    if (minutes > 0) {
+        val minuteText = resources.getQuantityString(
+            CoreR.plurals.minute,
+            minutes,
+        )
+        stringParts.add("$minutes $minuteText")
+    }
+
+    if (seconds > 0) {
+        val secondText = resources.getQuantityString(
+            CoreR.plurals.second,
+            seconds,
+        )
+        stringParts.add("$seconds $secondText")
+    }
+
+    return stringParts.joinToString(" ")
 }

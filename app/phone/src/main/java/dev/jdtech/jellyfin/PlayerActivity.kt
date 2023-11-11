@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin
 
-import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
@@ -44,6 +43,7 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
+import dev.jdtech.jellyfin.utils.formatDuration
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -313,7 +313,7 @@ class PlayerActivity : BasePlayerActivity() {
                 // Check if the sleep timer is currently running
                 if (sleepJob?.isActive == true) {
                     sleepJob?.cancel()
-                    Toast.makeText(applicationContext, CoreR.string.sleep_mode_disabled, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, CoreR.string.sleep_mode_deactivated, Toast.LENGTH_SHORT).show()
                 }
                 isSleepModeEnabled = false
             } else {
@@ -423,26 +423,27 @@ class PlayerActivity : BasePlayerActivity() {
     private fun startSleepTimer(timerDuration: Long) {
         sleepJob?.cancel() // Cancel any existing timer job
         sleepJob = CoroutineScope(Dispatchers.Main).launch {
-            delay(timerDuration)
-            binding.playerView.player?.playWhenReady = !binding.playerView.player?.playWhenReady!!
+            delay(timerDuration * 1000)
+            binding.playerView.player?.pause()
             binding.playerView.findViewById<FrameLayout>(R.id.player_controls).visibility = View.GONE
             binding.playerView.findViewById<FrameLayout>(R.id.sleep_mode_view).visibility = View.VISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             isControlsLocked = true
         }
-        Toast.makeText(applicationContext, formatTimerMessage(timerDuration), Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, formatTimerMessage(timerDuration.formatDuration(resources)), Toast.LENGTH_SHORT).show()
     }
 
     private fun showSleepTimerDurationDialog() {
-        val timerTexts = resources.getStringArray(CoreR.array.sleep_timer_durations)
-        val durationValues = longArrayOf(60000L, 300000L, 600000L, 1800000L, 3600000L, 7200000L)
-        var selectedDuration = durationValues[2] // Default: 10 minutes in milliseconds
+        val durationValues = longArrayOf(300L, 600L, 1800L, 3600L, 7200L)
+        val timerTexts = durationValues.map { it.formatDuration(resources) }.toTypedArray()
+        val defaultIndex = 1
+        var selectedDuration = durationValues[defaultIndex]
 
         val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle(CoreR.string.select_sleep_timer_duration)
             .setSingleChoiceItems(
                 timerTexts,
-                timerTexts.indexOf("${selectedDuration / 60000} ${resources.getString(CoreR.string.minutes)}"),
+                defaultIndex,
             ) { _, which ->
                 selectedDuration = durationValues[which]
             }
@@ -462,7 +463,6 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun disableSleepMode() {
-        binding.playerView.player?.playWhenReady = true
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         binding.playerView.findViewById<FrameLayout>(R.id.sleep_mode_view).visibility = View.GONE
         binding.playerView.findViewById<FrameLayout>(R.id.player_controls).visibility = View.VISIBLE
@@ -470,44 +470,10 @@ class PlayerActivity : BasePlayerActivity() {
         isSleepModeEnabled = false
     }
 
-    @SuppressLint("StringFormatMatches")
-    private fun formatTimerMessage(timerDuration: Long): String {
-        val hours = timerDuration / 3600000L
-        val minutes = (timerDuration % 3600000L) / 60000L
-
-        val hourText = resources.getQuantityString(
-            CoreR.plurals.hour,
-            hours.toInt(),
-            hours,
+    private fun formatTimerMessage(durationString: String): String {
+        return getString(
+            CoreR.string.sleep_mode_activated,
+            durationString,
         )
-
-        val minuteText = resources.getQuantityString(
-            CoreR.plurals.minute,
-            minutes.toInt(),
-            minutes,
-        )
-
-        return when {
-            hours > 0 && minutes > 0 ->
-                getString(
-                    CoreR.string.sleep_mode_enabled_hours_and_minutes,
-                    hours,
-                    hourText,
-                    minutes,
-                    minuteText,
-                )
-            hours > 0 ->
-                getString(
-                    CoreR.string.sleep_mode_enabled_hours,
-                    hours,
-                    hourText,
-                )
-            else ->
-                getString(
-                    CoreR.string.sleep_mode_enabled_minutes,
-                    minutes,
-                    minuteText,
-                )
-        }
     }
 }
