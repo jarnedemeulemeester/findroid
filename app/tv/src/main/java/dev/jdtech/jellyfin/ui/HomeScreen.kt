@@ -30,8 +30,10 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.destinations.MovieScreenDestination
+import dev.jdtech.jellyfin.destinations.ShowScreenDestination
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -59,6 +61,9 @@ fun HomeScreen(
             when (item) {
                 is FindroidMovie -> {
                     navigator.navigate(MovieScreenDestination(item.id))
+                }
+                is FindroidShow -> {
+                    navigator.navigate(ShowScreenDestination(item.id))
                 }
             }
         },

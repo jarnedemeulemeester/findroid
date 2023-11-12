@@ -12,7 +12,6 @@ import coil.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidSeason
 
 enum class Direction {
     HORIZONTAL, VERTICAL
@@ -30,7 +29,6 @@ fun ItemPoster(item: FindroidItem, direction: Direction) {
         Direction.VERTICAL -> {
             when (item) {
                 is FindroidEpisode -> imageUri = item.images.showPrimary
-                is FindroidSeason -> imageUri = item.images.showPrimary
             }
         }
     }
