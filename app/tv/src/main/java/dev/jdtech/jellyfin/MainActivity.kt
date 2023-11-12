@@ -14,10 +14,9 @@ import androidx.tv.material3.Surface
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.ui.NavGraphs
-import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.ServerSelectScreenDestination
+import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
+import dev.jdtech.jellyfin.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject

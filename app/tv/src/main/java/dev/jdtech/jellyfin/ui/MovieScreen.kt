@@ -44,6 +44,8 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
@@ -53,7 +55,10 @@ import dev.jdtech.jellyfin.ui.dummy.dummyMovie
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.Yellow
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.MovieViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -61,19 +66,32 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Destination
 @Composable
 fun MovieScreen(
+    navigator: DestinationsNavigator,
     itemId: UUID,
     movieViewModel: MovieViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         movieViewModel.loadData(itemId)
     }
 
+    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is PlayerItemsEvent.PlayerItemsReady -> {
+                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
+            }
+            is PlayerItemsEvent.PlayerItemsError -> Unit
+        }
+    }
+
     val delegatedUiState by movieViewModel.uiState.collectAsState()
 
     MovieScreenLayout(
         uiState = delegatedUiState,
-        onPlayClick = {},
+        onPlayClick = {
+            playerViewModel.loadPlayerItems(movieViewModel.item)
+        },
         onTrailerClick = { trailerUri ->
             try {
                 Intent(
@@ -197,7 +215,9 @@ private fun MovieScreenLayout(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     ) {
                         Button(
-                            onClick = { },
+                            onClick = {
+                                onPlayClick()
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_play),
@@ -221,7 +241,9 @@ private fun MovieScreenLayout(
                             }
                         }
                         Button(
-                            onClick = { },
+                            onClick = {
+                                onPlayedClick()
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_check),
@@ -231,7 +253,9 @@ private fun MovieScreenLayout(
                             Text(text = stringResource(id = CoreR.string.mark_as_played))
                         }
                         Button(
-                            onClick = { },
+                            onClick = {
+                                onFavoriteClick()
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_heart),

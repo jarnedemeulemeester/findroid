@@ -39,6 +39,7 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MovieEvent
 import dev.jdtech.jellyfin.viewmodels.MovieViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -126,6 +127,15 @@ class MovieFragment : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    playerViewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is PlayerItemsEvent.PlayerItemsReady -> bindPlayerItems(event.items)
+                            is PlayerItemsEvent.PlayerItemsError -> bindPlayerItemsError(event.error)
+                        }
+                    }
+                }
             }
         }
 
@@ -135,13 +145,6 @@ class MovieFragment : Fragment() {
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
-        }
-
-        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
-            when (playerItems) {
-                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
-                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
-            }
         }
 
         binding.itemActions.playButton.setOnClickListener {
@@ -433,18 +436,18 @@ class MovieFragment : Fragment() {
         }
     }
 
-    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
-        navigateToPlayerActivity(items.items.toTypedArray())
+    private fun bindPlayerItems(items: List<PlayerItem>) {
+        navigateToPlayerActivity(items.toTypedArray())
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
-    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
-        Timber.e(error.error.message)
+    private fun bindPlayerItemsError(error: Exception) {
+        Timber.e(error.message)
         binding.playerItemsError.visibility = View.VISIBLE
         playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error)
+            ErrorDialogFragment.newInstance(error)
                 .show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }

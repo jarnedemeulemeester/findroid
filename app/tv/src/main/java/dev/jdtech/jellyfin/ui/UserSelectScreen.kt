@@ -43,10 +43,10 @@ import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.destinations.LoginScreenDestination
+import dev.jdtech.jellyfin.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.ui.destinations.LoginScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.dummy.dummyUsers

@@ -41,11 +41,11 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
+import dev.jdtech.jellyfin.destinations.MainScreenDestination
+import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.Server
-import dev.jdtech.jellyfin.ui.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.MainScreenDestination
-import dev.jdtech.jellyfin.ui.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
 import dev.jdtech.jellyfin.ui.dummy.dummyServers
