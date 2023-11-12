@@ -71,6 +71,7 @@ class PlayerActivity : ComponentActivity() {
                         PlayerView(context).also { playerView ->
                             playerView.player = viewModel.player
                             viewModel.initializePlayer(args.items.toTypedArray())
+                            playerView.setBackgroundColor(resources.getColor(android.R.color.black, theme))
                             lifecycleOwner.lifecycle.coroutineScope.launch {
                                 activity.keyDownEvents.receiveAsFlow().collect { keyEvent ->
                                     playerView.dispatchMediaKeyEvent(keyEvent)
