@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin
 
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +47,8 @@ class PlayerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val args = PlayerActivityDestination.argsFrom(intent)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContent {
             FindroidTheme {
