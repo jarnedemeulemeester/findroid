@@ -3,8 +3,10 @@ package dev.jdtech.jellyfin.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +42,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
@@ -68,6 +73,8 @@ enum class TabDestination(
 private fun MainScreenLayout(navigator: DestinationsNavigator) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
+
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -138,18 +145,24 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     }
                 }
             }
-            ProfileButton(
-                onClick = {},
-                modifier = Modifier
-                    .align(Alignment.CenterEnd),
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                modifier = Modifier.align(Alignment.CenterEnd),
+            ) {
+                if (isLoading) {
+                    LoadingIndicator()
+                }
+                ProfileButton(
+                    onClick = {},
+                )
+            }
         }
         when (activeTabIndex) {
             1 -> {
-                HomeScreen(navigator = navigator)
+                HomeScreen(navigator = navigator, isLoading = { isLoading = it })
             }
             2 -> {
-                LibrariesScreen(navigator = navigator)
+                LibrariesScreen(navigator = navigator, isLoading = { isLoading = it })
             }
         }
     }

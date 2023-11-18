@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -51,6 +53,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun HomeScreen(
     navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel(),
+    isLoading: (Boolean) -> Unit,
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.loadData()
@@ -60,6 +63,7 @@ fun HomeScreen(
 
     HomeScreenLayout(
         uiState = delegatedUiState,
+        isLoading = isLoading,
         onClick = { item ->
             when (item) {
                 is FindroidMovie -> {
@@ -77,80 +81,83 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenLayout(
     uiState: HomeViewModel.UiState,
+    isLoading: (Boolean) -> Unit,
     onClick: (FindroidItem) -> Unit,
 ) {
+    var homeItems: List<HomeItem> by remember { mutableStateOf(emptyList()) }
+
     val focusRequester = remember { FocusRequester() }
 
     when (uiState) {
-        is HomeViewModel.UiState.Loading -> {
-            Text(text = "LOADING")
-        }
         is HomeViewModel.UiState.Normal -> {
-            TvLazyColumn(
-                contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .focusRequester(focusRequester),
-            ) {
-                items(uiState.homeItems, key = { it.id }) { homeItem ->
-                    when (homeItem) {
-                        is HomeItem.Section -> {
-                            Text(
-                                text = homeItem.homeSection.name.asString(),
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(start = MaterialTheme.spacings.large),
+            homeItems = uiState.homeItems
+            isLoading(false)
+        }
+        is HomeViewModel.UiState.Loading -> {
+            isLoading(true)
+        }
+        else -> Unit
+    }
+    TvLazyColumn(
+        contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
+        modifier = Modifier
+            .fillMaxSize()
+            .focusRequester(focusRequester),
+    ) {
+        items(homeItems, key = { it.id }) { homeItem ->
+            when (homeItem) {
+                is HomeItem.Section -> {
+                    Text(
+                        text = homeItem.homeSection.name.asString(),
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(start = MaterialTheme.spacings.large),
+                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                    TvLazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
+                    ) {
+                        items(homeItem.homeSection.items, key = { it.id }) { item ->
+                            ItemCard(
+                                item = item,
+                                direction = Direction.HORIZONTAL,
+                                onClick = {
+                                    onClick(it)
+                                },
                             )
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                            TvLazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                            ) {
-                                items(homeItem.homeSection.items) { item ->
-                                    ItemCard(
-                                        item = item,
-                                        direction = Direction.HORIZONTAL,
-                                        onClick = {
-                                            onClick(it)
-                                        },
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
                         }
-                        is HomeItem.ViewItem -> {
-                            Text(
-                                text = stringResource(id = CoreR.string.latest_library, homeItem.view.name),
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(start = MaterialTheme.spacings.large),
-                            )
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                            TvLazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                            ) {
-                                items(homeItem.view.items.orEmpty()) { item ->
-                                    ItemCard(
-                                        item = item,
-                                        direction = Direction.VERTICAL,
-                                        onClick = {
-                                            onClick(it)
-                                        },
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
-                        }
-                        else -> Unit
                     }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
                 }
-            }
-            LaunchedEffect(true) {
-                focusRequester.requestFocus()
+                is HomeItem.ViewItem -> {
+                    Text(
+                        text = stringResource(id = CoreR.string.latest_library, homeItem.view.name),
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(start = MaterialTheme.spacings.large),
+                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                    TvLazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
+                    ) {
+                        items(homeItem.view.items.orEmpty(), key = { it.id }) { item ->
+                            ItemCard(
+                                item = item,
+                                direction = Direction.VERTICAL,
+                                onClick = {
+                                    onClick(it)
+                                },
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
+                }
+                else -> Unit
             }
         }
-        is HomeViewModel.UiState.Error -> {
-            Text(text = uiState.error.toString())
-        }
+    }
+    LaunchedEffect(homeItems) {
+        focusRequester.requestFocus()
     }
 }
 
@@ -162,6 +169,7 @@ private fun HomeScreenLayoutPreview() {
         Surface {
             HomeScreenLayout(
                 uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
+                isLoading = {},
                 onClick = {},
             )
         }
