@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,8 +66,8 @@ enum class TabDestination(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun MainScreenLayout(navigator: DestinationsNavigator) {
-    var focusedTabIndex by remember { mutableIntStateOf(1) }
-    var activeTabIndex by remember { mutableIntStateOf(focusedTabIndex) }
+    var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
+    var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
 
     Column(
         modifier = Modifier
