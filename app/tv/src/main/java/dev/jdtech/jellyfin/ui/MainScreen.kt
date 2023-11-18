@@ -38,6 +38,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
@@ -91,10 +92,10 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                 selectedTabIndex = focusedTabIndex,
                 indicator = { tabPositions, isActivated ->
                     // FocusedTab's indicator
-                    TabRowDefaults.PillIndicator(
+                    PillBorderIndicator(
                         currentTabPosition = tabPositions[focusedTabIndex],
-                        activeColor = Color.White,
-                        inactiveColor = Color.Transparent,
+                        activeBorderColor = Color.White,
+                        inactiveBorderColor = Color.Transparent,
                         doesTabRowHaveFocus = isActivated,
                     )
 
@@ -113,10 +114,10 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
                         colors = TabDefaults.pillIndicatorTabColors(
-                            // activeContentColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                             selectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                            focusedContentColor = MaterialTheme.colorScheme.onPrimary,
+                            focusedContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                            focusedSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
                             focusedTabIndex = index
