@@ -42,7 +42,7 @@ fun PillBorderIndicator(
     doesTabRowHaveFocus: Boolean,
     modifier: Modifier = Modifier,
     activeBorderColor: Color = MaterialTheme.colorScheme.onSurface,
-    inactiveBorderColor: Color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+    inactiveBorderColor: Color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
 ) {
     val width by animateDpAsState(
         targetValue = currentTabPosition.width,
@@ -51,15 +51,15 @@ fun PillBorderIndicator(
     val height = currentTabPosition.height
     val leftOffset by animateDpAsState(
         targetValue = currentTabPosition.left,
-        label = "PillIndicator.leftOffset"
+        label = "PillIndicator.leftOffset",
     )
     val topOffset = currentTabPosition.top
 
     val borderColor by
-    animateColorAsState(
-        targetValue = if (doesTabRowHaveFocus) activeBorderColor else inactiveBorderColor,
-        label = "PillIndicator.pillColor"
-    )
+        animateColorAsState(
+            targetValue = if (doesTabRowHaveFocus) activeBorderColor else inactiveBorderColor,
+            label = "PillIndicator.pillColor",
+        )
 
     Box(
         modifier
@@ -69,6 +69,6 @@ fun PillBorderIndicator(
             .width(width)
             .height(height)
             .border(width = 4.dp, color = borderColor, shape = RoundedCornerShape(50))
-            .zIndex(-1f)
+            .zIndex(-1f),
     )
 }
