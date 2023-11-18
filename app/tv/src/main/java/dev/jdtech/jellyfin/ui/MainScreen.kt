@@ -81,7 +81,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                 .padding(horizontal = MaterialTheme.spacings.default),
         ) {
             Icon(
-                painter = painterResource(id = CoreR.drawable.ic_launcher_foreground),
+                painter = painterResource(id = CoreR.drawable.ic_logo),
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier
