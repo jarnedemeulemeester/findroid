@@ -13,13 +13,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -84,6 +88,8 @@ private fun AddServerScreenLayout(
     val isLoading = uiState is AddServerViewModel.UiState.Loading
     val context = LocalContext.current
 
+    val focusRequester = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -135,7 +141,8 @@ private fun AddServerScreenLayout(
                     }
                 },
                 modifier = Modifier
-                    .width(360.dp),
+                    .width(360.dp)
+                    .focusRequester(focusRequester),
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Box {
@@ -165,6 +172,10 @@ private fun AddServerScreenLayout(
                 }
             }
         }
+    }
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
     }
 }
 

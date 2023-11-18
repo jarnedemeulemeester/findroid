@@ -8,7 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,7 +52,7 @@ fun LibraryScreen(
     libraryType: CollectionType,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(true) {
         libraryViewModel.loadItems(libraryId, libraryType)
     }
 
@@ -78,6 +81,8 @@ private fun LibraryScreenLayout(
     uiState: LibraryViewModel.UiState,
     onClick: (FindroidItem) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     when (uiState) {
         is LibraryViewModel.UiState.Loading -> Text(text = "LOADING")
         is LibraryViewModel.UiState.Normal -> {
@@ -89,7 +94,8 @@ private fun LibraryScreenLayout(
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
+                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
+                    .focusRequester(focusRequester),
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
                     Text(
@@ -108,6 +114,11 @@ private fun LibraryScreenLayout(
                             },
                         )
                     }
+                }
+            }
+            LaunchedEffect(items.itemCount > 0) {
+                if (items.itemCount > 0) {
+                    focusRequester.requestFocus()
                 }
             }
         }

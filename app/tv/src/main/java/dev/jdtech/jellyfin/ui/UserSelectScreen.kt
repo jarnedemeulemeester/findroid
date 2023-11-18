@@ -17,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -112,6 +115,8 @@ private fun UserSelectScreenLayout(
         else -> Unit
     }
 
+    val focusRequester = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -144,6 +149,7 @@ private fun UserSelectScreenLayout(
                 TvLazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     contentPadding = PaddingValues(MaterialTheme.spacings.default),
+                    modifier = Modifier.focusRequester(focusRequester),
                 ) {
                     items(users) {
                         UserComponent(
@@ -153,6 +159,9 @@ private fun UserSelectScreenLayout(
                             onUserClick(user)
                         }
                     }
+                }
+                LaunchedEffect(true) {
+                    focusRequester.requestFocus()
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))

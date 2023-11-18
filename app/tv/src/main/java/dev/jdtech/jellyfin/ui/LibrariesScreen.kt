@@ -3,8 +3,13 @@ package dev.jdtech.jellyfin.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.foundation.lazy.grid.TvGridCells
@@ -48,6 +53,8 @@ private fun LibrariesScreenLayout(
     uiState: MediaViewModel.UiState,
     onClick: (UUID, String, CollectionType) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     when (uiState) {
         is MediaViewModel.UiState.Loading -> Text(text = "LOADING")
         is MediaViewModel.UiState.Normal -> {
@@ -61,6 +68,7 @@ private fun LibrariesScreenLayout(
                     end = MaterialTheme.spacings.large,
                     bottom = MaterialTheme.spacings.large,
                 ),
+                modifier = Modifier.focusRequester(focusRequester),
             ) {
                 items(uiState.collections) { collection ->
                     ItemCard(
@@ -71,6 +79,9 @@ private fun LibrariesScreenLayout(
                         },
                     )
                 }
+            }
+            LaunchedEffect(true) {
+                focusRequester.requestFocus()
             }
         }
         is MediaViewModel.UiState.Error -> Text(text = uiState.error.toString())

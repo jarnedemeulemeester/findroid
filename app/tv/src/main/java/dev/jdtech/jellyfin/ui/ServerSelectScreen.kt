@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -122,6 +126,8 @@ private fun ServerSelectScreenLayout(
         else -> Unit
     }
 
+    val focusRequester = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -168,6 +174,7 @@ private fun ServerSelectScreenLayout(
                 TvLazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
+                    modifier = Modifier.focusRequester(focusRequester),
                 ) {
                     items(servers) { server ->
                         ServerComponent(server) { onServerClick(it) }
@@ -175,6 +182,10 @@ private fun ServerSelectScreenLayout(
                     items(discoveredServers) {
                         ServerComponent(it, discovered = true)
                     }
+                }
+
+                LaunchedEffect(true) {
+                    focusRequester.requestFocus()
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))

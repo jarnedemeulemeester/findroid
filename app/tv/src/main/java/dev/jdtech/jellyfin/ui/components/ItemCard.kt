@@ -39,13 +39,14 @@ fun ItemCard(
     item: FindroidItem,
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val width = when (direction) {
         Direction.HORIZONTAL -> 260
         Direction.VERTICAL -> 150
     }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .width(width.dp),
     ) {
         Surface(

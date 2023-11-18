@@ -13,8 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,6 +79,8 @@ private fun HomeScreenLayout(
     uiState: HomeViewModel.UiState,
     onClick: (FindroidItem) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     when (uiState) {
         is HomeViewModel.UiState.Loading -> {
             Text(text = "LOADING")
@@ -83,7 +88,9 @@ private fun HomeScreenLayout(
         is HomeViewModel.UiState.Normal -> {
             TvLazyColumn(
                 contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .focusRequester(focusRequester),
             ) {
                 items(uiState.homeItems, key = { it.id }) { homeItem ->
                     when (homeItem) {
@@ -136,6 +143,9 @@ private fun HomeScreenLayout(
                         else -> Unit
                     }
                 }
+            }
+            LaunchedEffect(true) {
+                focusRequester.requestFocus()
             }
         }
         is HomeViewModel.UiState.Error -> {

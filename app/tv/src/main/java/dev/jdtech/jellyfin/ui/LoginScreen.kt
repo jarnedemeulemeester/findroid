@@ -13,13 +13,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -110,6 +114,8 @@ private fun LoginScreenLayout(
     val quickConnectEnabled = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
     val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
 
+    val focusRequester = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -145,7 +151,8 @@ private fun LoginScreenLayout(
                 isError = isError,
                 enabled = !isLoading,
                 modifier = Modifier
-                    .width(360.dp),
+                    .width(360.dp)
+                    .focusRequester(focusRequester),
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             OutlinedTextField(
@@ -234,6 +241,10 @@ private fun LoginScreenLayout(
                 }
             }
         }
+    }
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
     }
 }
 
