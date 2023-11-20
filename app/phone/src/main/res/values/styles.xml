@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomCastExpandedController" parent="CastExpandedController">
+        <item name="castControlButtons">
+            @array/cast_expanded_controller_control_buttons
+        </item>
+    </style>
+
+</resources>

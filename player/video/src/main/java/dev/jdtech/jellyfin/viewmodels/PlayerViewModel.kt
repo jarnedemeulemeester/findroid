@@ -252,6 +252,7 @@ class PlayerViewModel @Inject internal constructor(
         val callback = object : RemoteMediaClient.Callback() {
 
             override fun onSendingRemoteMediaRequest() {
+
                 val test = remoteMediaClient.approximateStreamPosition
                 viewModelScope.launch {
                     try {
