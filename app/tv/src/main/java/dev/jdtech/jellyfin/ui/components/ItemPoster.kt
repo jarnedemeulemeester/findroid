@@ -19,7 +19,11 @@ enum class Direction {
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun ItemPoster(item: FindroidItem, direction: Direction) {
+fun ItemPoster(
+    item: FindroidItem,
+    direction: Direction,
+    modifier: Modifier = Modifier,
+) {
     var imageUri = item.images.primary
 
     when (direction) {
@@ -37,7 +41,7 @@ fun ItemPoster(item: FindroidItem, direction: Direction) {
         model = imageUri,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
             .background(

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui.dummy
 
+import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.FindroidMediaStream
@@ -58,4 +59,8 @@ val dummyEpisode = FindroidEpisode(
 
 val dummyEpisodes = listOf(
     dummyEpisode,
+)
+
+val dummyEpisodeItems = listOf(
+    EpisodeItem.Episode(dummyEpisode),
 )

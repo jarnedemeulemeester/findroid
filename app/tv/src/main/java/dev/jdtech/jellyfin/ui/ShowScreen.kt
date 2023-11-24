@@ -58,6 +58,7 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
+import dev.jdtech.jellyfin.destinations.SeasonScreenDestination
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -115,7 +116,9 @@ fun ShowScreen(
         },
         onPlayedClick = {},
         onFavoriteClick = {},
-        onSeasonClick = {},
+        onSeasonClick = { season ->
+            navigator.navigate(SeasonScreenDestination(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name))
+        },
     )
 }
 
