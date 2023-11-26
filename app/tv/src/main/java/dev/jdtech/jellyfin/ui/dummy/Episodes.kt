@@ -43,7 +43,7 @@ val dummyEpisode = FindroidEpisode(
             ),
         ),
     ),
-    played = false,
+    played = true,
     favorite = true,
     canPlay = true,
     canDownload = true,

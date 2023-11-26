@@ -68,6 +68,12 @@ fun ItemCard(
                     item = item,
                     direction = direction,
                 )
+                ProgressBadge(
+                    item = item,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(MaterialTheme.spacings.small),
+                )
                 if (direction == Direction.HORIZONTAL) {
                     Column(
                         modifier = Modifier

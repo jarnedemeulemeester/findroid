@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -64,6 +66,12 @@ fun EpisodeCard(
                     item = episode,
                     direction = Direction.HORIZONTAL,
                     modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                )
+                ProgressBadge(
+                    item = episode,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(PaddingValues(MaterialTheme.spacings.small)),
                 )
             }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
