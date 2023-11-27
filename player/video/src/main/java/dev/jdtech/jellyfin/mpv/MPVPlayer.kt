@@ -1296,6 +1296,10 @@ class MPVPlayer(
         return MPVLib.setPropertyBoolean("mute", muted)
     }
 
+    override fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) {
+        TODO("Not yet implemented")
+    }
+
     fun updateZoomMode(enabled: Boolean) {
         if (enabled) {
             MPVLib.setOptionString("panscan", "1")
