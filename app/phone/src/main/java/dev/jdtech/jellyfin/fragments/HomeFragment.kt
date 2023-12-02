@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,6 +10,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -17,24 +24,58 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
+import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
+import dev.jdtech.jellyfin.chromecast.SyncPlayCast
+import dev.jdtech.jellyfin.chromecast.SyncPlayMedia
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.Globals
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import org.jellyfin.sdk.api.client.extensions.syncPlayApi
+import org.jellyfin.sdk.api.sockets.addGeneralCommandsListener
+import org.jellyfin.sdk.api.sockets.addListener
+import org.jellyfin.sdk.api.sockets.addPlayStateCommandsListener
+import org.jellyfin.sdk.api.sockets.addSyncPlayCommandsListener
+import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.GroupUpdateType
+import org.jellyfin.sdk.model.api.JoinGroupRequestDto
+import org.jellyfin.sdk.model.socket.GeneralCommandMessage
+import org.jellyfin.sdk.model.socket.PlayMessage
+import org.jellyfin.sdk.model.socket.PlayStateMessage
+import org.jellyfin.sdk.model.socket.SessionsMessage
+import org.jellyfin.sdk.model.socket.SyncPlayCommandMessage
+import org.jellyfin.sdk.model.socket.SyncPlayGroupUpdateMessage
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -46,8 +87,18 @@ class HomeFragment : Fragment() {
 
     private lateinit var errorDialog: ErrorDialogFragment
 
+    private lateinit var spinner: Spinner
+
+    private var groups = ArrayList<String>()
+
+    private var test: JellyfinApi? = null
+
+    private var groupIds = ArrayList<java.util.UUID>()
+
+    private var isCasting = false
     @Inject
     lateinit var appPreferences: AppPreferences
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,9 +112,13 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
-
+    fun isCasting(): Boolean {
+        return isCasting
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        test = JellyfinApi.getInstance(this.requireContext())
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(
@@ -75,7 +130,101 @@ class HomeFragment : Fragment() {
                         menu,
                         CoreR.id.media_route_menu_item,
                     )
+
+
+                    val spinnerItem = menu.add(Menu.NONE, Menu.NONE, 0, "Select an option")
+                    spinnerItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+
+                    val spinner = Spinner(requireContext())
+                    spinner.adapter = createSpinnerAdapter()
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams.width = 125
+                    spinner.layoutParams = layoutParams
+                    spinnerItem.actionView = spinner
+                    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>,
+                            view: View,
+                            position: Int,
+                            id: Long
+                        ) {
+
+                            if (position > 1) {
+
+                                var item = BaseItemDto
+                                var groupJoinRequest =
+                                    JoinGroupRequestDto(groupIds.get(position - 2))
+
+                                val castContext = CastContext.getSharedInstance(requireContext().applicationContext)
+                                val session = castContext.sessionManager.currentCastSession
+                                if (session == null || castContext.castState != CastState.CONNECTED) {
+
+                                } else {
+                                    val remoteMediaClient = session.remoteMediaClient ?: return
+                                    remoteMediaClient.registerCallback(object :
+                                        RemoteMediaClient.Callback() {
+                                        override fun onStatusUpdated() {
+                                            val intent = Intent(
+                                                requireActivity(),
+                                                ExpandedControlsActivity::class.java
+                                            )
+                                            startActivity(intent)
+                                            remoteMediaClient.unregisterCallback(this)
+                                        }
+                                    })
+                                }
+                               Globals.syncPlay = true
+
+                                viewModel.viewModelScope.launch {
+                                    test!!.api.syncPlayApi.syncPlayJoinGroup(groupJoinRequest)
+                                    val instance = test!!.api.ws()
+
+
+                                    SyncPlayCast.startCast(
+                                        test!!,
+                                        groupIds.get(position - 2),
+                                        requireContext(),
+                                        viewModel.getRepository(),
+                                        groupJoinRequest
+                                    )
+
+                                    var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
+                                    print(mediaItem)
+                                    var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
+                                    print(streamUrl)
+                                    val mCastSession = CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
+                                    val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return@launch
+                                    remoteMediaClient.load(MediaLoadRequestData.Builder().setMediaInfo(MediaInfo.Builder().setContentUrl(streamUrl).build()).setAutoplay(true).setCurrentTime(mediaItem.timestamp).build())
+                                }
+
+
+                            }
+
+                            if (position == 1) {
+                                // Execute your action here
+                                Toast.makeText(
+                                    requireContext(),
+                                    "You selected: ${spinner.selectedItem} position + ${position}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    test!!.api.syncPlayApi.syncPlayLeaveGroup()
+                                }
+                                Globals.syncPlay = false
+                            }
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+                            // Do nothing if nothing is selected
+                        }
+                    }
+
                     val settings = menu.findItem(CoreR.id.action_settings)
+
                     val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
                     searchView.queryHint = getString(CoreR.string.search_hint)
@@ -114,6 +263,7 @@ class HomeFragment : Fragment() {
                             navigateToSettingsFragment()
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -121,6 +271,164 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner,
             Lifecycle.State.RESUMED,
         )
+    }
+
+    private fun getItemID(
+        test: JellyfinApi,
+        requireContext: Context,
+        repository: JellyfinRepository
+    ): SyncPlayMedia? {
+        val session =
+            CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
+
+        var hasItemId: Boolean = false
+        var ItemId: java.util.UUID? = null
+        var startPositionTicks = 0
+        var userID = ""
+
+        //var instance = SocketInstance
+        var mediaId: String
+        var mediaUrl = ""
+        var mediaIDString = ""
+
+        var castUrl: String
+        var instance = test.api.ws()
+        var Groupmessage: JsonElement
+
+        instance.addGeneralCommandsListener { message ->
+            // type of message is GeneralCommandMessage
+            println("Received a message: $message")
+        }
+
+        instance.addPlayStateCommandsListener { message ->
+            // type of message is PlayStateMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<PlayMessage> { message ->
+            // type of message is UserDataChangedMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<PlayStateMessage> { message ->
+            // type of message is UserDataChangedMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<SyncPlayCommandMessage> { message ->
+            // type of message is UserDataChangedMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<SessionsMessage> { message ->
+            // type of message is UserDataChangedMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<GeneralCommandMessage> { message ->
+            // type of message is UserDataChangedMessage
+            println("Received a message: $message")
+        }
+
+        instance.addListener<SyncPlayGroupUpdateMessage> {
+
+                message ->
+            println("msg" + message)
+            if (message.update.type == GroupUpdateType.PLAY_QUEUE) {
+                Groupmessage = message.update.data
+                print(Groupmessage)
+                var element = Groupmessage.jsonObject
+                var startTime = element.get("StartPositionTicks").toString().toLong()
+                var playList = element.get("Playlist")!!
+                var ItemIdsArray = playList.jsonArray.get(0)
+                mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
+                mediaIDString = mediaIDString.replace("\"", "")
+                var r = Groupmessage.toString()
+                var mediaInfo: MediaInfo? = null
+                print(r + ItemIdsArray + mediaIDString)
+                val regex = Regex("""([0-z]{8})([0-z]{4})([0-z]{4})([0-z]{4})([0-z]{12})""")
+                mediaId = regex.replace(mediaIDString) { match ->
+                    "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+                }
+                ItemId = java.util.UUID.fromString(mediaId)
+                startPositionTicks = startTime.toInt()
+                hasItemId = true
+
+            }
+
+
+            instance.addSyncPlayCommandsListener { message ->
+
+
+                println("Received a message: $message")
+            }
+
+        }
+
+        while(ItemId==null){
+            Thread.sleep(100)
+        }
+        var mediaItem = SyncPlayMedia(ItemId!!, startPositionTicks.toLong(), true)
+        return mediaItem
+
+
+    }
+
+    private fun loadRemoteMedia(
+        position: Int,
+        mCastSession: CastSession,
+        mediaInfo: MediaInfo,
+        streamUrl: String,
+        item: PlayerItem,
+        episode: BaseItemDto,
+    ) {
+        if (mCastSession == null) {
+            return
+        }
+        val remoteMediaClient = mCastSession.remoteMediaClient ?: return
+
+        remoteMediaClient.load(
+            MediaLoadRequestData.Builder()
+                .setMediaInfo(mediaInfo)
+                .setAutoplay(true)
+                .setCurrentTime(position.toLong()).build(),
+        )
+        }
+    private fun createSpinnerAdapter(): ArrayAdapter<String> {
+
+        // Create an ArrayAdapter with the desired items and layout
+
+
+
+        groups.add("Join a syncplay group")
+        groups.add("Leave Groups")
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            var syncPlayGetGroups = test!!.api.syncPlayApi.syncPlayGetGroups()
+            print(syncPlayGetGroups)
+
+            for (groupInfoDto in syncPlayGetGroups.content) {
+                groups.add(groupInfoDto.groupName)
+                groupIds.add(groupInfoDto.groupId)
+            }
+
+        }
+
+
+
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            groups
+        )
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Add an empty item at the beginning
+
+        return adapter
     }
 
     override fun onStart() {
@@ -145,6 +453,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupView() {
+
+
         binding.refreshLayout.setOnRefreshListener {
             viewModel.loadData()
         }
@@ -228,6 +538,7 @@ class HomeFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidShow -> {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToShowFragment(
@@ -236,6 +547,7 @@ class HomeFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidEpisode -> {
                 findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(

@@ -48,6 +48,10 @@ class HomeViewModel @Inject internal constructor(
         }
     }
 
+    fun getRepository(): JellyfinRepository {
+        return repository
+    }
+
     fun loadData(includeLibraries: Boolean = false) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)

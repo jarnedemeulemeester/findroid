@@ -404,7 +404,12 @@ class JellyfinRepositoryImpl(
             playSessionIds[itemId] = playbackInfo.playSessionId
             sources
         }
-
+    suspend fun formatUuid(uuid: String): String {
+        val regex = Regex("""([0-z]{8})([0-z]{4})([0-z]{4})([0-z]{4})([0-z]{12})""")
+        return regex.replace(uuid) { match ->
+            "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+        }
+    }
     override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
@@ -479,7 +484,7 @@ class JellyfinRepositoryImpl(
                 r
             } catch (e: Exception) {
                 Timber.e(e)
-                "l"
+                ""
             }
         }
 

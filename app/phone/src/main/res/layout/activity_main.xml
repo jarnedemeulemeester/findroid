@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
 
+
     <fragment
         android:id="@+id/cast_mini_controller"
         android:layout_width="match_parent"
@@ -48,6 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/main_toolbar"

@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Spinner
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,13 +40,16 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
+
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
     private val jellyfinApi: JellyfinApi,
+
 ) : ViewModel() {
 
     private val progressListeners: MutableList<MyProgressListener> = mutableListOf()
+    private lateinit var spinner: Spinner
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
         replay = 0,
@@ -449,6 +453,8 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     fun startCast(items: Array<PlayerItem>, context: Context) {
+
+
         val session = CastContext.getSharedInstance(context).sessionManager.currentCastSession
         viewModelScope.launch {
             try {

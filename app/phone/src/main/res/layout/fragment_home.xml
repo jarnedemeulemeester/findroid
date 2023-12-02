@@ -15,6 +15,7 @@
             android:id="@+id/error_layout"
             layout="@layout/error_panel" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"
             android:layout_width="0dp"
@@ -39,6 +40,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
