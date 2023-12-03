@@ -94,9 +94,9 @@ constructor(
 
     fun connectToServer(server: Server) {
         viewModelScope.launch {
-            val serverWithAddressesAndUsers = database.getServerWithAddressesAndUsers(server.id) ?: return@launch
-            val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == serverWithAddressesAndUsers.server.currentServerAddressId } ?: return@launch
-            val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
+            val serverWithAddressAndUser = database.getServerWithAddressAndUser(server.id) ?: return@launch
+            val serverAddress = serverWithAddressAndUser.address ?: return@launch
+            val user = serverWithAddressAndUser.user
 
             // If server has no selected user, navigate to login fragment
             if (user == null) {

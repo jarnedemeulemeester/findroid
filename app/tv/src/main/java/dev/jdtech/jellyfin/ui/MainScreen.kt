@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
@@ -42,20 +44,30 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
+import dev.jdtech.jellyfin.ui.dummy.dummyServer
+import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @RootNavGraph(start = true)
 @Destination
 @Composable
 fun MainScreen(
+    mainViewModel: MainViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 ) {
-    MainScreenLayout(navigator)
+    val delegatedUiState by mainViewModel.uiState.collectAsState()
+
+    MainScreenLayout(
+        uiState = delegatedUiState,
+        navigator = navigator,
+    )
 }
 
 enum class TabDestination(
@@ -70,11 +82,22 @@ enum class TabDestination(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun MainScreenLayout(navigator: DestinationsNavigator) {
+private fun MainScreenLayout(
+    uiState: MainViewModel.UiState,
+    navigator: DestinationsNavigator,
+) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
 
     var isLoading by remember { mutableStateOf(false) }
+
+    var user: User? = null
+    when (uiState) {
+        is MainViewModel.UiState.Normal -> {
+            user = uiState.user
+        }
+        else -> Unit
+    }
 
     Column(
         modifier = Modifier
@@ -116,7 +139,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                 },
                 modifier = Modifier.align(Alignment.Center),
             ) {
-                TabDestination.values().forEachIndexed { index, tab ->
+                TabDestination.entries.forEachIndexed { index, tab ->
                     Tab(
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
@@ -153,6 +176,7 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
                     LoadingIndicator()
                 }
                 ProfileButton(
+                    user = user,
                     onClick = {},
                 )
             }
@@ -174,7 +198,10 @@ private fun MainScreenLayout(navigator: DestinationsNavigator) {
 private fun MainScreenLayoutPreview() {
     FindroidTheme {
         Surface {
-            MainScreenLayout(navigator = EmptyDestinationsNavigator)
+            MainScreenLayout(
+                uiState = MainViewModel.UiState.Normal(server = dummyServer, user = dummyUser),
+                navigator = EmptyDestinationsNavigator,
+            )
         }
     }
 }
