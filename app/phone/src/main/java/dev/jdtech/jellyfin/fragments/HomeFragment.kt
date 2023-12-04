@@ -338,7 +338,7 @@ class HomeFragment : Fragment() {
                 Groupmessage = message.update.data
                 print(Groupmessage)
                 var element = Groupmessage.jsonObject
-                var startTime = element.get("StartPositionTicks").toString().toLong()
+                var startTime = element.get("StartPositionTicks").toString().toLong() / 10000
                 var playList = element.get("Playlist")!!
                 var ItemIdsArray = playList.jsonArray.get(0)
                 mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
@@ -366,7 +366,7 @@ class HomeFragment : Fragment() {
         }
 
         while(ItemId==null){
-            Thread.sleep(100)
+
         }
         var mediaItem = SyncPlayMedia(ItemId!!, startPositionTicks.toLong(), true)
         return mediaItem
@@ -399,7 +399,7 @@ class HomeFragment : Fragment() {
         // Create an ArrayAdapter with the desired items and layout
 
 
-
+        groups.clear()
         groups.add("Join a syncplay group")
         groups.add("Leave Groups")
 
