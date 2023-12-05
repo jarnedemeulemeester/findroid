@@ -38,7 +38,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
-import dev.jdtech.jellyfin.chromecast.SyncPlayCast
+import dev.jdtech.jellyfin.chromecast.SyncPlayDataSource
 import dev.jdtech.jellyfin.chromecast.SyncPlayMedia
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -54,6 +54,7 @@ import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
@@ -95,7 +96,7 @@ class HomeFragment : Fragment() {
 
     private var groupIds = ArrayList<java.util.UUID>()
 
-    private var isCasting = false
+    private var syncPlayDataSource: SyncPlayDataSource? = null
     @Inject
     lateinit var appPreferences: AppPreferences
 
@@ -112,14 +113,54 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
-    fun isCasting(): Boolean {
-        return isCasting
+
+    private fun loadRemoteMedia(
+        position: Long,
+        mCastSession: CastSession,
+        mediaInfo: MediaInfo,
+        streamUrl: String,
+        item: PlayerItem,
+        episode: BaseItemDto,
+    ) {
+        if (mCastSession == null) {
+            return
+        }
+
+        val remoteMediaClient = mCastSession.remoteMediaClient ?: return
+        var previousSubtitleTrackIds: LongArray? = null
+        var newIndex = -1
+        var subtitleIndex = -1
+        var newAudioIndex = 1
+
+        val callback = object : RemoteMediaClient.Callback() {
+
+            override fun onSendingRemoteMediaRequest() {
+
+
+            }
+
+            override fun onStatusUpdated() {
+                val mediaStatus = remoteMediaClient.mediaStatus
+
+
+            }
+        }
+
+        remoteMediaClient.registerCallback(callback)
+        remoteMediaClient.load(
+            MediaLoadRequestData.Builder()
+                .setMediaInfo(mediaInfo)
+                .setAutoplay(true)
+                .setCurrentTime(position.toLong()).build(),
+        )
+        val mediaStatus = remoteMediaClient.mediaStatus
+        val activeMediaTracks = mediaStatus?.activeTrackIds
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         test = JellyfinApi.getInstance(this.requireContext())
-
+        syncPlayDataSource = SyncPlayDataSource(test!!)
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(
             object : MenuProvider {
@@ -179,25 +220,28 @@ class HomeFragment : Fragment() {
                                Globals.syncPlay = true
 
                                 viewModel.viewModelScope.launch {
+
+
                                     test!!.api.syncPlayApi.syncPlayJoinGroup(groupJoinRequest)
-                                    val instance = test!!.api.ws()
-
-
-                                    SyncPlayCast.startCast(
+                                    val recentUpdate = syncPlayDataSource!!.latestUpdate.collectLatest {
+                                        message ->
+                                        print(message)
+                                    }
+                                    /*SyncPlayCast.startCast(
                                         test!!,
                                         groupIds.get(position - 2),
                                         requireContext(),
                                         viewModel.getRepository(),
                                         groupJoinRequest
-                                    )
+                                    )*/
 
-                                    var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
-                                    print(mediaItem)
-                                    var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
-                                    print(streamUrl)
+                                    //var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
+                                    //print(mediaItem)
+                                    //var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
+                                    print(recentUpdate)
                                     val mCastSession = CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
                                     val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return@launch
-                                    remoteMediaClient.load(MediaLoadRequestData.Builder().setMediaInfo(MediaInfo.Builder().setContentUrl(streamUrl).build()).setAutoplay(true).setCurrentTime(mediaItem.timestamp).build())
+                                    //loadRemoteMedia(mediaItem.timestamp, mCastSession,MediaInfo.Builder("wjat",).setContentUrl(streamUrl).build(), api = test!! )
                                 }
 
 
@@ -272,7 +316,27 @@ class HomeFragment : Fragment() {
             Lifecycle.State.RESUMED,
         )
     }
+    private fun loadRemoteMedia(
+        position: Long,
+        mCastSession: CastSession,
+        mediaInfo: MediaInfo,
+        api: JellyfinApi,
+    ) {
+        if (mCastSession == null) {
+            return
+        }
+        var instance = api.api.ws()
 
+
+        val remoteMediaClient = mCastSession.remoteMediaClient ?: return
+
+        remoteMediaClient.load(
+            MediaLoadRequestData.Builder()
+                .setMediaInfo(mediaInfo)
+                .setAutoplay(true)
+                .setCurrentTime(position.toLong()).build(),
+        )
+    }
     private fun getItemID(
         test: JellyfinApi,
         requireContext: Context,
@@ -374,26 +438,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun loadRemoteMedia(
-        position: Int,
-        mCastSession: CastSession,
-        mediaInfo: MediaInfo,
-        streamUrl: String,
-        item: PlayerItem,
-        episode: BaseItemDto,
-    ) {
-        if (mCastSession == null) {
-            return
-        }
-        val remoteMediaClient = mCastSession.remoteMediaClient ?: return
 
-        remoteMediaClient.load(
-            MediaLoadRequestData.Builder()
-                .setMediaInfo(mediaInfo)
-                .setAutoplay(true)
-                .setCurrentTime(position.toLong()).build(),
-        )
-        }
     private fun createSpinnerAdapter(): ArrayAdapter<String> {
 
         // Create an ArrayAdapter with the desired items and layout
