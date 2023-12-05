@@ -67,7 +67,6 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.JoinGroupRequestDto
 import org.jellyfin.sdk.model.api.MediaStreamType
-import org.jellyfin.sdk.model.api.SendCommandType
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
 import timber.log.Timber
 import javax.inject.Inject
@@ -245,7 +244,7 @@ class HomeFragment : Fragment() {
 
                                     var mediaInfo = buildMediaInfo(streamUrl, mediaItem!!.itemID, episode)
                                     val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return@launch
-                                    loadRemoteMedia(mediaItem!!.timestamp, mCastSession,mediaInfo, api = test!!)
+                                    loadRemoteMedia(mediaItem!!.timestamp, mCastSession,mediaInfo, api = test!!, mediaItem!!.itemID)
                                 }
 
 
@@ -400,13 +399,14 @@ class HomeFragment : Fragment() {
         mCastSession: CastSession,
         mediaInfo: MediaInfo,
         api: JellyfinApi,
+        itemID: UUID
     ) {
         if (mCastSession == null) {
             return
         }
 
 
-        var groupListener = SyncPlayGroupListener(api)
+        var groupListener = SyncPlayGroupListener(api,itemID)
 
 
         val remoteMediaClient = mCastSession.remoteMediaClient ?: return
@@ -421,15 +421,13 @@ class HomeFragment : Fragment() {
         val recentUpdate = groupListener!!.latestUpdate.collectLatest {
                 message ->
             print(message)
-            if(message.command.command.equals(SendCommandType.UNPAUSE)){
+            if(message.itemID == itemID){
+                remoteMediaClient.seek(message.timestamp)
+            }
+            if(message.isPlaying){
                 remoteMediaClient.play()
-                remoteMediaClient.seek(message.command.positionTicks!! / 10000)
-            }
-            else if(message.command.command.equals(SendCommandType.PAUSE)){
+            }else{
                 remoteMediaClient.pause()
-            }
-            else if(message.command.command.equals(SendCommandType.SEEK)){
-                remoteMediaClient.seek(message.command.positionTicks!! / 10000)
             }
         }
 
