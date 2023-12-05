@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -44,6 +43,7 @@ import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
 import dev.jdtech.jellyfin.chromecast.SyncPlayDataSource
+import dev.jdtech.jellyfin.chromecast.SyncPlayGroupListener
 import dev.jdtech.jellyfin.chromecast.SyncPlayMedia
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -52,7 +52,6 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Globals
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.restart
@@ -61,28 +60,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.api.client.extensions.syncPlayApi
-import org.jellyfin.sdk.api.sockets.addGeneralCommandsListener
-import org.jellyfin.sdk.api.sockets.addListener
-import org.jellyfin.sdk.api.sockets.addPlayStateCommandsListener
-import org.jellyfin.sdk.api.sockets.addSyncPlayCommandsListener
 import org.jellyfin.sdk.model.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.GroupUpdateType
 import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.JoinGroupRequestDto
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.SendCommandType
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
-import org.jellyfin.sdk.model.socket.GeneralCommandMessage
-import org.jellyfin.sdk.model.socket.PlayMessage
-import org.jellyfin.sdk.model.socket.PlayStateMessage
-import org.jellyfin.sdk.model.socket.SessionsMessage
-import org.jellyfin.sdk.model.socket.SyncPlayCommandMessage
-import org.jellyfin.sdk.model.socket.SyncPlayGroupUpdateMessage
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -409,7 +395,7 @@ class HomeFragment : Fragment() {
             .build()
     }
 
-    private fun loadRemoteMedia(
+    private suspend fun loadRemoteMedia(
         position: Long,
         mCastSession: CastSession,
         mediaInfo: MediaInfo,
@@ -418,7 +404,9 @@ class HomeFragment : Fragment() {
         if (mCastSession == null) {
             return
         }
-        var instance = api.api.ws()
+
+
+        var groupListener = SyncPlayGroupListener(api)
 
 
         val remoteMediaClient = mCastSession.remoteMediaClient ?: return
@@ -426,110 +414,28 @@ class HomeFragment : Fragment() {
         remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
-                .setAutoplay(true)
+                .setAutoplay(false)
                 .setCurrentTime(position.toLong()).build(),
         )
-    }
-    private fun getItemID(
-        test: JellyfinApi,
-        requireContext: Context,
-        repository: JellyfinRepository
-    ): SyncPlayMedia? {
-        val session =
-            CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
 
-        var hasItemId: Boolean = false
-        var ItemId: java.util.UUID? = null
-        var startPositionTicks = 0
-        var userID = ""
-
-        //var instance = SocketInstance
-        var mediaId: String
-        var mediaUrl = ""
-        var mediaIDString = ""
-
-        var castUrl: String
-        var instance = test.api.ws()
-        var Groupmessage: JsonElement
-
-        instance.addGeneralCommandsListener { message ->
-            // type of message is GeneralCommandMessage
-            println("Received a message: $message")
-        }
-
-        instance.addPlayStateCommandsListener { message ->
-            // type of message is PlayStateMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<PlayMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<PlayStateMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<SyncPlayCommandMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<SessionsMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<GeneralCommandMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<SyncPlayGroupUpdateMessage> {
-
+        val recentUpdate = groupListener!!.latestUpdate.collectLatest {
                 message ->
-            println("msg" + message)
-            if (message.update.type == GroupUpdateType.PLAY_QUEUE) {
-                Groupmessage = message.update.data
-                print(Groupmessage)
-                var element = Groupmessage.jsonObject
-                var startTime = element.get("StartPositionTicks").toString().toLong() / 10000
-                var playList = element.get("Playlist")!!
-                var ItemIdsArray = playList.jsonArray.get(0)
-                mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
-                mediaIDString = mediaIDString.replace("\"", "")
-                var r = Groupmessage.toString()
-                var mediaInfo: MediaInfo? = null
-                print(r + ItemIdsArray + mediaIDString)
-                val regex = Regex("""([0-z]{8})([0-z]{4})([0-z]{4})([0-z]{4})([0-z]{12})""")
-                mediaId = regex.replace(mediaIDString) { match ->
-                    "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
-                }
-                ItemId = java.util.UUID.fromString(mediaId)
-                startPositionTicks = startTime.toInt()
-                hasItemId = true
-
+            print(message)
+            if(message.command.command.equals(SendCommandType.UNPAUSE)){
+                remoteMediaClient.play()
+                remoteMediaClient.seek(message.command.positionTicks!! / 10000)
             }
-
-
-            instance.addSyncPlayCommandsListener { message ->
-
-
-                println("Received a message: $message")
+            else if(message.command.command.equals(SendCommandType.PAUSE)){
+                remoteMediaClient.pause()
             }
-
+            else if(message.command.command.equals(SendCommandType.SEEK)){
+                remoteMediaClient.seek(message.command.positionTicks!! / 10000)
+            }
         }
-
-        while(ItemId==null){
-
-        }
-        var mediaItem = SyncPlayMedia(ItemId!!, startPositionTicks.toLong(), true)
-        return mediaItem
 
 
     }
+
 
 
     private fun createSpinnerAdapter(): ArrayAdapter<String> {
