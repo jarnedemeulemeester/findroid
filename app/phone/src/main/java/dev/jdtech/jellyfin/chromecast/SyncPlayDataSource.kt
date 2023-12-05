@@ -60,8 +60,9 @@ class SyncPlayDataSource(
                 message ->
             if (message.update.type == GroupUpdateType.PLAY_QUEUE) {
                 groupMessage = message.update.data
+                receivedPlaylist = true
             }
-            receivedPlaylist = true
+
         }
        while(!receivedPlaylist){
            delay(100)

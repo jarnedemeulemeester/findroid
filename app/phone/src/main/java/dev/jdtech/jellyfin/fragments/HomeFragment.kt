@@ -423,11 +423,19 @@ class HomeFragment : Fragment() {
             print(message)
             if(message.itemID == itemID){
                 remoteMediaClient.seek(message.timestamp)
+                if(message.isPlaying){
+                    remoteMediaClient.play()
+                }else{
+                    remoteMediaClient.pause()
+                }
             }
-            if(message.isPlaying){
-                remoteMediaClient.play()
-            }else{
-                remoteMediaClient.pause()
+            else{
+                val streamUrl = viewModel.getRepository().getStreamCastUrl(message!!.itemID, message.itemID.toString().replace("-",""))
+                val episode = viewModel.getRepository().getItem(message!!.itemID)
+                var itemsRequest = GetItemsRequest(test!!.userId, listOf(message!!.itemID).toString())
+
+                var mediaInfo = buildMediaInfo(streamUrl, message!!.itemID, episode)
+                loadRemoteMedia(message.timestamp, mCastSession, mediaInfo, test!!, message.itemID)
             }
         }
 
