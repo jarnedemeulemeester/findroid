@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,14 +26,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MimeTypes
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaTrack
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.google.android.gms.common.images.WebImage
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
@@ -59,14 +64,19 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.api.client.extensions.syncPlayApi
 import org.jellyfin.sdk.api.sockets.addGeneralCommandsListener
 import org.jellyfin.sdk.api.sockets.addListener
 import org.jellyfin.sdk.api.sockets.addPlayStateCommandsListener
 import org.jellyfin.sdk.api.sockets.addSyncPlayCommandsListener
+import org.jellyfin.sdk.model.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.GroupUpdateType
+import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.JoinGroupRequestDto
+import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.request.GetItemsRequest
 import org.jellyfin.sdk.model.socket.GeneralCommandMessage
 import org.jellyfin.sdk.model.socket.PlayMessage
 import org.jellyfin.sdk.model.socket.PlayStateMessage
@@ -223,10 +233,14 @@ class HomeFragment : Fragment() {
 
 
                                     test!!.api.syncPlayApi.syncPlayJoinGroup(groupJoinRequest)
+                                    var mediaItem : SyncPlayMedia ?= null
                                     val recentUpdate = syncPlayDataSource!!.latestUpdate.collectLatest {
                                         message ->
                                         print(message)
+                                        mediaItem = message
                                     }
+
+
                                     /*SyncPlayCast.startCast(
                                         test!!,
                                         groupIds.get(position - 2),
@@ -237,11 +251,15 @@ class HomeFragment : Fragment() {
 
                                     //var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
                                     //print(mediaItem)
-                                    //var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
-                                    print(recentUpdate)
+                                    var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
+                                    print(streamUrl)
                                     val mCastSession = CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
+                                    val episode = viewModel.getRepository().getItem(mediaItem!!.itemID)
+                                    var itemsRequest = GetItemsRequest(test!!.userId, listOf(mediaItem!!.itemID).toString())
+
+                                    var mediaInfo = buildMediaInfo(streamUrl, mediaItem!!.itemID, episode)
                                     val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return@launch
-                                    //loadRemoteMedia(mediaItem.timestamp, mCastSession,MediaInfo.Builder("wjat",).setContentUrl(streamUrl).build(), api = test!! )
+                                    loadRemoteMedia(mediaItem!!.timestamp, mCastSession,mediaInfo, api = test!!)
                                 }
 
 
@@ -316,6 +334,81 @@ class HomeFragment : Fragment() {
             Lifecycle.State.RESUMED,
         )
     }
+
+    private fun buildMediaInfo(
+        streamUrl: String,
+        itemID: UUID,
+        episode: BaseItemDto,
+    ): MediaInfo {
+        val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
+        val thumbnailUrl = episode.seasonId?.let {
+            test!!.api.imageApi.getItemImageUrl(
+                it,
+                imageType = ImageType.PRIMARY,
+            )
+        }
+        if (thumbnailUrl != null) {
+            var thumbnailImage = WebImage(Uri.parse(thumbnailUrl))
+            mediaMetadata.addImage(thumbnailImage)
+        } else {
+            var thumbnailImage = WebImage(
+                Uri.parse(
+                    test!!.api.imageApi.getItemImageUrl(
+                        itemID,
+                        imageType = ImageType.PRIMARY,
+                    ),
+                ),
+            )
+            mediaMetadata.addImage(thumbnailImage)
+        }
+
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, episode.name!!)
+
+        val mediaSubtitles = episode.mediaStreams?.mapIndexed { index, externalSubtitle ->
+
+            MediaTrack.Builder(
+                index.toLong(),
+                if (externalSubtitle.type == MediaStreamType.AUDIO) {
+                    MediaTrack.TYPE_AUDIO
+                } else {
+                    MediaTrack.TYPE_TEXT
+                },
+            )
+                .setName(externalSubtitle.displayTitle + " " + externalSubtitle.type)
+                .setLanguage(externalSubtitle.language)
+                .build()
+        }
+        val copy = mediaSubtitles?.drop(1)
+        val audioTracks: MutableList<MediaTrack> = ArrayList<MediaTrack>()
+        val audioTracks2 = episode.mediaStreams?.mapIndexed { index, mediaStream ->
+            if (!mediaStream.isTextSubtitleStream) {
+                MediaTrack.Builder(index.toLong(), MediaTrack.TYPE_AUDIO)
+                    .setName(mediaStream.title)
+                    .setLanguage(mediaStream.language)
+                    .build()
+            }
+        }
+        val frenchAudio = MediaTrack.Builder(1, MediaTrack.TYPE_AUDIO)
+            .setLanguage("jp-JP")
+            .setRoles(emptyList())
+            .setContentType("audio/mp4")
+            .build()
+        val engAudio = MediaTrack.Builder(2, MediaTrack.TYPE_AUDIO)
+            .setLanguage("en-US")
+            .setRoles(emptyList())
+            .setContentType("audio/mp4")
+            .build()
+        audioTracks.add(frenchAudio)
+        audioTracks.add(engAudio)
+        return MediaInfo.Builder(streamUrl)
+            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+            .setContentType(MimeTypes.VIDEO_MP4)
+            .setContentUrl(streamUrl)
+            .setMediaTracks(mediaSubtitles)
+            .setMetadata(mediaMetadata)
+            .build()
+    }
+
     private fun loadRemoteMedia(
         position: Long,
         mCastSession: CastSession,

@@ -1,19 +1,15 @@
 package dev.jdtech.jellyfin.chromecast
 
+import com.google.android.gms.cast.MediaInfo
 import dev.jdtech.jellyfin.api.JellyfinApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.JsonElement
-import org.jellyfin.sdk.api.sockets.addGeneralCommandsListener
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import org.jellyfin.sdk.api.sockets.addListener
-import org.jellyfin.sdk.api.sockets.addPlayStateCommandsListener
 import org.jellyfin.sdk.model.api.GroupUpdateType
-import org.jellyfin.sdk.model.socket.GeneralCommandMessage
-import org.jellyfin.sdk.model.socket.PlayMessage
-import org.jellyfin.sdk.model.socket.PlayStateMessage
-import org.jellyfin.sdk.model.socket.SessionsMessage
-import org.jellyfin.sdk.model.socket.SyncPlayCommandMessage
 import org.jellyfin.sdk.model.socket.SyncPlayGroupUpdateMessage
 
 class SyncPlayDataSource(
@@ -22,47 +18,35 @@ class SyncPlayDataSource(
     val instance = api.api.ws()
     private var groupMessage: JsonElement? = null
     private var receivedPlaylist = false
-    val latestUpdate: Flow<JsonElement> = flow {
-        instance.addGeneralCommandsListener { message ->
-            // type of message is GeneralCommandMessage
-            println("Received a message: $message")
-        }
+    val latestUpdate: Flow<SyncPlayMedia> = flow {
 
-        instance.addPlayStateCommandsListener { message ->
-            // type of message is PlayStateMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<PlayMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<PlayStateMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<SyncPlayCommandMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<SessionsMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        instance.addListener<GeneralCommandMessage> { message ->
-            // type of message is UserDataChangedMessage
-            println("Received a message: $message")
-        }
-
-        while (true) {
+        var gotItemId = false
+        while (!gotItemId) {
             groupMessage = getDataSource(api)
             if (receivedPlaylist) {
-                emit(groupMessage!!)
-                receivedPlaylist = false
+
+                var Groupmessage = groupMessage
+                print(Groupmessage)
+                var element = Groupmessage!!.jsonObject
+                var startTime = element.get("StartPositionTicks").toString().toLong() / 10000
+                var playList = element.get("Playlist")!!
+                var ItemIdsArray = playList.jsonArray.get(0)
+                var mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
+                mediaIDString = mediaIDString.replace("\"", "")
+                var r = Groupmessage.toString()
+                var mediaInfo: MediaInfo? = null
+                print(r + ItemIdsArray + mediaIDString)
+                val regex = Regex("""([0-z]{8})([0-z]{4})([0-z]{4})([0-z]{4})([0-z]{12})""")
+                var mediaId = regex.replace(mediaIDString) { match ->
+                    "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+                }
+                var ItemId = java.util.UUID.fromString(mediaId)
+                var startPositionTicks = startTime.toInt()
+                var hasItemId = true
+                var syncItem = SyncPlayMedia(ItemId, startPositionTicks.toLong(), hasItemId)
+
+                emit(syncItem!!)
+                gotItemId = true
             }
             delay(500)
         }
