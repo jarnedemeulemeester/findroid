@@ -166,108 +166,137 @@ class HomeFragment : Fragment() {
                         menu,
                         CoreR.id.media_route_menu_item,
                     )
+                    val session = CastContext.getSharedInstance(context!!).sessionManager.currentCastSession
 
-
-                    val spinnerItem = menu.add(Menu.NONE, Menu.NONE, 0, "Select an option")
+                    val spinnerItem = menu.add(Menu.NONE, Menu.NONE, 0, "")
                     spinnerItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                    if(session!= null) {
+                        val spinner = Spinner(requireContext())
+                        spinner.adapter = createSpinnerAdapter()
+                        val layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                        layoutParams.width = 125
+                        spinner.layoutParams = layoutParams
+                        spinnerItem.actionView = spinner
+                        spinner.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>,
+                                    view: View,
+                                    position: Int,
+                                    id: Long
+                                ) {
 
-                    val spinner = Spinner(requireContext())
-                    spinner.adapter = createSpinnerAdapter()
-                    val layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    layoutParams.width = 125
-                    spinner.layoutParams = layoutParams
-                    spinnerItem.actionView = spinner
-                    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>,
-                            view: View,
-                            position: Int,
-                            id: Long
-                        ) {
+                                    if (position > 1) {
 
-                            if (position > 1) {
+                                        var item = BaseItemDto
+                                        var groupJoinRequest =
+                                            JoinGroupRequestDto(groupIds.get(position - 2))
 
-                                var item = BaseItemDto
-                                var groupJoinRequest =
-                                    JoinGroupRequestDto(groupIds.get(position - 2))
+                                        val castContext =
+                                            CastContext.getSharedInstance(requireContext().applicationContext)
+                                        val session = castContext.sessionManager.currentCastSession
+                                        if (session == null || castContext.castState != CastState.CONNECTED) {
 
-                                val castContext = CastContext.getSharedInstance(requireContext().applicationContext)
-                                val session = castContext.sessionManager.currentCastSession
-                                if (session == null || castContext.castState != CastState.CONNECTED) {
-
-                                } else {
-                                    val remoteMediaClient = session.remoteMediaClient ?: return
-                                    remoteMediaClient.registerCallback(object :
-                                        RemoteMediaClient.Callback() {
-                                        override fun onStatusUpdated() {
-                                            val intent = Intent(
-                                                requireActivity(),
-                                                ExpandedControlsActivity::class.java
-                                            )
-                                            startActivity(intent)
-                                            remoteMediaClient.unregisterCallback(this)
+                                        } else {
+                                            val remoteMediaClient =
+                                                session.remoteMediaClient ?: return
+                                            remoteMediaClient.registerCallback(object :
+                                                RemoteMediaClient.Callback() {
+                                                override fun onStatusUpdated() {
+                                                    val intent = Intent(
+                                                        requireActivity(),
+                                                        ExpandedControlsActivity::class.java
+                                                    )
+                                                    startActivity(intent)
+                                                    remoteMediaClient.unregisterCallback(this)
+                                                }
+                                            })
                                         }
-                                    })
-                                }
-                               Globals.syncPlay = true
-
-                                viewModel.viewModelScope.launch {
 
 
-                                    test!!.api.syncPlayApi.syncPlayJoinGroup(groupJoinRequest)
-                                    var mediaItem : SyncPlayMedia ?= null
-                                    val recentUpdate = syncPlayDataSource!!.latestUpdate.collectLatest {
-                                        message ->
-                                        print(message)
-                                        mediaItem = message
+                                        viewModel.viewModelScope.launch {
+
+
+                                            test!!.api.syncPlayApi.syncPlayJoinGroup(
+                                                groupJoinRequest
+                                            )
+                                            Globals.syncPlay = true
+                                            var mediaItem: SyncPlayMedia? = null
+                                            val recentUpdate =
+                                                syncPlayDataSource!!.latestUpdate.collectLatest { message ->
+                                                    print(message)
+                                                    mediaItem = message
+                                                }
+
+
+                                            /*SyncPlayCast.startCast(
+                                            test!!,
+                                            groupIds.get(position - 2),
+                                            requireContext(),
+                                            viewModel.getRepository(),
+                                            groupJoinRequest
+                                        )*/
+
+                                            //var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
+                                            //print(mediaItem)
+                                            var streamUrl = viewModel.getRepository()
+                                                .getStreamCastUrl(
+                                                    mediaItem!!.itemID,
+                                                    mediaItem!!.itemID.toString().replace("-", "")
+                                                )
+                                            print(streamUrl)
+                                            val mCastSession =
+                                                CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
+                                            val episode = viewModel.getRepository()
+                                                .getItem(mediaItem!!.itemID)
+                                            var itemsRequest = GetItemsRequest(
+                                                test!!.userId,
+                                                listOf(mediaItem!!.itemID).toString()
+                                            )
+
+                                            var mediaInfo = buildMediaInfo(
+                                                streamUrl,
+                                                mediaItem!!.itemID,
+                                                episode
+                                            )
+                                            val remoteMediaClient =
+                                                mCastSession!!.remoteMediaClient ?: return@launch
+                                            loadRemoteMedia(
+                                                mediaItem!!.timestamp,
+                                                mCastSession,
+                                                mediaInfo,
+                                                api = test!!,
+                                                mediaItem!!.itemID
+                                            )
+                                        }
+
+
                                     }
 
+                                    if (position == 1) {
+                                        // Execute your action here
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "You selected: ${spinner.selectedItem} position + ${position}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
-                                    /*SyncPlayCast.startCast(
-                                        test!!,
-                                        groupIds.get(position - 2),
-                                        requireContext(),
-                                        viewModel.getRepository(),
-                                        groupJoinRequest
-                                    )*/
-
-                                    //var mediaItem = getItemID(test!!, requireContext(), viewModel.getRepository())
-                                    //print(mediaItem)
-                                    var streamUrl = viewModel.getRepository().getStreamCastUrl(mediaItem!!.itemID, mediaItem!!.itemID.toString().replace("-",""))
-                                    print(streamUrl)
-                                    val mCastSession = CastContext.getSharedInstance(requireContext()).sessionManager.currentCastSession
-                                    val episode = viewModel.getRepository().getItem(mediaItem!!.itemID)
-                                    var itemsRequest = GetItemsRequest(test!!.userId, listOf(mediaItem!!.itemID).toString())
-
-                                    var mediaInfo = buildMediaInfo(streamUrl, mediaItem!!.itemID, episode)
-                                    val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return@launch
-                                    loadRemoteMedia(mediaItem!!.timestamp, mCastSession,mediaInfo, api = test!!, mediaItem!!.itemID)
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            if(Globals.syncPlay) {
+                                                test!!.api.syncPlayApi.syncPlayLeaveGroup()
+                                            }
+                                        }
+                                        Globals.syncPlay = false
+                                    }
                                 }
 
-
-                            }
-
-                            if (position == 1) {
-                                // Execute your action here
-                                Toast.makeText(
-                                    requireContext(),
-                                    "You selected: ${spinner.selectedItem} position + ${position}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    test!!.api.syncPlayApi.syncPlayLeaveGroup()
+                                override fun onNothingSelected(parent: AdapterView<*>) {
+                                    // Do nothing if nothing is selected
                                 }
-                                Globals.syncPlay = false
                             }
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                            // Do nothing if nothing is selected
-                        }
                     }
 
                     val settings = menu.findItem(CoreR.id.action_settings)
@@ -435,6 +464,7 @@ class HomeFragment : Fragment() {
                 var itemsRequest = GetItemsRequest(test!!.userId, listOf(message!!.itemID).toString())
 
                 var mediaInfo = buildMediaInfo(streamUrl, message!!.itemID, episode)
+
                 loadRemoteMedia(message.timestamp, mCastSession, mediaInfo, test!!, message.itemID)
             }
         }

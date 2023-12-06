@@ -452,6 +452,35 @@ class PlayerViewModel @Inject internal constructor(
             .build()
     }
 
+    fun startCast(items: Array<PlayerItem>, context: Context, groupPlay: Boolean) {
+
+        val session = CastContext.getSharedInstance(context).sessionManager.currentCastSession
+        viewModelScope.launch {
+            try {
+                val item = items.first()
+                val streamUrl =
+                    repository.getStreamCastUrl(
+                        items.first().itemId,
+                        items.first().mediaSourceId,
+                    )
+                val episode = repository.getItem(item.itemId)
+                if (session != null) {
+                    val mediaInfo = buildMediaInfo(streamUrl, item, episode)
+                    loadRemoteMedia(
+                        (item.playbackPosition).toInt(),
+                        session,
+                        mediaInfo,
+                        streamUrl,
+                        item,
+                        episode,
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
     fun startCast(items: Array<PlayerItem>, context: Context) {
 
 

@@ -26,6 +26,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
@@ -37,12 +38,18 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.utils.Globals
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.extensions.syncPlayApi
 import org.jellyfin.sdk.model.DateTime
+import org.jellyfin.sdk.model.api.PlayRequestDto
+import org.jellyfin.sdk.model.api.RemoveFromPlaylistRequestDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -60,6 +67,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: EpisodeBottomSheetBinding
     private val viewModel: EpisodeBottomSheetViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
+
 
     private lateinit var downloadPreparingDialog: AlertDialog
 
@@ -423,11 +431,24 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                     remoteMediaClient.unregisterCallback(this)
                 }
             })
-            playerViewModel.startCast(playerItems, requireContext())
+
         }
         if (session != null) {
-            if (session.remoteMediaClient?.isPaused() == true) {
-                print("yeet")
+            if(Globals.syncPlay == true){
+                var nextItem = PlayRequestDto(listOf(playerItems.get(0).itemId), 0, 0)
+
+                var api = JellyfinApi.getInstance(this.requireContext())
+                CoroutineScope(Dispatchers.IO).launch {
+                    var remove = RemoveFromPlaylistRequestDto(playlistItemIds = listOf(playerItems.get(0).itemId), true, true)
+                    api.api.syncPlayApi.syncPlayRemoveFromPlaylist(remove)
+                    var response = api.api.syncPlayApi.syncPlaySetNewQueue(nextItem)
+
+                    print(response)
+                }
+
+            }
+            else{
+                playerViewModel.startCast(playerItems, requireContext())
             }
         }
     }

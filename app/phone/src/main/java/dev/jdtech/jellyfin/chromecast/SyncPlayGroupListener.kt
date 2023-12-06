@@ -46,14 +46,17 @@ class SyncPlayGroupListener(
             var command = ""
             if(message.command.command.equals(SendCommandType.UNPAUSE)){
                 isPlaying = true
+                receivedCommand = true
             }
             else if(message.command.command.equals(SendCommandType.PAUSE)){
                 isPlaying = false
+                receivedCommand = true
             }
             else if(message.command.command.equals(SendCommandType.SEEK)){
                 isPlaying = false
+                receivedCommand = true
             }
-            receivedCommand = true
+
             media = SyncPlayMedia(itemId, message.command.positionTicks!!/ 10000, isPlaying)
         }
 
