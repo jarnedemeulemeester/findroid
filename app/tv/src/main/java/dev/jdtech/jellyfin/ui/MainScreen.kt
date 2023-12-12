@@ -44,6 +44,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.destinations.SettingsScreenDestination
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
@@ -177,7 +178,9 @@ private fun MainScreenLayout(
                 }
                 ProfileButton(
                     user = user,
-                    onClick = {},
+                    onClick = {
+                        navigator.navigate(SettingsScreenDestination)
+                    },
                 )
             }
         }
