@@ -33,6 +33,8 @@ class SyncPlayDataSource(
                 var ItemIdsArray = playList.jsonArray.get(0)
                 var mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
                 mediaIDString = mediaIDString.replace("\"", "")
+                var playListItemID = ItemIdsArray.jsonObject.get("PlaylistItemId").toString()
+                playListItemID = playListItemID.replace("\"", "")
                 var r = Groupmessage.toString()
                 var mediaInfo: MediaInfo? = null
                 print(r + ItemIdsArray + mediaIDString)
@@ -40,10 +42,18 @@ class SyncPlayDataSource(
                 var mediaId = regex.replace(mediaIDString) { match ->
                     "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
                 }
+                playListItemID = regex.replace(playListItemID) { match ->
+                    "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+                }
                 var ItemId = java.util.UUID.fromString(mediaId)
                 var startPositionTicks = startTime.toInt()
                 var hasItemId = true
-                var syncItem = SyncPlayMedia(ItemId, startPositionTicks.toLong(), hasItemId)
+                var syncItem = SyncPlayMedia(
+                    ItemId,
+                    startPositionTicks.toLong(),
+                    hasItemId,
+                    playListItemID
+                )
 
                 emit(syncItem!!)
                 gotItemId = true

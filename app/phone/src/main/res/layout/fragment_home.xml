@@ -15,7 +15,6 @@
             android:id="@+id/error_layout"
             layout="@layout/error_panel" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/views_recycler_view"
             android:layout_width="0dp"
@@ -29,6 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="4"
             tools:listitem="@layout/view_item" />
+
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loading_indicator"

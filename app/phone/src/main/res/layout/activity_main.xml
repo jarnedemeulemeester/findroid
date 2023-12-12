@@ -18,6 +18,8 @@
         app:layout_constraintRight_toRightOf="parent"
         class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment" />
 
+
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"

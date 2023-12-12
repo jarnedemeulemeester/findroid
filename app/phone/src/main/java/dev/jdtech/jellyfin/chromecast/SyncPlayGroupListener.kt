@@ -57,7 +57,12 @@ class SyncPlayGroupListener(
                 receivedCommand = true
             }
 
-            media = SyncPlayMedia(itemId, message.command.positionTicks!!/ 10000, isPlaying)
+            media = SyncPlayMedia(
+                itemId,
+                message.command.positionTicks!!/ 10000,
+                isPlaying,
+                ""
+            )
         }
 
         instance.addListener<SyncPlayGroupUpdateMessage> {
@@ -70,6 +75,8 @@ class SyncPlayGroupListener(
                 var playList = element.get("Playlist")!!
                 var ItemIdsArray = playList.jsonArray.get(0)
                 var mediaIDString = ItemIdsArray.jsonObject.get("ItemId").toString()
+                var playListItemID = ItemIdsArray.jsonObject.get("PlaylistItemId").toString()
+                playListItemID = playListItemID.replace("\"", "")
                 mediaIDString = mediaIDString.replace("\"", "")
                 var r = Groupmessage.toString()
                 var mediaInfo: MediaInfo? = null
@@ -78,11 +85,14 @@ class SyncPlayGroupListener(
                 var mediaId = regex.replace(mediaIDString) { match ->
                     "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
                 }
+                playListItemID = regex.replace(playListItemID) { match ->
+                    "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+                }
                 var ItemId = java.util.UUID.fromString(mediaId)
                 var startPositionTicks = startTime.toInt()
                 var hasItemId = true
                 receivedCommand = true
-                media = SyncPlayMedia(ItemId, startPositionTicks.toLong(), false)
+                media = SyncPlayMedia(ItemId, startPositionTicks.toLong(), false, playListItemID)
             }
 
         }

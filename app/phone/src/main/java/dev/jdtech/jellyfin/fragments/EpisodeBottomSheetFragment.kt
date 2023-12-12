@@ -29,6 +29,8 @@ import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
+import dev.jdtech.jellyfin.chromecast.SyncPlayDataSource
+import dev.jdtech.jellyfin.chromecast.SyncPlayMedia
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -49,7 +51,6 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.api.client.extensions.syncPlayApi
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.PlayRequestDto
-import org.jellyfin.sdk.model.api.RemoveFromPlaylistRequestDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -439,11 +440,18 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
 
                 var api = JellyfinApi.getInstance(this.requireContext())
                 CoroutineScope(Dispatchers.IO).launch {
-                    var remove = RemoveFromPlaylistRequestDto(playlistItemIds = listOf(playerItems.get(0).itemId), true, true)
-                    api.api.syncPlayApi.syncPlayRemoveFromPlaylist(remove)
+                    var syncPlayDataSource = SyncPlayDataSource(api!!)
+                   var mediaItem: SyncPlayMedia? = null
                     var response = api.api.syncPlayApi.syncPlaySetNewQueue(nextItem)
-
+                    /*val recentUpdate =
+                        syncPlayDataSource!!.latestUpdate.collectLatest { message ->
+                            print(message)
+                            mediaItem = message
+                        }
+                    val readyRequest= ReadyRequestDto(LocalDateTime.now(), nextItem.startPositionTicks, false, mediaItem!!.playListItemID.toUUID())
+                    val readyResponse = api.api.syncPlayApi.syncPlayReady(readyRequest)
                     print(response)
+                    print(readyResponse)*/
                 }
 
             }

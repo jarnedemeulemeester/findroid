@@ -39,6 +39,7 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
@@ -67,8 +68,11 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.JoinGroupRequestDto
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.ReadyRequestDto
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
+import org.jellyfin.sdk.model.serializer.toUUID
 import timber.log.Timber
+import java.time.LocalDateTime
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -154,6 +158,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         test = JellyfinApi.getInstance(this.requireContext())
         syncPlayDataSource = SyncPlayDataSource(test!!)
         val menuHost: MenuHost = requireActivity()
@@ -168,18 +173,29 @@ class HomeFragment : Fragment() {
                     )
                     val session = CastContext.getSharedInstance(context!!).sessionManager.currentCastSession
 
-                    val spinnerItem = menu.add(Menu.NONE, Menu.NONE, 0, "")
-                    spinnerItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+
                     if(session!= null) {
+
+
+                        val spinnerItem = menu.add(Menu.NONE, Menu.NONE, 0, "")
+                        spinnerItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
                         val spinner = Spinner(requireContext())
                         spinner.adapter = createSpinnerAdapter()
                         val layoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
+                            LinearLayout.LayoutParams.FILL_PARENT ,
+                            LinearLayout.LayoutParams.FILL_PARENT
                         )
-                        layoutParams.width = 125
+                        layoutParams.width = 72
+                        layoutParams.height = 72
+
+                        spinner.left
+
                         spinner.layoutParams = layoutParams
+                        spinner.setBackgroundResource(R.drawable.ic_grey_placeholder)
+                        spinner.right = 100
+                        //spinner.background = R.drawable.ic_grey_placeholder.toDrawable()
                         spinnerItem.actionView = spinner
+
                         spinner.onItemSelectedListener =
                             object : AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(
@@ -230,7 +246,7 @@ class HomeFragment : Fragment() {
                                                     print(message)
                                                     mediaItem = message
                                                 }
-
+                                            var readyRequestDto = ReadyRequestDto(LocalDateTime.now(), mediaItem!!.timestamp, false, mediaItem!!.playListItemID.toUUID())
 
                                             /*SyncPlayCast.startCast(
                                             test!!,
@@ -422,6 +438,8 @@ class HomeFragment : Fragment() {
             .setMetadata(mediaMetadata)
             .build()
     }
+
+
 
     private suspend fun loadRemoteMedia(
         position: Long,

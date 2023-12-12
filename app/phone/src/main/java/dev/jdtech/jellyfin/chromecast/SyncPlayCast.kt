@@ -13,7 +13,8 @@ import org.jellyfin.sdk.model.api.JoinGroupRequestDto
 data class SyncPlayMedia(
     var itemID: UUID,
     var timestamp: Long,
-    var isPlaying: Boolean
+    var isPlaying: Boolean,
+    val playListItemID: String
 )
 class SyncPlayCast internal constructor(private val repository: JellyfinRepository) {
 
