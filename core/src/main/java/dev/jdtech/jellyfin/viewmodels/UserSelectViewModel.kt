@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class UserSelectViewModel
 @Inject
 constructor(
+    private val appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
@@ -33,19 +35,20 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    private var currentServerId: String = ""
+    private val currentServerId: String? = appPreferences.currentServer
 
     /**
      * Load users from the database and emit them
-     *
-     * @param serverId The ID of the server
      */
-    fun loadUsers(serverId: String) {
-        currentServerId = serverId
+    fun loadUsers() {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
+            if (currentServerId == null) {
+                _uiState.emit(UiState.Error(Exception("No server in use")))
+                return@launch
+            }
             try {
-                val serverWithUser = database.getServerWithUsers(serverId)
+                val serverWithUser = database.getServerWithUsers(currentServerId)
                 _uiState.emit(UiState.Normal(serverWithUser.server, serverWithUser.users))
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
@@ -60,6 +63,9 @@ constructor(
      */
     fun loginAsUser(user: User) {
         viewModelScope.launch {
+            if (currentServerId == null) {
+                return@launch
+            }
             val server = database.get(currentServerId) ?: return@launch
             server.currentUserId = user.id
             database.update(server)

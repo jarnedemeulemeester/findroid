@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -23,6 +24,10 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.Preference
+import dev.jdtech.jellyfin.PreferenceType
+import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
+import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.ui.components.SettingsCard
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
@@ -33,24 +38,72 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun SettingsScreen(
     navigator: DestinationsNavigator,
 ) {
-    SettingsScreenLayout()
+    val preferences = listOf(
+        Preference(
+            nameStringResource = CoreR.string.settings_category_language,
+            iconDrawableId = CoreR.drawable.ic_languages,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_appearance,
+            iconDrawableId = CoreR.drawable.ic_palette,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_player,
+            iconDrawableId = CoreR.drawable.ic_play,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.users,
+            iconDrawableId = CoreR.drawable.ic_user,
+            type = PreferenceType.NAVIGATE,
+            onClick = {
+                navigator.navigate(UserSelectScreenDestination)
+            },
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_servers,
+            iconDrawableId = CoreR.drawable.ic_server,
+            type = PreferenceType.NAVIGATE,
+            onClick = {
+                navigator.navigate(ServerSelectScreenDestination)
+            },
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_device,
+            iconDrawableId = CoreR.drawable.ic_smartphone,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_network,
+            iconDrawableId = CoreR.drawable.ic_smartphone,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.settings_category_cache,
+            iconDrawableId = null,
+            type = PreferenceType.CATEGORY,
+        ),
+        Preference(
+            nameStringResource = CoreR.string.about,
+            iconDrawableId = null,
+            type = PreferenceType.CATEGORY,
+        ),
+    )
+
+    SettingsScreenLayout(preferences)
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun SettingsScreenLayout() {
+private fun SettingsScreenLayout(
+    preferences: List<Preference>,
+) {
     val focusRequester = remember { FocusRequester() }
 
-    val settings = mapOf(
-        "Language" to CoreR.drawable.ic_languages,
-        "Appearance" to CoreR.drawable.ic_palette,
-        "Player" to CoreR.drawable.ic_play,
-        "Users" to CoreR.drawable.ic_user,
-        "Servers" to CoreR.drawable.ic_server,
-    ).toList()
-
     TvLazyVerticalGrid(
-        columns = TvGridCells.Fixed(4),
+        columns = TvGridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
@@ -65,9 +118,12 @@ private fun SettingsScreenLayout() {
                 style = MaterialTheme.typography.displayMedium,
             )
         }
-        items(settings) { setting ->
-            SettingsCard(name = setting.first, icon = setting.second, onClick = {})
+        items(preferences) { preference ->
+            SettingsCard(preference)
         }
+    }
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
     }
 }
 
@@ -77,7 +133,20 @@ private fun SettingsScreenLayout() {
 private fun SettingsScreenLayoutPreview() {
     FindroidTheme {
         Surface {
-            SettingsScreenLayout()
+            SettingsScreenLayout(
+                listOf(
+                    Preference(
+                        nameStringResource = CoreR.string.settings_category_language,
+                        iconDrawableId = CoreR.drawable.ic_languages,
+                        type = PreferenceType.CATEGORY,
+                    ),
+                    Preference(
+                        nameStringResource = CoreR.string.settings_category_appearance,
+                        iconDrawableId = CoreR.drawable.ic_palette,
+                        type = PreferenceType.CATEGORY,
+                    ),
+                ),
+            )
         }
     }
 }

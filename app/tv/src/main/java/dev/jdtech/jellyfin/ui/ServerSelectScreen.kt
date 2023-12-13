@@ -45,6 +45,8 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
+import dev.jdtech.jellyfin.NavGraphs
 import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
@@ -72,10 +74,14 @@ fun ServerSelectScreen(
     ObserveAsEvents(serverSelectViewModel.eventsChannelFlow) { event ->
         when (event) {
             ServerSelectEvent.NavigateToLogin -> {
-                navigator.navigate(UserSelectScreenDestination(serverSelectViewModel.currentServerId ?: ""))
+                navigator.navigate(UserSelectScreenDestination)
             }
             ServerSelectEvent.NavigateToHome -> {
-                navigator.navigate(MainScreenDestination)
+                navigator.navigate(MainScreenDestination) {
+                    popUpTo(NavGraphs.root) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }

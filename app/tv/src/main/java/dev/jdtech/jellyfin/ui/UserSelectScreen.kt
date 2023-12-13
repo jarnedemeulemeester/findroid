@@ -45,6 +45,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
+import dev.jdtech.jellyfin.NavGraphs
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.destinations.MainScreenDestination
@@ -64,7 +66,6 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Destination
 @Composable
 fun UserSelectScreen(
-    serverId: String,
     navigator: DestinationsNavigator,
     userSelectViewModel: UserSelectViewModel = hiltViewModel(),
 ) {
@@ -75,13 +76,17 @@ fun UserSelectScreen(
     ObserveAsEvents(userSelectViewModel.eventsChannelFlow) { event ->
         when (event) {
             is UserSelectEvent.NavigateToMain -> {
-                navigator.navigate(MainScreenDestination)
+                navigator.navigate(MainScreenDestination) {
+                    popUpTo(NavGraphs.root) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }
 
     LaunchedEffect(key1 = true) {
-        userSelectViewModel.loadUsers(serverId)
+        userSelectViewModel.loadUsers()
     }
 
     UserSelectScreenLayout(

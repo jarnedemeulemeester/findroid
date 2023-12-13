@@ -44,6 +44,8 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
+import dev.jdtech.jellyfin.NavGraphs
 import dev.jdtech.jellyfin.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
@@ -67,7 +69,11 @@ fun LoginScreen(
     ObserveAsEvents(loginViewModel.eventsChannelFlow) { event ->
         when (event) {
             is LoginEvent.NavigateToHome -> {
-                navigator.navigate(MainScreenDestination)
+                navigator.navigate(MainScreenDestination) {
+                    popUpTo(NavGraphs.root) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }
