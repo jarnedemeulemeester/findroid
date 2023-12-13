@@ -1,13 +1,13 @@
 package dev.jdtech.jellyfin.ui.theme
 
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.Typography
+import androidx.tv.material3.Typography as TypographyTv
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-val TypographyTv = Typography(
+val Typography = Typography(
     displayMedium = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 48.sp,
@@ -32,4 +32,14 @@ val TypographyTv = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
     ),
+)
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+val TypographyTv = TypographyTv(
+    displayMedium = Typography.displayMedium,
+    headlineMedium = Typography.headlineMedium,
+    titleMedium = Typography.titleMedium,
+    titleSmall = Typography.titleSmall,
+    bodyMedium = Typography.bodyMedium,
+    labelMedium = Typography.labelMedium,
 )
