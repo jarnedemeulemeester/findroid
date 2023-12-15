@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val playerItems = MutableSharedFlow<PlayerItemState>(
@@ -136,7 +138,8 @@ class PlayerViewModel @Inject internal constructor(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
-        val mediaSources = repository.getMediaSources(id, true)
+        val shouldTranscode = appPreferences.playerPreferredQuality != "Original"
+        val mediaSources = repository.getMediaSources(id, !shouldTranscode)
         val mediaSource = if (mediaSourceIndex == null) {
             mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
         } else {
@@ -144,7 +147,10 @@ class PlayerViewModel @Inject internal constructor(
         }
         val externalSubtitles = mediaSource.mediaStreams
             .filter { mediaStream ->
-                mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+                // When transcoding, subtitles aren't embedded, so we add them externally
+                (appPreferences.playerPreferredQuality != "Original" || mediaStream.isExternal) &&
+                        mediaStream.type == MediaStreamType.SUBTITLE &&
+                        !mediaStream.path.isNullOrBlank()
             }
             .map { mediaStream ->
                 // Temp fix for vtt

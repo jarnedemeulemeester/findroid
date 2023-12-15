@@ -179,6 +179,14 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
+    override suspend fun getHlsPlaylistUrl(
+        itemId: UUID,
+        mediaSourceId: String,
+        transcodeResolution: Int?
+    ): String {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
             database.getIntro(itemId)?.toIntro()
