@@ -32,8 +32,10 @@ import dev.jdtech.jellyfin.destinations.SettingsScreenDestination
 import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
+import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
@@ -50,6 +52,23 @@ fun SettingsScreen(
         PreferenceCategory(
             nameStringResource = CoreR.string.settings_category_language,
             iconDrawableId = CoreR.drawable.ic_languages,
+            onClick = {
+                navigator.navigate(SettingsScreenDestination(intArrayOf(0), it.nameStringResource))
+            },
+            nestedPreferences = listOf(
+                PreferenceSelect(
+                    nameStringResource = CoreR.string.settings_preferred_audio_language,
+                    iconDrawableId = CoreR.drawable.ic_speaker,
+                    backendName = Constants.PREF_AUDIO_LANGUAGE,
+                    backendDefaultValue = null,
+                ),
+                PreferenceSelect(
+                    nameStringResource = CoreR.string.settings_preferred_subtitle_language,
+                    iconDrawableId = CoreR.drawable.ic_closed_caption,
+                    backendName = Constants.PREF_SUBTITLE_LANGUAGE,
+                    backendDefaultValue = null,
+                ),
+            ),
         ),
         PreferenceCategory(
             nameStringResource = CoreR.string.settings_category_appearance,
@@ -156,6 +175,7 @@ private fun SettingsScreenLayout(
             when (preference) {
                 is PreferenceCategory -> SettingsCategoryCard(preference = preference)
                 is PreferenceSwitch -> SettingsSwitchCard(preference = preference)
+                is PreferenceSelect -> SettingsSelectCard(preference = preference)
             }
         }
     }

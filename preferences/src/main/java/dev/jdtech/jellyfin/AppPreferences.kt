@@ -161,11 +161,11 @@ constructor(
         }
     }
 
-    fun getString(key: String, default: String): String {
-        return sharedPreferences.getString(key, default)!!
+    fun getString(key: String, default: String?): String? {
+        return sharedPreferences.getString(key, default)
     }
 
-    fun setString(key: String, value: String) {
+    fun setString(key: String, value: String?) {
         sharedPreferences.edit {
             putString(key, value)
         }

@@ -130,7 +130,7 @@ fun SettingsSwitchCardLayout(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
-private fun SettingsCardSwitchPreview() {
+private fun SettingsSwitchCardPreview() {
     FindroidTheme {
         Surface {
             SettingsSwitchCardLayout(
@@ -150,7 +150,7 @@ private fun SettingsCardSwitchPreview() {
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
-private fun SettingsCardSwitchDescriptionPreview() {
+private fun SettingsSwitchCardDescriptionPreview() {
     FindroidTheme {
         Surface {
             SettingsSwitchCardLayout(

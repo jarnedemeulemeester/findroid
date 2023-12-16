@@ -10,5 +10,5 @@ data class PreferenceSelect(
     override val disabled: Boolean = false,
     override val onClick: (Preference) -> Unit = {},
     val backendName: String,
-    val backendDefaultValue: String,
+    val backendDefaultValue: String?,
 ) : Preference

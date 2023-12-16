@@ -19,11 +19,11 @@ constructor(
         appPreferences.setBoolean(key, value)
     }
 
-    fun getString(key: String, default: String): String {
+    fun getString(key: String, default: String?): String? {
         return appPreferences.getString(key, default)
     }
 
-    fun setString(key: String, value: String) {
+    fun setString(key: String, value: String?) {
         appPreferences.setString(key, value)
     }
 }
