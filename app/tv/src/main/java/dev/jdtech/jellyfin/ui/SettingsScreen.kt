@@ -102,6 +102,7 @@ fun SettingsScreen(
         ),
         PreferenceCategory(
             nameStringResource = CoreR.string.settings_category_cache,
+            iconDrawableId = CoreR.drawable.ic_hard_drive,
             onClick = {
                 navigator.navigate(SettingsScreenDestination(intArrayOf(7), it.nameStringResource))
             },
@@ -118,7 +119,7 @@ fun SettingsScreen(
         ),
         PreferenceCategory(
             nameStringResource = CoreR.string.about,
-            iconDrawableId = null,
+            iconDrawableId = CoreR.drawable.ic_info,
         ),
     )
 
