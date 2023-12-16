@@ -144,4 +144,30 @@ constructor(
                 putString(Constants.PREF_SORT_ORDER, value)
             }
         }
+
+    fun setValue(key: String, value: String) {
+        sharedPreferences.edit {
+            putString(key, value)
+        }
+    }
+
+    fun getBoolean(key: String, default: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, default)
+    }
+
+    fun setBoolean(key: String, value: Boolean) {
+        sharedPreferences.edit {
+            putBoolean(key, value)
+        }
+    }
+
+    fun getString(key: String, default: String): String {
+        return sharedPreferences.getString(key, default)!!
+    }
+
+    fun setString(key: String, value: String) {
+        sharedPreferences.edit {
+            putString(key, value)
+        }
+    }
 }
