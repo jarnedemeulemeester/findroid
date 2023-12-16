@@ -77,6 +77,17 @@ fun SettingsScreen(
         PreferenceCategory(
             nameStringResource = CoreR.string.settings_category_player,
             iconDrawableId = CoreR.drawable.ic_play,
+            onClick = {
+                navigator.navigate(SettingsScreenDestination(intArrayOf(2), it.nameStringResource))
+            },
+            nestedPreferences = listOf(
+                PreferenceSwitch(
+                    nameStringResource = CoreR.string.mpv_player,
+                    descriptionStringRes = CoreR.string.mpv_player_summary,
+                    backendName = Constants.PREF_PLAYER_MPV,
+                    backendDefaultValue = false,
+                )
+            ),
         ),
         PreferenceCategory(
             nameStringResource = CoreR.string.users,
@@ -112,8 +123,6 @@ fun SettingsScreen(
                     descriptionStringRes = CoreR.string.settings_use_cache_summary,
                     backendName = Constants.PREF_IMAGE_CACHE,
                     backendDefaultValue = false,
-                    onClick = {
-                    },
                 ),
             ),
         ),
