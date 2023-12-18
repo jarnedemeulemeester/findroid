@@ -413,7 +413,7 @@ class JellyfinRepositoryImpl(
     override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
-                jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+                //jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 
                 // this is needed in order to create a transcoding url
                 val item = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
@@ -422,8 +422,7 @@ class JellyfinRepositoryImpl(
                         userId = jellyfinApi.userId!!,
                         deviceProfile = DeviceProfile(
                             name = "Direct play all",
-                            maxStaticBitrate = 1_000_000_000,
-                            maxStreamingBitrate = 1_000_000_000,
+
                             codecProfiles = emptyList(),
                             containerProfiles = emptyList(),
                             directPlayProfiles = listOf(),
@@ -441,18 +440,18 @@ class JellyfinRepositoryImpl(
                                     enableMpegtsM2TsMode = false,
                                     maxAudioChannels = "2",
                                     transcodeSeekInfo = TranscodeSeekInfo.AUTO,
-                                    copyTimestamps = true,
-                                    enableSubtitlesInManifest = true,
+                                    copyTimestamps = false,
+                                    enableSubtitlesInManifest = false,
                                     minSegments = 1,
                                     segmentLength = 0,
-                                    breakOnNonKeyFrames = false,
+                                    breakOnNonKeyFrames = true,
                                     conditions = emptyList(),
                                 ),
                             ),
                             responseProfiles = emptyList(),
                             subtitleProfiles = listOf(
-                                SubtitleProfile("vtt", SubtitleDeliveryMethod.EMBED),
-
+                                SubtitleProfile("vtt", SubtitleDeliveryMethod.DROP),
+                                SubtitleProfile("srt", SubtitleDeliveryMethod.DROP)
                             ),
                             xmlRootAttributes = emptyList(),
                             supportedMediaTypes = "",
@@ -467,7 +466,7 @@ class JellyfinRepositoryImpl(
                             requiresPlainVideoItems = false,
                             timelineOffsetSeconds = 0,
                         ),
-                        maxStreamingBitrate = 1_000_000_000,
+
                         audioStreamIndex = -1,
                         subtitleStreamIndex = -1,
                         enableTranscoding = true,
@@ -481,6 +480,7 @@ class JellyfinRepositoryImpl(
                 // otherwise, the video will not direct play and you will lose hdr
                 r = r.replace(Regex("AudioStreamIndex=\\d+"), "AudioStreamIndex=-1")
                 r = r.replace(Regex("SubtitleStreamIndex=\\d+"), "SubtitleStreamIndex=-1")
+                r = r.replace(Regex("VideoCodec=h264"),"VideoCodec=h265")
                 r
             } catch (e: Exception) {
                 Timber.e(e)

@@ -185,8 +185,8 @@ class HomeFragment : Fragment() {
                             LinearLayout.LayoutParams.FILL_PARENT ,
                             LinearLayout.LayoutParams.FILL_PARENT
                         )
-                        layoutParams.width = 72
-                        layoutParams.height = 72
+                        layoutParams.width = 82
+                        layoutParams.height = 82
 
                         spinner.left
 

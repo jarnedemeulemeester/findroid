@@ -252,6 +252,7 @@ class PlayerViewModel @Inject internal constructor(
         var newIndex = -1
         var subtitleIndex = -1
         var newAudioIndex = 1
+        var externalSubs = false //used to determine if we burn in subs or not.
 
         val callback = object : RemoteMediaClient.Callback() {
 
@@ -338,7 +339,13 @@ class PlayerViewModel @Inject internal constructor(
                                 Regex("PlaySessionId=[\\w&]+"),
                                 "PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key",
                             )
+                            /*if(externalSubs){ newUrl = newUrl.replace(
+                                Regex("SubtitleMethod=Encode"),
+                                "SubtitleMethod=External",)
+                            }*/
+
                             val newMediaInfo = buildMediaInfo(newUrl, item, episode)
+
 
                             remoteMediaClient.load(
                                 MediaLoadRequestData.Builder()
@@ -360,14 +367,15 @@ class PlayerViewModel @Inject internal constructor(
         progressListeners.add(myProgressListener)
         remoteMediaClient.registerCallback(callback)
         remoteMediaClient.addProgressListener(myProgressListener, 50000)
-        remoteMediaClient.load(
+        var load = remoteMediaClient.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
                 .setAutoplay(true)
+                //.setActiveTrackIds(LongArray(2))
                 .setCurrentTime(position.toLong()).build(),
         )
-        val mediaStatus = remoteMediaClient.mediaStatus
-        val activeMediaTracks = mediaStatus?.activeTrackIds
+
+
     }
 
     public suspend fun postPlaybackProgress(
@@ -431,18 +439,7 @@ class PlayerViewModel @Inject internal constructor(
                     .build()
             }
         }
-        val frenchAudio = MediaTrack.Builder(1, MediaTrack.TYPE_AUDIO)
-            .setLanguage("jp-JP")
-            .setRoles(emptyList())
-            .setContentType("audio/mp4")
-            .build()
-        val engAudio = MediaTrack.Builder(2, MediaTrack.TYPE_AUDIO)
-            .setLanguage("en-US")
-            .setRoles(emptyList())
-            .setContentType("audio/mp4")
-            .build()
-        audioTracks.add(frenchAudio)
-        audioTracks.add(engAudio)
+
         return MediaInfo.Builder(streamUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
             .setContentType(MimeTypes.VIDEO_MP4)

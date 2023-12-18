@@ -58,7 +58,7 @@ coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version.ref = "jellyfin" }
+jellyfin-core = { module = "org.jellyfin.sdk:jellyfin-core", version = "1.4.6" }
 libmpv = { module = "dev.jdtech.mpv:libmpv", version.ref = "libmpv" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "androidx-mediarouter" }
