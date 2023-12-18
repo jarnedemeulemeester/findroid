@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ClickableSurfaceScale
@@ -36,39 +31,15 @@ import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
-import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
-
-@Composable
-fun SettingsSwitchCard(
-    preference: PreferenceSwitch,
-    settingViewModel: SettingsViewModel = hiltViewModel(),
-) {
-    val initialValue = settingViewModel.getBoolean(preference.backendName, preference.backendDefaultValue)
-
-    SettingsSwitchCardLayout(preference = preference, initialValue = initialValue) { newValue ->
-        preference.backendName.let { key ->
-            settingViewModel.setBoolean(key, newValue)
-        }
-    }
-}
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun SettingsSwitchCardLayout(
+fun SettingsSwitchCard(
     preference: PreferenceSwitch,
-    initialValue: Boolean,
-    onUpdate: (Boolean) -> Unit,
+    onClick: () -> Unit,
 ) {
-    var checked by remember {
-        mutableStateOf(initialValue)
-    }
-
     Surface(
-        onClick = {
-            checked = !checked
-            onUpdate(checked)
-            preference.onClick(preference)
-        },
+        onClick = onClick,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -118,10 +89,8 @@ fun SettingsSwitchCardLayout(
             }
 
             Switch(
-                checked = checked,
-                onCheckedChange = {
-                    checked = it
-                },
+                checked = preference.value,
+                onCheckedChange = null,
             )
         }
     }
@@ -133,15 +102,15 @@ fun SettingsSwitchCardLayout(
 private fun SettingsSwitchCardPreview() {
     FindroidTheme {
         Surface {
-            SettingsSwitchCardLayout(
+            SettingsSwitchCard(
                 preference = PreferenceSwitch(
                     nameStringResource = R.string.settings_use_cache_title,
                     iconDrawableId = null,
                     backendName = "image-cache",
                     backendDefaultValue = false,
+                    value = false,
                 ),
-                initialValue = false,
-                onUpdate = {},
+                onClick = {},
             )
         }
     }
@@ -153,16 +122,16 @@ private fun SettingsSwitchCardPreview() {
 private fun SettingsSwitchCardDescriptionPreview() {
     FindroidTheme {
         Surface {
-            SettingsSwitchCardLayout(
+            SettingsSwitchCard(
                 preference = PreferenceSwitch(
                     nameStringResource = R.string.settings_use_cache_title,
                     descriptionStringRes = R.string.settings_use_cache_summary,
                     iconDrawableId = null,
                     backendName = "image-cache",
                     backendDefaultValue = true,
+                    value = true,
                 ),
-                initialValue = false,
-                onUpdate = {},
+                onClick = {},
             )
         }
     }

@@ -5,5 +5,4 @@ interface Preference {
     val descriptionStringRes: Int?
     val iconDrawableId: Int?
     val disabled: Boolean
-    val onClick: (Preference) -> Unit
 }

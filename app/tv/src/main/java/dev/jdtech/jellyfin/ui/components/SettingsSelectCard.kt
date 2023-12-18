@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ClickableSurfaceScale
@@ -34,39 +29,16 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
-import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
-
-@Composable
-fun SettingsSelectCard(
-    preference: PreferenceSelect,
-    settingViewModel: SettingsViewModel = hiltViewModel(),
-) {
-    val initialValue = settingViewModel.getString(preference.backendName, preference.backendDefaultValue)
-
-    SettingsSelectCardLayout(preference = preference, initialValue = initialValue) { newValue ->
-        preference.backendName.let { key ->
-            settingViewModel.setString(key, newValue)
-        }
-    }
-}
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun SettingsSelectCardLayout(
+fun SettingsSelectCard(
     preference: PreferenceSelect,
-    initialValue: String?,
-    onUpdate: (String?) -> Unit,
+    onClick: () -> Unit,
 ) {
-    var value by remember {
-        mutableStateOf(initialValue)
-    }
-
     Surface(
-        onClick = {
-            onUpdate(value)
-            preference.onClick(preference)
-        },
+        onClick = onClick,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -109,7 +81,7 @@ fun SettingsSelectCardLayout(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
-                    text = value ?: "Not set",
+                    text = preference.value ?: "Not set",
                     style = MaterialTheme.typography.labelMedium,
                 )
             }
@@ -123,15 +95,16 @@ fun SettingsSelectCardLayout(
 private fun SettingsSelectCardPreview() {
     FindroidTheme {
         Surface {
-            SettingsSelectCardLayout(
+            SettingsSelectCard(
                 preference = PreferenceSelect(
                     nameStringResource = CoreR.string.settings_preferred_audio_language,
                     iconDrawableId = CoreR.drawable.ic_speaker,
                     backendName = "image-cache",
                     backendDefaultValue = null,
+                    value = null,
+                    options = emptyList(),
                 ),
-                initialValue = null,
-                onUpdate = {},
+                onClick = {},
             )
         }
     }

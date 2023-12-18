@@ -8,7 +8,8 @@ data class PreferenceSwitch(
     @StringRes override val descriptionStringRes: Int? = null,
     @DrawableRes override val iconDrawableId: Int? = null,
     override val disabled: Boolean = false,
-    override val onClick: (Preference) -> Unit = {},
+    val onClick: (PreferenceSwitch) -> Unit = {},
     val backendName: String,
     val backendDefaultValue: Boolean,
+    val value: Boolean = false,
 ) : Preference

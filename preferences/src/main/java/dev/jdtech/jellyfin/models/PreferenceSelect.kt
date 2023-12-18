@@ -8,7 +8,9 @@ data class PreferenceSelect(
     @StringRes override val descriptionStringRes: Int? = null,
     @DrawableRes override val iconDrawableId: Int? = null,
     override val disabled: Boolean = false,
-    override val onClick: (Preference) -> Unit = {},
+    val onClick: (Preference) -> Unit = {},
     val backendName: String,
     val backendDefaultValue: String?,
+    val options: List<String>,
+    val value: String? = null,
 ) : Preference
