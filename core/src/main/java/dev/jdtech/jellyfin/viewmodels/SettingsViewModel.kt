@@ -66,6 +66,7 @@ constructor(
         PreferenceCategory(
             nameStringResource = R.string.settings_category_appearance,
             iconDrawableId = R.drawable.ic_palette,
+            enabled = false,
         ),
         PreferenceCategory(
             nameStringResource = R.string.settings_category_player,
@@ -84,18 +85,21 @@ constructor(
                 ),
                 PreferenceSelect(
                     nameStringResource = R.string.pref_player_mpv_hwdec,
+                    dependencies = listOf(Constants.PREF_PLAYER_MPV),
                     backendName = Constants.PREF_PLAYER_MPV_HWDEC,
                     backendDefaultValue = "mediacodec",
                     options = listOf("no", "mediacodec", "mediacodec-copy"),
                 ),
                 PreferenceSelect(
                     nameStringResource = R.string.pref_player_mpv_vo,
+                    dependencies = listOf(Constants.PREF_PLAYER_MPV),
                     backendName = Constants.PREF_PLAYER_MPV_VO,
                     backendDefaultValue = "gpu",
                     options = listOf("gpu", "gpu-next"),
                 ),
                 PreferenceSelect(
                     nameStringResource = R.string.pref_player_mpv_ao,
+                    dependencies = listOf(Constants.PREF_PLAYER_MPV),
                     backendName = Constants.PREF_PLAYER_MPV_AO,
                     backendDefaultValue = "audiotrack",
                     options = listOf("audiotrack", "opensles"),
@@ -123,10 +127,12 @@ constructor(
         PreferenceCategory(
             nameStringResource = R.string.settings_category_device,
             iconDrawableId = R.drawable.ic_smartphone,
+            enabled = false,
         ),
         PreferenceCategory(
             nameStringResource = R.string.settings_category_network,
             iconDrawableId = R.drawable.ic_network,
+            enabled = false,
         ),
         PreferenceCategory(
             nameStringResource = R.string.settings_category_cache,
@@ -148,6 +154,7 @@ constructor(
         PreferenceCategory(
             nameStringResource = R.string.about,
             iconDrawableId = R.drawable.ic_info,
+            enabled = false,
         ),
     )
 
@@ -167,10 +174,16 @@ constructor(
             preferences = preferences.map { preference ->
                 when (preference) {
                     is PreferenceSwitch -> {
-                        preference.copy(value = getBoolean(preference.backendName, preference.backendDefaultValue))
+                        preference.copy(
+                            enabled = preference.dependencies.all { getBoolean(it, false) },
+                            value = getBoolean(preference.backendName, preference.backendDefaultValue),
+                        )
                     }
                     is PreferenceSelect -> {
-                        preference.copy(value = getString(preference.backendName, preference.backendDefaultValue))
+                        preference.copy(
+                            enabled = preference.dependencies.all { getBoolean(it, false) },
+                            value = getString(preference.backendName, preference.backendDefaultValue),
+                        )
                     }
                     else -> preference
                 }

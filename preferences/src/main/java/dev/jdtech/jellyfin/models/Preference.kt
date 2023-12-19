@@ -4,5 +4,6 @@ interface Preference {
     val nameStringResource: Int
     val descriptionStringRes: Int?
     val iconDrawableId: Int?
-    val disabled: Boolean
+    val enabled: Boolean
+    val dependencies: List<String>
 }

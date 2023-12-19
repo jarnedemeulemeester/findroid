@@ -39,6 +39,7 @@ fun SettingsSelectCard(
 ) {
     Surface(
         onClick = onClick,
+        enabled = preference.enabled,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,

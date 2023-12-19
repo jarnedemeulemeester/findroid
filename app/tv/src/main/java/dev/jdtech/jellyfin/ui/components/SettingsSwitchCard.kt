@@ -40,6 +40,7 @@ fun SettingsSwitchCard(
 ) {
     Surface(
         onClick = onClick,
+        enabled = preference.enabled,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -106,6 +107,27 @@ private fun SettingsSwitchCardPreview() {
                 preference = PreferenceSwitch(
                     nameStringResource = R.string.settings_use_cache_title,
                     iconDrawableId = null,
+                    backendName = "image-cache",
+                    backendDefaultValue = false,
+                    value = false,
+                ),
+                onClick = {},
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Preview
+@Composable
+private fun SettingsSwitchCardDisabledPreview() {
+    FindroidTheme {
+        Surface {
+            SettingsSwitchCard(
+                preference = PreferenceSwitch(
+                    nameStringResource = R.string.settings_use_cache_title,
+                    iconDrawableId = null,
+                    enabled = false,
                     backendName = "image-cache",
                     backendDefaultValue = false,
                     value = false,
