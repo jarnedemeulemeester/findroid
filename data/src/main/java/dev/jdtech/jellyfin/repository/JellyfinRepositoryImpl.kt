@@ -38,6 +38,7 @@ import org.jellyfin.sdk.model.api.DeviceOptionsDto
 import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.DirectPlayProfile
 import org.jellyfin.sdk.model.api.DlnaProfileType
+import org.jellyfin.sdk.model.api.EncodingContext
 import org.jellyfin.sdk.model.api.GeneralCommandType
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
@@ -46,6 +47,8 @@ import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
+import org.jellyfin.sdk.model.api.TranscodeSeekInfo
+import org.jellyfin.sdk.model.api.TranscodingProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
 import java.io.File
@@ -57,6 +60,8 @@ class JellyfinRepositoryImpl(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
+
+    private val playSessionIds = mutableMapOf<UUID, String?>()
     override suspend fun getPublicSystemInfo(): PublicSystemInfo = withContext(Dispatchers.IO) {
         jellyfinApi.systemApi.getPublicSystemInfo().content
     }
@@ -242,7 +247,8 @@ class JellyfinRepositoryImpl(
                     .orEmpty()
                     .map { it.toFindroidSeason() }
             } else {
-                database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
+                database.getSeasonsByShowId(seriesId)
+                    .map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
             }
         }
 
@@ -278,7 +284,8 @@ class JellyfinRepositoryImpl(
                     .orEmpty()
                     .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
             } else {
-                database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                database.getEpisodesBySeasonId(seasonId)
+                    .map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
             }
         }
 
@@ -300,7 +307,27 @@ class JellyfinRepositoryImpl(
                                 DirectPlayProfile(type = DlnaProfileType.VIDEO),
                                 DirectPlayProfile(type = DlnaProfileType.AUDIO),
                             ),
-                            transcodingProfiles = emptyList(),
+                            transcodingProfiles = listOf(
+                                TranscodingProfile(
+                                    type = DlnaProfileType.VIDEO,
+                                    container = "mkv",
+                                    videoCodec = "h264",
+                                    audioCodec = "mp1,mp2,mp3,aac,ac3,eac3,dts,mlp,truehd",
+                                    context = EncodingContext.STREAMING,
+                                    protocol = "hls",
+
+                                    // TODO: remove redundant defaults after API/SDK is fixed
+                                    estimateContentLength = false,
+                                    enableMpegtsM2TsMode = false,
+                                    transcodeSeekInfo = TranscodeSeekInfo.AUTO,
+                                    copyTimestamps = false,
+                                    enableSubtitlesInManifest = false,
+                                    minSegments = 0,
+                                    segmentLength = 0,
+                                    breakOnNonKeyFrames = false,
+                                    conditions = emptyList(),
+                                ),
+                            ),
                             responseProfiles = emptyList(),
                             subtitleProfiles = listOf(
                                 SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
@@ -321,19 +348,143 @@ class JellyfinRepositoryImpl(
                             timelineOffsetSeconds = 0,
                         ),
                         maxStreamingBitrate = 1_000_000_000,
+                        enableTranscoding = true,
+                        enableDirectPlay = true,
+                        enableDirectStream = true,
                     ),
-                ).content.mediaSources.map {
-                    it.toFindroidSource(
-                        this@JellyfinRepositoryImpl,
-                        itemId,
-                        includePath,
-                    )
-                },
+                )
+                    .content.mediaSources.map {
+                        it.toFindroidSource(
+                            this@JellyfinRepositoryImpl,
+                            itemId,
+                            includePath,
+                        )
+                    },
             )
             sources.addAll(
                 database.getSources(itemId).map { it.toFindroidSource(database) },
             )
+            val playbackInfo = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                itemId,
+                PlaybackInfoDto(
+                    userId = jellyfinApi.userId!!,
+                    deviceProfile = DeviceProfile(
+                        name = "Direct play all",
+                        maxStaticBitrate = 1_000_000_000,
+                        maxStreamingBitrate = 1_000_000_000,
+                        codecProfiles = emptyList(),
+                        containerProfiles = emptyList(),
+                        directPlayProfiles = listOf(
+                            DirectPlayProfile(type = DlnaProfileType.VIDEO),
+                            DirectPlayProfile(type = DlnaProfileType.AUDIO),
+                        ),
+                        transcodingProfiles = emptyList(),
+                        responseProfiles = emptyList(),
+                        subtitleProfiles = listOf(
+                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL),
+                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                        ),
+                        xmlRootAttributes = emptyList(),
+                        supportedMediaTypes = "",
+                        enableAlbumArtInDidl = false,
+                        enableMsMediaReceiverRegistrar = false,
+                        enableSingleAlbumArtLimit = false,
+                        enableSingleSubtitleLimit = false,
+                        ignoreTranscodeByteRangeRequests = false,
+                        maxAlbumArtHeight = 1_000_000_000,
+                        maxAlbumArtWidth = 1_000_000_000,
+                        requiresPlainFolders = false,
+                        requiresPlainVideoItems = false,
+                        timelineOffsetSeconds = 0,
+                    ),
+                    maxStreamingBitrate = 1_000_000_000,
+                ),
+            ).content
+            playSessionIds[itemId] = playbackInfo.playSessionId
             sources
+        }
+    suspend fun formatUuid(uuid: String): String {
+        val regex = Regex("""([0-z]{8})([0-z]{4})([0-z]{4})([0-z]{4})([0-z]{12})""")
+        return regex.replace(uuid) { match ->
+            "${match.groups[1]?.value}-${match.groups[2]?.value}-${match.groups[3]?.value}-${match.groups[4]?.value}-${match.groups[5]?.value}"
+        }
+    }
+    override suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String =
+        withContext(Dispatchers.IO) {
+            try {
+                //jellyfinApi.api.createUrl("/videos/" + itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + mediaSourceId + "&VideoCodec=h265,h265&AudioCodec=mp3&AudioStreamIndex=1&SubtitleStreamIndex=-1&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&PlaySessionId=" + playSessionIds[itemId] + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=mp4&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
+
+                // this is needed in order to create a transcoding url
+                val item = jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
+                    itemId,
+                    PlaybackInfoDto(
+                        userId = jellyfinApi.userId!!,
+                        deviceProfile = DeviceProfile(
+                            name = "Direct play all",
+
+                            codecProfiles = emptyList(),
+                            containerProfiles = emptyList(),
+                            directPlayProfiles = listOf(),
+                            transcodingProfiles = listOf(
+                                TranscodingProfile(
+                                    type = DlnaProfileType.VIDEO,
+                                    container = "mp4",
+                                    videoCodec = "hevc",
+                                    audioCodec = "aac",
+                                    context = EncodingContext.STREAMING,
+                                    protocol = "hls",
+
+                                    // TODO: remove redundant defaults after API/SDK is fixed
+                                    estimateContentLength = false,
+                                    enableMpegtsM2TsMode = false,
+                                    maxAudioChannels = "2",
+                                    transcodeSeekInfo = TranscodeSeekInfo.BYTES,
+                                    copyTimestamps = false,
+                                    enableSubtitlesInManifest = false,
+                                    minSegments = 1,
+                                    segmentLength = 0,
+                                    breakOnNonKeyFrames = true,
+                                    conditions = emptyList(),
+                                ),
+                            ),
+                            responseProfiles = emptyList(),
+                            subtitleProfiles = listOf(
+                                SubtitleProfile("Subrip",SubtitleDeliveryMethod.EMBED)
+                            ),
+                            xmlRootAttributes = emptyList(),
+                            supportedMediaTypes = "",
+                            enableAlbumArtInDidl = false,
+                            enableMsMediaReceiverRegistrar = false,
+                            enableSingleAlbumArtLimit = false,
+                            enableSingleSubtitleLimit = false,
+                            ignoreTranscodeByteRangeRequests = false,
+                            maxAlbumArtHeight = 1_000_000_000,
+                            maxAlbumArtWidth = 1_000_000_000,
+                            requiresPlainFolders = false,
+                            requiresPlainVideoItems = false,
+                            timelineOffsetSeconds = 0,
+                        ),
+
+                        audioStreamIndex = -1,
+                        subtitleStreamIndex = -1,
+                        enableTranscoding = true,
+                        enableDirectPlay = true,
+                        enableDirectStream = true,
+                    ),
+                ).content
+                var r = jellyfinApi.api.createUrl(item.mediaSources.get(0).transcodingUrl!!)
+
+                // we must replace the audio stream index, for some reason jellyfin overrides it with the default audio index
+                // otherwise, the video will not direct play and you will lose hdr
+                r = r.replace(Regex("AudioStreamIndex=\\d+"), "AudioStreamIndex=-1")
+                r = r.replace(Regex("SubtitleStreamIndex=\\d+"), "SubtitleStreamIndex=-1")
+                r = r.replace(Regex("VideoCodec=h264"),"VideoCodec=h265")
+                r
+            } catch (e: Exception) {
+                Timber.e(e)
+                ""
+            }
         }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
@@ -353,15 +504,12 @@ class JellyfinRepositoryImpl(
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
             val intro = database.getIntro(itemId)?.toIntro()
-
             if (intro != null) {
                 return@withContext intro
             }
-
             // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
             val pathParameters = mutableMapOf<String, UUID>()
             pathParameters["itemId"] = itemId
-
             try {
                 return@withContext jellyfinApi.api.get<Intro>(
                     "/Episode/{itemId}/IntroTimestamps/v1",
@@ -461,10 +609,12 @@ class JellyfinRepositoryImpl(
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(jellyfinApi.userId!!, itemId, false)
                 }
+
                 playedPercentage > 90 -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(jellyfinApi.userId!!, itemId, true)
                 }
+
                 else -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
                     database.setPlayed(jellyfinApi.userId!!, itemId, false)
@@ -580,5 +730,9 @@ class JellyfinRepositoryImpl(
 
     override fun getUserId(): UUID {
         return jellyfinApi.userId!!
+    }
+
+    override fun getChromeCastUrls(itemId: UUID, mediaSourceId: String, subIndex: Int, audioIndex: Int): String {
+        TODO("Not yet implemented")
     }
 }

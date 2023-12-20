@@ -35,6 +35,7 @@ ktlint {
     version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
+    disabledRules.add("max-line-length")
 }
 
 dependencies {
@@ -47,6 +48,11 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.hilt.android)
+    implementation(project(":player:core"))
+    implementation(project(":player:core"))
+    ksp(libs.hilt.compiler)
+    implementation("com.google.android.gms:play-services-cast:21.3.0")
+    implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.libmpv)

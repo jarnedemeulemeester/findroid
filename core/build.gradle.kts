@@ -28,8 +28,9 @@ android {
 
     flavorDimensions += "variant"
     productFlavors {
-        register("libre")
+        register("google-play-services")
         register("huawei")
+        register("libre")
     }
 
     compileOptions {

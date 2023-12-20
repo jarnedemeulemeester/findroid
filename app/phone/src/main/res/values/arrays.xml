@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="cast_expanded_controller_control_buttons">
+        <item>@id/cast_button_type_closed_caption</item>
+        <item>@id/cast_button_type_rewind_30_seconds</item>
+        <item>@id/cast_button_type_forward_30_seconds</item>
+        <item>@id/cast_button_type_mute_toggle</item>
+    </array>
+
+</resources>

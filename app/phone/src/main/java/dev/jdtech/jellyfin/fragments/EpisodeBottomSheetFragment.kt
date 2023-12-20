@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.app.DownloadManager
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
 import android.util.TypedValue
@@ -15,6 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -22,7 +26,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.bindCardItemImage
+import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
+import dev.jdtech.jellyfin.chromecast.SyncPlayDataSource
+import dev.jdtech.jellyfin.chromecast.SyncPlayMedia
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -32,12 +40,17 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.utils.Globals
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.extensions.syncPlayApi
 import org.jellyfin.sdk.model.DateTime
+import org.jellyfin.sdk.model.api.PlayRequestDto
 import timber.log.Timber
 import java.text.DateFormat
 import java.time.ZoneOffset
@@ -55,6 +68,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: EpisodeBottomSheetBinding
     private val viewModel: EpisodeBottomSheetViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
+
 
     private lateinit var downloadPreparingDialog: AlertDialog
 
@@ -401,11 +415,50 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
-        findNavController().navigate(
-            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
-                playerItems,
-            ),
-        )
+        val castContext = CastContext.getSharedInstance(requireContext().applicationContext)
+        val session = castContext.sessionManager.currentCastSession
+        if (session == null || castContext.castState != CastState.CONNECTED) {
+            findNavController().navigate(
+                EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
+                    playerItems,
+                ),
+            )
+        } else {
+            val remoteMediaClient = session.remoteMediaClient ?: return
+            remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
+                override fun onStatusUpdated() {
+                    val intent = Intent(requireActivity(), ExpandedControlsActivity::class.java)
+                    startActivity(intent)
+                    remoteMediaClient.unregisterCallback(this)
+                }
+            })
+
+        }
+        if (session != null) {
+            if(Globals.syncPlay == true){
+                var nextItem = PlayRequestDto(listOf(playerItems.get(0).itemId), 0, 0)
+
+                var api = JellyfinApi.getInstance(this.requireContext())
+                CoroutineScope(Dispatchers.IO).launch {
+                    var syncPlayDataSource = SyncPlayDataSource(api!!)
+                   var mediaItem: SyncPlayMedia? = null
+                    var response = api.api.syncPlayApi.syncPlaySetNewQueue(nextItem)
+                    /*val recentUpdate =
+                        syncPlayDataSource!!.latestUpdate.collectLatest { message ->
+                            print(message)
+                            mediaItem = message
+                        }
+                    val readyRequest= ReadyRequestDto(LocalDateTime.now(), nextItem.startPositionTicks, false, mediaItem!!.playListItemID.toUUID())
+                    val readyResponse = api.api.syncPlayApi.syncPlayReady(readyRequest)
+                    print(response)
+                    print(readyResponse)*/
+                }
+
+            }
+            else{
+                playerViewModel.startCast(playerItems, requireContext())
+            }
+        }
     }
 
     private fun navigateToSeries(id: UUID, name: String) {

@@ -29,6 +29,7 @@
             tools:itemCount="4"
             tools:listitem="@layout/view_item" />
 
+
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loading_indicator"
             android:layout_width="0dp"
@@ -39,6 +40,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

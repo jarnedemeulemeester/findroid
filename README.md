@@ -1,7 +1,7 @@
 ![Findroid banner](images/findroid-banner.png)
 
 # Findroid
-
+This is my fork of findroid where I have added the ability to chromecast media and SyncPlay media. currently I have only tested the Chromecast ultra (the one that looks like a hockey puck with a usb cable out of it).
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
 I am developing this application in my spare time.

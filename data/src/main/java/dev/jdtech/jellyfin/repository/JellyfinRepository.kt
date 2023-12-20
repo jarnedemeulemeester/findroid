@@ -115,4 +115,12 @@ interface JellyfinRepository {
     suspend fun getDownloads(): List<FindroidItem>
 
     fun getUserId(): UUID
+
+    suspend fun getStreamCastUrl(itemId: UUID, mediaSourceId: String): String
+    fun getChromeCastUrls(
+        itemId: UUID,
+        mediaSourceId: String,
+        subIndex: Int,
+        audioIndex: Int,
+    ): String
 }

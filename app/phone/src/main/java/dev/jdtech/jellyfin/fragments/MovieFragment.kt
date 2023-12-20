@@ -18,12 +18,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.bindItemBackdropImage
+import dev.jdtech.jellyfin.chromecast.ExpandedControlsActivity
 import dev.jdtech.jellyfin.databinding.FragmentMovieBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -494,11 +498,25 @@ class MovieFragment : Fragment() {
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
-        findNavController().navigate(
-            MovieFragmentDirections.actionMovieFragmentToPlayerActivity(
-                playerItems,
-            ),
-        )
+        val castContext = CastContext.getSharedInstance(requireContext().applicationContext)
+        val session = castContext.sessionManager.currentCastSession
+        if (session == null || castContext.castState != CastState.CONNECTED) {
+            findNavController().navigate(
+                MovieFragmentDirections.actionMovieFragmentToPlayerActivity(
+                    playerItems,
+                ),
+            )
+        } else {
+            val remoteMediaClient = session.remoteMediaClient ?: return
+            remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
+                override fun onStatusUpdated() {
+                    val intent = Intent(requireActivity(), ExpandedControlsActivity::class.java)
+                    startActivity(intent)
+                    remoteMediaClient.unregisterCallback(this)
+                }
+            })
+            playerViewModel.startCast(playerItems, requireContext())
+        }
     }
 
     private fun navigateToPersonDetail(personId: UUID) {
