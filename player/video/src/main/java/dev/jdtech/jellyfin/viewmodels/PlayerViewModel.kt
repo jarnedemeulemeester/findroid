@@ -31,13 +31,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.api.client.extensions.hlsSegmentApi
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType.PRIMARY
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
-import java.util.UUID
 import javax.inject.Inject
 
 
@@ -247,12 +247,21 @@ class PlayerViewModel @Inject internal constructor(
             return
         }
 
+        var streamPosition = 1000
+        if(position > 0){
+            streamPosition = position
+        }
+
+
         val remoteMediaClient = mCastSession.remoteMediaClient ?: return
         var previousSubtitleTrackIds: LongArray? = null
         var newIndex = -1
         var subtitleIndex = -1
         var newAudioIndex = 1
         var externalSubs = false //used to determine if we burn in subs or not.
+
+        var match = Regex("PlaySessionId=([\\w&]+)&").find(streamUrl)
+        var playSessionId = match!!.groupValues[1]
 
         val callback = object : RemoteMediaClient.Callback() {
 
@@ -326,7 +335,16 @@ class PlayerViewModel @Inject internal constructor(
                             /*val newUrl =
                                 jellyfinApi.api.createUrl("/videos/" + item.itemId + "/master.m3u8?DeviceId=" + jellyfinApi.api.deviceInfo.id + "&MediaSourceId=" + item.mediaSourceId + "&VideoCodec=h264,h264&AudioCodec=mp3&AudioStreamIndex=" + newAudioIndex + "&SubtitleStreamIndex=" + subtitleIndex + "&VideoBitrate=10000000&AudioBitrate=320000&AudioSampleRate=44100&MaxFramerate=23.976025&PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key=" + jellyfinApi.api.accessToken + "&SubtitleMethod=Encode&RequireAvc=false&SegmentContainer=ts&BreakOnNonKeyFrames=False&h264-level=5&h264-videobitdepth=8&h264-profile=high&h264-audiochannels=2&aac-profile=lc&TranscodeReasons=SubtitleCodecNotSupported")
 */
+                            viewModelScope.launch {
+                                try {
+                                    endTranscodeProcess(playSessionId, jellyfinApi)
+                                } catch (e: Exception) {
+                                    Timber.e(e)
+                                }
+                            }
                             var newUrl = mediaInfo?.contentUrl
+                            var newSessionId = (Math.random() * 10000).toInt()
+                            playSessionId = newSessionId.toString()
                             newUrl = newUrl!!.replace(
                                 Regex("AudioStreamIndex=-?\\d+"),
                                 "AudioStreamIndex=" + newAudioIndex,
@@ -337,7 +355,7 @@ class PlayerViewModel @Inject internal constructor(
                             )
                             newUrl = newUrl.replace(
                                 Regex("PlaySessionId=[\\w&]+"),
-                                "PlaySessionId=" + (Math.random() * 10000).toInt() + "&api_key",
+                                "PlaySessionId=" + newSessionId + "&api_key",
                             )
                             /*if(externalSubs){ newUrl = newUrl.replace(
                                 Regex("SubtitleMethod=Encode"),
@@ -352,7 +370,7 @@ class PlayerViewModel @Inject internal constructor(
                                     .setMediaInfo(newMediaInfo)
                                     .setAutoplay(true)
                                     .setActiveTrackIds(activeSubtitleTrackIds)
-                                    .setCurrentTime(mediaStatus!!.streamPosition.toInt().toLong())
+                                    .setCurrentTime((mediaStatus!!.streamPosition + 1000).toLong())
                                     .build(),
                             )
                         }
@@ -361,6 +379,8 @@ class PlayerViewModel @Inject internal constructor(
                 previousSubtitleTrackIds = mediaStatus?.activeTrackIds
             }
         }
+
+
 
         val myProgressListener =
             MyProgressListener(jellyfinApi, item, repository, remoteMediaClient)
@@ -372,18 +392,20 @@ class PlayerViewModel @Inject internal constructor(
                 .setMediaInfo(mediaInfo)
                 .setAutoplay(true)
                 //.setActiveTrackIds(LongArray(2))
-                .setCurrentTime(position.toLong()).build(),
+                .setCurrentTime((streamPosition+2000 ).toLong()).build(),
         )
 
 
     }
 
-    public suspend fun postPlaybackProgress(
-        itemId: UUID,
-        positionTicks: Long,
-        isPaused: Boolean,
+    public suspend fun endTranscodeProcess(
+        playSessionId: String,
+        api: JellyfinApi
     ) {
-        repository.postPlaybackProgress(itemId, positionTicks, isPaused)
+        var r = jellyfinApi.api.hlsSegmentApi.stopEncodingProcess(jellyfinApi.api.deviceInfo.id,
+            playSessionId
+        )
+        print(r)
     }
 
     private fun buildMediaInfo(
@@ -391,6 +413,8 @@ class PlayerViewModel @Inject internal constructor(
         item: PlayerItem,
         episode: BaseItemDto,
     ): MediaInfo {
+
+        var externalSubs = false
         val mediaMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
         val thumbnailUrl = episode.seasonId?.let {
             jellyfinApi.api.imageApi.getItemImageUrl(
@@ -426,6 +450,7 @@ class PlayerViewModel @Inject internal constructor(
                 },
             )
                 .setName(externalSubtitle.displayTitle + " " + externalSubtitle.type)
+
                 .setLanguage(externalSubtitle.language)
                 .build()
         }

@@ -430,7 +430,7 @@ class JellyfinRepositoryImpl(
                                 TranscodingProfile(
                                     type = DlnaProfileType.VIDEO,
                                     container = "mp4",
-                                    videoCodec = "h265",
+                                    videoCodec = "hevc",
                                     audioCodec = "aac",
                                     context = EncodingContext.STREAMING,
                                     protocol = "hls",
@@ -439,7 +439,7 @@ class JellyfinRepositoryImpl(
                                     estimateContentLength = false,
                                     enableMpegtsM2TsMode = false,
                                     maxAudioChannels = "2",
-                                    transcodeSeekInfo = TranscodeSeekInfo.AUTO,
+                                    transcodeSeekInfo = TranscodeSeekInfo.BYTES,
                                     copyTimestamps = false,
                                     enableSubtitlesInManifest = false,
                                     minSegments = 1,
@@ -450,8 +450,7 @@ class JellyfinRepositoryImpl(
                             ),
                             responseProfiles = emptyList(),
                             subtitleProfiles = listOf(
-                                SubtitleProfile("vtt", SubtitleDeliveryMethod.DROP),
-                                SubtitleProfile("srt", SubtitleDeliveryMethod.DROP)
+                                SubtitleProfile("Subrip",SubtitleDeliveryMethod.EMBED)
                             ),
                             xmlRootAttributes = emptyList(),
                             supportedMediaTypes = "",
