@@ -12,6 +12,7 @@ data class PreferenceSelect(
     val onClick: (Preference) -> Unit = {},
     val backendName: String,
     val backendDefaultValue: String?,
-    val options: List<String>,
+    val options: Int,
+    val optionValues: Int,
     val value: String? = null,
 ) : Preference

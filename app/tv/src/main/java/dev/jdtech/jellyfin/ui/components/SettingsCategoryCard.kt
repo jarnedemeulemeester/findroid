@@ -35,6 +35,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun SettingsCategoryCard(
     preference: PreferenceCategory,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = {
@@ -56,7 +57,7 @@ fun SettingsCategoryCard(
             ),
         ),
         scale = ClickableSurfaceScale.None,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
     ) {
         Row(

@@ -1,9 +1,7 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -16,6 +14,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,7 +29,7 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
-import dev.jdtech.jellyfin.destinations.SettingsScreenDestination
+import dev.jdtech.jellyfin.destinations.SettingsSubScreenDestination
 import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
@@ -49,19 +48,17 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Destination
 @Composable
 fun SettingsScreen(
-    indexes: IntArray = intArrayOf(),
-    @StringRes title: Int? = null,
     navigator: DestinationsNavigator,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
-        settingsViewModel.loadPreferences(indexes)
+        settingsViewModel.loadPreferences(intArrayOf())
     }
 
     ObserveAsEvents(settingsViewModel.eventsChannelFlow) { event ->
         when (event) {
             is SettingsEvent.NavigateToSettings -> {
-                navigator.navigate(SettingsScreenDestination(event.indexes, event.title))
+                navigator.navigate(SettingsSubScreenDestination(event.indexes, event.title))
             }
             is SettingsEvent.NavigateToUsers -> {
                 navigator.navigate(UserSelectScreenDestination)
@@ -74,7 +71,7 @@ fun SettingsScreen(
 
     val delegatedUiState by settingsViewModel.uiState.collectAsState()
 
-    SettingsScreenLayout(delegatedUiState, title) { preference ->
+    SettingsScreenLayout(delegatedUiState) { preference ->
         when (preference) {
             is PreferenceSwitch -> {
                 settingsViewModel.setBoolean(preference.backendName, preference.value)
@@ -83,7 +80,7 @@ fun SettingsScreen(
                 settingsViewModel.setString(preference.backendName, preference.value)
             }
         }
-        settingsViewModel.loadPreferences(indexes)
+        settingsViewModel.loadPreferences(intArrayOf())
     }
 }
 
@@ -91,7 +88,6 @@ fun SettingsScreen(
 @Composable
 private fun SettingsScreenLayout(
     uiState: SettingsViewModel.UiState,
-    @StringRes title: Int? = null,
     onUpdate: (Preference) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -109,23 +105,10 @@ private fun SettingsScreenLayout(
                     .focusRequester(focusRequester),
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
-                    if (title != null) {
-                        Column {
-                            Text(
-                                text = stringResource(id = title),
-                                style = MaterialTheme.typography.displayMedium,
-                            )
-                            Text(
-                                text = stringResource(id = CoreR.string.title_settings),
-                                style = MaterialTheme.typography.headlineMedium,
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = stringResource(id = CoreR.string.title_settings),
-                            style = MaterialTheme.typography.displayMedium,
-                        )
-                    }
+                    Text(
+                        text = stringResource(id = CoreR.string.title_settings),
+                        style = MaterialTheme.typography.displayMedium,
+                    )
                 }
                 items(uiState.preferences) { preference ->
                     when (preference) {
@@ -136,14 +119,15 @@ private fun SettingsScreenLayout(
                             }
                         }
                         is PreferenceSelect -> {
+                            val options = stringArrayResource(id = preference.options)
                             SettingsSelectCard(preference = preference) {
-                                val currentIndex = preference.options.indexOf(preference.value)
-                                val newIndex = if (currentIndex == preference.options.count() - 1) {
+                                val currentIndex = options.indexOf(preference.value)
+                                val newIndex = if (currentIndex == options.count() - 1) {
                                     0
                                 } else {
                                     currentIndex + 1
                                 }
-                                onUpdate(preference.copy(value = preference.options[newIndex]))
+                                onUpdate(preference.copy(value = options[newIndex]))
                             }
                         }
                     }
@@ -178,32 +162,6 @@ private fun SettingsScreenLayoutPreview() {
                         ),
                     ),
                 ),
-                onUpdate = {},
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
-@Composable
-private fun SettingsScreenLayoutNestedPreview() {
-    FindroidTheme {
-        Surface {
-            SettingsScreenLayout(
-                uiState = SettingsViewModel.UiState.Normal(
-                    listOf(
-                        PreferenceCategory(
-                            nameStringResource = CoreR.string.settings_category_language,
-                            iconDrawableId = CoreR.drawable.ic_languages,
-                        ),
-                        PreferenceCategory(
-                            nameStringResource = CoreR.string.settings_category_appearance,
-                            iconDrawableId = CoreR.drawable.ic_palette,
-                        ),
-                    ),
-                ),
-                title = CoreR.string.settings_category_player,
                 onUpdate = {},
             )
         }

@@ -1,13 +1,13 @@
 package dev.jdtech.jellyfin.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -36,6 +36,7 @@ import dev.jdtech.jellyfin.ui.theme.spacings
 @Composable
 fun SettingsSwitchCard(
     preference: PreferenceSwitch,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Surface(
@@ -56,23 +57,21 @@ fun SettingsSwitchCard(
             ),
         ),
         scale = ClickableSurfaceScale.None,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
             if (preference.iconDrawableId != null) {
                 Icon(
                     painter = painterResource(id = preference.iconDrawableId!!),
                     contentDescription = null,
                 )
-            } else {
-                Spacer(modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.width(16.dp))
             }
-
-            Spacer(modifier = Modifier.width(24.dp))
             Column(
                 modifier = Modifier.weight(1f),
             ) {
