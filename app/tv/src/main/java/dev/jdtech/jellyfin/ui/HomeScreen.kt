@@ -35,7 +35,9 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.destinations.MovieScreenDestination
+import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
 import dev.jdtech.jellyfin.destinations.ShowScreenDestination
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -45,7 +47,10 @@ import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyHomeItems
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Destination
@@ -53,10 +58,20 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun HomeScreen(
     navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
     isLoading: (Boolean) -> Unit,
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.loadData()
+    }
+
+    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is PlayerItemsEvent.PlayerItemsReady -> {
+                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
+            }
+            is PlayerItemsEvent.PlayerItemsError -> Unit
+        }
     }
 
     val delegatedUiState by homeViewModel.uiState.collectAsState()
@@ -71,6 +86,9 @@ fun HomeScreen(
                 }
                 is FindroidShow -> {
                     navigator.navigate(ShowScreenDestination(item.id))
+                }
+                is FindroidEpisode -> {
+                    playerViewModel.loadPlayerItems(item = item)
                 }
             }
         },
