@@ -92,7 +92,7 @@ private fun VideoPlayerOverlayPreview() {
                     Box(
                         Modifier
                             .fillMaxWidth()
-                            .height(100.dp)
+                            .height(120.dp)
                             .background(Color.Blue),
                     )
                 },
