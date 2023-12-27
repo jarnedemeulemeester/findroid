@@ -56,8 +56,6 @@ fun VideoPlayerSeekBar(
     LaunchedEffect(isSelected) {
         if (isSelected) {
             state.showControls(seconds = Int.MAX_VALUE)
-        } else {
-            state.showControls()
         }
     }
 

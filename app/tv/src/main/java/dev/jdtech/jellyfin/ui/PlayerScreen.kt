@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -27,6 +28,7 @@ import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
 import androidx.media3.ui.PlayerView
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
@@ -63,13 +65,33 @@ fun PlayerScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    val context = LocalContext.current
+
     var lifecycle by remember {
         mutableStateOf(Lifecycle.Event.ON_CREATE)
+    }
+    var mediaSession by remember {
+        mutableStateOf<MediaSession?>(null)
     }
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             lifecycle = event
+
+            // Handle creation and release of media session
+            when (lifecycle) {
+                Lifecycle.Event.ON_STOP -> {
+                    println("ON_STOP")
+                    mediaSession?.release()
+                }
+
+                Lifecycle.Event.ON_START -> {
+                    println("ON_START")
+                    mediaSession = MediaSession.Builder(context, viewModel.player).build()
+                }
+
+                else -> {}
+            }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
 
@@ -123,17 +145,11 @@ fun PlayerScreen(
                     playerView.useController = false
                     viewModel.initializePlayer(items.toTypedArray())
                     playerView.setBackgroundColor(
-
                         context.resources.getColor(
                             android.R.color.black,
                             context.theme,
                         ),
                     )
-//                    lifecycleOwner.lifecycle.coroutineScope.launch {
-//                        activity.keyDownEvents.receiveAsFlow().collect { keyEvent ->
-//                            // playerView.dispatchMediaKeyEvent(keyEvent)
-//                        }
-//                    }
                 }
             },
             update = {
@@ -218,6 +234,8 @@ fun VideoPlayerControls(
             ) {
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_speaker),
+                    state = state,
+                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
                         navigator.navigate(VideoPlayerTrackSelectorDialogDestination(tracks))
@@ -225,6 +243,8 @@ fun VideoPlayerControls(
                 )
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_closed_caption),
+                    state = state,
+                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
                         navigator.navigate(VideoPlayerTrackSelectorDialogDestination(tracks))
@@ -239,14 +259,10 @@ private fun Modifier.dPadEvents(
     exoPlayer: Player,
     videoPlayerState: VideoPlayerState,
 ): Modifier = this.handleDPadKeyEvents(
-    onLeft = {
-        exoPlayer.seekBack()
-    },
-    onRight = {
-        exoPlayer.seekForward()
-    },
-    onUp = { videoPlayerState.showControls() },
-    onDown = { videoPlayerState.showControls() },
+    onLeft = {},
+    onRight = {},
+    onUp = {},
+    onDown = {},
     onEnter = {
         exoPlayer.pause()
         videoPlayerState.showControls()
