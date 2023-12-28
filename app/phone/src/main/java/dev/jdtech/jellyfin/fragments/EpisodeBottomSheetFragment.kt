@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
+import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
@@ -122,14 +123,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 }
 
                 launch {
-                    viewModel.downloadError.collect { uiText ->
-                        createErrorDialog(uiText)
-                    }
-                }
-
-                launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is EpisodeBottomSheetEvent.NavigateBack -> findNavController().navigateUp()
+                            is EpisodeBottomSheetEvent.DownloadError -> createErrorDialog(event.uiText)
+                        }
                     }
                 }
             }

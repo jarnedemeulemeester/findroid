@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -52,7 +51,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         scheduleUserDataSync()
-        cleanUpOldDownloads()
         applyTheme()
         setupActivity()
     }
@@ -145,31 +143,6 @@ class MainActivity : AppCompatActivity() {
                     onNoUser()
                 }
             }
-        }
-    }
-
-    /**
-     * Temp to remove old downloads, will be removed in a future version
-     */
-    private fun cleanUpOldDownloads() {
-        if (appPreferences.downloadsMigrated) {
-            return
-        }
-
-        lifecycleScope.launch {
-            val oldDir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-            if (oldDir == null) {
-                appPreferences.downloadsMigrated = true
-                return@launch
-            }
-
-            try {
-                for (file in oldDir.listFiles()!!) {
-                    file.delete()
-                }
-            } catch (_: Exception) {}
-
-            appPreferences.downloadsMigrated = true
         }
     }
 

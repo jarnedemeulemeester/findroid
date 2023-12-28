@@ -15,10 +15,10 @@ import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.UiText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
@@ -38,10 +38,11 @@ constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
     val uiState = _uiState.asStateFlow()
-    private val _navigateToLogin = MutableSharedFlow<Boolean>()
-    val navigateToLogin = _navigateToLogin.asSharedFlow()
     private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
     val discoveredServersState = _discoveredServersState.asStateFlow()
+
+    private val eventsChannel = Channel<AddServerEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val discoveredServers = mutableListOf<DiscoveredServer>()
     private var serverFound = false
@@ -206,7 +207,7 @@ constructor(
         }
 
         _uiState.emit(UiState.Normal)
-        _navigateToLogin.emit(true)
+        eventsChannel.send(AddServerEvent.NavigateToLogin)
     }
 
     /**
@@ -268,4 +269,8 @@ constructor(
             database.insertServerAddress(address)
         }
     }
+}
+
+sealed interface AddServerEvent {
+    data object NavigateToLogin : AddServerEvent
 }

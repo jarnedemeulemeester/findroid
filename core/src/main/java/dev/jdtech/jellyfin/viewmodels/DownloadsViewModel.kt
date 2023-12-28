@@ -11,11 +11,11 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,8 +28,9 @@ constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
-    private val _connectionError = MutableSharedFlow<Exception>()
-    val connectionError = _connectionError.asSharedFlow()
+
+    private val eventsChannel = Channel<DownloadsEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
@@ -49,7 +50,7 @@ constructor(
                 // Give the UI a chance to load
                 delay(100)
             } catch (e: Exception) {
-                _connectionError.emit(e)
+                eventsChannel.send(DownloadsEvent.ConnectionError(e))
             }
         }
     }
@@ -87,4 +88,8 @@ constructor(
             _uiState.emit(UiState.Normal(sections))
         }
     }
+}
+
+sealed interface DownloadsEvent {
+    data class ConnectionError(val error: Exception) : DownloadsEvent
 }

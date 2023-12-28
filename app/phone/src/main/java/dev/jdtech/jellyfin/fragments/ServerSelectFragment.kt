@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
+import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -61,13 +62,11 @@ class ServerSelectFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.navigateToMain.collect {
-                        if (it) navigateToMainActivity()
-                    }
-                }
-                launch {
-                    viewModel.navigateToLogin.collect {
-                        if (it) navigateToLoginFragment()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is ServerSelectEvent.NavigateToHome -> navigateToMainActivity()
+                            is ServerSelectEvent.NavigateToLogin -> navigateToLoginFragment()
+                        }
                     }
                 }
             }

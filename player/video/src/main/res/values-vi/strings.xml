@@ -9,4 +9,11 @@
     <string name="player_controls_rewind">Tua lùi</string>
     <string name="player_controls_fast_forward">Tua tới</string>
     <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
+    <string name="player_controls_skip_back">Bỏ qua / Trở về</string>
+    <string name="player_controls_lock">Khoá trình phát</string>
+    <string name="player_controls_play_pause">Phát / Tạm dừng</string>
+    <string name="player_controls_picture_in_picture">Vào chế độ Hình trong Hình</string>
+    <string name="player_controls_skip_forward">Tiến tới</string>
+    <string name="player_trickplay">Tua mượt mà</string>
+    <string name="player_controls_progress">Thanh tiến trình</string>
 </resources>
