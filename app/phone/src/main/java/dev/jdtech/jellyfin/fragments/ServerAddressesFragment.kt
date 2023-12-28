@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.adapters.ServerAddressAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerAddressesBinding
 import dev.jdtech.jellyfin.dialogs.AddServerAddressDialog
 import dev.jdtech.jellyfin.dialogs.DeleteServerAddressDialog
+import dev.jdtech.jellyfin.viewmodels.ServerAddressesEvent
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -57,9 +58,9 @@ class ServerAddressesFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToMainActivity()
+                viewModel.eventsChannelFlow.collect { event ->
+                    when (event) {
+                        is ServerAddressesEvent.NavigateToHome -> navigateToMainActivity()
                     }
                 }
             }

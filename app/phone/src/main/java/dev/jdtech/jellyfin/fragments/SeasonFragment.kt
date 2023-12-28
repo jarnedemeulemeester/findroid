@@ -30,6 +30,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -121,6 +122,11 @@ class SeasonFragment : Fragment() {
                 launch {
                     viewModel.navigateBack.collect {
                         if (it) findNavController().navigateUp()
+                        viewModel.eventsChannelFlow.collect { event ->
+                            when (event) {
+                                is SeasonEvent.NavigateBack -> findNavController().navigateUp()
+                            }
+                        }
                     }
                 }
             }

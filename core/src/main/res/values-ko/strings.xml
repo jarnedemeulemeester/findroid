@@ -173,4 +173,7 @@
     <string name="remove_server_address">서버 주소 제</string>
     <string name="temp">임시</string>
     <string name="subtitle_chip_text">CC</string>
+    <string name="picture_in_picture_gesture">Picture-in-picture 홈 제스쳐</string>
+    <string name="picture_in_picture_gesture_summary">영상 재생 중 홈 버튼 또는 제스쳐를 이용해 picture-in-picture 변경</string>
+    <string name="picture_in_picture">Picture-in-picture 기능</string>
 </resources>

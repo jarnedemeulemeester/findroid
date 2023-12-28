@@ -10,10 +10,12 @@ import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import java.util.UUID
@@ -39,6 +41,9 @@ constructor(
     private val _navigateBack = MutableSharedFlow<Boolean>()
     val navigateBack = _navigateBack.asSharedFlow()
 
+    private val eventsChannel = Channel<SeasonEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
+
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
         data object Loading : UiState()
@@ -56,7 +61,7 @@ constructor(
                 _uiState.emit(UiState.Normal(episodes))
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
-                _navigateBack.emit(true)
+                eventsChannel.send(SeasonEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
@@ -95,4 +100,8 @@ constructor(
 
         return listOf(header) + episodes.map { EpisodeItem.Episode(it) }
     }
+}
+
+sealed interface SeasonEvent {
+    data object NavigateBack : SeasonEvent
 }

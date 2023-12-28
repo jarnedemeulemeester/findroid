@@ -15,4 +15,5 @@
     <string name="player_controls_play_pause">재생/일시정지</string>
     <string name="player_controls_skip_forward">앞으로 건너뛰기</string>
     <string name="player_controls_progress">진행 표시줄</string>
+    <string name="player_controls_picture_in_picture">picture-in-picture 전환</string>
 </resources>
