@@ -374,8 +374,7 @@ class PlayerGestureHelper(
                 }
             }
         }
-        if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP
-                    || event.action == MotionEvent.ACTION_CANCEL)) {
+        if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
             playerView.player?.let {
                 it.playbackParameters = it.playbackParameters.withSpeed(lastPlaybackSpeed)
             }
