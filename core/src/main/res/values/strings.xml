@@ -106,6 +106,7 @@
     <string name="player_gestures_vb_summary">Swipe up and down on the right side of the screen to change the volume and on the left side to change the brightness</string>
     <string name="player_gestures_zoom_summary">Pinch to fill the screen with the video</string>
     <string name="player_gestures_seek_summary">Swipe horizontally to seek forwards or backwards</string>
+    <string name="player_gestures_speed">2.0X</string>
     <string name="player_brightness_remember">Remember brightness level</string>
     <string name="sort_by_options_0">Title</string>
     <string name="sort_by_options_1">IMDB Rating</string>
