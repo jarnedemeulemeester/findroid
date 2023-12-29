@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
@@ -74,7 +75,7 @@ fun MovieScreen(
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(Unit) {
         movieViewModel.loadData(itemId)
     }
 
@@ -106,8 +107,12 @@ fun MovieScreen(
                 Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         },
-        onPlayedClick = {},
-        onFavoriteClick = {},
+        onPlayedClick = {
+            movieViewModel.togglePlayed()
+        },
+        onFavoriteClick = {
+            movieViewModel.toggleFavorite()
+        },
     )
 }
 
@@ -254,9 +259,10 @@ private fun MovieScreenLayout(
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_check),
                                 contentDescription = null,
+                                tint = if (item.played) Color.Red else LocalContentColor.current,
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = stringResource(id = CoreR.string.mark_as_played))
+                            Text(text = stringResource(id = if (item.played) CoreR.string.unmark_as_played else CoreR.string.mark_as_played))
                         }
                         Button(
                             onClick = {
@@ -264,11 +270,12 @@ private fun MovieScreenLayout(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(id = CoreR.drawable.ic_heart),
+                                painter = painterResource(id = if (item.favorite) CoreR.drawable.ic_heart_filled else CoreR.drawable.ic_heart),
                                 contentDescription = null,
+                                tint = if (item.favorite) Color.Red else LocalContentColor.current,
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = stringResource(id = CoreR.string.add_to_favorites))
+                            Text(text = stringResource(id = if (item.favorite) CoreR.string.remove_from_favorites else CoreR.string.add_to_favorites))
                         }
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))

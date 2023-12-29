@@ -148,13 +148,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         binding.itemActions.checkButton.setOnClickListener {
-            val played = viewModel.togglePlayed()
-            bindCheckButtonState(played)
+            viewModel.togglePlayed()
         }
 
         binding.itemActions.favoriteButton.setOnClickListener {
-            val favorite = viewModel.toggleFavorite()
-            bindFavoriteButtonState(favorite)
+            viewModel.toggleFavorite()
         }
 
         binding.itemActions.downloadButton.setOnClickListener {

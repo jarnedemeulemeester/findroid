@@ -147,13 +147,11 @@ class ShowFragment : Fragment() {
         }
 
         binding.itemActions.checkButton.setOnClickListener {
-            val played = viewModel.togglePlayed()
-            bindCheckButtonState(played)
+            viewModel.togglePlayed()
         }
 
         binding.itemActions.favoriteButton.setOnClickListener {
-            val favorite = viewModel.toggleFavorite()
-            bindFavoriteButtonState(favorite)
+            viewModel.toggleFavorite()
         }
     }
 
