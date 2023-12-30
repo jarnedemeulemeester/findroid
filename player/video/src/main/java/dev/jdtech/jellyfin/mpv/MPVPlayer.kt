@@ -20,6 +20,7 @@ import androidx.media3.common.FlagSet
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Commands
@@ -33,7 +34,6 @@ import androidx.media3.common.util.Clock
 import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
-import androidx.media3.exoplayer.ExoPlaybackException
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.mpv.MPVLib
 import org.json.JSONArray
@@ -736,7 +736,7 @@ class MPVPlayer(
      * @return The error, or `null`.
      * @see androidx.media3.common.Player.Listener.onPlayerError
      */
-    override fun getPlayerError(): ExoPlaybackException? {
+    override fun getPlayerError(): PlaybackException? {
         return null
     }
 
@@ -977,8 +977,7 @@ class MPVPlayer(
      *
      *
      * This [MediaMetadata] is a combination of the [MediaItem.mediaMetadata] and the
-     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged] and
-     * [androidx.media3.exoplayer.metadata.MetadataOutput.onMetadata].
+     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged].
      */
     override fun getMediaMetadata(): MediaMetadata {
         return MediaMetadata.EMPTY
