@@ -11,7 +11,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
-import androidx.media3.common.Tracks
+import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -88,10 +88,15 @@ constructor(
 
     init {
         if (appPreferences.playerMpv) {
+            val trackSelectionParameters = TrackSelectionParameters.Builder(application)
+                .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
+                .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
+                .build()
             player = MPVPlayer(
                 application,
                 false,
                 appPreferences,
+                trackSelectionParameters,
             )
         } else {
             val renderersFactory =
@@ -310,8 +315,16 @@ constructor(
         releasePlayer()
     }
 
-    fun switchToTrack(trackType: TrackType, tracksGroup: Tracks.Group) {
+    fun switchToTrack(trackType: TrackType, index: Int) {
         if (player is MPVPlayer) {
+            // Index -1 equals disable track
+            if (index == -1) {
+                player.selectTrack(trackType, id = "no")
+                return
+            }
+
+            // Get track to select based on index
+            val tracksGroup = player.currentTracks.groups.filter { TrackType.fromMedia3TrackType(it.type) == trackType }[index]
             val format = tracksGroup.mediaTrackGroup.getFormat(0)
             if (format.id == null) {
                 return

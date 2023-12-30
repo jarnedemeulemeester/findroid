@@ -49,6 +49,7 @@ class MPVPlayer(
     context: Context,
     private val requestAudioFocus: Boolean,
     private val appPreferences: AppPreferences,
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -96,8 +97,8 @@ class MPVPlayer(
         MPVLib.setOptionString("sub-use-margins", "no")
 
         // Language
-        MPVLib.setOptionString("alang", appPreferences.preferredAudioLanguage)
-        MPVLib.setOptionString("slang", appPreferences.preferredSubtitleLanguage)
+        MPVLib.setOptionString("alang", trackSelectionParameters.preferredAudioLanguages.firstOrNull() ?: "")
+        MPVLib.setOptionString("slang", trackSelectionParameters.preferredTextLanguages.firstOrNull() ?: "")
 
         // Other options
         MPVLib.setOptionString("force-window", "no")
@@ -175,7 +176,6 @@ class MPVPlayer(
     private var currentCacheDurationMs: Long? = null
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialSeekTo: Long = 0L
-    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build()
 
     // mpv events
     override fun eventProperty(property: String) {
@@ -949,6 +949,11 @@ class MPVPlayer(
 
     override fun setTrackSelectionParameters(parameters: TrackSelectionParameters) {
         trackSelectionParameters = parameters
+
+        // Disabled track types
+        val disabledTrackTypes = parameters.disabledTrackTypes.map { TrackType.fromMedia3TrackType(it) }
+
+        // Overrides
         val notOverriddenTypes = mutableSetOf(TrackType.VIDEO, TrackType.AUDIO, TrackType.SUBTITLE)
         for (override in parameters.overrides) {
             val trackType = TrackType.fromMedia3TrackType(override.key.type)
@@ -958,7 +963,11 @@ class MPVPlayer(
             selectTrack(trackType, id)
         }
         for (notOverriddenType in notOverriddenTypes) {
-            selectTrack(notOverriddenType, "auto")
+            if (notOverriddenType in disabledTrackTypes) {
+                selectTrack(notOverriddenType, "no")
+            } else {
+                selectTrack(notOverriddenType, "auto")
+            }
         }
     }
 

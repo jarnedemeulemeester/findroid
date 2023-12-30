@@ -11,7 +11,6 @@ import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import java.lang.IllegalStateException
 
-// TODO add option to disable track type
 class TrackSelectionDialogFragment(
     private val type: TrackType,
     private val viewModel: PlayerActivityViewModel,
@@ -24,12 +23,12 @@ class TrackSelectionDialogFragment(
                     val tracksGroups = viewModel.player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
                     builder.setTitle(getString(R.string.select_audio_track))
                         .setSingleChoiceItems(
-                            tracksGroups.getTrackNames(),
-                            tracksGroups.indexOfFirst { it.isSelected },
+                            arrayOf(getString(R.string.none)) + tracksGroups.getTrackNames(), // Add "None" at the top of the list
+                            tracksGroups.indexOfFirst { it.isSelected } + 1, // Add 1 to the index to account for the "None" item
                         ) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.AUDIO,
-                                tracksGroups[which],
+                                which - 1, // Minus 1 to get the correct group without the "None" item. "None" becomes -1
                             )
                             dialog.dismiss()
                         }
@@ -42,12 +41,12 @@ class TrackSelectionDialogFragment(
                     val tracksGroups = viewModel.player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }
                     builder.setTitle(getString(R.string.select_subtile_track))
                         .setSingleChoiceItems(
-                            tracksGroups.getTrackNames(),
-                            tracksGroups.indexOfFirst { it.isSelected },
+                            arrayOf(getString(R.string.none)) + tracksGroups.getTrackNames(),
+                            tracksGroups.indexOfFirst { it.isSelected } + 1,
                         ) { dialog, which ->
                             viewModel.switchToTrack(
                                 TrackType.SUBTITLE,
-                                tracksGroups[which],
+                                which - 1,
                             )
                             dialog.dismiss()
                         }
