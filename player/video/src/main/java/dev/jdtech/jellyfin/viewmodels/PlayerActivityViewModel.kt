@@ -11,6 +11,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.Tracks
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -67,9 +68,6 @@ constructor(
 
     private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
 
-    var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
-    var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
-
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
@@ -85,7 +83,6 @@ constructor(
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
 
     var playbackSpeed: Float = 1f
-    var disableSubtitle: Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -296,23 +293,6 @@ constructor(
             }
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
-                currentAudioTracks.clear()
-                currentSubtitleTracks.clear()
-                when (player) {
-                    is MPVPlayer -> {
-                        player.currentMpvTracks.forEach {
-                            when (it.type) {
-                                TrackType.VIDEO -> Unit
-                                TrackType.AUDIO -> {
-                                    currentAudioTracks.add(it)
-                                }
-                                TrackType.SUBTITLE -> {
-                                    currentSubtitleTracks.add(it)
-                                }
-                            }
-                        }
-                    }
-                }
                 _uiState.update { it.copy(fileLoaded = true) }
             }
             ExoPlayer.STATE_ENDED -> {
@@ -330,10 +310,13 @@ constructor(
         releasePlayer()
     }
 
-    fun switchToTrack(trackType: TrackType, track: MPVPlayer.Companion.Track) {
+    fun switchToTrack(trackType: TrackType, tracksGroup: Tracks.Group) {
         if (player is MPVPlayer) {
-            player.selectTrack(trackType, id = track.id)
-            disableSubtitle = track.ffIndex == -1
+            val format = tracksGroup.mediaTrackGroup.getFormat(0)
+            if (format.id == null) {
+                return
+            }
+            player.selectTrack(trackType, id = format.id!!)
         }
     }
 
