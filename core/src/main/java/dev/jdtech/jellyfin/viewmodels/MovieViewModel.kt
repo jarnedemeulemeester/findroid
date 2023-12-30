@@ -21,10 +21,10 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
@@ -49,11 +49,8 @@ constructor(
     private val _downloadStatus = MutableStateFlow(Pair(0, 0))
     val downloadStatus = _downloadStatus.asStateFlow()
 
-    private val _downloadError = MutableSharedFlow<UiText>()
-    val downloadError = _downloadError.asSharedFlow()
-
-    private val _navigateBack = MutableSharedFlow<Boolean>()
-    val navigateBack = _navigateBack.asSharedFlow()
+    private val eventsChannel = Channel<MovieEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -78,44 +75,41 @@ constructor(
     }
 
     lateinit var item: FindroidMovie
-    private var played: Boolean = false
-    private var favorite: Boolean = false
     private var writers: List<BaseItemPerson> = emptyList()
     private var writersString: String = ""
     private var runTime: String = ""
+
+    private var currentUiState: UiState = UiState.Loading
 
     fun loadData(itemId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = repository.getMovie(itemId)
-                played = item.played
-                favorite = item.favorite
                 writers = getWriters(item)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
                 runTime = "${item.runtimeTicks.div(600000000)} min"
                 if (item.isDownloading()) {
                     pollDownloadProgress()
                 }
-                _uiState.emit(
-                    UiState.Normal(
-                        item,
-                        getActors(item),
-                        getDirector(item),
-                        writers,
-                        parseVideoMetadata(item),
-                        writersString,
-                        item.genres.joinToString(separator = ", "),
-                        getMediaString(item, MediaStreamType.VIDEO),
-                        getMediaString(item, MediaStreamType.AUDIO),
-                        getMediaString(item, MediaStreamType.SUBTITLE),
-                        runTime,
-                        getDateString(item),
-                    ),
+                currentUiState = UiState.Normal(
+                    item,
+                    getActors(item),
+                    getDirector(item),
+                    writers,
+                    parseVideoMetadata(item),
+                    writersString,
+                    item.genres.joinToString(separator = ", "),
+                    getMediaString(item, MediaStreamType.VIDEO),
+                    getMediaString(item, MediaStreamType.AUDIO),
+                    getMediaString(item, MediaStreamType.SUBTITLE),
+                    runTime,
+                    getDateString(item),
                 )
+                _uiState.emit(currentUiState)
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
-                _navigateBack.emit(true)
+                eventsChannel.send(MovieEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
@@ -262,48 +256,76 @@ constructor(
         )
     }
 
-    fun togglePlayed(): Boolean {
-        when (played) {
-            false -> {
-                played = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsPlayed(item.id)
-                    } catch (_: Exception) {}
+    fun togglePlayed() {
+        suspend fun updateUiPlayedState(played: Boolean) {
+            item = item.copy(played = played)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(item = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                played = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalPlayedState = item.played
+            updateUiPlayedState(!item.played)
+
+            when (item.played) {
+                false -> {
                     try {
                         repository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsPlayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
                 }
             }
         }
-        return played
     }
 
-    fun toggleFavorite(): Boolean {
-        when (favorite) {
-            false -> {
-                favorite = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsFavorite(item.id)
-                    } catch (_: Exception) {}
+    fun toggleFavorite() {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+            item = item.copy(favorite = isFavorite)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(item = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                favorite = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalFavoriteState = item.favorite
+            updateUiFavoriteState(!item.favorite)
+
+            when (item.favorite) {
+                false -> {
                     try {
                         repository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
                 }
             }
         }
-        return favorite
     }
 
     private fun getDateString(item: FindroidMovie): String {
@@ -330,7 +352,7 @@ constructor(
             _downloadStatus.emit(Pair(10, Random.nextInt()))
 
             if (result.second != null) {
-                _downloadError.emit(result.second!!)
+                eventsChannel.send(MovieEvent.DownloadError(result.second!!))
             }
 
             loadData(item.id)
@@ -384,4 +406,9 @@ constructor(
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
+}
+
+sealed interface MovieEvent {
+    data object NavigateBack : MovieEvent
+    data class DownloadError(val uiText: UiText) : MovieEvent
 }

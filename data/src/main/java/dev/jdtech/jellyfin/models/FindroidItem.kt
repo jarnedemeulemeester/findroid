@@ -19,6 +19,7 @@ interface FindroidItem {
     val runtimeTicks: Long
     val playbackPositionTicks: Long
     val unplayedItemCount: Int?
+    val images: FindroidImages
 }
 
 suspend fun BaseItemDto.toFindroidItem(
@@ -28,9 +29,9 @@ suspend fun BaseItemDto.toFindroidItem(
     return when (type) {
         BaseItemKind.MOVIE -> toFindroidMovie(jellyfinRepository, serverDatabase)
         BaseItemKind.EPISODE -> toFindroidEpisode(jellyfinRepository)
-        BaseItemKind.SEASON -> toFindroidSeason()
-        BaseItemKind.SERIES -> toFindroidShow()
-        BaseItemKind.BOX_SET -> toFindroidBoxSet()
+        BaseItemKind.SEASON -> toFindroidSeason(jellyfinRepository)
+        BaseItemKind.SERIES -> toFindroidShow(jellyfinRepository)
+        BaseItemKind.BOX_SET -> toFindroidBoxSet(jellyfinRepository)
         else -> null
     }
 }

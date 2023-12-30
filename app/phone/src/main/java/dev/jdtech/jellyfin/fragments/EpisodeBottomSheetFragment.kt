@@ -33,7 +33,9 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
+import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.DateTime
@@ -122,23 +124,22 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                 }
 
                 launch {
-                    viewModel.downloadError.collect { uiText ->
-                        createErrorDialog(uiText)
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is EpisodeBottomSheetEvent.NavigateBack -> findNavController().navigateUp()
+                            is EpisodeBottomSheetEvent.DownloadError -> createErrorDialog(event.uiText)
+                        }
                     }
                 }
 
                 launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    playerViewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is PlayerItemsEvent.PlayerItemsReady -> bindPlayerItems(event.items)
+                            is PlayerItemsEvent.PlayerItemsError -> bindPlayerItemsError(event.error)
+                        }
                     }
                 }
-            }
-        }
-
-        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
-            when (playerItems) {
-                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
-                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
             }
         }
 
@@ -147,13 +148,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         binding.itemActions.checkButton.setOnClickListener {
-            val played = viewModel.togglePlayed()
-            bindCheckButtonState(played)
+            viewModel.togglePlayed()
         }
 
         binding.itemActions.favoriteButton.setOnClickListener {
-            val favorite = viewModel.toggleFavorite()
-            bindFavoriteButtonState(favorite)
+            viewModel.toggleFavorite()
         }
 
         binding.itemActions.downloadButton.setOnClickListener {
@@ -312,8 +311,8 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         binding.overview.text = uiState.error.message
     }
 
-    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
-        navigateToPlayerActivity(items.items.toTypedArray())
+    private fun bindPlayerItems(items: List<PlayerItem>) {
+        navigateToPlayerActivity(items.toTypedArray())
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
@@ -349,12 +348,12 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
-        Timber.e(error.error.message)
+    private fun bindPlayerItemsError(error: Exception) {
+        Timber.e(error.message)
         binding.playerItemsError.isVisible = true
         playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error).show(parentFragmentManager, ErrorDialogFragment.TAG)
+            ErrorDialogFragment.newInstance(error).show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }
 

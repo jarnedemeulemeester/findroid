@@ -124,7 +124,6 @@ class ViewListAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is HomeItem.OfflineCard -> ITEM_VIEW_TYPE_OFFLINE_CARD
-            is HomeItem.Libraries -> -1
             is HomeItem.Section -> ITEM_VIEW_TYPE_NEXT_UP
             is HomeItem.ViewItem -> ITEM_VIEW_TYPE_VIEW
         }

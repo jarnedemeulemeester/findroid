@@ -19,7 +19,7 @@ object ApiModule {
     fun provideJellyfinApi(
         @ApplicationContext application: Context,
         appPreferences: AppPreferences,
-        serverDatabase: ServerDatabaseDao,
+        database: ServerDatabaseDao,
     ): JellyfinApi {
         val jellyfinApi = JellyfinApi.getInstance(
             context = application,
@@ -30,10 +30,10 @@ object ApiModule {
 
         val serverId = appPreferences.currentServer ?: return jellyfinApi
 
-        val serverWithAddressesAndUsers = serverDatabase.getServerWithAddressesAndUsers(serverId) ?: return jellyfinApi
-        val server = serverWithAddressesAndUsers.server
-        val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: return jellyfinApi
-        val user = serverWithAddressesAndUsers.users.firstOrNull { it.id == server.currentUserId }
+        val serverWithAddressAndUser = database.getServerWithAddressAndUser(serverId) ?: return jellyfinApi
+        val serverAddress = serverWithAddressAndUser.address ?: return jellyfinApi
+        val user = serverWithAddressAndUser.user
+
         jellyfinApi.apply {
             api.baseUrl = serverAddress.address
             api.accessToken = user?.accessToken

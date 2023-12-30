@@ -90,7 +90,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId,
-            ).content.toFindroidShow()
+            ).content.toFindroidShow(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
@@ -98,7 +98,7 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi.getItem(
                 jellyfinApi.userId!!,
                 itemId,
-            ).content.toFindroidSeason()
+            ).content.toFindroidSeason(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
@@ -107,7 +107,7 @@ class JellyfinRepositoryImpl(
                 jellyfinApi.userId!!,
             ).content.items
                 .orEmpty()
-                .mapNotNull { it.toFindroidCollection() }
+                .mapNotNull { it.toFindroidCollection(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getItems(
@@ -125,7 +125,7 @@ class JellyfinRepositoryImpl(
                 parentId = parentId,
                 includeItemTypes = includeTypes,
                 recursive = recursive,
-                sortBy = listOf(sortBy.SortString),
+                sortBy = listOf(sortBy.sortString),
                 sortOrder = listOf(sortOrder),
                 startIndex = startIndex,
                 limit = limit,
@@ -240,7 +240,7 @@ class JellyfinRepositoryImpl(
             if (!offline) {
                 jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
                     .orEmpty()
-                    .map { it.toFindroidSeason() }
+                    .map { it.toFindroidSeason(this@JellyfinRepositoryImpl) }
             } else {
                 database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
             }

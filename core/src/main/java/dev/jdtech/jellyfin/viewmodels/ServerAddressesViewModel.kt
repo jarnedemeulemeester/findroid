@@ -7,10 +7,10 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.ServerAddress
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -32,8 +32,8 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    private val _navigateToMain = MutableSharedFlow<Boolean>()
-    val navigateToMain = _navigateToMain.asSharedFlow()
+    private val eventsChannel = Channel<ServerAddressesEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private var currentServerId: String = ""
 
@@ -75,7 +75,7 @@ constructor(
 
             jellyfinApi.api.baseUrl = address.address
 
-            _navigateToMain.emit(true)
+            eventsChannel.send(ServerAddressesEvent.NavigateToHome)
         }
     }
 
@@ -86,4 +86,8 @@ constructor(
             loadAddresses(currentServerId)
         }
     }
+}
+
+sealed interface ServerAddressesEvent {
+    data object NavigateToHome : ServerAddressesEvent
 }

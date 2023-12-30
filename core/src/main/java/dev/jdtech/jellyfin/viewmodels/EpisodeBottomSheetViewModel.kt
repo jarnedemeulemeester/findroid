@@ -13,10 +13,10 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.Downloader
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
@@ -37,11 +37,8 @@ constructor(
     private val _downloadStatus = MutableStateFlow(Pair(0, 0))
     val downloadStatus = _downloadStatus.asStateFlow()
 
-    private val _downloadError = MutableSharedFlow<UiText>()
-    val downloadError = _downloadError.asSharedFlow()
-
-    private val _navigateBack = MutableSharedFlow<Boolean>()
-    val navigateBack = _navigateBack.asSharedFlow()
+    private val eventsChannel = Channel<EpisodeBottomSheetEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -55,75 +52,98 @@ constructor(
     }
 
     lateinit var item: FindroidEpisode
-    private var played: Boolean = false
-    private var favorite: Boolean = false
+
+    private var currentUiState: UiState = UiState.Loading
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = repository.getEpisode(episodeId)
-                played = item.played
-                favorite = item.favorite
                 if (item.isDownloading()) {
                     pollDownloadProgress()
                 }
-                _uiState.emit(
-                    UiState.Normal(
-                        item,
-                    ),
-                )
+                currentUiState = UiState.Normal(item)
+                _uiState.emit(currentUiState)
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
-                _navigateBack.emit(true)
+                eventsChannel.send(EpisodeBottomSheetEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
         }
     }
 
-    fun togglePlayed(): Boolean {
-        when (played) {
-            false -> {
-                played = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsPlayed(item.id)
-                    } catch (_: Exception) {}
+    fun togglePlayed() {
+        suspend fun updateUiPlayedState(played: Boolean) {
+            item = item.copy(played = played)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                played = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalPlayedState = item.played
+            updateUiPlayedState(!item.played)
+
+            when (item.played) {
+                false -> {
                     try {
                         repository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsPlayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
                 }
             }
         }
-        return played
     }
 
-    fun toggleFavorite(): Boolean {
-        when (favorite) {
-            false -> {
-                favorite = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsFavorite(item.id)
-                    } catch (_: Exception) {}
+    fun toggleFavorite() {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+            item = item.copy(favorite = isFavorite)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                favorite = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalFavoriteState = item.favorite
+            updateUiFavoriteState(!item.favorite)
+
+            when (item.favorite) {
+                false -> {
                     try {
                         repository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
                 }
             }
         }
-        return favorite
     }
 
     fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
@@ -133,7 +153,7 @@ constructor(
             _downloadStatus.emit(Pair(10, Random.nextInt()))
 
             if (result.second != null) {
-                _downloadError.emit(result.second!!)
+                eventsChannel.send(EpisodeBottomSheetEvent.DownloadError(result.second!!))
             }
 
             loadEpisode(item.id)
@@ -187,4 +207,9 @@ constructor(
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
+}
+
+sealed interface EpisodeBottomSheetEvent {
+    data object NavigateBack : EpisodeBottomSheetEvent
+    data class DownloadError(val uiText: UiText) : EpisodeBottomSheetEvent
 }

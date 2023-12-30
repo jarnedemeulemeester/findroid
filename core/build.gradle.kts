@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin.core"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
-        minSdk = 28
+        minSdk = Versions.minSdk
     }
 
     buildTypes {
@@ -33,13 +33,21 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }
@@ -50,6 +58,7 @@ dependencies {
     implementation(project(":player:core"))
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)

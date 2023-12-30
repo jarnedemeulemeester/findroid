@@ -11,19 +11,16 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 28
-        targetSdk = 34
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-
-        versionCode = appVersionCode
-        versionName = appVersionName
+        versionCode = Versions.appCode
+        versionName = Versions.appName
     }
 
     buildTypes {
@@ -60,22 +57,22 @@ android {
             isEnable = true
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
 }

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.models
 
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
 
@@ -17,9 +18,12 @@ data class FindroidCollection(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int? = null,
     val type: CollectionType,
+    override val images: FindroidImages,
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidCollection(): FindroidCollection? {
+fun BaseItemDto.toFindroidCollection(
+    jellyfinRepository: JellyfinRepository,
+): FindroidCollection? {
     val type = CollectionType.fromString(collectionType)
 
     if (type !in CollectionType.supported) {
@@ -30,5 +34,6 @@ fun BaseItemDto.toFindroidCollection(): FindroidCollection? {
         id = id,
         name = name.orEmpty(),
         type = type,
+        images = toFindroidImages(jellyfinRepository),
     )
 }

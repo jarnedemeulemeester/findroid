@@ -31,7 +31,9 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.viewmodels.ShowEvent
 import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -79,8 +81,19 @@ class ShowFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.navigateBack.collect {
-                        if (it) findNavController().navigateUp()
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is ShowEvent.NavigateBack -> findNavController().navigateUp()
+                        }
+                    }
+                }
+
+                launch {
+                    playerViewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is PlayerItemsEvent.PlayerItemsReady -> bindPlayerItems(event.items)
+                            is PlayerItemsEvent.PlayerItemsError -> bindPlayerItemsError(event.error)
+                        }
                     }
                 }
             }
@@ -155,13 +168,11 @@ class ShowFragment : Fragment() {
         }
 
         binding.itemActions.checkButton.setOnClickListener {
-            val played = viewModel.togglePlayed()
-            bindCheckButtonState(played)
+            viewModel.togglePlayed()
         }
 
         binding.itemActions.favoriteButton.setOnClickListener {
-            val favorite = viewModel.toggleFavorite()
-            bindFavoriteButtonState(favorite)
+            viewModel.toggleFavorite()
         }
     }
 
@@ -301,18 +312,18 @@ class ShowFragment : Fragment() {
         }
     }
 
-    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
-        navigateToPlayerActivity(items.items.toTypedArray())
+    private fun bindPlayerItems(items: List<PlayerItem>) {
+        navigateToPlayerActivity(items.toTypedArray())
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
-    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
-        Timber.e(error.error.message)
+    private fun bindPlayerItemsError(error: Exception) {
+        Timber.e(error.message)
         binding.playerItemsError.visibility = View.VISIBLE
         playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {
-            ErrorDialogFragment.newInstance(error.error)
+            ErrorDialogFragment.newInstance(error)
                 .show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
     }

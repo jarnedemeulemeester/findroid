@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
@@ -29,9 +30,12 @@ data class FindroidShow(
     val productionYear: Int?,
     val endDate: DateTime?,
     val trailer: String?,
+    override val images: FindroidImages,
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidShow(): FindroidShow {
+fun BaseItemDto.toFindroidShow(
+    jellyfinRepository: JellyfinRepository,
+): FindroidShow {
     return FindroidShow(
         id = id,
         name = name.orEmpty(),
@@ -53,6 +57,7 @@ fun BaseItemDto.toFindroidShow(): FindroidShow {
         productionYear = productionYear,
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
+        images = toFindroidImages(jellyfinRepository),
     )
 }
 
@@ -79,5 +84,6 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         productionYear = productionYear,
         endDate = endDate,
         trailer = null,
+        images = FindroidImages(),
     )
 }

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
 import java.util.UUID
@@ -22,9 +23,12 @@ data class FindroidSeason(
     override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
+    override val images: FindroidImages,
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidSeason(): FindroidSeason {
+fun BaseItemDto.toFindroidSeason(
+    jellyfinRepository: JellyfinRepository,
+): FindroidSeason {
     return FindroidSeason(
         id = id,
         name = name.orEmpty(),
@@ -40,6 +44,7 @@ fun BaseItemDto.toFindroidSeason(): FindroidSeason {
         episodes = emptyList(),
         seriesId = seriesId!!,
         seriesName = seriesName.orEmpty(),
+        images = toFindroidImages(jellyfinRepository),
     )
 }
 
@@ -60,5 +65,6 @@ fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID
         episodes = emptyList(),
         seriesId = seriesId,
         seriesName = seriesName,
+        images = FindroidImages(),
     )
 }

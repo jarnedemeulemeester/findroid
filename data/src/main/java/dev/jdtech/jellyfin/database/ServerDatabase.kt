@@ -26,5 +26,5 @@ import dev.jdtech.jellyfin.models.User
 )
 @TypeConverters(Converters::class)
 abstract class ServerDatabase : RoomDatabase() {
-    abstract val serverDatabaseDao: ServerDatabaseDao
+    abstract fun getServerDatabaseDao(): ServerDatabaseDao
 }

@@ -6,10 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import java.util.UUID
@@ -24,8 +24,8 @@ constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _navigateBack = MutableSharedFlow<Boolean>()
-    val navigateBack = _navigateBack.asSharedFlow()
+    private val eventsChannel = Channel<SeasonEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
@@ -33,7 +33,7 @@ constructor(
         data class Error(val error: Exception) : UiState()
     }
 
-    lateinit var season: FindroidSeason
+    private lateinit var season: FindroidSeason
 
     fun loadEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean) {
         viewModelScope.launch {
@@ -44,7 +44,7 @@ constructor(
                 _uiState.emit(UiState.Normal(episodes))
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
-                _navigateBack.emit(true)
+                eventsChannel.send(SeasonEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
@@ -62,4 +62,8 @@ constructor(
 
         return listOf(header) + episodes.map { EpisodeItem.Episode(it) }
     }
+}
+
+sealed interface SeasonEvent {
+    data object NavigateBack : SeasonEvent
 }
