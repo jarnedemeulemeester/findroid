@@ -227,6 +227,8 @@ class PlayerActivity : BasePlayerActivity() {
                         viewModel.player,
                         C.TRACK_TYPE_AUDIO,
                     )
+                    trackSelectionDialogBuilder.setShowDisableOption(true)
+
                     val trackSelectionDialog = trackSelectionDialogBuilder.build()
                     trackSelectionDialog.show()
                 }
