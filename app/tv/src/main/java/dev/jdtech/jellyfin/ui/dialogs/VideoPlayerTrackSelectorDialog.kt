@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui.dialogs
 
+import android.os.Parcelable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
@@ -30,22 +32,38 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
+import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
+import kotlinx.parcelize.Parcelize
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
+
+@Parcelize
+data class VideoPlayerTrackSelectorDialogResult(
+    val trackType: TrackType,
+    val index: Int,
+) : Parcelable
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Destination(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(
-    tracks: ArrayList<Track>,
-    resultNavigator: ResultBackNavigator<Int>,
+    trackType: TrackType,
+    tracks: Array<Track>,
+    resultNavigator: ResultBackNavigator<VideoPlayerTrackSelectorDialogResult>,
 ) {
+    val dialogTitle = when (trackType) {
+        TrackType.AUDIO -> PlayerVideoR.string.select_audio_track
+        TrackType.SUBTITLE -> PlayerVideoR.string.select_subtile_track
+        else -> CoreR.string.unknown_error
+    }
     Surface {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
         ) {
             Text(
-                text = "Select track",
+                text = stringResource(id = dialogTitle),
                 style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
@@ -56,7 +74,7 @@ fun VideoPlayerTrackSelectorDialog(
                 items(tracks) { track ->
                     Surface(
                         onClick = {
-                            resultNavigator.navigateBack(result = track.id)
+                            resultNavigator.navigateBack(result = VideoPlayerTrackSelectorDialogResult(trackType, track.id))
                         },
                         enabled = track.supported,
                         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
@@ -86,7 +104,13 @@ fun VideoPlayerTrackSelectorDialog(
                                 enabled = true,
                             )
                             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
-                            Text(text = listOf(track.label, track.language, track.codec).mapNotNull { it }.joinToString(" - "), style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                text = listOf(track.label, track.language, track.codec)
+                                    .mapNotNull { it }
+                                    .joinToString(" - ")
+                                    .ifEmpty { stringResource(id = PlayerVideoR.string.none) },
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                         }
                     }
                 }
@@ -100,14 +124,15 @@ fun VideoPlayerTrackSelectorDialog(
 private fun VideoPlayerTrackSelectorDialogPreview() {
     FindroidTheme {
         VideoPlayerTrackSelectorDialog(
-            tracks = arrayListOf(
+            trackType = TrackType.AUDIO,
+            tracks = arrayOf(
                 Track(
                     id = 0,
                     label = null,
                     language = "English",
                     codec = "flac",
                     selected = true,
-                    supported = true
+                    supported = true,
                 ),
                 Track(
                     id = 0,

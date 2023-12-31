@@ -1,8 +1,11 @@
 package dev.jdtech.jellyfin.mpv
 
+import android.os.Parcelable
 import androidx.media3.common.C
+import kotlinx.parcelize.Parcelize
 
-enum class TrackType(val type: String) {
+@Parcelize
+enum class TrackType(val type: String) : Parcelable {
     VIDEO("video"),
     AUDIO("audio"),
     SUBTITLE("sub"),
