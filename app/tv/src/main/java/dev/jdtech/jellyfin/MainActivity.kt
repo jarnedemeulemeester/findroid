@@ -9,7 +9,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
 import dev.jdtech.jellyfin.destinations.LoginScreenDestination
-import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
@@ -34,9 +33,6 @@ class MainActivity : ComponentActivity() {
         } else if (checkUser()) {
             startRoute = LoginScreenDestination
         }
-
-        // TODO remove temp always show server selection screen
-        startRoute = ServerSelectScreenDestination
 
         setContent {
             FindroidTheme {
