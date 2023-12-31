@@ -10,4 +10,5 @@ data class Track(
     val language: String?,
     val codec: String?,
     val selected: Boolean,
+    val supported: Boolean,
 ) : Parcelable

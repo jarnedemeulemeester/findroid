@@ -58,10 +58,12 @@ fun VideoPlayerTrackSelectorDialog(
                         onClick = {
                             resultNavigator.navigateBack(result = track.id)
                         },
+                        enabled = track.supported,
                         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
                         colors = ClickableSurfaceDefaults.colors(
                             containerColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
                         ),
                         border = ClickableSurfaceDefaults.border(
                             focusedBorder = Border(
@@ -105,6 +107,7 @@ private fun VideoPlayerTrackSelectorDialogPreview() {
                     language = "English",
                     codec = "flac",
                     selected = true,
+                    supported = true
                 ),
                 Track(
                     id = 0,
@@ -112,6 +115,15 @@ private fun VideoPlayerTrackSelectorDialogPreview() {
                     language = "Japanese",
                     codec = "flac",
                     selected = false,
+                    supported = true,
+                ),
+                Track(
+                    id = 0,
+                    label = null,
+                    language = "English",
+                    codec = "truehd",
+                    selected = false,
+                    supported = false,
                 ),
             ),
             resultNavigator = EmptyResultBackNavigator(),

@@ -277,17 +277,13 @@ private fun getTracks(player: Player, type: Int): ArrayList<Track> {
         if (group.type == type) {
             val format = group.mediaTrackGroup.getFormat(0)
 
-            val label = format.label
-            val language = Locale(format.language.toString()).displayLanguage
-            val codec = format.codecs
-            val selected = group.isSelected
-
             val track = Track(
                 id = groupIndex,
-                label = label,
-                language = language,
-                codec = codec,
-                selected = selected,
+                label = format.label,
+                language = Locale(format.language.toString()).displayLanguage,
+                codec = format.codecs,
+                selected = group.isSelected,
+                supported = group.isSupported
             )
 
             tracks.add(track)
