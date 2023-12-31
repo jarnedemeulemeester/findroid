@@ -128,7 +128,6 @@
     <string name="add_user">유저 추가</string>
     <string name="pref_player_mpv_hwdec">하드웨어 디코딩</string>
     <string name="add_server_address">서버 주소 추가</string>
-    <string name="pref_player_mpv_hwdec_codecs">하드웨어 디코딩 코덱</string>
     <string name="pref_player_mpv_vo">비디오 출력</string>
     <string name="pref_player_mpv_ao">오디오 출력</string>
     <string name="addresses">주소</string>

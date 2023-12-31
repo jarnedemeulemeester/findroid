@@ -93,10 +93,14 @@ constructor(
                 .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
                 .build()
             player = MPVPlayer(
-                application,
-                false,
-                appPreferences,
-                trackSelectionParameters,
+                context = application,
+                requestAudioFocus = false,
+                trackSelectionParameters = trackSelectionParameters,
+                seekBackIncrement = appPreferences.playerSeekBackIncrement,
+                seekForwardIncrement = appPreferences.playerSeekForwardIncrement,
+                videoOutput = appPreferences.playerMpvVo,
+                audioOutput = appPreferences.playerMpvAo,
+                hwDec = appPreferences.playerMpvHwdec,
             )
         } else {
             val renderersFactory =

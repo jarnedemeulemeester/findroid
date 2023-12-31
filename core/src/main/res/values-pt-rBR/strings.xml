@@ -115,7 +115,6 @@
     <string name="users">Usuários</string>
     <string name="add_user">Adicionar usuário</string>
     <string name="pref_player_mpv_hwdec">Decodificação de hardware</string>
-    <string name="pref_player_mpv_hwdec_codecs">Codecs de decodificação de hardware</string>
     <string name="sort_by_options_3">Data de Adição</string>
     <string name="sort_by_options_4">Data de Reprodução</string>
     <string name="ascending">Crescente</string>

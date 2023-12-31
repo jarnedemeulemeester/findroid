@@ -11,20 +11,13 @@
             app:summary="@string/mpv_player_summary"
             app:title="@string/mpv_player" />
         <ListPreference
-            app:defaultValue="mediacodec-copy"
+            app:defaultValue="mediacodec"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_hwdec"
             app:entryValues="@array/mpv_hwdec"
             app:key="pref_player_mpv_hwdec"
             app:title="@string/pref_player_mpv_hwdec"
             app:useSimpleSummaryProvider="true" />
-        <MultiSelectListPreference
-            app:defaultValue="@array/mpv_hwdec_codecs"
-            app:dependency="pref_player_mpv"
-            app:entries="@array/mpv_hwdec_codecs"
-            app:entryValues="@array/mpv_hwdec_codecs"
-            app:key="pref_player_mpv_hwdec_codecs"
-            app:title="@string/pref_player_mpv_hwdec_codecs" />
         <ListPreference
             app:defaultValue="gpu"
             app:dependency="pref_player_mpv"
@@ -40,14 +33,6 @@
             app:entryValues="@array/mpv_aos"
             app:key="pref_player_mpv_ao"
             app:title="@string/pref_player_mpv_ao"
-            app:useSimpleSummaryProvider="true" />
-        <ListPreference
-            app:defaultValue="opengl"
-            app:dependency="pref_player_mpv"
-            app:entries="@array/mpv_gpu_api"
-            app:entryValues="@array/mpv_gpu_api"
-            app:key="pref_player_mpv_gpu_api"
-            app:title="@string/pref_player_mpv_gpu_api"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

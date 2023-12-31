@@ -100,7 +100,6 @@
     <string name="settings_socket_timeout">Thời gian socket hết hạn (ms)</string>
     <string name="users">Người dùng</string>
     <string name="pref_player_mpv_hwdec">Giải mã phần cứng</string>
-    <string name="pref_player_mpv_hwdec_codecs">Các bộ giải mã phần cứng</string>
     <string name="pref_player_mpv_vo">Đầu ra hình ảnh</string>
     <string name="pref_player_mpv_ao">Đầu ra âm thanh</string>
     <string name="addresses">Địa chỉ</string>

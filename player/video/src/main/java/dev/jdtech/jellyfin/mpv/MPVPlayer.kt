@@ -34,7 +34,6 @@ import androidx.media3.common.util.Clock
 import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.mpv.MPVLib
 import org.json.JSONArray
 import org.json.JSONException
@@ -48,8 +47,12 @@ import java.util.concurrent.CopyOnWriteArraySet
 class MPVPlayer(
     context: Context,
     private val requestAudioFocus: Boolean,
-    private val appPreferences: AppPreferences,
     private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
+    private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
+    private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
+    videoOutput: String = "gpu",
+    audioOutput: String = "audiotrack",
+    hwDec: String = "mediacodec",
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -74,14 +77,13 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("vo", appPreferences.playerMpvVo)
+        MPVLib.setOptionString("vo", videoOutput)
+        MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
-        MPVLib.setOptionString("gpu-api", appPreferences.playerMpvGpuApi)
-        MPVLib.setOptionString("ao", appPreferences.playerMpvAo)
 
         // Hardware video decoding
-        MPVLib.setOptionString("hwdec", appPreferences.playerMpvHwdec)
-        MPVLib.setOptionString("hwdec-codecs", appPreferences.playerMpvHwdecCodecs.joinToString(separator = ","))
+        MPVLib.setOptionString("hwdec", hwDec)
+        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
 
         // TLS
         MPVLib.setOptionString("tls-verify", "no")
@@ -110,8 +112,6 @@ class MPVPlayer(
         MPVLib.setOptionString("vd-lavc-dr", "no")
 
         MPVLib.init()
-
-        companionPrefs = appPreferences
 
         MPVLib.addObserver(this)
 
@@ -885,11 +885,11 @@ class MPVPlayer(
     }
 
     override fun getSeekBackIncrement(): Long {
-        return appPreferences.playerSeekBackIncrement
+        return seekBackIncrement
     }
 
     override fun getSeekForwardIncrement(): Long {
-        return appPreferences.playerSeekForwardIncrement
+        return seekForwardIncrement
     }
 
     override fun getMaxSeekToPreviousPosition(): Long {
@@ -1316,6 +1316,58 @@ class MPVPlayer(
         }
     }
 
+    private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
+        /**
+         * This is called immediately after the surface is first created.
+         * Implementations of this should start up whatever rendering code
+         * they desire.  Note that only one thread can ever draw into
+         * a [Surface], so you should not draw into the Surface here
+         * if your normal rendering will be in another thread.
+         *
+         * @param holder The SurfaceHolder whose surface is being created.
+         */
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            MPVLib.attachSurface(holder.surface)
+            MPVLib.setOptionString("force-window", "yes")
+            MPVLib.setOptionString("vo", videoOutput)
+        }
+
+        /**
+         * This is called immediately after any structural changes (format or
+         * size) have been made to the surface.  You should at this point update
+         * the imagery in the surface.  This method is always called at least
+         * once, after [.surfaceCreated].
+         *
+         * @param holder The SurfaceHolder whose surface has changed.
+         * @param format The new [android.graphics.PixelFormat] of the surface.
+         * @param width The new width of the surface.
+         * @param height The new height of the surface.
+         */
+        override fun surfaceChanged(
+            holder: SurfaceHolder,
+            format: Int,
+            width: Int,
+            height: Int,
+        ) {
+            MPVLib.setPropertyString("android-surface-size", "${width}x$height")
+        }
+
+        /**
+         * This is called immediately before a surface is being destroyed. After
+         * returning from this call, you should no longer try to access this
+         * surface.  If you have a rendering thread that directly accesses
+         * the surface, you must ensure that thread is no longer touching the
+         * Surface before returning from this function.
+         *
+         * @param holder The SurfaceHolder whose surface is being destroyed.
+         */
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            MPVLib.setOptionString("vo", "null")
+            MPVLib.setOptionString("force-window", "no")
+            MPVLib.detachSurface()
+        }
+    }
+
     companion object {
         /**
          * Fraction to which audio volume is ducked on loss of audio focus
@@ -1334,60 +1386,6 @@ class MPVPlayer(
                 COMMAND_SET_TRACK_SELECTION_PARAMETERS,
             )
             .build()
-
-        private lateinit var companionPrefs: AppPreferences
-
-        private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
-            /**
-             * This is called immediately after the surface is first created.
-             * Implementations of this should start up whatever rendering code
-             * they desire.  Note that only one thread can ever draw into
-             * a [Surface], so you should not draw into the Surface here
-             * if your normal rendering will be in another thread.
-             *
-             * @param holder The SurfaceHolder whose surface is being created.
-             */
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                MPVLib.attachSurface(holder.surface)
-                MPVLib.setOptionString("force-window", "yes")
-                MPVLib.setOptionString("vo", companionPrefs.playerMpvVo)
-            }
-
-            /**
-             * This is called immediately after any structural changes (format or
-             * size) have been made to the surface.  You should at this point update
-             * the imagery in the surface.  This method is always called at least
-             * once, after [.surfaceCreated].
-             *
-             * @param holder The SurfaceHolder whose surface has changed.
-             * @param format The new [android.graphics.PixelFormat] of the surface.
-             * @param width The new width of the surface.
-             * @param height The new height of the surface.
-             */
-            override fun surfaceChanged(
-                holder: SurfaceHolder,
-                format: Int,
-                width: Int,
-                height: Int,
-            ) {
-                MPVLib.setPropertyString("android-surface-size", "${width}x$height")
-            }
-
-            /**
-             * This is called immediately before a surface is being destroyed. After
-             * returning from this call, you should no longer try to access this
-             * surface.  If you have a rendering thread that directly accesses
-             * the surface, you must ensure that thread is no longer touching the
-             * Surface before returning from this function.
-             *
-             * @param holder The SurfaceHolder whose surface is being destroyed.
-             */
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                MPVLib.setOptionString("vo", "null")
-                MPVLib.setOptionString("force-window", "no")
-                MPVLib.detachSurface()
-            }
-        }
 
         private fun JSONObject.optNullableString(name: String): String? {
             return if (this.has(name) && !this.isNull(name)) {
