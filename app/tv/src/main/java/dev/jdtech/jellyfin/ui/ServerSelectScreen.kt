@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -136,8 +134,7 @@ private fun ServerSelectScreenLayout(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
+            .fillMaxSize(),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,57 +201,48 @@ private fun ServerSelectScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun ServerSelectScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            ServerSelectScreenLayout(
-                uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
-                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    dummyDiscoveredServers,
-                ),
-                onServerClick = {},
-                onAddServerClick = {},
-            )
-        }
+        ServerSelectScreenLayout(
+            uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
+            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                dummyDiscoveredServers,
+            ),
+            onServerClick = {},
+            onAddServerClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun ServerSelectScreenLayoutPreviewNoDiscovered() {
     FindroidTheme {
-        Surface {
-            ServerSelectScreenLayout(
-                uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
-                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    emptyList(),
-                ),
-                onServerClick = {},
-                onAddServerClick = {},
-            )
-        }
+        ServerSelectScreenLayout(
+            uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
+            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                emptyList(),
+            ),
+            onServerClick = {},
+            onAddServerClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun ServerSelectScreenLayoutPreviewNoServers() {
     FindroidTheme {
-        Surface {
-            ServerSelectScreenLayout(
-                uiState = ServerSelectViewModel.UiState.Normal(emptyList()),
-                discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                    emptyList(),
-                ),
-                onServerClick = {},
-                onAddServerClick = {},
-            )
-        }
+        ServerSelectScreenLayout(
+            uiState = ServerSelectViewModel.UiState.Normal(emptyList()),
+            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
+                emptyList(),
+            ),
+            onServerClick = {},
+            onAddServerClick = {},
+        )
     }
 }
 
@@ -324,27 +312,21 @@ private fun ServerComponent(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ServerComponentPreview() {
     FindroidTheme {
-        Surface {
-            ServerComponent(dummyDiscoveredServer)
-        }
+        ServerComponent(dummyDiscoveredServer)
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ServerComponentPreviewDiscovered() {
     FindroidTheme {
-        Surface {
-            ServerComponent(
-                server = dummyDiscoveredServer,
-                discovered = true,
-            )
-        }
+        ServerComponent(
+            server = dummyDiscoveredServer,
+            discovered = true,
+        )
     }
 }

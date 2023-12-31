@@ -19,7 +19,6 @@ import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.foundation.lazy.grid.items
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.destinations.LibraryScreenDestination
@@ -102,17 +101,14 @@ private fun LibrariesScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun LibrariesScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            LibrariesScreenLayout(
-                uiState = MediaViewModel.UiState.Normal(dummyCollections),
-                isLoading = {},
-                onClick = { _, _, _ -> },
-            )
-        }
+        LibrariesScreenLayout(
+            uiState = MediaViewModel.UiState.Normal(dummyCollections),
+            isLoading = {},
+            onClick = { _, _, _ -> },
+        )
     }
 }

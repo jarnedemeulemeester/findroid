@@ -93,18 +93,15 @@ fun SettingsCategoryCard(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun SettingsCategoryCardPreview() {
     FindroidTheme {
-        Surface {
-            SettingsCategoryCard(
-                preference = PreferenceCategory(
-                    nameStringResource = CoreR.string.settings_category_player,
-                    iconDrawableId = CoreR.drawable.ic_play,
-                ),
-            )
-        }
+        SettingsCategoryCard(
+            preference = PreferenceCategory(
+                nameStringResource = CoreR.string.settings_category_player,
+                iconDrawableId = CoreR.drawable.ic_play,
+            ),
+        )
     }
 }

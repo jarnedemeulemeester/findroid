@@ -43,7 +43,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -335,41 +334,38 @@ private fun MovieScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun MovieScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            MovieScreenLayout(
-                uiState = MovieViewModel.UiState.Normal(
-                    item = dummyMovie,
-                    actors = emptyList(),
-                    director = BaseItemPerson(
-                        id = UUID.randomUUID(),
-                        name = "Robert Rodriguez",
-                    ),
-                    writers = emptyList(),
-                    videoMetadata = VideoMetadata(
-                        resolution = listOf(Resolution.UHD),
-                        displayProfiles = listOf(DisplayProfile.HDR10),
-                        audioChannels = listOf(AudioChannel.CH_5_1),
-                        audioCodecs = listOf(AudioCodec.EAC3),
-                        isAtmos = listOf(false),
-                    ),
-                    writersString = "James Cameron, Laeta Kalogridis, Yukito Kishiro",
-                    genresString = "Action, Science Fiction, Adventure",
-                    videoString = "",
-                    audioString = "",
-                    subtitleString = "",
-                    runTime = "121 min",
-                    dateString = "2019",
+        MovieScreenLayout(
+            uiState = MovieViewModel.UiState.Normal(
+                item = dummyMovie,
+                actors = emptyList(),
+                director = BaseItemPerson(
+                    id = UUID.randomUUID(),
+                    name = "Robert Rodriguez",
                 ),
-                onPlayClick = {},
-                onTrailerClick = {},
-                onPlayedClick = {},
-                onFavoriteClick = {},
-            )
-        }
+                writers = emptyList(),
+                videoMetadata = VideoMetadata(
+                    resolution = listOf(Resolution.UHD),
+                    displayProfiles = listOf(DisplayProfile.HDR10),
+                    audioChannels = listOf(AudioChannel.CH_5_1),
+                    audioCodecs = listOf(AudioCodec.EAC3),
+                    isAtmos = listOf(false),
+                ),
+                writersString = "James Cameron, Laeta Kalogridis, Yukito Kishiro",
+                genresString = "Action, Science Fiction, Adventure",
+                videoString = "",
+                audioString = "",
+                subtitleString = "",
+                runTime = "121 min",
+                dateString = "2019",
+            ),
+            onPlayClick = {},
+            onTrailerClick = {},
+            onPlayedClick = {},
+            onFavoriteClick = {},
+        )
     }
 }

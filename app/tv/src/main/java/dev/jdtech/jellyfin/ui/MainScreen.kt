@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabDefaults
 import androidx.tv.material3.TabRow
@@ -102,8 +99,7 @@ private fun MainScreenLayout(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
+            .fillMaxSize(),
     ) {
         Box(
             modifier = Modifier
@@ -195,16 +191,13 @@ private fun MainScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun MainScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            MainScreenLayout(
-                uiState = MainViewModel.UiState.Normal(server = dummyServer, user = dummyUser),
-                navigator = EmptyDestinationsNavigator,
-            )
-        }
+        MainScreenLayout(
+            uiState = MainViewModel.UiState.Normal(server = dummyServer, user = dummyUser),
+            navigator = EmptyDestinationsNavigator,
+        )
     }
 }

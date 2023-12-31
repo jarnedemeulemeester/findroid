@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -124,8 +122,7 @@ private fun UserSelectScreenLayout(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
+            .fillMaxSize(),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -181,35 +178,29 @@ private fun UserSelectScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun UserSelectScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            UserSelectScreenLayout(
-                uiState = UserSelectViewModel.UiState.Normal(dummyServer, dummyUsers),
-                baseUrl = "https://demo.jellyfin.org/stable",
-                onUserClick = {},
-                onAddUserClick = {},
-            )
-        }
+        UserSelectScreenLayout(
+            uiState = UserSelectViewModel.UiState.Normal(dummyServer, dummyUsers),
+            baseUrl = "https://demo.jellyfin.org/stable",
+            onUserClick = {},
+            onAddUserClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun UserSelectScreenLayoutPreviewNoUsers() {
     FindroidTheme {
-        Surface {
-            UserSelectScreenLayout(
-                uiState = UserSelectViewModel.UiState.Normal(dummyServer, emptyList()),
-                baseUrl = "https://demo.jellyfin.org/stable",
-                onUserClick = {},
-                onAddUserClick = {},
-            )
-        }
+        UserSelectScreenLayout(
+            uiState = UserSelectViewModel.UiState.Normal(dummyServer, emptyList()),
+            baseUrl = "https://demo.jellyfin.org/stable",
+            onUserClick = {},
+            onAddUserClick = {},
+        )
     }
 }
 
@@ -273,16 +264,13 @@ private fun UserComponent(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun UserComponentPreview() {
     FindroidTheme {
-        Surface {
-            UserComponent(
-                user = dummyUser,
-                baseUrl = "https://demo.jellyfin.org/stable",
-            )
-        }
+        UserComponent(
+            user = dummyUser,
+            baseUrl = "https://demo.jellyfin.org/stable",
+        )
     }
 }

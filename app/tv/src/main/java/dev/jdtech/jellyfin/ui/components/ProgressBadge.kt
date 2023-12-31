@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.ui.dummy.dummyEpisode
@@ -67,28 +66,22 @@ fun ProgressBadge(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ProgressBadgePreviewWatched() {
     FindroidTheme {
-        Surface {
-            ProgressBadge(
-                item = dummyEpisode,
-            )
-        }
+        ProgressBadge(
+            item = dummyEpisode,
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ProgressBadgePreviewItemRemaining() {
     FindroidTheme {
-        Surface {
-            ProgressBadge(
-                item = dummyShow,
-            )
-        }
+        ProgressBadge(
+            item = dummyShow,
+        )
     }
 }

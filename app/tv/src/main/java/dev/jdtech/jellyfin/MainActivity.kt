@@ -4,13 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.NonInteractiveSurfaceDefaults
-import androidx.tv.material3.Surface
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
@@ -32,7 +25,6 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    @OptIn(ExperimentalTvMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,18 +40,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FindroidTheme {
-                Surface(
-                    colors = NonInteractiveSurfaceDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                    ),
-                    shape = RectangleShape,
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    DestinationsNavHost(
-                        navGraph = NavGraphs.root,
-                        startRoute = startRoute,
-                    )
-                }
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root,
+                    startRoute = startRoute,
+                )
             }
         }
     }

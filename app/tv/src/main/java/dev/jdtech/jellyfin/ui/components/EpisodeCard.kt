@@ -98,16 +98,13 @@ fun EpisodeCard(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ItemCardPreviewEpisode() {
     FindroidTheme {
-        Surface {
-            EpisodeCard(
-                episode = dummyEpisode,
-                onClick = {},
-            )
-        }
+        EpisodeCard(
+            episode = dummyEpisode,
+            onClick = {},
+        )
     }
 }

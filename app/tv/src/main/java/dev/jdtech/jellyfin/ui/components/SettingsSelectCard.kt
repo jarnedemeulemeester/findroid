@@ -102,23 +102,20 @@ fun SettingsSelectCard(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun SettingsSelectCardPreview() {
     FindroidTheme {
-        Surface {
-            SettingsSelectCard(
-                preference = PreferenceSelect(
-                    nameStringResource = CoreR.string.settings_preferred_audio_language,
-                    iconDrawableId = CoreR.drawable.ic_speaker,
-                    backendName = Constants.PREF_AUDIO_LANGUAGE,
-                    backendDefaultValue = null,
-                    options = CoreR.array.languages,
-                    optionValues = CoreR.array.languages_values,
-                ),
-                onClick = {},
-            )
-        }
+        SettingsSelectCard(
+            preference = PreferenceSelect(
+                nameStringResource = CoreR.string.settings_preferred_audio_language,
+                iconDrawableId = CoreR.drawable.ic_speaker,
+                backendName = Constants.PREF_AUDIO_LANGUAGE,
+                backendDefaultValue = null,
+                options = CoreR.array.languages,
+                optionValues = CoreR.array.languages_values,
+            ),
+            onClick = {},
+        )
     }
 }

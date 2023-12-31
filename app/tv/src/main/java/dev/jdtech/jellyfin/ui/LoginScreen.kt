@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -40,7 +37,6 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -124,8 +120,7 @@ private fun LoginScreenLayout(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721)))),
+            .fillMaxSize(),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -254,34 +249,28 @@ private fun LoginScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun LoginScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            LoginScreenLayout(
-                uiState = LoginViewModel.UiState.Normal,
-                quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
-                onLoginClick = { _, _ -> },
-                onQuickConnectClick = {},
-            )
-        }
+        LoginScreenLayout(
+            uiState = LoginViewModel.UiState.Normal,
+            quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
+            onLoginClick = { _, _ -> },
+            onQuickConnectClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun LoginScreenLayoutPreviewError() {
     FindroidTheme {
-        Surface {
-            LoginScreenLayout(
-                uiState = LoginViewModel.UiState.Error(UiText.DynamicString("Invalid username or password")),
-                quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
-                onLoginClick = { _, _ -> },
-                onQuickConnectClick = {},
-            )
-        }
+        LoginScreenLayout(
+            uiState = LoginViewModel.UiState.Error(UiText.DynamicString("Invalid username or password")),
+            quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
+            onLoginClick = { _, _ -> },
+            onQuickConnectClick = {},
+        )
     }
 }

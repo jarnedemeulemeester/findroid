@@ -53,7 +53,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -394,31 +393,28 @@ private fun ShowScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun ShowScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            ShowScreenLayout(
-                uiState = ShowViewModel.UiState.Normal(
-                    item = dummyShow,
-                    actors = emptyList(),
-                    director = null,
-                    writers = emptyList(),
-                    writersString = "Hiroshi Seko, Hajime Isayama",
-                    genresString = "Action, Science Fiction, Adventure",
-                    runTime = "0 min",
-                    dateString = "2013 - 2023",
-                    nextUp = null,
-                    seasons = emptyList(),
-                ),
-                onPlayClick = {},
-                onTrailerClick = {},
-                onPlayedClick = {},
-                onFavoriteClick = {},
-                onSeasonClick = {},
-            )
-        }
+        ShowScreenLayout(
+            uiState = ShowViewModel.UiState.Normal(
+                item = dummyShow,
+                actors = emptyList(),
+                director = null,
+                writers = emptyList(),
+                writersString = "Hiroshi Seko, Hajime Isayama",
+                genresString = "Action, Science Fiction, Adventure",
+                runTime = "0 min",
+                dateString = "2013 - 2023",
+                nextUp = null,
+                seasons = emptyList(),
+            ),
+            onPlayClick = {},
+            onTrailerClick = {},
+            onPlayedClick = {},
+            onFavoriteClick = {},
+            onSeasonClick = {},
+        )
     }
 }

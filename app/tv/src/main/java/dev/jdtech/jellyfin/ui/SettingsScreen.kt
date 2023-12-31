@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +21,6 @@ import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.foundation.lazy.grid.items
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -101,7 +97,6 @@ private fun SettingsScreenLayout(
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Brush.linearGradient(listOf(Color.Black, Color(0xFF001721))))
                     .focusRequester(focusRequester),
             ) {
                 item(span = { TvGridItemSpan(this.maxLineSpan) }) {
@@ -143,27 +138,24 @@ private fun SettingsScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun SettingsScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            SettingsScreenLayout(
-                uiState = SettingsViewModel.UiState.Normal(
-                    listOf(
-                        PreferenceCategory(
-                            nameStringResource = CoreR.string.settings_category_language,
-                            iconDrawableId = CoreR.drawable.ic_languages,
-                        ),
-                        PreferenceCategory(
-                            nameStringResource = CoreR.string.settings_category_appearance,
-                            iconDrawableId = CoreR.drawable.ic_palette,
-                        ),
+        SettingsScreenLayout(
+            uiState = SettingsViewModel.UiState.Normal(
+                listOf(
+                    PreferenceCategory(
+                        nameStringResource = CoreR.string.settings_category_language,
+                        iconDrawableId = CoreR.drawable.ic_languages,
+                    ),
+                    PreferenceCategory(
+                        nameStringResource = CoreR.string.settings_category_appearance,
+                        iconDrawableId = CoreR.drawable.ic_palette,
                     ),
                 ),
-                onUpdate = {},
-            )
-        }
+            ),
+            onUpdate = {},
+        )
     }
 }

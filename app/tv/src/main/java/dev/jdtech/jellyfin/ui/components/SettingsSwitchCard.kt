@@ -96,64 +96,55 @@ fun SettingsSwitchCard(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun SettingsSwitchCardPreview() {
     FindroidTheme {
-        Surface {
-            SettingsSwitchCard(
-                preference = PreferenceSwitch(
-                    nameStringResource = R.string.settings_use_cache_title,
-                    iconDrawableId = null,
-                    backendName = "image-cache",
-                    backendDefaultValue = false,
-                    value = false,
-                ),
-                onClick = {},
-            )
-        }
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                iconDrawableId = null,
+                backendName = "image-cache",
+                backendDefaultValue = false,
+                value = false,
+            ),
+            onClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun SettingsSwitchCardDisabledPreview() {
     FindroidTheme {
-        Surface {
-            SettingsSwitchCard(
-                preference = PreferenceSwitch(
-                    nameStringResource = R.string.settings_use_cache_title,
-                    iconDrawableId = null,
-                    enabled = false,
-                    backendName = "image-cache",
-                    backendDefaultValue = false,
-                    value = false,
-                ),
-                onClick = {},
-            )
-        }
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                iconDrawableId = null,
+                enabled = false,
+                backendName = "image-cache",
+                backendDefaultValue = false,
+                value = false,
+            ),
+            onClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun SettingsSwitchCardDescriptionPreview() {
     FindroidTheme {
-        Surface {
-            SettingsSwitchCard(
-                preference = PreferenceSwitch(
-                    nameStringResource = R.string.settings_use_cache_title,
-                    descriptionStringRes = R.string.settings_use_cache_summary,
-                    iconDrawableId = null,
-                    backendName = "image-cache",
-                    backendDefaultValue = true,
-                    value = true,
-                ),
-                onClick = {},
-            )
-        }
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                descriptionStringRes = R.string.settings_use_cache_summary,
+                iconDrawableId = null,
+                backendName = "image-cache",
+                backendDefaultValue = true,
+                value = true,
+            ),
+            onClick = {},
+        )
     }
 }

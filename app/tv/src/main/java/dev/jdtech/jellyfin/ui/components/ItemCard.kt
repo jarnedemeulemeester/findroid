@@ -127,47 +127,38 @@ fun ItemCard(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ItemCardPreviewMovie() {
     FindroidTheme {
-        Surface {
-            ItemCard(
-                item = dummyMovie,
-                direction = Direction.HORIZONTAL,
-                onClick = {},
-            )
-        }
+        ItemCard(
+            item = dummyMovie,
+            direction = Direction.HORIZONTAL,
+            onClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ItemCardPreviewMovieVertical() {
     FindroidTheme {
-        Surface {
-            ItemCard(
-                item = dummyMovie,
-                direction = Direction.VERTICAL,
-                onClick = {},
-            )
-        }
+        ItemCard(
+            item = dummyMovie,
+            direction = Direction.VERTICAL,
+            onClick = {},
+        )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ItemCardPreviewEpisode() {
     FindroidTheme {
-        Surface {
-            ItemCard(
-                item = dummyEpisode,
-                direction = Direction.HORIZONTAL,
-                onClick = {},
-            )
-        }
+        ItemCard(
+            item = dummyEpisode,
+            direction = Direction.HORIZONTAL,
+            onClick = {},
+        )
     }
 }

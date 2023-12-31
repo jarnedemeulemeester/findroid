@@ -81,16 +81,13 @@ fun ProfileButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Preview
 @Composable
 private fun ProfileButtonPreview() {
     FindroidTheme {
-        Surface {
-            ProfileButton(
-                user = dummyUser,
-                onClick = {},
-            )
-        }
+        ProfileButton(
+            user = dummyUser,
+            onClick = {},
+        )
     }
 }

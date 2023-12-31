@@ -30,7 +30,6 @@ import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -179,18 +178,15 @@ private fun HomeScreenLayout(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Preview(widthDp = 960, heightDp = 540)
+@Preview(device = "id:tv_1080p")
 @Composable
 private fun HomeScreenLayoutPreview() {
     FindroidTheme {
-        Surface {
-            HomeScreenLayout(
-                uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
-                isLoading = {},
-                onClick = {},
-            )
-        }
+        HomeScreenLayout(
+            uiState = HomeViewModel.UiState.Normal(dummyHomeItems),
+            isLoading = {},
+            onClick = {},
+        )
     }
 }
 
