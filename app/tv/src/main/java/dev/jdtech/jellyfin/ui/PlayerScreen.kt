@@ -124,7 +124,7 @@ fun PlayerScreen(
                 val trackType = result.value.trackType
                 val index = result.value.index
 
-                if (result.value.index == -1) {
+                if (index == -1) {
                     viewModel.player.trackSelectionParameters = viewModel.player.trackSelectionParameters
                         .buildUpon()
                         .clearOverridesOfType(trackType)

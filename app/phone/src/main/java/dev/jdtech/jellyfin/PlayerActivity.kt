@@ -27,18 +27,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
-import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -46,7 +43,6 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
 var isControlsLocked: Boolean = false
 
@@ -201,38 +197,10 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         audioButton.setOnClickListener {
-            when (viewModel.player) {
-                is MPVPlayer -> {
-                    TrackSelectionDialogFragment(TrackType.AUDIO, viewModel).show(
-                        supportFragmentManager,
-                        "trackselectiondialog",
-                    )
-                }
-                is ExoPlayer -> {
-                    val mappedTrackInfo =
-                        viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
-
-                    var audioRenderer: Int? = null
-                    for (i in 0 until mappedTrackInfo.rendererCount) {
-                        if (isRendererType(mappedTrackInfo, i, C.TRACK_TYPE_AUDIO)) {
-                            audioRenderer = i
-                        }
-                    }
-
-                    if (audioRenderer == null) return@setOnClickListener
-
-                    val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this,
-                        resources.getString(PlayerVideoR.string.select_audio_track),
-                        viewModel.player,
-                        C.TRACK_TYPE_AUDIO,
-                    )
-                    trackSelectionDialogBuilder.setShowDisableOption(true)
-
-                    val trackSelectionDialog = trackSelectionDialogBuilder.build()
-                    trackSelectionDialog.show()
-                }
-            }
+            TrackSelectionDialogFragment(C.TRACK_TYPE_AUDIO, viewModel).show(
+                supportFragmentManager,
+                "trackselectiondialog",
+            )
         }
 
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
@@ -253,38 +221,10 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         subtitleButton.setOnClickListener {
-            when (viewModel.player) {
-                is MPVPlayer -> {
-                    TrackSelectionDialogFragment(TrackType.SUBTITLE, viewModel).show(
-                        supportFragmentManager,
-                        "trackselectiondialog",
-                    )
-                }
-                is ExoPlayer -> {
-                    val mappedTrackInfo =
-                        viewModel.trackSelector.currentMappedTrackInfo ?: return@setOnClickListener
-
-                    var subtitleRenderer: Int? = null
-                    for (i in 0 until mappedTrackInfo.rendererCount) {
-                        if (isRendererType(mappedTrackInfo, i, C.TRACK_TYPE_TEXT)) {
-                            subtitleRenderer = i
-                        }
-                    }
-
-                    if (subtitleRenderer == null) return@setOnClickListener
-
-                    val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(
-                        this,
-                        resources.getString(PlayerVideoR.string.select_subtile_track),
-                        viewModel.player,
-                        C.TRACK_TYPE_TEXT,
-                    )
-                    trackSelectionDialogBuilder.setShowDisableOption(true)
-
-                    val trackSelectionDialog = trackSelectionDialogBuilder.build()
-                    trackSelectionDialog.show()
-                }
-            }
+            TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel).show(
+                supportFragmentManager,
+                "trackselectiondialog",
+            )
         }
 
         speedButton.setOnClickListener {

@@ -354,7 +354,7 @@ class MPVPlayer(
      * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
-    fun selectTrack(
+    private fun selectTrack(
         trackType: TrackType,
         id: String,
     ) {
