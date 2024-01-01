@@ -40,7 +40,6 @@ import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.destinations.VideoPlayerTrackSelectorDialogDestination
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Track
-import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaTitle
@@ -122,24 +121,22 @@ fun PlayerScreen(
         when (result) {
             is NavResult.Canceled -> Unit
             is NavResult.Value -> {
-                val type = when (result.value.trackType) {
-                    TrackType.VIDEO -> C.TRACK_TYPE_VIDEO
-                    TrackType.AUDIO -> C.TRACK_TYPE_AUDIO
-                    TrackType.SUBTITLE -> C.TRACK_TYPE_TEXT
-                }
+                val trackType = result.value.trackType
+                val index = result.value.index
+
                 if (result.value.index == -1) {
                     viewModel.player.trackSelectionParameters = viewModel.player.trackSelectionParameters
                         .buildUpon()
-                        .clearOverridesOfType(type)
-                        .setTrackTypeDisabled(type, true)
+                        .clearOverridesOfType(trackType)
+                        .setTrackTypeDisabled(trackType, true)
                         .build()
                 } else {
                     viewModel.player.trackSelectionParameters = viewModel.player.trackSelectionParameters
                         .buildUpon()
                         .setOverrideForType(
-                            TrackSelectionOverride(viewModel.player.currentTracks.groups[result.value.index].mediaTrackGroup, 0),
+                            TrackSelectionOverride(viewModel.player.currentTracks.groups[index].mediaTrackGroup, 0),
                         )
-                        .setTrackTypeDisabled(type, false)
+                        .setTrackTypeDisabled(trackType, false)
                         .build()
                 }
             }
@@ -254,7 +251,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
-                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(TrackType.AUDIO, tracks))
+                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
                     },
                 )
                 VideoPlayerMediaButton(
@@ -263,7 +260,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
-                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(TrackType.SUBTITLE, tracks))
+                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
                     },
                 )
             }

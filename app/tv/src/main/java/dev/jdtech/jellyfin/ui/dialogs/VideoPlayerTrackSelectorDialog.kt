@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Border
@@ -32,7 +33,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
-import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import kotlinx.parcelize.Parcelize
@@ -41,7 +41,7 @@ import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
 
 @Parcelize
 data class VideoPlayerTrackSelectorDialogResult(
-    val trackType: TrackType,
+    val trackType: @C.TrackType Int,
     val index: Int,
 ) : Parcelable
 
@@ -49,13 +49,13 @@ data class VideoPlayerTrackSelectorDialogResult(
 @Destination(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(
-    trackType: TrackType,
+    trackType: @C.TrackType Int,
     tracks: Array<Track>,
     resultNavigator: ResultBackNavigator<VideoPlayerTrackSelectorDialogResult>,
 ) {
     val dialogTitle = when (trackType) {
-        TrackType.AUDIO -> PlayerVideoR.string.select_audio_track
-        TrackType.SUBTITLE -> PlayerVideoR.string.select_subtile_track
+        C.TRACK_TYPE_AUDIO -> PlayerVideoR.string.select_audio_track
+        C.TRACK_TYPE_TEXT -> PlayerVideoR.string.select_subtile_track
         else -> CoreR.string.unknown_error
     }
     Surface {
@@ -124,7 +124,7 @@ fun VideoPlayerTrackSelectorDialog(
 private fun VideoPlayerTrackSelectorDialogPreview() {
     FindroidTheme {
         VideoPlayerTrackSelectorDialog(
-            trackType = TrackType.AUDIO,
+            trackType = C.TRACK_TYPE_AUDIO,
             tracks = arrayOf(
                 Track(
                     id = 0,
