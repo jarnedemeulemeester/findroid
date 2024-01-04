@@ -160,7 +160,6 @@
     <string name="dynamic_colors_summary">Використовувати кольори Material You (доступно лише на Android 12+)</string>
     <string name="theme_system">Як на пристрої</string>
     <string name="settings_connect_timeout">Тайм-аут підключення (мс)</string>
-    <string name="pref_player_mpv_hwdec_codecs">Апаратні кодеки декодування</string>
     <string name="add">Додати</string>
     <string name="audio">Аудіо</string>
     <string name="subtitle">Субтитри</string>

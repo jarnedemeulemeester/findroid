@@ -11,6 +11,8 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -19,7 +21,6 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.jellyfin.mpv.TrackType
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.bif.BifData
@@ -67,9 +68,6 @@ constructor(
 
     private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
 
-    var currentAudioTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
-    var currentSubtitleTracks: MutableList<MPVPlayer.Companion.Track> = mutableListOf()
-
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
@@ -85,16 +83,24 @@ constructor(
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
 
     var playbackSpeed: Float = 1f
-    var disableSubtitle: Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
 
     init {
         if (appPreferences.playerMpv) {
+            val trackSelectionParameters = TrackSelectionParameters.Builder(application)
+                .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
+                .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
+                .build()
             player = MPVPlayer(
-                application,
-                false,
-                appPreferences,
+                context = application,
+                requestAudioFocus = false,
+                trackSelectionParameters = trackSelectionParameters,
+                seekBackIncrement = appPreferences.playerSeekBackIncrement,
+                seekForwardIncrement = appPreferences.playerSeekForwardIncrement,
+                videoOutput = appPreferences.playerMpvVo,
+                audioOutput = appPreferences.playerMpvAo,
+                hwDec = appPreferences.playerMpvHwdec,
             )
         } else {
             val renderersFactory =
@@ -296,23 +302,6 @@ constructor(
             }
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
-                currentAudioTracks.clear()
-                currentSubtitleTracks.clear()
-                when (player) {
-                    is MPVPlayer -> {
-                        player.currentMpvTracks.forEach {
-                            when (it.type) {
-                                TrackType.VIDEO -> Unit
-                                TrackType.AUDIO -> {
-                                    currentAudioTracks.add(it)
-                                }
-                                TrackType.SUBTITLE -> {
-                                    currentSubtitleTracks.add(it)
-                                }
-                            }
-                        }
-                    }
-                }
                 _uiState.update { it.copy(fileLoaded = true) }
             }
             ExoPlayer.STATE_ENDED -> {
@@ -330,10 +319,22 @@ constructor(
         releasePlayer()
     }
 
-    fun switchToTrack(trackType: TrackType, track: MPVPlayer.Companion.Track) {
-        if (player is MPVPlayer) {
-            player.selectTrack(trackType, id = track.id)
-            disableSubtitle = track.ffIndex == -1
+    fun switchToTrack(trackType: @C.TrackType Int, index: Int) {
+        // Index -1 equals disable track
+        if (index == -1) {
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .clearOverridesOfType(trackType)
+                .setTrackTypeDisabled(trackType, true)
+                .build()
+        } else {
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setOverrideForType(
+                    TrackSelectionOverride(player.currentTracks.groups.filter { it.type == trackType && it.isSupported }[index].mediaTrackGroup, 0),
+                )
+                .setTrackTypeDisabled(trackType, false)
+                .build()
         }
     }
 

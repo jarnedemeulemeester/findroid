@@ -49,8 +49,6 @@ constructor(
     }
 
     lateinit var item: FindroidShow
-    private var played: Boolean = false
-    private var favorite: Boolean = false
     private var actors: List<BaseItemPerson> = emptyList()
     private var director: BaseItemPerson? = null
     private var writers: List<BaseItemPerson> = emptyList()
@@ -61,13 +59,13 @@ constructor(
     var nextUp: FindroidEpisode? = null
     var seasons: List<FindroidSeason> = emptyList()
 
+    private var currentUiState: UiState = UiState.Loading
+
     fun loadData(itemId: UUID, offline: Boolean) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = jellyfinRepository.getShow(itemId)
-                played = item.played
-                favorite = item.favorite
                 actors = getActors(item)
                 director = getDirector(item)
                 writers = getWriters(item)
@@ -77,20 +75,19 @@ constructor(
                 dateString = getDateString(item)
                 nextUp = getNextUp(itemId)
                 seasons = jellyfinRepository.getSeasons(itemId, offline)
-                _uiState.emit(
-                    UiState.Normal(
-                        item,
-                        actors,
-                        director,
-                        writers,
-                        writersString,
-                        genresString,
-                        runTime,
-                        dateString,
-                        nextUp,
-                        seasons,
-                    ),
+                currentUiState = UiState.Normal(
+                    item,
+                    actors,
+                    director,
+                    writers,
+                    writersString,
+                    genresString,
+                    runTime,
+                    dateString,
+                    nextUp,
+                    seasons,
                 )
+                _uiState.emit(currentUiState)
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
                 eventsChannel.send(ShowEvent.NavigateBack)
@@ -129,48 +126,76 @@ constructor(
         return nextUpItems.getOrNull(0)
     }
 
-    fun togglePlayed(): Boolean {
-        when (played) {
-            false -> {
-                played = true
-                viewModelScope.launch {
-                    try {
-                        jellyfinRepository.markAsPlayed(item.id)
-                    } catch (_: Exception) {}
+    fun togglePlayed() {
+        suspend fun updateUiPlayedState(played: Boolean) {
+            item = item.copy(played = played)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(item = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                played = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalPlayedState = item.played
+            updateUiPlayedState(!item.played)
+
+            when (item.played) {
+                false -> {
                     try {
                         jellyfinRepository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
+                true -> {
+                    try {
+                        jellyfinRepository.markAsPlayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
                 }
             }
         }
-        return played
     }
 
-    fun toggleFavorite(): Boolean {
-        when (favorite) {
-            false -> {
-                favorite = true
-                viewModelScope.launch {
-                    try {
-                        jellyfinRepository.markAsFavorite(item.id)
-                    } catch (_: Exception) {}
+    fun toggleFavorite() {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+            item = item.copy(favorite = isFavorite)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(item = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                favorite = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalFavoriteState = item.favorite
+            updateUiFavoriteState(!item.favorite)
+
+            when (item.favorite) {
+                false -> {
                     try {
                         jellyfinRepository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
+                true -> {
+                    try {
+                        jellyfinRepository.markAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
                 }
             }
         }
-        return favorite
     }
 
     private fun getDateString(item: FindroidShow): String {

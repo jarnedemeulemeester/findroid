@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="discovered_servers">
+        <item quantity="one">%d server discovered</item>
+        <item quantity="other">%d servers discovered</item>
+    </plurals>
+</resources>

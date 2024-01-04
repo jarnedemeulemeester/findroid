@@ -138,10 +138,8 @@
     <string name="users">Users</string>
     <string name="add_user">Add user</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
-    <string name="pref_player_mpv_hwdec_codecs">Hardware decoding codecs</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
-    <string name="pref_player_mpv_gpu_api" translatable="false">GPU API</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
     <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
     <string name="pref_player_trick_play">Trick Play</string>
@@ -178,4 +176,14 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
+    <string name="no_servers_found">No servers found</string>
+    <string name="no_users_found">No users found</string>
+    <string name="select_user">Select user</string>
+    <string name="live_tv">Live TV</string>
+    <string name="play">Play</string>
+    <string name="watch_trailer">Watch trailer</string>
+    <string name="mark_as_played">Mark as played</string>
+    <string name="unmark_as_played">Unmark as played</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
 </resources>

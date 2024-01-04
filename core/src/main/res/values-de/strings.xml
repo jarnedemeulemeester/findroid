@@ -134,7 +134,6 @@
     <string name="pref_player_intro_skipper_summary">Benötigt ConfusedPolarBears Intro Skipper Plugin installiert auf dem Server</string>
     <string name="theme_system">Übernehme Systemeinstellung</string>
     <string name="pref_player_mpv_hwdec">Hardware-Dekodierung</string>
-    <string name="pref_player_mpv_hwdec_codecs">Hardware-Dekodierung Codecs</string>
     <string name="pref_player_mpv_vo">Videoausgang</string>
     <string name="pref_player_mpv_ao">Audioausgang</string>
     <string name="pref_player_trick_play">Trickspiel</string>

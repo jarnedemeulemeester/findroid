@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.IntroDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.models.ServerWithAddressAndUser
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.ServerWithUsers
@@ -54,6 +55,10 @@ interface ServerDatabaseDao {
     @Transaction
     @Query("SELECT * FROM servers WHERE id = :id")
     fun getServerWithAddressesAndUsers(id: String): ServerWithAddressesAndUsers?
+
+    @Transaction
+    @Query("SELECT * FROM servers WHERE id = :id")
+    fun getServerWithAddressAndUser(id: String): ServerWithAddressAndUser?
 
     @Query("DELETE FROM servers")
     fun clear()

@@ -16,4 +16,5 @@
     <string name="player_controls_exit">Esci dal player</string>
     <string name="player_controls_skip_intro">Salta intro</string>
     <string name="player_controls_picture_in_picture">Attiva picture in picture</string>
+    <string name="none">Nessuno</string>
 </resources>

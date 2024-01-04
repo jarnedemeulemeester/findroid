@@ -7,7 +7,6 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
-import android.os.Parcelable
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -21,7 +20,7 @@ import androidx.media3.common.FlagSet
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Commands
@@ -35,10 +34,7 @@ import androidx.media3.common.util.Clock
 import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
-import androidx.media3.exoplayer.ExoPlaybackException
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.mpv.MPVLib
-import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -51,7 +47,12 @@ import java.util.concurrent.CopyOnWriteArraySet
 class MPVPlayer(
     context: Context,
     private val requestAudioFocus: Boolean,
-    private val appPreferences: AppPreferences,
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
+    private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
+    private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
+    videoOutput: String = "gpu",
+    audioOutput: String = "audiotrack",
+    hwDec: String = "mediacodec",
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -76,14 +77,13 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("vo", appPreferences.playerMpvVo)
+        MPVLib.setOptionString("vo", videoOutput)
+        MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
-        MPVLib.setOptionString("gpu-api", appPreferences.playerMpvGpuApi)
-        MPVLib.setOptionString("ao", appPreferences.playerMpvAo)
 
         // Hardware video decoding
-        MPVLib.setOptionString("hwdec", appPreferences.playerMpvHwdec)
-        MPVLib.setOptionString("hwdec-codecs", appPreferences.playerMpvHwdecCodecs.joinToString(separator = ","))
+        MPVLib.setOptionString("hwdec", hwDec)
+        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
 
         // TLS
         MPVLib.setOptionString("tls-verify", "no")
@@ -99,8 +99,8 @@ class MPVPlayer(
         MPVLib.setOptionString("sub-use-margins", "no")
 
         // Language
-        MPVLib.setOptionString("alang", appPreferences.preferredAudioLanguage)
-        MPVLib.setOptionString("slang", appPreferences.preferredSubtitleLanguage)
+        MPVLib.setOptionString("alang", trackSelectionParameters.preferredAudioLanguages.firstOrNull() ?: "")
+        MPVLib.setOptionString("slang", trackSelectionParameters.preferredTextLanguages.firstOrNull() ?: "")
 
         // Other options
         MPVLib.setOptionString("force-window", "no")
@@ -112,8 +112,6 @@ class MPVPlayer(
         MPVLib.setOptionString("vd-lavc-dr", "no")
 
         MPVLib.init()
-
-        companionPrefs = appPreferences
 
         MPVLib.addObserver(this)
 
@@ -176,10 +174,8 @@ class MPVPlayer(
     private var currentPositionMs: Long? = null
     private var currentDurationMs: Long? = null
     private var currentCacheDurationMs: Long? = null
-    var currentMpvTracks: List<Track> = emptyList()
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialSeekTo: Long = 0L
-    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build()
 
     // mpv events
     override fun eventProperty(property: String) {
@@ -190,19 +186,12 @@ class MPVPlayer(
         handler.post {
             when (property) {
                 "track-list" -> {
-                    val (mpvTracks, newTracks) = getMPVTracks(value)
-                    mpvTracks.forEach { Timber.i("${it.ffIndex} ${it.type} ${it.codec}") }
-                    currentMpvTracks = mpvTracks
-                    if (isPlayerReady) {
-                        if (newTracks != tracks) {
-                            tracks = newTracks
-//                            listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-//                                listener.onTracksChanged(currentTracks)
-//                            }
-                        }
-                    } else {
-                        tracks = newTracks
-                    }
+                    val newTracks = getTracks(value)
+                    tracks = newTracks
+                    // We may need this, or not?
+//                    listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
+//                        listener.onTracksChanged(currentTracks)
+//                    }
                 }
             }
         }
@@ -359,21 +348,17 @@ class MPVPlayer(
     }
 
     /**
-     * Select a [Track] or disable a [TrackType] in the current player.
+     * Select a Track or disable a [TrackType] in the current player.
      *
      * @param trackType The [TrackType]
      * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
      * @return true if the track is or was already selected
      */
-    fun selectTrack(
+    private fun selectTrack(
         trackType: TrackType,
-        id: Int,
+        id: String,
     ) {
-        if (id != C.INDEX_UNSET) {
-            MPVLib.setPropertyInt(trackType.type, id)
-        } else {
-            MPVLib.setPropertyString(trackType.type, "no")
-        }
+        MPVLib.setPropertyString(trackType.type, id)
     }
 
     // Timeline wrapper
@@ -751,7 +736,7 @@ class MPVPlayer(
      * @return The error, or `null`.
      * @see androidx.media3.common.Player.Listener.onPlayerError
      */
-    override fun getPlayerError(): ExoPlaybackException? {
+    override fun getPlayerError(): PlaybackException? {
         return null
     }
 
@@ -900,11 +885,11 @@ class MPVPlayer(
     }
 
     override fun getSeekBackIncrement(): Long {
-        return appPreferences.playerSeekBackIncrement
+        return seekBackIncrement
     }
 
     override fun getSeekForwardIncrement(): Long {
-        return appPreferences.playerSeekForwardIncrement
+        return seekForwardIncrement
     }
 
     override fun getMaxSeekToPreviousPosition(): Long {
@@ -964,6 +949,26 @@ class MPVPlayer(
 
     override fun setTrackSelectionParameters(parameters: TrackSelectionParameters) {
         trackSelectionParameters = parameters
+
+        // Disabled track types
+        val disabledTrackTypes = parameters.disabledTrackTypes.map { TrackType.fromMedia3TrackType(it) }
+
+        // Overrides
+        val notOverriddenTypes = mutableSetOf(TrackType.VIDEO, TrackType.AUDIO, TrackType.SUBTITLE)
+        for (override in parameters.overrides) {
+            val trackType = TrackType.fromMedia3TrackType(override.key.type)
+            notOverriddenTypes.remove(trackType)
+            val id = override.key.getFormat(0).id ?: continue
+
+            selectTrack(trackType, id)
+        }
+        for (notOverriddenType in notOverriddenTypes) {
+            if (notOverriddenType in disabledTrackTypes) {
+                selectTrack(notOverriddenType, "no")
+            } else {
+                selectTrack(notOverriddenType, "auto")
+            }
+        }
     }
 
     /**
@@ -972,8 +977,7 @@ class MPVPlayer(
      *
      *
      * This [MediaMetadata] is a combination of the [MediaItem.mediaMetadata] and the
-     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged] and
-     * [androidx.media3.exoplayer.metadata.MetadataOutput.onMetadata].
+     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged].
      */
     override fun getMediaMetadata(): MediaMetadata {
         return MediaMetadata.EMPTY
@@ -1296,6 +1300,10 @@ class MPVPlayer(
         return MPVLib.setPropertyBoolean("mute", muted)
     }
 
+    override fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) {
+        TODO("Not yet implemented")
+    }
+
     fun updateZoomMode(enabled: Boolean) {
         if (enabled) {
             MPVLib.setOptionString("panscan", "1")
@@ -1305,6 +1313,58 @@ class MPVPlayer(
             MPVLib.setOptionString("panscan", "0")
             MPVLib.setOptionString("sub-use-margins", "no")
             MPVLib.setOptionString("sub-ass-force-margins", "no")
+        }
+    }
+
+    private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
+        /**
+         * This is called immediately after the surface is first created.
+         * Implementations of this should start up whatever rendering code
+         * they desire.  Note that only one thread can ever draw into
+         * a [Surface], so you should not draw into the Surface here
+         * if your normal rendering will be in another thread.
+         *
+         * @param holder The SurfaceHolder whose surface is being created.
+         */
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            MPVLib.attachSurface(holder.surface)
+            MPVLib.setOptionString("force-window", "yes")
+            MPVLib.setOptionString("vo", videoOutput)
+        }
+
+        /**
+         * This is called immediately after any structural changes (format or
+         * size) have been made to the surface.  You should at this point update
+         * the imagery in the surface.  This method is always called at least
+         * once, after [.surfaceCreated].
+         *
+         * @param holder The SurfaceHolder whose surface has changed.
+         * @param format The new [android.graphics.PixelFormat] of the surface.
+         * @param width The new width of the surface.
+         * @param height The new height of the surface.
+         */
+        override fun surfaceChanged(
+            holder: SurfaceHolder,
+            format: Int,
+            width: Int,
+            height: Int,
+        ) {
+            MPVLib.setPropertyString("android-surface-size", "${width}x$height")
+        }
+
+        /**
+         * This is called immediately before a surface is being destroyed. After
+         * returning from this call, you should no longer try to access this
+         * surface.  If you have a rendering thread that directly accesses
+         * the surface, you must ensure that thread is no longer touching the
+         * Surface before returning from this function.
+         *
+         * @param holder The SurfaceHolder whose surface is being destroyed.
+         */
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            MPVLib.setOptionString("vo", "null")
+            MPVLib.setOptionString("force-window", "no")
+            MPVLib.detachSurface()
         }
     }
 
@@ -1322,214 +1382,92 @@ class MPVPlayer(
                 COMMAND_GET_METADATA,
                 COMMAND_CHANGE_MEDIA_ITEMS,
                 COMMAND_SET_VIDEO_SURFACE,
+                COMMAND_GET_TRACKS,
+                COMMAND_SET_TRACK_SELECTION_PARAMETERS,
             )
             .build()
 
-        private lateinit var companionPrefs: AppPreferences
-
-        private val surfaceHolder: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
-            /**
-             * This is called immediately after the surface is first created.
-             * Implementations of this should start up whatever rendering code
-             * they desire.  Note that only one thread can ever draw into
-             * a [Surface], so you should not draw into the Surface here
-             * if your normal rendering will be in another thread.
-             *
-             * @param holder The SurfaceHolder whose surface is being created.
-             */
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                MPVLib.attachSurface(holder.surface)
-                MPVLib.setOptionString("force-window", "yes")
-                MPVLib.setOptionString("vo", companionPrefs.playerMpvVo)
-            }
-
-            /**
-             * This is called immediately after any structural changes (format or
-             * size) have been made to the surface.  You should at this point update
-             * the imagery in the surface.  This method is always called at least
-             * once, after [.surfaceCreated].
-             *
-             * @param holder The SurfaceHolder whose surface has changed.
-             * @param format The new [android.graphics.PixelFormat] of the surface.
-             * @param width The new width of the surface.
-             * @param height The new height of the surface.
-             */
-            override fun surfaceChanged(
-                holder: SurfaceHolder,
-                format: Int,
-                width: Int,
-                height: Int,
-            ) {
-                MPVLib.setPropertyString("android-surface-size", "${width}x$height")
-            }
-
-            /**
-             * This is called immediately before a surface is being destroyed. After
-             * returning from this call, you should no longer try to access this
-             * surface.  If you have a rendering thread that directly accesses
-             * the surface, you must ensure that thread is no longer touching the
-             * Surface before returning from this function.
-             *
-             * @param holder The SurfaceHolder whose surface is being destroyed.
-             */
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                MPVLib.setOptionString("vo", "null")
-                MPVLib.setOptionString("force-window", "no")
-                MPVLib.detachSurface()
+        private fun JSONObject.optNullableString(name: String): String? {
+            return if (this.has(name) && !this.isNull(name)) {
+                this.getString(name)
+            } else {
+                null
             }
         }
 
-        @Parcelize
-        data class Track(
-            val id: Int,
-            val type: TrackType,
-            val mimeType: String = when (type) {
-                TrackType.VIDEO -> MimeTypes.BASE_TYPE_VIDEO
-                TrackType.AUDIO -> MimeTypes.BASE_TYPE_AUDIO
-                TrackType.SUBTITLE -> MimeTypes.BASE_TYPE_TEXT
-            },
-            val title: String,
-            val lang: String,
-            val external: Boolean,
-            val selected: Boolean,
-            val externalFilename: String?,
-            val ffIndex: Int,
-            val codec: String,
-            val width: Int?,
-            val height: Int?,
-        ) : Parcelable {
-            fun toFormat(): Format {
-                return Format.Builder()
-                    .setId(id)
-                    .setContainerMimeType("$mimeType/$codec")
-                    .setSampleMimeType("$mimeType/$codec")
-                    .setCodecs(codec)
-                    .setWidth(width ?: Format.NO_VALUE)
-                    .setHeight(height ?: Format.NO_VALUE)
-                    .build()
+        private fun JSONObject.optNullableDouble(name: String): Double? {
+            return if (this.has(name) && !this.isNull(name)) {
+                this.getDouble(name)
+            } else {
+                null
             }
+        }
 
-            companion object {
-                fun fromJSON(json: JSONObject): Track {
-                    return Track(
-                        id = json.optInt("id"),
-                        type = TrackType.values().first { it.type == json.optString("type") },
-                        title = json.optString("title"),
-                        lang = json.optString("lang"),
-                        external = json.getBoolean("external"),
-                        selected = json.getBoolean("selected"),
-                        externalFilename = json.optString("external-filename"),
-                        ffIndex = json.optInt("ff-index"),
-                        codec = json.optString("codec"),
-                        width = json.optInt("demux-w").takeIf { it > 0 },
-                        height = json.optInt("demux-h").takeIf { it > 0 },
-                    )
+        private fun createTracksGroupfromMpvJson(json: JSONObject): Tracks.Group {
+            val trackType = TrackType.entries.first { it.type == json.optString("type") }
+
+            // Base format shared between video, audio and subtitles
+            val baseFormat = Format.Builder()
+                .setId(json.optInt("id"))
+                .setLabel(json.optNullableString("title"))
+                .setLanguage(json.optNullableString("lang"))
+                .setSelectionFlags(if (json.optBoolean("default")) C.SELECTION_FLAG_DEFAULT else 0)
+                .setCodecs(json.optNullableString("codec"))
+                .build()
+
+            // Video, audio and subtitle specific values
+            val format = when (trackType) {
+                TrackType.VIDEO -> {
+                    baseFormat.buildUpon()
+                        .setSampleMimeType("video/${baseFormat.codecs}")
+                        .setWidth(json.optInt("demux-w", Format.NO_VALUE))
+                        .setHeight(json.optInt("demux-h", Format.NO_VALUE))
+                        .setFrameRate(
+                            (json.optNullableDouble("demux-w") ?: Format.NO_VALUE).toFloat(),
+                        )
+                        .build()
+                }
+
+                TrackType.AUDIO -> {
+                    baseFormat.buildUpon()
+                        .setSampleMimeType("audio/${baseFormat.codecs}")
+                        .setChannelCount(json.optInt("demux-channel-count", Format.NO_VALUE))
+                        .setSampleRate(json.optInt("demux-samplerate", Format.NO_VALUE))
+                        .build()
+                }
+
+                TrackType.SUBTITLE -> {
+                    baseFormat.buildUpon()
+                        .setSampleMimeType("text/${baseFormat.codecs}")
+                        .build()
                 }
             }
+
+            val trackGroup = TrackGroup(format)
+
+            return Tracks.Group(
+                trackGroup,
+                false,
+                IntArray(trackGroup.length) { C.FORMAT_HANDLED },
+                BooleanArray(trackGroup.length) { json.optBoolean("selected") },
+            )
         }
 
-        private fun getMPVTracks(trackList: String): Pair<List<Track>, Tracks> {
-            val mpvTracks = mutableListOf<Track>()
+        private fun getTracks(trackList: String): Tracks {
             var tracks = Tracks.EMPTY
             val trackGroups = mutableListOf<Tracks.Group>()
-
-            val trackListVideo = mutableListOf<Format>()
-            val trackListAudio = mutableListOf<Format>()
-            val trackListText = mutableListOf<Format>()
-            var indexCurrentVideo: Int = C.INDEX_UNSET
-            var indexCurrentAudio: Int = C.INDEX_UNSET
-            var indexCurrentText: Int = C.INDEX_UNSET
             try {
-                val emptyTrack = Track(
-                    id = -1,
-                    type = TrackType.SUBTITLE,
-                    mimeType = MimeTypes.BASE_TYPE_TEXT,
-                    title = "None",
-                    lang = "",
-                    external = false,
-                    selected = false,
-                    externalFilename = null,
-                    ffIndex = -1,
-                    codec = "",
-                    width = null,
-                    height = null,
-                )
-                mpvTracks.add(emptyTrack)
-                trackListText.add(emptyTrack.toFormat())
                 val currentTrackList = JSONArray(trackList)
                 for (index in 0 until currentTrackList.length()) {
-                    val currentTrack = Track.fromJSON(currentTrackList.getJSONObject(index))
-                    val currentFormat = currentTrack.toFormat()
-                    when (currentTrack.type) {
-                        TrackType.VIDEO -> {
-                            mpvTracks.add(currentTrack)
-                            trackListVideo.add(currentFormat)
-                            if (currentTrack.selected) {
-                                indexCurrentVideo = trackListVideo.indexOf(currentFormat)
-                            }
-                        }
-                        TrackType.AUDIO -> {
-                            mpvTracks.add(currentTrack)
-                            trackListAudio.add(currentFormat)
-                            if (currentTrack.selected) {
-                                indexCurrentAudio = trackListAudio.indexOf(currentFormat)
-                            }
-                        }
-                        TrackType.SUBTITLE -> {
-                            mpvTracks.add(currentTrack)
-                            trackListText.add(currentFormat)
-                            if (currentTrack.selected) {
-                                indexCurrentText = trackListText.indexOf(currentFormat)
-                            }
-                        }
-                    }
-                }
-                if (trackListText.size == 1 && trackListText[0].id == emptyTrack.id.toString()) {
-                    mpvTracks.remove(emptyTrack)
-                    trackListText.removeFirst()
-                }
-                if (trackListVideo.isNotEmpty()) {
-                    trackGroups.add(
-                        with(TrackGroup(*trackListVideo.toTypedArray())) {
-                            Tracks.Group(
-                                this,
-                                true,
-                                IntArray(this.length) { C.FORMAT_HANDLED },
-                                BooleanArray(this.length) { it == indexCurrentVideo },
-                            )
-                        },
-                    )
-                }
-                if (trackListAudio.isNotEmpty()) {
-                    trackGroups.add(
-                        with(TrackGroup(*trackListAudio.toTypedArray())) {
-                            Tracks.Group(
-                                this,
-                                true,
-                                IntArray(this.length) { C.FORMAT_HANDLED },
-                                BooleanArray(this.length) { it == indexCurrentAudio },
-                            )
-                        },
-                    )
-                }
-                if (trackListText.isNotEmpty()) {
-                    trackGroups.add(
-                        with(TrackGroup(*trackListText.toTypedArray())) {
-                            Tracks.Group(
-                                this,
-                                true,
-                                IntArray(this.length) { C.FORMAT_HANDLED },
-                                BooleanArray(this.length) { it == indexCurrentText },
-                            )
-                        },
-                    )
+                    val tracksGroup = createTracksGroupfromMpvJson(currentTrackList.getJSONObject(index))
+                    trackGroups.add(tracksGroup)
                 }
                 if (trackGroups.isNotEmpty()) {
                     tracks = Tracks(trackGroups)
                 }
             } catch (_: JSONException) {
             }
-            return Pair(mpvTracks, tracks)
+            return tracks
         }
     }
 }
