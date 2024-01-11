@@ -26,7 +26,6 @@ import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
 import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.SeasonEvent
