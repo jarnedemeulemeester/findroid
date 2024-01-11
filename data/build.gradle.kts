@@ -51,7 +51,7 @@ ktlint {
 }
 
 dependencies {
-    implementation(project(":preferences"))
+    implementation(projects.preferences)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)

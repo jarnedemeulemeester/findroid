@@ -53,9 +53,9 @@ ktlint {
 }
 
 dependencies {
-    implementation(project(":data"))
-    implementation(project(":preferences"))
-    implementation(project(":player:core"))
+    implementation(projects.data)
+    implementation(projects.preferences)
+    implementation(projects.player.core)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.ui)
