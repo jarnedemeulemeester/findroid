@@ -6,18 +6,29 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp">
 
+    <ImageView
+        android:id="@+id/toggle_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_name"
+        android:contentDescription="@string/toggle_view"
+        android:src="@drawable/ic_chevron_down" />
+
     <TextView
         android:id="@+id/view_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textSize="18sp"
         app:layout_constraintBaseline_toBaselineOf="@id/view_all"
         app:layout_constraintEnd_toStartOf="@id/view_all"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/toggle_view"
         tools:text="Movies" />
 
     <Button

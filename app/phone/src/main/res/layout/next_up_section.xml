@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,23 +7,39 @@
     android:layout_marginBottom="12dp"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/toggle_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:contentDescription="@string/toggle_view"
+        android:src="@drawable/ic_chevron_down"
+        app:layout_constraintBottom_toBottomOf="@id/section_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/section_name" />
+
     <TextView
         android:id="@+id/section_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="4dp"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/toggle_view"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Next Up" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/section_name"
         tools:listitem="@layout/home_episode_item" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
