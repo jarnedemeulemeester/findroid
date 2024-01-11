@@ -28,7 +28,7 @@
     <string name="director">Regista</string>
     <string name="cast_amp_crew">Cast</string>
     <string name="seasons">Stagioni</string>
-    <string name="play_button_description">Riproduci</string>
+    <string name="play_button_description">Riproduci i contenuti multimediali</string>
     <string name="check_button_description">Segna come visto o non visto</string>
     <string name="favorite_button_description">Preferito</string>
     <string name="episode_watched_indicator">Indicatore episodio visto</string>
@@ -128,7 +128,6 @@
     <string name="users">Utenti</string>
     <string name="add_user">Aggiungi utente</string>
     <string name="pref_player_mpv_hwdec">Decodifica hardware</string>
-    <string name="pref_player_mpv_hwdec_codecs">Codec di decodifica hardware</string>
     <string name="pref_player_mpv_vo">Output video</string>
     <string name="addresses">Indirizzi</string>
     <string name="add_address">Aggiungi indirizzo</string>
@@ -176,4 +175,14 @@
     <string name="picture_in_picture">Immagine nell\'immagine</string>
     <string name="picture_in_picture_gesture">Gesto/pulsante home</string>
     <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
+    <string name="no_servers_found">Nessun server trovato</string>
+    <string name="no_users_found">Nessun utente trovato</string>
+    <string name="select_user">Seleziona utente</string>
+    <string name="watch_trailer">Guarda Trailer</string>
+    <string name="add_to_favorites">Aggiungi ai preferiti</string>
+    <string name="mark_as_played">Segna come visto</string>
+    <string name="unmark_as_played">Segna come non visto</string>
+    <string name="live_tv">Diretta TV</string>
+    <string name="play">Riproduci</string>
+    <string name="remove_from_favorites">Rimuovi dai preferiti</string>
 </resources>

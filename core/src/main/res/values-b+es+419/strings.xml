@@ -120,7 +120,6 @@
     <string name="theme_dark">Oscuro</string>
     <string name="settings_category_network">Red</string>
     <string name="pref_player_mpv_hwdec">Decodificación por hardware</string>
-    <string name="pref_player_mpv_hwdec_codecs">Códecs de decodificación por hardware</string>
     <string name="pref_player_mpv_vo">Salida de vídeo</string>
     <string name="pref_player_mpv_ao">Salida de audio</string>
     <string name="addresses">Direcciones</string>

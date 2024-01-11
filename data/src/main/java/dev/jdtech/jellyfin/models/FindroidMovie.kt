@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.PlayAccess
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class FindroidMovie(
@@ -20,16 +20,17 @@ data class FindroidMovie(
     override val canDownload: Boolean,
     override val runtimeTicks: Long,
     override val playbackPositionTicks: Long,
-    val premiereDate: DateTime?,
+    val premiereDate: LocalDateTime?,
     val people: List<BaseItemPerson>,
     val genres: List<String>,
     val communityRating: Float?,
     val officialRating: String?,
     val status: String,
     val productionYear: Int?,
-    val endDate: DateTime?,
+    val endDate: LocalDateTime?,
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
+    override val images: FindroidImages,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidMovie(
@@ -62,6 +63,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         productionYear = productionYear,
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
+        images = toFindroidImages(jellyfinRepository),
     )
 }
 
@@ -88,5 +90,6 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         canPlay = true,
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
+        images = FindroidImages(),
     )
 }

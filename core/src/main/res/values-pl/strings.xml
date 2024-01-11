@@ -122,7 +122,6 @@
     <string name="theme_dark">Ciemny</string>
     <string name="episodes_label">Odcinki</string>
     <string name="add_user">Dodaj użytkownika</string>
-    <string name="pref_player_mpv_hwdec_codecs">Sprzętowe kodeki do dekodowania</string>
     <string name="pref_player_mpv_vo">Wyjście wideo</string>
     <string name="pref_player_mpv_ao">Wyjście audio</string>
     <string name="seek_back_increment">Krok przesuwania wstecznego (ms)</string>
