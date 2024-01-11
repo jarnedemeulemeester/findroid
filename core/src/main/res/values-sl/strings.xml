@@ -100,7 +100,6 @@
     <string name="users">Uporabniki</string>
     <string name="add_user">Dodaj uporabnika</string>
     <string name="pref_player_mpv_hwdec">Strojno dekodiranje</string>
-    <string name="pref_player_mpv_hwdec_codecs">Kodeki za strojno dekodiranje</string>
     <string name="pref_player_mpv_vo">Video izhod</string>
     <string name="pref_player_mpv_ao">Avdio izhod</string>
     <string name="pref_player_intro_skipper">Preskoči uvode</string>

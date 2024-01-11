@@ -38,6 +38,10 @@ android {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 ktlint {

@@ -29,7 +29,6 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
@@ -41,7 +40,6 @@ class SeasonFragment : Fragment() {
 
     private lateinit var binding: FragmentSeasonBinding
     private val viewModel: SeasonViewModel by viewModels()
-    private val playerViewModel: PlayerViewModel by viewModels()
     private val args: SeasonFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
@@ -136,15 +134,6 @@ class SeasonFragment : Fragment() {
             viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
         }
 
-        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
-            when (playerItems) {
-                is PlayerViewModel.PlayerItems -> {
-                    navigateToPlayerActivity(playerItems.items.toTypedArray())
-                }
-                is PlayerViewModel.PlayerItemError -> {}
-            }
-        }
-
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
@@ -225,16 +214,6 @@ class SeasonFragment : Fragment() {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
                 episode.id,
-            ),
-        )
-    }
-
-    private fun navigateToPlayerActivity(
-        playerItems: Array<PlayerItem>,
-    ) {
-        findNavController().navigate(
-            SeasonFragmentDirections.actionSeasonFragmentToPlayerActivity(
-                playerItems,
             ),
         )
     }

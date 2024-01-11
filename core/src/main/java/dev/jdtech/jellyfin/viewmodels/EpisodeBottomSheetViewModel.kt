@@ -52,24 +52,19 @@ constructor(
     }
 
     lateinit var item: FindroidEpisode
-    private var played: Boolean = false
-    private var favorite: Boolean = false
+
+    private var currentUiState: UiState = UiState.Loading
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 item = repository.getEpisode(episodeId)
-                played = item.played
-                favorite = item.favorite
                 if (item.isDownloading()) {
                     pollDownloadProgress()
                 }
-                _uiState.emit(
-                    UiState.Normal(
-                        item,
-                    ),
-                )
+                currentUiState = UiState.Normal(item)
+                _uiState.emit(currentUiState)
             } catch (_: NullPointerException) {
                 // Navigate back because item does not exist (probably because it's been deleted)
                 eventsChannel.send(EpisodeBottomSheetEvent.NavigateBack)
@@ -79,48 +74,76 @@ constructor(
         }
     }
 
-    fun togglePlayed(): Boolean {
-        when (played) {
-            false -> {
-                played = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsPlayed(item.id)
-                    } catch (_: Exception) {}
+    fun togglePlayed() {
+        suspend fun updateUiPlayedState(played: Boolean) {
+            item = item.copy(played = played)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                played = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalPlayedState = item.played
+            updateUiPlayedState(!item.played)
+
+            when (item.played) {
+                false -> {
                     try {
                         repository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsPlayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
                 }
             }
         }
-        return played
     }
 
-    fun toggleFavorite(): Boolean {
-        when (favorite) {
-            false -> {
-                favorite = true
-                viewModelScope.launch {
-                    try {
-                        repository.markAsFavorite(item.id)
-                    } catch (_: Exception) {}
+    fun toggleFavorite() {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+            item = item.copy(favorite = isFavorite)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
                 }
+
+                else -> {}
             }
-            true -> {
-                favorite = false
-                viewModelScope.launch {
+        }
+
+        viewModelScope.launch {
+            val originalFavoriteState = item.favorite
+            updateUiFavoriteState(!item.favorite)
+
+            when (item.favorite) {
+                false -> {
                     try {
                         repository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {}
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
                 }
             }
         }
-        return favorite
     }
 
     fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {

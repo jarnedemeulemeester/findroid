@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.net.Uri
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
@@ -15,8 +14,8 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
@@ -27,16 +26,8 @@ import javax.inject.Inject
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
 ) : ViewModel() {
-
-    private val playerItems = MutableSharedFlow<PlayerItemState>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
-
-    fun onPlaybackRequested(scope: LifecycleCoroutineScope, collector: (PlayerItemState) -> Unit) {
-        scope.launch { playerItems.collect { collector(it) } }
-    }
+    private val eventsChannel = Channel<PlayerItemsEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     fun loadPlayerItems(
         item: FindroidItem,
@@ -47,14 +38,13 @@ class PlayerViewModel @Inject internal constructor(
         viewModelScope.launch {
             val playbackPosition = item.playbackPositionTicks.div(10000)
 
-            val items = try {
-                prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
+            try {
+                val items = prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
+                eventsChannel.send(PlayerItemsEvent.PlayerItemsReady(items))
             } catch (e: Exception) {
                 Timber.d(e)
-                PlayerItemError(e)
+                eventsChannel.send(PlayerItemsEvent.PlayerItemsError(e))
             }
-
-            playerItems.tryEmit(items)
         }
     }
 
@@ -178,9 +168,9 @@ class PlayerViewModel @Inject internal constructor(
             externalSubtitles = externalSubtitles,
         )
     }
+}
 
-    sealed class PlayerItemState
-
-    data class PlayerItemError(val error: Exception) : PlayerItemState()
-    data class PlayerItems(val items: List<PlayerItem>) : PlayerItemState()
+sealed interface PlayerItemsEvent {
+    data class PlayerItemsReady(val items: List<PlayerItem>) : PlayerItemsEvent
+    data class PlayerItemsError(val error: Exception) : PlayerItemsEvent
 }
