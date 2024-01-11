@@ -303,6 +303,7 @@ constructor(
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
                 _uiState.update { it.copy(fileLoaded = true) }
+                eventsChannel.trySend(PlayerEvents.PlayerReady)
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
@@ -370,4 +371,5 @@ constructor(
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
+    data object PlayerReady : PlayerEvents
 }
