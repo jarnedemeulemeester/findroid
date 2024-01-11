@@ -175,4 +175,14 @@
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-Picture</string>
     <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
+    <string name="no_servers_found">Nenhum servidor encontrado</string>
+    <string name="mark_as_played">Marcar como reproduzido</string>
+    <string name="unmark_as_played">Desmarcar como reproduzido</string>
+    <string name="add_to_favorites">Adicionar aos favoritos</string>
+    <string name="remove_from_favorites">Remover dos favoritos</string>
+    <string name="no_users_found">Usuários não encontrados</string>
+    <string name="select_user">Selecione o usuário</string>
+    <string name="live_tv">TV ao vivo</string>
+    <string name="play">Reproduzir</string>
+    <string name="watch_trailer">Assista o trailer</string>
 </resources>
