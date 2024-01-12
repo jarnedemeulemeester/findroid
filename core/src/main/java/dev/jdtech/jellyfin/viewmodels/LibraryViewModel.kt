@@ -48,6 +48,7 @@ constructor(
             CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
             CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
             CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
+            CollectionType.Mixed -> listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES)
             else -> null
         }
         viewModelScope.launch {
