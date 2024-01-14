@@ -48,15 +48,19 @@ constructor(
             CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
             CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
             CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
+            CollectionType.Mixed -> listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
             else -> null
         }
+
+        val recursive = libraryType != CollectionType.Mixed
+
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
                     includeTypes = itemType,
-                    recursive = true,
+                    recursive = recursive,
                     sortBy = sortBy,
                     sortOrder = sortOrder,
                 ).cachedIn(viewModelScope)
