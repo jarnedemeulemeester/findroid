@@ -9,6 +9,7 @@ enum class CollectionType(val type: String) {
     Books("books"),
     LiveTv("livetv"),
     BoxSets("boxsets"),
+    Mixed("mixed"),
     Unknown("unknown"),
     ;
 
@@ -19,11 +20,12 @@ enum class CollectionType(val type: String) {
             Movies,
             TvShows,
             BoxSets,
+            Mixed,
         )
 
         fun fromString(string: String?): CollectionType {
             if (string == null) {
-                return defaultValue
+                return Mixed
             }
 
             return try {
