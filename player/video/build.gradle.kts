@@ -38,9 +38,9 @@ ktlint {
 }
 
 dependencies {
-    implementation(project(":player:core"))
-    implementation(project(":data"))
-    implementation(project(":preferences"))
+    implementation(projects.player.core)
+    implementation(projects.data)
+    implementation(projects.preferences)
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
