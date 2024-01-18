@@ -127,6 +127,11 @@ class PlayerGestureHelper(
                 val rightmostAreaStart = middleAreaStart + areaWidth
 
                 val player = (playerView.player as MPVPlayer)
+                val numOfChapters = player.getNumberOfChapters()
+                if (numOfChapters == 0) {
+                    return
+                }
+
                 when (e.x.toInt()) {
                     in leftmostAreaStart until middleAreaStart -> {
                         player.previousChapter()
