@@ -137,6 +137,11 @@ class PlayerGestureHelper(
                         player.previousChapter()
                     }
                     in rightmostAreaStart until viewWidth -> {
+                        // When trying to skip last chapter, skip to next episode.
+                        if (player.getCurrentChapter() + 1 == numOfChapters) {
+                            player.seekToNextMediaItem()
+                            return
+                        }
                         player.nextChapter()
                     }
                     else -> return
