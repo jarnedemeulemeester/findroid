@@ -1,12 +1,12 @@
 ![Findroid banner](images/findroid-banner.png)
 
 # Findroid
-<p align="center">
-    <b>Third-Party Jellyfin Client</b>
-
-![GitHub release (with filter)](https://img.shields.io/github/v/release/jarnedemeulemeester/findroid) ![GitHub Repo stars](https://img.shields.io/github/stars/jarnedemeulemeester/findroid) ![GitHub top language](https://img.shields.io/github/languages/top/jarnedemeulemeester/findroid) ![GitHub pull requests](https://img.shields.io/github/issues-pr/jarnedemeulemeester/findroid) ![GitHub issues](https://img.shields.io/github/issues/jarnedemeulemeester/findroid) ![GitHub closed issues](https://img.shields.io/github/issues-closed/jarnedemeulemeester/findroid) ![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total) ![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid) ![GitHub repo size](https://img.shields.io/github/repo-size/jarnedemeulemeester/findroid) ![GitHub forks](https://img.shields.io/github/forks/jarnedemeulemeester/findroid) <a target="_blank" href="https://github.com/jarnedemeulemeester/findroid"><img src="https://img.shields.io/github/last-commit/jarnedemeulemeester/findroid" /></a>
-
-</p>
+![GitHub release (with filter)](https://img.shields.io/github/v/release/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub repo stars](https://img.shields.io/github/stars/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
 
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
