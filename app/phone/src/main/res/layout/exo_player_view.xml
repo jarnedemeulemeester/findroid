@@ -86,6 +86,7 @@
     <androidx.media3.ui.PlayerControlView
         android:id="@id/exo_controller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:animation_enabled="false"/>
 
 </merge>
