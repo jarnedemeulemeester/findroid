@@ -91,7 +91,7 @@ constructor(
     }
 
     suspend fun delete() {
-        for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id, offline = true)){
+        for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id, offline = true)) {
             downloader.deleteItem(episode, episode.sources.first { it.type == FindroidSourceType.LOCAL })
         }
     }
