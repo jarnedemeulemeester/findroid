@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 
-
 @AndroidEntryPoint
 class SeasonFragment : Fragment() {
 
