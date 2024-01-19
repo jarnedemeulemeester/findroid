@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
@@ -86,6 +87,12 @@ constructor(
             }
             // Send one time signal to fragment that the download has been initiated
             _downloadStatus.emit(Pair(10, Random.nextInt()))
+        }
+    }
+
+    suspend fun delete() {
+        for (episode in jellyfinRepository.getEpisodes(season.seriesId, season.id, offline = true)){
+            downloader.deleteItem(episode, episode.sources.first { it.type == FindroidSourceType.LOCAL })
         }
     }
 
