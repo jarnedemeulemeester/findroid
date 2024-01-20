@@ -52,7 +52,7 @@ constructor(
             else -> null
         }
 
-        val recursive = libraryType != CollectionType.Mixed
+        val recursive = itemType == null || !itemType.contains(BaseItemKind.FOLDER)
 
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
