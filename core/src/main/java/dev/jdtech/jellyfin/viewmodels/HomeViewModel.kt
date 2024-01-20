@@ -93,7 +93,7 @@ class HomeViewModel @Inject internal constructor(
 
     private suspend fun loadViews() = repository
         .getUserViews()
-        .filter { view -> CollectionType.supported.any { it.type == view.collectionType } }
+        .filter { view -> CollectionType.fromString(view.collectionType) in CollectionType.supported }
         .map { view -> view to repository.getLatestMedia(view.id) }
         .filter { (_, latest) -> latest.isNotEmpty() }
         .map { (view, latest) -> view.toView().apply { items = latest } }
