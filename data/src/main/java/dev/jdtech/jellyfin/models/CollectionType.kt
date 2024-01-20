@@ -9,7 +9,7 @@ enum class CollectionType(val type: String) {
     Books("books"),
     LiveTv("livetv"),
     BoxSets("boxsets"),
-    Mixed("mixed"),
+    Mixed("null"),
     Unknown("unknown"),
     ;
 
@@ -24,7 +24,7 @@ enum class CollectionType(val type: String) {
         )
 
         fun fromString(string: String?): CollectionType {
-            if (string == null) {
+            if (string == null) { // TODO jellyfin returns null as the collectiontype for mixed libraries. This is obviously wrong, but probably an upstream issue. Should be fixed whenever upstream fixes this
                 return Mixed
             }
 
