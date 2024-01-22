@@ -135,7 +135,7 @@
     <string name="add">Aggiungi</string>
     <string name="quick_connect">Connessione Rapida</string>
     <string name="pref_player_intro_skipper">Salta intro</string>
-    <string name="pref_player_intro_skipper_summary">Richiede il plugin Intro Skipper di ConfusedPolarBear installato sul server</string>
+    <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>ConfusedPolarBear</i> installato sul server.\nInstalla <b>Intro Skipper v0.1.8.0 o maggiore</b> di <i>jumoog</i> per saltare anche i titoli di coda</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
     <string name="player_gestures_seek">Gesto posizionamento</string>
     <string name="audio">Audio</string>
@@ -148,7 +148,7 @@
     <string name="amoled_theme">Tema scuro AMOLED</string>
     <string name="amoled_theme_summary">Usa il tema AMOLED con lo sfondo nero</string>
     <string name="pref_player_trick_play">Anteprima</string>
-    <string name="pref_player_trick_play_summary">Richiede il plugin Jellyscrub di nicknsy installato sul server</string>
+    <string name="pref_player_trick_play_summary">Richiede il plugin <b>Jellyscrub</b> di <i>nicknsy</i> installato sul server</string>
     <string name="size">Dimensione</string>
     <string name="privacy_policy_notice">Utilizzando Findroid accetti l\'<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">informativa sulla privacy</a> che afferma che non raccogliamo alcun dato</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
