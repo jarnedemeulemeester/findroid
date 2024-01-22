@@ -28,6 +28,6 @@ fun CreditDto.toCredit(): Credit {
             introEnd = end,
             showSkipPromptAt = showAt,
             hideSkipPromptAt = hideAt,
-        )
+        ),
     )
 }
