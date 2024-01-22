@@ -248,11 +248,10 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
-        val skipCheckRunnable = object : Runnable {
+        val introCheckRunnable = object : Runnable {
             override fun run() {
                 if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                     val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-
                     intros[itemId]?.let { intro ->
                         val seconds = player.currentPosition / 1000.0
                         if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
@@ -261,7 +260,14 @@ constructor(
                         }
                         _uiState.update { it.copy(currentIntro = null) }
                     }
-
+                    handler.postDelayed(this, 1000L)
+                }
+            }
+        }
+        val creditCheckRunnable = object : Runnable {
+            override fun run() {
+                if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                    val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                     credits[itemId]?.let { credit ->
                         val seconds = player.currentPosition / 1000.0
                         if (seconds > credit.showSkipPromptAt && seconds < credit.hideSkipPromptAt) {
@@ -271,13 +277,12 @@ constructor(
                         _uiState.update { it.copy(currentCredit = null) }
                     }
                 }
-
                 handler.postDelayed(this, 1000L)
             }
         }
         handler.post(playbackProgressRunnable)
-        if (intros.isNotEmpty()) handler.post(skipCheckRunnable)
-        if (credits.isNotEmpty()) handler.post(skipCheckRunnable)
+        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
+        if (credits.isNotEmpty()) handler.post(creditCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
