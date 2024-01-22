@@ -32,6 +32,7 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
@@ -136,10 +137,15 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Intro button
-                            skipIntroButton.isVisible = !isInPictureInPictureMode && currentIntro != null
+                            skipIntroButton.isVisible = !isInPictureInPictureMode && (currentIntro != null || currentCredit != null)
+                            skipIntroButton.text = if (currentCredit != null) getString(CoreR.string.skip_credit_button) else getString(CoreR.string.skip_intro_button)
                             skipIntroButton.setOnClickListener {
-                                currentIntro?.let {
-                                    binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                                if (currentIntro != null) {
+                                    currentIntro?.let {
+                                        binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                                    }
+                                } else if (currentCredit != null) {
+                                    binding.playerView.player?.seekToNext()
                                 }
                             }
 

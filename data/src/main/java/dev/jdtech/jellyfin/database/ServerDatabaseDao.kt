@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.models.CreditDto
 import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
@@ -221,6 +222,15 @@ interface ServerDatabaseDao {
 
     @Query("DELETE FROM intros WHERE itemId = :itemId")
     fun deleteIntro(itemId: UUID)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCredit(credit: CreditDto)
+
+    @Query("SELECT * FROM credits WHERE itemId = :itemId")
+    fun getCredit(itemId: UUID): CreditDto?
+
+    @Query("DELETE FROM credits WHERE itemId = :itemId")
+    fun deleteCredit(itemId: UUID)
 
     @Query("SELECT * FROM seasons")
     fun getSeasons(): List<FindroidSeasonDto>

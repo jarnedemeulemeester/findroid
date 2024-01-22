@@ -8,7 +8,6 @@
     <string name="player_controls_exit">Izhod iz predvajalnika</string>
     <string name="player_controls_rewind">Previj nazaj</string>
     <string name="player_controls_fast_forward">Navijaj naprej</string>
-    <string name="player_controls_skip_intro">Preskoči uvod</string>
     <string name="player_controls_lock">Zaklene predvajalnik</string>
     <string name="player_controls_skip_back">Preskoči nazaj</string>
     <string name="player_controls_play_pause">Predvajaj ustavi</string>

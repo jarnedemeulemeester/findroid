@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.Credit
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -15,6 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toCredit
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
@@ -182,6 +184,11 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
         withContext(Dispatchers.IO) {
             database.getIntro(itemId)?.toIntro()
+        }
+
+    override suspend fun getCreditTimestamps(itemId: UUID): Credit? =
+        withContext(Dispatchers.IO) {
+            database.getCredit(itemId)?.toCredit()
         }
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =

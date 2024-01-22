@@ -8,7 +8,6 @@
     <string name="player_controls_exit">Thoát khỏi trình xem</string>
     <string name="player_controls_rewind">Tua lùi</string>
     <string name="player_controls_fast_forward">Tua tới</string>
-    <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
     <string name="player_controls_skip_back">Bỏ qua / Trở về</string>
     <string name="player_controls_lock">Khoá trình phát</string>
     <string name="player_controls_play_pause">Phát / Tạm dừng</string>

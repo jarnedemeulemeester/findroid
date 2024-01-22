@@ -8,5 +8,4 @@
     <string name="player_controls_rewind">Відмотка</string>
     <string name="player_controls_fast_forward">Швидке перемотування</string>
     <string name="player_controls_exit">Вийти з плеєра</string>
-    <string name="player_controls_skip_intro">Пропустити вступ</string>
 </resources>

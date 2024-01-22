@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "3cb9aaa3295b9e461cb94dfc708258ed",
+    "identityHash": "2611f255654b3d481be40f080a8b5401",
     "entities": [
       {
         "tableName": "servers",
@@ -759,6 +759,50 @@
         "foreignKeys": []
       },
       {
+        "tableName": "credits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `start` REAL NOT NULL, `end` REAL NOT NULL, `showAt` REAL NOT NULL, `hideAt` REAL NOT NULL, PRIMARY KEY(`itemId`))",
+        "fields": [
+          {
+            "fieldPath": "itemId",
+            "columnName": "itemId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showAt",
+            "columnName": "showAt",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hideAt",
+            "columnName": "hideAt",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "itemId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "userdata",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `itemId` TEXT NOT NULL, `played` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, `playbackPositionTicks` INTEGER NOT NULL, `toBeSynced` INTEGER NOT NULL, PRIMARY KEY(`userId`, `itemId`))",
         "fields": [
@@ -813,7 +857,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cb9aaa3295b9e461cb94dfc708258ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2611f255654b3d481be40f080a8b5401')"
     ]
   }
 }

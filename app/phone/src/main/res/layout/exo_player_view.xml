@@ -55,7 +55,6 @@
             android:layout_gravity="end|bottom"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="64dp"
-            android:text="@string/player_controls_skip_intro"
             android:textColor="@android:color/white"
             android:visibility="gone"
             app:backgroundTint="@color/player_background"
