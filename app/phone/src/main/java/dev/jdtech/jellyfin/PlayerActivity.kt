@@ -32,7 +32,6 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
@@ -44,6 +43,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 var isControlsLocked: Boolean = false
 
