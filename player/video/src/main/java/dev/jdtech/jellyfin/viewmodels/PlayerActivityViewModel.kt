@@ -303,6 +303,8 @@ constructor(
                         }
                         _uiState.update { it.copy(currentItemTitle = itemTitle) }
 
+                        _uiState.update { it.copy(currentCredit = null) }
+
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
                         if (appPreferences.playerTrickPlay) {
