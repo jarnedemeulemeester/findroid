@@ -55,6 +55,9 @@ class PlayerGestureHelper(
 
     private var lastScaleEvent: Long = 0
 
+    private var playbackSpeedIncrease: Float = 2f
+    private var lastPlaybackSpeed: Float = 0f
+
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
 
@@ -67,6 +70,18 @@ class PlayerGestureHelper(
                 }
 
                 return true
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onLongPress(e: MotionEvent) {
+                playerView.player?.let {
+                    if (it.isPlaying) {
+                        lastPlaybackSpeed = it.playbackParameters.speed
+                        it.setPlaybackSpeed(playbackSpeedIncrease)
+                        activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
+                        activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
+                    }
+                }
             }
 
             override fun onDoubleTap(e: MotionEvent): Boolean {
@@ -361,6 +376,11 @@ class PlayerGestureHelper(
                     swipeGestureValueTrackerProgress = -1L
                 }
             }
+        }
+        if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
+            playerView.player?.setPlaybackSpeed(lastPlaybackSpeed)
+            lastPlaybackSpeed = 0f
+            activity.binding.gestureSpeedLayout.visibility = View.GONE
         }
     }
 
