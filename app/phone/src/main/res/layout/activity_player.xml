@@ -133,8 +133,7 @@
             android:layout_marginStart="16dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:text="@string/player_gestures_speed"/>
+            android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/gesture_speed_image"

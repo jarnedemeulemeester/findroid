@@ -55,6 +55,7 @@ class PlayerGestureHelper(
 
     private var lastScaleEvent: Long = 0
 
+    private var playbackSpeedIncrease: Float = 2f
     private var lastPlaybackSpeed: Float = 0f
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
@@ -71,11 +72,13 @@ class PlayerGestureHelper(
                 return true
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onLongPress(e: MotionEvent) {
                 playerView.player?.let {
                     if (it.isPlaying) {
                         lastPlaybackSpeed = it.playbackParameters.speed
-                        it.setPlaybackSpeed(2f)
+                        it.setPlaybackSpeed(playbackSpeedIncrease)
+                        activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
                         activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
                     }
                 }
