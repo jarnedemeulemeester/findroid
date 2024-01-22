@@ -145,8 +145,11 @@ class PlayerActivity : BasePlayerActivity() {
                                         binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
                                     }
                                 } else if (currentCredit != null) {
-                                    if (binding.playerView.player?.hasNextMediaItem() == true) binding.playerView.player?.seekToNext()
-                                    else finish()
+                                    if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                        binding.playerView.player?.seekToNext()
+                                    } else {
+                                        finish()
+                                    }
                                 }
                             }
 
