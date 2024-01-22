@@ -55,7 +55,7 @@ class PlayerGestureHelper(
 
     private var lastScaleEvent: Long = 0
 
-    private var lastPlaybackSpeed: Float = 0.0F
+    private var lastPlaybackSpeed: Float = 0f
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
@@ -75,7 +75,7 @@ class PlayerGestureHelper(
                 playerView.player?.let {
                     if (it.isPlaying) {
                         lastPlaybackSpeed = it.playbackParameters.speed
-                        it.playbackParameters = it.playbackParameters.withSpeed(2.0F)
+                        it.setPlaybackSpeed(2f)
                         activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
                     }
                 }
@@ -375,10 +375,8 @@ class PlayerGestureHelper(
             }
         }
         if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
-            playerView.player?.let {
-                it.playbackParameters = it.playbackParameters.withSpeed(lastPlaybackSpeed)
-            }
-            lastPlaybackSpeed = 0F
+            playerView.player?.setPlaybackSpeed(lastPlaybackSpeed)
+            lastPlaybackSpeed = 0f
             activity.binding.gestureSpeedLayout.visibility = View.GONE
         }
     }
