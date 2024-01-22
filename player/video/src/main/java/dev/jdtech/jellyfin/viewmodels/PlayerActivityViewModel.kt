@@ -277,6 +277,7 @@ constructor(
         }
         handler.post(playbackProgressRunnable)
         if (intros.isNotEmpty()) handler.post(skipCheckRunnable)
+        if (credits.isNotEmpty()) handler.post(skipCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
