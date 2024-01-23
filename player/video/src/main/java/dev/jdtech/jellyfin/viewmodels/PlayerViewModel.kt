@@ -62,8 +62,6 @@ class PlayerViewModel @Inject internal constructor(
                 Timber.d(e)
                 eventsChannel.send(PlayerItemsEvent.PlayerItemsError(e))
             }
-
-//            playerItems.tryEmit(items)
         }
     }
 

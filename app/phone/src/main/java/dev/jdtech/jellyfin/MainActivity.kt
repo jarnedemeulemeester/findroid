@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
-    @OptIn(NavigationUiSaveStateControl::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         scheduleUserDataSync()

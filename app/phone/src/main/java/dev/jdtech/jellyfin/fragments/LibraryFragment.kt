@@ -48,6 +48,7 @@ class LibraryFragment : Fragment() {
 
     @Inject
     lateinit var preferences: AppPreferences
+
     @Inject
     lateinit var castManager: CastManager
 
@@ -85,6 +86,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
+
                         CoreR.id.action_sort_order -> {
                             SortDialogFragment(
                                 args.libraryId,
@@ -97,6 +99,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -129,9 +132,11 @@ class LibraryFragment : Fragment() {
                     val error = Exception((it.refresh as LoadState.Error).error)
                     bindUiStateError(LibraryViewModel.UiState.Error(error))
                 }
+
                 is LoadState.Loading -> {
                     bindUiStateLoading()
                 }
+
                 is LoadState.NotLoading -> {
                     binding.loadingIndicator.isVisible = false
                 }
@@ -209,6 +214,7 @@ class LibraryFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidShow -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
@@ -217,6 +223,7 @@ class LibraryFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidBoxSet -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
