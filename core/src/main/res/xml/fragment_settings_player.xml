@@ -19,7 +19,7 @@
             app:title="@string/pref_player_mpv_hwdec"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
-            app:defaultValue="gpu"
+            app:defaultValue="gpu-next"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_vos"
             app:entryValues="@array/mpv_vos"
