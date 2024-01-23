@@ -30,6 +30,7 @@ android {
     productFlavors {
         register("libre")
         register("huawei")
+        register("chromecast")
     }
 
     compileOptions {

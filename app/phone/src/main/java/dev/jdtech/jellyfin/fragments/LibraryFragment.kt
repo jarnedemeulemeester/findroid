@@ -18,9 +18,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
-import com.google.android.gms.cast.framework.CastButtonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.CastManager
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -48,6 +48,8 @@ class LibraryFragment : Fragment() {
 
     @Inject
     lateinit var preferences: AppPreferences
+    @Inject
+    lateinit var castManager: CastManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,11 +68,7 @@ class LibraryFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(CoreR.menu.library_menu, menu)
-                    CastButtonFactory.setUpMediaRouteButton(
-                        context!!,
-                        menu,
-                        CoreR.id.media_route_menu_item
-                    )
+                    castManager.addCastMenuItem(menu, CoreR.id.media_route_menu_item)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
