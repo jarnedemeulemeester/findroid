@@ -187,4 +187,5 @@
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="skip_intro_button">Skip Intro</string>
     <string name="skip_credit_button">Next episode</string>
+    <string name="skip_credit_button_last">Close player</string>
 </resources>

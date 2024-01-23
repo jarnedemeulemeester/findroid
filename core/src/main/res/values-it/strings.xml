@@ -187,4 +187,5 @@
     <string name="remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="skip_intro_button">Salta intro</string>
     <string name="skip_credit_button">Prossimo episodio</string>
+    <string name="skip_credit_button_last">Chiudi player</string>
 </resources>

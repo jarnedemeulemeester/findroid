@@ -138,7 +138,15 @@ class PlayerActivity : BasePlayerActivity() {
 
                             // Skip Intro button
                             skipIntroButton.isVisible = !isInPictureInPictureMode && (currentIntro != null || currentCredit != null)
-                            skipIntroButton.text = if (currentCredit != null) getString(CoreR.string.skip_credit_button) else getString(CoreR.string.skip_intro_button)
+                            skipIntroButton.text = if (currentCredit != null) {
+                                if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                    getString(CoreR.string.skip_credit_button)
+                                } else {
+                                    getString(CoreR.string.skip_credit_button_last)
+                                }
+                            } else {
+                                getString(CoreR.string.skip_intro_button)
+                            }
                             skipIntroButton.setOnClickListener {
                                 if (currentIntro != null) {
                                     currentIntro?.let {
