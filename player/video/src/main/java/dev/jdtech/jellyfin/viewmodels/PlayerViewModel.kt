@@ -1,9 +1,7 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
@@ -11,61 +9,37 @@ import com.google.android.gms.cast.framework.CastContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jdtech.jellyfin.api.JellyfinApi
-import dev.jdtech.jellyfin.database.DownloadDatabaseDao
 import dev.jdtech.jellyfin.models.ExternalSubtitle
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.getDownloadPlayerItem
-import dev.jdtech.jellyfin.utils.isItemAvailable
-import javax.inject.Inject
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
-import org.jellyfin.sdk.model.api.LocationType.VIRTUAL
-import org.jellyfin.sdk.model.api.MediaProtocol
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
-    private val application: Application,
     private val repository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao,
     private val jellyfinApi: JellyfinApi,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-
-    private val playerItems = MutableSharedFlow<PlayerItemState>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
-    fun onPlaybackRequested(scope: LifecycleCoroutineScope, collector: (PlayerItemState) -> Unit) {
-        scope.launch { playerItems.collect { collector(it) } }
-    }
+    private val eventsChannel = Channel<PlayerItemsEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     fun loadPlayerItems(
-        item: BaseItemDto,
-        mediaSourceIndex: Int = 0,
-        onVersionSelectRequired: () -> Unit = { }
+        item: FindroidItem,
+        mediaSourceIndex: Int? = null,
     ) {
-        if (isItemAvailable(item.id)) {
-            val playerItem = getDownloadPlayerItem(downloadDatabase, item.id)
-            if (playerItem != null) {
-                loadOfflinePlayerItems(playerItem)
-                return
-            }
-        }
         Timber.d("Loading player items for item ${item.id}")
-        if (item.mediaSources.orEmpty().size > 1) {
-            onVersionSelectRequired()
-        }
 
         viewModelScope.launch {
             val session = CastContext.getSharedInstance(context).sessionManager.currentCastSession
@@ -73,72 +47,48 @@ class PlayerViewModel @Inject internal constructor(
             if (session != null) {
                 val thing =
                     "{\"options\":{\"ids\":[\"${item.id}\"],\"startPositionTicks\":${
-                        item.userData?.playbackPositionTicks ?: 0
-                    },\"serverId\":\"\",\"fullscreen\":true,\"items\":[{\"Id\":\"${item.id}\",\"ServerId\":\"\",\"Name\":\"${item.name}\",\"Type\":\"${item.type}\",\"MediaType\":\"${item.mediaType}\",\"IsFolder\":false}]},\"command\":\"PlayNow\",\"userId\":\"${jellyfinApi.userId}\",\"deviceId\":\"${jellyfinApi.api.deviceInfo.id}\",\"accessToken\":\"${jellyfinApi.api.accessToken}\",\"serverAddress\":\"${jellyfinApi.api.baseUrl}\",\"serverId\":\"\",\"serverVersion\":\"\",\"receiverName\":\"Living Room TV\",\"subtitleAppearance\":{\"verticalPosition\":-3},\"subtitleBurnIn\":\"\"}"
+                        item.playbackPositionTicks
+                    },\"serverId\":\"\",\"fullscreen\":true,\"items\":[{\"Id\":\"${item.id}\",\"ServerId\":\"\",\"Name\":\"${item.name}\",\"Type\":\"${item.sources.first().type}\",\"MediaType\":\"${item.sources.first().mediaStreams.first().type}\",\"IsFolder\":false}]},\"command\":\"PlayNow\",\"userId\":\"${jellyfinApi.userId}\",\"deviceId\":\"${jellyfinApi.api.deviceInfo.id}\",\"accessToken\":\"${jellyfinApi.api.accessToken}\",\"serverAddress\":\"${jellyfinApi.api.baseUrl}\",\"serverId\":\"\",\"serverVersion\":\"\",\"receiverName\":\"Living Room TV\",\"subtitleAppearance\":{\"verticalPosition\":-3},\"subtitleBurnIn\":\"\"}"
                 session.sendMessage("urn:x-cast:com.connectsdk", thing)
                 return@launch
             }
 
-            val playbackPosition = item.userData?.playbackPositionTicks?.div(10000) ?: 0
+            val playbackPosition = item.playbackPositionTicks.div(10000)
 
-            val items = try {
-                createItems(item, playbackPosition, mediaSourceIndex).let(::PlayerItems)
+            try {
+                val items = prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
+                eventsChannel.send(PlayerItemsEvent.PlayerItemsReady(items))
             } catch (e: Exception) {
                 Timber.d(e)
-                PlayerItemError(e)
+                eventsChannel.send(PlayerItemsEvent.PlayerItemsError(e))
             }
-            playerItems.tryEmit(items)
+
+//            playerItems.tryEmit(items)
         }
     }
 
-    fun loadOfflinePlayerItems(
-        playerItem: PlayerItem
-    ) {
-        playerItems.tryEmit(PlayerItems(listOf(playerItem)))
-    }
-
-    private suspend fun createItems(
-        item: BaseItemDto,
-        playbackPosition: Long,
-        mediaSourceIndex: Int
-    ) = if (playbackPosition <= 0) {
-        prepareIntros(item) + prepareMediaPlayerItems(
-            item,
-            playbackPosition,
-            mediaSourceIndex
-        )
-    } else {
-        prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
-    }
-
-    private suspend fun prepareIntros(item: BaseItemDto): List<PlayerItem> {
-        return repository
-            .getIntros(item.id)
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .map { intro -> intro.toPlayerItem(mediaSourceIndex = 0, playbackPosition = 0) }
-    }
-
     private suspend fun prepareMediaPlayerItems(
-        item: BaseItemDto,
+        item: FindroidItem,
         playbackPosition: Long,
-        mediaSourceIndex: Int
-    ): List<PlayerItem> = when (item.type) {
-        BaseItemKind.MOVIE -> itemToMoviePlayerItems(item, playbackPosition, mediaSourceIndex)
-        BaseItemKind.SERIES -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        BaseItemKind.EPISODE -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        mediaSourceIndex: Int?,
+    ): List<PlayerItem> = when (item) {
+        is FindroidMovie -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
+        is FindroidShow -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidSeason -> seasonToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidEpisode -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
         else -> emptyList()
     }
 
-    private suspend fun itemToMoviePlayerItems(
-        item: BaseItemDto,
+    private suspend fun movieToPlayerItem(
+        item: FindroidMovie,
         playbackPosition: Long,
-        mediaSourceIndex: Int
+        mediaSourceIndex: Int?,
     ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
-        item: BaseItemDto,
+        item: FindroidShow,
         playbackPosition: Long,
-        mediaSourceIndex: Int
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         val nextUp = repository.getNextUp(item.id)
 
@@ -152,106 +102,94 @@ class PlayerViewModel @Inject internal constructor(
     }
 
     private suspend fun seasonToPlayerItems(
-        item: BaseItemDto,
+        item: FindroidSeason,
         playbackPosition: Long,
-        mediaSourceIndex: Int
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         return repository
             .getEpisodes(
-                seriesId = item.seriesId!!,
+                seriesId = item.seriesId,
                 seasonId = item.id,
-                fields = listOf(ItemFields.MEDIA_SOURCES)
+                fields = listOf(ItemFields.MEDIA_SOURCES),
             )
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .filter { it.locationType != VIRTUAL }
+            .filter { it.sources.isNotEmpty() }
+            .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
     private suspend fun episodeToPlayerItems(
-        item: BaseItemDto,
+        item: FindroidEpisode,
         playbackPosition: Long,
-        mediaSourceIndex: Int
+        mediaSourceIndex: Int?,
     ): List<PlayerItem> {
         // TODO Move user configuration to a separate class
-        val userConfig = repository.getUserConfiguration()
+        val userConfig = try {
+            repository.getUserConfiguration()
+        } catch (_: Exception) {
+            null
+        }
         return repository
             .getEpisodes(
-                seriesId = item.seriesId!!,
-                seasonId = item.seasonId!!,
+                seriesId = item.seriesId,
+                seasonId = item.seasonId,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
                 startItemId = item.id,
-                limit = if (userConfig.enableNextEpisodeAutoPlay) null else 1
+                limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
             )
-            .filter { it.mediaSources != null && it.mediaSources?.isNotEmpty() == true }
-            .filter { it.locationType != VIRTUAL }
+            .filter { it.sources.isNotEmpty() }
+            .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
-    private suspend fun BaseItemDto.toPlayerItem(
-        mediaSourceIndex: Int,
-        playbackPosition: Long
+    private suspend fun FindroidItem.toPlayerItem(
+        mediaSourceIndex: Int?,
+        playbackPosition: Long,
     ): PlayerItem {
-        val mediaSource = repository.getMediaSources(id)[mediaSourceIndex]
-        val externalSubtitles = mutableListOf<ExternalSubtitle>()
-        for (mediaStream in mediaSource.mediaStreams!!) {
-            if (mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.deliveryUrl.isNullOrBlank()) {
-
+        val mediaSources = repository.getMediaSources(id, true)
+        val mediaSource = if (mediaSourceIndex == null) {
+            mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
+        } else {
+            mediaSources[mediaSourceIndex]
+        }
+        val externalSubtitles = mediaSource.mediaStreams
+            .filter { mediaStream ->
+                mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+            }
+            .map { mediaStream ->
                 // Temp fix for vtt
                 // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.deliveryUrl!!
+                var deliveryUrl = mediaStream.path!!
                 if (mediaStream.codec == "webvtt") {
                     deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
                 }
 
-                externalSubtitles.add(
-                    ExternalSubtitle(
-                        mediaStream.title ?: application.getString(R.string.external),
-                        mediaStream.language.orEmpty(),
-                        Uri.parse(repository.getBaseUrl() + deliveryUrl),
-                        when (mediaStream.codec) {
-                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.TEXT_VTT
-                            "ass" -> MimeTypes.TEXT_SSA
-                            else -> MimeTypes.TEXT_UNKNOWN
-                        }
-                    )
+                ExternalSubtitle(
+                    mediaStream.title,
+                    mediaStream.language,
+                    Uri.parse(deliveryUrl),
+                    when (mediaStream.codec) {
+                        "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                        "webvtt" -> MimeTypes.TEXT_VTT
+                        "ass" -> MimeTypes.TEXT_SSA
+                        else -> MimeTypes.TEXT_UNKNOWN
+                    },
                 )
             }
-        }
-        return when (mediaSource.protocol) {
-            MediaProtocol.FILE -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-            MediaProtocol.HTTP -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                mediaSourceUri = mediaSource.path!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-            else -> PlayerItem(
-                name = name,
-                itemId = id,
-                mediaSourceId = mediaSource.id!!,
-                playbackPosition = playbackPosition,
-                parentIndexNumber = parentIndexNumber,
-                indexNumber = indexNumber,
-                externalSubtitles = externalSubtitles
-            )
-        }
+        return PlayerItem(
+            name = name,
+            itemId = id,
+            mediaSourceId = mediaSource.id,
+            mediaSourceUri = mediaSource.path,
+            playbackPosition = playbackPosition,
+            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
+            indexNumber = if (this is FindroidEpisode) indexNumber else null,
+            indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            externalSubtitles = externalSubtitles,
+        )
     }
+}
 
-    sealed class PlayerItemState
-
-    data class PlayerItemError(val error: Exception) : PlayerItemState()
-    data class PlayerItems(val items: List<PlayerItem>) : PlayerItemState()
+sealed interface PlayerItemsEvent {
+    data class PlayerItemsReady(val items: List<PlayerItem>) : PlayerItemsEvent
+    data class PlayerItemsError(val error: Exception) : PlayerItemsEvent
 }

@@ -1,52 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_layout"
+    android:layout_width="110dp"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_background"
+    android:orientation="vertical">
 
-    <data>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/person_image"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginBottom="4dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
-        <variable
-            name="person"
-            type="org.jellyfin.sdk.model.api.BaseItemPerson" />
-    </data>
-
-    <LinearLayout
-        android:id="@+id/item_layout"
-        android:layout_width="110dp"
+    <TextView
+        android:id="@+id/person_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="@drawable/ripple_background"
-        android:orientation="vertical">
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        tools:text="Rosa Salazar" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/person_image"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginBottom="4dp"
-            android:scaleType="centerCrop"
-            app:personImage="@{person}"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
-
-        <TextView
-            android:id="@+id/person_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@{person.name}"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            tools:text="Rosa Salazar" />
-
-        <TextView
-            android:id="@+id/person_role"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@{person.role}"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            tools:text="Alita" />
-    </LinearLayout>
-</layout>
+    <TextView
+        android:id="@+id/person_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        tools:text="Alita" />
+</LinearLayout>

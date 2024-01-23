@@ -13,20 +13,20 @@ import dev.jdtech.jellyfin.models.ExceptionUiTexts
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.UiText
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
 import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class AddServerViewModel
@@ -34,26 +34,27 @@ class AddServerViewModel
 constructor(
     private val appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
-    private val database: ServerDatabaseDao
+    private val database: ServerDatabaseDao,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
     val uiState = _uiState.asStateFlow()
-    private val _navigateToLogin = MutableSharedFlow<Boolean>()
-    val navigateToLogin = _navigateToLogin.asSharedFlow()
     private val _discoveredServersState = MutableStateFlow<DiscoveredServersState>(DiscoveredServersState.Loading)
     val discoveredServersState = _discoveredServersState.asStateFlow()
+
+    private val eventsChannel = Channel<AddServerEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val discoveredServers = mutableListOf<DiscoveredServer>()
     private var serverFound = false
 
     sealed class UiState {
-        object Normal : UiState()
-        object Loading : UiState()
+        data object Normal : UiState()
+        data object Loading : UiState()
         data class Error(val message: Collection<UiText>) : UiState()
     }
 
     sealed class DiscoveredServersState {
-        object Loading : DiscoveredServersState()
+        data object Loading : DiscoveredServersState()
         data class Servers(val servers: List<DiscoveredServer>) : DiscoveredServersState()
     }
 
@@ -65,11 +66,11 @@ constructor(
                     DiscoveredServer(
                         serverDiscoveryInfo.id,
                         serverDiscoveryInfo.name,
-                        serverDiscoveryInfo.address
-                    )
+                        serverDiscoveryInfo.address,
+                    ),
                 )
                 _discoveredServersState.emit(
-                    DiscoveredServersState.Servers(ArrayList(discoveredServers))
+                    DiscoveredServersState.Servers(ArrayList(discoveredServers)),
                 )
             }
         }
@@ -96,7 +97,7 @@ constructor(
                 val candidates = jellyfinApi.jellyfin.discovery.getAddressCandidates(inputValue)
                 val recommended = jellyfinApi.jellyfin.discovery.getRecommendedServers(
                     candidates,
-                    RecommendedServerInfoScore.OK
+                    RecommendedServerInfoScore.OK,
                 )
 
                 val goodServers = mutableListOf<RecommendedServerInfo>()
@@ -139,17 +140,17 @@ constructor(
             } catch (_: CancellationException) {
             } catch (e: ExceptionUiText) {
                 _uiState.emit(
-                    UiState.Error(listOf(e.uiText))
+                    UiState.Error(listOf(e.uiText)),
                 )
             } catch (e: ExceptionUiTexts) {
                 _uiState.emit(
-                    UiState.Error(e.uiTexts)
+                    UiState.Error(e.uiTexts),
                 )
             } catch (e: Exception) {
                 _uiState.emit(
                     UiState.Error(
-                        listOf(if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(R.string.unknown_error))
-                    )
+                        listOf(if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(R.string.unknown_error)),
+                    ),
                 )
             }
         }
@@ -173,7 +174,7 @@ constructor(
                 val serverAddress = ServerAddress(
                     id = UUID.randomUUID(),
                     serverId = serverInDatabase.id,
-                    address = recommendedServerInfo.address
+                    address = recommendedServerInfo.address,
                 )
 
                 insertServerAddress(serverAddress)
@@ -183,7 +184,7 @@ constructor(
             val serverAddress = ServerAddress(
                 id = UUID.randomUUID(),
                 serverId = serverInfo.id!!,
-                address = recommendedServerInfo.address
+                address = recommendedServerInfo.address,
             )
 
             val server = Server(
@@ -206,7 +207,7 @@ constructor(
         }
 
         _uiState.emit(UiState.Normal)
-        _navigateToLogin.emit(true)
+        eventsChannel.send(AddServerEvent.NavigateToLogin)
     }
 
     /**
@@ -222,7 +223,7 @@ constructor(
                     UiText.StringResource(R.string.add_server_error_outdated, it.version)
                 }
                 is RecommendedServerIssue.InvalidProductName -> {
-                    UiText.StringResource(R.string.add_server_error_not_jellyfin, it.productName)
+                    UiText.StringResource(R.string.add_server_error_not_jellyfin, it.productName ?: "")
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
                     UiText.StringResource(R.string.add_server_error_version, it.version)
@@ -268,4 +269,8 @@ constructor(
             database.insertServerAddress(address)
         }
     }
+}
+
+sealed interface AddServerEvent {
+    data object NavigateToLogin : AddServerEvent
 }

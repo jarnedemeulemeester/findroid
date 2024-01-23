@@ -1,55 +1,60 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
 }
 
 android {
     namespace = "dev.jdtech.jellyfin.data"
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
-        minSdk = 27
+        minSdk = Versions.minSdk
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-        buildConfigField("int", "VERSION_CODE", appVersionCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"$appVersionName\"")
+        buildConfigField("int", "VERSION_CODE", Versions.appCode.toString())
+        buildConfigField("String", "VERSION_NAME", "\"${Versions.appName}\"")
 
         consumerProguardFile("proguard-rules.pro")
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.generateKotlin", "true")
+        }
     }
 
     buildTypes {
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = false
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+    buildFeatures {
+        buildConfig = true
     }
 }
 
 ktlint {
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {
-    implementation(project(":preferences"))
+    implementation(projects.preferences)
     implementation(libs.androidx.paging)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)

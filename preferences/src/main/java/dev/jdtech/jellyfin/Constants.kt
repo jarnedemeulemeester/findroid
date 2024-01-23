@@ -1,15 +1,17 @@
 package dev.jdtech.jellyfin
 
 object Constants {
+
     // player
-    const val GESTURE_EXCLUSION_AREA_TOP = 48
+    const val GESTURE_EXCLUSION_AREA_VERTICAL = 48
+    const val GESTURE_EXCLUSION_AREA_HORIZONTAL = 24
     const val FULL_SWIPE_RANGE_SCREEN_RATIO = 0.66f
     const val ZOOM_SCALE_BASE = 1f
     const val ZOOM_SCALE_THRESHOLD = 0.01f
 
     // pref
     const val PREF_CURRENT_SERVER = "pref_current_server"
-    const val PREF_DISPLAY_EXTENDED_TITLE = "pref_player_display_extended_title"
+    const val PREF_OFFLINE_MODE = "pref_offline_mode"
     const val PREF_PLAYER_GESTURES = "pref_player_gestures"
     const val PREF_PLAYER_GESTURES_VB = "pref_player_gestures_vb"
     const val PREF_PLAYER_GESTURES_ZOOM = "pref_player_gestures_zoom"
@@ -20,11 +22,11 @@ object Constants {
     const val PREF_PLAYER_SEEK_FORWARD_INC = "pref_player_seek_forward_inc"
     const val PREF_PLAYER_MPV = "pref_player_mpv"
     const val PREF_PLAYER_MPV_HWDEC = "pref_player_mpv_hwdec"
-    const val PREF_PLAYER_MPV_HWDEC_CODECS = "pref_player_mpv_hwdec_codecs"
     const val PREF_PLAYER_MPV_VO = "pref_player_mpv_vo"
     const val PREF_PLAYER_MPV_AO = "pref_player_mpv_ao"
-    const val PREF_PLAYER_MPV_GPU_API = "pref_player_mpv_gpu_api"
     const val PREF_PLAYER_INTRO_SKIPPER = "pref_player_intro_skipper"
+    const val PREF_PLAYER_TRICK_PLAY = "pref_player_trick_play"
+    const val PREF_PLAYER_PIP_GESTURE = "pref_player_picture_in_picture_gesture"
     const val PREF_AUDIO_LANGUAGE = "pref_audio_language"
     const val PREF_SUBTITLE_LANGUAGE = "pref_subtitle_language"
     const val PREF_IMAGE_CACHE = "pref_image_cache"

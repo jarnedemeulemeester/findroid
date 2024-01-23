@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/play_button"
+            style="?attr/materialIconButtonFilledStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/play_button_description"
+            android:enabled="false"
+            android:paddingHorizontal="24dp"
+            app:icon="@drawable/ic_play"
+            tools:enabled="true" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_play"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:elevation="8dp"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:indicatorSize="24dp"
+            app:trackCornerRadius="2dp" />
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/trailer_button"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/trailer_button_description"
+        android:visibility="gone"
+        app:icon="@drawable/ic_film"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/check_button"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/check_button_description"
+        android:enabled="false"
+        app:icon="@drawable/ic_check"
+        tools:enabled="true" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/favorite_button"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/favorite_button_description"
+        android:enabled="false"
+        app:icon="@drawable/ic_heart"
+        tools:enabled="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/download_button"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/download_button_description"
+            android:visibility="gone"
+            app:icon="@drawable/ic_download"
+            tools:visibility="visible" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_download"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:elevation="8dp"
+            android:progress="0"
+            android:progressTint="?attr/colorOnSecondary"
+            android:visibility="invisible"
+            app:indicatorSize="24dp"
+            app:trackCornerRadius="2dp" />
+
+    </RelativeLayout>
+</LinearLayout>

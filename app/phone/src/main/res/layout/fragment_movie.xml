@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/error_layout"
+        layout="@layout/error_panel" />
+
+    <ScrollView
+        android:id="@+id/media_info_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/item_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/header_gradient"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                    app:layout_constraintBottom_toTopOf="@id/original_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Alita: Battle Angel" />
+
+                <TextView
+                    android:id="@+id/original_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp">
+
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="2019" />
+
+                <TextView
+                    android:id="@+id/playtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="122 min" />
+
+                <TextView
+                    android:id="@+id/official_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    tools:text="PG-13" />
+
+                <TextView
+                    android:id="@+id/community_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    app:drawableStartCompat="@drawable/ic_star"
+                    app:drawableTint="@color/yellow"
+                    tools:text="7.3" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="24dp"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/video_meta_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    app:singleLine="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/res_chip"
+                        style="@style/MetaChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/temp"
+                        android:visibility="gone"
+                        tools:text="4K"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/video_profile_chip"
+                        style="@style/MetaChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/temp"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_dolby"
+                        app:chipIconSize="0dp"
+                        app:chipIconTint="?attr/colorOnBackground"
+                        app:chipIconVisible="false"
+                        app:chipStartPadding="8dp"
+                        tools:text="Vision"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/audio_codec_chip"
+                        style="@style/MetaChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/temp"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_dolby"
+                        app:chipIconSize="0dp"
+                        app:chipIconTint="?attr/colorOnBackground"
+                        app:chipIconVisible="true"
+                        app:chipStartPadding="8dp"
+                        tools:text="ATMOS"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/audio_channel_chip"
+                        style="@style/MetaChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/temp"
+                        android:visibility="gone"
+                        tools:text="5.1"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/subs_chip"
+                        style="@style/MetaChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/subtitle_chip_text"
+                        android:visibility="gone"
+                        tools:text="CC"
+                        tools:visibility="visible" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <include
+                android:id="@+id/item_actions"
+                layout="@layout/item_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp" />
+
+            <LinearLayout
+                android:id="@+id/player_items_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/player_items_error_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/error_preparing_player_items"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorError" />
+
+                <TextView
+                    android:id="@+id/player_items_error_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_details_underlined"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorError" />
+            </LinearLayout>
+
+            <include
+                android:id="@+id/info"
+                layout="@layout/item_info" />
+
+            <LinearLayout
+                android:id="@+id/actors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/cast_amp_crew"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/people_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/person_item" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loading_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

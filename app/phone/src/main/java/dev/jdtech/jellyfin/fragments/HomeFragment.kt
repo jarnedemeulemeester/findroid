@@ -8,8 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -22,18 +20,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.cast.framework.CastButtonFactory
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -45,10 +46,13 @@ class HomeFragment : Fragment() {
 
     private lateinit var errorDialog: ErrorDialogFragment
 
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -65,17 +69,17 @@ class HomeFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.home_menu, menu)
+                    menuInflater.inflate(CoreR.menu.home_menu, menu)
                     CastButtonFactory.setUpMediaRouteButton(
                         requireContext(),
                         menu,
-                        R.id.media_route_menu_item
+                        CoreR.id.media_route_menu_item
                     )
 
-                    val settings = menu.findItem(R.id.action_settings)
-                    val search = menu.findItem(R.id.action_search)
+                    val settings = menu.findItem(CoreR.id.action_settings)
+                    val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
-                    searchView.queryHint = getString(R.string.search_hint)
+                    searchView.queryHint = getString(CoreR.string.search_hint)
 
                     search.setOnActionExpandListener(
                         object : MenuItem.OnActionExpandListener {
@@ -88,7 +92,7 @@ class HomeFragment : Fragment() {
                                 settings.isVisible = true
                                 return true
                             }
-                        }
+                        },
                     )
 
                     searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -107,7 +111,7 @@ class HomeFragment : Fragment() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.action_settings -> {
+                        CoreR.id.action_settings -> {
                             navigateToSettingsFragment()
                             true
                         }
@@ -115,7 +119,8 @@ class HomeFragment : Fragment() {
                     }
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
         )
     }
 
@@ -146,18 +151,14 @@ class HomeFragment : Fragment() {
         }
 
         binding.viewsRecyclerView.adapter = ViewListAdapter(
-            onClickListener = ViewListAdapter.OnClickListener { navigateToLibraryFragment(it) },
-            onItemClickListener = ViewItemListAdapter.OnClickListener {
-                navigateToMediaInfoFragment(it)
+            onClickListener = { navigateToLibraryFragment(it) },
+            onItemClickListener = {
+                navigateToMediaItem(it)
             },
-            onNextUpClickListener = HomeEpisodeListAdapter.OnClickListener { item ->
-                when (item.type) {
-                    BaseItemKind.EPISODE -> navigateToEpisodeBottomSheetFragment(item)
-                    BaseItemKind.MOVIE -> navigateToMediaInfoFragment(item)
-                    else -> Toast.makeText(requireContext(), R.string.unknown_error, LENGTH_LONG)
-                        .show()
-                }
-            }
+            onOnlineClickListener = {
+                appPreferences.offlineMode = false
+                activity?.restart()
+            },
         )
 
         binding.errorLayout.errorRetryButton.setOnClickListener {
@@ -211,50 +212,50 @@ class HomeFragment : Fragment() {
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
         findNavController().navigate(
             HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
-                view.id,
-                view.name,
-                view.type
-            )
+                libraryId = view.id,
+                libraryName = view.name,
+                libraryType = view.type,
+            ),
         )
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        if (item.type == BaseItemKind.EPISODE) {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    item.seriesId!!,
-                    item.seriesName,
-                    BaseItemKind.SERIES
+    private fun navigateToMediaItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToMovieFragment(
+                        item.id,
+                        item.name,
+                    ),
                 )
-            )
-        } else {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    item.id,
-                    item.name,
-                    item.type
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToShowFragment(
+                        item.id,
+                        item.name,
+                    ),
                 )
-            )
+            }
+            is FindroidEpisode -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
+                        item.id,
+                    ),
+                )
+            }
         }
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
-        findNavController().navigate(
-            HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
-                episode.id
-            )
-        )
     }
 
     private fun navigateToSettingsFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+            HomeFragmentDirections.actionHomeFragmentToSettingsFragment(),
         )
     }
 
     private fun navigateToSearchResultFragment(query: String) {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query)
+            HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query),
         )
     }
 }

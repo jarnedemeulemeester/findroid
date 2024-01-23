@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.adapters.ServerAddressAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerAddressesBinding
 import dev.jdtech.jellyfin.dialogs.AddServerAddressDialog
 import dev.jdtech.jellyfin.dialogs.DeleteServerAddressDialog
+import dev.jdtech.jellyfin.viewmodels.ServerAddressesEvent
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,7 +31,7 @@ class ServerAddressesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentServerAddressesBinding.inflate(inflater)
 
@@ -42,24 +43,24 @@ class ServerAddressesFragment : Fragment() {
                 { address ->
                     DeleteServerAddressDialog(viewModel, address).show(
                         parentFragmentManager,
-                        "deleteServerAddress"
+                        "deleteServerAddress",
                     )
                     true
-                }
+                },
             )
 
         binding.buttonAddAddress.setOnClickListener {
             AddServerAddressDialog(viewModel).show(
                 parentFragmentManager,
-                "addServerAddress"
+                "addServerAddress",
             )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToMainActivity()
+                viewModel.eventsChannelFlow.collect { event ->
+                    when (event) {
+                        is ServerAddressesEvent.NavigateToHome -> navigateToMainActivity()
                     }
                 }
             }

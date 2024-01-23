@@ -1,193 +1,215 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.app.Application
+import android.app.DownloadManager
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.database.DownloadDatabaseDao
-import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.canRetryDownload
-import dev.jdtech.jellyfin.utils.deleteDownloadedEpisode
-import dev.jdtech.jellyfin.utils.downloadMetadataToBaseItemDto
-import dev.jdtech.jellyfin.utils.isItemAvailable
-import dev.jdtech.jellyfin.utils.isItemDownloaded
-import dev.jdtech.jellyfin.utils.requestDownload
-import java.text.DateFormat
-import java.time.ZoneOffset
-import java.util.Date
-import java.util.UUID
-import javax.inject.Inject
+import dev.jdtech.jellyfin.utils.Downloader
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.api.client.exception.ApiClientException
-import org.jellyfin.sdk.model.DateTime
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.PlayAccess
-import timber.log.Timber
+import java.io.File
+import java.util.UUID
+import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class EpisodeBottomSheetViewModel
 @Inject
 constructor(
-    private val application: Application,
-    private val jellyfinRepository: JellyfinRepository,
-    private val downloadDatabase: DownloadDatabaseDao
+    private val repository: JellyfinRepository,
+    private val database: ServerDatabaseDao,
+    private val downloader: Downloader,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _downloadStatus = MutableStateFlow(Pair(0, 0))
+    val downloadStatus = _downloadStatus.asStateFlow()
+
+    private val eventsChannel = Channel<EpisodeBottomSheetEvent>()
+    val eventsChannelFlow = eventsChannel.receiveAsFlow()
+
+    private val handler = Handler(Looper.getMainLooper())
+
     sealed class UiState {
         data class Normal(
-            val episode: BaseItemDto,
-            val runTime: String,
-            val dateString: String,
-            val played: Boolean,
-            val favorite: Boolean,
-            val canPlay: Boolean,
-            val canDownload: Boolean,
-            val downloaded: Boolean,
-            val available: Boolean,
-            val canRetry: Boolean
+            val episode: FindroidEpisode,
         ) : UiState()
 
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    var item: BaseItemDto? = null
-    private var runTime: String = ""
-    private var dateString: String = ""
-    var played: Boolean = false
-    var favorite: Boolean = false
-    private var canPlay = true
-    private var canDownload = false
-    private var downloaded: Boolean = false
-    private var available: Boolean = true
-    var canRetry: Boolean = false
-    var playerItems: MutableList<PlayerItem> = mutableListOf()
+    lateinit var item: FindroidEpisode
+
+    private var currentUiState: UiState = UiState.Loading
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
-                val tempItem = jellyfinRepository.getItem(episodeId)
-                item = tempItem
-                runTime = "${tempItem.runTimeTicks?.div(600000000)} min"
-                dateString = getDateString(tempItem.premiereDate)
-                played = tempItem.userData?.played == true
-                favorite = tempItem.userData?.isFavorite == true
-                canPlay = tempItem.playAccess != PlayAccess.NONE
-                canDownload = tempItem.canDownload == true
-                downloaded = isItemDownloaded(downloadDatabase, episodeId)
-                _uiState.emit(
-                    UiState.Normal(
-                        tempItem,
-                        runTime,
-                        dateString,
-                        played,
-                        favorite,
-                        canPlay,
-                        canDownload,
-                        downloaded,
-                        available,
-                        canRetry,
-                    )
-                )
+                item = repository.getEpisode(episodeId)
+                if (item.isDownloading()) {
+                    pollDownloadProgress()
+                }
+                currentUiState = UiState.Normal(item)
+                _uiState.emit(currentUiState)
+            } catch (_: NullPointerException) {
+                // Navigate back because item does not exist (probably because it's been deleted)
+                eventsChannel.send(EpisodeBottomSheetEvent.NavigateBack)
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }
         }
     }
 
-    fun loadEpisode(playerItem: PlayerItem) {
-        viewModelScope.launch {
-            _uiState.emit(UiState.Loading)
-            playerItems.add(playerItem)
-            item = downloadMetadataToBaseItemDto(playerItem.item!!)
-            available = isItemAvailable(playerItem.itemId)
-            canRetry = canRetryDownload(playerItem.itemId, downloadDatabase, application)
-            _uiState.emit(
-                UiState.Normal(
-                    item!!,
-                    runTime,
-                    dateString,
-                    played,
-                    favorite,
-                    canPlay,
-                    canDownload,
-                    downloaded,
-                    available,
-                    canRetry,
-                )
-            )
-        }
-    }
+    fun togglePlayed() {
+        suspend fun updateUiPlayedState(played: Boolean) {
+            item = item.copy(played = played)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
+                }
 
-    fun markAsPlayed(itemId: UUID) {
-        viewModelScope.launch {
-            try {
-                jellyfinRepository.markAsPlayed(itemId)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+                else -> {}
             }
         }
-        played = true
-    }
 
-    fun markAsUnplayed(itemId: UUID) {
         viewModelScope.launch {
-            try {
-                jellyfinRepository.markAsUnplayed(itemId)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            val originalPlayedState = item.played
+            updateUiPlayedState(!item.played)
+
+            when (item.played) {
+                false -> {
+                    try {
+                        repository.markAsUnplayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsPlayed(item.id)
+                    } catch (_: Exception) {
+                        updateUiPlayedState(originalPlayedState)
+                    }
+                }
             }
         }
-        played = false
     }
 
-    fun markAsFavorite(itemId: UUID) {
-        viewModelScope.launch {
-            try {
-                jellyfinRepository.markAsFavorite(itemId)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+    fun toggleFavorite() {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+            item = item.copy(favorite = isFavorite)
+            when (currentUiState) {
+                is UiState.Normal -> {
+                    currentUiState = (currentUiState as UiState.Normal).copy(episode = item)
+                    _uiState.emit(currentUiState)
+                }
+
+                else -> {}
             }
         }
-        favorite = true
-    }
 
-    fun unmarkAsFavorite(itemId: UUID) {
         viewModelScope.launch {
-            try {
-                jellyfinRepository.unmarkAsFavorite(itemId)
-            } catch (e: ApiClientException) {
-                Timber.d(e)
+            val originalFavoriteState = item.favorite
+            updateUiFavoriteState(!item.favorite)
+
+            when (item.favorite) {
+                false -> {
+                    try {
+                        repository.unmarkAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
+                true -> {
+                    try {
+                        repository.markAsFavorite(item.id)
+                    } catch (_: Exception) {
+                        updateUiFavoriteState(originalFavoriteState)
+                    }
+                }
             }
         }
-        favorite = false
     }
 
-    fun download() {
+    fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
         viewModelScope.launch {
-            requestDownload(
-                jellyfinRepository,
-                downloadDatabase,
-                application,
-                item!!.id
-            )
+            val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
+            // Send one time signal to fragment that the download has been initiated
+            _downloadStatus.emit(Pair(10, Random.nextInt()))
+
+            if (result.second != null) {
+                eventsChannel.send(EpisodeBottomSheetEvent.DownloadError(result.second!!))
+            }
+
+            loadEpisode(item.id)
+        }
+    }
+
+    fun cancelDownload() {
+        viewModelScope.launch {
+            downloader.cancelDownload(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
+            loadEpisode(item.id)
         }
     }
 
     fun deleteEpisode() {
-        deleteDownloadedEpisode(downloadDatabase, playerItems[0].itemId)
+        viewModelScope.launch {
+            downloader.deleteItem(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
+            loadEpisode(item.id)
+        }
     }
 
-    private fun getDateString(datetime: DateTime?): String {
-        if (datetime == null) return ""
-        val instant = datetime.toInstant(ZoneOffset.UTC)
-        val date = Date.from(instant)
-        return DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+    private fun pollDownloadProgress() {
+        handler.removeCallbacksAndMessages(null)
+        val downloadProgressRunnable = object : Runnable {
+            override fun run() {
+                viewModelScope.launch {
+                    val source = item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }
+                    val (downloadStatus, progress) = downloader.getProgress(source?.downloadId)
+                    _downloadStatus.emit(Pair(downloadStatus, progress))
+                    if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                        if (source == null) return@launch
+                        val path = source.path.replace(".download", "")
+                        File(source.path).renameTo(File(path))
+                        database.setSourcePath(source.id, path)
+                        loadEpisode(item.id)
+                    }
+                    if (downloadStatus == DownloadManager.STATUS_FAILED) {
+                        if (source == null) return@launch
+                        downloader.deleteItem(item, source)
+                        loadEpisode(item.id)
+                    }
+                }
+                if (item.isDownloading()) {
+                    handler.postDelayed(this, 2000L)
+                }
+            }
+        }
+        handler.post(downloadProgressRunnable)
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        handler.removeCallbacksAndMessages(null)
+    }
+}
+
+sealed interface EpisodeBottomSheetEvent {
+    data object NavigateBack : EpisodeBottomSheetEvent
+    data class DownloadError(val uiText: UiText) : EpisodeBottomSheetEvent
 }

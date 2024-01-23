@@ -1,4 +1,10 @@
 <resources>
+    <!-- Player theme -->
+    <style name="Theme.Findroid.Player" parent="Theme.Findroid">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.Findroid" parent="Base.Theme.Findroid" />
 
@@ -45,20 +51,20 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
-        <item name="dolbyColor">#000</item>
+<!--        <item name="dolbyColor">#000</item>-->
 
         <!-- Cast SDK -->
-        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>
-        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>
+<!--        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>-->
+<!--        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>-->
     </style>
 
-    <style name="CustomCastMiniController" parent="CastMiniController">
-        <item name="castProgressBarColor">?attr/colorPrimary</item>
-    </style>
+<!--    <style name="CustomCastMiniController" parent="CastMiniController">-->
+<!--        <item name="castProgressBarColor">?attr/colorPrimary</item>-->
+<!--    </style>-->
 
-    <style name="CustomCastExpandedController" parent="CastExpandedController">
-        <item name="castSeekBarProgressAndThumbColor">?attr/colorPrimary</item>
-    </style>
+<!--    <style name="CustomCastExpandedController" parent="CastExpandedController">-->
+<!--        <item name="castSeekBarProgressAndThumbColor">?attr/colorPrimary</item>-->
+<!--    </style>-->
 
     <string-array name="themes">
         <item>@string/theme_system</item>

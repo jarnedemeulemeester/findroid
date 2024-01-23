@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:icon="@drawable/ic_languages"
+        app:isPreferenceVisible="false"
+        app:key="pref_app_language"
+        app:title="@string/app_language" />
+
     <ListPreference
         app:defaultValue="null"
         app:entries="@array/languages"

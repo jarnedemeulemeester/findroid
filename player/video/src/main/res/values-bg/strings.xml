@@ -4,4 +4,16 @@
     <string name="select_subtile_track">Изберете писта за субтитри</string>
     <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
     <string name="select_a_version">Изберете версия</string>
+    <string name="external">Externo</string>
+    <string name="player_controls_skip_back">Voltar</string>
+    <string name="player_controls_rewind">Retroceder</string>
+    <string name="player_controls_lock">Bloqueia o reprodutor</string>
+    <string name="player_controls_progress">Barra de progresso</string>
+    <string name="player_controls_fast_forward">Avanço rápido</string>
+    <string name="player_controls_skip_forward">Passe para frente</string>
+    <string name="player_trickplay">Truques</string>
+    <string name="player_controls_play_pause">Pausa na reprodução</string>
+    <string name="player_controls_exit">Sair do reprodutor</string>
+    <string name="player_controls_skip_intro">Pular introdução</string>
+    <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
 </resources>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <SwitchPreferenceCompat
-        app:key="pref_player_display_extended_title"
-        app:summary="@string/display_extended_title_summary"
-        app:title="@string/display_extended_title"
-        app:widgetLayout="@layout/preference_material3_switch" />
-
     <Preference
         app:key="pref_player_subtitles"
         app:summary="@string/subtitles_summary"
@@ -17,20 +11,13 @@
             app:summary="@string/mpv_player_summary"
             app:title="@string/mpv_player" />
         <ListPreference
-            app:defaultValue="mediacodec-copy"
+            app:defaultValue="mediacodec"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_hwdec"
             app:entryValues="@array/mpv_hwdec"
             app:key="pref_player_mpv_hwdec"
             app:title="@string/pref_player_mpv_hwdec"
             app:useSimpleSummaryProvider="true" />
-        <MultiSelectListPreference
-            app:defaultValue="@array/mpv_hwdec_codecs"
-            app:dependency="pref_player_mpv"
-            app:entries="@array/mpv_hwdec_codecs"
-            app:entryValues="@array/mpv_hwdec_codecs"
-            app:key="pref_player_mpv_hwdec_codecs"
-            app:title="@string/pref_player_mpv_hwdec_codecs" />
         <ListPreference
             app:defaultValue="gpu"
             app:dependency="pref_player_mpv"
@@ -46,14 +33,6 @@
             app:entryValues="@array/mpv_aos"
             app:key="pref_player_mpv_ao"
             app:title="@string/pref_player_mpv_ao"
-            app:useSimpleSummaryProvider="true" />
-        <ListPreference
-            app:defaultValue="opengl"
-            app:dependency="pref_player_mpv"
-            app:entries="@array/mpv_gpu_api"
-            app:entryValues="@array/mpv_gpu_api"
-            app:key="pref_player_mpv_gpu_api"
-            app:title="@string/pref_player_mpv_gpu_api"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
@@ -105,5 +84,19 @@
         app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
         app:widgetLayout="@layout/preference_material3_switch" />
+        
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="pref_player_trick_play"
+        app:summary="@string/pref_player_trick_play_summary"
+        app:title="@string/pref_player_trick_play"
+        app:widgetLayout="@layout/preference_material3_switch" />
 
+    <PreferenceCategory app:title="@string/picture_in_picture">
+        <SwitchPreferenceCompat
+            app:key="pref_player_picture_in_picture_gesture"
+            app:title="@string/picture_in_picture_gesture"
+            app:summary="@string/picture_in_picture_gesture_summary" />
+    </PreferenceCategory>
+    
 </PreferenceScreen>

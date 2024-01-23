@@ -4,58 +4,65 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
+import dev.jdtech.jellyfin.bindItemBackdropById
+import dev.jdtech.jellyfin.bindSeasonPoster
 import dev.jdtech.jellyfin.databinding.EpisodeItemBinding
 import dev.jdtech.jellyfin.databinding.SeasonHeaderBinding
 import dev.jdtech.jellyfin.models.EpisodeItem
-import java.util.UUID
-import org.jellyfin.sdk.model.api.BaseItemDto
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.core.R as CoreR
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class EpisodeListAdapter(
-    private val onClickListener: OnClickListener,
-    private val seriesId: UUID,
-    private val seriesName: String?,
-    private val seasonId: UUID,
-    private val seasonName: String?
+    private val onClickListener: (item: FindroidEpisode) -> Unit,
 ) :
     ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     class HeaderViewHolder(private var binding: SeasonHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(
-            seriesId: UUID,
-            seriesName: String?,
-            seasonId: UUID,
-            seasonName: String?
-        ) {
-            binding.seriesId = seriesId
-            binding.seasonId = seasonId
-            binding.seasonName.text = seasonName
-            binding.seriesName.text = seriesName
-            binding.executePendingBindings()
+        fun bind(header: EpisodeItem.Header) {
+            binding.seasonName.text = header.seasonName
+            binding.seriesName.text = header.seriesName
+            bindItemBackdropById(binding.itemBanner, header.seriesId)
+            bindSeasonPoster(binding.seasonPoster, header.seasonId)
         }
     }
 
     class EpisodeViewHolder(private var binding: EpisodeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(episode: BaseItemDto) {
-            binding.episode = episode
-            if (episode.userData?.playedPercentage != null) {
+        fun bind(episode: FindroidEpisode) {
+            binding.episodeTitle.text = if (episode.indexNumberEnd == null) {
+                binding.root.context.getString(CoreR.string.episode_name, episode.indexNumber, episode.name)
+            } else {
+                binding.root.context.getString(CoreR.string.episode_name_with_end, episode.indexNumber, episode.indexNumberEnd, episode.name)
+            }
+
+            binding.episodeOverview.text = episode.overview
+
+            if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    (episode.userData?.playedPercentage?.times(.84))!!.toFloat(),
-                    binding.progressBar.context.resources.displayMetrics
+                    (episode.playbackPositionTicks.div(episode.runtimeTicks.toFloat()).times(84)),
+                    binding.progressBar.context.resources.displayMetrics,
                 ).toInt()
                 binding.progressBar.visibility = View.VISIBLE
             } else {
                 binding.progressBar.visibility = View.GONE
             }
-            binding.executePendingBindings()
+
+            binding.playedIcon.isVisible = episode.played
+            binding.missingIcon.isVisible = episode.missing
+            binding.downloadedIcon.isVisible = episode.isDownloaded()
+
+            bindCardItemImage(binding.episodeImage, episode)
         }
     }
 
@@ -76,8 +83,8 @@ class EpisodeListAdapter(
                     SeasonHeaderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
             ITEM_VIEW_TYPE_EPISODE -> {
@@ -85,8 +92,8 @@ class EpisodeListAdapter(
                     EpisodeItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
             else -> throw ClassCastException("Unknown viewType $viewType")
@@ -96,12 +103,13 @@ class EpisodeListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_HEADER -> {
-                (holder as HeaderViewHolder).bind(seriesId, seriesName, seasonId, seasonName)
+                val item = getItem(position) as EpisodeItem.Header
+                (holder as HeaderViewHolder).bind(item)
             }
             ITEM_VIEW_TYPE_EPISODE -> {
                 val item = getItem(position) as EpisodeItem.Episode
                 holder.itemView.setOnClickListener {
-                    onClickListener.onClick(item.episode)
+                    onClickListener(item.episode)
                 }
                 (holder as EpisodeViewHolder).bind(item.episode)
             }
@@ -113,9 +121,5 @@ class EpisodeListAdapter(
             is EpisodeItem.Header -> ITEM_VIEW_TYPE_HEADER
             is EpisodeItem.Episode -> ITEM_VIEW_TYPE_EPISODE
         }
-    }
-
-    class OnClickListener(val clickListener: (item: BaseItemDto) -> Unit) {
-        fun onClick(item: BaseItemDto) = clickListener(item)
     }
 }

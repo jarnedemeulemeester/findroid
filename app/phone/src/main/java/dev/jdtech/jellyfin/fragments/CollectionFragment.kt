@@ -14,14 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
-import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
-import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.CollectionViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -35,18 +36,13 @@ class CollectionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        binding.favoritesRecyclerView.adapter = FavoritesListAdapter(
-            ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
-            },
-            HomeEpisodeListAdapter.OnClickListener { item ->
-                navigateToEpisodeBottomSheetFragment(item)
-            }
-        )
+        binding.favoritesRecyclerView.adapter = FavoritesListAdapter { item ->
+            navigateToMediaItem(item)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -103,21 +99,31 @@ class CollectionFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            CollectionFragmentDirections.actionCollectionFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type
-            )
-        )
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
-        findNavController().navigate(
-            CollectionFragmentDirections.actionCollectionFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
-        )
+    private fun navigateToMediaItem(item: FindroidItem) {
+        when (item) {
+            is FindroidMovie -> {
+                findNavController().navigate(
+                    CollectionFragmentDirections.actionCollectionFragmentToMovieFragment(
+                        item.id,
+                        item.name,
+                    ),
+                )
+            }
+            is FindroidShow -> {
+                findNavController().navigate(
+                    CollectionFragmentDirections.actionCollectionFragmentToShowFragment(
+                        item.id,
+                        item.name,
+                    ),
+                )
+            }
+            is FindroidEpisode -> {
+                findNavController().navigate(
+                    CollectionFragmentDirections.actionCollectionFragmentToEpisodeBottomSheetFragment(
+                        item.id,
+                    ),
+                )
+            }
+        }
     }
 }

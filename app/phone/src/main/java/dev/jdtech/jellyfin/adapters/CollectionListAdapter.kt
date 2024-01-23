@@ -5,26 +5,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.CollectionItemBinding
-import org.jellyfin.sdk.model.api.BaseItemDto
+import dev.jdtech.jellyfin.models.FindroidCollection
 
 class CollectionListAdapter(
-    private val onClickListener: OnClickListener
-) : ListAdapter<BaseItemDto, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
+    private val onClickListener: (collection: FindroidCollection) -> Unit,
+) : ListAdapter<FindroidCollection, CollectionListAdapter.CollectionViewHolder>(DiffCallback) {
     class CollectionViewHolder(private var binding: CollectionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(collection: BaseItemDto) {
-            binding.collection = collection
-            binding.executePendingBindings()
+        fun bind(collection: FindroidCollection) {
+            binding.collectionName.text = collection.name
+            bindCardItemImage(binding.collectionImage, collection)
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<BaseItemDto>() {
-        override fun areItemsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<FindroidCollection>() {
+        override fun areItemsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: BaseItemDto, newItem: BaseItemDto): Boolean {
+        override fun areContentsTheSame(oldItem: FindroidCollection, newItem: FindroidCollection): Boolean {
             return oldItem == newItem
         }
     }
@@ -34,20 +35,16 @@ class CollectionListAdapter(
             CollectionItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
-            )
+                false,
+            ),
         )
     }
 
     override fun onBindViewHolder(holder: CollectionViewHolder, position: Int) {
         val collection = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(collection)
+            onClickListener(collection)
         }
         holder.bind(collection)
-    }
-
-    class OnClickListener(val clickListener: (collection: BaseItemDto) -> Unit) {
-        fun onClick(collection: BaseItemDto) = clickListener(collection)
     }
 }

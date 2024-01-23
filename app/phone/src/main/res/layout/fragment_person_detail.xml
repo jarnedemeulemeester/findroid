@@ -31,11 +31,11 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/person_image"
-                    android:layout_width="0dp"
-                    android:layout_height="210dp"
-                    android:layout_marginStart="24dp"
+                    android:layout_width="220dp"
+                    android:layout_height="345dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintDimensionRatio="H,3:2"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
@@ -45,24 +45,26 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/person_image"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/person_image"
                     tools:text="Actor/Actress name" />
 
                 <TextView
                     android:id="@+id/overview"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="@dimen/person_detail_overview_height"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:ellipsize="end"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:layout_constraintBottom_toTopOf="@id/read_all"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/person_image"
-                    app:layout_constraintTop_toBottomOf="@+id/name" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/name" />
 
                 <FrameLayout
                     android:id="@+id/overview_gradient"

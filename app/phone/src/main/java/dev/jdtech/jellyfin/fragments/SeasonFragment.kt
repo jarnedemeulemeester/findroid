@@ -16,10 +16,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -34,7 +35,7 @@ class SeasonFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSeasonBinding.inflate(inflater, container, false)
         return binding.root
@@ -45,25 +46,29 @@ class SeasonFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    Timber.d("$uiState")
-                    when (uiState) {
-                        is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
-                        is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
-                        is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                launch {
+                    viewModel.uiState.collect { uiState ->
+                        Timber.d("$uiState")
+                        when (uiState) {
+                            is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                            is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
+                            is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.eventsChannelFlow.collect { event ->
+                        when (event) {
+                            is SeasonEvent.NavigateBack -> findNavController().navigateUp()
+                        }
                     }
                 }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadEpisodes(args.seriesId, args.seasonId)
-            }
-        }
-
         binding.errorLayout.errorRetryButton.setOnClickListener {
-            viewModel.loadEpisodes(args.seriesId, args.seasonId)
+            viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
@@ -71,12 +76,15 @@ class SeasonFragment : Fragment() {
         }
 
         binding.episodesRecyclerView.adapter =
-            EpisodeListAdapter(
-                EpisodeListAdapter.OnClickListener { episode ->
-                    navigateToEpisodeBottomSheetFragment(episode)
-                },
-                args.seriesId, args.seriesName, args.seasonId, args.seasonName
-            )
+            EpisodeListAdapter { episode ->
+                navigateToEpisodeBottomSheetFragment(episode)
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
     }
 
     private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal) {
@@ -102,11 +110,11 @@ class SeasonFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {
+    private fun navigateToEpisodeBottomSheetFragment(episode: FindroidEpisode) {
         findNavController().navigate(
             SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
-                episode.id
-            )
+                episode.id,
+            ),
         )
     }
 }

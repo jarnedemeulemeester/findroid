@@ -5,12 +5,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 
-@Suppress("unused")
 class SettingsAppearanceFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.fragment_settings_appearance, rootKey)
+        setPreferencesFromResource(CoreR.xml.fragment_settings_appearance, rootKey)
 
         findPreference<ListPreference>("theme")?.setOnPreferenceChangeListener { _, newValue ->
             when (newValue) {

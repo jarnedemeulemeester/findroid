@@ -1,9 +1,8 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
     alias(libs.plugins.aboutlibraries)
@@ -12,36 +11,44 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = 33
-    buildToolsVersion = "33.0.2"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = 27
-        targetSdk = 33
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
 
-        val appVersionCode: Int by rootProject.extra
-        val appVersionName: String by rootProject.extra
-
-        versionCode = appVersionCode
-        versionName = appVersionName
+        versionCode = Versions.appCode
+        versionName = Versions.appName
     }
 
     buildTypes {
-        getByName("debug") {
+        named("debug") {
             applicationIdSuffix = ".debug"
         }
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
             applicationIdSuffix = ".staging"
+        }
+    }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        register("libre") {
+            dimension = "variant"
+            isDefault = true
+        }
+        register("huawei") {
+            dimension = "variant"
         }
     }
 
@@ -50,43 +57,39 @@ android {
             isEnable = true
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
     buildFeatures {
-        dataBinding = true
+        buildConfig = true
         viewBinding = true
     }
 }
 
 ktlint {
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":data"))
-    implementation(project(":preferences"))
-    implementation(project(":player:core"))
-    implementation(project(":player:video"))
+    implementation(projects.core)
+    implementation(projects.data)
+    implementation(projects.preferences)
+    implementation(projects.player.core)
+    implementation(projects.player.video)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.exoplayer)
@@ -97,12 +100,12 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.recyclerview.selection)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.swiperefreshlayout)
-    implementation(libs.glide)
+    implementation(libs.androidx.work)
+    implementation(libs.coil)
+    implementation(libs.coil.svg)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)

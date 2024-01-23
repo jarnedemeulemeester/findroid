@@ -20,15 +20,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.cast.framework.CastButtonFactory
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.BaseItemDto
 import timber.log.Timber
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class MediaFragment : Fragment() {
@@ -43,16 +43,14 @@ class MediaFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
 
         binding.viewsRecyclerView.adapter =
-            CollectionListAdapter(
-                CollectionListAdapter.OnClickListener { library ->
-                    navigateToLibraryFragment(library)
-                }
-            )
+            CollectionListAdapter { library ->
+                navigateToLibraryFragment(library)
+            }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -85,16 +83,16 @@ class MediaFragment : Fragment() {
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.media_menu, menu)
+                    menuInflater.inflate(CoreR.menu.media_menu, menu)
                     CastButtonFactory.setUpMediaRouteButton(
                         requireContext(),
                         menu,
-                        R.id.media_route_menu_item
+                        CoreR.id.media_route_menu_item
                     )
 
-                    val search = menu.findItem(R.id.action_search)
+                    val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
-                    searchView.queryHint = getString(R.string.search_hint)
+                    searchView.queryHint = getString(CoreR.string.search_hint)
 
                     searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                         override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -114,7 +112,8 @@ class MediaFragment : Fragment() {
                     return true
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
         )
     }
 
@@ -152,19 +151,19 @@ class MediaFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToLibraryFragment(library: BaseItemDto) {
+    private fun navigateToLibraryFragment(library: FindroidCollection) {
         findNavController().navigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
-                library.id,
-                library.name,
-                library.collectionType,
-            )
+                libraryId = library.id,
+                libraryName = library.name,
+                libraryType = library.type,
+            ),
         )
     }
 
     private fun navigateToSearchResultFragment(query: String) {
         findNavController().navigate(
-            MediaFragmentDirections.actionNavigationMediaToSearchResultFragment(query)
+            MediaFragmentDirections.actionNavigationMediaToSearchResultFragment(query),
         )
     }
 }

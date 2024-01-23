@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // False positive
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,36 +6,32 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin.preferences"
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = Versions.compileSdk
+    buildToolsVersion = Versions.buildTools
 
     defaultConfig {
-        minSdk = 27
+        minSdk = Versions.minSdk
     }
 
     buildTypes {
-        getByName("release") {
+        named("release") {
             isMinifyEnabled = false
         }
-        create("staging") {
+        register("staging") {
             initWith(getByName("release"))
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 }
 
 ktlint {
+    version.set(Versions.ktlint)
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.add("max-line-length")
 }
 
 dependencies {

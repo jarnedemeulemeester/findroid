@@ -16,14 +16,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
+import dev.jdtech.jellyfin.viewmodels.LoginEvent
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -41,7 +42,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentLoginBinding.inflate(inflater)
 
@@ -109,7 +110,7 @@ class LoginFragment : Fragment() {
                         }
                         is LoginViewModel.QuickConnectUiState.Normal -> {
                             binding.buttonQuickconnectLayout.isVisible = true
-                            binding.buttonQuickconnect.text = resources.getString(R.string.quick_connect)
+                            binding.buttonQuickconnect.text = resources.getString(CoreR.string.quick_connect)
                             binding.buttonQuickconnectProgress.isVisible = false
                         }
                         is LoginViewModel.QuickConnectUiState.Waiting -> {
@@ -123,9 +124,9 @@ class LoginFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToMain.collect {
-                    if (it) {
-                        navigateToHomeFragment()
+                viewModel.eventsChannelFlow.collect { event ->
+                    when (event) {
+                        is LoginEvent.NavigateToHome -> navigateToHomeFragment()
                     }
                 }
             }

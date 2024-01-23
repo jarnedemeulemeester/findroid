@@ -8,8 +8,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.utils.restart
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -17,7 +18,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     lateinit var appPreferences: AppPreferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.fragment_settings, rootKey)
+        setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
 
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
             findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
@@ -36,10 +37,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>("pref_offline_mode")?.setOnPreferenceClickListener {
+            activity?.restart()
+            true
+        }
+
         findPreference<Preference>("privacyPolicy")?.setOnPreferenceClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/jarnedemeulemeester/findroid/blob/main/PRIVACY")
+                Uri.parse("https://github.com/jarnedemeulemeester/findroid/blob/main/PRIVACY"),
             )
             startActivity(intent)
             true

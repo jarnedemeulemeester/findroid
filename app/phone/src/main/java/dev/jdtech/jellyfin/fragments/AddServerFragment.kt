@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.DiscoveredServerListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
+import dev.jdtech.jellyfin.viewmodels.AddServerEvent
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,9 +31,11 @@ class AddServerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentAddServerBinding.inflate(inflater)
+
+        binding.privacyPolicyText.movementMethod = LinkMovementMethod.getInstance()
 
         (binding.editTextServerAddress as AppCompatEditText).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
@@ -78,9 +82,9 @@ class AddServerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToLogin.collect {
-                    if (it) {
-                        navigateToLoginFragment()
+                viewModel.eventsChannelFlow.collect { event ->
+                    when (event) {
+                        is AddServerEvent.NavigateToLogin -> navigateToLoginFragment()
                     }
                 }
             }
@@ -114,7 +118,7 @@ class AddServerFragment : Fragment() {
     }
 
     private fun bindDiscoveredServersStateServers(
-        serversState: AddServerViewModel.DiscoveredServersState.Servers
+        serversState: AddServerViewModel.DiscoveredServersState.Servers,
     ) {
         val servers = serversState.servers
         if (servers.isEmpty()) {

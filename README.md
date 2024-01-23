@@ -1,6 +1,12 @@
 ![Findroid banner](images/findroid-banner.png)
 
 # Findroid
+![GitHub release (with filter)](https://img.shields.io/github/v/release/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub repo stars](https://img.shields.io/github/stars/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/jarnedemeulemeester/findroid?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
 
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
@@ -8,10 +14,7 @@ I am developing this application in my spare time.
 
 **This project is in its early stages so expect bugs.**
 
-<div style="display: flex; align-items: center;">
-<a href='https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/></a><a href='http://www.amazon.com/gp/product/B0BTWC8DNZ/ref=mas_pm_findroid'><img alt='Available at Amazon Appstore' src='https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png' height="55"/></a><a href='https://apt.izzysoft.de/fdroid/index/apk/dev.jdtech.jellyfin'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height="80"/></a>
-</div>
-
+<a href='https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/></a><a href='http://www.amazon.com/gp/product/B0BTWC8DNZ'><img alt='Available at Amazon Appstore' src='https://user-images.githubusercontent.com/32322857/219019331-027a6775-7362-44bb-a026-281f71e9b37b.png' height="80"/></a><a href='https://appgallery.huawei.com/app/C107646987'><img alt='Explore it on Huawei AppGallery' src='https://user-images.githubusercontent.com/32322857/219013519-f0a11e17-c32c-42fd-8009-ab77fe2c23e7.png' height="80"/></a><a href='https://apt.izzysoft.de/fdroid/index/apk/dev.jdtech.jellyfin'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height="80"/></a>
 
 ## Screenshots
 | Home                                | Library                             | Movie                           | Season                            | Episode                             |
@@ -30,27 +33,25 @@ I am developing this application in my spare time.
     - Support provided by ExoPlayer FFmpeg extension
   - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
     - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
-- **NEW** MPV Player
+- mpv
   - Container formats: mkv, mov, mp4, avi
   - Video codecs: H.264, H.265, VP8, VP9, AV1
   - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
-
+- Picture-in-picture mode
 
 ## Planned features
 - Android TV
 - Websocket connection (Syncplay)
-- Picture in picture mode
 - Chromecast support
 
 ## Translating
 [JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
+[![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\
 We have a Discord server to discuss future development or ask general questions.
-Click [here](https://discord.gg/tg5VvTFwTV) to join.
-
 
 ## License
 This project is licensed under [GPLv3](LICENSE).
