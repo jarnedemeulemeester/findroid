@@ -253,22 +253,26 @@ constructor(
                 if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                     val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                     val seconds = player.currentPosition / 1000.0
-                    intros[itemId]?.let { intro ->
-                        if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
-                            _uiState.update { it.copy(currentIntro = intro) }
-                            return@let
+                    if (intros.isNotEmpty()) {
+                        intros[itemId]?.let { intro ->
+                            if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
+                                _uiState.update { it.copy(currentIntro = intro) }
+                                return@let
+                            }
+                            _uiState.update { it.copy(currentIntro = null) }
                         }
-                        _uiState.update { it.copy(currentIntro = null) }
                     }
-                    credits[itemId]?.let { credit ->
-                        if (seconds > credit.showSkipPromptAt && seconds < credit.hideSkipPromptAt) {
-                            _uiState.update { it.copy(currentCredit = credit) }
-                            return@let
+                    if (credits.isNotEmpty()) {
+                        credits[itemId]?.let { credit ->
+                            if (seconds > credit.showSkipPromptAt && seconds < credit.hideSkipPromptAt) {
+                                _uiState.update { it.copy(currentCredit = credit) }
+                                return@let
+                            }
+                            _uiState.update { it.copy(currentCredit = null) }
                         }
-                        _uiState.update { it.copy(currentCredit = null) }
                     }
-                    handler.postDelayed(this, 1000L)
                 }
+                handler.postDelayed(this, 1000L)
             }
         }
         handler.post(playbackProgressRunnable)
