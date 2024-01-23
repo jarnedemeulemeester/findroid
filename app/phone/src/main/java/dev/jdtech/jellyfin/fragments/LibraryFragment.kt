@@ -24,7 +24,6 @@ import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.dialogs.SortDialogFragment
-import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -229,7 +228,7 @@ class LibraryFragment : Fragment() {
                     LibraryFragmentDirections.actionLibraryFragmentSelf(
                         item.id,
                         item.name,
-                        CollectionType.Mixed,
+                        args.libraryType,
                     ),
                 )
             }
