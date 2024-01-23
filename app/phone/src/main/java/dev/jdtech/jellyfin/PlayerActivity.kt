@@ -148,6 +148,10 @@ class PlayerActivity : BasePlayerActivity() {
                                 it.currentTrickPlay = currentTrickPlay
                             }
 
+                            playerGestureHelper?.let {
+                                it.currentTrickPlay = currentTrickPlay
+                            }
+
                             // File Loaded
                             if (fileLoaded) {
                                 audioButton.isEnabled = true

@@ -185,4 +185,6 @@
     <string name="live_tv">Diretta TV</string>
     <string name="play">Riproduci</string>
     <string name="remove_from_favorites">Rimuovi dai preferiti</string>
+    <string name="pref_player_trick_play_gesture">Anteprima in gesto posizionamento</string>
+    <string name="pref_player_trick_play_gesture_summary">Richiede \'Gesto posizionamento\' e \'Anteprima\'</string>
 </resources>

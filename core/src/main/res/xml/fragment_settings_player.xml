@@ -92,6 +92,14 @@
         app:title="@string/pref_player_trick_play"
         app:widgetLayout="@layout/preference_material3_switch" />
 
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:dependency="pref_player_trick_play"
+        app:key="pref_player_trick_play_gesture"
+        app:summary="@string/pref_player_trick_play_gesture_summary"
+        app:title="@string/pref_player_trick_play_gesture"
+        app:widgetLayout="@layout/preference_material3_switch" />
+
     <PreferenceCategory app:title="@string/picture_in_picture">
         <SwitchPreferenceCompat
             app:key="pref_player_picture_in_picture_gesture"
