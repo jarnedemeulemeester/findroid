@@ -112,45 +112,6 @@ class PlayerGestureHelper(
                 }
                 return true
             }
-
-            override fun onLongPress(e: MotionEvent) {
-                if (isControlsLocked || !appPreferences.playerGesturesChapterSkip || playerView.player !is MPVPlayer) {
-                    return
-                }
-
-                val viewWidth = playerView.measuredWidth
-                val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
-
-                // Define the areas and their boundaries
-                val leftmostAreaStart = 0
-                val middleAreaStart = areaWidth * 2
-                val rightmostAreaStart = middleAreaStart + areaWidth
-
-                val player = (playerView.player as MPVPlayer)
-                val numOfChapters = player.getNumberOfChapters()
-                if (numOfChapters == 0) {
-                    return
-                }
-
-                when (e.x.toInt()) {
-                    in leftmostAreaStart until middleAreaStart -> {
-                        player.previousChapter()
-                    }
-                    in rightmostAreaStart until viewWidth -> {
-                        // When trying to skip last chapter, skip to next episode.
-                        if (player.getCurrentChapter() + 1 == numOfChapters) {
-                            player.seekToNextMediaItem()
-                            return
-                        }
-                        player.nextChapter()
-                    }
-                    else -> return
-                }
-
-                // Show chapter title
-                activity.binding.progressScrubberLayout.visibility = View.VISIBLE
-                activity.binding.progressScrubberText.text = player.getChapterTitle(player.getCurrentChapter())
-            }
         },
     )
 
