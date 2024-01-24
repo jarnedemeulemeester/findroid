@@ -176,7 +176,7 @@ class PlayerViewModel @Inject internal constructor(
         return this?.map { chapter ->
             PlayerChapter(
                 startPositionTicks = chapter.startPositionTicks,
-                name = chapter.name
+                name = chapter.name,
             )
         }
     }
