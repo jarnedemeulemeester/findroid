@@ -19,6 +19,7 @@ import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
@@ -56,6 +57,7 @@ constructor(
             currentItemTitle = "",
             currentIntro = null,
             currentTrickPlay = null,
+            currentChapters = null,
             fileLoaded = false,
         ),
     )
@@ -72,6 +74,7 @@ constructor(
         val currentItemTitle: String,
         val currentIntro: Intro?,
         val currentTrickPlay: BifData?,
+        val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
     )
 
@@ -265,6 +268,7 @@ constructor(
         Timber.d("Playing MediaItem: ${mediaItem?.mediaId}")
         savedStateHandle["mediaItemIndex"] = player.currentMediaItemIndex
         viewModelScope.launch {
+            Timber.d(items.toString())
             try {
                 items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
                     .let { item ->
@@ -278,6 +282,7 @@ constructor(
                             item.name
                         }
                         _uiState.update { it.copy(currentItemTitle = itemTitle) }
+                        _uiState.update { it.copy(currentChapters = item.chapters) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
@@ -303,7 +308,6 @@ constructor(
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
                 _uiState.update { it.copy(fileLoaded = true) }
-                eventsChannel.trySend(PlayerEvents.PlayerReady)
             }
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
@@ -371,5 +375,4 @@ constructor(
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
-    data object PlayerReady : PlayerEvents
 }

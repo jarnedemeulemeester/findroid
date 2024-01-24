@@ -31,6 +31,7 @@ data class FindroidMovie(
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>?,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidMovie(
@@ -64,6 +65,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
         images = toFindroidImages(jellyfinRepository),
+        chapters = toFindroidChapters(),
     )
 }
 
@@ -91,5 +93,6 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
         images = FindroidImages(),
+        chapters = null,//chapters,
     )
 }

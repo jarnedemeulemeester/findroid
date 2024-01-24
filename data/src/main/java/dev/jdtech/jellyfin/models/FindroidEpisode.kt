@@ -31,6 +31,7 @@ data class FindroidEpisode(
     override val unplayedItemCount: Int? = null,
     val missing: Boolean = false,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>?,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(
@@ -65,6 +66,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
             communityRating = communityRating,
             missing = locationType == LocationType.VIRTUAL,
             images = toFindroidImages(jellyfinRepository),
+            chapters = toFindroidChapters(),
         )
     } catch (_: NullPointerException) {
         null
@@ -94,5 +96,6 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         seasonId = seasonId,
         communityRating = communityRating,
         images = FindroidImages(),
+        chapters = null,// chapters,
     )
 }
