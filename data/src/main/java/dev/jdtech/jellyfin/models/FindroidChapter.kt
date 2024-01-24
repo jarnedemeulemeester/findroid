@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.models
 
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.ChapterInfo
 
 data class FindroidChapter(
     /**
@@ -14,12 +13,11 @@ data class FindroidChapter(
     val name: String? = null,
 )
 
-
 fun BaseItemDto.toFindroidChapters(): List<FindroidChapter>? {
     return chapters?.map { chapter ->
         FindroidChapter(
             startPositionTicks = chapter.startPositionTicks,
-            name = chapter.name
+            name = chapter.name,
         )
     }
 }

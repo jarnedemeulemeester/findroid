@@ -96,6 +96,6 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         seasonId = seasonId,
         communityRating = communityRating,
         images = FindroidImages(),
-        chapters = null,// chapters,
+        chapters = null, // chapters,
     )
 }
