@@ -1,6 +1,6 @@
 [versions]
 aboutlibraries = "10.10.0"
-android-plugin = "8.2.1"
+android-plugin = "8.2.2"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-compose-material3 = "1.2.0-alpha09"
