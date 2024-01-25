@@ -93,6 +93,6 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
         images = FindroidImages(),
-        chapters = null, // chapters,
+        chapters = chapters,
     )
 }
