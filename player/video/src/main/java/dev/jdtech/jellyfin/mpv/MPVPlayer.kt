@@ -869,8 +869,11 @@ class MPVPlayer(
                 )
             }
             currentIndex = index
-            MPVLib.command(arrayOf("playlist-play-index", "$index"))
-            MPVLib.setPropertyBoolean("pause", true)
+            // Only set the playlist index when the index is not the currently playing item. Otherwise playback will be restarted.
+            // This is a problem on initial load when the first item is still loading causing duplicate external subtitle entries.
+            if (MPVLib.getPropertyInt("playlist-current-pos") != index) {
+                MPVLib.command(arrayOf("playlist-play-index", "$index"))
+            }
             listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
                 listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
             }
