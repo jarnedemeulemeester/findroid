@@ -17,6 +17,7 @@ object Constants {
     const val PREF_PLAYER_GESTURES_ZOOM = "pref_player_gestures_zoom"
     const val PREF_PLAYER_GESTURES_SEEK = "pref_player_gestures_seek"
     const val PREF_PLAYER_BRIGHTNESS_REMEMBER = "pref_player_brightness_remember"
+    const val PREF_PLAYER_START_MAXIMIZED = "pref_player_start_maximized"
     const val PREF_PLAYER_BRIGHTNESS = "pref_player_brightness"
     const val PREF_PLAYER_SEEK_BACK_INC = "pref_player_seek_back_inc"
     const val PREF_PLAYER_SEEK_FORWARD_INC = "pref_player_seek_forward_inc"

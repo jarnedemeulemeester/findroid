@@ -51,6 +51,9 @@ constructor(
     val playerBrightnessRemember get() =
         sharedPreferences.getBoolean(Constants.PREF_PLAYER_BRIGHTNESS_REMEMBER, false)
 
+    val playerStartMaximized get() =
+        sharedPreferences.getBoolean(Constants.PREF_PLAYER_START_MAXIMIZED, false)
+
     var playerBrightness: Float
         get() = sharedPreferences.getFloat(
             Constants.PREF_PLAYER_BRIGHTNESS,
