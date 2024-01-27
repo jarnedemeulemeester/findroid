@@ -12,6 +12,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
+import android.provider.Settings
 import android.util.Rational
 import android.view.View
 import android.view.WindowManager
@@ -27,7 +28,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
-import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
@@ -35,7 +35,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
-import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -309,10 +308,11 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.useController = false
         binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
 
-        if (binding.playerView.player is MPVPlayer) {
-            (binding.playerView.player as MPVPlayer).updateZoomMode(false)
-        } else {
-            binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        playerGestureHelper?.updateZoomMode(false)
+
+        // Brightness mode Auto
+        window.attributes = window.attributes.apply {
+            screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         }
 
         try {
@@ -327,6 +327,19 @@ class PlayerActivity : BasePlayerActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (!isInPictureInPictureMode) {
             binding.playerView.useController = true
+            playerGestureHelper?.isZoomEnabled?.let { playerGestureHelper!!.updateZoomMode(it) }
+
+            // Override auto brightness
+            window.attributes = window.attributes.apply {
+                screenBrightness = if (appPreferences.playerBrightnessRemember) {
+                    appPreferences.playerBrightness
+                } else {
+                    Settings.System.getInt(
+                        contentResolver,
+                        Settings.System.SCREEN_BRIGHTNESS,
+                    ).toFloat() / 255
+                }
+            }
         }
     }
 }
