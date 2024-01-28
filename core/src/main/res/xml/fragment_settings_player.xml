@@ -63,6 +63,11 @@
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
+        <SwitchPreferenceCompat
+            app:dependency="pref_player_gestures_zoom"
+            app:key="pref_player_start_maximized"
+            app:summary="@string/player_start_maximized_summary"
+            app:title="@string/player_start_maximized" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/seeking">
