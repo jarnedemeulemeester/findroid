@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PlayerChapter(
     /**
-     * The start position ticks.
+     * The start position.
      */
-    val startPositionTicks: Long,
+    val startPosition: Long,
     /**
      * The name.
      */

@@ -40,6 +40,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.floor
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -369,6 +370,62 @@ constructor(
                     }
                 }
             }
+    }
+
+    fun getChapters(): List<PlayerChapter>? {
+        return uiState.value.currentChapters
+    }
+
+    fun getCurrentChapterIndex(): Int? {
+        val chapters = getChapters() ?: return null
+
+        var lastChapterIndex: Int? = null
+        for ((index, chapter) in chapters.iterator().withIndex()) {
+            // If the player position is before current chapter, it's the previous chapter.
+            val chapterPosition = floor(chapter.startPosition / 1000.0) * 1000
+            if (lastChapterIndex != null && player.currentPosition < chapterPosition.toLong()) {
+                return lastChapterIndex
+            }
+
+            lastChapterIndex = index
+        }
+
+        // If no chapter was selected, it means we are past last chapter position.
+        return chapters.size - 1
+    }
+
+    fun getCurrentChapter(): PlayerChapter? {
+        return getChapters()?.getOrNull(getCurrentChapterIndex()!!)
+    }
+
+    fun getNextChapterIndex(): Int? {
+        val chapters = getChapters() ?: return null
+        val currentChapterIndex = getCurrentChapterIndex() ?: return null
+
+        return minOf(chapters.size - 1, currentChapterIndex + 1)
+    }
+
+    fun getPreviousChapterIndex(): Int? {
+        getChapters() ?: return null
+
+        return maxOf(0, getCurrentChapterIndex()!! - 1)
+    }
+
+    fun isFirstChapter(): Boolean? = getChapters()?.let { getCurrentChapterIndex() == 0 }
+    fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
+
+    fun seekToChapter(chapterIndex: Int) {
+        getChapters()?.getOrNull(chapterIndex)?.let { chapter ->
+            player.seekTo(chapter.startPosition)
+        }
+    }
+
+    fun seekToNextChapter() {
+        getNextChapterIndex()?.let { seekToChapter(it) }
+    }
+
+    fun seekToPreviousChapter() {
+        getPreviousChapterIndex()?.let { seekToChapter(it) }
     }
 }
 

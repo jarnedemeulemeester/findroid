@@ -155,7 +155,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
                                     val numOfChapters = currentChapters!!.size
                                     playerControlView.setExtraAdGroupMarkers(
-                                        LongArray(numOfChapters) { index -> currentChapters!![index].startPositionTicks / 10000 },
+                                        LongArray(numOfChapters) { index -> currentChapters!![index].startPosition },
                                         BooleanArray(numOfChapters) { false },
                                     )
                                 }

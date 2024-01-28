@@ -6,9 +6,9 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 @Serializable
 data class FindroidChapter(
     /**
-     * The start position ticks.
+     * The start position.
      */
-    val startPositionTicks: Long,
+    val startPosition: Long,
     /**
      * The name.
      */
@@ -18,7 +18,7 @@ data class FindroidChapter(
 fun BaseItemDto.toFindroidChapters(): List<FindroidChapter>? {
     return chapters?.map { chapter ->
         FindroidChapter(
-            startPositionTicks = chapter.startPositionTicks,
+            startPosition = chapter.startPositionTicks / 10000,
             name = chapter.name,
         )
     }

@@ -72,15 +72,13 @@ class PlayerGestureHelper(
                 return true
             }
 
-            @SuppressLint("SetTextI18n")
             override fun onLongPress(e: MotionEvent) {
-                playerView.player?.let {
-                    if (it.isPlaying) {
-                        lastPlaybackSpeed = it.playbackParameters.speed
-                        it.setPlaybackSpeed(playbackSpeedIncrease)
-                        activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
-                        activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
-                    }
+                // This is a temporary solution for chapter skipping.
+                // TODO: Remove this after implementing #636
+                if (appPreferences.playerGesturesChapterSkip) {
+                    handleChapterSkip(e)
+                } else {
+                    enableSpeedIncrease()
                 }
             }
 
@@ -114,6 +112,50 @@ class PlayerGestureHelper(
             }
         },
     )
+
+    @SuppressLint("SetTextI18n")
+    private fun enableSpeedIncrease() {
+        playerView.player?.let {
+            if (it.isPlaying) {
+                lastPlaybackSpeed = it.playbackParameters.speed
+                it.setPlaybackSpeed(playbackSpeedIncrease)
+                activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
+                activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun handleChapterSkip(e: MotionEvent) {
+        if (isControlsLocked) {
+            return
+        }
+
+        val viewWidth = playerView.measuredWidth
+        val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
+
+        // Define the areas and their boundaries
+        val leftmostAreaStart = 0
+        val middleAreaStart = areaWidth * 2
+        val rightmostAreaStart = middleAreaStart + areaWidth
+
+        when (e.x.toInt()) {
+            in leftmostAreaStart until middleAreaStart -> {
+                activity.viewModel.seekToPreviousChapter()
+            }
+            in rightmostAreaStart until viewWidth -> {
+                if (activity.viewModel.isLastChapter() == true) {
+                    playerView.player?.seekToNextMediaItem()
+                    return
+                }
+                activity.viewModel.seekToNextChapter()
+            }
+            else -> return
+        }
+
+        // Show chapter title
+        activity.binding.progressScrubberLayout.visibility = View.VISIBLE
+        activity.binding.progressScrubberText.text = activity.viewModel.getCurrentChapter()?.name ?: ""
+    }
 
     private fun fastForward() {
         val currentPosition = playerView.player?.currentPosition ?: 0

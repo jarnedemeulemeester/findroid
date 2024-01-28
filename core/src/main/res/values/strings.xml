@@ -106,7 +106,7 @@
     <string name="player_gestures_chapter_skip">Chapter gesture</string>
     <string name="player_gestures_vb_summary">Swipe up and down on the right side of the screen to change the volume and on the left side to change the brightness</string>
     <string name="player_gestures_zoom_summary">Pinch to fill the screen with the video</string>
-    <string name="player_gestures_chapter_skip_summary">Long press on Left / Right side to skip chapters</string>
+    <string name="player_gestures_chapter_skip_summary">Long press on Left / Right side to skip chapters (overrides 2x speed gesture)</string>
     <string name="player_gestures_seek_summary">Swipe horizontally to seek forwards or backwards</string>
     <string name="player_brightness_remember">Remember brightness level</string>
     <string name="player_start_maximized">Start maximized</string>
