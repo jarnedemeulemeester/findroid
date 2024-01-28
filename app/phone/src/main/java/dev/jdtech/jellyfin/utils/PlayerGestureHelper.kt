@@ -37,7 +37,7 @@ class PlayerGestureHelper(
      * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
      * Useful on wide-screen phones to remove black bars from some movies.
      */
-    private var isZoomEnabled = false
+    var isZoomEnabled = false
 
     /**
      * Tracks a value during a swipe gesture (between multiple onScroll calls).
@@ -340,7 +340,7 @@ class PlayerGestureHelper(
         },
     ).apply { isQuickScaleEnabled = false }
 
-    private fun updateZoomMode(enabled: Boolean) {
+    fun updateZoomMode(enabled: Boolean) {
         if (playerView.player is MPVPlayer) {
             (playerView.player as MPVPlayer).updateZoomMode(enabled)
         } else {
