@@ -418,7 +418,8 @@ class PlayerGestureHelper(
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         }
 
-        updateZoomMode(appPreferences.playerStartMaximized)
+        isZoomEnabled = appPreferences.playerStartMaximized
+        updateZoomMode(isZoomEnabled)
 
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
