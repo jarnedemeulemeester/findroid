@@ -175,4 +175,16 @@
     <string name="picture_in_picture">画中画</string>
     <string name="picture_in_picture_gesture_summary">在视频播放时使用主页按钮或手势进入画中画模式</string>
     <string name="picture_in_picture_gesture">画中画返回手势</string>
+    <string name="select_user">选择用户</string>
+    <string name="live_tv">电视直播</string>
+    <string name="no_servers_found">没有找到服务器</string>
+    <string name="no_users_found">找不到用户</string>
+    <string name="unmark_as_played">取消标记已播放</string>
+    <string name="add_to_favorites">加入收藏</string>
+    <string name="remove_from_favorites">从收藏中删除</string>
+    <string name="mark_as_played">标记为已播放</string>
+    <string name="player_start_maximized">最大化启动</string>
+    <string name="player_start_maximized_summary">默认以最大化模式打开视频</string>
+    <string name="play">播放</string>
+    <string name="watch_trailer">观看预告</string>
 </resources>
