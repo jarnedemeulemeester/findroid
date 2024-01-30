@@ -346,6 +346,7 @@ class PlayerGestureHelper(
         } else {
             playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
         }
+        isZoomEnabled = enabled
     }
 
     private fun releaseAction(event: MotionEvent) {
@@ -418,8 +419,7 @@ class PlayerGestureHelper(
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         }
 
-        isZoomEnabled = appPreferences.playerStartMaximized
-        updateZoomMode(isZoomEnabled)
+        updateZoomMode(appPreferences.playerStartMaximized)
 
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
