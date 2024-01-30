@@ -27,7 +27,7 @@ enum class CollectionType(val type: String) {
             }
 
             return try {
-                entries.first { it.type == string }
+                entries.first { it.type == string.lowercase() }
             } catch (e: NoSuchElementException) {
                 defaultValue
             }
