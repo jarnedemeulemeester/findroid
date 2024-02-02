@@ -271,7 +271,7 @@ class PlayerActivity : BasePlayerActivity() {
             appPreferences.playerPipGesture &&
             viewModel.player.isPlaying &&
             !isControlsLocked
-            ) {
+        ) {
             pictureInPicture()
         }
     }
