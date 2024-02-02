@@ -270,7 +270,8 @@ class PlayerActivity : BasePlayerActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
             appPreferences.playerPipGesture &&
             viewModel.player.isPlaying &&
-            !isControlsLocked) {
+            !isControlsLocked
+            ) {
             pictureInPicture()
         }
     }
@@ -308,10 +309,10 @@ class PlayerActivity : BasePlayerActivity() {
             .setSourceRectHint(sourceRectHint)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            builder.setAutoEnterEnabled(true);
+            builder.setAutoEnterEnabled(true)
         }
 
-        return builder.build();
+        return builder.build()
     }
 
     private fun pictureInPicture() {
