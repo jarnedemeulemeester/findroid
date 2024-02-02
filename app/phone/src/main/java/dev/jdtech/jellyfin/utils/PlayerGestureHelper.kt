@@ -330,7 +330,7 @@ class PlayerGestureHelper(
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
                 if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
-                     val enableZoom= scaleFactor > 1
+                    val enableZoom = scaleFactor > 1
                     updateZoomMode(enableZoom)
                 }
                 return true
