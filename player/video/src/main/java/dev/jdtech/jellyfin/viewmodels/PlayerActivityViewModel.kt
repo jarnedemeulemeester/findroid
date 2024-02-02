@@ -277,7 +277,7 @@ constructor(
                         } else {
                             item.name
                         }
-                        _uiState.update { it.copy(currentItemTitle = itemTitle) }
+                        _uiState.update { it.copy(currentItemTitle = itemTitle, fileLoaded = false) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 

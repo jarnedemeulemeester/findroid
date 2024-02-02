@@ -160,6 +160,10 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
+
+                                if (appPreferences.playerPipGesture) {
+                                    setPictureInPictureParams(pipParams())
+                                }
                             }
                         }
                     }
@@ -263,7 +267,10 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
-        if (appPreferences.playerPipGesture && viewModel.player.isPlaying && !isControlsLocked) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
+            appPreferences.playerPipGesture &&
+            viewModel.player.isPlaying &&
+            !isControlsLocked) {
             pictureInPicture()
         }
     }
@@ -296,10 +303,15 @@ class PlayerActivity : BasePlayerActivity() {
             )
         }
 
-        return PictureInPictureParams.Builder()
+        val builder = PictureInPictureParams.Builder()
             .setAspectRatio(aspectRatio)
             .setSourceRectHint(sourceRectHint)
-            .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setAutoEnterEnabled(true);
+        }
+
+        return builder.build();
     }
 
     private fun pictureInPicture() {
