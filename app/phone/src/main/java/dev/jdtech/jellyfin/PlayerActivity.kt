@@ -112,10 +112,6 @@ class PlayerActivity : BasePlayerActivity() {
             finish()
         }
 
-        binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
-            finish()
-        }
-
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
