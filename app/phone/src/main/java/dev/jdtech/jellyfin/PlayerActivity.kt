@@ -160,10 +160,6 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
-
-                                if (appPreferences.playerPipGesture) {
-                                    setPictureInPictureParams(pipParams())
-                                }
                             }
                         }
                     }
@@ -173,6 +169,11 @@ class PlayerActivity : BasePlayerActivity() {
                     viewModel.eventsChannelFlow.collect { event ->
                         when (event) {
                             is PlayerEvents.NavigateBack -> finish()
+                            is PlayerEvents.IsPlayingChanged -> {
+                                if (appPreferences.playerPipGesture) {
+                                    setPictureInPictureParams(pipParams(event.isPlaying))
+                                }
+                            }
                         }
                     }
                 }
@@ -276,7 +277,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
     }
 
-    private fun pipParams(): PictureInPictureParams {
+    private fun pipParams(enableAutoEnter: Boolean = false): PictureInPictureParams {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio = binding.playerView.player?.videoSize?.let {
@@ -309,7 +310,7 @@ class PlayerActivity : BasePlayerActivity() {
             .setSourceRectHint(sourceRectHint)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            builder.setAutoEnterEnabled(true)
+            builder.setAutoEnterEnabled(enableAutoEnter)
         }
 
         return builder.build()
