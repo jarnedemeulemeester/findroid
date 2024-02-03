@@ -277,7 +277,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
     }
 
-    private fun pipParams(enableAutoEnter: Boolean = false): PictureInPictureParams {
+    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio = binding.playerView.player?.videoSize?.let {
