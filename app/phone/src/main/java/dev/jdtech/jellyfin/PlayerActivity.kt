@@ -336,7 +336,7 @@ class PlayerActivity : BasePlayerActivity() {
                 binding.playerView.useController = false
                 binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
 
-                wasZoom = playerGestureHelper!!.isZoomEnabled
+                wasZoom = playerGestureHelper?.isZoomEnabled ?: false
                 playerGestureHelper?.updateZoomMode(false)
 
                 // Brightness mode Auto
