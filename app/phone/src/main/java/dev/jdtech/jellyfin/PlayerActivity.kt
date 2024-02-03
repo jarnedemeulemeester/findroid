@@ -55,6 +55,7 @@ class PlayerActivity : BasePlayerActivity() {
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
+    private var wasZoom: Boolean = false
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -308,6 +309,7 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.useController = false
         binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
 
+        wasZoom = playerGestureHelper!!.isZoomEnabled
         playerGestureHelper?.updateZoomMode(false)
 
         // Brightness mode Auto
@@ -327,7 +329,7 @@ class PlayerActivity : BasePlayerActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (!isInPictureInPictureMode) {
             binding.playerView.useController = true
-            playerGestureHelper?.isZoomEnabled?.let { playerGestureHelper!!.updateZoomMode(it) }
+            playerGestureHelper?.updateZoomMode(wasZoom)
 
             // Override auto brightness
             window.attributes = window.attributes.apply {

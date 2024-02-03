@@ -330,8 +330,8 @@ class PlayerGestureHelper(
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
                 if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
-                    isZoomEnabled = scaleFactor > 1
-                    updateZoomMode(isZoomEnabled)
+                    val enableZoom = scaleFactor > 1
+                    updateZoomMode(enableZoom)
                 }
                 return true
             }
@@ -346,6 +346,7 @@ class PlayerGestureHelper(
         } else {
             playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
         }
+        isZoomEnabled = enabled
     }
 
     private fun releaseAction(event: MotionEvent) {
