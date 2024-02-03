@@ -16,4 +16,5 @@
     <string name="player_controls_progress">Idővonal</string>
     <string name="player_trickplay">Trükkös játék</string>
     <string name="player_controls_picture_in_picture">Belépés kép a képben</string>
+    <string name="none">Nincs</string>
 </resources>
