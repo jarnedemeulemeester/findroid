@@ -61,6 +61,8 @@ class PlayerGestureHelper(
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
 
+    private var currentNumberOfPointers: Int = 0
+
     private val tapGestureDetector = GestureDetector(
         playerView.context,
         object : GestureDetector.SimpleOnGestureListener() {
@@ -74,6 +76,12 @@ class PlayerGestureHelper(
 
             @SuppressLint("SetTextI18n")
             override fun onLongPress(e: MotionEvent) {
+                // Disables long press gesture if view is locked
+                if (isControlsLocked) return
+
+                // Stop long press gesture when more than 1 pointer
+                if (currentNumberOfPointers > 1) return
+
                 playerView.player?.let {
                     if (it.isPlaying) {
                         lastPlaybackSpeed = it.playbackParameters.speed
@@ -350,7 +358,7 @@ class PlayerGestureHelper(
     }
 
     private fun releaseAction(event: MotionEvent) {
-        if (event.action == MotionEvent.ACTION_UP) {
+        if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
             activity.binding.gestureVolumeLayout.apply {
                 if (visibility == View.VISIBLE) {
                     removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
@@ -377,6 +385,7 @@ class PlayerGestureHelper(
                     swipeGestureValueTrackerProgress = -1L
                 }
             }
+            currentNumberOfPointers = 0
         }
         if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
             playerView.player?.setPlaybackSpeed(lastPlaybackSpeed)
@@ -424,6 +433,7 @@ class PlayerGestureHelper(
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
             if (playerView.useController) {
+                currentNumberOfPointers = event.pointerCount
                 when (event.pointerCount) {
                     1 -> {
                         tapGestureDetector.onTouchEvent(event)
