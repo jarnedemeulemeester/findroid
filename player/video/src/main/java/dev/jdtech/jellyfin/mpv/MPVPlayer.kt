@@ -34,7 +34,6 @@ import androidx.media3.common.util.Clock
 import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.mpv.MPVLib
 import org.json.JSONArray
 import org.json.JSONException
@@ -43,7 +42,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
-import javax.inject.Inject
 
 @Suppress("SpellCheckingInspection")
 class MPVPlayer(
@@ -58,9 +56,6 @@ class MPVPlayer(
     highQuality: Boolean,
     deband: Boolean,
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
