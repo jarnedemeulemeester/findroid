@@ -101,6 +101,7 @@ constructor(
                 videoOutput = appPreferences.playerMpvVo,
                 audioOutput = appPreferences.playerMpvAo,
                 hwDec = appPreferences.playerMpvHwdec,
+                profile = if (appPreferences.playerMpvHq) "high-quality" else "fast"
             )
         } else {
             val renderersFactory =

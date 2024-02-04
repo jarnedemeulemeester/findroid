@@ -34,6 +34,12 @@
             app:key="pref_player_mpv_ao"
             app:title="@string/pref_player_mpv_ao"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="pref_player_mpv"
+            app:key="pref_player_mpv_hq"
+            app:summary="@string/pref_player_mpv_hq_summary"
+            app:title="@string/pref_player_mpv_hq" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/gestures">
