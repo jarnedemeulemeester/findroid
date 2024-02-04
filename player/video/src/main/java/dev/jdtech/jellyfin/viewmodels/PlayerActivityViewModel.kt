@@ -277,7 +277,7 @@ constructor(
                         } else {
                             item.name
                         }
-                        _uiState.update { it.copy(currentItemTitle = itemTitle) }
+                        _uiState.update { it.copy(currentItemTitle = itemTitle, fileLoaded = false) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
@@ -366,8 +366,14 @@ constructor(
                 }
             }
     }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+        eventsChannel.trySend(PlayerEvents.IsPlayingChanged(isPlaying))
+    }
 }
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
+    data class IsPlayingChanged(val isPlaying: Boolean) : PlayerEvents
 }
