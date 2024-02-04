@@ -40,6 +40,12 @@
             app:key="pref_player_mpv_hq"
             app:summary="@string/pref_player_mpv_hq_summary"
             app:title="@string/pref_player_mpv_hq" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="pref_player_mpv_hq"
+            app:key="pref_player_mpv_deband"
+            app:summary="@string/pref_player_mpv_deband_summary"
+            app:title="@string/pref_player_mpv_deband" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/gestures">

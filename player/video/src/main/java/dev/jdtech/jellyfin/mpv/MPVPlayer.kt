@@ -55,7 +55,8 @@ class MPVPlayer(
     videoOutput: String = "gpu-next",
     audioOutput: String = "audiotrack",
     hwDec: String = "mediacodec",
-    profile: String = "high-quality",
+    highQuality: Boolean,
+    deband: Boolean,
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     @Inject
@@ -83,11 +84,16 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("profile", profile)
+        MPVLib.setOptionString("profile", if (highQuality) "high-quality" else "fast")
         MPVLib.setOptionString("vo", videoOutput)
         MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("opengl-es", "yes")
+
+        if (deband && highQuality)
+            MPVLib.setOptionString("deband", "yes")
+        else
+            MPVLib.setOptionString("deband", "no")
 
         // Hardware video decoding
         MPVLib.setOptionString("hwdec", hwDec)
