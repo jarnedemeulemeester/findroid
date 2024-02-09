@@ -80,7 +80,7 @@ class PlayerGestureHelper(
 
                 // Stop long press gesture when more than 1 pointer
                 if (currentNumberOfPointers > 1) return
-              
+
                 // This is a temporary solution for chapter skipping.
                 // TODO: Remove this after implementing #636
                 if (appPreferences.playerGesturesChapterSkip) {
