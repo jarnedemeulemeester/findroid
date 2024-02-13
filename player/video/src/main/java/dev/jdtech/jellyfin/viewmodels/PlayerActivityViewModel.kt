@@ -378,23 +378,13 @@ constructor(
     private fun getCurrentChapterIndex(): Int? {
         val chapters = getChapters() ?: return null
 
-        var lastChapterIndex: Int? = null
-        for ((index, chapter) in chapters.iterator().withIndex()) {
-            // If the player position is before current chapter, it's the previous chapter.
-            val chapterPosition = floor(chapter.startPosition / 1000.0) * 1000
-            if (lastChapterIndex != null && player.currentPosition < chapterPosition.toLong()) {
-                return lastChapterIndex
+        for (i in chapters.indices.reversed()) {
+            if (chapters[i].startPosition < player.currentPosition) {
+                return i
             }
-
-            lastChapterIndex = index
         }
 
-        // If no chapter was selected, it means we are past last chapter position.
-        return chapters.size - 1
-    }
-
-    fun getCurrentChapter(): PlayerChapter? {
-        return getChapters()?.getOrNull(getCurrentChapterIndex()!!)
+        return null
     }
 
     private fun getNextChapterIndex(): Int? {
