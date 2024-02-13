@@ -371,11 +371,11 @@ constructor(
             }
     }
 
-    fun getChapters(): List<PlayerChapter>? {
+    private fun getChapters(): List<PlayerChapter>? {
         return uiState.value.currentChapters
     }
 
-    fun getCurrentChapterIndex(): Int? {
+    private fun getCurrentChapterIndex(): Int? {
         val chapters = getChapters() ?: return null
 
         var lastChapterIndex: Int? = null
@@ -397,14 +397,14 @@ constructor(
         return getChapters()?.getOrNull(getCurrentChapterIndex()!!)
     }
 
-    fun getNextChapterIndex(): Int? {
+    private fun getNextChapterIndex(): Int? {
         val chapters = getChapters() ?: return null
         val currentChapterIndex = getCurrentChapterIndex() ?: return null
 
         return minOf(chapters.size - 1, currentChapterIndex + 1)
     }
 
-    fun getPreviousChapterIndex(): Int? {
+    private fun getPreviousChapterIndex(): Int? {
         getChapters() ?: return null
 
         return maxOf(0, getCurrentChapterIndex()!! - 1)
@@ -413,18 +413,18 @@ constructor(
     fun isFirstChapter(): Boolean? = getChapters()?.let { getCurrentChapterIndex() == 0 }
     fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
-    fun seekToChapter(chapterIndex: Int) {
-        getChapters()?.getOrNull(chapterIndex)?.let { chapter ->
+    private fun seekToChapter(chapterIndex: Int): PlayerChapter? {
+        return getChapters()?.getOrNull(chapterIndex)?.also { chapter ->
             player.seekTo(chapter.startPosition)
         }
     }
 
-    fun seekToNextChapter() {
-        getNextChapterIndex()?.let { seekToChapter(it) }
+    fun seekToNextChapter(): PlayerChapter? {
+        return getNextChapterIndex()?.let { seekToChapter(it) }
     }
 
-    fun seekToPreviousChapter() {
-        getPreviousChapterIndex()?.let { seekToChapter(it) }
+    fun seekToPreviousChapter(): PlayerChapter? {
+        return getPreviousChapterIndex()?.let { seekToChapter(it) }
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {

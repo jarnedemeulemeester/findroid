@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import timber.log.Timber
 import kotlin.math.abs
@@ -148,21 +149,26 @@ class PlayerGestureHelper(
 
         when (e.x.toInt()) {
             in leftmostAreaStart until middleAreaStart -> {
-                activity.viewModel.seekToPreviousChapter()
+                activity.viewModel.seekToPreviousChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
             }
             in rightmostAreaStart until viewWidth -> {
                 if (activity.viewModel.isLastChapter() == true) {
                     playerView.player?.seekToNextMediaItem()
                     return
                 }
-                activity.viewModel.seekToNextChapter()
+                activity.viewModel.seekToNextChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
             }
             else -> return
         }
+    }
 
-        // Show chapter title
+    private fun displayChapter(chapter: PlayerChapter) {
         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
-        activity.binding.progressScrubberText.text = activity.viewModel.getCurrentChapter()?.name ?: ""
+        activity.binding.progressScrubberText.text = chapter.name ?: ""
     }
 
     private fun fastForward() {
