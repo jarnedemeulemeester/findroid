@@ -40,7 +40,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
-import kotlin.math.floor
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -371,10 +370,18 @@ constructor(
             }
     }
 
+    /**
+     * Get chapters of current item
+     * @return list of [PlayerChapter]
+     */
     private fun getChapters(): List<PlayerChapter>? {
         return uiState.value.currentChapters
     }
 
+    /**
+     * Get the index of the current chapter
+     * @return the index of the current chapter
+     */
     private fun getCurrentChapterIndex(): Int? {
         val chapters = getChapters() ?: return null
 
@@ -387,6 +394,10 @@ constructor(
         return null
     }
 
+    /**
+     * Get the index of the next chapter
+     * @return the index of the next chapter
+     */
     private fun getNextChapterIndex(): Int? {
         val chapters = getChapters() ?: return null
         val currentChapterIndex = getCurrentChapterIndex() ?: return null
@@ -394,25 +405,50 @@ constructor(
         return minOf(chapters.size - 1, currentChapterIndex + 1)
     }
 
+    /**
+     * Get the index of the previous chapter.
+     * Only use this for seeking as it will return the current chapter when player position is more than 5 seconds past the start of the chapter
+     * @return the index of the previous chapter
+     */
     private fun getPreviousChapterIndex(): Int? {
-        getChapters() ?: return null
+        val chapters = getChapters() ?: return null
+        val currentChapterIndex = getCurrentChapterIndex() ?: return null
 
-        return maxOf(0, getCurrentChapterIndex()!! - 1)
+        // Return current chapter when more than 5 seconds past chapter start
+        if (player.currentPosition > chapters[currentChapterIndex].startPosition + 5000L) {
+            return currentChapterIndex
+        }
+
+        return maxOf(0, currentChapterIndex - 1)
     }
 
     fun isFirstChapter(): Boolean? = getChapters()?.let { getCurrentChapterIndex() == 0 }
     fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
+    /**
+     * Seek to chapter
+     * @param [chapterIndex] the index of the chapter to seek to
+     * @return the [PlayerChapter] which has been sought to
+     */
     private fun seekToChapter(chapterIndex: Int): PlayerChapter? {
         return getChapters()?.getOrNull(chapterIndex)?.also { chapter ->
             player.seekTo(chapter.startPosition)
         }
     }
 
+    /**
+     * Seek to the next chapter
+     * @return the [PlayerChapter] which has been sought to
+     */
     fun seekToNextChapter(): PlayerChapter? {
         return getNextChapterIndex()?.let { seekToChapter(it) }
     }
 
+    /**
+     * Seek to the previous chapter
+     * Will seek to start of current chapter if player position is more than 5 seconds past start of chapter
+     * @return the [PlayerChapter] which has been sought to
+     */
     fun seekToPreviousChapter(): PlayerChapter? {
         return getPreviousChapterIndex()?.let { seekToChapter(it) }
     }
