@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.models.User
     version = 4,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
     ],
 )
 @TypeConverters(Converters::class)
