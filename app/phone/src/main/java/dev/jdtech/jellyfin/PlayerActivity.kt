@@ -148,11 +148,11 @@ class PlayerActivity : BasePlayerActivity() {
 
                             // Chapters
                             if (appPreferences.showChapterMarkers && currentChapters != null) {
-                                currentChapters?.let {
+                                currentChapters?.let { chapters ->
                                     val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
-                                    val numOfChapters = currentChapters!!.size
+                                    val numOfChapters = chapters.size
                                     playerControlView.setExtraAdGroupMarkers(
-                                        LongArray(numOfChapters) { index -> currentChapters!![index].startPosition },
+                                        LongArray(numOfChapters) { index -> chapters[index].startPosition },
                                         BooleanArray(numOfChapters) { false },
                                     )
                                 }

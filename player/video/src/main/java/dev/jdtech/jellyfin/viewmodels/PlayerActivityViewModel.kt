@@ -80,7 +80,7 @@ constructor(
 
     private var items: Array<PlayerItem> = arrayOf()
 
-    val trackSelector = DefaultTrackSelector(application)
+    private val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
