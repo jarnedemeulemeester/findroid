@@ -42,7 +42,7 @@ I am developing this application in my spare time.
 - Picture-in-picture mode
 - Media chapters
   - Timeline markers
-  - Chapter navigation guestures
+  - Chapter navigation gestures
 
 ## Planned features
 - Android TV
