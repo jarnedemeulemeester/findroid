@@ -20,6 +20,7 @@ interface FindroidItem {
     val playbackPositionTicks: Long
     val unplayedItemCount: Int?
     val images: FindroidImages
+    val chapters: List<FindroidChapter>?
 }
 
 suspend fun BaseItemDto.toFindroidItem(

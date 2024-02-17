@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import timber.log.Timber
 import kotlin.math.abs
@@ -74,7 +75,6 @@ class PlayerGestureHelper(
                 return true
             }
 
-            @SuppressLint("SetTextI18n")
             override fun onLongPress(e: MotionEvent) {
                 // Disables long press gesture if view is locked
                 if (isControlsLocked) return
@@ -82,13 +82,12 @@ class PlayerGestureHelper(
                 // Stop long press gesture when more than 1 pointer
                 if (currentNumberOfPointers > 1) return
 
-                playerView.player?.let {
-                    if (it.isPlaying) {
-                        lastPlaybackSpeed = it.playbackParameters.speed
-                        it.setPlaybackSpeed(playbackSpeedIncrease)
-                        activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
-                        activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
-                    }
+                // This is a temporary solution for chapter skipping.
+                // TODO: Remove this after implementing #636
+                if (appPreferences.playerGesturesChapterSkip) {
+                    handleChapterSkip(e)
+                } else {
+                    enableSpeedIncrease()
                 }
             }
 
@@ -122,6 +121,55 @@ class PlayerGestureHelper(
             }
         },
     )
+
+    @SuppressLint("SetTextI18n")
+    private fun enableSpeedIncrease() {
+        playerView.player?.let {
+            if (it.isPlaying) {
+                lastPlaybackSpeed = it.playbackParameters.speed
+                it.setPlaybackSpeed(playbackSpeedIncrease)
+                activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
+                activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun handleChapterSkip(e: MotionEvent) {
+        if (isControlsLocked) {
+            return
+        }
+
+        val viewWidth = playerView.measuredWidth
+        val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
+
+        // Define the areas and their boundaries
+        val leftmostAreaStart = 0
+        val middleAreaStart = areaWidth * 2
+        val rightmostAreaStart = middleAreaStart + areaWidth
+
+        when (e.x.toInt()) {
+            in leftmostAreaStart until middleAreaStart -> {
+                activity.viewModel.seekToPreviousChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
+            }
+            in rightmostAreaStart until viewWidth -> {
+                if (activity.viewModel.isLastChapter() == true) {
+                    playerView.player?.seekToNextMediaItem()
+                    return
+                }
+                activity.viewModel.seekToNextChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
+            }
+            else -> return
+        }
+    }
+
+    private fun displayChapter(chapter: PlayerChapter) {
+        activity.binding.progressScrubberLayout.visibility = View.VISIBLE
+        activity.binding.progressScrubberText.text = chapter.name ?: ""
+    }
 
     private fun fastForward() {
         val currentPosition = playerView.player?.currentPosition ?: 0
