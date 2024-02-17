@@ -84,6 +84,10 @@
         <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
+        <action
+            android:id="@+id/action_settingsPlayerFragment_to_playerGesturesFragment"
+            app:destination="@id/playerGesturesFragment"
+            app:popUpTo="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -404,6 +408,16 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/playerGesturesFragment"
+        android:name="dev.jdtech.jellyfin.fragments.PlayerGesturesFragment"
+        android:label="@string/player_gestures"
+        tools:layout="@layout/fragment_player_gestures">
+        <argument
+            android:name="profileId"
+            app:argType="string" />
     </fragment>
 
 </navigation>
