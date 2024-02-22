@@ -53,11 +53,14 @@ ktlint {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+
     implementation(projects.data)
     implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
+    implementation(composeBom)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
