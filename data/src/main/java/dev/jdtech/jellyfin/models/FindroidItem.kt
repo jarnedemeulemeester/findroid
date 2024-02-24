@@ -33,6 +33,7 @@ suspend fun BaseItemDto.toFindroidItem(
         BaseItemKind.SEASON -> toFindroidSeason(jellyfinRepository)
         BaseItemKind.SERIES -> toFindroidShow(jellyfinRepository)
         BaseItemKind.BOX_SET -> toFindroidBoxSet(jellyfinRepository)
+        BaseItemKind.FOLDER -> toFindroidFolder(jellyfinRepository)
         else -> null
     }
 }
