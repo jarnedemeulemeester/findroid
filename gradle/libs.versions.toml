@@ -26,7 +26,7 @@ kotlin = "1.9.22"
 kotlinx-serialization = "1.6.3"
 ksp = "1.9.22-1.0.17"
 ktlint = "12.1.0"
-libmpv = "0.1.4"
+libmpv = "0.2.0"
 material = "1.11.0"
 timber = "5.0.1"
 
