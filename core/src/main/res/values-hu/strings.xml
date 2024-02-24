@@ -185,4 +185,6 @@
     <string name="live_tv">Élő TV</string>
     <string name="play">Lejátszás</string>
     <string name="watch_trailer">Előzetes megtekintése</string>
+    <string name="player_start_maximized_summary">Videó megnyitása alapértelmezés szerint maximalizált módban</string>
+    <string name="player_start_maximized">Indítás maximalizálva</string>
 </resources>

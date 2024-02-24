@@ -40,6 +40,9 @@ I am developing this application in my spare time.
   - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
   - Optionally force software decoding when hardware decoding has issues.
 - Picture-in-picture mode
+- Media chapters
+  - Timeline markers
+  - Chapter navigation gestures
 
 ## Planned features
 - Android TV

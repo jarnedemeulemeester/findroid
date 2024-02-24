@@ -19,6 +19,7 @@ data class FindroidCollection(
     override val unplayedItemCount: Int? = null,
     val type: CollectionType,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>? = null,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidCollection(

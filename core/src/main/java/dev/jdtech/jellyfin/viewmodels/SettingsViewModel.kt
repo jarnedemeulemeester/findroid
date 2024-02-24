@@ -97,7 +97,7 @@ constructor(
                     nameStringResource = R.string.pref_player_mpv_vo,
                     dependencies = listOf(Constants.PREF_PLAYER_MPV),
                     backendName = Constants.PREF_PLAYER_MPV_VO,
-                    backendDefaultValue = "gpu",
+                    backendDefaultValue = "gpu-next",
                     options = R.array.mpv_vos,
                     optionValues = R.array.mpv_vos,
                 ),

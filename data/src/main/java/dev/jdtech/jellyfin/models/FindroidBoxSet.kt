@@ -18,6 +18,7 @@ data class FindroidBoxSet(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>? = null,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidBoxSet(
