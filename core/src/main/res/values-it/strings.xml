@@ -188,4 +188,10 @@
     <string name="skip_intro_button">Salta intro</string>
     <string name="skip_credit_button">Prossimo episodio</string>
     <string name="skip_credit_button_last">Chiudi player</string>
+    <string name="player_gestures_chapter_skip">Gesto per le scene</string>
+    <string name="pref_player_chapter_markers">Marcatori delle scene</string>
+    <string name="pref_player_chapter_markers_summary">Mostra i marcatori delle scene sulla timebar</string>
+    <string name="player_gestures_chapter_skip_summary">Premere a lungo sul lato sinistro/destro per saltare le scene (disattiva il gesto di velocità 2x)</string>
+    <string name="player_start_maximized">Adatta video al display</string>
+    <string name="player_start_maximized_summary">Avvia di default il video adattato al display</string>
 </resources>
