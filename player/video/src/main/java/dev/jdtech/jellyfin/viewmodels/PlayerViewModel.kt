@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.ExternalSubtitle
+import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.channels.Channel
@@ -113,7 +115,7 @@ class PlayerViewModel @Inject internal constructor(
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.seasonId,
-                fields = listOf(ItemFields.MEDIA_SOURCES),
+                fields = listOf(ItemFields.MEDIA_SOURCES, ItemFields.CHAPTERS),
                 startItemId = item.id,
                 limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
             )
@@ -166,7 +168,17 @@ class PlayerViewModel @Inject internal constructor(
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
             externalSubtitles = externalSubtitles,
+            chapters = chapters.toPlayerChapters(),
         )
+    }
+
+    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter>? {
+        return this?.map { chapter ->
+            PlayerChapter(
+                startPosition = chapter.startPosition,
+                name = chapter.name,
+            )
+        }
     }
 }
 

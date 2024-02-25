@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
@@ -29,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
 import androidx.media3.ui.DefaultTimeBar
+import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -148,6 +150,18 @@ class PlayerActivity : BasePlayerActivity() {
                                 it.currentTrickPlay = currentTrickPlay
                             }
 
+                            // Chapters
+                            if (appPreferences.showChapterMarkers && currentChapters != null) {
+                                currentChapters?.let { chapters ->
+                                    val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
+                                    val numOfChapters = chapters.size
+                                    playerControlView.setExtraAdGroupMarkers(
+                                        LongArray(numOfChapters) { index -> chapters[index].startPosition },
+                                        BooleanArray(numOfChapters) { false },
+                                    )
+                                }
+                            }
+
                             // File Loaded
                             if (fileLoaded) {
                                 audioButton.isEnabled = true
@@ -243,9 +257,12 @@ class PlayerActivity : BasePlayerActivity() {
             pictureInPicture()
         }
 
+        // Set marker color
+        val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+        timeBar.setAdMarkerColor(Color.WHITE)
+
         if (appPreferences.playerTrickPlay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
-            val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
             previewScrubListener = PreviewScrubListener(
                 imagePreview,
                 timeBar,

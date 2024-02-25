@@ -47,6 +47,7 @@ constructor(
     val playerGesturesVB get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
     val playerGesturesSeek get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_SEEK, true)
+    val playerGesturesChapterSkip get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_CHAPTER_SKIP, true)
 
     val playerBrightnessRemember get() =
         sharedPreferences.getBoolean(Constants.PREF_PLAYER_BRIGHTNESS_REMEMBER, false)
@@ -79,6 +80,7 @@ constructor(
     val playerIntroSkipper get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_INTRO_SKIPPER, true)
     val playerTrickPlay get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICK_PLAY, true)
     val playerTrickPlayGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICK_PLAY_GESTURE, true)
+    val showChapterMarkers get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_CHAPTER_MARKERS, true)
     val playerPipGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_GESTURE, false)
 
     // Language

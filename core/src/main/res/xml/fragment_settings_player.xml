@@ -60,6 +60,12 @@
             app:summary="@string/player_gestures_seek_summary"
             app:title="@string/player_gestures_seek" />
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="pref_player_gestures"
+            app:key="pref_player_gestures_chapter_skip"
+            app:summary="@string/player_gestures_chapter_skip_summary"
+            app:title="@string/player_gestures_chapter_skip" />
+        <SwitchPreferenceCompat
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
@@ -103,6 +109,13 @@
         app:key="pref_player_trick_play_gesture"
         app:summary="@string/pref_player_trick_play_gesture_summary"
         app:title="@string/pref_player_trick_play_gesture"
+        app:widgetLayout="@layout/preference_material3_switch" />
+  
+      <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="pref_player_chapter_markers"
+        app:summary="@string/pref_player_chapter_markers_summary"
+        app:title="@string/pref_player_chapter_markers"
         app:widgetLayout="@layout/preference_material3_switch" />
 
     <PreferenceCategory app:title="@string/picture_in_picture">
