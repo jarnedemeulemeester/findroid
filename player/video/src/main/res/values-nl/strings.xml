@@ -9,4 +9,12 @@
     <string name="player_controls_rewind">Terugspoelen</string>
     <string name="player_controls_fast_forward">Snel vooruit</string>
     <string name="player_controls_skip_intro">Intro overslaan</string>
+    <string name="player_controls_progress">Voortgangsbalk</string>
+    <string name="none">Geen</string>
+    <string name="player_controls_picture_in_picture">Scherm-in-scherm openen</string>
+    <string name="player_controls_lock">Vergrendelt de speler</string>
+    <string name="player_controls_skip_back">Achteruit springen</string>
+    <string name="player_controls_play_pause">Speel pauze</string>
+    <string name="player_controls_skip_forward">Vooruit springen</string>
+    <string name="player_trickplay">Trickplay</string>
 </resources>
