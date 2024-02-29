@@ -170,4 +170,25 @@
     <string name="downloaded_indicator">Gedownloade indicator</string>
     <string name="pref_player_trick_play">Trick Play</string>
     <string name="player_gestures_seek">Zoek gebaar</string>
+    <string name="no_users_found">Geen gebruikers gevonden</string>
+    <string name="picture_in_picture">Scherm-in-scherm</string>
+    <string name="picture_in_picture_gesture_summary">Gebruik de startknop of een gebaar om beeld-in-beeld te openen terwijl de video wordt afgespeeld</string>
+    <string name="picture_in_picture_gesture">Scherm-in-scherm huisgebaar</string>
+    <string name="player_gestures_chapter_skip">Hoofdstuk gebaar</string>
+    <string name="no_servers_found">Geen servers gevonden</string>
+    <string name="player_gestures_chapter_skip_summary">Druk lang op de linker-/rechterkant om hoofdstukken over te slaan (overschrijft 2x snelheidsgebaar)</string>
+    <string name="watch_trailer">Bekijk trailer</string>
+    <string name="mark_as_played">Markeer als afgespeeld</string>
+    <string name="unmark_as_played">Markering als afgespeeld ongedaan maken</string>
+    <string name="remove_server_address">Verwijder server adres</string>
+    <string name="remove_server_address_dialog_text">Weet u zeker dat u het server adres %1$s wilt verwijderen</string>
+    <string name="player_start_maximized">Gemaximaliseerd starten</string>
+    <string name="player_start_maximized_summary">Open video standaard in de gemaximaliseerde modus</string>
+    <string name="pref_player_chapter_markers">Hoofdstukmarkeringen</string>
+    <string name="pref_player_chapter_markers_summary">Geef hoofdstukmarkeringen weer op de tijdbalk</string>
+    <string name="select_user">Selecteer gebruiker</string>
+    <string name="live_tv">Live TV</string>
+    <string name="play">Afspelen</string>
+    <string name="add_to_favorites">Aan favorieten toevoegen</string>
+    <string name="remove_from_favorites">Van favorieten verwijderen</string>
 </resources>
