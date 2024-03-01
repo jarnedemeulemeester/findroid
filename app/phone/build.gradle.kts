@@ -50,6 +50,10 @@ android {
         register("huawei") {
             dimension = "variant"
         }
+
+        register("chromecast") {
+            dimension = "variant"
+        }
     }
 
     splits {
@@ -109,6 +113,8 @@ dependencies {
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
+    implementation(libs.mediarouter)
+    "chromecastImplementation"(libs.playServicesCastFramework)
     implementation(libs.timber)
 
     implementation(rootProject.files("libs/lib-decoder-ffmpeg-release.aar"))

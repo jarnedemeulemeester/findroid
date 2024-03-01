@@ -1,10 +1,14 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
+import com.google.android.gms.cast.framework.CastContext
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -27,6 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
+    private val jellyfinApi: JellyfinApi,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val eventsChannel = Channel<PlayerItemsEvent>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
@@ -38,6 +44,17 @@ class PlayerViewModel @Inject internal constructor(
         Timber.d("Loading player items for item ${item.id}")
 
         viewModelScope.launch {
+            val session = CastContext.getSharedInstance(context).sessionManager.currentCastSession
+
+            if (session != null) {
+                val thing =
+                    "{\"options\":{\"ids\":[\"${item.id}\"],\"startPositionTicks\":${
+                        item.playbackPositionTicks
+                    },\"serverId\":\"\",\"fullscreen\":true,\"items\":[{\"Id\":\"${item.id}\",\"ServerId\":\"\",\"Name\":\"${item.name}\",\"Type\":\"${item.sources.first().type}\",\"MediaType\":\"${item.sources.first().mediaStreams.first().type}\",\"IsFolder\":false}]},\"command\":\"PlayNow\",\"userId\":\"${jellyfinApi.userId}\",\"deviceId\":\"${jellyfinApi.api.deviceInfo.id}\",\"accessToken\":\"${jellyfinApi.api.accessToken}\",\"serverAddress\":\"${jellyfinApi.api.baseUrl}\",\"serverId\":\"\",\"serverVersion\":\"\",\"receiverName\":\"Living Room TV\",\"subtitleAppearance\":{\"verticalPosition\":-3},\"subtitleBurnIn\":\"\"}"
+                session.sendMessage("urn:x-cast:com.connectsdk", thing)
+                return@launch
+            }
+
             val playbackPosition = item.playbackPositionTicks.div(10000)
 
             try {

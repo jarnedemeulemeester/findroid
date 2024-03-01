@@ -55,6 +55,36 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
+        <receiver
+            android:name=".utils.DownloadReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+
+        <!--            android:theme="@style/Theme.CastVideosDark"-->
+        <activity
+            android:name=".chromecast.ExpandedControlsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".PlayerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+
+        <meta-data
+            android:name=
+                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="dev.jdtech.jellyfin.chromecast.CastOptionsProvider" />
     </application>
 
 </manifest>

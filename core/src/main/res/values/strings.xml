@@ -191,4 +191,5 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="media_route_menu_title">Cast Thing</string>
 </resources>

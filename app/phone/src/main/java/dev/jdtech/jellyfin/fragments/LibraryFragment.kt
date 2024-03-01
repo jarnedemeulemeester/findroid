@@ -20,6 +20,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.CastManager
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -34,7 +35,6 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.SortOrder
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -49,6 +49,9 @@ class LibraryFragment : Fragment() {
 
     @Inject
     lateinit var preferences: AppPreferences
+
+    @Inject
+    lateinit var castManager: CastManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +70,7 @@ class LibraryFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(CoreR.menu.library_menu, menu)
+                    castManager.addCastMenuItem(menu, CoreR.id.media_route_menu_item)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -83,6 +87,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
+
                         CoreR.id.action_sort_order -> {
                             SortDialogFragment(
                                 args.libraryId,
@@ -95,6 +100,7 @@ class LibraryFragment : Fragment() {
                             )
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -127,9 +133,11 @@ class LibraryFragment : Fragment() {
                     val error = Exception((it.refresh as LoadState.Error).error)
                     bindUiStateError(LibraryViewModel.UiState.Error(error))
                 }
+
                 is LoadState.Loading -> {
                     bindUiStateLoading()
                 }
+
                 is LoadState.NotLoading -> {
                     binding.loadingIndicator.isVisible = false
                 }
@@ -207,6 +215,7 @@ class LibraryFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidShow -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
@@ -215,6 +224,7 @@ class LibraryFragment : Fragment() {
                     ),
                 )
             }
+
             is FindroidBoxSet -> {
                 findNavController().navigate(
                     LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(

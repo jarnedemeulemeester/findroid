@@ -25,12 +25,16 @@ import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     private val viewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var castManager: CastManager
 
     @Inject
     lateinit var database: ServerDatabaseDao
@@ -45,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         scheduleUserDataSync()
         applyTheme()
         setupActivity()
+
+        castManager.init(this)
     }
 
     @OptIn(NavigationUiSaveStateControl::class)
@@ -152,4 +158,5 @@ class MainActivity : AppCompatActivity() {
             setTheme(CoreR.style.Theme_FindroidAMOLED)
         }
     }
+
 }

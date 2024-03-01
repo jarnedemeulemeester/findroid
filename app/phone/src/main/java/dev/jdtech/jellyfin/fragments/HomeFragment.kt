@@ -20,6 +20,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.CastManager
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -47,6 +48,8 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+    @Inject
+    lateinit var castManager: CastManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,6 +72,8 @@ class HomeFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(CoreR.menu.home_menu, menu)
+                    castManager.addCastMenuItem(menu, CoreR.id.media_route_menu_item)
+
                     val settings = menu.findItem(CoreR.id.action_settings)
                     val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView

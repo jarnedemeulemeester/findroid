@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.CastManager
 import dev.jdtech.jellyfin.adapters.CollectionListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -27,6 +28,7 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
@@ -38,6 +40,8 @@ class MediaFragment : Fragment() {
     private var originalSoftInputMode: Int? = null
 
     private lateinit var errorDialog: ErrorDialogFragment
+    @Inject
+    lateinit var castManager: CastManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,6 +87,7 @@ class MediaFragment : Fragment() {
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(CoreR.menu.media_menu, menu)
+                    castManager.addCastMenuItem(menu, CoreR.id.media_route_menu_item)
 
                     val search = menu.findItem(CoreR.id.action_search)
                     val searchView = search.actionView as SearchView
