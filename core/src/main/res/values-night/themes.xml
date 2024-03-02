@@ -21,5 +21,6 @@
         <!-- Surface -->
         <item name="android:colorBackground">@android:color/black</item>
         <item name="colorSurface">@android:color/black</item>
+        <item name="colorSurfaceContainer">@android:color/black</item>
     </style>
 </resources>
