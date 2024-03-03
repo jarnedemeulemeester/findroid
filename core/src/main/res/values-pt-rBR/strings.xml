@@ -34,7 +34,7 @@
     <string name="episode_watched_indicator">Indicador de episódio assistido</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">T%1$d:E%2$d - %3$s</string>
-    <string name="next_up">Próximo</string>
+    <string name="next_up">A seguir</string>
     <string name="continue_watching">Continuar assistindo</string>
     <string name="series_poster">Poster da série</string>
     <string name="no_favorites">Você não tem favoritos</string>
@@ -60,13 +60,13 @@
     <string name="unknown_error">Erro desconhecido</string>
     <string name="mpv_player">Reprodutor mpv</string>
     <string name="download_mobile_data">Download usando dados móveis</string>
-    <string name="download_button_description">Download</string>
+    <string name="download_button_description">Baixar</string>
     <string name="person_detail_title">Detalhes</string>
     <string name="movies_label">Filmes</string>
     <string name="shows_label">Series de TV</string>
     <string name="hide">Esconder</string>
     <string name="sort_by">Ordenar por</string>
-    <string name="sort_order">Ordem</string>
+    <string name="sort_order">Ordem de classificação</string>
     <string name="close">Fechar</string>
     <string name="share">Compartilhar</string>
     <string name="image_description_poster">%1$s pôster</string>
@@ -80,7 +80,7 @@
     <string name="check_button_description">Marcar como assistido ou não assistido</string>
     <string name="no_downloads">Você não tem nada baixado</string>
     <string name="settings_category_servers">Servidores</string>
-    <string name="settings_category_download">Downloads</string>
+    <string name="settings_category_download">Transferências</string>
     <string name="settings_use_cache_summary">Armazena imagens no disco para acelerar o tempo de carregamento. Surte efeito após reiniciar o aplicativo.</string>
     <string name="search_hint">Busca filmes, shows, episódios…</string>
     <string name="mpv_player_summary">Usa o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vídeo, áudio e legenda.</string>
@@ -98,7 +98,7 @@
     <string name="app_description">Aplicação Jellyfin nativa de terceiros</string>
     <string name="latest_library">%1$s mais recentes</string>
     <string name="jellyfin_banner">Banner Jellyfin</string>
-    <string name="download_roaming">Download quando estiver em roaming</string>
+    <string name="download_roaming">Baixar quando estiver em roaming</string>
     <string name="settings_cache_size_message">O aplicativo usará essa quantidade em MB do seu espaço em disco para armazenar imagens do servidor Jellyfin. Valores maiores podem ser benéficos em redes mais lentas.</string>
     <string name="episodes_label">Episódios</string>
     <string name="player_gestures">Gestos do reprodutor</string>
