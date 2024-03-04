@@ -54,6 +54,7 @@
     <string name="latest_library">Latest %1$s</string>
     <string name="libraries">Libraries</string>
     <string name="series_poster">Series poster</string>
+    <string name="collection_no_media">This collection does not contain any media</string>
     <string name="no_favorites">You have no favorites</string>
     <string name="no_downloads">You have nothing downloaded</string>
     <string name="search">Search</string>
