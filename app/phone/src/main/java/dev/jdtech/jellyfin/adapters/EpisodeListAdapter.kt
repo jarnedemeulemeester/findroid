@@ -23,6 +23,7 @@ private const val ITEM_VIEW_TYPE_EPISODE = 1
 
 class EpisodeListAdapter(
     private val onClickListener: (item: FindroidEpisode) -> Unit,
+    private val onLongClickListener: (item: FindroidEpisode) -> Unit,
 ) :
     ListAdapter<EpisodeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
@@ -110,6 +111,10 @@ class EpisodeListAdapter(
                 val item = getItem(position) as EpisodeItem.Episode
                 holder.itemView.setOnClickListener {
                     onClickListener(item.episode)
+                }
+                holder.itemView.setOnLongClickListener {
+                    onLongClickListener(item.episode)
+                    true
                 }
                 (holder as EpisodeViewHolder).bind(item.episode)
             }

@@ -19,9 +19,12 @@ import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
 import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,6 +34,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 class DownloadsFragment : Fragment() {
     private lateinit var binding: FragmentDownloadsBinding
     private val viewModel: DownloadsViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -42,9 +46,13 @@ class DownloadsFragment : Fragment() {
     ): View {
         binding = FragmentDownloadsBinding.inflate(inflater, container, false)
 
-        binding.downloadsRecyclerView.adapter = FavoritesListAdapter { item ->
-            navigateToMediaItem(item)
-        }
+        binding.downloadsRecyclerView.adapter = FavoritesListAdapter(
+            onItemClickListener = { item -> navigateToMediaItem(item) },
+            onItemLongClickListener = { item ->
+                binding.loadingIndicator.isVisible = true
+                playerViewModel.loadPlayerItems(item)
+            },
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -76,7 +84,24 @@ class DownloadsFragment : Fragment() {
             }
         }
 
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+            binding.loadingIndicator.isVisible = false
+        }
+
         return binding.root
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+        playerErrorDialogSnackbar(parentFragmentManager, binding.root, error)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     override fun onResume() {
@@ -119,5 +144,15 @@ class DownloadsFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun navigateToPlayerActivity(
+        playerItems: Array<PlayerItem>,
+    ) {
+        findNavController().navigate(
+            DownloadsFragmentDirections.actionDownloadsFragmentToPlayerActivity(
+                playerItems,
+            ),
+        )
     }
 }

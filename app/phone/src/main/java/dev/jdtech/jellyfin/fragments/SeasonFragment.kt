@@ -18,6 +18,8 @@ import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
@@ -71,14 +73,35 @@ class SeasonFragment : Fragment() {
             viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
         }
 
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+            binding.loadingIndicator.isVisible = false
+        }
+
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
 
         binding.episodesRecyclerView.adapter =
-            EpisodeListAdapter { episode ->
-                navigateToEpisodeBottomSheetFragment(episode)
-            }
+            EpisodeListAdapter(
+                onClickListener = { episode -> navigateToEpisodeBottomSheetFragment(episode) },
+                onLongClickListener = { episode ->
+                    binding.loadingIndicator.isVisible = true
+                    playerViewModel.loadPlayerItems(episode)
+                },
+            )
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+        playerErrorDialogSnackbar(parentFragmentManager, binding.root, error)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     override fun onResume() {

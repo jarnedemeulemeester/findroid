@@ -27,9 +27,12 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.playerErrorDialogSnackbar
 import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,6 +43,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     private var originalSoftInputMode: Int? = null
 
@@ -148,6 +152,10 @@ class HomeFragment : Fragment() {
             onItemClickListener = {
                 navigateToMediaItem(it)
             },
+            onItemLongClickListener = {
+                binding.loadingIndicator.isVisible = true
+                playerViewModel.loadPlayerItems(it)
+            },
             onOnlineClickListener = {
                 appPreferences.offlineMode = false
                 activity?.restart()
@@ -161,6 +169,23 @@ class HomeFragment : Fragment() {
         binding.errorLayout.errorDetailsButton.setOnClickListener {
             errorDialog.show(parentFragmentManager, ErrorDialogFragment.TAG)
         }
+
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+            binding.loadingIndicator.isVisible = false
+        }
+    }
+
+    private fun bindPlayerItemsError(error: PlayerViewModel.PlayerItemError) {
+        Timber.e(error.error.message)
+        playerErrorDialogSnackbar(parentFragmentManager, binding.root, error)
+    }
+
+    private fun bindPlayerItems(items: PlayerViewModel.PlayerItems) {
+        navigateToPlayerActivity(items.items.toTypedArray())
     }
 
     private fun bindState() {
@@ -249,6 +274,16 @@ class HomeFragment : Fragment() {
     private fun navigateToSearchResultFragment(query: String) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query),
+        )
+    }
+
+    private fun navigateToPlayerActivity(
+        playerItems: Array<PlayerItem>,
+    ) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToPlayerActivity(
+                playerItems,
+            ),
         )
     }
 }

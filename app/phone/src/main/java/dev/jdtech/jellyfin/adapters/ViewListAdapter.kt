@@ -20,6 +20,7 @@ private const val ITEM_VIEW_TYPE_OFFLINE_CARD = 2
 class ViewListAdapter(
     private val onClickListener: (view: View) -> Unit,
     private val onItemClickListener: (item: FindroidItem) -> Unit,
+    private val onItemLongClickListener: (item: FindroidItem) -> Unit,
     private val onOnlineClickListener: () -> Unit,
 ) : ListAdapter<HomeItem, RecyclerView.ViewHolder>(DiffCallback) {
 
@@ -29,11 +30,12 @@ class ViewListAdapter(
             dataItem: HomeItem.ViewItem,
             onClickListener: (view: View) -> Unit,
             onItemClickListener: (item: FindroidItem) -> Unit,
+            onItemLongClickListener: (item: FindroidItem) -> Unit,
         ) {
             val view = dataItem.view
             binding.viewName.text = binding.viewName.context.resources.getString(CoreR.string.latest_library, view.name)
             binding.itemsRecyclerView.adapter =
-                ViewItemListAdapter(onItemClickListener, fixedWidth = true)
+                ViewItemListAdapter(onItemClickListener, onItemLongClickListener, fixedWidth = true)
             (binding.itemsRecyclerView.adapter as ViewItemListAdapter).submitList(view.items)
             binding.viewAll.setOnClickListener {
                 onClickListener(view)
@@ -46,9 +48,10 @@ class ViewListAdapter(
         fun bind(
             section: HomeItem.Section,
             onClickListener: (item: FindroidItem) -> Unit,
+            onItemLongClickListener: (item: FindroidItem) -> Unit,
         ) {
             binding.sectionName.text = section.homeSection.name.asString(binding.sectionName.context.resources)
-            binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener)
+            binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener, onItemLongClickListener)
             (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.homeSection.items)
         }
     }
@@ -106,11 +109,11 @@ class ViewListAdapter(
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_NEXT_UP -> {
                 val view = getItem(position) as HomeItem.Section
-                (holder as NextUpViewHolder).bind(view, onItemClickListener)
+                (holder as NextUpViewHolder).bind(view, onItemClickListener, onItemLongClickListener)
             }
             ITEM_VIEW_TYPE_VIEW -> {
                 val view = getItem(position) as HomeItem.ViewItem
-                (holder as ViewViewHolder).bind(view, onClickListener, onItemClickListener)
+                (holder as ViewViewHolder).bind(view, onClickListener, onItemClickListener, onItemLongClickListener)
             }
             ITEM_VIEW_TYPE_OFFLINE_CARD -> {
                 (holder as OfflineCardViewHolder).bind(onOnlineClickListener)

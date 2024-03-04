@@ -12,20 +12,22 @@ import dev.jdtech.jellyfin.models.FindroidItem
 
 class FavoritesListAdapter(
     private val onItemClickListener: (item: FindroidItem) -> Unit,
+    private val onItemLongClickListener: (item: FindroidItem) -> Unit = {},
 ) : ListAdapter<FavoriteSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
     class SectionViewHolder(private var binding: FavoriteSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             section: FavoriteSection,
             onItemClickListener: (item: FindroidItem) -> Unit,
+            onItemLongClickListener: (item: FindroidItem) -> Unit,
         ) {
             if (section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) {
                 binding.itemsRecyclerView.adapter =
-                    ViewItemListAdapter(onItemClickListener, fixedWidth = true)
+                    ViewItemListAdapter(onItemClickListener, onItemLongClickListener, fixedWidth = true)
                 (binding.itemsRecyclerView.adapter as ViewItemListAdapter).submitList(section.items)
             } else if (section.id == Constants.FAVORITE_TYPE_EPISODES) {
                 binding.itemsRecyclerView.adapter =
-                    HomeEpisodeListAdapter(onItemClickListener)
+                    HomeEpisodeListAdapter(onItemClickListener, onItemLongClickListener)
                 (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.items)
             }
             binding.sectionName.text = section.name.asString(binding.root.resources)
@@ -57,6 +59,6 @@ class FavoritesListAdapter(
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
         val collection = getItem(position)
-        holder.bind(collection, onItemClickListener)
+        holder.bind(collection, onItemClickListener, onItemLongClickListener)
     }
 }

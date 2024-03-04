@@ -106,6 +106,14 @@ class ShowFragment : Fragment() {
             viewModel.loadData(args.itemId, args.offline)
         }
 
+        playerViewModel.onPlaybackRequested(lifecycleScope) { playerItems ->
+            when (playerItems) {
+                is PlayerViewModel.PlayerItemError -> bindPlayerItemsError(playerItems)
+                is PlayerViewModel.PlayerItems -> bindPlayerItems(playerItems)
+            }
+            binding.loadingIndicator.isVisible = false
+        }
+
         binding.itemActions.trailerButton.setOnClickListener {
             viewModel.item.trailer.let { trailerUri ->
                 val intent = Intent(
@@ -124,10 +132,23 @@ class ShowFragment : Fragment() {
             navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
         }
 
+        binding.nextUp.setOnLongClickListener {
+            binding.loadingIndicator.isVisible = true
+            playerViewModel.loadPlayerItems(viewModel.nextUp!!)
+            true
+        }
+
         binding.seasonsRecyclerView.adapter =
             ViewItemListAdapter(
                 { season ->
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
+                },
+                onItemLongClickListener = { season ->
+                    // Loads the "Next Up" episode if it's matching the selected season,
+                    // otherwise just starts the first episode.
+                    playerViewModel.loadPlayerItems(
+                        viewModel.nextUp?.takeIf { it.seasonId == season.id } ?: season,
+                    )
                 },
                 fixedWidth = true,
             )
