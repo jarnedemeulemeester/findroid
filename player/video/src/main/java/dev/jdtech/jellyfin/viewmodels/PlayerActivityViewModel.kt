@@ -258,7 +258,7 @@ constructor(
                     val seconds = player.currentPosition / 1000.0
                     if (intros.isNotEmpty()) {
                         intros[itemId]?.let { intro ->
-                            if (seconds > intro.showSkipPromptAt && seconds < (intro.hideSkipPromptAt - 1)) {
+                            if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
                                 _uiState.update { it.copy(currentIntro = intro) }
                                 return@let
                             }

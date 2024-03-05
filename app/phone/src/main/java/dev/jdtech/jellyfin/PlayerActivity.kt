@@ -150,6 +150,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     currentIntro?.let {
                                         binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
                                     }
+                                    skipIntroButton.isVisible = false
                                 } else if (currentCredit != null) {
                                     if (binding.playerView.player?.hasNextMediaItem() == true) {
                                         binding.playerView.player?.seekToNext()
