@@ -276,7 +276,6 @@ class MovieFragment : Fragment() {
             if (item.trailer != null) {
                 binding.itemActions.trailerButton.isVisible = true
             }
-            binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
             binding.itemActions.playButton.isEnabled = item.canPlay && item.sources.isNotEmpty()
@@ -309,7 +308,10 @@ class MovieFragment : Fragment() {
                 binding.playtime.text = runTime
             }
             binding.officialRating.text = item.officialRating
-            binding.communityRating.text = item.communityRating.toString()
+            item.communityRating?.also {
+                binding.communityRating.text = it.toString()
+                binding.communityRating.isVisible = true
+            }
 
             videoMetadata.let {
                 with(binding) {

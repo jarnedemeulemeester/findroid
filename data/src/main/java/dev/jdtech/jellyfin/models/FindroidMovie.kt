@@ -56,7 +56,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         runtimeTicks = runTimeTicks ?: 0,
         playbackPositionTicks = userData?.playbackPositionTicks ?: 0,
         premiereDate = premiereDate,
-        communityRating = communityRating,
+        communityRating = communityRating?.let { Math.round(it * 10).div(10F) },
         genres = genres ?: emptyList(),
         people = people ?: emptyList(),
         officialRating = officialRating,
