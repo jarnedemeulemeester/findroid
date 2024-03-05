@@ -42,7 +42,7 @@ constructor(
             try {
                 val items = jellyfinRepository.getItems(
                     parentId = parentId,
-                    sortBy = SortBy.RELEASE_DATE
+                    sortBy = SortBy.RELEASE_DATE,
                 )
 
                 if (items.isEmpty()) {
