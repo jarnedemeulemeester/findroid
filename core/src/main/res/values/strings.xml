@@ -145,9 +145,9 @@
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
-    <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
+    <string name="pref_player_intro_skipper_summary">Requires <i>ConfusedPolarBear\'s</i> <b>Intro Skipper</b> plugin to be installed on the server.\nInstall <i>jumoog\'s</i> <b>Intro Skipper v0.1.8.0 or higher</b> to skip end credits.</string>
     <string name="pref_player_trick_play">Trick Play</string>
-    <string name="pref_player_trick_play_summary">Requires nicknsy\'s Jellyscrub plugin to be installed on the server</string>
+    <string name="pref_player_trick_play_summary">Requires <i>nicknsy\'s</i> <b>Jellyscrub</b> plugin to be installed on the server</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>
     <string name="pref_player_chapter_markers_summary">Display chapter markers on the timebar</string>
     <string name="addresses">Addresses</string>
@@ -192,4 +192,7 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="skip_intro_button">Skip Intro</string>
+    <string name="skip_credit_button">Next episode</string>
+    <string name="skip_credit_button_last">Close player</string>
 </resources>

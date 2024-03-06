@@ -8,5 +8,4 @@
     <string name="player_controls_exit">Player verlassen</string>
     <string name="player_controls_rewind">Wiederholen</string>
     <string name="player_controls_fast_forward">Vorspulen</string>
-    <string name="player_controls_skip_intro">Intro überspringen</string>
 </resources>

@@ -7,7 +7,6 @@
     <string name="player_controls_rewind">Rebobinar</string>&gt;
     <string name="player_controls_exit">Salir de reproductor</string>
     <string name="player_controls_fast_forward">Avanzar</string>
-    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="external">Externo</string>
     <string name="player_controls_skip_back">Saltar atrás</string>
     <string name="player_controls_play_pause">Reproducir pausar</string>

@@ -8,7 +8,6 @@
     <string name="player_controls_exit">Выйти из проигрывателя</string>
     <string name="player_controls_rewind">Перемотка</string>
     <string name="player_controls_fast_forward">Быстрая перемотка</string>
-    <string name="player_controls_skip_intro">Пропустить заставку</string>
     <string name="player_controls_lock">Блокировка</string>
     <string name="player_controls_skip_back">Перейти назад</string>
     <string name="player_controls_play_pause">Плей пауза</string>

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.repository
 
 import androidx.paging.PagingData
+import dev.jdtech.jellyfin.models.Credit
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -85,6 +86,8 @@ interface JellyfinRepository {
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
+
+    suspend fun getCreditTimestamps(itemId: UUID): Credit?
 
     suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?
 

@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.models.Credit
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -17,6 +18,7 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
+import dev.jdtech.jellyfin.models.toCredit
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
@@ -365,6 +367,28 @@ class JellyfinRepositoryImpl(
             try {
                 return@withContext jellyfinApi.api.get<Intro>(
                     "/Episode/{itemId}/IntroTimestamps/v1",
+                    pathParameters,
+                ).content
+            } catch (e: Exception) {
+                return@withContext null
+            }
+        }
+
+    override suspend fun getCreditTimestamps(itemId: UUID): Credit? =
+        withContext(Dispatchers.IO) {
+            val credit = database.getCredit(itemId)?.toCredit()
+
+            if (credit != null) {
+                return@withContext credit
+            }
+
+            // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
+            val pathParameters = mutableMapOf<String, UUID>()
+            pathParameters["itemId"] = itemId
+
+            try {
+                return@withContext jellyfinApi.api.get<Credit>(
+                    "/Episode/{itemId}/IntroSkipperSegments",
                     pathParameters,
                 ).content
             } catch (e: Exception) {

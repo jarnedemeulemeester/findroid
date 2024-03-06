@@ -18,6 +18,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.models.Credits
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -56,6 +57,7 @@ constructor(
         UiState(
             currentItemTitle = "",
             currentIntro = null,
+            currentCredit = null,
             currentTrickPlay = null,
             currentChapters = null,
             fileLoaded = false,
@@ -67,12 +69,14 @@ constructor(
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
+    private val credits: MutableMap<UUID, Credits> = mutableMapOf()
 
     private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
 
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
+        val currentCredit: Credits?,
         val currentTrickPlay: BifData?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
@@ -154,6 +158,9 @@ constructor(
                     if (appPreferences.playerIntroSkipper) {
                         jellyfinRepository.getIntroTimestamps(item.itemId)?.let { intro ->
                             intros[item.itemId] = intro
+                        }
+                        jellyfinRepository.getCreditTimestamps(item.itemId)?.let { credit ->
+                            credits[item.itemId] = credit.credit
                         }
                     }
 
@@ -244,24 +251,35 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
-        val introCheckRunnable = object : Runnable {
+        val skipCheckRunnable = object : Runnable {
             override fun run() {
                 if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                     val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                    intros[itemId]?.let { intro ->
-                        val seconds = player.currentPosition / 1000.0
-                        if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
-                            _uiState.update { it.copy(currentIntro = intro) }
-                            return@let
+                    val seconds = player.currentPosition / 1000.0
+                    if (intros.isNotEmpty()) {
+                        intros[itemId]?.let { intro ->
+                            if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
+                                _uiState.update { it.copy(currentIntro = intro) }
+                                return@let
+                            }
+                            _uiState.update { it.copy(currentIntro = null) }
                         }
-                        _uiState.update { it.copy(currentIntro = null) }
+                    }
+                    if (credits.isNotEmpty()) {
+                        credits[itemId]?.let { credit ->
+                            if (seconds > credit.showSkipPromptAt && seconds < credit.hideSkipPromptAt) {
+                                _uiState.update { it.copy(currentCredit = credit) }
+                                return@let
+                            }
+                            _uiState.update { it.copy(currentCredit = null) }
+                        }
                     }
                 }
                 handler.postDelayed(this, 1000L)
             }
         }
         handler.post(playbackProgressRunnable)
-        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
+        if (intros.isNotEmpty() || credits.isNotEmpty()) handler.post(skipCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -281,6 +299,8 @@ constructor(
                             item.name
                         }
                         _uiState.update { it.copy(currentItemTitle = itemTitle, currentChapters = item.chapters, fileLoaded = false) }
+
+                        _uiState.update { it.copy(currentCredit = null) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 

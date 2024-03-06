@@ -14,6 +14,5 @@
     <string name="player_trickplay">Truques</string>
     <string name="player_controls_play_pause">Pausa na reprodução</string>
     <string name="player_controls_exit">Sair do reprodutor</string>
-    <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
 </resources>

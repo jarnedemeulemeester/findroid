@@ -44,6 +44,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 var isControlsLocked: Boolean = false
 
@@ -134,10 +135,28 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Intro button
-                            skipIntroButton.isVisible = !isInPictureInPictureMode && currentIntro != null
+                            skipIntroButton.isVisible = !isInPictureInPictureMode && (currentIntro != null || currentCredit != null)
+                            skipIntroButton.text = if (currentCredit != null) {
+                                if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                    getString(CoreR.string.skip_credit_button)
+                                } else {
+                                    getString(CoreR.string.skip_credit_button_last)
+                                }
+                            } else {
+                                getString(CoreR.string.skip_intro_button)
+                            }
                             skipIntroButton.setOnClickListener {
-                                currentIntro?.let {
-                                    binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                                if (currentIntro != null) {
+                                    currentIntro?.let {
+                                        binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                                    }
+                                    skipIntroButton.isVisible = false
+                                } else if (currentCredit != null) {
+                                    if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                        binding.playerView.player?.seekToNext()
+                                    } else {
+                                        finish()
+                                    }
                                 }
                             }
 

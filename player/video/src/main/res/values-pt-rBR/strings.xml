@@ -8,7 +8,6 @@
     <string name="player_controls_exit">Sair do reprodutor</string>
     <string name="player_controls_rewind">Retroceder</string>
     <string name="player_controls_fast_forward">Avanço rápido</string>
-    <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="player_controls_lock">Bloqueia o reprodutor</string>
     <string name="player_controls_skip_back">Saltar para trás</string>
     <string name="player_trickplay">Miniatura de pré-visualização</string>
