@@ -99,6 +99,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
                                 binding.itemActions.downloadButton.setIconResource(AndroidR.color.transparent)
                                 binding.itemActions.progressDownload.isIndeterminate = true
                                 binding.itemActions.progressDownload.isVisible = true
+
+                                if (appPreferences.promptPendingDownloads) {
+                                    createPendingDownloadDialog()
+                                }
                             }
 
                             DownloadManager.STATUS_RUNNING -> {
@@ -401,6 +405,21 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
         dialog.show()
     }
 
+    private fun createPendingDownloadDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialog = builder
+            .setTitle(CoreR.string.download_is_pending)
+            .setMessage(CoreR.string.pending_download_message)
+            .setPositiveButton(CoreR.string.go_to_download_settings) { _, _ ->
+                navigateToSettings()
+            }
+            .setNeutralButton(CoreR.string.dismiss) { _, _ ->
+                // Close
+            }
+            .create()
+        dialog.show()
+    }
+
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
@@ -408,6 +427,11 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
             ),
+        )
+    }
+    private fun navigateToSettings() {
+        findNavController().navigate(
+            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToSettingsFragment(),
         )
     }
 
