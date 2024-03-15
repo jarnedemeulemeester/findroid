@@ -32,6 +32,7 @@
     <string name="title_settings">Settings</string>
     <string name="title_download">Downloads</string>
     <string name="view_all">View all</string>
+    <string name="toggle_view">Toggle View</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="retry">Retry</string>
     <string name="genres">Genres</string>
