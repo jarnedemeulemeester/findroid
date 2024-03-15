@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.utils.Downloader
 import dev.jdtech.jellyfin.utils.restart
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -16,6 +17,9 @@ import dev.jdtech.jellyfin.core.R as CoreR
 class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var downloader: Downloader
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
@@ -54,6 +58,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("appInfo")?.setOnPreferenceClickListener {
             findNavController().navigate(TwoPaneSettingsFragmentDirections.actionSettingsFragmentToAboutLibraries())
             true
+        }
+
+        // Re-download pending items when a download preference has changed.
+        // https://stackoverflow.com/questions/29476741/executing-code-after-a-preference-has-been-changed
+        appPreferences.sharedPreferences.registerOnSharedPreferenceChangeListener { _, key ->
+            if (key.startsWith("pref_downloads_")) {
+                downloader.requeuePendingItems()
+            }
         }
     }
 }
