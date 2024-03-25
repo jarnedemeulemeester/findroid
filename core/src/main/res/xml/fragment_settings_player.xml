@@ -37,6 +37,9 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/gestures">
+        <Preference
+            app:key="pref_player_gesture_customizations"
+            app:title="@string/customize_gestures" />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="pref_player_gestures"
