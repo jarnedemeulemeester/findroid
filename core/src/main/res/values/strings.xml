@@ -170,6 +170,10 @@
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
     <string name="downloading_error">Error while downloading</string>
+    <string name="download_season_dialog_title">Download Season</string>
+    <string name="download_season_dialog_question">Which episodes do you want to download?</string>
+    <string name="download_season_dialog_download_all">All Episodes</string>
+    <string name="download_season_dialog_download_unwatched">Unwatched Episodes</string>
     <string name="not_enough_storage">This item requires %1$s of free storage but only %2$s is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
     <string name="select_storage_location">Select storage location</string>
@@ -182,6 +186,7 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
+    <string name="download_season_button_description">Download season</string>
     <string name="no_servers_found">No servers found</string>
     <string name="no_users_found">No users found</string>
     <string name="select_user">Select user</string>
@@ -192,4 +197,5 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="delete_season_button_description">Delete Season</string>
 </resources>
