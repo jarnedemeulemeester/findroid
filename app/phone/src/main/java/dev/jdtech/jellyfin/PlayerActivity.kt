@@ -146,6 +146,10 @@ class PlayerActivity : BasePlayerActivity() {
                                 it.currentTrickPlay = currentTrickPlay
                             }
 
+                            playerGestureHelper?.let {
+                                it.currentTrickPlay = currentTrickPlay
+                            }
+
                             // Chapters
                             if (appPreferences.showChapterMarkers && currentChapters != null) {
                                 currentChapters?.let { chapters ->
