@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsLanguageFragment"
-        app:title="@string/settings_category_language"
-        app:icon="@drawable/ic_languages"/>
+        app:icon="@drawable/ic_languages"
+        app:key="language"
+        app:title="@string/settings_category_language" />
 
     <Preference
         app:icon="@drawable/ic_server"
@@ -23,33 +23,31 @@
         app:title="@string/addresses" />
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
         app:icon="@drawable/ic_palette"
+        app:key="appearance"
         app:title="@string/settings_category_appearance" />
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsDownloadsFragment"
         app:icon="@drawable/ic_download"
-        app:title="@string/settings_category_download"/>
+        app:key="downloads"
+        app:title="@string/settings_category_download" />
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsPlayerFragment"
         app:icon="@drawable/ic_play"
+        app:key="player"
         app:title="@string/settings_category_player" />
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsDeviceFragment"
-        app:title="@string/settings_category_device"
-        app:icon="@drawable/ic_smartphone" />
+        app:icon="@drawable/ic_smartphone"
+        app:key="device"
+        app:title="@string/settings_category_device" />
 
     <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsNetworkFragment"
-        app:title="@string/settings_category_network"
-        app:icon="@drawable/ic_network"/>
+        app:icon="@drawable/ic_network"
+        app:key="network"
+        app:title="@string/settings_category_network" />
 
-    <Preference
-        app:fragment="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
-        app:title="@string/settings_category_cache" />
+    <Preference app:title="@string/settings_category_cache" />
 
     <SwitchPreferenceCompat
         android:defaultValue="false"

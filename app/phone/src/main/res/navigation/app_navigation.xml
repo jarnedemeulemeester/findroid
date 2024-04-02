@@ -6,6 +6,34 @@
     app:startDestination="@+id/homeFragment">
 
     <fragment
+        android:id="@+id/settingsDeviceFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsDeviceFragment"
+        android:label="@string/settings_category_device" />
+    <fragment
+        android:id="@+id/settingsCacheFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsCacheFragment"
+        android:label="@string/settings_category_cache" />
+    <fragment
+        android:id="@+id/settingsDownloadsFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsDownloadsFragment"
+        android:label="@string/settings_category_download" />
+    <fragment
+        android:id="@+id/settingsLanguageFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsLanguageFragment"
+        android:label="@string/settings_category_language" />
+    <fragment
+        android:id="@+id/settingsNetworkFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsNetworkFragment"
+        android:label="@string/settings_category_network" />
+    <fragment
+        android:id="@+id/settingsAppearanceFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment"
+        android:label="@string/settings_category_appearance" />
+    <fragment
+        android:id="@+id/settingsPlayerFragment"
+        android:name="dev.jdtech.jellyfin.fragments.SettingsPlayerFragment"
+        android:label="@string/settings_category_player" />
+    <fragment
         android:id="@+id/homeFragment"
         android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
         android:label="@string/title_home"
@@ -74,16 +102,81 @@
         android:label="@string/title_settings">
         <action
             android:id="@+id/action_navigation_settings_to_serverSelectFragment"
-            app:destination="@id/serverSelectFragment" />
+            app:destination="@id/serverSelectFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_navigation_settings_to_usersFragment"
-            app:destination="@id/usersFragment" />
+            app:destination="@id/usersFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
-            app:destination="@id/serverAddressesFragment" />
+            app:destination="@id/serverAddressesFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_settingsFragment_to_about_libraries"
-            app:destination="@id/about_libraries" />
+            app:destination="@id/about_libraries"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_TwoPaneSettingsFragmentToSettingsDownloadsFragment"
+            app:destination="@id/settingsDownloadsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsDeviceFragment"
+            app:destination="@id/settingsDeviceFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsLanguageFragment"
+            app:destination="@id/settingsLanguageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsNetworkFragment"
+            app:destination="@id/settingsNetworkFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsAppearanceFragment"
+            app:destination="@id/settingsAppearanceFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsCacheFragment"
+            app:destination="@id/settingsCacheFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_twoPaneSettingsFragment_to_settingsPlayerFragment"
+            app:destination="@id/settingsPlayerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
