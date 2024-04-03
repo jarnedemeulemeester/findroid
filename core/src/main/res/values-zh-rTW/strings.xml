@@ -175,4 +175,21 @@
     <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
     <string name="pref_player_trick_play">跳轉預覽</string>
     <string name="temp">臨時文件</string>
+    <string name="no_servers_found">未找到伺服器</string>
+    <string name="no_users_found">未找到相應的用戶</string>
+    <string name="select_user">選擇用戶</string>
+    <string name="live_tv">電視直播</string>
+    <string name="play">播放</string>
+    <string name="watch_trailer">觀看預告</string>
+    <string name="mark_as_played">標記為已播放</string>
+    <string name="unmark_as_played">取消標記為已播放</string>
+    <string name="add_to_favorites">加入收藏夾</string>
+    <string name="remove_from_favorites">從收藏夾中刪除</string>
+    <string name="player_start_maximized">開始最大化</string>
+    <string name="player_start_maximized_summary">預設以最大化模式開啟視頻</string>
+    <string name="player_gestures_chapter_skip">章節手勢</string>
+    <string name="player_gestures_chapter_skip_summary">長按左/右側可跳過章節（覆蓋 2 倍速度手勢）</string>
+    <string name="pref_player_chapter_markers">章節標記</string>
+    <string name="pref_player_chapter_markers_summary">在時間欄上顯示章節標記</string>
+    <string name="collection_no_media">該集合不包含任何媒體</string>
 </resources>
