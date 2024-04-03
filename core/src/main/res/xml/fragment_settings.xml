@@ -47,7 +47,9 @@
         app:key="network"
         app:title="@string/settings_category_network" />
 
-    <Preference app:title="@string/settings_category_cache" />
+    <Preference
+        app:key="cache"
+        app:title="@string/settings_category_cache" />
 
     <SwitchPreferenceCompat
         android:defaultValue="false"

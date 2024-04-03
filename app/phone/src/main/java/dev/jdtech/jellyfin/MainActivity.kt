@@ -92,7 +92,20 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.navView.visibility = when (destination.id) {
-                R.id.twoPaneSettingsFragment, R.id.serverSelectFragment, R.id.addServerFragment, R.id.loginFragment, com.mikepenz.aboutlibraries.R.id.about_libraries_dest, R.id.usersFragment, R.id.serverAddressesFragment -> View.GONE
+                R.id.twoPaneSettingsFragment,
+                R.id.serverSelectFragment,
+                R.id.addServerFragment,
+                R.id.loginFragment,
+                com.mikepenz.aboutlibraries.R.id.about_libraries_dest,
+                R.id.usersFragment,
+                R.id.serverAddressesFragment,
+                R.id.settingsCacheFragment,
+                R.id.settingsNetworkFragment,
+                R.id.settingsDeviceFragment,
+                R.id.settingsPlayerFragment,
+                R.id.settingsDownloadsFragment,
+                R.id.settingsAppearanceFragment,
+                R.id.settingsLanguageFragment -> View.GONE
                 else -> View.VISIBLE
             }
             if (destination.id == com.mikepenz.aboutlibraries.R.id.about_libraries_dest) {
