@@ -105,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.settingsPlayerFragment,
                 R.id.settingsDownloadsFragment,
                 R.id.settingsAppearanceFragment,
-                R.id.settingsLanguageFragment, -> View.GONE
+                R.id.settingsLanguageFragment,
+                -> View.GONE
                 else -> View.VISIBLE
             }
             if (destination.id == com.mikepenz.aboutlibraries.R.id.about_libraries_dest) {
