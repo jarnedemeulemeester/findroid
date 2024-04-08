@@ -28,7 +28,7 @@ suspend fun BaseItemDto.toFindroidItem(
     serverDatabase: ServerDatabaseDao? = null,
 ): FindroidItem? {
     return when (type) {
-        BaseItemKind.MOVIE -> toFindroidMovie(jellyfinRepository, serverDatabase)
+        BaseItemKind.MOVIE, BaseItemKind.VIDEO -> toFindroidMovie(jellyfinRepository, serverDatabase)
         BaseItemKind.EPISODE -> toFindroidEpisode(jellyfinRepository)
         BaseItemKind.SEASON -> toFindroidSeason(jellyfinRepository)
         BaseItemKind.SERIES -> toFindroidShow(jellyfinRepository)
