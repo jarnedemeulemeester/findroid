@@ -1,6 +1,6 @@
 [versions]
 aboutlibraries = "11.1.2"
-android-plugin = "8.3.0"
+android-plugin = "8.3.1"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-compose-bom = "2024.04.00"
