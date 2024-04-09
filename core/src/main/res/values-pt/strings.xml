@@ -165,7 +165,7 @@
     <string name="internal">Interno</string>
     <string name="select_storage_location">Selecione o local de armazenamento</string>
     <string name="storage_unavailable">O local de armazenamento não está disponível</string>
-    <string name="storage_name">%1$s (%2$d MB grátis)</string>
+    <string name="storage_name">%1$s (%2$d MB livre)</string>
     <string name="preparing_download">Preparando para baixar</string>
     <string name="extra_info">Exibir informações extras</string>
     <string name="not_enough_storage">Este item requer %1$s de armazenamento gratuito, mas apenas %2$s está disponível</string>
@@ -175,4 +175,15 @@
     <string name="picture_in_picture_gesture">Gesto inicial imagem em imagem</string>
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="cancel_download_message">Tem certeza de que deseja cancelar a transferência\?</string>
+    <string name="collection_no_media">Esta coleção não contém nenhum conteúdo</string>
+    <string name="player_start_maximized">Inicie maximizado</string>
+    <string name="player_start_maximized_summary">Abra o vídeo no modo maximizado por padrão</string>
+    <string name="no_servers_found">Nenhum servidor encontrado</string>
+    <string name="no_users_found">Nenhum utilizador encontrado</string>
+    <string name="select_user">Seleccione um utilizador</string>
+    <string name="live_tv">TV ao vivo</string>
+    <string name="play">Reproduzir</string>
+    <string name="player_gestures_chapter_skip">Gesto de capítulo</string>
+    <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
+    <string name="pref_player_chapter_markers_summary">Exibir marcadores de capítulo na barra de tempo</string>
 </resources>
