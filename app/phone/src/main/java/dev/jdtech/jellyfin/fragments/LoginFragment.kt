@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,6 +131,10 @@ class LoginFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.loginDisclaimer.text = fromHtml(viewModel.getLoginDisclaimer(), 0)
         }
 
         return binding.root
