@@ -170,4 +170,21 @@
     <string name="stop_download">Download stoppen</string>
     <string name="downloaded_indicator">Download Indikator</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="watch_trailer">Trailer anschauen</string>
+    <string name="remove_from_favorites">Aus Favoriten entfernen</string>
+    <string name="no_servers_found">Keine Server gefunden</string>
+    <string name="no_users_found">Keine Benutzer gefunden</string>
+    <string name="picture_in_picture">Bild-in-Bild</string>
+    <string name="remove_server_address_dialog_text">Bist du sicher, dass du die Server Adresse \"%1$s\" entfernen möchtest?</string>
+    <string name="remove_server_address">Server Adresse entfernen</string>
+    <string name="collection_no_media">Diese Sammlung enthält keine Medien</string>
+    <string name="player_start_maximized">Maximiert starten</string>
+    <string name="player_start_maximized_summary">Video standardmäßig maximiert öffnen</string>
+    <string name="pref_player_chapter_markers">Kapitelmarker</string>
+    <string name="pref_player_chapter_markers_summary">Zeige Kapitelmarker in der Zeitleiste an</string>
+    <string name="select_user">Benutzer auswählen</string>
+    <string name="mark_as_played">Als angesehen markieren</string>
+    <string name="add_to_favorites">Zu Favoriten hinzufügen</string>
+    <string name="player_gestures_chapter_skip">Kapitel Geste</string>
+    <string name="player_gestures_chapter_skip_summary">Drücke lange auf der linken/rechten Seite um Kapitel zu überspringen (überschreibt die 2x-Geschwindigkeitsgesten)</string>
 </resources>
