@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -70,6 +71,11 @@ class MainActivity : AppCompatActivity() {
         if (appPreferences.offlineMode) {
             navView.menu.clear()
             navView.inflateMenu(CoreR.menu.bottom_nav_menu_offline)
+        }
+
+        viewModel.addressChangedOnBoot.observe(this) {
+            val serverName = appPreferences.currentServer?.let { id -> database.getServerCurrentAddress(id)?.address }
+            Toast.makeText(applicationContext, applicationContext.getString(CoreR.string.connected_to_server, serverName), Toast.LENGTH_SHORT).show()
         }
 
         setSupportActionBar(binding.mainToolbar)
