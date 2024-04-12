@@ -29,7 +29,7 @@ I am developing this application in my spare time.
 - ExoPlayer
   - Video codecs: H.263, H.264, H.265, VP8, VP9, AV1 
     - Support depends on Android device
-  - Audio codecs: Vorbis, Opus, FLAC, ALAC, PCM, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
+  - Audio codecs: Vorbis, Opus, FLAC, ALAC, PCM, MP3, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
     - Support provided by ExoPlayer FFmpeg extension
   - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
     - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)

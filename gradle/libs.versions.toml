@@ -1,5 +1,6 @@
 [versions]
 aboutlibraries = "11.1.3"
+android-desugar-jdk-libs = "2.0.4"
 android-plugin = "8.3.2"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
@@ -28,11 +29,13 @@ ksp = "1.9.23-1.0.20"
 ktlint = "12.1.0"
 libmpv = "0.2.0"
 material = "1.11.0"
+media3-ffmpeg-decoder = "1.2.1+1"
 timber = "5.0.1"
 
 [libraries]
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
 aboutlibraries = { group = "com.mikepenz", name = "aboutlibraries", version.ref = "aboutlibraries" }
+android-desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk-libs" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
@@ -76,6 +79,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.ref = "jellyfin" }
 libmpv = { group = "dev.jdtech.mpv", name = "libmpv", version.ref = "libmpv" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+media3-ffmpeg-decoder = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version.ref = "media3-ffmpeg-decoder" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

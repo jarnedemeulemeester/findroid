@@ -61,6 +61,8 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
@@ -109,7 +111,8 @@ dependencies {
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
+    implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.timber)
 
-    implementation(rootProject.files("libs/lib-decoder-ffmpeg-release.aar"))
+    coreLibraryDesugaring(libs.android.desugar.jdk)
 }
