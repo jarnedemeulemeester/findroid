@@ -56,8 +56,12 @@ constructor(
                                 try {
                                     Timber.e("checking ${addressData.address}")
                                     val hostname = addressData.address.removePrefix("https://").removePrefix("http://").split(':')[0].split('/')[0]
-                                    if (InetAddress.getByName(hostname).isReachable(appPreferences.connectTimeout.toInt())) addressData
-                                    else null
+                                    if (InetAddress.getByName(hostname).isReachable(1000)){
+                                        addressData
+                                    }
+                                    else {
+                                        null
+                                    }
                                 } catch (e: UnknownHostException) {
                                     null
                                 }
