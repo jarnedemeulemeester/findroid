@@ -47,9 +47,6 @@ android {
             dimension = "variant"
             isDefault = true
         }
-        register("huawei") {
-            dimension = "variant"
-        }
     }
 
     splits {
