@@ -21,6 +21,8 @@ android {
 
         versionCode = Versions.appCode
         versionName = Versions.appName
+
+        testInstrumentationRunner = "dev.jdtech.jellyfin.HiltTestRunner"
     }
 
     buildTypes {
@@ -112,4 +114,10 @@ dependencies {
     implementation(libs.timber)
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
+
+    androidTestImplementation(libs.androidx.room.runtime)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.androidx.test)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 }
