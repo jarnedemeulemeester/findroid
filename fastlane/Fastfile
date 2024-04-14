@@ -5,7 +5,7 @@ platform :android do
   lane :publish do
     gradle(task: "clean")
     gradle(
-      task: "assemble",
+      task: "app:phone:assemble",
       flavor: "libre",
       build_type: "release",
       print_command: false,
@@ -18,7 +18,7 @@ platform :android do
     )
 
     gradle(
-      task: "bundle",
+      task: "app:phone:bundle",
       flavor: "libre",
       build_type: "release",
       print_command: false,
@@ -31,9 +31,7 @@ platform :android do
     )
 
     upload_to_play_store(
-      aab: "./app/phone/build/outputs/bundle/libreRelease/phone-libre-release.aab",
       track: "production",
-      rollout: 1,
       json_key: ENV["FINDROID_PLAY_API_CREDENTIALS"],
       skip_upload_apk: true,
       sync_image_upload: true
