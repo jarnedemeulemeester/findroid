@@ -31,7 +31,7 @@ platform :android do
     )
 
     upload_to_play_store(
-      aab: "./app/phone/build/outputs/bundle/libreRelease/phone-libre-release.aab"
+      aab: "./app/phone/build/outputs/bundle/libreRelease/phone-libre-release.aab",
       track: "production",
       rollout: 1,
       json_key: ENV["FINDROID_PLAY_API_CREDENTIALS"],
