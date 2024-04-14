@@ -1,0 +1,42 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build and publish"
+  lane :publish do
+    gradle(task: "clean")
+    gradle(
+      task: "assemble",
+      flavor: "libre",
+      build_type: "release",
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => ENV["FINDROID_KEYSTORE"],
+        "android.injected.signing.store.password" => ENV["FINDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["FINDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["FINDROID_KEY_PASSWORD"],
+      }
+    )
+
+    gradle(
+      task: "bundle",
+      flavor: "libre",
+      build_type: "release",
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => ENV["FINDROID_KEYSTORE"],
+        "android.injected.signing.store.password" => ENV["FINDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["FINDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["FINDROID_KEY_PASSWORD"],
+      }
+    )
+
+    upload_to_play_store(
+      aab: "./app/phone/build/outputs/bundle/libreRelease/phone-libre-release.aab"
+      track: "production",
+      rollout: 1,
+      json_key: ENV["FINDROID_PLAY_API_CREDENTIALS"],
+      skip_upload_apk: true,
+      sync_image_upload: true
+    )
+  end
+end
