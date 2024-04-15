@@ -21,6 +21,20 @@ android {
 
         versionCode = Versions.appCode
         versionName = Versions.appName
+
+        testInstrumentationRunner = "dev.jdtech.jellyfin.HiltTestRunner"
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                if (variant.buildType.name == "release") {
+                    val outputFileName = "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
+                    output.outputFileName = outputFileName
+                }
+            }
     }
 
     buildTypes {
@@ -47,9 +61,6 @@ android {
             dimension = "variant"
             isDefault = true
         }
-        register("huawei") {
-            dimension = "variant"
-        }
     }
 
     splits {
@@ -61,6 +72,8 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
@@ -109,7 +122,14 @@ dependencies {
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)
     implementation(libs.material)
+    implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.timber)
 
-    implementation(rootProject.files("libs/lib-decoder-ffmpeg-release.aar"))
+    coreLibraryDesugaring(libs.android.desugar.jdk)
+
+    androidTestImplementation(libs.androidx.room.runtime)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.androidx.test)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 }

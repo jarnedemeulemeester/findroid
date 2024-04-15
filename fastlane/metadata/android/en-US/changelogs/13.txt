@@ -1,0 +1,18 @@
+This update forces a servers database reset! Servers will need to be added again!
+
+New features:
+- Servers database v2
+- Network settings
+  - Request timeout
+  - Connect timeout
+  - Socket timeout
+- Mutli-user support
+
+Improvements:
+- Add series name to episode sheet with navigation
+- Enable predictive back gesture
+- Improve downloads management
+- Upgrade libmpv
+- Handle audio focus
+- Lot's of library upgrades
+- Bugfixes

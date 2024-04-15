@@ -63,7 +63,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
             seriesName = seriesName.orEmpty(),
             seriesId = seriesId!!,
             seasonId = seasonId!!,
-            communityRating = communityRating,
+            communityRating = communityRating?.let { Math.round(it * 10).div(10F) },
             missing = locationType == LocationType.VIRTUAL,
             images = toFindroidImages(jellyfinRepository),
             chapters = toFindroidChapters(),

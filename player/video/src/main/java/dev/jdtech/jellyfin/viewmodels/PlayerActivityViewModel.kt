@@ -101,7 +101,7 @@ constructor(
                 .build()
             player = MPVPlayer(
                 context = application,
-                requestAudioFocus = false,
+                requestAudioFocus = true,
                 trackSelectionParameters = trackSelectionParameters,
                 seekBackIncrement = appPreferences.playerSeekBackIncrement,
                 seekForwardIncrement = appPreferences.playerSeekForwardIncrement,

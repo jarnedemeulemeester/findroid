@@ -1,0 +1,14 @@
+New features:
+- Add option to display extended episode title in player
+- Add option to download over mobile network
+- Add option to disable player gestures and remember screen brightness
+
+Improvements:
+- Expand episode bottom sheet by default
+- Upgrade to Material 3 theme and components
+- Redesign settings using two pane layout
+- Add option to turn off subtitles in player (only ExoPlayer)
+- Enable image caching by default
+- Add support for Vorbis audio codec in mpv player
+
+Plus bugfixes!

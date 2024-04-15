@@ -200,7 +200,9 @@ class PlayerActivity : BasePlayerActivity() {
                             is PlayerEvents.NavigateBack -> finish()
                             is PlayerEvents.IsPlayingChanged -> {
                                 if (appPreferences.playerPipGesture) {
-                                    setPictureInPictureParams(pipParams(event.isPlaying))
+                                    try {
+                                        setPictureInPictureParams(pipParams(event.isPlaying))
+                                    } catch (_: IllegalArgumentException) { }
                                 }
                             }
                         }
