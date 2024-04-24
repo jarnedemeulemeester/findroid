@@ -62,6 +62,7 @@ class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactor
                     .maxSizeBytes(appPreferences.imageCacheSize * 1024L * 1024)
                     .build()
             }
+            .respectCacheHeaders(false)
             .build()
     }
 }
