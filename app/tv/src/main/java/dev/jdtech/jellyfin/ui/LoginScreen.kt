@@ -252,7 +252,7 @@ private fun LoginScreenLayout(
             }
             Text(
                 text = disclaimer ?: "",
-                modifier = Modifier.padding(MaterialTheme.spacings.default)
+                modifier = Modifier.padding(MaterialTheme.spacings.default),
             )
         }
     }
