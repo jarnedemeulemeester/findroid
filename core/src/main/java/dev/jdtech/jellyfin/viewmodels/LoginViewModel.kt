@@ -33,7 +33,7 @@ constructor(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Normal)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Normal())
     val uiState = _uiState.asStateFlow()
     private val _usersState = MutableStateFlow<UsersState>(UsersState.Loading)
     val usersState = _usersState.asStateFlow()
@@ -45,8 +45,10 @@ constructor(
 
     private var quickConnectJob: Job? = null
 
+    private var loginDisclaimer: String? = null
+
     sealed class UiState {
-        data object Normal : UiState()
+        data class Normal(val disclaimer: String? = null) : UiState()
         data object Loading : UiState()
         data class Error(val message: UiText) : UiState()
     }
@@ -63,8 +65,16 @@ constructor(
     }
 
     init {
+        loadDisclaimer()
         loadPublicUsers()
         loadQuickConnectAvailable()
+    }
+
+    private fun loadDisclaimer() {
+        viewModelScope.launch {
+            loginDisclaimer = jellyfinApi.api.brandingApi.getBrandingOptions().content.loginDisclaimer
+            _uiState.emit(UiState.Normal(loginDisclaimer))
+        }
     }
 
     private fun loadPublicUsers() {
@@ -122,7 +132,7 @@ constructor(
 
                 saveAuthenticationResult(authenticationResult)
 
-                _uiState.emit(UiState.Normal)
+                _uiState.emit(UiState.Normal(loginDisclaimer))
                 eventsChannel.send(LoginEvent.NavigateToHome)
             } catch (e: Exception) {
                 val message =
@@ -165,8 +175,6 @@ constructor(
             }
         }
     }
-
-    suspend fun getLoginDisclaimer(): String? = jellyfinApi.api.brandingApi.getBrandingOptions().content.loginDisclaimer
 
     private suspend fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
         val serverInfo by jellyfinApi.systemApi.getPublicSystemInfo()

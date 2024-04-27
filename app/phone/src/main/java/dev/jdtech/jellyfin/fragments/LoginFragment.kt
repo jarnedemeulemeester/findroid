@@ -83,7 +83,7 @@ class LoginFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
-                        is LoginViewModel.UiState.Normal -> bindUiStateNormal()
+                        is LoginViewModel.UiState.Normal -> bindUiStateNormal(uiState)
                         is LoginViewModel.UiState.Error -> bindUiStateError(uiState)
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
                     }
@@ -133,18 +133,18 @@ class LoginFragment : Fragment() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            binding.loginDisclaimer.text = fromHtml(viewModel.getLoginDisclaimer(), 0)
-        }
-
         return binding.root
     }
 
-    private fun bindUiStateNormal() {
+    private fun bindUiStateNormal(uiState: LoginViewModel.UiState.Normal) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
         binding.editTextUsernameLayout.isEnabled = true
         binding.editTextPasswordLayout.isEnabled = true
+
+        uiState.disclaimer?.let { disclaimer ->
+            binding.loginDisclaimer.text = fromHtml(disclaimer, 0)
+        }
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {
