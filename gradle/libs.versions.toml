@@ -35,7 +35,7 @@ ksp = "1.9.23-1.0.20"
 ktlint = "12.1.0"
 libmpv = "0.2.0"
 material = "1.11.0"
-media3-ffmpeg-decoder = "1.3.1+1"
+media3-ffmpeg-decoder = "1.3.1+2"
 timber = "5.0.1"
 
 [libraries]
