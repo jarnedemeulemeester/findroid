@@ -51,12 +51,7 @@ class SortDialogFragment(
                             sortByOptions,
                             currentSortBy.ordinal,
                         ) { dialog, which ->
-                            val sortBy =
-                                if (libraryType == CollectionType.TvShows && sortByValues[which] == SortBy.DATE_PLAYED) {
-                                    SortBy.SERIES_DATE_PLAYED
-                                } else {
-                                    sortByValues[which]
-                                }
+                            val sortBy = sortByValues[which]
                             appPreferences.sortBy = sortBy.name
                             viewModel.loadItems(
                                 parentId,
