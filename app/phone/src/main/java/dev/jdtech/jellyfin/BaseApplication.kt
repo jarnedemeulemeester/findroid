@@ -69,7 +69,7 @@ class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactor
                         chain.proceed(
                             chain.request().newBuilder()
                                 .header("Cache-Control", "stale-if-error")
-                                .build()
+                                .build(),
                         )
                     }
                     .build()
