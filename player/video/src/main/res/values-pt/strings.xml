@@ -16,4 +16,5 @@
     <string name="player_controls_skip_back">Pular para trás</string>
     <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
+    <string name="none">Nenhum</string>
 </resources>

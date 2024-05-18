@@ -97,7 +97,7 @@ constructor(
                 .build()
             player = MPVPlayer(
                 context = application,
-                requestAudioFocus = false,
+                requestAudioFocus = true,
                 trackSelectionParameters = trackSelectionParameters,
                 seekBackIncrement = appPreferences.playerSeekBackIncrement,
                 seekForwardIncrement = appPreferences.playerSeekForwardIncrement,
@@ -186,11 +186,6 @@ constructor(
                 currentMediaItemIndex,
                 startPosition,
             )
-            if (appPreferences.playerMpv) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
-                withContext(Dispatchers.IO) {
-                    Thread.sleep(1)
-                }
-            }
             player.prepare()
             player.play()
             pollPosition(player)

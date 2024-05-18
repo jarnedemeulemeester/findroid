@@ -185,4 +185,11 @@
     <string name="unmark_as_played">Zrušiť označenie pozretého</string>
     <string name="add_to_favorites">Pridať k obľúbeným</string>
     <string name="remove_from_favorites">Odstrániť z obľúbených</string>
+    <string name="collection_no_media">Táto kolekcia neobsahuje žiadne média</string>
+    <string name="player_start_maximized">Začni maximalizovaný</string>
+    <string name="player_start_maximized_summary">Štandardne otvor video v maximalizovanom režime</string>
+    <string name="player_gestures_chapter_skip">Gesto na kapitoly</string>
+    <string name="player_gestures_chapter_skip_summary">Dlhé stlačenie na ľavej / pravej strane pre preskočenie kapitoly (prepíše gesto na 2x rýchlosť)</string>
+    <string name="pref_player_chapter_markers">Značky kapitol</string>
+    <string name="pref_player_chapter_markers_summary">Zobraz značky kapitol na časovej osi</string>
 </resources>

@@ -185,7 +185,9 @@ class PlayerActivity : BasePlayerActivity() {
                             is PlayerEvents.NavigateBack -> finish()
                             is PlayerEvents.IsPlayingChanged -> {
                                 if (appPreferences.playerPipGesture) {
-                                    setPictureInPictureParams(pipParams(event.isPlaying))
+                                    try {
+                                        setPictureInPictureParams(pipParams(event.isPlaying))
+                                    } catch (_: IllegalArgumentException) { }
                                 }
                             }
                         }
@@ -276,7 +278,7 @@ class PlayerActivity : BasePlayerActivity() {
         hideSystemUI()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
 
@@ -285,6 +287,7 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
             appPreferences.playerPipGesture &&
             viewModel.player.isPlaying &&

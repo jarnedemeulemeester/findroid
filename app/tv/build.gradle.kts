@@ -56,6 +56,8 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
@@ -95,12 +97,13 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.tv.foundation)
+    implementation(libs.androidx.tv.material)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.compose.destinations.core)
@@ -108,8 +111,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
-    implementation(libs.androidx.tv.foundation)
-    implementation(libs.androidx.tv.material)
+    implementation(libs.media3.ffmpeg.decoder)
+
+    coreLibraryDesugaring(libs.android.desugar.jdk)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

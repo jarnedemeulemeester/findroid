@@ -24,6 +24,9 @@
         <!-- Surface -->
         <item name="android:colorBackground">@color/neutral_50</item>
         <item name="colorSurface">@color/neutral_100</item>
+        <item name="colorSurfaceContainer">?attr/colorSurface</item>
+        <item name="colorSurfaceContainerLow">?attr/colorSurface</item>
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
 
         <!-- Error -->
         <item name="colorError">@color/red</item>
@@ -51,6 +54,10 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
+    </style>
+
+    <style name="ThemeOverlay.Findroid.DynamicColors" parent="ThemeOverlay.Material3.DynamicColors.DayNight">
+        <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
     </style>
 
     <string-array name="themes">

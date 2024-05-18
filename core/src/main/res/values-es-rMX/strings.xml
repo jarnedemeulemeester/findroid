@@ -172,4 +172,6 @@
     <string name="downloading_error">Ocurrió un error al descargar</string>
     <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
     <string name="remove_server_address">Remover dirección del servidor</string>
+    <string name="collection_no_media">Ésta colección no contiene elementos</string>
+    <string name="player_gestures_chapter_skip">Gesto para cambiar capítulos</string>
 </resources>

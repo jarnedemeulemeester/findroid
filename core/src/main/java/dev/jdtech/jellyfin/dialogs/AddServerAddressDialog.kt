@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.InputType
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -15,13 +16,14 @@ class AddServerAddressDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val editText = EditText(this.context)
         editText.hint = "http://<server_ip>:8096"
+        editText.inputType = InputType.TYPE_TEXT_VARIATION_URI
         return activity?.let { activity ->
             val builder = MaterialAlertDialogBuilder(activity)
             builder
                 .setTitle(getString(R.string.add_server_address))
                 .setView(editText)
                 .setPositiveButton(getString(R.string.add)) { _, _ ->
-                    viewModel.addAddress(editText.text.toString())
+                    viewModel.addAddress(requireContext(), editText.text.toString())
                 }
                 .setNegativeButton(getString(R.string.cancel)) { _, _ ->
                 }

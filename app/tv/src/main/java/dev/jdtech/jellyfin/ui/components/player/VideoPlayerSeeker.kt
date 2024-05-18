@@ -15,7 +15,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
 import androidx.tv.material3.MaterialTheme
@@ -25,7 +24,6 @@ import dev.jdtech.jellyfin.ui.theme.spacings
 import kotlin.time.Duration
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun VideoPlayerSeeker(
     focusRequester: FocusRequester,

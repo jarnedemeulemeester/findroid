@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.fragments
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -170,7 +171,6 @@ class ShowFragment : Fragment() {
             if (item.trailer != null) {
                 binding.itemActions.trailerButton.isVisible = true
             }
-            binding.communityRating.isVisible = item.communityRating != null
             binding.actors.isVisible = actors.isNotEmpty()
 
             // TODO currently the sources of a show is always empty, we need a way to check if sources are available
@@ -212,9 +212,12 @@ class ShowFragment : Fragment() {
                 binding.playtime.text = runTime
             }
             binding.officialRating.text = item.officialRating
-            binding.communityRating.text = item.communityRating.toString()
+            item.communityRating?.also {
+                binding.communityRating.text = item.communityRating.toString()
+                binding.communityRating.isVisible = true
+            }
 
-            binding.info.description.text = item.overview
+            binding.info.description.text = fromHtml(item.overview, 0)
             binding.info.genres.text = genresString
             binding.info.genresGroup.isVisible = item.genres.isNotEmpty()
             binding.info.director.text = director?.name

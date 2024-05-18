@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
 import androidx.compose.ui.zIndex
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.TabRow
 
@@ -35,7 +34,6 @@ import androidx.tv.material3.TabRow
  *
  * This component is adapted from androidx.tv.material3.TabRowDefaults.PillIndicator
  */
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun PillBorderIndicator(
     currentTabPosition: DpRect,
