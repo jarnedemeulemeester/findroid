@@ -19,6 +19,8 @@ import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
 import java.util.UUID
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
@@ -40,9 +42,9 @@ class JellyfinApi(
     }
     val api = jellyfin.createApi(
         httpClientOptions = HttpClientOptions(
-            requestTimeout = requestTimeout,
-            connectTimeout = connectTimeout,
-            socketTimeout = socketTimeout,
+            requestTimeout = requestTimeout.toDuration(DurationUnit.MILLISECONDS),
+            connectTimeout = connectTimeout.toDuration(DurationUnit.MILLISECONDS),
+            socketTimeout = socketTimeout.toDuration(DurationUnit.MILLISECONDS),
         ),
     )
     var userId: UUID? = null

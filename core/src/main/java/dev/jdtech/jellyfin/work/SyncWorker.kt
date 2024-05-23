@@ -40,8 +40,10 @@ class SyncWorker @AssistedInject constructor(
                 val serverAddress = serverWithAddressesAndUsers.addresses.firstOrNull { it.id == server.currentServerAddressId } ?: continue
                 for (user in serverWithAddressesAndUsers.users) {
                     jellyfinApi.apply {
-                        api.baseUrl = serverAddress.address
-                        api.accessToken = user.accessToken
+                        api.update(
+                            baseUrl = serverAddress.address,
+                            accessToken = user.accessToken,
+                        )
                         userId = user.id
                     }
                     val movies = database.getMoviesByServerId(server.id).map { it.toFindroidMovie(database, user.id) }
@@ -76,7 +78,6 @@ class SyncWorker @AssistedInject constructor(
                 }
 
                 jellyfinApi.playStateApi.onPlaybackStopped(
-                    userId = user.id,
                     itemId = item.id,
                     positionTicks = userData.playbackPositionTicks,
                 )

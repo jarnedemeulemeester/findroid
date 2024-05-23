@@ -30,6 +30,8 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.PersonKind
+import org.jellyfin.sdk.model.api.VideoRangeType
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -119,7 +121,7 @@ constructor(
     private suspend fun getActors(item: FindroidMovie): List<BaseItemPerson> {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            actors = item.people.filter { it.type == "Actor" }
+            actors = item.people.filter { it.type == PersonKind.ACTOR }
         }
         return actors
     }
@@ -127,7 +129,7 @@ constructor(
     private suspend fun getDirector(item: FindroidMovie): BaseItemPerson? {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
-            director = item.people.firstOrNull { it.type == "Director" }
+            director = item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
         }
         return director
     }
@@ -135,7 +137,7 @@ constructor(
     private suspend fun getWriters(item: FindroidMovie): List<BaseItemPerson> {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            writers = item.people.filter { it.type == "Writer" }
+            writers = item.people.filter { it.type == PersonKind.WRITER }
         }
         return writers
     }
@@ -213,9 +215,9 @@ constructor(
                                     DisplayProfile.DOLBY_VISION
                                 } else {
                                     when (videoRangeType) {
-                                        DisplayProfile.HDR.raw -> DisplayProfile.HDR
-                                        DisplayProfile.HDR10.raw -> DisplayProfile.HDR10
-                                        DisplayProfile.HLG.raw -> DisplayProfile.HLG
+                                        VideoRangeType.HDR10 -> DisplayProfile.HDR10
+                                        VideoRangeType.HDR10_PLUS -> DisplayProfile.HDR10_PLUS
+                                        VideoRangeType.HLG -> DisplayProfile.HLG
                                         else -> DisplayProfile.SDR
                                     }
                                 },

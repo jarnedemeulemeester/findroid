@@ -18,8 +18,8 @@ enum class Resolution(val raw: String) {
 
 enum class DisplayProfile(val raw: String) {
     SDR("SDR"),
-    HDR("HDR"),
     HDR10("HDR10"),
+    HDR10_PLUS("HDR10+"),
     DOLBY_VISION("Vision"),
     HLG("HLG"),
 }

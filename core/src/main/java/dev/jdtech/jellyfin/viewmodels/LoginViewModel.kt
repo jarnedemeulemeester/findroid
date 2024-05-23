@@ -104,7 +104,7 @@ constructor(
     private fun loadQuickConnectAvailable() {
         viewModelScope.launch {
             try {
-                val isEnabled by jellyfinApi.quickConnectApi.getEnabled()
+                val isEnabled by jellyfinApi.quickConnectApi.getQuickConnectEnabled()
                 if (isEnabled) {
                     _quickConnectUiState.emit(QuickConnectUiState.Normal)
                 }
@@ -155,11 +155,11 @@ constructor(
         }
         quickConnectJob = viewModelScope.launch {
             try {
-                var quickConnectState = jellyfinApi.quickConnectApi.initiate().content
+                var quickConnectState = jellyfinApi.quickConnectApi.initiateQuickConnect().content
                 _quickConnectUiState.emit(QuickConnectUiState.Waiting(quickConnectState.code))
 
                 while (!quickConnectState.authenticated) {
-                    quickConnectState = jellyfinApi.quickConnectApi.connect(quickConnectState.secret).content
+                    quickConnectState = jellyfinApi.quickConnectApi.getQuickConnectState(quickConnectState.secret).content
                     delay(5000L)
                 }
                 val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
@@ -189,7 +189,7 @@ constructor(
         insertUser(appPreferences.currentServer!!, user)
 
         jellyfinApi.apply {
-            api.accessToken = authenticationResult.accessToken
+            api.update(accessToken = authenticationResult.accessToken)
             userId = authenticationResult.user?.id
         }
     }

@@ -61,6 +61,7 @@ import dev.jdtech.jellyfin.viewmodels.MovieViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.PersonKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -343,6 +344,7 @@ private fun MovieScreenLayoutPreview() {
                 director = BaseItemPerson(
                     id = UUID.randomUUID(),
                     name = "Robert Rodriguez",
+                    type = PersonKind.DIRECTOR,
                 ),
                 writers = emptyList(),
                 videoMetadata = VideoMetadata(
