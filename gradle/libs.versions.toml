@@ -30,9 +30,9 @@ hilt = "2.51.1"
 compose-destinations = "1.10.2"
 jellyfin = "1.4.7"
 junit = "4.13.2"
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 kotlinx-serialization = "1.6.3"
-ksp = "1.9.24-1.0.20"
+ksp = "2.0.0-1.0.21"
 ktlint = "12.1.1"
 libmpv = "0.2.0"
 material = "1.12.0"
@@ -107,6 +107,7 @@ android-library = { id = "com.android.library", version.ref = "android-plugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
