@@ -161,7 +161,6 @@
     <string name="amoled_theme">AMOLED donker thema</string>
     <string name="amoled_theme_summary">Gebruik AMOLED thema met een compleet zwarte achtergrond</string>
     <string name="downloading_error">Fout tijdens het downloaden</string>
-    <string name="pref_player_trick_play_summary">Verzoek voor nicknsy\'s Jellyscrub te installeren op de server</string>
     <string name="temp">tijdelijk</string>
     <string name="pref_player_intro_skipper">Intro Overslaan</string>
     <string name="subtitle_chip_text">CC</string>

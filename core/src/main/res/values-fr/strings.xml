@@ -142,7 +142,6 @@
     <string name="add_address">Ajouter une adresse</string>
     <string name="add_server_address">Ajouter l\'adresse d\'un serveur</string>
     <string name="add">Ajouter</string>
-    <string name="pref_player_trick_play_summary">Nécessite que le plugin Jellyscrub de Nicknsy soit installé sur le serveur</string>
     <string name="temp">temporaire</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="player_gestures_seek">Déplacement du curseur de lecture</string>

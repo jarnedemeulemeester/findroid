@@ -136,7 +136,6 @@
     <string name="quick_connect">Quick Connect</string>
     <string name="pref_player_intro_skipper">Intro Skipper 기능</string>
     <string name="pref_player_intro_skipper_summary">서버에 ConfusedPolarBear의 Intro Skipper 플러그인이 설치되어 있어야 합니다.</string>
-    <string name="pref_player_trick_play_summary">nicknsy\'s Jellyscrub 플러그인이 서버에 설치되어 있어야 합니다</string>
     <string name="pref_player_trick_play">Trick Play</string>
     <string name="internal">내부</string>
     <string name="storage_name">%1$s (%2$d MB 사용 가능)</string>

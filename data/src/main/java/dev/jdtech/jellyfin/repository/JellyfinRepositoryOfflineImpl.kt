@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.repository
 
-import android.content.Context
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -14,14 +13,12 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toIntro
-import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -31,11 +28,9 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
-import java.io.File
 import java.util.UUID
 
 class JellyfinRepositoryOfflineImpl(
-    private val context: Context,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
@@ -184,22 +179,8 @@ class JellyfinRepositoryOfflineImpl(
             database.getIntro(itemId)?.toIntro()
         }
 
-    override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
-        withContext(Dispatchers.IO) {
-            database.getTrickPlayManifest(itemId)?.toTrickPlayManifest()
-        }
-
-    override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
-        withContext(Dispatchers.IO) {
-            val trickPlayManifest = database.getTrickPlayManifest(itemId)
-            if (trickPlayManifest != null) {
-                return@withContext File(
-                    context.filesDir,
-                    "trickplay/$itemId.bif",
-                ).readBytes()
-            }
-            null
-        }
+    override suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray? =
+        null
 
     override suspend fun postCapabilities() {}
 

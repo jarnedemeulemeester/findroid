@@ -20,7 +20,6 @@ import dev.jdtech.jellyfin.models.ServerWithAddressAndUser
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.ServerWithUsers
-import dev.jdtech.jellyfin.models.TrickPlayManifestDto
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
 
@@ -146,15 +145,6 @@ interface ServerDatabaseDao {
 
     @Query("UPDATE userdata SET favorite = :favorite WHERE userId = :userId AND itemId = :itemId")
     fun setFavorite(userId: UUID, itemId: UUID, favorite: Boolean)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrickPlayManifest(trickPlayManifestDto: TrickPlayManifestDto)
-
-    @Query("SELECT * FROM trickPlayManifests WHERE itemId = :itemId")
-    fun getTrickPlayManifest(itemId: UUID): TrickPlayManifestDto?
-
-    @Query("DELETE FROM trickPlayManifests WHERE itemId = :itemId")
-    fun deleteTrickPlayManifest(itemId: UUID)
 
     @Query("SELECT * FROM movies ORDER BY name ASC")
     fun getMovies(): List<FindroidMovieDto>

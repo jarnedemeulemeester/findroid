@@ -13,7 +13,6 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
@@ -23,7 +22,6 @@ import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.models.toIntroDto
-import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
@@ -46,15 +44,6 @@ class DownloaderImpl(
         try {
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val intro = jellyfinRepository.getIntroTimestamps(item.id)
-            val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
-            val trickPlayData = if (trickPlayManifest != null) {
-                jellyfinRepository.getTrickPlayData(
-                    item.id,
-                    trickPlayManifest.widthResolutions.max(),
-                )
-            } else {
-                null
-            }
             val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
             if (storageLocation == null || Environment.getExternalStorageState(storageLocation) != Environment.MEDIA_MOUNTED) {
                 return Pair(-1, UiText.StringResource(CoreR.string.storage_unavailable))
@@ -81,9 +70,6 @@ class DownloaderImpl(
                     if (intro != null) {
                         database.insertIntro(intro.toIntroDto(item.id))
                     }
-                    if (trickPlayManifest != null && trickPlayData != null) {
-                        downloadTrickPlay(item, trickPlayManifest, trickPlayData)
-                    }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
                         .setAllowedOverMetered(appPreferences.downloadOverMobileData)
@@ -109,9 +95,6 @@ class DownloaderImpl(
                     downloadExternalMediaStreams(item, source, storageIndex)
                     if (intro != null) {
                         database.insertIntro(intro.toIntroDto(item.id))
-                    }
-                    if (trickPlayManifest != null && trickPlayData != null) {
-                        downloadTrickPlay(item, trickPlayManifest, trickPlayData)
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -175,7 +158,6 @@ class DownloaderImpl(
 
         database.deleteIntro(item.id)
 
-        database.deleteTrickPlayManifest(item.id)
         File(context.filesDir, "trickplay/${item.id}.bif").delete()
     }
 
@@ -231,16 +213,5 @@ class DownloaderImpl(
             val downloadId = downloadManager.enqueue(request)
             database.setMediaStreamDownloadId(id, downloadId)
         }
-    }
-
-    private fun downloadTrickPlay(
-        item: FindroidItem,
-        trickPlayManifest: TrickPlayManifest,
-        byteArray: ByteArray,
-    ) {
-        database.insertTrickPlayManifest(trickPlayManifest.toTrickPlayManifestDto(item.id))
-        File(context.filesDir, "trickplay").mkdirs()
-        val file = File(context.filesDir, "trickplay/${item.id}.bif")
-        file.writeBytes(byteArray)
     }
 }

@@ -32,6 +32,7 @@ data class FindroidEpisode(
     val missing: Boolean = false,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>?,
+    override val trickplayInfo: Map<String, Map<String, FindroidTrickplayInfo>>?,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(
@@ -67,6 +68,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
             missing = locationType == LocationType.VIRTUAL,
             images = toFindroidImages(jellyfinRepository),
             chapters = toFindroidChapters(),
+            trickplayInfo = trickplay?.mapValues { it.value.mapValues { it.value.toFindroidTrickplayInfo() } },
         )
     } catch (_: NullPointerException) {
         null
@@ -97,5 +99,6 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         communityRating = communityRating,
         images = FindroidImages(),
         chapters = chapters,
+        trickplayInfo = null,
     )
 }

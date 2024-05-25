@@ -13,8 +13,10 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -115,7 +117,7 @@ class PlayerViewModel @Inject internal constructor(
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.seasonId,
-                fields = listOf(ItemFields.MEDIA_SOURCES, ItemFields.CHAPTERS),
+                fields = listOf(ItemFields.MEDIA_SOURCES, ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
                 startItemId = item.id,
                 limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
             )
@@ -151,6 +153,22 @@ class PlayerViewModel @Inject internal constructor(
                     },
                 )
             }
+        val trickplayInfo = when (this) {
+            is FindroidSources -> {
+                this.trickplayInfo?.get(mediaSource.id)?.mapValues {
+                    TrickplayInfo(
+                        width = it.value.width,
+                        height = it.value.height,
+                        tileWidth = it.value.tileWidth,
+                        tileHeight = it.value.tileHeight,
+                        thumbnailCount = it.value.thumbnailCount,
+                        interval = it.value.interval,
+                        bandwidth = it.value.bandwidth,
+                    )
+                }
+            }
+            else -> null
+        }
         return PlayerItem(
             name = name,
             itemId = id,
@@ -162,6 +180,7 @@ class PlayerViewModel @Inject internal constructor(
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
+            trickplayInfo = trickplayInfo,
         )
     }
 

@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.SavedStateHandle
@@ -21,11 +23,10 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.bif.BifData
-import dev.jdtech.jellyfin.utils.bif.BifUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.ceil
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -66,12 +68,10 @@ constructor(
 
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
 
-    private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
-
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
-        val currentTrickPlay: BifData?,
+        val currentTrickPlay: Trickplay?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
     )
@@ -278,7 +278,7 @@ constructor(
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
                         if (appPreferences.playerTrickPlay) {
-                            getTrickPlay(item.itemId)
+                            getTrickPlay(item)
                         }
                     }
             } catch (e: Exception) {
@@ -339,28 +339,33 @@ constructor(
         playbackSpeed = speed
     }
 
-    private suspend fun getTrickPlay(itemId: UUID) {
-        if (trickPlays[itemId] != null) return
-        jellyfinRepository.getTrickPlayManifest(itemId)
-            ?.let { trickPlayManifest ->
-                val widthResolution =
-                    trickPlayManifest.widthResolutions.max()
-                Timber.d("Trickplay Resolution: $widthResolution")
+    private suspend fun getTrickPlay(item: PlayerItem) {
+        val trickplayInfo = item.trickplayInfo ?: return
+        val width =
+            trickplayInfo.keys.max()
+        Timber.d("Trickplay Resolution: $width")
 
-                jellyfinRepository.getTrickPlayData(
-                    itemId,
-                    widthResolution,
-                )?.let { byteArray ->
-                    val trickPlayData =
-                        BifUtil.trickPlayDecode(byteArray, widthResolution)
+        val trickplay = trickplayInfo[width]!!
 
-                    trickPlayData?.let { bifData ->
-                        Timber.d("Trickplay Images: ${bifData.imageCount}")
-                        trickPlays[itemId] = bifData
-                        _uiState.update { it.copy(currentTrickPlay = trickPlays[itemId]) }
+        val maxIndex = ceil(trickplay.thumbnailCount.toDouble().div(trickplay.tileWidth * trickplay.tileHeight)).toInt()
+        val bitmaps = mutableListOf<Bitmap>()
+
+        for (i in 0..maxIndex) {
+            jellyfinRepository.getTrickPlayData(
+                item.itemId,
+                width.toInt(),
+                i,
+            )?.let { byteArray ->
+                val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                for (offsetY in 0..<trickplay.height * trickplay.tileHeight step trickplay.height) {
+                    for (offsetX in 0..<trickplay.width * trickplay.tileWidth step trickplay.width) {
+                        val bitmap = Bitmap.createBitmap(fullBitmap, offsetX, offsetY, trickplay.width, trickplay.height)
+                        bitmaps.add(bitmap)
                     }
                 }
             }
+        }
+        _uiState.update { it.copy(currentTrickPlay = Trickplay(trickplay.interval, bitmaps)) }
     }
 
     /**

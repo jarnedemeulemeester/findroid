@@ -146,7 +146,6 @@
     <string name="extra_info_summary">显示关于音频、视频和字幕的详细信息</string>
     <string name="temp">temp</string>
     <string name="pref_player_trick_play">跳转预览</string>
-    <string name="pref_player_trick_play_summary">需要在服务器上安装 nicknsy 的 Jellyscrub 插件</string>
     <string name="amoled_theme">AMOLED 深色模式</string>
     <string name="amoled_theme_summary">使用带有纯黑背景的 AMOLED 主题</string>
     <string name="offline_mode_go_online">上线</string>

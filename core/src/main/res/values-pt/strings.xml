@@ -132,7 +132,6 @@
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="pref_player_intro_skipper">Capitão de introdução</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plugin Confused Polar Bears Intro Skipper esteja instalado no servidor</string>
-    <string name="pref_player_trick_play_summary">Requer que o plugin Jellyscrub do Nicknsy esteja instalado no servidor</string>
     <string name="add_server_address">Adicionar endereço do servidor</string>
     <string name="player_gestures_seek">Procure gesto</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para avançar ou retroceder</string>

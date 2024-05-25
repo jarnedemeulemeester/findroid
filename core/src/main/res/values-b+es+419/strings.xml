@@ -138,7 +138,6 @@
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de ConfusedPolarBear esté instalado en el servidor</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="pref_player_trick_play_summary">Requiere que el complemento Jellyscrub de nicknsy esté instalado en el servidor</string>
     <string name="extra_info_summary">Mostrar información detallada de audio, video y subtítulos</string>
     <string name="offline_mode">Modo desconectado</string>
     <string name="offline_mode_icon">Icono de modo desconectado</string>

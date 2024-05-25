@@ -11,11 +11,3 @@ data class TrickPlayManifestDto(
     val version: String,
     val resolution: Int,
 )
-
-fun TrickPlayManifest.toTrickPlayManifestDto(itemId: UUID): TrickPlayManifestDto {
-    return TrickPlayManifestDto(
-        itemId = itemId,
-        version = version,
-        resolution = widthResolutions.max(),
-    )
-}
