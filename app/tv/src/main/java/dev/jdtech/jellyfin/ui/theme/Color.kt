@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.ui.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.darkColorScheme as darkColorSchemeTv
 
 val PrimaryDark = Color(0xffa1c9ff)
@@ -23,7 +22,6 @@ val ColorScheme = darkColorScheme(
     background = Neutral1000,
 )
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 val ColorSchemeTv = darkColorSchemeTv(
     primary = ColorScheme.primary,
     onPrimary = ColorScheme.onPrimary,

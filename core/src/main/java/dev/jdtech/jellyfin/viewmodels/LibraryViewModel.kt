@@ -61,7 +61,7 @@ constructor(
                     parentId = parentId,
                     includeTypes = itemType,
                     recursive = recursive,
-                    sortBy = sortBy,
+                    sortBy = if (libraryType == CollectionType.TvShows && sortBy == SortBy.DATE_PLAYED) SortBy.SERIES_DATE_PLAYED else sortBy, // Jellyfin uses a different enum for sorting series by data played
                     sortOrder = sortOrder,
                 ).cachedIn(viewModelScope)
                 _uiState.emit(UiState.Normal(items))

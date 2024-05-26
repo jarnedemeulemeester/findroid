@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
@@ -86,7 +86,6 @@ fun LoginScreen(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LoginScreenLayout(
     uiState: LoginViewModel.UiState,
@@ -108,6 +107,14 @@ private fun LoginScreenLayout(
             quickConnectValue = quickConnectUiState.code
         }
         else -> Unit
+    }
+
+    var disclaimer: String? by remember {
+        mutableStateOf(null)
+    }
+
+    if (uiState is LoginViewModel.UiState.Normal) {
+        disclaimer = uiState.disclaimer
     }
 
     val isError = uiState is LoginViewModel.UiState.Error
@@ -241,6 +248,10 @@ private fun LoginScreenLayout(
                     }
                 }
             }
+            Text(
+                text = disclaimer ?: "",
+                modifier = Modifier.padding(MaterialTheme.spacings.default),
+            )
         }
     }
 
@@ -254,7 +265,7 @@ private fun LoginScreenLayout(
 private fun LoginScreenLayoutPreview() {
     FindroidTheme {
         LoginScreenLayout(
-            uiState = LoginViewModel.UiState.Normal,
+            uiState = LoginViewModel.UiState.Normal(),
             quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
             onLoginClick = { _, _ -> },
             onQuickConnectClick = {},

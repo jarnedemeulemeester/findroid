@@ -1,0 +1,9 @@
+Improvements:
+- Replaced oss-licenses-plugin with AboutLibraries.
+- Improved server url discovery, no more http://, https:// or ports required!
+- New error panel to display detailed error messages.
+- Make library images smaller to fit more on one screen.
+
+Fixes:
+- Removed books from home & media screens.
+- Move episode metadata to under the image to adjust for larger font sizes and smaller screens.
