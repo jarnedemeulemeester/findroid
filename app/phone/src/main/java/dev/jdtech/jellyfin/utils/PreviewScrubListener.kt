@@ -9,6 +9,7 @@ import androidx.media3.ui.TimeBar
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.models.Trickplay
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
 class PreviewScrubListener(
@@ -56,6 +57,7 @@ class PreviewScrubListener(
 
         if (currentBitMap != image) {
             scrubbingPreview.load(image) {
+                dispatcher(Dispatchers.Main.immediate)
                 transformations(roundedCorners)
             }
             currentBitMap = image
