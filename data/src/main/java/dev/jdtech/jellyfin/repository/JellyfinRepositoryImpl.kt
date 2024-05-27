@@ -254,6 +254,7 @@ class JellyfinRepositoryImpl(
                 jellyfinApi.userId!!,
                 limit = 24,
                 seriesId = seriesId,
+                enableResumable = false,
             ).content.items
                 .orEmpty()
                 .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
