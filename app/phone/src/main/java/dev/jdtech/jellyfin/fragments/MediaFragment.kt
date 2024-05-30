@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.databinding.FragmentMediaBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -146,7 +147,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun navigateToLibraryFragment(library: FindroidCollection) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             MediaFragmentDirections.actionNavigationMediaToLibraryFragment(
                 libraryId = library.id,
                 libraryName = library.name,
@@ -156,7 +157,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun navigateToSearchResultFragment(query: String) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             MediaFragmentDirections.actionNavigationMediaToSearchResultFragment(query),
         )
     }

@@ -88,7 +88,7 @@ fun ShowScreen(
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
             is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
+                navigator.safeNavigate(PlayerActivityDestination(items = ArrayList(event.items)))
             }
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
@@ -120,7 +120,7 @@ fun ShowScreen(
             showViewModel.toggleFavorite()
         },
         onSeasonClick = { season ->
-            navigator.navigate(SeasonScreenDestination(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name))
+            navigator.safeNavigate(SeasonScreenDestination(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name))
         },
     )
 }

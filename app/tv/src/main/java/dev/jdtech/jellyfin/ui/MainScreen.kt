@@ -173,7 +173,7 @@ private fun MainScreenLayout(
                 ProfileButton(
                     user = user,
                     onClick = {
-                        navigator.navigate(SettingsScreenDestination())
+                        navigator.safeNavigate(SettingsScreenDestination())
                     },
                 )
             }

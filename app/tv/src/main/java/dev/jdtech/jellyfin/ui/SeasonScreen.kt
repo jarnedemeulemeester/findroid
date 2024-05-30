@@ -57,7 +57,7 @@ fun SeasonScreen(
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
             is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
+                navigator.safeNavigate(PlayerActivityDestination(items = ArrayList(event.items)))
             }
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }

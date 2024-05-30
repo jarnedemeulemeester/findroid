@@ -61,13 +61,13 @@ fun LibraryScreen(
         onClick = { item ->
             when (item) {
                 is FindroidMovie -> {
-                    navigator.navigate(MovieScreenDestination(item.id))
+                    navigator.safeNavigate(MovieScreenDestination(item.id))
                 }
                 is FindroidShow -> {
-                    navigator.navigate(ShowScreenDestination(item.id))
+                    navigator.safeNavigate(ShowScreenDestination(item.id))
                 }
                 is FindroidFolder -> {
-                    navigator.navigate(LibraryScreenDestination(item.id, item.name, libraryType))
+                    navigator.safeNavigate(LibraryScreenDestination(item.id, item.name, libraryType))
                 }
             }
         },

@@ -73,7 +73,7 @@ fun UserSelectScreen(
     ObserveAsEvents(userSelectViewModel.eventsChannelFlow) { event ->
         when (event) {
             is UserSelectEvent.NavigateToMain -> {
-                navigator.navigate(MainScreenDestination) {
+                navigator.safeNavigate(MainScreenDestination) {
                     popUpTo(NavGraphs.root) {
                         inclusive = true
                     }
@@ -93,7 +93,7 @@ fun UserSelectScreen(
             userSelectViewModel.loginAsUser(user)
         },
         onAddUserClick = {
-            navigator.navigate(LoginScreenDestination)
+            navigator.safeNavigate(LoginScreenDestination)
         },
     )
 }

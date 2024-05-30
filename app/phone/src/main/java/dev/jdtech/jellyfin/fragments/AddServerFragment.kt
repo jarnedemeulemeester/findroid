@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.DiscoveredServerListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentAddServerBinding
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.AddServerEvent
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import kotlinx.coroutines.launch
@@ -135,6 +136,6 @@ class AddServerFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
+        findNavController().safeNavigate(AddServerFragmentDirections.actionAddServerFragmentToLoginFragment())
     }
 }

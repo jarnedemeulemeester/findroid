@@ -37,6 +37,7 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.MovieEvent
 import dev.jdtech.jellyfin.viewmodels.MovieViewModel
@@ -498,7 +499,7 @@ class MovieFragment : Fragment() {
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             MovieFragmentDirections.actionMovieFragmentToPlayerActivity(
                 playerItems,
             ),
@@ -506,7 +507,7 @@ class MovieFragment : Fragment() {
     }
 
     private fun navigateToPersonDetail(personId: UUID) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             MovieFragmentDirections.actionMovieFragmentToPersonDetailFragment(personId),
         )
     }

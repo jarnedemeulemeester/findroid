@@ -44,7 +44,7 @@ fun LibrariesScreen(
         uiState = delegatedUiState,
         isLoading = isLoading,
         onClick = { libraryId, libraryName, libraryType ->
-            navigator.navigate(LibraryScreenDestination(libraryId, libraryName, libraryType))
+            navigator.safeNavigate(LibraryScreenDestination(libraryId, libraryName, libraryType))
         },
     )
 }

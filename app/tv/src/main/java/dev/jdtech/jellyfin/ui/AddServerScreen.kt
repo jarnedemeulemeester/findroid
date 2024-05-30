@@ -57,7 +57,7 @@ fun AddServerScreen(
     ObserveAsEvents(addServerViewModel.eventsChannelFlow) { event ->
         when (event) {
             is AddServerEvent.NavigateToLogin -> {
-                navigator.navigate(LoginScreenDestination)
+                navigator.safeNavigate(LoginScreenDestination)
             }
         }
     }
