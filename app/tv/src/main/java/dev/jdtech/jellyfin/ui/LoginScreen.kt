@@ -65,7 +65,7 @@ fun LoginScreen(
     ObserveAsEvents(loginViewModel.eventsChannelFlow) { event ->
         when (event) {
             is LoginEvent.NavigateToHome -> {
-                navigator.safeNavigate(MainScreenDestination) {
+                navigator.navigate(MainScreenDestination) {
                     popUpTo(NavGraphs.root) {
                         inclusive = true
                     }

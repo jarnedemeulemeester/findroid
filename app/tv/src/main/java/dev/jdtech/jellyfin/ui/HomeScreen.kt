@@ -60,7 +60,7 @@ fun HomeScreen(
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
             is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.safeNavigate(PlayerActivityDestination(items = ArrayList(event.items)))
+                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
             }
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
@@ -74,10 +74,10 @@ fun HomeScreen(
         onClick = { item ->
             when (item) {
                 is FindroidMovie -> {
-                    navigator.safeNavigate(MovieScreenDestination(item.id))
+                    navigator.navigate(MovieScreenDestination(item.id))
                 }
                 is FindroidShow -> {
-                    navigator.safeNavigate(ShowScreenDestination(item.id))
+                    navigator.navigate(ShowScreenDestination(item.id))
                 }
                 is FindroidEpisode -> {
                     playerViewModel.loadPlayerItems(item = item)

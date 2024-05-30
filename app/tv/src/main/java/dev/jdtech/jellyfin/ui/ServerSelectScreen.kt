@@ -71,10 +71,10 @@ fun ServerSelectScreen(
     ObserveAsEvents(serverSelectViewModel.eventsChannelFlow) { event ->
         when (event) {
             ServerSelectEvent.NavigateToLogin -> {
-                navigator.safeNavigate(UserSelectScreenDestination)
+                navigator.navigate(UserSelectScreenDestination)
             }
             ServerSelectEvent.NavigateToHome -> {
-                navigator.safeNavigate(MainScreenDestination) {
+                navigator.navigate(MainScreenDestination) {
                     popUpTo(NavGraphs.root) {
                         inclusive = true
                     }
@@ -97,7 +97,7 @@ fun ServerSelectScreen(
             )
         },
         onAddServerClick = {
-            navigator.safeNavigate(AddServerScreenDestination)
+            navigator.navigate(AddServerScreenDestination)
         },
     )
 }

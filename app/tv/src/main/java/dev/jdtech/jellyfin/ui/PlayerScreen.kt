@@ -249,7 +249,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
-                        navigator.safeNavigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
+                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
                     },
                 )
                 VideoPlayerMediaButton(
@@ -258,7 +258,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
-                        navigator.safeNavigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
+                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
                     },
                 )
             }

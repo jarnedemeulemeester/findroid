@@ -63,13 +63,13 @@ fun SettingsSubScreen(
     ObserveAsEvents(settingsViewModel.eventsChannelFlow) { event ->
         when (event) {
             is SettingsEvent.NavigateToSettings -> {
-                navigator.safeNavigate(SettingsScreenDestination)
+                navigator.navigate(SettingsScreenDestination)
             }
             is SettingsEvent.NavigateToUsers -> {
-                navigator.safeNavigate(UserSelectScreenDestination)
+                navigator.navigate(UserSelectScreenDestination)
             }
             is SettingsEvent.NavigateToServers -> {
-                navigator.safeNavigate(ServerSelectScreenDestination)
+                navigator.navigate(ServerSelectScreenDestination)
             }
         }
     }
