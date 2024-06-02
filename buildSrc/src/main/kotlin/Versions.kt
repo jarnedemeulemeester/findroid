@@ -11,6 +11,5 @@ object Versions {
 
     val java = JavaVersion.VERSION_17
 
-    const val composeCompiler = "1.5.11"
     const val ktlint = "0.50.0"
 }

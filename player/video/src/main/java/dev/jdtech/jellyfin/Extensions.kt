@@ -9,7 +9,7 @@ fun List<Tracks.Group>.getTrackNames(): Array<String> {
         val format = group.mediaTrackGroup.getFormat(0)
         nameParts.run {
             add(format.label)
-            add(format.language?.let { Locale(it).displayLanguage })
+            add(format.language?.let { Locale(it.split("-").last()).displayLanguage })
             add(format.codecs)
             filterNotNull().joinToString(separator = " - ")
         }

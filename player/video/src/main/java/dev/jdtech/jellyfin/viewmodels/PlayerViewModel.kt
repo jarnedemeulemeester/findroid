@@ -139,20 +139,13 @@ class PlayerViewModel @Inject internal constructor(
                 mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
             }
             .map { mediaStream ->
-                // Temp fix for vtt
-                // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.path!!
-                if (mediaStream.codec == "webvtt") {
-                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
-                }
-
                 ExternalSubtitle(
                     mediaStream.title,
                     mediaStream.language,
-                    Uri.parse(deliveryUrl),
+                    Uri.parse(mediaStream.path!!),
                     when (mediaStream.codec) {
                         "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                        "webvtt" -> MimeTypes.TEXT_VTT
+                        "webvtt" -> MimeTypes.APPLICATION_SUBRIP
                         "ass" -> MimeTypes.TEXT_SSA
                         else -> MimeTypes.TEXT_UNKNOWN
                     },

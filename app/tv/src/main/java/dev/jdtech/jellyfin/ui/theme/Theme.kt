@@ -10,12 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.NonInteractiveSurfaceDefaults
 import androidx.tv.material3.Surface
+import androidx.tv.material3.SurfaceDefaults
 import androidx.tv.material3.MaterialTheme as MaterialThemeTv
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun FindroidTheme(
     content: @Composable BoxScope.() -> Unit,
@@ -34,7 +32,7 @@ fun FindroidTheme(
                 shapes = shapesTv,
                 content = {
                     Surface(
-                        colors = NonInteractiveSurfaceDefaults.colors(
+                        colors = SurfaceDefaults.colors(
                             containerColor = androidx.tv.material3.MaterialTheme.colorScheme.background,
                         ),
                         shape = RectangleShape,
