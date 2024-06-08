@@ -68,13 +68,13 @@ class SyncWorker @AssistedInject constructor(
 
             try {
                 when (userData.played) {
-                    true -> jellyfinApi.playStateApi.markPlayedItem(user.id, item.id)
-                    false -> jellyfinApi.playStateApi.markUnplayedItem(user.id, item.id)
+                    true -> jellyfinApi.playStateApi.markPlayedItem(item.id, user.id)
+                    false -> jellyfinApi.playStateApi.markUnplayedItem(item.id, user.id)
                 }
 
                 when (userData.favorite) {
-                    true -> jellyfinApi.userLibraryApi.markFavoriteItem(user.id, item.id)
-                    false -> jellyfinApi.userLibraryApi.unmarkFavoriteItem(user.id, item.id)
+                    true -> jellyfinApi.userLibraryApi.markFavoriteItem(item.id, user.id)
+                    false -> jellyfinApi.userLibraryApi.unmarkFavoriteItem(item.id, user.id)
                 }
 
                 jellyfinApi.playStateApi.onPlaybackStopped(
