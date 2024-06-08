@@ -23,3 +23,15 @@ fun TrickplayInfo.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
         bandwidth = bandwidth,
     )
 }
+
+fun FindroidTrickplayInfoDto.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
+    return FindroidTrickplayInfo(
+        width = width,
+        height = height,
+        tileWidth = tileWidth,
+        tileHeight = tileHeight,
+        thumbnailCount = thumbnailCount,
+        interval = interval,
+        bandwidth = bandwidth,
+    )
+}

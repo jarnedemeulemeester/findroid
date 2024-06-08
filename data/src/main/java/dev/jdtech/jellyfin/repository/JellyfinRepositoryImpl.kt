@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.repository
 
+import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -46,9 +47,11 @@ import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
+import java.io.File
 import java.util.UUID
 
 class JellyfinRepositoryImpl(
+    private val context: Context,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
@@ -358,6 +361,13 @@ class JellyfinRepositoryImpl(
     override suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         withContext(Dispatchers.IO) {
             try {
+                try {
+                    val sources = File(context.filesDir, "trickplay/$itemId").listFiles()
+                    if (sources != null) {
+                        return@withContext File(sources.first(), index.toString()).readBytes()
+                    }
+                } catch (_: Exception) { }
+
                 return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content.toByteArray()
             } catch (e: Exception) {
                 return@withContext null

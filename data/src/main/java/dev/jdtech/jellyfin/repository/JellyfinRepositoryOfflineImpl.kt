@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.repository
 
+import android.content.Context
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
@@ -28,9 +29,11 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
+import java.io.File
 import java.util.UUID
 
 class JellyfinRepositoryOfflineImpl(
+    private val context: Context,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
@@ -180,7 +183,14 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray? =
-        null
+        withContext(Dispatchers.IO) {
+            try {
+                val sources = File(context.filesDir, "trickplay/$itemId").listFiles() ?: return@withContext null
+                File(sources.first(), index.toString()).readBytes()
+            } catch (e: Exception) {
+                null
+            }
+        }
 
     override suspend fun postCapabilities() {}
 

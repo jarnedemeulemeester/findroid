@@ -77,6 +77,13 @@ suspend fun BaseItemDto.toFindroidEpisode(
 
 fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID): FindroidEpisode {
     val userData = database.getUserDataOrCreateNew(id, userId)
+    val sources = database.getSources(id).map { it.toFindroidSource(database) }
+    val trickplayInfos = mutableMapOf<String, Map<String, FindroidTrickplayInfo>>()
+    for (source in sources) {
+        database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
+            trickplayInfos[source.id] = mapOf(it.width.toString() to it)
+        }
+    }
     return FindroidEpisode(
         id = id,
         name = name,
@@ -85,7 +92,7 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         indexNumber = indexNumber,
         indexNumberEnd = indexNumberEnd,
         parentIndexNumber = parentIndexNumber,
-        sources = database.getSources(id).map { it.toFindroidSource(database) },
+        sources = sources,
         played = userData.played,
         favorite = userData.favorite,
         canPlay = true,
@@ -99,6 +106,6 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         communityRating = communityRating,
         images = FindroidImages(),
         chapters = chapters,
-        trickplayInfo = null,
+        trickplayInfo = trickplayInfos,
     )
 }

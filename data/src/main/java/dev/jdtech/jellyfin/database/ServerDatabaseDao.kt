@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.models.FindroidMovieDto
 import dev.jdtech.jellyfin.models.FindroidSeasonDto
 import dev.jdtech.jellyfin.models.FindroidShowDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
+import dev.jdtech.jellyfin.models.FindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.IntroDto
 import dev.jdtech.jellyfin.models.Server
@@ -260,4 +261,10 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM episodes WHERE serverId = :serverId AND name LIKE '%' || :name || '%'")
     fun searchEpisodes(serverId: String, name: String): List<FindroidEpisodeDto>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTrickplayInfo(trickplayInfoDto: FindroidTrickplayInfoDto)
+
+    @Query("SELECT * FROM trickplayInfos WHERE sourceId = :sourceId")
+    fun getTrickplayInfo(sourceId: String): FindroidTrickplayInfoDto?
 }
