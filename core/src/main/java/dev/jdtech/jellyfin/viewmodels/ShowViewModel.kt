@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemPerson
+import org.jellyfin.sdk.model.api.PersonKind
 import java.util.UUID
 import javax.inject.Inject
 
@@ -100,7 +101,7 @@ constructor(
     private suspend fun getActors(item: FindroidShow): List<BaseItemPerson> {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            actors = item.people.filter { it.type == "Actor" }
+            actors = item.people.filter { it.type == PersonKind.ACTOR }
         }
         return actors
     }
@@ -108,7 +109,7 @@ constructor(
     private suspend fun getDirector(item: FindroidShow): BaseItemPerson? {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
-            director = item.people.firstOrNull { it.type == "Director" }
+            director = item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
         }
         return director
     }
@@ -116,7 +117,7 @@ constructor(
     private suspend fun getWriters(item: FindroidShow): List<BaseItemPerson> {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
-            writers = item.people.filter { it.type == "Writer" }
+            writers = item.people.filter { it.type == PersonKind.WRITER }
         }
         return writers
     }

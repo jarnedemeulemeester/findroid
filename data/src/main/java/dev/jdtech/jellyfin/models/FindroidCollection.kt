@@ -25,7 +25,7 @@ data class FindroidCollection(
 fun BaseItemDto.toFindroidCollection(
     jellyfinRepository: JellyfinRepository,
 ): FindroidCollection? {
-    val type = CollectionType.fromString(collectionType)
+    val type = CollectionType.fromString(collectionType?.serialName)
 
     if (type !in CollectionType.supported) {
         return null

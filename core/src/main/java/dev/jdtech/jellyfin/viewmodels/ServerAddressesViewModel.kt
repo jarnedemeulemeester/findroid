@@ -74,7 +74,9 @@ constructor(
             server.currentServerAddressId = address.id
             database.update(server)
 
-            jellyfinApi.api.baseUrl = address.address
+            jellyfinApi.api.update(
+                baseUrl = address.address,
+            )
 
             eventsChannel.send(ServerAddressesEvent.NavigateToHome)
         }
@@ -84,7 +86,9 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val jellyfinApi = JellyfinApi(context)
-                jellyfinApi.api.baseUrl = address
+                jellyfinApi.api.update(
+                    baseUrl = address,
+                )
                 val systemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
                 if (systemInfo.id != currentServerId) {
                     return@launch

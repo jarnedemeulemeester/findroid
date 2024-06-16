@@ -35,8 +35,10 @@ object ApiModule {
         val user = serverWithAddressAndUser.user
 
         jellyfinApi.apply {
-            api.baseUrl = serverAddress.address
-            api.accessToken = user?.accessToken
+            api.update(
+                baseUrl = serverAddress.address,
+                accessToken = user?.accessToken,
+            )
             userId = user?.id
         }
 

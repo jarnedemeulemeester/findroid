@@ -73,7 +73,9 @@ constructor(
             database.update(server)
 
             jellyfinApi.apply {
-                api.accessToken = user.accessToken
+                api.update(
+                    accessToken = user.accessToken,
+                )
                 userId = user.id
             }
 

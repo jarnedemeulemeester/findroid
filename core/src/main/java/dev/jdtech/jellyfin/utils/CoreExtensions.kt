@@ -18,7 +18,7 @@ fun BaseItemDto.toView(): View {
     return View(
         id = id,
         name = name ?: "",
-        type = CollectionType.fromString(collectionType),
+        type = CollectionType.fromString(collectionType?.serialName),
     )
 }
 
