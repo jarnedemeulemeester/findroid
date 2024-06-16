@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.api.client.extensions.authenticateWithQuickConnect
-import org.jellyfin.sdk.api.client.extensions.brandingApi
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import org.jellyfin.sdk.model.api.AuthenticationResult
 import javax.inject.Inject
@@ -72,7 +71,7 @@ constructor(
 
     private fun loadDisclaimer() {
         viewModelScope.launch {
-            loginDisclaimer = jellyfinApi.api.brandingApi.getBrandingOptions().content.loginDisclaimer
+            loginDisclaimer = jellyfinApi.brandingApi.getBrandingOptions().content.loginDisclaimer
             _uiState.emit(UiState.Normal(loginDisclaimer))
         }
     }
