@@ -158,8 +158,8 @@ constructor(
                 _quickConnectUiState.emit(QuickConnectUiState.Waiting(quickConnectState.code))
 
                 while (!quickConnectState.authenticated) {
-                    quickConnectState = jellyfinApi.quickConnectApi.getQuickConnectState(quickConnectState.secret).content
                     delay(5000L)
+                    quickConnectState = jellyfinApi.quickConnectApi.getQuickConnectState(quickConnectState.secret).content
                 }
                 val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
                     secret = quickConnectState.secret,
