@@ -101,8 +101,10 @@ constructor(
             // If server has no selected user, navigate to login fragment
             if (user == null) {
                 jellyfinApi.apply {
-                    api.baseUrl = serverAddress.address
-                    api.accessToken = null
+                    api.update(
+                        baseUrl = serverAddress.address,
+                        accessToken = null,
+                    )
                     userId = null
                 }
                 appPreferences.currentServer = server.id
@@ -111,8 +113,10 @@ constructor(
             }
 
             jellyfinApi.apply {
-                api.baseUrl = serverAddress.address
-                api.accessToken = user.accessToken
+                api.update(
+                    baseUrl = serverAddress.address,
+                    accessToken = user.accessToken,
+                )
                 userId = user.id
             }
 

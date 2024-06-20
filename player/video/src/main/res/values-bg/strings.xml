@@ -4,15 +4,16 @@
     <string name="select_subtile_track">Изберете писта за субтитри</string>
     <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
     <string name="select_a_version">Изберете версия</string>
-    <string name="external">Externo</string>
-    <string name="player_controls_skip_back">Voltar</string>
-    <string name="player_controls_rewind">Retroceder</string>
-    <string name="player_controls_lock">Bloqueia o reprodutor</string>
-    <string name="player_controls_progress">Barra de progresso</string>
-    <string name="player_controls_fast_forward">Avanço rápido</string>
-    <string name="player_controls_skip_forward">Passe para frente</string>
-    <string name="player_trickplay">Truques</string>
-    <string name="player_controls_play_pause">Pausa na reprodução</string>
-    <string name="player_controls_exit">Sair do reprodutor</string>
-    <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
+    <string name="external">Външно</string>
+    <string name="player_controls_skip_back">Пусни предишен</string>
+    <string name="player_controls_rewind">Върни назад</string>
+    <string name="player_controls_lock">Заключи контролите</string>
+    <string name="player_controls_progress">Индикарор за прогрес</string>
+    <string name="player_controls_fast_forward">Пропусни напред</string>
+    <string name="player_controls_skip_forward">Пусни следващ</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_play_pause">Начало пауза</string>
+    <string name="player_controls_exit">Излез от плейъра</string>
+    <string name="player_controls_picture_in_picture">Влез в режим картина-в-картина</string>
+    <string name="none">Нищо</string>
 </resources>

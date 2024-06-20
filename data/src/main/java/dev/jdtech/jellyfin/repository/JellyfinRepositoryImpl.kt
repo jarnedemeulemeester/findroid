@@ -43,6 +43,8 @@ import org.jellyfin.sdk.model.api.DlnaProfileType
 import org.jellyfin.sdk.model.api.GeneralCommandType
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
+import org.jellyfin.sdk.model.api.ItemSortBy
+import org.jellyfin.sdk.model.api.MediaType
 import org.jellyfin.sdk.model.api.PlaybackInfoDto
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
@@ -68,38 +70,38 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getItem(itemId: UUID): BaseItemDto = withContext(Dispatchers.IO) {
-        jellyfinApi.userLibraryApi.getItem(jellyfinApi.userId!!, itemId).content
+        jellyfinApi.userLibraryApi.getItem(itemId, jellyfinApi.userId!!).content
     }
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
-                jellyfinApi.userId!!,
                 itemId,
+                jellyfinApi.userId!!,
             ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
-                jellyfinApi.userId!!,
                 itemId,
+                jellyfinApi.userId!!,
             ).content.toFindroidMovie(this@JellyfinRepositoryImpl, database)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
-                jellyfinApi.userId!!,
                 itemId,
+                jellyfinApi.userId!!,
             ).content.toFindroidShow(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
-                jellyfinApi.userId!!,
                 itemId,
+                jellyfinApi.userId!!,
             ).content.toFindroidSeason(this@JellyfinRepositoryImpl)
         }
 
@@ -127,7 +129,7 @@ class JellyfinRepositoryImpl(
                 parentId = parentId,
                 includeItemTypes = includeTypes,
                 recursive = recursive,
-                sortBy = listOf(sortBy.sortString),
+                sortBy = listOf(ItemSortBy.fromName(sortBy.sortString)),
                 sortOrder = listOf(sortOrder),
                 startIndex = startIndex,
                 limit = limit,
@@ -253,7 +255,8 @@ class JellyfinRepositoryImpl(
             jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
                 limit = 24,
-                seriesId = seriesId?.toString(),
+                seriesId = seriesId,
+                enableResumable = false,
             ).content.items
                 .orEmpty()
                 .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
@@ -303,23 +306,10 @@ class JellyfinRepositoryImpl(
                                 DirectPlayProfile(type = DlnaProfileType.AUDIO),
                             ),
                             transcodingProfiles = emptyList(),
-                            responseProfiles = emptyList(),
                             subtitleProfiles = listOf(
                                 SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
                                 SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
                             ),
-                            xmlRootAttributes = emptyList(),
-                            supportedMediaTypes = "",
-                            enableAlbumArtInDidl = false,
-                            enableMsMediaReceiverRegistrar = false,
-                            enableSingleAlbumArtLimit = false,
-                            enableSingleSubtitleLimit = false,
-                            ignoreTranscodeByteRangeRequests = false,
-                            maxAlbumArtHeight = 1_000_000_000,
-                            maxAlbumArtWidth = 1_000_000_000,
-                            requiresPlainFolders = false,
-                            requiresPlainVideoItems = false,
-                            timelineOffsetSeconds = 0,
                         ),
                         maxStreamingBitrate = 1_000_000_000,
                     ),
@@ -444,7 +434,7 @@ class JellyfinRepositoryImpl(
         Timber.d("Sending capabilities")
         withContext(Dispatchers.IO) {
             jellyfinApi.sessionApi.postCapabilities(
-                playableMediaTypes = listOf("Video"),
+                playableMediaTypes = listOf(MediaType.VIDEO),
                 supportedCommands = listOf(
                     GeneralCommandType.VOLUME_UP,
                     GeneralCommandType.VOLUME_DOWN,
@@ -468,7 +458,7 @@ class JellyfinRepositoryImpl(
     override suspend fun postPlaybackStart(itemId: UUID) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
-            jellyfinApi.playStateApi.onPlaybackStart(jellyfinApi.userId!!, itemId)
+            jellyfinApi.playStateApi.onPlaybackStart(itemId)
         }
     }
 
@@ -495,7 +485,6 @@ class JellyfinRepositoryImpl(
             }
             try {
                 jellyfinApi.playStateApi.onPlaybackStopped(
-                    jellyfinApi.userId!!,
                     itemId,
                     positionTicks = positionTicks,
                 )
@@ -515,7 +504,6 @@ class JellyfinRepositoryImpl(
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             try {
                 jellyfinApi.playStateApi.onPlaybackProgress(
-                    jellyfinApi.userId!!,
                     itemId,
                     positionTicks = positionTicks,
                     isPaused = isPaused,

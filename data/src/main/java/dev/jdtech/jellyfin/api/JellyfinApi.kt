@@ -4,6 +4,7 @@ import android.content.Context
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.data.BuildConfig
 import org.jellyfin.sdk.api.client.HttpClientOptions
+import org.jellyfin.sdk.api.client.extensions.brandingApi
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
@@ -19,6 +20,8 @@ import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
 import java.util.UUID
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-platform-android
@@ -40,25 +43,26 @@ class JellyfinApi(
     }
     val api = jellyfin.createApi(
         httpClientOptions = HttpClientOptions(
-            requestTimeout = requestTimeout,
-            connectTimeout = connectTimeout,
-            socketTimeout = socketTimeout,
+            requestTimeout = requestTimeout.toDuration(DurationUnit.MILLISECONDS),
+            connectTimeout = connectTimeout.toDuration(DurationUnit.MILLISECONDS),
+            socketTimeout = socketTimeout.toDuration(DurationUnit.MILLISECONDS),
         ),
     )
     var userId: UUID? = null
 
+    val brandingApi = api.brandingApi
     val devicesApi = api.devicesApi
-    val systemApi = api.systemApi
-    val userApi = api.userApi
-    val viewsApi = api.userViewsApi
     val itemsApi = api.itemsApi
-    val userLibraryApi = api.userLibraryApi
-    val showsApi = api.tvShowsApi
-    val sessionApi = api.sessionApi
-    val videosApi = api.videosApi
     val mediaInfoApi = api.mediaInfoApi
     val playStateApi = api.playStateApi
     val quickConnectApi = api.quickConnectApi
+    val sessionApi = api.sessionApi
+    val showsApi = api.tvShowsApi
+    val systemApi = api.systemApi
+    val userApi = api.userApi
+    val userLibraryApi = api.userLibraryApi
+    val videosApi = api.videosApi
+    val viewsApi = api.userViewsApi
 
     companion object {
         @Volatile

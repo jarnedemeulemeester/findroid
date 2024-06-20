@@ -1,5 +1,7 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+rootProject.name = "findroid"
+
 include(":app:phone")
 include(":app:tv")
 include(":core")
