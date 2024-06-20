@@ -5,24 +5,22 @@ import androidx.paging.PagingData
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.Credit
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
-import dev.jdtech.jellyfin.models.toCredit
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.models.toFindroidSegments
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
-import dev.jdtech.jellyfin.models.toIntro
 import dev.jdtech.jellyfin.models.toTrickPlayManifest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -181,14 +179,9 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>? =
         withContext(Dispatchers.IO) {
-            database.getIntro(itemId)?.toIntro()
-        }
-
-    override suspend fun getCreditTimestamps(itemId: UUID): Credit? =
-        withContext(Dispatchers.IO) {
-            database.getCredit(itemId)?.toCredit()
+            database.getSegments(itemId)?.toFindroidSegments()
         }
 
     override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =

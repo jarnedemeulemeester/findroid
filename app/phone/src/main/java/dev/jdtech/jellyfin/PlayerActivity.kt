@@ -135,29 +135,38 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Intro button
-                            skipIntroButton.isVisible = !isInPictureInPictureMode && (currentIntro != null || currentCredit != null)
-                            skipIntroButton.text = if (currentCredit != null) {
-                                if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                    getString(CoreR.string.skip_credit_button)
-                                } else {
-                                    getString(CoreR.string.skip_credit_button_last)
+                            // Visibility
+                            skipIntroButton.isVisible = !isInPictureInPictureMode && showSkip == true
+                            // Text
+                            when (currentSegment?.type) {
+                                "intro" -> {
+                                    skipIntroButton.text = getString(CoreR.string.skip_intro_button)
                                 }
-                            } else {
-                                getString(CoreR.string.skip_intro_button)
-                            }
-                            skipIntroButton.setOnClickListener {
-                                if (currentIntro != null) {
-                                    currentIntro?.let {
-                                        binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
-                                    }
-                                    skipIntroButton.isVisible = false
-                                } else if (currentCredit != null) {
-                                    if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                        binding.playerView.player?.seekToNext()
+                                "credit" -> {
+                                    skipIntroButton.text = if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                        getString(CoreR.string.skip_credit_button)
                                     } else {
-                                        finish()
+                                        getString(CoreR.string.skip_credit_button_last)
                                     }
                                 }
+                            }
+                            // onClick
+                            skipIntroButton.setOnClickListener {
+                                when (currentSegment?.type) {
+                                    "intro" -> {
+                                        currentSegment?.let {
+                                            binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
+                                        }
+                                    }
+                                    "credit" -> {
+                                        if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                            binding.playerView.player?.seekToNext()
+                                        } else {
+                                            finish()
+                                        }
+                                    }
+                                }
+                                skipIntroButton.isVisible = false
                             }
 
                             // Trick Play

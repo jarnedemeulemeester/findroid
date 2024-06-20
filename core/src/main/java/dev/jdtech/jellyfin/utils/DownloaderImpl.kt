@@ -15,20 +15,18 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.UiText
-import dev.jdtech.jellyfin.models.toCreditDto
 import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
+import dev.jdtech.jellyfin.models.toFindroidSegmentsDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
-import dev.jdtech.jellyfin.models.toIntroDto
 import dev.jdtech.jellyfin.models.toTrickPlayManifestDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
-import kotlin.Exception
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class DownloaderImpl(
@@ -46,8 +44,7 @@ class DownloaderImpl(
     ): Pair<Long, UiText?> {
         try {
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
-            val intro = jellyfinRepository.getIntroTimestamps(item.id)
-            val credit = jellyfinRepository.getCreditTimestamps(item.id)
+            val segments = jellyfinRepository.getSegmentsTimestamps(item.id)
             val trickPlayManifest = jellyfinRepository.getTrickPlayManifest(item.id)
             val trickPlayData = if (trickPlayManifest != null) {
                 jellyfinRepository.getTrickPlayData(
@@ -80,11 +77,8 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (intro != null) {
-                        database.insertIntro(intro.toIntroDto(item.id))
-                    }
-                    if (credit != null) {
-                        database.insertCredit(credit.toCreditDto(item.id))
+                    if (segments != null) {
+                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
                     }
                     if (trickPlayManifest != null && trickPlayData != null) {
                         downloadTrickPlay(item, trickPlayManifest, trickPlayData)
@@ -112,11 +106,8 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (intro != null) {
-                        database.insertIntro(intro.toIntroDto(item.id))
-                    }
-                    if (credit != null) {
-                        database.insertCredit(credit.toCreditDto(item.id))
+                    if (segments != null) {
+                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
                     }
                     if (trickPlayManifest != null && trickPlayData != null) {
                         downloadTrickPlay(item, trickPlayManifest, trickPlayData)
@@ -181,7 +172,7 @@ class DownloaderImpl(
 
         database.deleteUserData(item.id)
 
-        database.deleteIntro(item.id)
+        database.deleteSegments(item.id)
 
         database.deleteTrickPlayManifest(item.id)
         File(context.filesDir, "trickplay/${item.id}.bif").delete()

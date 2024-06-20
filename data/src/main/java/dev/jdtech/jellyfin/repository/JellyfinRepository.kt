@@ -1,15 +1,14 @@
 package dev.jdtech.jellyfin.repository
 
 import androidx.paging.PagingData
-import dev.jdtech.jellyfin.models.Credit
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.TrickPlayManifest
 import kotlinx.coroutines.flow.Flow
@@ -85,9 +84,7 @@ interface JellyfinRepository {
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
-    suspend fun getIntroTimestamps(itemId: UUID): Intro?
-
-    suspend fun getCreditTimestamps(itemId: UUID): Credit?
+    suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>?
 
     suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?
 

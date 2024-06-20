@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "3cb9aaa3295b9e461cb94dfc708258ed",
+    "version": 5,
+    "identityHash": "98335303560b91843defc6f7631873ab",
     "entities": [
       {
         "tableName": "servers",
@@ -158,7 +158,7 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, `chapters` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -230,6 +230,12 @@
             "fieldPath": "endDate",
             "columnName": "endDate",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "chapters",
+            "columnName": "chapters",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -396,7 +402,7 @@
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `seasonId` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, `indexNumberEnd` INTEGER, `parentIndexNumber` INTEGER NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, PRIMARY KEY(`id`), FOREIGN KEY(`seasonId`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `seasonId` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, `indexNumberEnd` INTEGER, `parentIndexNumber` INTEGER NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `chapters` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`seasonId`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -474,6 +480,12 @@
             "fieldPath": "communityRating",
             "columnName": "communityRating",
             "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "chapters",
+            "columnName": "chapters",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -715,8 +727,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "intros",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `start` REAL NOT NULL, `end` REAL NOT NULL, `showAt` REAL NOT NULL, `hideAt` REAL NOT NULL, PRIMARY KEY(`itemId`))",
+        "tableName": "segments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `segments` TEXT NOT NULL, PRIMARY KEY(`itemId`))",
         "fields": [
           {
             "fieldPath": "itemId",
@@ -725,27 +737,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "start",
-            "columnName": "start",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "end",
-            "columnName": "end",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "showAt",
-            "columnName": "showAt",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "hideAt",
-            "columnName": "hideAt",
-            "affinity": "REAL",
+            "fieldPath": "segments",
+            "columnName": "segments",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -813,7 +807,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cb9aaa3295b9e461cb94dfc708258ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '98335303560b91843defc6f7631873ab')"
     ]
   }
 }
