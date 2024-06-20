@@ -89,6 +89,22 @@ class SortDialogFragment(
                             dialog.dismiss()
                         }
                 }
+                "columnSize" -> {
+                    val columnSizeValues = resources.getIntArray(R.array.column_size_options)
+                    val columnSizeOptions = columnSizeValues.map { o -> o.toString() }.toTypedArray()
+
+                    builder
+                        .setTitle(getString(R.string.column_size))
+                        .setSingleChoiceItems(
+                            columnSizeOptions,
+                            columnSizeValues.indexOf(appPreferences.columnSize),
+                        ) { dialog, which ->
+                            val columnSize = columnSizeValues[which]
+                            appPreferences.columnSize = columnSize
+                            viewModel.setColumnCount(columnSize)
+                            dialog.dismiss()
+                        }
+                }
             }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
