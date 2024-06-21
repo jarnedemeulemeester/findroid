@@ -37,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -59,6 +60,8 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
+    private var oldSegment: FindroidSegment? = null
+    private var buttonPressed: Boolean = false
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -120,7 +123,7 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
-        val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
+        val skipButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
@@ -134,30 +137,42 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip Intro button
-                            // Visibility
-                            skipIntroButton.isVisible = !isInPictureInPictureMode && showSkip == true
-                            // Text
+                            // Skip button
+                            // Button Visibility
+                            if (currentSegment != oldSegment) buttonPressed = false
+                            skipButton.isVisible =
+                                !isInPictureInPictureMode && !buttonPressed && (showSkip == true || (binding.playerView.isControllerFullyVisible && currentSegment?.skip == true))
+                            binding.playerView.setControllerVisibilityListener(
+                                PlayerView.ControllerVisibilityListener { visibility ->
+                                    skipButton.isVisible =
+                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || visibility == View.VISIBLE && currentSegment?.skip == true)
+                                },
+                            )
+                            // Button Text
                             when (currentSegment?.type) {
                                 "intro" -> {
-                                    skipIntroButton.text = getString(CoreR.string.skip_intro_button)
+                                    skipButton.text =
+                                        getString(CoreR.string.skip_intro_button)
                                 }
+
                                 "credit" -> {
-                                    skipIntroButton.text = if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                        getString(CoreR.string.skip_credit_button)
-                                    } else {
-                                        getString(CoreR.string.skip_credit_button_last)
-                                    }
+                                    skipButton.text =
+                                        if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                            getString(CoreR.string.skip_credit_button)
+                                        } else {
+                                            getString(CoreR.string.skip_credit_button_last)
+                                        }
                                 }
                             }
                             // onClick
-                            skipIntroButton.setOnClickListener {
+                            skipButton.setOnClickListener {
                                 when (currentSegment?.type) {
                                     "intro" -> {
                                         currentSegment?.let {
                                             binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
                                         }
                                     }
+
                                     "credit" -> {
                                         if (binding.playerView.player?.hasNextMediaItem() == true) {
                                             binding.playerView.player?.seekToNext()
@@ -166,8 +181,10 @@ class PlayerActivity : BasePlayerActivity() {
                                         }
                                     }
                                 }
-                                skipIntroButton.isVisible = false
+                                buttonPressed = true
+                                skipButton.isVisible = false
                             }
+                            oldSegment = currentSegment
 
                             // Trick Play
                             previewScrubListener?.let {

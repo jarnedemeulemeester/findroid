@@ -247,11 +247,11 @@ constructor(
                     val itemId = UUID.fromString(currentMediaItem.mediaId)
                     val seconds = player.currentPosition / 1000.0
 
-                    val currentSegment = segments[itemId]?.find { segment -> seconds in segment.startTime..segment.endTime }
+                    val currentSegment = segments[itemId]?.find { segment -> seconds in segment.startTime..<segment.endTime }
                     _uiState.update { it.copy(currentSegment = currentSegment) }
                     Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
-                    val showSkip = currentSegment?.let { it.skip && seconds in it.showAt..it.hideAt } ?: false
+                    val showSkip = currentSegment?.let { it.skip && seconds in it.showAt..<it.hideAt } ?: false
                     _uiState.update { it.copy(showSkip = showSkip) }
                 }
                 handler.postDelayed(this, 1000L)
