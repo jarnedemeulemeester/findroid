@@ -202,8 +202,10 @@ constructor(
         appPreferences.currentServer = server.id
 
         jellyfinApi.apply {
-            api.baseUrl = recommendedServerInfo.address
-            api.accessToken = null
+            api.update(
+                baseUrl = recommendedServerInfo.address,
+                accessToken = null,
+            )
         }
 
         _uiState.emit(UiState.Normal)

@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.utils.toView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -41,13 +42,12 @@ class HomeViewModel @Inject internal constructor(
         viewModelScope.launch {
             try {
                 repository.postCapabilities()
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) { }
         }
     }
 
     fun loadData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.emit(UiState.Loading)
             try {
                 val items = mutableListOf<HomeItem>()
@@ -93,7 +93,7 @@ class HomeViewModel @Inject internal constructor(
 
     private suspend fun loadViews() = repository
         .getUserViews()
-        .filter { view -> CollectionType.fromString(view.collectionType) in CollectionType.supported }
+        .filter { view -> CollectionType.fromString(view.collectionType?.serialName) in CollectionType.supported }
         .map { view -> view to repository.getLatestMedia(view.id) }
         .filter { (_, latest) -> latest.isNotEmpty() }
         .map { (view, latest) -> view.toView().apply { items = latest } }

@@ -98,9 +98,9 @@
         
     <SwitchPreferenceCompat
         app:defaultValue="true"
-        app:key="pref_player_trick_play"
-        app:summary="@string/pref_player_trick_play_summary"
-        app:title="@string/pref_player_trick_play"
+        app:key="pref_player_trickplay"
+        app:summary="@string/pref_player_trickplay_summary"
+        app:title="@string/pref_player_trickplay"
         app:widgetLayout="@layout/preference_material3_switch" />
 
     <SwitchPreferenceCompat

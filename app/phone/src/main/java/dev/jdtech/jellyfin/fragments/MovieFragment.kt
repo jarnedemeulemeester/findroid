@@ -325,8 +325,8 @@ class MovieFragment : Fragment() {
                     it.displayProfiles.firstOrNull()?.apply {
                         videoProfileChip.text = this.raw
                         videoProfileChip.isVisible = when (this) {
-                            DisplayProfile.HDR,
                             DisplayProfile.HDR10,
+                            DisplayProfile.HDR10_PLUS,
                             DisplayProfile.HLG,
                             -> {
                                 videoProfileChip.chipStartPadding = .0f

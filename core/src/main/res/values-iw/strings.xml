@@ -147,7 +147,6 @@
     <string name="player_gestures_zoom_summary">צבוט כדי להציג את הוידאו במסך מלא</string>
     <string name="seek_back_increment">גודל קפיצה אחורה (מילי שניות)</string>
     <string name="dynamic_colors_summary">השתמש בצבעים דינמיים של Material You (זמין רק בגרסת אנדרואיד 12 ומעלה)</string>
-    <string name="pref_player_trick_play_summary">דורש תוסף Jellyscrub של nicknsy מותקן על השרת</string>
     <string name="size">גודל</string>
     <string name="offline_mode_icon">סמל מצב לא מקוון</string>
     <string name="not_enough_storage">פריט זה דורש %1$s של מקום פנוי אבל רק %2$s זמינים</string>
@@ -171,7 +170,6 @@
     <string name="downloaded_indicator">מחוון הורדה</string>
     <string name="remove_server_address">הסר כתובת שרת</string>
     <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך להסיר את כתובת השרת %1$s</string>
-    <string name="pref_player_trick_play">Trick Play</string>
     <string name="picture_in_picture">תמונה-בתוך-תמונה</string>
     <string name="picture_in_picture_gesture_summary">השתמש בכפתור הבית או במחווה כדי להכנס למצב תמונה-בתוך-תמונה כאשר הוידאו פועל</string>
 </resources>

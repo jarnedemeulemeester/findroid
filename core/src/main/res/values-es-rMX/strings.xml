@@ -149,14 +149,12 @@
     <string name="player_gestures_seek">Gesto de búsqueda</string>
     <string name="player_gestures_seek_summary">Deslice horizontalmente para buscar hacia adelante o hacia atrás</string>
     <string name="app_language">Idioma de la aplicación</string>
-    <string name="pref_player_trick_play_summary">Requiere que el complemento Jellyscrub de nicknsy esté instalado en el servidor</string>
     <string name="cancel_download">Cancelar descarga</string>
     <string name="cancel_download_message">¿Quiere cancelar la descarga\?</string>
     <string name="subtitle">Subtítulos</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temporáneo</string>
     <string name="downloaded_indicator">Indicador de descargado</string>
-    <string name="pref_player_trick_play">Miniaturas (Trick Play)</string>
     <string name="preparing_download">Preparando la descarga</string>
     <string name="storage_name">%1$s (%2$d MB libres)</string>
     <string name="not_enough_storage">Éste elemento requiere %1$s de almacenamiento pero solo hay disponible %2$s</string>

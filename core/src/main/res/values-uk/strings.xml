@@ -100,8 +100,6 @@
     <string name="pref_player_mpv_ao">Виведення аудіо</string>
     <string name="pref_player_intro_skipper">Intro Skipper (Пропуск інтро)</string>
     <string name="pref_player_intro_skipper_summary">Потребує встановлення на сервері плагіна Intro Skipper від ConfusedPolarBear</string>
-    <string name="pref_player_trick_play">Мініатюри попереднього перегляду (Trick Play)</string>
-    <string name="pref_player_trick_play_summary">Потрібно встановити на сервері плагін Jellyscrub від nicknsy</string>
     <string name="addresses">Адреси</string>
     <string name="add_address">Додати адресу</string>
     <string name="add_server_address">Додати адресу сервера</string>

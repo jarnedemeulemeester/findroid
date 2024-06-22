@@ -137,7 +137,6 @@
     <string name="libraries">Könyvtárak</string>
     <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
     <string name="downloaded_indicator">Letöltött indikátor</string>
-    <string name="pref_player_trick_play_summary">nicknsy Jellyscrub bővítményének telepítve kell legyen a szerveren</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="offline_mode_go_online">Váltás online módra</string>
@@ -170,7 +169,6 @@
     <string name="subtitle_chip_text">Felirat</string>
     <string name="remove_server_address">Szerver címének eltávolítása</string>
     <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
-    <string name="pref_player_trick_play">Trükkös játék</string>
     <string name="player_gestures_seek">Gesztus keresése</string>
     <string name="picture_in_picture">Kép a képben</string>
     <string name="picture_in_picture_gesture">Kép a képben otthoni gesztus</string>

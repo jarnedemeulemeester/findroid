@@ -44,7 +44,7 @@ class SortDialogFragment(
             when (sortType) {
                 "sortBy" -> {
                     val sortByOptions = resources.getStringArray(R.array.sort_by_options)
-                    val sortByValues = SortBy.values()
+                    val sortByValues = SortBy.entries
                     builder
                         .setTitle(getString(R.string.sort_by))
                         .setSingleChoiceItems(
@@ -64,7 +64,7 @@ class SortDialogFragment(
                 }
                 "sortOrder" -> {
                     val sortByOptions = resources.getStringArray(R.array.sort_order_options)
-                    val sortOrderValues = SortOrder.values()
+                    val sortOrderValues = SortOrder.entries
 
                     builder
                         .setTitle(getString(R.string.sort_order))
