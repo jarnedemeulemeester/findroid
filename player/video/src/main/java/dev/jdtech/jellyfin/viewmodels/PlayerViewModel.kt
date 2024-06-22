@@ -155,15 +155,15 @@ class PlayerViewModel @Inject internal constructor(
             }
         val trickplayInfo = when (this) {
             is FindroidSources -> {
-                this.trickplayInfo?.get(mediaSource.id)?.mapValues {
+                this.trickplayInfo?.get(mediaSource.id)?.let {
                     TrickplayInfo(
-                        width = it.value.width,
-                        height = it.value.height,
-                        tileWidth = it.value.tileWidth,
-                        tileHeight = it.value.tileHeight,
-                        thumbnailCount = it.value.thumbnailCount,
-                        interval = it.value.interval,
-                        bandwidth = it.value.bandwidth,
+                        width = it.width,
+                        height = it.height,
+                        tileWidth = it.tileWidth,
+                        tileHeight = it.tileHeight,
+                        thumbnailCount = it.thumbnailCount,
+                        interval = it.interval,
+                        bandwidth = it.bandwidth,
                     )
                 }
             }

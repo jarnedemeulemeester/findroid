@@ -28,6 +28,7 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -341,31 +343,29 @@ constructor(
 
     private suspend fun getTrickPlay(item: PlayerItem) {
         val trickplayInfo = item.trickplayInfo ?: return
-        val width =
-            trickplayInfo.keys.max()
-        Timber.d("Trickplay Resolution: $width")
+        Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
 
-        val trickplay = trickplayInfo[width]!!
+        withContext(Dispatchers.Default) {
+            val maxIndex = ceil(trickplayInfo.thumbnailCount.toDouble().div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)).toInt()
+            val bitmaps = mutableListOf<Bitmap>()
 
-        val maxIndex = ceil(trickplay.thumbnailCount.toDouble().div(trickplay.tileWidth * trickplay.tileHeight)).toInt()
-        val bitmaps = mutableListOf<Bitmap>()
-
-        for (i in 0..maxIndex) {
-            jellyfinRepository.getTrickPlayData(
-                item.itemId,
-                width.toInt(),
-                i,
-            )?.let { byteArray ->
-                val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                for (offsetY in 0..<trickplay.height * trickplay.tileHeight step trickplay.height) {
-                    for (offsetX in 0..<trickplay.width * trickplay.tileWidth step trickplay.width) {
-                        val bitmap = Bitmap.createBitmap(fullBitmap, offsetX, offsetY, trickplay.width, trickplay.height)
-                        bitmaps.add(bitmap)
+            for (i in 0..maxIndex) {
+                jellyfinRepository.getTrickPlayData(
+                    item.itemId,
+                    trickplayInfo.width,
+                    i,
+                )?.let { byteArray ->
+                    val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    for (offsetY in 0..<trickplayInfo.height * trickplayInfo.tileHeight step trickplayInfo.height) {
+                        for (offsetX in 0..<trickplayInfo.width * trickplayInfo.tileWidth step trickplayInfo.width) {
+                            val bitmap = Bitmap.createBitmap(fullBitmap, offsetX, offsetY, trickplayInfo.width, trickplayInfo.height)
+                            bitmaps.add(bitmap)
+                        }
                     }
                 }
             }
+            _uiState.update { it.copy(currentTrickPlay = Trickplay(trickplayInfo.interval, bitmaps)) }
         }
-        _uiState.update { it.copy(currentTrickPlay = Trickplay(trickplay.interval, bitmaps)) }
     }
 
     /**

@@ -16,5 +16,5 @@ data class PlayerItem(
     val indexNumberEnd: Int? = null,
     val externalSubtitles: List<ExternalSubtitle> = emptyList(),
     val chapters: List<PlayerChapter>? = null,
-    val trickplayInfo: Map<String, TrickplayInfo>? = null,
+    val trickplayInfo: TrickplayInfo? = null,
 ) : Parcelable

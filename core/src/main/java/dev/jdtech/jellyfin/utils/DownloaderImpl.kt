@@ -49,10 +49,7 @@ class DownloaderImpl(
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val intro = jellyfinRepository.getIntroTimestamps(item.id)
             val trickplayInfo = if (item is FindroidSources) {
-                item.trickplayInfo?.get(sourceId)?.let { trickplayInfos ->
-                    val width = trickplayInfos.keys.max()
-                    trickplayInfos[width]!!
-                }
+                item.trickplayInfo?.get(sourceId)
             } else {
                 null
             }
