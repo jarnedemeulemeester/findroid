@@ -85,7 +85,7 @@ interface JellyfinRepository {
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
 
-    suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray?
+    suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray?
 
     suspend fun postCapabilities()
 

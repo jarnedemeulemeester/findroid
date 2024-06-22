@@ -238,7 +238,7 @@ class DownloaderImpl(
         val maxIndex = ceil(trickplayInfo.thumbnailCount.toDouble().div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)).toInt()
         val byteArrays = mutableListOf<ByteArray>()
         for (i in 0..maxIndex) {
-            jellyfinRepository.getTrickPlayData(
+            jellyfinRepository.getTrickplayData(
                 itemId,
                 trickplayInfo.width,
                 i,

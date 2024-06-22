@@ -141,9 +141,9 @@ class PlayerActivity : BasePlayerActivity() {
                                 }
                             }
 
-                            // Trick Play
+                            // Trickplay
                             previewScrubListener?.let {
-                                it.currentTrickPlay = currentTrickPlay
+                                it.currentTrickplay = currentTrickplay
                             }
 
                             // Chapters
@@ -259,7 +259,7 @@ class PlayerActivity : BasePlayerActivity() {
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
         timeBar.setAdMarkerColor(Color.WHITE)
 
-        if (appPreferences.playerTrickPlay) {
+        if (appPreferences.playerTrickplay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             previewScrubListener = PreviewScrubListener(
                 imagePreview,

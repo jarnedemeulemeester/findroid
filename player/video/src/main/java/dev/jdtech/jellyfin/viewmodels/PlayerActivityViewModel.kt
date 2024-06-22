@@ -58,7 +58,7 @@ constructor(
         UiState(
             currentItemTitle = "",
             currentIntro = null,
-            currentTrickPlay = null,
+            currentTrickplay = null,
             currentChapters = null,
             fileLoaded = false,
         ),
@@ -73,7 +73,7 @@ constructor(
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
-        val currentTrickPlay: Trickplay?,
+        val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
     )
@@ -210,7 +210,7 @@ constructor(
             }
         }
 
-        _uiState.update { it.copy(currentTrickPlay = null) }
+        _uiState.update { it.copy(currentTrickplay = null) }
         playWhenReady = false
         playbackPosition = 0L
         currentMediaItemIndex = 0
@@ -279,8 +279,8 @@ constructor(
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
-                        if (appPreferences.playerTrickPlay) {
-                            getTrickPlay(item)
+                        if (appPreferences.playerTrickplay) {
+                            getTrickplay(item)
                         }
                     }
             } catch (e: Exception) {
@@ -341,7 +341,7 @@ constructor(
         playbackSpeed = speed
     }
 
-    private suspend fun getTrickPlay(item: PlayerItem) {
+    private suspend fun getTrickplay(item: PlayerItem) {
         val trickplayInfo = item.trickplayInfo ?: return
         Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
 
@@ -350,7 +350,7 @@ constructor(
             val bitmaps = mutableListOf<Bitmap>()
 
             for (i in 0..maxIndex) {
-                jellyfinRepository.getTrickPlayData(
+                jellyfinRepository.getTrickplayData(
                     item.itemId,
                     trickplayInfo.width,
                     i,
@@ -364,7 +364,7 @@ constructor(
                     }
                 }
             }
-            _uiState.update { it.copy(currentTrickPlay = Trickplay(trickplayInfo.interval, bitmaps)) }
+            _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
         }
     }
 

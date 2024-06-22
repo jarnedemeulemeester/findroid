@@ -170,7 +170,6 @@
     <string name="downloaded_indicator">מחוון הורדה</string>
     <string name="remove_server_address">הסר כתובת שרת</string>
     <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך להסיר את כתובת השרת %1$s</string>
-    <string name="pref_player_trick_play">Trick Play</string>
     <string name="picture_in_picture">תמונה-בתוך-תמונה</string>
     <string name="picture_in_picture_gesture_summary">השתמש בכפתור הבית או במחווה כדי להכנס למצב תמונה-בתוך-תמונה כאשר הוידאו פועל</string>
 </resources>

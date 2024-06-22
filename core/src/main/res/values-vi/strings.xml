@@ -156,7 +156,6 @@
     <string name="temp">tạm</string>
     <string name="extra_info">Hiện thị thêm thông tin</string>
     <string name="video">Video</string>
-    <string name="pref_player_trick_play">Tua mượt mà</string>
     <string name="extra_info_summary">Hiển thị thêm các thông tin về âm thanh, video và phụ đề</string>
     <string name="storage_name">%1$s (%2$d MB trống)</string>
     <string name="amoled_theme">Chủ đề màu tối (AMOLED)</string>

@@ -17,14 +17,14 @@ class PreviewScrubListener(
     private val timeBarView: View,
     private val player: Player,
 ) : TimeBar.OnScrubListener {
-    var currentTrickPlay: Trickplay? = null
+    var currentTrickplay: Trickplay? = null
     private val roundedCorners = RoundedCornersTransformation(10f)
     private var currentBitMap: Bitmap? = null
 
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
-        if (currentTrickPlay == null) {
+        if (currentTrickplay == null) {
             return
         }
 
@@ -35,7 +35,7 @@ class PreviewScrubListener(
     override fun onScrubMove(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing to $position")
 
-        val trickplay = currentTrickPlay ?: return
+        val trickplay = currentTrickplay ?: return
         val image = trickplay.images[position.div(trickplay.interval).toInt()]
 
         val parent = scrubbingPreview.parent as ViewGroup

@@ -165,7 +165,6 @@
     <string name="no_server_connection">Aucune connection au serveur Jellyfin, pour regarder hors-ligne activer ce mode</string>
     <string name="cancel_download_message">Êtes-vous sûr de vouloir arrêter le téléchargement \?</string>
     <string name="app_language">Langue de l\'application</string>
-    <string name="pref_player_trick_play">Lecture Spéciale</string>
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="preparing_download">Préparation du téléchargement</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>

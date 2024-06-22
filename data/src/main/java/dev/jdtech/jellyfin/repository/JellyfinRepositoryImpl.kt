@@ -358,7 +358,7 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray? =
+    override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         withContext(Dispatchers.IO) {
             try {
                 try {

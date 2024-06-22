@@ -93,7 +93,6 @@
     <string name="add_user">Lägg till användare</string>
     <string name="pref_player_mpv_vo">Videooutput</string>
     <string name="pref_player_mpv_ao">Ljudoutput</string>
-    <string name="pref_player_trick_play">Trickspel</string>
     <string name="addresses">Adresser</string>
     <string name="add_address">Lägg till adress</string>
     <string name="add_server_address">Lägg till serveradress</string>

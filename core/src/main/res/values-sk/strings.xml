@@ -147,7 +147,6 @@
     <string name="temp">dočasné</string>
     <string name="amoled_theme">AMOLED temný motív</string>
     <string name="amoled_theme_summary">Použiť AMOLED motív s úplne čiernym pozadím</string>
-    <string name="pref_player_trick_play">Miniatúry (Trick Play)</string>
     <string name="episode_name_with_end">%1$d:%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="offline_mode">Offline Režim</string>

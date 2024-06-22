@@ -182,7 +182,7 @@ class JellyfinRepositoryOfflineImpl(
             database.getIntro(itemId)?.toIntro()
         }
 
-    override suspend fun getTrickPlayData(itemId: UUID, width: Int, index: Int): ByteArray? =
+    override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         withContext(Dispatchers.IO) {
             try {
                 val sources = File(context.filesDir, "trickplay/$itemId").listFiles() ?: return@withContext null
