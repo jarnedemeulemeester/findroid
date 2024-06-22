@@ -146,8 +146,8 @@
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
     <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
-    <string name="pref_player_trick_play">Trick Play</string>
-    <string name="pref_player_trick_play_summary">Requires nicknsy\'s Jellyscrub plugin to be installed on the server</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_trickplay_summary">Display preview images while scrubbing</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>
     <string name="pref_player_chapter_markers_summary">Display chapter markers on the timebar</string>
     <string name="addresses">Addresses</string>

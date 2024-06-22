@@ -80,7 +80,6 @@
     <string name="pref_player_mpv_vo">Ieșire video</string>
     <string name="pref_player_mpv_ao">Ieșire audio</string>
     <string name="pref_player_intro_skipper_summary">Necesită ca pluginul IntroSkipper de ConfusedPolarBear să fie instalat pe server</string>
-    <string name="pref_player_trick_play_summary">Necesită ca pluginul Jellyscrub de nicknsy să fie instalat pe server</string>
     <string name="addresses">Adrese</string>
     <string name="add_address">Adaugă o adresă</string>
     <string name="add_server_address">Adaugă o adresă de server</string>
