@@ -462,7 +462,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setFavorite(jellyfinApi.userId!!, itemId, true)
             try {
-                jellyfinApi.userLibraryApi.markFavoriteItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.userLibraryApi.markFavoriteItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -473,7 +473,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setFavorite(jellyfinApi.userId!!, itemId, false)
             try {
-                jellyfinApi.userLibraryApi.unmarkFavoriteItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.userLibraryApi.unmarkFavoriteItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -484,7 +484,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setPlayed(jellyfinApi.userId!!, itemId, true)
             try {
-                jellyfinApi.playStateApi.markPlayedItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.playStateApi.markPlayedItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -495,7 +495,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setPlayed(jellyfinApi.userId!!, itemId, false)
             try {
-                jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.playStateApi.markUnplayedItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
