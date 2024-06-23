@@ -23,7 +23,6 @@
         android:padding="10dp"
         android:background="@drawable/overlay_background"
         android:clickable="false"
-
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
