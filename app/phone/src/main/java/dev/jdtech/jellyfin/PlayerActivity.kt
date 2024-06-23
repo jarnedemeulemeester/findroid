@@ -147,7 +147,7 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             playerGestureHelper?.let {
-                                it.currentTrickPlay = currentTrickPlay
+                                it.currentTrickplay = currentTrickplay
                             }
 
                             // Chapters

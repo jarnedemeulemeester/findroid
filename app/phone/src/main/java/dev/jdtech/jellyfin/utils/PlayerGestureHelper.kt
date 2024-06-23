@@ -27,9 +27,9 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.models.PlayerChapter
+import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.jellyfin.utils.bif.BifData
-import dev.jdtech.jellyfin.utils.bif.BifUtil
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -67,7 +67,7 @@ class PlayerGestureHelper(
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
 
-    var currentTrickPlay: BifData? = null
+    var currentTrickplay: Trickplay? = null
     private val roundedCorners = RoundedCornersTransformation(10f)
     private var currentBitMap: Bitmap? = null
 
@@ -275,7 +275,7 @@ class PlayerGestureHelper(
                         activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
 
-                        if (currentTrickPlay != null) {
+                        if (currentTrickplay != null) {
                             onMove(newPos)
                         } else {
                             activity.binding.imagePreviewGesture.visibility = View.GONE
@@ -488,11 +488,12 @@ class PlayerGestureHelper(
     }
 
     fun onMove(position: Long) {
-        val currentBifData = currentTrickPlay ?: return
-        val image = BifUtil.getTrickPlayFrame(position.toInt(), currentBifData) ?: return
+        val trickplay = currentTrickplay ?: return
+        val image = trickplay.images[position.div(trickplay.interval).toInt()]
 
         if (currentBitMap != image) {
             activity.binding.imagePreviewGesture.load(image) {
+                dispatcher(Dispatchers.Main.immediate)
                 transformations(roundedCorners)
             }
             currentBitMap = image

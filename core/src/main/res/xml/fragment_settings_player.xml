@@ -105,10 +105,10 @@
 
     <SwitchPreferenceCompat
         app:defaultValue="true"
-        app:dependency="pref_player_trick_play"
+        app:dependency="pref_player_trickplay"
         app:key="pref_player_trick_play_gesture"
-        app:summary="@string/pref_player_trick_play_gesture_summary"
-        app:title="@string/pref_player_trick_play_gesture"
+        app:summary="@string/pref_player_trickplay_gesture_summary"
+        app:title="@string/pref_player_trickplay_gesture"
         app:widgetLayout="@layout/preference_material3_switch" />
   
       <SwitchPreferenceCompat
