@@ -145,8 +145,6 @@
     <string name="extra_info">显示额外信息</string>
     <string name="extra_info_summary">显示关于音频、视频和字幕的详细信息</string>
     <string name="temp">temp</string>
-    <string name="pref_player_trick_play">跳转预览</string>
-    <string name="pref_player_trick_play_summary">需要在服务器上安装 nicknsy 的 Jellyscrub 插件</string>
     <string name="amoled_theme">AMOLED 深色模式</string>
     <string name="amoled_theme_summary">使用带有纯黑背景的 AMOLED 主题</string>
     <string name="offline_mode_go_online">上线</string>
@@ -175,4 +173,21 @@
     <string name="picture_in_picture">画中画</string>
     <string name="picture_in_picture_gesture_summary">在视频播放时使用主页按钮或手势进入画中画模式</string>
     <string name="picture_in_picture_gesture">画中画返回手势</string>
+    <string name="select_user">选择用户</string>
+    <string name="live_tv">电视直播</string>
+    <string name="no_servers_found">没有找到服务器</string>
+    <string name="no_users_found">找不到用户</string>
+    <string name="unmark_as_played">取消标记已播放</string>
+    <string name="add_to_favorites">加入收藏</string>
+    <string name="remove_from_favorites">从收藏中删除</string>
+    <string name="mark_as_played">标记为已播放</string>
+    <string name="player_start_maximized">最大化启动</string>
+    <string name="player_start_maximized_summary">默认以最大化模式打开视频</string>
+    <string name="play">播放</string>
+    <string name="watch_trailer">观看预告</string>
+    <string name="collection_no_media">该集合不包含任何媒体</string>
+    <string name="player_gestures_chapter_skip">章节手势</string>
+    <string name="player_gestures_chapter_skip_summary">长按左/右侧可跳过章节（覆盖 2 倍速度手势）</string>
+    <string name="pref_player_chapter_markers">章节标记</string>
+    <string name="pref_player_chapter_markers_summary">在进度栏上显示章节标记</string>
 </resources>

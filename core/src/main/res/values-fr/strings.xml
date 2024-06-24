@@ -142,7 +142,6 @@
     <string name="add_address">Ajouter une adresse</string>
     <string name="add_server_address">Ajouter l\'adresse d\'un serveur</string>
     <string name="add">Ajouter</string>
-    <string name="pref_player_trick_play_summary">Le plugin Jellyscrub de nicknsy doit être installé sur le serveur</string>
     <string name="temp">temporaire</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="player_gestures_seek">Déplacement du curseur de lecture</string>
@@ -166,7 +165,6 @@
     <string name="no_server_connection">Aucune connection au serveur Jellyfin, pour regarder hors-ligne activer ce mode</string>
     <string name="cancel_download_message">Êtes-vous sûr de vouloir arrêter le téléchargement \?</string>
     <string name="app_language">Langue de l\'application</string>
-    <string name="pref_player_trick_play">Lecture Spéciale</string>
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="preparing_download">Préparation du téléchargement</string>
     <string name="downloaded_indicator">Indicateur de téléchargements</string>
@@ -175,4 +173,21 @@
     <string name="picture_in_picture">Fenêtre flottante</string>
     <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
+    <string name="unmark_as_played">Non marqué comme joué</string>
+    <string name="no_servers_found">Aucun serveur trouvé</string>
+    <string name="no_users_found">Aucun utilisateur trouvé</string>
+    <string name="select_user">Sélectionner un utilisateur</string>
+    <string name="live_tv">Direct TV</string>
+    <string name="add_to_favorites">Ajouter aux favoris</string>
+    <string name="collection_no_media">Cette collection ne contient aucun média</string>
+    <string name="player_start_maximized_summary">Ouvrir la vidéo en plein écran par défaut</string>
+    <string name="player_start_maximized">Démarrer en plein écran</string>
+    <string name="player_gestures_chapter_skip_summary">Appuyer longtemps sur les côtés de l\'écran pour passer le chapitre (cela remplace le geste de vitesse 2x)</string>
+    <string name="pref_player_chapter_markers">Marqueurs de chapitre</string>
+    <string name="pref_player_chapter_markers_summary">Afficher les marqueurs de chapitre sur la barre temporelle</string>
+    <string name="play">Lecture</string>
+    <string name="player_gestures_chapter_skip">Geste du chapitre</string>
+    <string name="watch_trailer">Regarder la bande annonce</string>
+    <string name="mark_as_played">Marquer comme joué</string>
+    <string name="remove_from_favorites">Retirer des favoris</string>
 </resources>

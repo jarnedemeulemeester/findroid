@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.fragments
 
 import android.app.DownloadManager
 import android.os.Bundle
+import android.text.Html.fromHtml
 import android.text.format.Formatter
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -285,11 +286,13 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             binding.seriesName.text = episode.seriesName
-            binding.overview.text = episode.overview
+            binding.overview.text = fromHtml(episode.overview, 0)
             binding.year.text = formatDateTime(episode.premiereDate)
             binding.playtime.text = getString(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000))
-            binding.communityRating.isVisible = episode.communityRating != null
-            binding.communityRating.text = episode.communityRating.toString()
+            episode.communityRating?.also {
+                binding.communityRating.text = episode.communityRating.toString()
+                binding.communityRating.isVisible = true
+            }
             binding.missingIcon.isVisible = false
 
             if (appPreferences.displayExtraInfo) {

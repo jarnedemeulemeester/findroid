@@ -147,8 +147,6 @@
     <string name="extra_info_summary">Wyświetla szczegółowe informacje o audio, wideo i napisach</string>
     <string name="amoled_theme">Ciemny motyw AMOLED</string>
     <string name="amoled_theme_summary">Użyj motywu AMOLED z czystym czarnym tłem</string>
-    <string name="pref_player_trick_play">Trick Play</string>
-    <string name="pref_player_trick_play_summary">Wymaga zainstalowania na serwerze wtyczki Nicknsy\'s Jellyscrub</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="offline_mode">Tryb offline</string>
@@ -175,4 +173,21 @@
     <string name="picture_in_picture_gesture">Gest domowy obrazu w obrazie</string>
     <string name="picture_in_picture">Obraz w obrazie</string>
     <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
+    <string name="collection_no_media">Ta kolekcja nie zawiera żadnych elementów</string>
+    <string name="no_servers_found">Nie znaleziono żadnego serwera</string>
+    <string name="no_users_found">Nie znaleziono użytkowników</string>
+    <string name="select_user">Wybierz użytkownika</string>
+    <string name="live_tv">Telewizja na żywo</string>
+    <string name="play">Odtwórz</string>
+    <string name="watch_trailer">Odtwórz trailer</string>
+    <string name="player_start_maximized">Uruchom w trybie pełnoekranowym</string>
+    <string name="player_start_maximized_summary">Domyślnie odtwórz wideo w trybie pełnoekranowym</string>
+    <string name="player_gestures_chapter_skip_summary">Długo przytrzymaj z prawej lub lewej strony aby pominąć rozdziały (omija 2x przyspieszenie wideo)</string>
+    <string name="player_gestures_chapter_skip">Gest rozdziału</string>
+    <string name="pref_player_chapter_markers">Znaczniki rozdziałów</string>
+    <string name="pref_player_chapter_markers_summary">Wyświetl znaczniki rozdziałów na pasku odtwarzania</string>
+    <string name="mark_as_played">Zaznacz jako obejrzane</string>
+    <string name="unmark_as_played">Zaznacz jako nieobejrzane</string>
+    <string name="add_to_favorites">Dodaj do ulubionych</string>
+    <string name="remove_from_favorites">Usuń z ulubionych</string>
 </resources>

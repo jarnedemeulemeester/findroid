@@ -18,14 +18,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvGridItemSpan
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.destinations.LibraryScreenDestination
 import dev.jdtech.jellyfin.destinations.MovieScreenDestination
 import dev.jdtech.jellyfin.destinations.ShowScreenDestination
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -65,12 +66,14 @@ fun LibraryScreen(
                 is FindroidShow -> {
                     navigator.navigate(ShowScreenDestination(item.id))
                 }
+                is FindroidFolder -> {
+                    navigator.navigate(LibraryScreenDestination(item.id, item.name, libraryType))
+                }
             }
         },
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,

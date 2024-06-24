@@ -23,7 +23,6 @@ data class PlayerActivityNavArgs(
 @ActivityDestination(
     navArgsDelegate = PlayerActivityNavArgs::class,
 )
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class PlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

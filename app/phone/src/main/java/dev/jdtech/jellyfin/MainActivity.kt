@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyTheme() {
         if (appPreferences.amoledTheme) {
-            setTheme(CoreR.style.Theme_FindroidAMOLED)
+            setTheme(CoreR.style.ThemeOverlay_Findroid_Amoled)
         }
     }
 

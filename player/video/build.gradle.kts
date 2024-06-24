@@ -38,10 +38,9 @@ ktlint {
 }
 
 dependencies {
-    implementation(project(":player:core"))
-    implementation(project(":data"))
-    implementation(project(":preferences"))
-    implementation(libs.androidx.core)
+    implementation(projects.player.core)
+    implementation(projects.data)
+    implementation(projects.preferences)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.exoplayer)

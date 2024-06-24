@@ -19,7 +19,7 @@
             app:title="@string/pref_player_mpv_hwdec"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
-            app:defaultValue="gpu"
+            app:defaultValue="gpu-next"
             app:dependency="pref_player_mpv"
             app:entries="@array/mpv_vos"
             app:entryValues="@array/mpv_vos"
@@ -60,9 +60,20 @@
             app:summary="@string/player_gestures_seek_summary"
             app:title="@string/player_gestures_seek" />
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="pref_player_gestures"
+            app:key="pref_player_gestures_chapter_skip"
+            app:summary="@string/player_gestures_chapter_skip_summary"
+            app:title="@string/player_gestures_chapter_skip" />
+        <SwitchPreferenceCompat
             app:dependency="pref_player_gestures_vb"
             app:key="pref_player_brightness_remember"
             app:title="@string/player_brightness_remember" />
+        <SwitchPreferenceCompat
+            app:dependency="pref_player_gestures_zoom"
+            app:key="pref_player_start_maximized"
+            app:summary="@string/player_start_maximized_summary"
+            app:title="@string/player_start_maximized" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/seeking">
@@ -87,9 +98,16 @@
         
     <SwitchPreferenceCompat
         app:defaultValue="true"
-        app:key="pref_player_trick_play"
-        app:summary="@string/pref_player_trick_play_summary"
-        app:title="@string/pref_player_trick_play"
+        app:key="pref_player_trickplay"
+        app:summary="@string/pref_player_trickplay_summary"
+        app:title="@string/pref_player_trickplay"
+        app:widgetLayout="@layout/preference_material3_switch" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="pref_player_chapter_markers"
+        app:summary="@string/pref_player_chapter_markers_summary"
+        app:title="@string/pref_player_chapter_markers"
         app:widgetLayout="@layout/preference_material3_switch" />
 
     <PreferenceCategory app:title="@string/picture_in_picture">

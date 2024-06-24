@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.fragments
 
 import android.os.Bundle
+import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,7 +83,7 @@ class LoginFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
                     when (uiState) {
-                        is LoginViewModel.UiState.Normal -> bindUiStateNormal()
+                        is LoginViewModel.UiState.Normal -> bindUiStateNormal(uiState)
                         is LoginViewModel.UiState.Error -> bindUiStateError(uiState)
                         is LoginViewModel.UiState.Loading -> bindUiStateLoading()
                     }
@@ -135,11 +136,15 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    private fun bindUiStateNormal() {
+    private fun bindUiStateNormal(uiState: LoginViewModel.UiState.Normal) {
         binding.buttonLogin.isEnabled = true
         binding.progressCircular.isVisible = false
         binding.editTextUsernameLayout.isEnabled = true
         binding.editTextPasswordLayout.isEnabled = true
+
+        uiState.disclaimer?.let { disclaimer ->
+            binding.loginDisclaimer.text = fromHtml(disclaimer, 0)
+        }
     }
 
     private fun bindUiStateError(uiState: LoginViewModel.UiState.Error) {

@@ -36,10 +36,5 @@ ktlint {
 }
 
 dependencies {
-    implementation(project(":data"))
-    implementation(project(":preferences"))
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.preference)
-    implementation(libs.jellyfin.core)
     implementation(libs.timber)
 }

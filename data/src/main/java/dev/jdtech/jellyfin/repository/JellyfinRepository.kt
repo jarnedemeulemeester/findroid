@@ -10,7 +10,6 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.models.TrickPlayManifest
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -86,9 +85,7 @@ interface JellyfinRepository {
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
 
-    suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest?
-
-    suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray?
+    suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray?
 
     suspend fun postCapabilities()
 

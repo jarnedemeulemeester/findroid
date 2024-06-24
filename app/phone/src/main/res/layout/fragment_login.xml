@@ -141,6 +141,15 @@
                     android:visibility="invisible" />
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/login_disclaimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_margin="24dp"
+                android:textSize="16sp"
+                tools:text="Sample login disclaimer" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

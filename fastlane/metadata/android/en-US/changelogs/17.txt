@@ -1,0 +1,6 @@
+Fixes:
+- Fix resuming playback
+- Fix downloads playback when there is no connection to the server
+- Fix next up episode image crop
+
+Translations: Chinese, Dutch, Vietnamese, German, Hungarian, Italian, Portuguese, Polish, Russian, Yue

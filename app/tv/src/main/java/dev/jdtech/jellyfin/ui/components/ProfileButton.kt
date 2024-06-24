@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Surface
 import coil.compose.AsyncImage
@@ -29,7 +28,6 @@ import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import org.jellyfin.sdk.model.api.ImageType
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun ProfileButton(
     user: User?,
