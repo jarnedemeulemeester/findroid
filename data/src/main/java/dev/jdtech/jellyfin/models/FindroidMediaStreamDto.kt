@@ -39,7 +39,7 @@ fun FindroidMediaStream.toFindroidMediaStreamDto(id: UUID, sourceId: String, pat
         isExternal = isExternal,
         path = path,
         channelLayout = channelLayout,
-        videoRangeType = videoRangeType,
+        videoRangeType = videoRangeType?.name,
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,

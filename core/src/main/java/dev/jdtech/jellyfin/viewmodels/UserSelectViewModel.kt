@@ -19,7 +19,7 @@ import javax.inject.Inject
 class UserSelectViewModel
 @Inject
 constructor(
-    private val appPreferences: AppPreferences,
+    appPreferences: AppPreferences,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
@@ -71,7 +71,9 @@ constructor(
             database.update(server)
 
             jellyfinApi.apply {
-                api.accessToken = user.accessToken
+                api.update(
+                    accessToken = user.accessToken,
+                )
                 userId = user.id
             }
 

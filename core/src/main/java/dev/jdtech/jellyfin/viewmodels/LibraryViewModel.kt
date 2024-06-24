@@ -48,16 +48,20 @@ constructor(
             CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
             CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
             CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
+            CollectionType.Mixed -> listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
             else -> null
         }
+
+        val recursive = itemType == null || !itemType.contains(BaseItemKind.FOLDER)
+
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
             try {
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
                     includeTypes = itemType,
-                    recursive = true,
-                    sortBy = sortBy,
+                    recursive = recursive,
+                    sortBy = if (libraryType == CollectionType.TvShows && sortBy == SortBy.DATE_PLAYED) SortBy.SERIES_DATE_PLAYED else sortBy, // Jellyfin uses a different enum for sorting series by data played
                     sortOrder = sortOrder,
                 ).cachedIn(viewModelScope)
                 _uiState.emit(UiState.Normal(items))

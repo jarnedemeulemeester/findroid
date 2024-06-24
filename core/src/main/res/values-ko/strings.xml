@@ -136,8 +136,6 @@
     <string name="quick_connect">Quick Connect</string>
     <string name="pref_player_intro_skipper">Intro Skipper 기능</string>
     <string name="pref_player_intro_skipper_summary">서버에 ConfusedPolarBear의 Intro Skipper 플러그인이 설치되어 있어야 합니다.</string>
-    <string name="pref_player_trick_play_summary">nicknsy\'s Jellyscrub 플러그인이 서버에 설치되어 있어야 합니다</string>
-    <string name="pref_player_trick_play">Trick Play</string>
     <string name="internal">내부</string>
     <string name="storage_name">%1$s (%2$d MB 사용 가능)</string>
     <string name="external">외부</string>
@@ -168,11 +166,21 @@
     <string name="stop_download">다운로드 중지</string>
     <string name="privacy_policy_notice">Findroid를 사용하면, 데이터를 수집하지 않는다는 <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">개인 정보 보호 정책</a>에 동의합니다</string>
     <string name="remove_server_address_dialog_text">서버 주소 %1$s를 제거하는것이 확실합니까\?</string>
-    <string name="downloaded_indicator">다운로드된 표시기</string>
+    <string name="downloaded_indicator">다운로드 표시기</string>
     <string name="remove_server_address">서버 주소 제</string>
     <string name="temp">임시</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="picture_in_picture_gesture">Picture-in-picture 홈 제스쳐</string>
     <string name="picture_in_picture_gesture_summary">영상 재생 중 홈 버튼 또는 제스쳐를 이용해 picture-in-picture 변경</string>
     <string name="picture_in_picture">Picture-in-picture 기능</string>
+    <string name="no_servers_found">서버가 발견되지 않았습니다</string>
+    <string name="no_users_found">사용자가 발견되지 않았습니다</string>
+    <string name="select_user">사용자를 선택하세요</string>
+    <string name="play">재생</string>
+    <string name="live_tv">라이브 TV</string>
+    <string name="watch_trailer">예고편 보기</string>
+    <string name="mark_as_played">시청함으로 표시</string>
+    <string name="remove_from_favorites">즐겨찾기에서 제거</string>
+    <string name="unmark_as_played">시청함으로 표시하지 않기</string>
+    <string name="add_to_favorites">즐겨찾기에 추가</string>
 </resources>

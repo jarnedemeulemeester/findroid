@@ -24,7 +24,6 @@ import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ClickableSurfaceScale
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
@@ -45,7 +44,6 @@ data class VideoPlayerTrackSelectorDialogResult(
     val index: Int,
 ) : Parcelable
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Destination(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(

@@ -31,6 +31,7 @@ data class FindroidShow(
     val endDate: DateTime?,
     val trailer: String?,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>? = null,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidShow(
@@ -51,7 +52,7 @@ fun BaseItemDto.toFindroidShow(
         genres = genres ?: emptyList(),
         people = people ?: emptyList(),
         runtimeTicks = runTimeTicks ?: 0,
-        communityRating = communityRating,
+        communityRating = communityRating?.let { Math.round(it * 10).div(10F) },
         officialRating = officialRating,
         status = status ?: "Ended",
         productionYear = productionYear,

@@ -123,6 +123,9 @@
         <argument
             android:name="libraryType"
             app:argType="dev.jdtech.jellyfin.models.CollectionType" />
+        <action
+            android:id="@+id/action_libraryFragment_self"
+            app:destination="@id/libraryFragment" />
     </fragment>
     <fragment
         android:id="@+id/showFragment"

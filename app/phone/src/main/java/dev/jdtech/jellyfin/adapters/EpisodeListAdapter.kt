@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.adapters
 
+import android.text.Html.fromHtml
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,7 @@ class EpisodeListAdapter(
                 binding.root.context.getString(CoreR.string.episode_name_with_end, episode.indexNumber, episode.indexNumberEnd, episode.name)
             }
 
-            binding.episodeOverview.text = episode.overview
+            binding.episodeOverview.text = fromHtml(episode.overview, 0)
 
             if (episode.playbackPositionTicks > 0) {
                 binding.progressBar.layoutParams.width = TypedValue.applyDimension(

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import coil.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -17,7 +16,6 @@ enum class Direction {
     HORIZONTAL, VERTICAL
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun ItemPoster(
     item: FindroidItem,

@@ -9,4 +9,11 @@
     <string name="player_controls_rewind">Wiederholen</string>
     <string name="player_controls_fast_forward">Vorspulen</string>
     <string name="player_controls_skip_intro">Intro überspringen</string>
+    <string name="player_controls_lock">Player sperren</string>
+    <string name="player_controls_skip_back">Zurückspulen</string>
+    <string name="player_controls_play_pause">Starten/Anhalten</string>
+    <string name="player_controls_skip_forward">Vor springen</string>
+    <string name="player_controls_progress">Fortschrittsanzeige</string>
+    <string name="none">Keine</string>
+    <string name="player_controls_picture_in_picture">Bild-in-Bild öffnen</string>
 </resources>

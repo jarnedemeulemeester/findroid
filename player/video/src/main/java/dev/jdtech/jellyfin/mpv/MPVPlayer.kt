@@ -50,7 +50,7 @@ class MPVPlayer(
     private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
-    videoOutput: String = "gpu",
+    videoOutput: String = "gpu-next",
     audioOutput: String = "audiotrack",
     hwDec: String = "mediacodec",
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
@@ -77,9 +77,11 @@ class MPVPlayer(
         // General
         MPVLib.setOptionString("config", "yes")
         MPVLib.setOptionString("config-dir", mpvDir.path)
+        MPVLib.setOptionString("profile", "fast")
         MPVLib.setOptionString("vo", videoOutput)
         MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
+        MPVLib.setOptionString("opengl-es", "yes")
 
         // Hardware video decoding
         MPVLib.setOptionString("hwdec", hwDec)
@@ -108,8 +110,6 @@ class MPVPlayer(
         MPVLib.setOptionString("save-position-on-quit", "no")
         MPVLib.setOptionString("sub-font-provider", "none")
         MPVLib.setOptionString("ytdl", "no")
-        // DR is known to ruin performance at least on Exynos devices, see mpv-android#508
-        MPVLib.setOptionString("vd-lavc-dr", "no")
 
         MPVLib.init()
 
@@ -755,7 +755,17 @@ class MPVPlayer(
                 playWhenReadyChangeReason = Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST,
             )
             if (isPlayerReady) {
-                MPVLib.setPropertyBoolean("pause", !playWhenReady)
+                // Request audio focus when starting playback
+                if (requestAudioFocus && playWhenReady) {
+                    val res = audioManager.requestAudioFocus(audioFocusRequest)
+                    if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                        MPVLib.setPropertyBoolean("pause", true)
+                    } else {
+                        MPVLib.setPropertyBoolean("pause", false)
+                    }
+                } else {
+                    MPVLib.setPropertyBoolean("pause", !playWhenReady)
+                }
             }
         }
     }
@@ -869,8 +879,11 @@ class MPVPlayer(
                 )
             }
             currentIndex = index
-            MPVLib.command(arrayOf("playlist-play-index", "$index"))
-            MPVLib.setPropertyBoolean("pause", true)
+            // Only set the playlist index when the index is not the currently playing item. Otherwise playback will be restarted.
+            // This is a problem on initial load when the first item is still loading causing duplicate external subtitle entries.
+            if (MPVLib.getPropertyInt("playlist-current-pos") != index) {
+                MPVLib.command(arrayOf("playlist-play-index", "$index"))
+            }
             listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
                 listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
             }

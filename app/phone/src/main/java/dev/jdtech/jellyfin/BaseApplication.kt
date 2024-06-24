@@ -10,9 +10,11 @@ import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.DynamicColorsOptions
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactory {
@@ -40,7 +42,12 @@ class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactor
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
-        if (appPreferences.dynamicColors) DynamicColors.applyToActivitiesIfAvailable(this)
+        if (appPreferences.dynamicColors) {
+            val dynamicColorsOptions = DynamicColorsOptions.Builder()
+                .setThemeOverlay(CoreR.style.ThemeOverlay_Findroid_DynamicColors)
+                .build()
+            DynamicColors.applyToActivitiesIfAvailable(this, dynamicColorsOptions)
+        }
     }
 
     override fun newImageLoader(): ImageLoader {

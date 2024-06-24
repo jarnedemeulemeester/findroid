@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,17 +74,29 @@ constructor(
             server.currentServerAddressId = address.id
             database.update(server)
 
-            jellyfinApi.api.baseUrl = address.address
+            jellyfinApi.api.update(
+                baseUrl = address.address,
+            )
 
             eventsChannel.send(ServerAddressesEvent.NavigateToHome)
         }
     }
 
-    fun addAddress(address: String) {
+    fun addAddress(context: Context, address: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val serverAddress = ServerAddress(UUID.randomUUID(), currentServerId, address)
-            database.insertServerAddress(serverAddress)
-            loadAddresses(currentServerId)
+            try {
+                val jellyfinApi = JellyfinApi(context)
+                jellyfinApi.api.update(
+                    baseUrl = address,
+                )
+                val systemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
+                if (systemInfo.id != currentServerId) {
+                    return@launch
+                }
+                val serverAddress = ServerAddress(UUID.randomUUID(), currentServerId, address)
+                database.insertServerAddress(serverAddress)
+                loadAddresses(currentServerId)
+            } catch (_: Exception) { }
         }
     }
 }

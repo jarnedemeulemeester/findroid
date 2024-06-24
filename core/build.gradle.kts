@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.navigation.safeargs)
@@ -29,7 +30,6 @@ android {
     flavorDimensions += "variant"
     productFlavors {
         register("libre")
-        register("huawei")
     }
 
     compileOptions {
@@ -40,10 +40,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
-    }
 }
 
 ktlint {
@@ -53,18 +49,18 @@ ktlint {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+
     implementation(projects.data)
     implementation(projects.preferences)
     implementation(projects.player.core)
-    implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
+    implementation(composeBom)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
-    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.room.runtime)
