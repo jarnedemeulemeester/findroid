@@ -251,8 +251,11 @@ constructor(
                     _uiState.update { it.copy(currentSegment = currentSegment) }
                     Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
-                    val showSkip = currentSegment?.let { it.skip && seconds in it.showAt..<it.hideAt } ?: false
-                    _uiState.update { it.copy(showSkip = showSkip) }
+                    if (currentSegment?.type == "intro") {
+                        val showSkip =
+                            currentSegment.let { it.skip && seconds in it.showAt..<it.hideAt }
+                        _uiState.update { it.copy(showSkip = showSkip) }
+                    }
                 }
                 handler.postDelayed(this, 1000L)
             }

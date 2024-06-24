@@ -124,6 +124,7 @@ class PlayerActivity : BasePlayerActivity() {
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         val skipButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
+        val watchCreditsButton = binding.playerView.findViewById<Button>(R.id.btn_watch_credits)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
@@ -137,22 +138,15 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip button
-                            // Button Visibility
+                            // Skip Button
                             if (currentSegment != oldSegment) buttonPressed = false
-                            skipButton.isVisible =
-                                !isInPictureInPictureMode && !buttonPressed && (showSkip == true || (binding.playerView.isControllerFullyVisible && currentSegment?.skip == true))
-                            binding.playerView.setControllerVisibilityListener(
-                                PlayerView.ControllerVisibilityListener { visibility ->
-                                    skipButton.isVisible =
-                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || visibility == View.VISIBLE && currentSegment?.skip == true)
-                                },
-                            )
-                            // Button Text
+                            // Button Visibility and Text
                             when (currentSegment?.type) {
                                 "intro" -> {
                                     skipButton.text =
                                         getString(CoreR.string.skip_intro_button)
+                                    skipButton.isVisible =
+                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || (binding.playerView.isControllerFullyVisible && currentSegment?.skip == true))
                                 }
 
                                 "credit" -> {
@@ -162,9 +156,35 @@ class PlayerActivity : BasePlayerActivity() {
                                         } else {
                                             getString(CoreR.string.skip_credit_button_last)
                                         }
+                                    skipButton.isVisible =
+                                        !isInPictureInPictureMode && !buttonPressed && currentSegment?.skip == true && !binding.playerView.isControllerFullyVisible
+                                    watchCreditsButton.isVisible = skipButton.isVisible
                                 }
                             }
+                            binding.playerView.setControllerVisibilityListener(
+                                PlayerView.ControllerVisibilityListener { visibility ->
+                                    when (currentSegment?.type) {
+                                        "intro" -> {
+                                            skipButton.isVisible =
+                                                !buttonPressed && (showSkip == true || (visibility == View.VISIBLE && currentSegment?.skip == true))
+                                        }
+
+                                        "credit" -> {
+                                            skipButton.isVisible =
+                                                !buttonPressed && currentSegment?.skip == true && visibility == View.GONE
+                                            watchCreditsButton.isVisible = skipButton.isVisible
+                                        }
+                                    }
+                                },
+                            )
                             // onClick
+                            if (currentSegment?.type == "credit") {
+                                watchCreditsButton.setOnClickListener {
+                                    buttonPressed = true
+                                    skipButton.isVisible = false
+                                    watchCreditsButton.isVisible = false
+                                }
+                            }
                             skipButton.setOnClickListener {
                                 when (currentSegment?.type) {
                                     "intro" -> {
@@ -183,6 +203,7 @@ class PlayerActivity : BasePlayerActivity() {
                                 }
                                 buttonPressed = true
                                 skipButton.isVisible = false
+                                watchCreditsButton.isVisible = false
                             }
                             oldSegment = currentSegment
 

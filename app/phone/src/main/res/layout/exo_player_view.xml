@@ -71,10 +71,39 @@
         android:layout_height="match_parent"
         app:animation_enabled="false"/>
 
-    <include
-        layout="@layout/exo_player_skip_control"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="64dp">
+
+        <Button
+            android:id="@+id/btn_watch_credits"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="@string/watch_credits"
+            android:textColor="@color/material_dynamic_secondary10"
+            android:visibility="gone"
+            app:backgroundTint="@color/material_dynamic_secondary90"
+            app:strokeColor="#928E98"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_skip_intro"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/material_dynamic_primary100"
+            android:visibility="gone"
+            app:backgroundTint="@color/material_dynamic_primary40"
+            app:icon="@drawable/ic_skip_forward"
+            app:iconTint="@color/material_dynamic_primary100"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
 </merge>
