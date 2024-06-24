@@ -8,8 +8,8 @@ import androidx.media3.common.Player
 import androidx.media3.ui.TimeBar
 import coil.load
 import coil.transform.RoundedCornersTransformation
-import dev.jdtech.jellyfin.utils.bif.BifData
-import dev.jdtech.jellyfin.utils.bif.BifUtil
+import dev.jdtech.jellyfin.models.Trickplay
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
 class PreviewScrubListener(
@@ -17,14 +17,14 @@ class PreviewScrubListener(
     private val timeBarView: View,
     private val player: Player,
 ) : TimeBar.OnScrubListener {
-    var currentTrickPlay: BifData? = null
+    var currentTrickplay: Trickplay? = null
     private val roundedCorners = RoundedCornersTransformation(10f)
     private var currentBitMap: Bitmap? = null
 
     override fun onScrubStart(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing started at $position")
 
-        if (currentTrickPlay == null) {
+        if (currentTrickplay == null) {
             return
         }
 
@@ -35,8 +35,8 @@ class PreviewScrubListener(
     override fun onScrubMove(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing to $position")
 
-        val currentBifData = currentTrickPlay ?: return
-        val image = BifUtil.getTrickPlayFrame(position.toInt(), currentBifData) ?: return
+        val trickplay = currentTrickplay ?: return
+        val image = trickplay.images[position.div(trickplay.interval).toInt()]
 
         val parent = scrubbingPreview.parent as ViewGroup
 
@@ -57,6 +57,7 @@ class PreviewScrubListener(
 
         if (currentBitMap != image) {
             scrubbingPreview.load(image) {
+                dispatcher(Dispatchers.Main.immediate)
                 transformations(roundedCorners)
             }
             currentBitMap = image

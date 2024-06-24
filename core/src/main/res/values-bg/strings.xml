@@ -142,7 +142,6 @@
     <string name="settings_category_network">Мрежа</string>
     <string name="settings_socket_timeout">Лимит на сокета (ms)</string>
     <string name="pref_player_mpv_hwdec">Хардуерно декодиране</string>
-    <string name="pref_player_trick_play_summary">Изисква Jellyscrub на nicknsy да бъде инсталиран на сървъра</string>
     <string name="add_address">Добави адрес</string>
     <string name="audio">Аудио</string>
     <string name="video">Видео</string>
@@ -161,7 +160,6 @@
     <string name="select_video_version_title">Изберете версия</string>
     <string name="theme_dark">Тъмна</string>
     <string name="pref_player_intro_skipper">Пропускане на интрота</string>
-    <string name="pref_player_trick_play">Trick Play</string>
     <string name="addresses">Адреси</string>
     <string name="add_server_address">Добави адрес на сървър</string>
     <string name="player_gestures_zoom">Жест за приближаване (zoom)</string>

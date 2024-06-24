@@ -17,7 +17,6 @@ import dev.jdtech.jellyfin.models.FindroidSegments
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.models.TrickPlayManifest
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
@@ -26,9 +25,7 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidSegments
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
-import dev.jdtech.jellyfin.models.toTrickPlayManifest
-import io.ktor.util.cio.toByteArray
-import io.ktor.utils.io.ByteReadChannel
+import io.ktor.util.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -389,46 +386,17 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getTrickPlayManifest(itemId: UUID): TrickPlayManifest? =
+    override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         withContext(Dispatchers.IO) {
-            val trickPlayManifest = database.getTrickPlayManifest(itemId)
-            if (trickPlayManifest != null) {
-                return@withContext trickPlayManifest.toTrickPlayManifest()
-            }
-            // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
-            val pathParameters = mutableMapOf<String, UUID>()
-            pathParameters["itemId"] = itemId
-
             try {
-                return@withContext jellyfinApi.api.get<TrickPlayManifest>(
-                    "/Trickplay/{itemId}/GetManifest",
-                    pathParameters,
-                ).content
-            } catch (e: Exception) {
-                return@withContext null
-            }
-        }
+                try {
+                    val sources = File(context.filesDir, "trickplay/$itemId").listFiles()
+                    if (sources != null) {
+                        return@withContext File(sources.first(), index.toString()).readBytes()
+                    }
+                } catch (_: Exception) { }
 
-    override suspend fun getTrickPlayData(itemId: UUID, width: Int): ByteArray? =
-        withContext(Dispatchers.IO) {
-            val trickPlayManifest = database.getTrickPlayManifest(itemId)
-            if (trickPlayManifest != null) {
-                return@withContext File(
-                    context.filesDir,
-                    "trickplay/$itemId.bif",
-                ).readBytes()
-            }
-
-            // https://github.com/nicknsy/jellyscrub/blob/main/Nick.Plugin.Jellyscrub/Api/TrickplayController.cs
-            val pathParameters = mutableMapOf<String, Any>()
-            pathParameters["itemId"] = itemId
-            pathParameters["width"] = width
-
-            try {
-                return@withContext jellyfinApi.api.get<ByteReadChannel>(
-                    "/Trickplay/{itemId}/{width}/GetBIF",
-                    pathParameters,
-                ).content.toByteArray()
+                return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content.toByteArray()
             } catch (e: Exception) {
                 return@withContext null
             }
@@ -522,7 +490,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setFavorite(jellyfinApi.userId!!, itemId, true)
             try {
-                jellyfinApi.userLibraryApi.markFavoriteItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.userLibraryApi.markFavoriteItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -533,7 +501,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setFavorite(jellyfinApi.userId!!, itemId, false)
             try {
-                jellyfinApi.userLibraryApi.unmarkFavoriteItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.userLibraryApi.unmarkFavoriteItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -544,7 +512,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setPlayed(jellyfinApi.userId!!, itemId, true)
             try {
-                jellyfinApi.playStateApi.markPlayedItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.playStateApi.markPlayedItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
@@ -555,7 +523,7 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setPlayed(jellyfinApi.userId!!, itemId, false)
             try {
-                jellyfinApi.playStateApi.markUnplayedItem(jellyfinApi.userId!!, itemId)
+                jellyfinApi.playStateApi.markUnplayedItem(itemId)
             } catch (e: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }

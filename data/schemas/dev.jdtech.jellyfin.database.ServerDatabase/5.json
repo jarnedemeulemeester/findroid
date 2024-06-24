@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "98335303560b91843defc6f7631873ab",
+    "identityHash": "d675d95afd81500a1121fe8b696cd070",
     "entities": [
       {
         "tableName": "servers",
@@ -695,8 +695,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "trickPlayManifests",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `version` TEXT NOT NULL, `resolution` INTEGER NOT NULL, PRIMARY KEY(`itemId`))",
+        "tableName": "intros",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `start` REAL NOT NULL, `end` REAL NOT NULL, `showAt` REAL NOT NULL, `hideAt` REAL NOT NULL, PRIMARY KEY(`itemId`))",
         "fields": [
           {
             "fieldPath": "itemId",
@@ -705,41 +705,27 @@
             "notNull": true
           },
           {
-            "fieldPath": "version",
-            "columnName": "version",
-            "affinity": "TEXT",
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "resolution",
-            "columnName": "resolution",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "itemId"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "segments",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `segments` TEXT NOT NULL, PRIMARY KEY(`itemId`))",
-        "fields": [
-          {
-            "fieldPath": "itemId",
-            "columnName": "itemId",
-            "affinity": "TEXT",
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "segments",
-            "columnName": "segments",
-            "affinity": "TEXT",
+            "fieldPath": "showAt",
+            "columnName": "showAt",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hideAt",
+            "columnName": "hideAt",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -802,12 +788,86 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "trickplayInfos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sourceId` TEXT NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `tileWidth` INTEGER NOT NULL, `tileHeight` INTEGER NOT NULL, `thumbnailCount` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `bandwidth` INTEGER NOT NULL, PRIMARY KEY(`sourceId`), FOREIGN KEY(`sourceId`) REFERENCES `sources`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "sourceId",
+            "columnName": "sourceId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "width",
+            "columnName": "width",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tileWidth",
+            "columnName": "tileWidth",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tileHeight",
+            "columnName": "tileHeight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailCount",
+            "columnName": "thumbnailCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "interval",
+            "columnName": "interval",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bandwidth",
+            "columnName": "bandwidth",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "sourceId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "sources",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sourceId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '98335303560b91843defc6f7631873ab')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd675d95afd81500a1121fe8b696cd070')"
     ]
   }
 }
