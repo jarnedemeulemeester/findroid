@@ -147,6 +147,7 @@ class PlayerActivity : BasePlayerActivity() {
                                         getString(CoreR.string.skip_intro_button)
                                     skipButton.isVisible =
                                         !isInPictureInPictureMode && !buttonPressed && (showSkip == true || (binding.playerView.isControllerFullyVisible && currentSegment?.skip == true))
+                                    watchCreditsButton.isVisible = false
                                 }
 
                                 "credit" -> {
@@ -159,6 +160,11 @@ class PlayerActivity : BasePlayerActivity() {
                                     skipButton.isVisible =
                                         !isInPictureInPictureMode && !buttonPressed && currentSegment?.skip == true && !binding.playerView.isControllerFullyVisible
                                     watchCreditsButton.isVisible = skipButton.isVisible
+                                }
+
+                                else -> {
+                                    skipButton.isVisible = false
+                                    watchCreditsButton.isVisible = false
                                 }
                             }
                             binding.playerView.setControllerVisibilityListener(
