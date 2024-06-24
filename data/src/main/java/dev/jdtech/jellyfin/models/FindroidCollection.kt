@@ -19,12 +19,13 @@ data class FindroidCollection(
     override val unplayedItemCount: Int? = null,
     val type: CollectionType,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>? = null,
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidCollection(
     jellyfinRepository: JellyfinRepository,
 ): FindroidCollection? {
-    val type = CollectionType.fromString(collectionType)
+    val type = CollectionType.fromString(collectionType?.serialName)
 
     if (type !in CollectionType.supported) {
         return null

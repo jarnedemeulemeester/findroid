@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.models.FindroidMovieDto
 import dev.jdtech.jellyfin.models.FindroidSeasonDto
 import dev.jdtech.jellyfin.models.FindroidShowDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
+import dev.jdtech.jellyfin.models.FindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.IntroDto
 import dev.jdtech.jellyfin.models.Server
@@ -20,7 +21,6 @@ import dev.jdtech.jellyfin.models.ServerWithAddressAndUser
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.ServerWithUsers
-import dev.jdtech.jellyfin.models.TrickPlayManifestDto
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
 
@@ -147,15 +147,6 @@ interface ServerDatabaseDao {
     @Query("UPDATE userdata SET favorite = :favorite WHERE userId = :userId AND itemId = :itemId")
     fun setFavorite(userId: UUID, itemId: UUID, favorite: Boolean)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrickPlayManifest(trickPlayManifestDto: TrickPlayManifestDto)
-
-    @Query("SELECT * FROM trickPlayManifests WHERE itemId = :itemId")
-    fun getTrickPlayManifest(itemId: UUID): TrickPlayManifestDto?
-
-    @Query("DELETE FROM trickPlayManifests WHERE itemId = :itemId")
-    fun deleteTrickPlayManifest(itemId: UUID)
-
     @Query("SELECT * FROM movies ORDER BY name ASC")
     fun getMovies(): List<FindroidMovieDto>
 
@@ -204,7 +195,7 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM episodes WHERE serverId = :serverId ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC")
     fun getEpisodesByServerId(serverId: String): List<FindroidEpisodeDto>
 
-    @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0 ORDER BY episodes.parentIndexNumber ASC, episodes.indexNumber ASC")
+    @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating, episodes.chapters FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0 ORDER BY episodes.parentIndexNumber ASC, episodes.indexNumber ASC")
     fun getEpisodeResumeItems(serverId: String): List<FindroidEpisodeDto>
 
     @Query("DELETE FROM episodes WHERE id = :id")
@@ -270,4 +261,10 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM episodes WHERE serverId = :serverId AND name LIKE '%' || :name || '%'")
     fun searchEpisodes(serverId: String, name: String): List<FindroidEpisodeDto>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTrickplayInfo(trickplayInfoDto: FindroidTrickplayInfoDto)
+
+    @Query("SELECT * FROM trickplayInfos WHERE sourceId = :sourceId")
+    fun getTrickplayInfo(sourceId: String): FindroidTrickplayInfoDto?
 }

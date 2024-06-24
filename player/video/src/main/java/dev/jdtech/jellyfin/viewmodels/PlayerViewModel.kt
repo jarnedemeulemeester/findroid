@@ -6,13 +6,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.ExternalSubtitle
+import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.FindroidSources
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -113,7 +117,7 @@ class PlayerViewModel @Inject internal constructor(
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.seasonId,
-                fields = listOf(ItemFields.MEDIA_SOURCES),
+                fields = listOf(ItemFields.MEDIA_SOURCES, ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
                 startItemId = item.id,
                 limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
             )
@@ -137,25 +141,34 @@ class PlayerViewModel @Inject internal constructor(
                 mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
             }
             .map { mediaStream ->
-                // Temp fix for vtt
-                // Jellyfin returns a srt stream when it should return vtt stream.
-                var deliveryUrl = mediaStream.path!!
-                if (mediaStream.codec == "webvtt") {
-                    deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
-                }
-
                 ExternalSubtitle(
                     mediaStream.title,
                     mediaStream.language,
-                    Uri.parse(deliveryUrl),
+                    Uri.parse(mediaStream.path!!),
                     when (mediaStream.codec) {
                         "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                        "webvtt" -> MimeTypes.TEXT_VTT
+                        "webvtt" -> MimeTypes.APPLICATION_SUBRIP
                         "ass" -> MimeTypes.TEXT_SSA
                         else -> MimeTypes.TEXT_UNKNOWN
                     },
                 )
             }
+        val trickplayInfo = when (this) {
+            is FindroidSources -> {
+                this.trickplayInfo?.get(mediaSource.id)?.let {
+                    TrickplayInfo(
+                        width = it.width,
+                        height = it.height,
+                        tileWidth = it.tileWidth,
+                        tileHeight = it.tileHeight,
+                        thumbnailCount = it.thumbnailCount,
+                        interval = it.interval,
+                        bandwidth = it.bandwidth,
+                    )
+                }
+            }
+            else -> null
+        }
         return PlayerItem(
             name = name,
             itemId = id,
@@ -166,7 +179,18 @@ class PlayerViewModel @Inject internal constructor(
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
             externalSubtitles = externalSubtitles,
+            chapters = chapters.toPlayerChapters(),
+            trickplayInfo = trickplayInfo,
         )
+    }
+
+    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter>? {
+        return this?.map { chapter ->
+            PlayerChapter(
+                startPosition = chapter.startPosition,
+                name = chapter.name,
+            )
+        }
     }
 }
 

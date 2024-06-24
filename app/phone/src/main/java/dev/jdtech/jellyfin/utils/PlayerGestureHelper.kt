@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import timber.log.Timber
 import kotlin.math.abs
@@ -61,6 +62,8 @@ class PlayerGestureHelper(
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
 
+    private var currentNumberOfPointers: Int = 0
+
     private val tapGestureDetector = GestureDetector(
         playerView.context,
         object : GestureDetector.SimpleOnGestureListener() {
@@ -72,15 +75,19 @@ class PlayerGestureHelper(
                 return true
             }
 
-            @SuppressLint("SetTextI18n")
             override fun onLongPress(e: MotionEvent) {
-                playerView.player?.let {
-                    if (it.isPlaying) {
-                        lastPlaybackSpeed = it.playbackParameters.speed
-                        it.setPlaybackSpeed(playbackSpeedIncrease)
-                        activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
-                        activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
-                    }
+                // Disables long press gesture if view is locked
+                if (isControlsLocked) return
+
+                // Stop long press gesture when more than 1 pointer
+                if (currentNumberOfPointers > 1) return
+
+                // This is a temporary solution for chapter skipping.
+                // TODO: Remove this after implementing #636
+                if (appPreferences.playerGesturesChapterSkip) {
+                    handleChapterSkip(e)
+                } else {
+                    enableSpeedIncrease()
                 }
             }
 
@@ -114,6 +121,55 @@ class PlayerGestureHelper(
             }
         },
     )
+
+    @SuppressLint("SetTextI18n")
+    private fun enableSpeedIncrease() {
+        playerView.player?.let {
+            if (it.isPlaying) {
+                lastPlaybackSpeed = it.playbackParameters.speed
+                it.setPlaybackSpeed(playbackSpeedIncrease)
+                activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
+                activity.binding.gestureSpeedLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun handleChapterSkip(e: MotionEvent) {
+        if (isControlsLocked) {
+            return
+        }
+
+        val viewWidth = playerView.measuredWidth
+        val areaWidth = viewWidth / 5 // Divide the view into 5 parts: 2:1:2
+
+        // Define the areas and their boundaries
+        val leftmostAreaStart = 0
+        val middleAreaStart = areaWidth * 2
+        val rightmostAreaStart = middleAreaStart + areaWidth
+
+        when (e.x.toInt()) {
+            in leftmostAreaStart until middleAreaStart -> {
+                activity.viewModel.seekToPreviousChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
+            }
+            in rightmostAreaStart until viewWidth -> {
+                if (activity.viewModel.isLastChapter() == true) {
+                    playerView.player?.seekToNextMediaItem()
+                    return
+                }
+                activity.viewModel.seekToNextChapter()?.let { chapter ->
+                    displayChapter(chapter)
+                }
+            }
+            else -> return
+        }
+    }
+
+    private fun displayChapter(chapter: PlayerChapter) {
+        activity.binding.progressScrubberLayout.visibility = View.VISIBLE
+        activity.binding.progressScrubberText.text = chapter.name ?: ""
+    }
 
     private fun fastForward() {
         val currentPosition = playerView.player?.currentPosition ?: 0
@@ -330,8 +386,8 @@ class PlayerGestureHelper(
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
                 if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
-                    isZoomEnabled = scaleFactor > 1
-                    updateZoomMode(isZoomEnabled)
+                    val enableZoom = scaleFactor > 1
+                    updateZoomMode(enableZoom)
                 }
                 return true
             }
@@ -346,10 +402,11 @@ class PlayerGestureHelper(
         } else {
             playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
         }
+        isZoomEnabled = enabled
     }
 
     private fun releaseAction(event: MotionEvent) {
-        if (event.action == MotionEvent.ACTION_UP) {
+        if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
             activity.binding.gestureVolumeLayout.apply {
                 if (visibility == View.VISIBLE) {
                     removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
@@ -376,6 +433,7 @@ class PlayerGestureHelper(
                     swipeGestureValueTrackerProgress = -1L
                 }
             }
+            currentNumberOfPointers = 0
         }
         if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
             playerView.player?.setPlaybackSpeed(lastPlaybackSpeed)
@@ -423,6 +481,7 @@ class PlayerGestureHelper(
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
             if (playerView.useController) {
+                currentNumberOfPointers = event.pointerCount
                 when (event.pointerCount) {
                     1 -> {
                         tapGestureDetector.onTouchEvent(event)

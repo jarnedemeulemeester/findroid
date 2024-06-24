@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
@@ -29,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.C
 import androidx.media3.ui.DefaultTimeBar
+import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +57,7 @@ class PlayerActivity : BasePlayerActivity() {
     private var playerGestureHelper: PlayerGestureHelper? = null
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
+    private var wasZoom: Boolean = false
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -111,10 +114,6 @@ class PlayerActivity : BasePlayerActivity() {
             finish()
         }
 
-        binding.playerView.findViewById<View>(R.id.back_button_alt).setOnClickListener {
-            finish()
-        }
-
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
@@ -142,9 +141,21 @@ class PlayerActivity : BasePlayerActivity() {
                                 }
                             }
 
-                            // Trick Play
+                            // Trickplay
                             previewScrubListener?.let {
-                                it.currentTrickPlay = currentTrickPlay
+                                it.currentTrickplay = currentTrickplay
+                            }
+
+                            // Chapters
+                            if (appPreferences.showChapterMarkers && currentChapters != null) {
+                                currentChapters?.let { chapters ->
+                                    val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
+                                    val numOfChapters = chapters.size
+                                    playerControlView.setExtraAdGroupMarkers(
+                                        LongArray(numOfChapters) { index -> chapters[index].startPosition },
+                                        BooleanArray(numOfChapters) { false },
+                                    )
+                                }
                             }
 
                             // File Loaded
@@ -168,6 +179,13 @@ class PlayerActivity : BasePlayerActivity() {
                     viewModel.eventsChannelFlow.collect { event ->
                         when (event) {
                             is PlayerEvents.NavigateBack -> finish()
+                            is PlayerEvents.IsPlayingChanged -> {
+                                if (appPreferences.playerPipGesture) {
+                                    try {
+                                        setPictureInPictureParams(pipParams(event.isPlaying))
+                                    } catch (_: IllegalArgumentException) { }
+                                }
+                            }
                         }
                     }
                 }
@@ -237,9 +255,12 @@ class PlayerActivity : BasePlayerActivity() {
             pictureInPicture()
         }
 
-        if (appPreferences.playerTrickPlay) {
+        // Set marker color
+        val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
+        timeBar.setAdMarkerColor(Color.WHITE)
+
+        if (appPreferences.playerTrickplay) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
-            val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
             previewScrubListener = PreviewScrubListener(
                 imagePreview,
                 timeBar,
@@ -253,7 +274,7 @@ class PlayerActivity : BasePlayerActivity() {
         hideSystemUI()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
 
@@ -262,12 +283,17 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onUserLeaveHint() {
-        if (appPreferences.playerPipGesture && viewModel.player.isPlaying && !isControlsLocked) {
+        super.onUserLeaveHint()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
+            appPreferences.playerPipGesture &&
+            viewModel.player.isPlaying &&
+            !isControlsLocked
+        ) {
             pictureInPicture()
         }
     }
 
-    private fun pipParams(): PictureInPictureParams {
+    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio = binding.playerView.player?.videoSize?.let {
@@ -295,24 +321,20 @@ class PlayerActivity : BasePlayerActivity() {
             )
         }
 
-        return PictureInPictureParams.Builder()
+        val builder = PictureInPictureParams.Builder()
             .setAspectRatio(aspectRatio)
             .setSourceRectHint(sourceRectHint)
-            .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setAutoEnterEnabled(enableAutoEnter)
+        }
+
+        return builder.build()
     }
 
     private fun pictureInPicture() {
         if (!isPipSupported) {
             return
-        }
-        binding.playerView.useController = false
-        binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
-
-        playerGestureHelper?.updateZoomMode(false)
-
-        // Brightness mode Auto
-        window.attributes = window.attributes.apply {
-            screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         }
 
         try {
@@ -325,19 +347,33 @@ class PlayerActivity : BasePlayerActivity() {
         newConfig: Configuration,
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if (!isInPictureInPictureMode) {
-            binding.playerView.useController = true
-            playerGestureHelper?.isZoomEnabled?.let { playerGestureHelper!!.updateZoomMode(it) }
+        when (isInPictureInPictureMode) {
+            true -> {
+                binding.playerView.useController = false
+                binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
 
-            // Override auto brightness
-            window.attributes = window.attributes.apply {
-                screenBrightness = if (appPreferences.playerBrightnessRemember) {
-                    appPreferences.playerBrightness
-                } else {
-                    Settings.System.getInt(
-                        contentResolver,
-                        Settings.System.SCREEN_BRIGHTNESS,
-                    ).toFloat() / 255
+                wasZoom = playerGestureHelper?.isZoomEnabled ?: false
+                playerGestureHelper?.updateZoomMode(false)
+
+                // Brightness mode Auto
+                window.attributes = window.attributes.apply {
+                    screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                }
+            }
+            false -> {
+                binding.playerView.useController = true
+                playerGestureHelper?.updateZoomMode(wasZoom)
+
+                // Override auto brightness
+                window.attributes = window.attributes.apply {
+                    screenBrightness = if (appPreferences.playerBrightnessRemember) {
+                        appPreferences.playerBrightness
+                    } else {
+                        Settings.System.getInt(
+                            contentResolver,
+                            Settings.System.SCREEN_BRIGHTNESS,
+                        ).toFloat() / 255
+                    }
                 }
             }
         }

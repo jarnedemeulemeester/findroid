@@ -35,7 +35,6 @@ import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
@@ -103,7 +102,6 @@ fun ServerSelectScreen(
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ServerSelectScreenLayout(
     uiState: ServerSelectViewModel.UiState,
@@ -246,7 +244,6 @@ private fun ServerSelectScreenLayoutPreviewNoServers() {
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ServerComponent(
     server: DiscoveredServer,

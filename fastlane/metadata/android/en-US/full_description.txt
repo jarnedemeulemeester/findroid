@@ -1,0 +1,8 @@
+Findroid is a third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
+
+To use this app you must have a Jellyfin server.
+
+You can also download movies and TV shows for offline playback while on the road.
+And with the built-in mpv player you are sure that all media formats will play correctly including styled SSA/ASS subtitles.
+
+Thanks for using Findroid!

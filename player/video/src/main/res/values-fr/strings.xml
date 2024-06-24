@@ -16,4 +16,5 @@
     <string name="player_controls_skip_forward">Avancer</string>
     <string name="player_controls_progress">Barre de progression</string>
     <string name="player_controls_picture_in_picture">Détacher la fenêtre flottante</string>
+    <string name="none">Aucun</string>
 </resources>

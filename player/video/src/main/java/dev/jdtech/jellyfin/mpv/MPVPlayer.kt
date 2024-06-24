@@ -762,7 +762,17 @@ class MPVPlayer(
                 playWhenReadyChangeReason = Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST,
             )
             if (isPlayerReady) {
-                MPVLib.setPropertyBoolean("pause", !playWhenReady)
+                // Request audio focus when starting playback
+                if (requestAudioFocus && playWhenReady) {
+                    val res = audioManager.requestAudioFocus(audioFocusRequest)
+                    if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                        MPVLib.setPropertyBoolean("pause", true)
+                    } else {
+                        MPVLib.setPropertyBoolean("pause", false)
+                    }
+                } else {
+                    MPVLib.setPropertyBoolean("pause", !playWhenReady)
+                }
             }
         }
     }

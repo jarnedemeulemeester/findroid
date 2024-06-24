@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.viewmodels.CollectionViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
 class CollectionFragment : Fragment() {
@@ -39,6 +40,8 @@ class CollectionFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+
+        binding.noFavoritesText.text = getString(CoreR.string.collection_no_media)
 
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter { item ->
             navigateToMediaItem(item)

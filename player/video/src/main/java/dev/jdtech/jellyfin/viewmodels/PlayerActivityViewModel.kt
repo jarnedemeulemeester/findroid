@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.viewmodels
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.SavedStateHandle
@@ -19,12 +21,12 @@ import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import dev.jdtech.jellyfin.utils.bif.BifData
-import dev.jdtech.jellyfin.utils.bif.BifUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,6 +41,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.ceil
 
 @HiltViewModel
 class PlayerActivityViewModel
@@ -55,7 +58,8 @@ constructor(
         UiState(
             currentItemTitle = "",
             currentIntro = null,
-            currentTrickPlay = null,
+            currentTrickplay = null,
+            currentChapters = null,
             fileLoaded = false,
         ),
     )
@@ -66,18 +70,17 @@ constructor(
 
     private val intros: MutableMap<UUID, Intro> = mutableMapOf()
 
-    private val trickPlays: MutableMap<UUID, BifData> = mutableMapOf()
-
     data class UiState(
         val currentItemTitle: String,
         val currentIntro: Intro?,
-        val currentTrickPlay: BifData?,
+        val currentTrickplay: Trickplay?,
+        val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
     )
 
     private var items: Array<PlayerItem> = arrayOf()
 
-    val trackSelector = DefaultTrackSelector(application)
+    private val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
@@ -94,7 +97,7 @@ constructor(
                 .build()
             player = MPVPlayer(
                 context = application,
-                requestAudioFocus = false,
+                requestAudioFocus = true,
                 trackSelectionParameters = trackSelectionParameters,
                 seekBackIncrement = appPreferences.playerSeekBackIncrement,
                 seekForwardIncrement = appPreferences.playerSeekForwardIncrement,
@@ -185,11 +188,6 @@ constructor(
                 currentMediaItemIndex,
                 startPosition,
             )
-            if (appPreferences.playerMpv) { // For some reason, adding a 1ms delay between these two lines fixes a crash when playing with mpv from downloads
-                withContext(Dispatchers.IO) {
-                    Thread.sleep(1)
-                }
-            }
             player.prepare()
             player.play()
             pollPosition(player)
@@ -214,7 +212,7 @@ constructor(
             }
         }
 
-        _uiState.update { it.copy(currentTrickPlay = null) }
+        _uiState.update { it.copy(currentTrickplay = null) }
         playWhenReady = false
         playbackPosition = 0L
         currentMediaItemIndex = 0
@@ -279,12 +277,12 @@ constructor(
                         } else {
                             item.name
                         }
-                        _uiState.update { it.copy(currentItemTitle = itemTitle) }
+                        _uiState.update { it.copy(currentItemTitle = itemTitle, currentChapters = item.chapters, fileLoaded = false) }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
-                        if (appPreferences.playerTrickPlay) {
-                            getTrickPlay(item.itemId)
+                        if (appPreferences.playerTrickplay) {
+                            getTrickplay(item)
                         }
                     }
             } catch (e: Exception) {
@@ -345,31 +343,123 @@ constructor(
         playbackSpeed = speed
     }
 
-    private suspend fun getTrickPlay(itemId: UUID) {
-        if (trickPlays[itemId] != null) return
-        jellyfinRepository.getTrickPlayManifest(itemId)
-            ?.let { trickPlayManifest ->
-                val widthResolution =
-                    trickPlayManifest.widthResolutions.max()
-                Timber.d("Trickplay Resolution: $widthResolution")
+    private suspend fun getTrickplay(item: PlayerItem) {
+        val trickplayInfo = item.trickplayInfo ?: return
+        Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
 
-                jellyfinRepository.getTrickPlayData(
-                    itemId,
-                    widthResolution,
+        withContext(Dispatchers.Default) {
+            val maxIndex = ceil(trickplayInfo.thumbnailCount.toDouble().div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)).toInt()
+            val bitmaps = mutableListOf<Bitmap>()
+
+            for (i in 0..maxIndex) {
+                jellyfinRepository.getTrickplayData(
+                    item.itemId,
+                    trickplayInfo.width,
+                    i,
                 )?.let { byteArray ->
-                    val trickPlayData =
-                        BifUtil.trickPlayDecode(byteArray, widthResolution)
-
-                    trickPlayData?.let { bifData ->
-                        Timber.d("Trickplay Images: ${bifData.imageCount}")
-                        trickPlays[itemId] = bifData
-                        _uiState.update { it.copy(currentTrickPlay = trickPlays[itemId]) }
+                    val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    for (offsetY in 0..<trickplayInfo.height * trickplayInfo.tileHeight step trickplayInfo.height) {
+                        for (offsetX in 0..<trickplayInfo.width * trickplayInfo.tileWidth step trickplayInfo.width) {
+                            val bitmap = Bitmap.createBitmap(fullBitmap, offsetX, offsetY, trickplayInfo.width, trickplayInfo.height)
+                            bitmaps.add(bitmap)
+                        }
                     }
                 }
             }
+            _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
+        }
+    }
+
+    /**
+     * Get chapters of current item
+     * @return list of [PlayerChapter]
+     */
+    private fun getChapters(): List<PlayerChapter>? {
+        return uiState.value.currentChapters
+    }
+
+    /**
+     * Get the index of the current chapter
+     * @return the index of the current chapter
+     */
+    private fun getCurrentChapterIndex(): Int? {
+        val chapters = getChapters() ?: return null
+
+        for (i in chapters.indices.reversed()) {
+            if (chapters[i].startPosition < player.currentPosition) {
+                return i
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Get the index of the next chapter
+     * @return the index of the next chapter
+     */
+    private fun getNextChapterIndex(): Int? {
+        val chapters = getChapters() ?: return null
+        val currentChapterIndex = getCurrentChapterIndex() ?: return null
+
+        return minOf(chapters.size - 1, currentChapterIndex + 1)
+    }
+
+    /**
+     * Get the index of the previous chapter.
+     * Only use this for seeking as it will return the current chapter when player position is more than 5 seconds past the start of the chapter
+     * @return the index of the previous chapter
+     */
+    private fun getPreviousChapterIndex(): Int? {
+        val chapters = getChapters() ?: return null
+        val currentChapterIndex = getCurrentChapterIndex() ?: return null
+
+        // Return current chapter when more than 5 seconds past chapter start
+        if (player.currentPosition > chapters[currentChapterIndex].startPosition + 5000L) {
+            return currentChapterIndex
+        }
+
+        return maxOf(0, currentChapterIndex - 1)
+    }
+
+    fun isFirstChapter(): Boolean? = getChapters()?.let { getCurrentChapterIndex() == 0 }
+    fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
+
+    /**
+     * Seek to chapter
+     * @param [chapterIndex] the index of the chapter to seek to
+     * @return the [PlayerChapter] which has been sought to
+     */
+    private fun seekToChapter(chapterIndex: Int): PlayerChapter? {
+        return getChapters()?.getOrNull(chapterIndex)?.also { chapter ->
+            player.seekTo(chapter.startPosition)
+        }
+    }
+
+    /**
+     * Seek to the next chapter
+     * @return the [PlayerChapter] which has been sought to
+     */
+    fun seekToNextChapter(): PlayerChapter? {
+        return getNextChapterIndex()?.let { seekToChapter(it) }
+    }
+
+    /**
+     * Seek to the previous chapter
+     * Will seek to start of current chapter if player position is more than 5 seconds past start of chapter
+     * @return the [PlayerChapter] which has been sought to
+     */
+    fun seekToPreviousChapter(): PlayerChapter? {
+        return getPreviousChapterIndex()?.let { seekToChapter(it) }
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+        eventsChannel.trySend(PlayerEvents.IsPlayingChanged(isPlaying))
     }
 }
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
+    data class IsPlayingChanged(val isPlaying: Boolean) : PlayerEvents
 }

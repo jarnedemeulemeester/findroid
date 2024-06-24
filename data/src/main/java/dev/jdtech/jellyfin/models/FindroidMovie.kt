@@ -31,6 +31,8 @@ data class FindroidMovie(
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
+    override val chapters: List<FindroidChapter>?,
+    override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidMovie(
@@ -55,7 +57,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         runtimeTicks = runTimeTicks ?: 0,
         playbackPositionTicks = userData?.playbackPositionTicks ?: 0,
         premiereDate = premiereDate,
-        communityRating = communityRating,
+        communityRating = communityRating?.let { Math.round(it * 10).div(10F) },
         genres = genres ?: emptyList(),
         people = people ?: emptyList(),
         officialRating = officialRating,
@@ -64,11 +66,20 @@ suspend fun BaseItemDto.toFindroidMovie(
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
         images = toFindroidImages(jellyfinRepository),
+        chapters = toFindroidChapters(),
+        trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
     )
 }
 
 fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie {
     val userData = database.getUserDataOrCreateNew(id, userId)
+    val sources = database.getSources(id).map { it.toFindroidSource(database) }
+    val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
+    for (source in sources) {
+        database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
+            trickplayInfos[source.id] = it
+        }
+    }
     return FindroidMovie(
         id = id,
         name = name,
@@ -91,5 +102,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
         images = FindroidImages(),
+        chapters = chapters,
+        trickplayInfo = trickplayInfos,
     )
 }
