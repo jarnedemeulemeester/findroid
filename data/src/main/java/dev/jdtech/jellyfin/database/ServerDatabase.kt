@@ -26,7 +26,7 @@ import dev.jdtech.jellyfin.models.User
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5, spec = ServerDatabase.TrickplayMigration::class),
-        AutoMigration(from = 5, to = 6, spec = ServerDatabase.IntrosMigration::class,),
+        AutoMigration(from = 5, to = 6, spec = ServerDatabase.IntrosMigration::class),
     ],
 )
 @TypeConverters(Converters::class)
