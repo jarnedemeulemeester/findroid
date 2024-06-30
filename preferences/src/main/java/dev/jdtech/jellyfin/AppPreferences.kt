@@ -123,6 +123,8 @@ constructor(
         false,
     )
 
+    val clearPlayerOverlay get() = sharedPreferences.getBoolean(Constants.PREF_CLEAR_PLAYER_OVERLAY, false)
+
     // Sorting
     var sortBy: String
         get() = sharedPreferences.getString(

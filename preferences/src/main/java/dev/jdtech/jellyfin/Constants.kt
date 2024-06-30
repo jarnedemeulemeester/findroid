@@ -45,6 +45,7 @@ object Constants {
     const val PREF_SORT_BY = "pref_sort_by"
     const val PREF_SORT_ORDER = "pref_sort_order"
     const val PREF_DISPLAY_EXTRA_INFO = "pref_display_extra_info"
+    const val PREF_CLEAR_PLAYER_OVERLAY = "pref_clear_player_overlay"
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20
