@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
+import androidx.navigation.fragment.findNavController
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -20,6 +21,10 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         }
         findPreference<Preference>("pref_player_subtitles")?.setOnPreferenceClickListener {
             startActivity(Intent(Settings.ACTION_CAPTIONING_SETTINGS))
+            true
+        }
+        findPreference<Preference>("pref_player_gesture_customizations")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionSettingsPlayerFragmentToPlayerGesturesFragment())
             true
         }
     }
