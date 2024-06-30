@@ -20,6 +20,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
 
+        findPreference<Preference>("language")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsLanguageFragment())
+            true
+        }
+
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
             findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
             true
@@ -34,6 +39,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("switchAddress")?.setOnPreferenceClickListener {
             val serverId = appPreferences.currentServer!!
             findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerAddressesFragment(serverId))
+            true
+        }
+
+        findPreference<Preference>("appearance")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsAppearanceFragment())
+            true
+        }
+
+        findPreference<Preference>("downloads")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsDownloadsFragment())
+            true
+        }
+
+        findPreference<Preference>("player")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsPlayerFragment())
+            true
+        }
+
+        findPreference<Preference>("device")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsDeviceFragment())
+            true
+        }
+
+        findPreference<Preference>("network")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsNetworkFragment())
+            true
+        }
+
+        findPreference<Preference>("cache")?.setOnPreferenceClickListener {
+            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionTwoPaneSettingsFragmentToSettingsCacheFragment())
             true
         }
 
