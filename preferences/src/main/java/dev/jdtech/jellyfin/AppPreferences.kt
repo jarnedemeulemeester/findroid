@@ -123,6 +123,12 @@ constructor(
         false,
     )
 
+    var promptPendingDownloads: Boolean
+        get() = sharedPreferences.getBoolean(Constants.PREF_PROMPT_PENDING_DOWNLOADS, true)
+        set(value) = sharedPreferences.edit {
+            putBoolean(Constants.PREF_PROMPT_PENDING_DOWNLOADS, value)
+        }
+
     // Sorting
     var sortBy: String
         get() = sharedPreferences.getString(
