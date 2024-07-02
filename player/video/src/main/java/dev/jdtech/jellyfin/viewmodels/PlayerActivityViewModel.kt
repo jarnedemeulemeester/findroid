@@ -104,6 +104,8 @@ constructor(
                 videoOutput = appPreferences.playerMpvVo,
                 audioOutput = appPreferences.playerMpvAo,
                 hwDec = appPreferences.playerMpvHwdec,
+                highQuality = appPreferences.playerMpvHq,
+                deband = appPreferences.playerMpvDeband,
             )
         } else {
             val renderersFactory =

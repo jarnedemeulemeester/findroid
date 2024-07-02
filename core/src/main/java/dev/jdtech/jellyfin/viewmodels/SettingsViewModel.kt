@@ -109,6 +109,20 @@ constructor(
                     options = R.array.mpv_aos,
                     optionValues = R.array.mpv_aos,
                 ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_mpv_hq,
+                    descriptionStringRes = R.string.pref_player_mpv_hq_summary,
+                    dependencies = listOf(Constants.PREF_PLAYER_MPV),
+                    backendName = Constants.PREF_PLAYER_MPV_HQ,
+                    backendDefaultValue = true,
+                ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_mpv_deband,
+                    descriptionStringRes = R.string.pref_player_mpv_deband_summary,
+                    dependencies = listOf(Constants.PREF_PLAYER_MPV_HQ),
+                    backendName = Constants.PREF_PLAYER_MPV_DEBAND,
+                    backendDefaultValue = false,
+                ),
             ),
         ),
         PreferenceCategory(

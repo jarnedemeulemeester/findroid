@@ -192,4 +192,8 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="pref_player_mpv_hq">High quality</string>
+    <string name="pref_player_mpv_hq_summary">Enable high quality playback. Might cause performance issues on older devices.</string>
+    <string name="pref_player_mpv_deband_summary">Removes banding artifacts at the cost of some fine detail</string>
+    <string name="pref_player_mpv_deband">Deband</string>
 </resources>
