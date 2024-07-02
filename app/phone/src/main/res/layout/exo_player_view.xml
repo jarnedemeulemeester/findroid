@@ -48,24 +48,6 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/btn_skip_intro"
-            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="64dp"
-            android:text="@string/player_controls_skip_intro"
-            android:textColor="@android:color/white"
-            android:visibility="gone"
-            app:backgroundTint="@color/player_background"
-            app:icon="@drawable/ic_skip_forward"
-            app:iconGravity="end"
-            app:iconTint="@android:color/white"
-            app:strokeColor="@android:color/white"
-            tools:visibility="visible" />
-
     </androidx.media3.ui.AspectRatioFrameLayout>
 
     <androidx.media3.ui.SubtitleView
@@ -88,5 +70,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:animation_enabled="false"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="64dp">
+
+        <Button
+            android:id="@+id/btn_watch_credits"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="@string/watch_credits"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_skip_intro"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:icon="@drawable/ic_skip_forward"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
 </merge>

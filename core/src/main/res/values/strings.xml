@@ -145,7 +145,7 @@
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
-    <string name="pref_player_intro_skipper_summary">Requires ConfusedPolarBear\'s Intro Skipper plugin to be installed on the server</string>
+    <string name="pref_player_intro_skipper_summary">Requires <i>jumoog\'s</i> <b>Intro Skipper</b> plugin to be installed on the server</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Display preview images while scrubbing</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>
@@ -192,4 +192,7 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="skip_intro_button">Skip Intro</string>
+    <string name="skip_credit_button">Next episode</string>
+    <string name="skip_credit_button_last">Close player</string>
 </resources>

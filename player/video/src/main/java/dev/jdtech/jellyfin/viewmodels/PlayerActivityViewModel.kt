@@ -20,7 +20,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
@@ -57,7 +57,8 @@ constructor(
     private val _uiState = MutableStateFlow(
         UiState(
             currentItemTitle = "",
-            currentIntro = null,
+            currentSegment = null,
+            showSkip = false,
             currentTrickplay = null,
             currentChapters = null,
             fileLoaded = false,
@@ -68,11 +69,12 @@ constructor(
     private val eventsChannel = Channel<PlayerEvents>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    private val intros: MutableMap<UUID, Intro> = mutableMapOf()
+    private val segments: MutableMap<UUID, List<FindroidSegment>> = mutableMapOf()
 
     data class UiState(
         val currentItemTitle: String,
-        val currentIntro: Intro?,
+        val currentSegment: FindroidSegment?,
+        val showSkip: Boolean?,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
@@ -152,9 +154,10 @@ constructor(
                     }
 
                     if (appPreferences.playerIntroSkipper) {
-                        jellyfinRepository.getIntroTimestamps(item.itemId)?.let { intro ->
-                            intros[item.itemId] = intro
+                        jellyfinRepository.getSegmentsTimestamps(item.itemId)?.let { segment ->
+                            segments[item.itemId] = segment
                         }
+                        Timber.tag("SegmentInfo").d("Segments: %s", segments)
                     }
 
                     Timber.d("Stream url: $streamUrl")
@@ -239,24 +242,28 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
-        val introCheckRunnable = object : Runnable {
+        val segmentCheckRunnable = object : Runnable {
             override fun run() {
-                if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
-                    val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                    intros[itemId]?.let { intro ->
-                        val seconds = player.currentPosition / 1000.0
-                        if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
-                            _uiState.update { it.copy(currentIntro = intro) }
-                            return@let
-                        }
-                        _uiState.update { it.copy(currentIntro = null) }
+                val currentMediaItem = player.currentMediaItem
+                if (currentMediaItem != null && currentMediaItem.mediaId.isNotEmpty()) {
+                    val itemId = UUID.fromString(currentMediaItem.mediaId)
+                    val seconds = player.currentPosition / 1000.0
+
+                    val currentSegment = segments[itemId]?.find { segment -> seconds in segment.startTime..<segment.endTime }
+                    _uiState.update { it.copy(currentSegment = currentSegment) }
+                    Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
+
+                    if (currentSegment?.type == "intro") {
+                        val showSkip =
+                            currentSegment.let { it.skip && seconds in it.showAt..<it.hideAt }
+                        _uiState.update { it.copy(showSkip = showSkip) }
                     }
                 }
                 handler.postDelayed(this, 1000L)
             }
         }
         handler.post(playbackProgressRunnable)
-        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
+        if (segments.isNotEmpty()) handler.post(segmentCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -275,7 +282,14 @@ constructor(
                         } else {
                             item.name
                         }
-                        _uiState.update { it.copy(currentItemTitle = itemTitle, currentChapters = item.chapters, fileLoaded = false) }
+                        _uiState.update {
+                            it.copy(
+                                currentItemTitle = itemTitle,
+                                currentSegment = null,
+                                currentChapters = item.chapters,
+                                fileLoaded = false,
+                            )
+                        }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 

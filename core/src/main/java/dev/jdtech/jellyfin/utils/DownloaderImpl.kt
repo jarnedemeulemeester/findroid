@@ -20,11 +20,11 @@ import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
+import dev.jdtech.jellyfin.models.toFindroidSegmentsDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
-import dev.jdtech.jellyfin.models.toIntroDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
@@ -47,7 +47,7 @@ class DownloaderImpl(
     ): Pair<Long, UiText?> {
         try {
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
-            val intro = jellyfinRepository.getIntroTimestamps(item.id)
+            val segments = jellyfinRepository.getSegmentsTimestamps(item.id)
             val trickplayInfo = if (item is FindroidSources) {
                 item.trickplayInfo?.get(sourceId)
             } else {
@@ -79,8 +79,8 @@ class DownloaderImpl(
                     if (trickplayInfo != null) {
                         downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
-                    if (intro != null) {
-                        database.insertIntro(intro.toIntroDto(item.id))
+                    if (segments != null) {
+                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -108,8 +108,8 @@ class DownloaderImpl(
                     if (trickplayInfo != null) {
                         downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
-                    if (intro != null) {
-                        database.insertIntro(intro.toIntroDto(item.id))
+                    if (segments != null) {
+                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -171,7 +171,7 @@ class DownloaderImpl(
 
         database.deleteUserData(item.id)
 
-        database.deleteIntro(item.id)
+        database.deleteSegments(item.id)
 
         File(context.filesDir, "trickplay/${item.id}").deleteRecursively()
     }

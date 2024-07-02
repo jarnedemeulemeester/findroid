@@ -12,18 +12,19 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegments
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.models.toFindroidSegments
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
-import dev.jdtech.jellyfin.models.toIntro
 import io.ktor.util.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -336,12 +337,12 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>? =
         withContext(Dispatchers.IO) {
-            val intro = database.getIntro(itemId)?.toIntro()
+            val segments = database.getSegments(itemId)?.toFindroidSegments()
 
-            if (intro != null) {
-                return@withContext intro
+            if (segments != null) {
+                return@withContext segments
             }
 
             // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
@@ -349,10 +350,37 @@ class JellyfinRepositoryImpl(
             pathParameters["itemId"] = itemId
 
             try {
-                return@withContext jellyfinApi.api.get<Intro>(
-                    "/Episode/{itemId}/IntroTimestamps/v1",
+                val segmentToConvert = jellyfinApi.api.get<FindroidSegments>(
+                    "/Episode/{itemId}/IntroSkipperSegments",
                     pathParameters,
                 ).content
+
+                val segmentConverted = mutableListOf(
+                    segmentToConvert.intro!!.let {
+                        FindroidSegment(
+                            type = "intro",
+                            skip = true,
+                            startTime = it.startTime,
+                            endTime = it.endTime,
+                            showAt = it.showAt,
+                            hideAt = it.hideAt,
+                        )
+                    },
+                    segmentToConvert.credit!!.let {
+                        FindroidSegment(
+                            type = "credit",
+                            skip = true,
+                            startTime = it.startTime,
+                            endTime = it.endTime,
+                            showAt = it.showAt,
+                            hideAt = it.hideAt,
+                        )
+                    },
+                )
+                Timber.tag("SegmentInfo").d("segmentToConvert: %s", segmentToConvert)
+                Timber.tag("SegmentInfo").d("segmentConverted: %s", segmentConverted)
+
+                return@withContext segmentConverted.toList()
             } catch (e: Exception) {
                 return@withContext null
             }
