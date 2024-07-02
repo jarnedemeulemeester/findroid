@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.CollectionViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -105,7 +106,7 @@ class CollectionFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     CollectionFragmentDirections.actionCollectionFragmentToMovieFragment(
                         item.id,
                         item.name,
@@ -113,7 +114,7 @@ class CollectionFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     CollectionFragmentDirections.actionCollectionFragmentToShowFragment(
                         item.id,
                         item.name,
@@ -121,7 +122,7 @@ class CollectionFragment : Fragment() {
                 )
             }
             is FindroidEpisode -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     CollectionFragmentDirections.actionCollectionFragmentToEpisodeBottomSheetFragment(
                         item.id,
                     ),

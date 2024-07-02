@@ -31,6 +31,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.SortOrder
@@ -200,7 +201,7 @@ class LibraryFragment : Fragment() {
     private fun navigateToItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     LibraryFragmentDirections.actionLibraryFragmentToMovieFragment(
                         item.id,
                         item.name,
@@ -208,7 +209,7 @@ class LibraryFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     LibraryFragmentDirections.actionLibraryFragmentToShowFragment(
                         item.id,
                         item.name,
@@ -216,7 +217,7 @@ class LibraryFragment : Fragment() {
                 )
             }
             is FindroidBoxSet -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     LibraryFragmentDirections.actionLibraryFragmentToCollectionFragment(
                         item.id,
                         item.name,
@@ -224,7 +225,7 @@ class LibraryFragment : Fragment() {
                 )
             }
             is FindroidFolder -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     LibraryFragmentDirections.actionLibraryFragmentSelf(
                         item.id,
                         item.name,

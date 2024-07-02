@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ServerGridAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerSelectBinding
 import dev.jdtech.jellyfin.dialogs.DeleteServerDialogFragment
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import kotlinx.coroutines.launch
@@ -82,16 +83,16 @@ class ServerSelectFragment : Fragment() {
     }
 
     private fun navigateToAddServerFragment() {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment(),
         )
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
+        findNavController().safeNavigate(ServerSelectFragmentDirections.actionServerSelectFragmentToHomeFragment())
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
+        findNavController().safeNavigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
     }
 }

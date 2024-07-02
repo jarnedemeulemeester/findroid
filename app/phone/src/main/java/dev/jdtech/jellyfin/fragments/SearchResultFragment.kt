@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.SearchResultViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -103,7 +104,7 @@ class SearchResultFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToMovieFragment(
                         item.id,
                         item.name,
@@ -111,7 +112,7 @@ class SearchResultFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToShowFragment(
                         item.id,
                         item.name,
@@ -119,7 +120,7 @@ class SearchResultFragment : Fragment() {
                 )
             }
             is FindroidEpisode -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToEpisodeBottomSheetFragment(
                         item.id,
                     ),
