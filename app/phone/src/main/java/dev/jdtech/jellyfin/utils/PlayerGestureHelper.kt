@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.utils
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.os.Build
 import android.os.SystemClock
@@ -19,12 +20,16 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.models.PlayerChapter
+import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -61,6 +66,10 @@ class PlayerGestureHelper(
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+
+    var currentTrickplay: Trickplay? = null
+    private val roundedCorners = RoundedCornersTransformation(10f)
+    private var currentBitMap: Bitmap? = null
 
     private var currentNumberOfPointers: Int = 0
 
@@ -265,6 +274,13 @@ class PlayerGestureHelper(
                         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
                         activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
+
+                        if (currentTrickplay != null) {
+                            onMove(newPos)
+                        } else {
+                            activity.binding.imagePreviewGesture.visibility = View.GONE
+                        }
+
                         swipeGestureProgressOpen = true
                         true
                     } else {
@@ -471,9 +487,25 @@ class PlayerGestureHelper(
         return false
     }
 
+    fun onMove(position: Long) {
+        val trickplay = currentTrickplay ?: return
+        val image = trickplay.images[position.div(trickplay.interval).toInt()]
+
+        if (currentBitMap != image) {
+            activity.binding.imagePreviewGesture.load(image) {
+                dispatcher(Dispatchers.Main.immediate)
+                transformations(roundedCorners)
+            }
+            currentBitMap = image
+        }
+    }
+
     init {
         if (appPreferences.playerBrightnessRemember) {
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
+        }
+        if (!appPreferences.playerTrickPlayGesture) {
+            activity.binding.imagePreviewGesture.visibility = View.GONE
         }
 
         updateZoomMode(appPreferences.playerStartMaximized)
