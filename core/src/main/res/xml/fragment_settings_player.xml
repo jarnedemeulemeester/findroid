@@ -95,28 +95,28 @@
         app:summary="@string/pref_player_intro_skipper_summary"
         app:title="@string/pref_player_intro_skipper"
         app:widgetLayout="@layout/preference_material3_switch" />
-        
-    <SwitchPreferenceCompat
-        app:defaultValue="true"
-        app:key="pref_player_trickplay"
-        app:summary="@string/pref_player_trickplay_summary"
-        app:title="@string/pref_player_trickplay"
-        app:widgetLayout="@layout/preference_material3_switch" />
 
     <SwitchPreferenceCompat
-        app:defaultValue="true"
-        app:dependency="pref_player_trickplay"
-        app:key="pref_player_trick_play_gesture"
-        app:summary="@string/pref_player_trickplay_gesture_summary"
-        app:title="@string/pref_player_trickplay_gesture"
-        app:widgetLayout="@layout/preference_material3_switch" />
-  
-      <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="pref_player_chapter_markers"
         app:summary="@string/pref_player_chapter_markers_summary"
         app:title="@string/pref_player_chapter_markers"
         app:widgetLayout="@layout/preference_material3_switch" />
+
+    <PreferenceCategory app:title="@string/trickplay">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_player_trickplay"
+            app:summary="@string/pref_player_trickplay_summary"
+            app:title="@string/pref_player_trickplay" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="pref_player_gestures_seek"
+            app:key="pref_player_trickplay_gesture"
+            app:summary="@string/pref_player_trickplay_gesture_summary"
+            app:title="@string/pref_player_trickplay_gesture" />
+    </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/picture_in_picture">
         <SwitchPreferenceCompat

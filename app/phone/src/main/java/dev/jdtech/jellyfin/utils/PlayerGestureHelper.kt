@@ -275,10 +275,13 @@ class PlayerGestureHelper(
                         activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
 
-                        if (currentTrickplay != null) {
-                            onMove(newPos)
-                        } else {
-                            activity.binding.imagePreviewGesture.visibility = View.GONE
+                        if (appPreferences.playerTrickplayGesture) {
+                            if (currentTrickplay != null) {
+                                activity.binding.imagePreviewGesture.visibility = View.VISIBLE
+                                onMove(newPos)
+                            } else {
+                                activity.binding.imagePreviewGesture.visibility = View.GONE
+                            }
                         }
 
                         swipeGestureProgressOpen = true
@@ -504,7 +507,7 @@ class PlayerGestureHelper(
         if (appPreferences.playerBrightnessRemember) {
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
         }
-        if (!appPreferences.playerTrickPlayGesture) {
+        if (!appPreferences.playerTrickplayGesture) {
             activity.binding.imagePreviewGesture.visibility = View.GONE
         }
 

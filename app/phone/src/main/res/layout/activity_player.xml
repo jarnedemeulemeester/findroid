@@ -35,7 +35,9 @@
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/player_trickplay" />
+            android:contentDescription="@string/player_trickplay"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/progress_scrubber_text"
