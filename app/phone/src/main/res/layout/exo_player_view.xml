@@ -85,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:text="@string/watch_credits"
+            android:text="@string/player_watch_credits"
             android:visibility="gone"
             tools:visibility="visible" />
 
