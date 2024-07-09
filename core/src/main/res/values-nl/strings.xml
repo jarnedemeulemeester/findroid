@@ -189,4 +189,5 @@
     <string name="play">Afspelen</string>
     <string name="add_to_favorites">Aan favorieten toevoegen</string>
     <string name="remove_from_favorites">Van favorieten verwijderen</string>
+    <string name="collection_no_media">Deze collectie bevat geen media</string>
 </resources>
