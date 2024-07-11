@@ -45,7 +45,7 @@ constructor(
     private fun testServerConnection() {
         viewModelScope.launch {
             try {
-                if (appPreferences.offlineMode) return@launch
+                if (appPreferences.isOffline) return@launch
                 repository.getPublicSystemInfo()
                 // Give the UI a chance to load
                 delay(100)
