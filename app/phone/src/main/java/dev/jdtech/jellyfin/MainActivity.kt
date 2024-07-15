@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val bars = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars()
-                        or WindowInsetsCompat.Type.displayCutout()
+                    or WindowInsetsCompat.Type.displayCutout(),
             )
             v.updatePadding(
                 left = bars.left,
