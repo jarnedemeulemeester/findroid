@@ -3,6 +3,9 @@ package dev.jdtech.jellyfin.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,9 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.tv.foundation.lazy.grid.TvGridCells
-import androidx.tv.foundation.lazy.grid.TvGridItemSpan
-import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
@@ -86,8 +86,8 @@ private fun LibraryScreenLayout(
         is LibraryViewModel.UiState.Loading -> Text(text = "LOADING")
         is LibraryViewModel.UiState.Normal -> {
             val items = uiState.items.collectAsLazyPagingItems()
-            TvLazyVerticalGrid(
-                columns = TvGridCells.Fixed(5),
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(5),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
@@ -95,7 +95,7 @@ private fun LibraryScreenLayout(
                     .fillMaxSize()
                     .focusRequester(focusRequester),
             ) {
-                item(span = { TvGridItemSpan(this.maxLineSpan) }) {
+                item(span = { GridItemSpan(this.maxLineSpan) }) {
                     Text(
                         text = libraryName,
                         style = MaterialTheme.typography.displayMedium,

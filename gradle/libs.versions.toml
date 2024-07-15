@@ -4,7 +4,7 @@ android-desugar-jdk-libs = "2.0.4"
 android-plugin = "8.5.1"
 androidx-activity = "1.9.0"
 androidx-appcompat = "1.7.0"
-androidx-compose-bom = "2024.06.00"
+androidx-compose = "1.7.0-beta05"
 androidx-compose-material3 = "1.2.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.13.1"
@@ -22,7 +22,6 @@ androidx-test-expresso = "3.6.1"
 androidx-test-junit = "1.2.1"
 androidx-test-rules = "1.6.1"
 androidx-test-runner = "1.6.1"
-androidx-tv = "1.0.0-alpha11"
 androidx-tv-material3 = "1.0.0-rc01"
 androidx-work = "2.9.0"
 coil = "2.6.0"
@@ -46,11 +45,12 @@ android-desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", 
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "androidx-compose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "androidx-compose" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "androidx-compose" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidx-compose" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "androidx-compose" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt" }
@@ -79,7 +79,6 @@ androidx-test-expresso = { group = "androidx.test.espresso", name = "espresso-co
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
 androidx-test-rules = { group = "androidx.test" , name = "rules", version.ref = "androidx-test-rules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
-androidx-tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "androidx-tv" }
 androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "androidx-tv-material3" }
 androidx-work = { group = "androidx.work", name = "work-runtime", version.ref = "androidx-work" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidx-work" }

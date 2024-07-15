@@ -152,7 +152,7 @@ private fun LoginScreenLayout(
                 label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next,
                 ),
@@ -175,7 +175,7 @@ private fun LoginScreenLayout(
                 label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Go,
                 ),
