@@ -345,14 +345,11 @@ class JellyfinRepositoryImpl(
                 return@withContext segments
             }
 
-            // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
-            val pathParameters = mutableMapOf<String, UUID>()
-            pathParameters["itemId"] = itemId
-
+            // https://github.com/jumoog/intro-skipper/blob/master/docs/api.md
             try {
                 val segmentToConvert = jellyfinApi.api.get<FindroidSegments>(
-                    "/Episode/{itemId}/IntroSkipperSegments",
-                    pathParameters,
+                    pathTemplate = "/Episode/{itemId}/IntroSkipperSegments",
+                    pathParameters = mapOf("itemId" to itemId),
                 ).content
 
                 val segmentConverted = mutableListOf(
@@ -380,7 +377,7 @@ class JellyfinRepositoryImpl(
                 Timber.tag("SegmentInfo").d("segmentToConvert: %s", segmentToConvert)
                 Timber.tag("SegmentInfo").d("segmentConverted: %s", segmentConverted)
 
-                return@withContext segmentConverted.toList()
+                return@withContext segmentConverted
             } catch (e: Exception) {
                 return@withContext null
             }

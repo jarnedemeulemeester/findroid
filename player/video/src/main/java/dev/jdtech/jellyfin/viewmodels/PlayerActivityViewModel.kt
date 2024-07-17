@@ -69,8 +69,6 @@ constructor(
     private val eventsChannel = Channel<PlayerEvents>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    private val segments: MutableMap<UUID, List<FindroidSegment>> = mutableMapOf()
-
     data class UiState(
         val currentItemTitle: String,
         val currentSegment: FindroidSegment?,
@@ -86,6 +84,7 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
+    private var currentSegments: List<FindroidSegment> = emptyList()
 
     var playbackSpeed: Float = 1f
 
@@ -151,13 +150,6 @@ constructor(
                             .setMimeType(externalSubtitle.mimeType)
                             .setLanguage(externalSubtitle.language)
                             .build()
-                    }
-
-                    if (appPreferences.playerIntroSkipper) {
-                        jellyfinRepository.getSegmentsTimestamps(item.itemId)?.let { segment ->
-                            segments[item.itemId] = segment
-                        }
-                        Timber.tag("SegmentInfo").d("Segments: %s", segments)
                     }
 
                     Timber.d("Stream url: $streamUrl")
@@ -244,12 +236,10 @@ constructor(
         }
         val segmentCheckRunnable = object : Runnable {
             override fun run() {
-                val currentMediaItem = player.currentMediaItem
-                if (currentMediaItem != null && currentMediaItem.mediaId.isNotEmpty()) {
-                    val itemId = UUID.fromString(currentMediaItem.mediaId)
+                if (currentSegments.isNotEmpty()) {
                     val seconds = player.currentPosition / 1000.0
 
-                    val currentSegment = segments[itemId]?.find { segment -> seconds in segment.startTime..<segment.endTime }
+                    val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
                     _uiState.update { it.copy(currentSegment = currentSegment) }
                     Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
@@ -263,7 +253,7 @@ constructor(
             }
         }
         handler.post(playbackProgressRunnable)
-        if (segments.isNotEmpty()) handler.post(segmentCheckRunnable)
+        handler.post(segmentCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -295,6 +285,9 @@ constructor(
 
                         if (appPreferences.playerTrickplay) {
                             getTrickplay(item)
+                        }
+                        if (appPreferences.playerIntroSkipper) {
+                            getSegments(item)
                         }
                     }
             } catch (e: Exception) {
@@ -379,6 +372,13 @@ constructor(
                 }
             }
             _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
+        }
+    }
+
+    private suspend fun getSegments(item: PlayerItem) {
+        currentSegments = emptyList()
+        jellyfinRepository.getSegmentsTimestamps(item.itemId)?.let { segments ->
+            currentSegments = segments
         }
     }
 
