@@ -76,9 +76,9 @@ class MainActivityTest {
             waitForElement(allOf(withText("Movies"), isDisplayed()))
             onView(withText("Movies")).perform(click())
 
-            // Navigate to Battle of the Stars
-            waitForElement(allOf(withText("Battle of the Stars"), isDisplayed()))
-            onView(withText("Battle of the Stars")).perform(click())
+            // Navigate to The Boy in the Plastic Bubble
+            waitForElement(allOf(withText("The Boy in the Plastic Bubble"), isDisplayed()))
+            onView(withText("The Boy in the Plastic Bubble")).perform(click())
 
             // Play the movie
             waitForElement(allOf(withId(R.id.play_button), isEnabled()))

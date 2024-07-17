@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="add_server_error_outdated">اصدار الخادم قديم: %1$s. الرجاء تحديث الخادم</string>
+    <string name="add_server_error_not_jellyfin">ليس خادم جيلي فن:%1$s</string>
+    <string name="add_server_error_version">اصدار الخادم غير مدعوم: %1$s. الرجاء تحديث الخادم</string>
+    <string name="add_server_error_slow">رد الخادم بطيء: %1$s</string>
+    <string name="login">تسجيل دخول</string>
+    <string name="login_error_wrong_username_password">اسم المستخدم او الكلمه السريه غير صحيحه</string>
+    <string name="select_server">اختر الخادم</string>
+    <string name="edit_text_server_address_hint">عنوان الخادم</string>
+    <string name="edit_text_username_hint">اسم المستخدم</string>
+    <string name="edit_text_password_hint">الكلمه السريه</string>
+    <string name="button_connect">اتصل</string>
+    <string name="button_login">تسجيل دخول</string>
+    <string name="remove_server">حذف الخادم</string>
+    <string name="add_server">اضافه خادم</string>
+    <string name="add_server_error_not_found">الخادم غير موجود</string>
+    <string name="add_server_error_empty_address">عنوان الخادم فاضي</string>
+    <string name="add_server_error_no_id">الخادم غير معرف بالid , يبدو انه هناك خلل في الخادم</string>
+</resources>

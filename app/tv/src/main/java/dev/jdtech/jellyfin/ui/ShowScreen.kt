@@ -16,6 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,10 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.items
-import androidx.tv.foundation.lazy.list.rememberTvLazyListState
 import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
@@ -136,7 +136,7 @@ private fun ShowScreenLayout(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    val listState = rememberTvLazyListState()
+    val listState = rememberLazyListState()
     val listSize = remember { mutableIntStateOf(2) }
     var currentIndex by remember { mutableIntStateOf(0) }
 
@@ -179,7 +179,7 @@ private fun ShowScreenLayout(
                             ),
                     )
                 }
-                TvLazyColumn(
+                LazyColumn(
                     state = listState,
                     contentPadding = PaddingValues(top = 112.dp, bottom = MaterialTheme.spacings.large),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
@@ -364,7 +364,7 @@ private fun ShowScreenLayout(
                         }
                     }
                     item {
-                        TvLazyRow(
+                        LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2),
                         ) {
