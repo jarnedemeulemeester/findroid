@@ -270,6 +270,13 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
+        if (appPreferences.clearPlayerOverlay) {
+            binding.run {
+                progressScrubberLayout.background = null
+                findViewById<View>(R.id.player_controls)?.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+
         viewModel.initializePlayer(args.items)
         hideSystemUI()
     }

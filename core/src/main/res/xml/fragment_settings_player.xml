@@ -74,6 +74,11 @@
             app:key="pref_player_start_maximized"
             app:summary="@string/player_start_maximized_summary"
             app:title="@string/player_start_maximized" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_clear_player_overlay"
+            app:summary="@string/clear_player_overlay_desc"
+            app:title="@string/clear_player_overlay_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/seeking">
