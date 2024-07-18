@@ -356,7 +356,6 @@ class JellyfinRepositoryImpl(
                     segmentToConvert.intro!!.let {
                         FindroidSegment(
                             type = "intro",
-                            skip = true,
                             startTime = it.startTime,
                             endTime = it.endTime,
                             showAt = it.showAt,
@@ -366,7 +365,6 @@ class JellyfinRepositoryImpl(
                     segmentToConvert.credit!!.let {
                         FindroidSegment(
                             type = "credit",
-                            skip = true,
                             startTime = it.startTime,
                             endTime = it.endTime,
                             showAt = it.showAt,

@@ -14,7 +14,6 @@ data class FindroidSegments(
 @Serializable
 data class FindroidSegment(
     val type: String = "none",
-    val skip: Boolean = false,
     @SerialName("IntroStart")
     val startTime: Double,
     @SerialName("IntroEnd")
@@ -29,7 +28,6 @@ fun FindroidSegmentsDto.toFindroidSegments(): List<FindroidSegment> {
     return segments.map { segment ->
         FindroidSegment(
             type = segment.type,
-            skip = segment.skip,
             startTime = segment.startTime,
             endTime = segment.endTime,
             showAt = segment.showAt,

@@ -245,7 +245,7 @@ constructor(
 
                     if (currentSegment?.type == "intro") {
                         val showSkip =
-                            currentSegment.let { it.skip && seconds in it.showAt..<it.hideAt }
+                            currentSegment.let { seconds in it.showAt..<it.hideAt }
                         _uiState.update { it.copy(showSkip = showSkip) }
                     }
                 }

@@ -146,7 +146,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     skipButton.text =
                                         getString(CoreR.string.skip_intro_button)
                                     skipButton.isVisible =
-                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || (binding.playerView.isControllerFullyVisible && currentSegment?.skip == true))
+                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || binding.playerView.isControllerFullyVisible)
                                     watchCreditsButton.isVisible = false
                                 }
 
@@ -158,7 +158,7 @@ class PlayerActivity : BasePlayerActivity() {
                                             getString(CoreR.string.skip_credit_button_last)
                                         }
                                     skipButton.isVisible =
-                                        !isInPictureInPictureMode && !buttonPressed && currentSegment?.skip == true && !binding.playerView.isControllerFullyVisible
+                                        !isInPictureInPictureMode && !buttonPressed && !binding.playerView.isControllerFullyVisible
                                     watchCreditsButton.isVisible = skipButton.isVisible
                                 }
 
@@ -172,12 +172,12 @@ class PlayerActivity : BasePlayerActivity() {
                                     when (currentSegment?.type) {
                                         "intro" -> {
                                             skipButton.isVisible =
-                                                !buttonPressed && (showSkip == true || (visibility == View.VISIBLE && currentSegment?.skip == true))
+                                                !buttonPressed && (showSkip == true || visibility == View.VISIBLE)
                                         }
 
                                         "credit" -> {
                                             skipButton.isVisible =
-                                                !buttonPressed && currentSegment?.skip == true && visibility == View.GONE
+                                                !buttonPressed && visibility == View.GONE
                                             watchCreditsButton.isVisible = skipButton.isVisible
                                         }
                                     }
