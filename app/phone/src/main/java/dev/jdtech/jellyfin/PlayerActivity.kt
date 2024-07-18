@@ -33,6 +33,7 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
@@ -82,6 +83,10 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val changeQualityButton: ImageButton = findViewById(R.id.btnChangeQuality)
+        changeQualityButton.setOnClickListener {
+            showQualitySelectionDialog()
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
@@ -340,6 +345,23 @@ class PlayerActivity : BasePlayerActivity() {
         try {
             enterPictureInPictureMode(pipParams())
         } catch (_: IllegalArgumentException) { }
+    }
+
+    private fun showQualitySelectionDialog() {
+       val height = viewModel.getOriginalHeight() // TODO: rewrite getting height stuff I don't like that its only update after changing quality
+        val qualities = when (height) {
+            0 -> arrayOf("Auto", "Original - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
+            in 1001..1999 -> arrayOf("Auto", "Original (1080p) - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
+            in 2000..3000 ->  arrayOf("Auto", "Original (4K) - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
+            else -> arrayOf("Auto", "Original - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Select Video Quality")
+            .setItems(qualities) { _, which ->
+                val selectedQuality = qualities[which]
+                viewModel.changeVideoQuality(selectedQuality)
+            }
+            .show()
     }
 
     override fun onPictureInPictureModeChanged(

@@ -23,9 +23,13 @@ import dev.jdtech.jellyfin.models.toIntro
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.Response
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
+import org.jellyfin.sdk.model.api.EncodingContext
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PlaybackInfoResponse
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
@@ -173,7 +177,7 @@ class JellyfinRepositoryOfflineImpl(
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
 
-    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
+    override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String, playSessionId: String?): String {
         TODO("Not yet implemented")
     }
 
@@ -284,5 +288,55 @@ class JellyfinRepositoryOfflineImpl(
 
     override fun getUserId(): UUID {
         return jellyfinApi.userId!!
+    }
+
+    override suspend fun getDeviceId(): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getVideoTranscodeBitRate(transcodeResolution: Int): Pair<Int, Int> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun buildDeviceProfile(
+        maxBitrate: Int,
+        container: String,
+        context: EncodingContext
+    ): DeviceProfile {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getVideoStreambyContainerUrl(
+        itemId: UUID,
+        deviceId: String,
+        mediaSourceId: String,
+        playSessionId: String,
+        videoBitrate: Int,
+        container: String
+    ): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTranscodedVideoStream(
+        itemId: UUID,
+        deviceId: String,
+        mediaSourceId: String,
+        playSessionId: String,
+        videoBitrate: Int
+    ): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPostedPlaybackInfo(
+        itemId: UUID,
+        enableDirectStream: Boolean,
+        deviceProfile: DeviceProfile,
+        maxBitrate: Int
+    ): Response<PlaybackInfoResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun stopEncodingProcess(playSessionId: String) {
+        TODO("Not yet implemented")
     }
 }
