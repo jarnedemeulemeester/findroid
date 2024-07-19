@@ -192,70 +192,80 @@ class MovieFragment : Fragment() {
         }
 
         binding.itemActions.downloadButton.setOnClickListener {
-            if (viewModel.item.isDownloaded()) {
-                viewModel.deleteItem()
-                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-            } else if (viewModel.item.isDownloading()) {
-                createCancelDialog()
-            } else {
-                binding.itemActions.downloadButton.setIconResource(android.R.color.transparent)
-                binding.itemActions.progressDownload.isIndeterminate = true
-                binding.itemActions.progressDownload.isVisible = true
-                if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
-                    val storageDialog = getStorageSelectionDialog(
-                        requireContext(),
-                        onItemSelected = { storageIndex ->
-                            if (viewModel.item.sources.size > 1) {
-                                val dialog = getVideoVersionDialog(
-                                    requireContext(),
-                                    viewModel.item,
-                                    onItemSelected = { sourceIndex ->
-                                        createDownloadPreparingDialog()
-                                        viewModel.download(sourceIndex, storageIndex)
-                                    },
-                                    onCancel = {
-                                        binding.itemActions.progressDownload.isVisible = false
-                                        binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                                    },
-                                )
-                                dialog.show()
-                                return@getStorageSelectionDialog
-                            }
-                            createDownloadPreparingDialog()
-                            viewModel.download(storageIndex = storageIndex)
-                        },
-                        onCancel = {
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        },
-                    )
-                    storageDialog.show()
-                    return@setOnClickListener
-                }
-                if (viewModel.item.sources.size > 1) {
-                    val dialog = getVideoVersionDialog(
-                        requireContext(),
-                        viewModel.item,
-                        onItemSelected = { sourceIndex ->
-                            createDownloadPreparingDialog()
-                            viewModel.download(sourceIndex)
-                        },
-                        onCancel = {
-                            binding.itemActions.progressDownload.isVisible = false
-                            binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
-                        },
-                    )
-                    dialog.show()
-                    return@setOnClickListener
-                }
-                createDownloadPreparingDialog()
-                viewModel.download()
-            }
+                handleDownload()
         }
 
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
         }
+    }
+
+    private fun handleDownload() {
+        if (viewModel.item.isDownloaded()) {
+            viewModel.deleteItem()
+            binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
+        } else if (viewModel.item.isDownloading()) {
+            createCancelDialog()
+        } else if (!appPreferences.downloadQualityDefault) {
+            createPickQualityDialog()
+        } else {
+            download()
+        }
+    }
+
+    private fun download() {
+        binding.itemActions.downloadButton.setIconResource(android.R.color.transparent)
+        binding.itemActions.progressDownload.isIndeterminate = true
+        binding.itemActions.progressDownload.isVisible = true
+        if (requireContext().getExternalFilesDirs(null).filterNotNull().size > 1) {
+            val storageDialog = getStorageSelectionDialog(
+                requireContext(),
+                onItemSelected = { storageIndex ->
+                    if (viewModel.item.sources.size > 1) {
+                        val dialog = getVideoVersionDialog(
+                            requireContext(),
+                            viewModel.item,
+                            onItemSelected = { sourceIndex ->
+                                createDownloadPreparingDialog()
+                                viewModel.download(sourceIndex, storageIndex)
+                            },
+                            onCancel = {
+                                binding.itemActions.progressDownload.isVisible = false
+                                binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
+                            },
+                        )
+                        dialog.show()
+                        return@getStorageSelectionDialog
+                    }
+                    createDownloadPreparingDialog()
+                    viewModel.download(storageIndex = storageIndex)
+                },
+                onCancel = {
+                    binding.itemActions.progressDownload.isVisible = false
+                    binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
+                },
+            )
+            storageDialog.show()
+            return
+        }
+        if (viewModel.item.sources.size > 1) {
+            val dialog = getVideoVersionDialog(
+                requireContext(),
+                viewModel.item,
+                onItemSelected = { sourceIndex ->
+                    createDownloadPreparingDialog()
+                    viewModel.download(sourceIndex)
+                },
+                onCancel = {
+                    binding.itemActions.progressDownload.isVisible = false
+                    binding.itemActions.downloadButton.setIconResource(CoreR.drawable.ic_download)
+                },
+            )
+            dialog.show()
+            return
+        }
+        createDownloadPreparingDialog()
+        viewModel.download()
     }
 
     override fun onResume() {
@@ -492,6 +502,31 @@ class MovieFragment : Fragment() {
             .setNegativeButton(CoreR.string.cancel) { _, _ ->
             }
             .create()
+        dialog.show()
+    }
+
+    private fun createPickQualityDialog() {
+        val qualityEntries = resources.getStringArray(CoreR.array.quality_entries)
+        val qualityValues = resources.getStringArray(CoreR.array.quality_values)
+        val quality = appPreferences.downloadQuality
+        val currentQualityIndex = qualityValues.indexOf(quality)
+        var selectedQuality = quality
+
+
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle("Download Quality")
+        builder.setSingleChoiceItems(qualityEntries, currentQualityIndex) { _, which ->
+            selectedQuality = qualityValues[which]
+        }
+        builder.setPositiveButton("Download") { dialog, _ ->
+            appPreferences.downloadQuality = selectedQuality
+            download()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
         dialog.show()
     }
 

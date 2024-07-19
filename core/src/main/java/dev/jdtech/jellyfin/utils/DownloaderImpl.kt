@@ -26,6 +26,8 @@ import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.models.toIntroDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import org.jellyfin.sdk.model.api.EncodingContext
+import org.jellyfin.sdk.model.api.MediaStreamType
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
@@ -82,15 +84,29 @@ class DownloaderImpl(
                     if (intro != null) {
                         database.insertIntro(intro.toIntroDto(item.id))
                     }
-                    val request = DownloadManager.Request(source.path.toUri())
-                        .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.downloadOverMobileData)
-                        .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationUri(path)
-                    val downloadId = downloadManager.enqueue(request)
-                    database.setSourceDownloadId(source.id, downloadId)
-                    return Pair(downloadId, null)
+                    if (appPreferences.downloadQuality != "Original") {
+                        downloadEmbeddedMediaStreams(item, source,storageIndex)
+                        val transcodingUrl =getTranscodedUrl(item.id,appPreferences.downloadQuality!!)
+                        val request = DownloadManager.Request(transcodingUrl)
+                            .setTitle(item.name)
+                            .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                            .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setDestinationUri(path)
+                        val downloadId = downloadManager.enqueue(request)
+                        database.setSourceDownloadId(source.id, downloadId)
+                        return Pair(downloadId, null)
+                    }else {
+                        val request = DownloadManager.Request(source.path.toUri())
+                            .setTitle(item.name)
+                            .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                            .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setDestinationUri(path)
+                        val downloadId = downloadManager.enqueue(request)
+                        database.setSourceDownloadId(source.id, downloadId)
+                        return Pair(downloadId, null)
+                    }
                 }
 
                 is FindroidEpisode -> {
@@ -111,15 +127,29 @@ class DownloaderImpl(
                     if (intro != null) {
                         database.insertIntro(intro.toIntroDto(item.id))
                     }
-                    val request = DownloadManager.Request(source.path.toUri())
-                        .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.downloadOverMobileData)
-                        .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationUri(path)
-                    val downloadId = downloadManager.enqueue(request)
-                    database.setSourceDownloadId(source.id, downloadId)
-                    return Pair(downloadId, null)
+                    if (appPreferences.downloadQuality != "Original") {
+                        downloadEmbeddedMediaStreams(item, source,storageIndex)
+                        val transcodingUrl = getTranscodedUrl(item.id, appPreferences.downloadQuality!!)
+                        val request = DownloadManager.Request(transcodingUrl)
+                            .setTitle(item.name)
+                            .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                            .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setDestinationUri(path)
+                        val downloadId = downloadManager.enqueue(request)
+                        database.setSourceDownloadId(source.id, downloadId)
+                        return Pair(downloadId, null)
+                    }else {
+                        val request = DownloadManager.Request(source.path.toUri())
+                            .setTitle(item.name)
+                            .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                            .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setDestinationUri(path)
+                        val downloadId = downloadManager.enqueue(request)
+                        database.setSourceDownloadId(source.id, downloadId)
+                        return Pair(downloadId, null)
+                    }
                 }
             }
             return Pair(-1, null)
@@ -230,6 +260,45 @@ class DownloaderImpl(
         }
     }
 
+    private fun downloadEmbeddedMediaStreams(
+        item: FindroidItem,
+        source: FindroidSource,
+        storageIndex: Int = 0
+    ) {
+        val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
+        val subtitleStreams = source.mediaStreams.filter { !it.isExternal && it.type == MediaStreamType.SUBTITLE && it.path != null }
+        for (mediaStream in subtitleStreams) {
+            var deliveryUrl = mediaStream.path!!
+            if (mediaStream.codec == "webvtt") {
+                deliveryUrl = deliveryUrl.replace("Stream.srt", "Stream.vtt")
+            }
+            val id = UUID.randomUUID()
+            val streamPath = Uri.fromFile(
+                File(
+                    storageLocation,
+                    "downloads/${item.id}.${source.id}.$id.download"
+                )
+            )
+            database.insertMediaStream(
+                mediaStream.toFindroidMediaStreamDto(
+                    id,
+                    source.id,
+                    streamPath.path.orEmpty()
+                )
+            )
+            val request = DownloadManager.Request(Uri.parse(deliveryUrl))
+                .setTitle(mediaStream.title)
+                .setAllowedOverMetered(appPreferences.downloadOverMobileData)
+                .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                .setDestinationUri(streamPath)
+
+            val downloadId = downloadManager.enqueue(request)
+            database.setMediaStreamDownloadId(id, downloadId)
+        }
+    }
+
+
     private suspend fun downloadTrickplayData(
         itemId: UUID,
         sourceId: String,
@@ -262,5 +331,48 @@ class DownloaderImpl(
             val file = File(context.filesDir, "$basePath/$i")
             file.writeBytes(byteArray)
         }
+    }
+
+    private suspend fun getTranscodedUrl(itemId: UUID, quality: String): Uri? {
+        val maxBitrate = when (quality) {
+            "720p" -> 2000000 // 2 Mbps
+            "480p" -> 1000000 // 1 Mbps
+            "360p" -> 800000  // 800Kbps
+            else -> 2000000
+        }
+
+        return try {
+
+            val deviceProfile = jellyfinRepository.buildDeviceProfile(maxBitrate,"mkv", EncodingContext.STATIC)
+            val playbackInfo = jellyfinRepository.getPostedPlaybackInfo(itemId,false,deviceProfile,maxBitrate)
+            val mediaSourceId = playbackInfo.content.mediaSources.firstOrNull()?.id!!
+            val playSessionId = playbackInfo.content.playSessionId!!
+            val deviceId = jellyfinRepository.getDeviceId()
+            val downloadUrl = jellyfinRepository.getVideoStreambyContainerUrl(itemId, deviceId, mediaSourceId, playSessionId, maxBitrate, "ts")
+
+            val transcodeUri = buildTranscodeUri(downloadUrl, maxBitrate, quality)
+            transcodeUri
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    // TODO: I believe building upon the uri is not necessary anymore all is handled in the sdk api
+    private fun buildTranscodeUri(
+        transcodingUrl: String,
+        maxBitrate: Int,
+        quality: String
+    ): Uri {
+        val resolution = when (quality) {
+            "720p" -> "720"
+            "480p" -> "480"
+            "360p" -> "360"
+            else -> "720"
+        }
+        return Uri.parse(transcodingUrl).buildUpon()
+            .appendQueryParameter("MaxVideoHeight", resolution)
+            .appendQueryParameter("MaxVideoBitRate", maxBitrate.toString())
+            .appendQueryParameter("subtitleMethod", "External")
+            .build()
     }
 }

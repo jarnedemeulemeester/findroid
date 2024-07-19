@@ -25,4 +25,16 @@
         <item>audiotrack</item>
         <item>opensles</item>
     </string-array>
+    <string-array name="quality_entries">
+        <item>Original</item>
+        <item>720p - 2Mbps</item>
+        <item>480p - 1Mbps</item>
+        <item>360p - 800Kbps</item>
+    </string-array>
+    <string-array name="quality_values">
+        <item>Original</item>
+        <item>720p</item>
+        <item>480p</item>
+        <item>360p</item>
+    </string-array>
 </resources>
