@@ -29,7 +29,9 @@ interface JellyfinRepository {
     suspend fun getUserViews(): List<BaseItemDto>
 
     suspend fun getItem(itemId: UUID): BaseItemDto
+
     suspend fun getEpisode(itemId: UUID): FindroidEpisode
+
     suspend fun getMovie(itemId: UUID): FindroidMovie
 
     suspend fun getShow(itemId: UUID): FindroidShow
@@ -70,7 +72,10 @@ interface JellyfinRepository {
 
     suspend fun getLatestMedia(parentId: UUID): List<FindroidItem>
 
-    suspend fun getSeasons(seriesId: UUID, offline: Boolean = false): List<FindroidSeason>
+    suspend fun getSeasons(
+        seriesId: UUID,
+        offline: Boolean = false,
+    ): List<FindroidSeason>
 
     suspend fun getNextUp(seriesId: UUID? = null): List<FindroidEpisode>
 
@@ -83,21 +88,40 @@ interface JellyfinRepository {
         offline: Boolean = false,
     ): List<FindroidEpisode>
 
-    suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>
+    suspend fun getMediaSources(
+        itemId: UUID,
+        includePath: Boolean = false,
+    ): List<FindroidSource>
 
-    suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String, playSessionId: String? = null): String
+    suspend fun getStreamUrl(
+        itemId: UUID,
+        mediaSourceId: String,
+        playSessionId: String? = null,
+    ): String
 
     suspend fun getIntroTimestamps(itemId: UUID): Intro?
 
-    suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray?
+    suspend fun getTrickplayData(
+        itemId: UUID,
+        width: Int,
+        index: Int,
+    ): ByteArray?
 
     suspend fun postCapabilities()
 
     suspend fun postPlaybackStart(itemId: UUID)
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
+    suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+    )
 
-    suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
+    suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+    )
 
     suspend fun markAsFavorite(itemId: UUID)
 
@@ -121,13 +145,37 @@ interface JellyfinRepository {
 
     suspend fun getVideoTranscodeBitRate(transcodeResolution: Int): Pair<Int, Int>
 
-    suspend fun buildDeviceProfile(maxBitrate: Int, container: String, context: EncodingContext): DeviceProfile
+    suspend fun buildDeviceProfile(
+        maxBitrate: Int,
+        container: String,
+        context: EncodingContext,
+    ): DeviceProfile
 
-    suspend fun getVideoStreambyContainerUrl(itemId: UUID, deviceId: String, mediaSourceId: String, playSessionId: String, videoBitrate: Int, container: String): String
+    suspend fun getVideoStreambyContainerUrl(
+        itemId: UUID,
+        deviceId: String,
+        mediaSourceId: String,
+        playSessionId: String,
+        videoBitrate:
+            @Suppress("ktlint:standard:max-line-length")
+            Int,
+        container: String,
+    ): String
 
-    suspend fun getTranscodedVideoStream(itemId: UUID, deviceId: String, mediaSourceId: String, playSessionId: String, videoBitrate: Int): String
+    suspend fun getTranscodedVideoStream(
+        itemId: UUID,
+        deviceId: String,
+        mediaSourceId: String,
+        playSessionId: String,
+        videoBitrate: Int,
+    ): String
 
-    suspend fun getPostedPlaybackInfo(itemId: UUID, enableDirectStream: Boolean, deviceProfile: DeviceProfile ,maxBitrate: Int): Response<PlaybackInfoResponse>
+    suspend fun getPostedPlaybackInfo(
+        itemId: UUID,
+        enableDirectStream: Boolean,
+        deviceProfile: DeviceProfile,
+        maxBitrate: Int,
+    ): Response<PlaybackInfoResponse>
 
     suspend fun stopEncodingProcess(playSessionId: String)
 }
