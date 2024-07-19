@@ -710,7 +710,6 @@ class JellyfinRepositoryImpl(
         deviceId: String,
         mediaSourceId: String,
         playSessionId: String,
-        @Suppress("ktlint:standard:max-line-length")
         videoBitrate: Int,
         container: String,
     ): String {
