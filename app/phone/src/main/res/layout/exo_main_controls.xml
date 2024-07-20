@@ -81,7 +81,7 @@
                 android:background="@drawable/transparent_circle_background"
                 android:contentDescription="Quality"
                 android:padding="16dp"
-                android:src="@drawable/ic_quality"
+                android:src="@drawable/ic_monitor_play"
                 android:layout_gravity="end"
                 app:tint="@android:color/white"
                 />

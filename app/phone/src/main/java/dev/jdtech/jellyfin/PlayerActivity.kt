@@ -366,7 +366,7 @@ class PlayerActivity : BasePlayerActivity() {
             qualities[1] = "${qualities[1]} (${closestQuality})"
         }
         MaterialAlertDialogBuilder(this)
-            .setTitle("Select Video Quality")
+            .setTitle(CoreR.string.select_quality)
             .setSingleChoiceItems(qualities.toTypedArray(), selectedIndex) { dialog, which ->
                 selectedIndex = which
                 val selectedQualityValue = qualityValues[which]

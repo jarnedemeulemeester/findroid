@@ -26,12 +26,12 @@
         <item>opensles</item>
     </string-array>
     <string-array name="quality_entries">
-        <item>Auto</item>
-        <item>Original</item>
-        <item>1080p - 8Mbps</item>
-        <item>720p - 3Mbps</item>
-        <item>480p - 1.5Mbps</item>
-        <item>360p - 800Kbps</item>
+        <item>@string/quality_auto</item>
+        <item>@string/quality_original</item>
+        <item>@string/quality_1080p</item>
+        <item>@string/quality_720p</item>
+        <item>@string/quality_480p</item>
+        <item>@string/quality_360p</item>
     </string-array>
     <string-array name="quality_values">
         <item>Auto</item>
@@ -42,11 +42,11 @@
         <item>360p</item>
     </string-array>
     <string-array name="download_quality_entries">
-        <item>Original</item>
-        <item>1080p - 8Mbps</item>
-        <item>720p - 3Mbps</item>
-        <item>480p - 1.5Mbps</item>
-        <item>360p - 800Kbps</item>
+        <item>@string/quality_original</item>
+        <item>@string/quality_1080p</item>
+        <item>@string/quality_720p</item>
+        <item>@string/quality_480p</item>
+        <item>@string/quality_360p</item>
     </string-array>
     <string-array name="download_quality_values">
         <item>Original</item>

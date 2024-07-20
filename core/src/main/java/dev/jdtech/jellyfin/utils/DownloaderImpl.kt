@@ -86,7 +86,7 @@ class DownloaderImpl(
                     if (intro != null) {
                         database.insertIntro(intro.toIntroDto(item.id))
                     }
-                    if (appPreferences.downloadQuality != "Original") {
+                    if (appPreferences.downloadQuality != VideoQuality.Original.toString()) {
                         downloadEmbeddedMediaStreams(item, source, storageIndex)
                         val transcodingUrl =
                             getTranscodedUrl(item.id, appPreferences.downloadQuality!!)
