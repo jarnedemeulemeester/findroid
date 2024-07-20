@@ -139,7 +139,7 @@
     <string name="settings_request_timeout">Request timeout (ms)</string>
     <string name="settings_connect_timeout">Connect timeout (ms)</string>
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
-    <string name="settings_quality_codec">Transcoding Codec</string>
+    <string name="settings_quality_codec">Transcoding codec</string>
     <string name="users">Users</string>
     <string name="add_user">Add user</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
