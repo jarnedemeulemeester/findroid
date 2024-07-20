@@ -13,7 +13,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.models.FindroidSegments
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
@@ -337,7 +337,7 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>? =
+    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
             val segments = database.getSegments(itemId)?.toFindroidSegments()
 
@@ -347,37 +347,25 @@ class JellyfinRepositoryImpl(
 
             // https://github.com/jumoog/intro-skipper/blob/master/docs/api.md
             try {
-                val segmentToConvert = jellyfinApi.api.get<FindroidSegments>(
+                val segmentsMap = jellyfinApi.api.get<Map<String, FindroidSegment>>(
                     pathTemplate = "/Episode/{itemId}/IntroSkipperSegments",
                     pathParameters = mapOf("itemId" to itemId),
                 ).content
 
-                val segmentConverted = mutableListOf(
-                    segmentToConvert.intro!!.let {
-                        FindroidSegment(
-                            type = "intro",
-                            startTime = it.startTime,
-                            endTime = it.endTime,
-                            showAt = it.showAt,
-                            hideAt = it.hideAt,
-                        )
-                    },
-                    segmentToConvert.credit!!.let {
-                        FindroidSegment(
-                            type = "credit",
-                            startTime = it.startTime,
-                            endTime = it.endTime,
-                            showAt = it.showAt,
-                            hideAt = it.hideAt,
-                        )
-                    },
-                )
-                Timber.tag("SegmentInfo").d("segmentToConvert: %s", segmentToConvert)
-                Timber.tag("SegmentInfo").d("segmentConverted: %s", segmentConverted)
+                for ((type, segment) in segmentsMap) {
+                    segment.type = when (type) {
+                        "Introduction" -> FindroidSegmentType.INTRO
+                        "Credits" -> FindroidSegmentType.CREDITS
+                        else -> FindroidSegmentType.UNKNOWN
+                    }
+                }
 
-                return@withContext segmentConverted
+                Timber.tag("SegmentInfo").d("segments: %s", segmentsMap.values)
+
+                return@withContext segmentsMap.values.toList()
             } catch (e: Exception) {
-                return@withContext null
+                Timber.e(e)
+                return@withContext emptyList()
             }
         }
 

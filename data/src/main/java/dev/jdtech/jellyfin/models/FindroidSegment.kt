@@ -3,17 +3,13 @@ package dev.jdtech.jellyfin.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class FindroidSegments(
-    @SerialName("Introduction")
-    val intro: FindroidSegment?,
-    @SerialName("Credits")
-    val credit: FindroidSegment?,
-)
+enum class FindroidSegmentType {
+    INTRO, CREDITS, UNKNOWN
+}
 
 @Serializable
 data class FindroidSegment(
-    val type: String = "none",
+    var type: FindroidSegmentType = FindroidSegmentType.UNKNOWN,
     @SerialName("IntroStart")
     val startTime: Double,
     @SerialName("IntroEnd")

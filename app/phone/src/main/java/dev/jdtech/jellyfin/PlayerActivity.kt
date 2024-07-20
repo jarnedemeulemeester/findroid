@@ -39,6 +39,7 @@ import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -145,43 +146,40 @@ class PlayerActivity : BasePlayerActivity() {
                             // Skip Button
                             if (currentSegment != oldSegment) skipSegmentDismissed = false
                             // Button text
-                            when (currentSegment?.type) {
-                                "intro" -> skipSegmentButton.text = getString(CoreR.string.skip_intro_button)
-
-                                "credit" -> {
-                                    skipSegmentButton.text =
-                                        if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                            getString(CoreR.string.skip_credit_button)
-                                        } else {
-                                            getString(CoreR.string.skip_credit_button_last)
-                                        }
+                            skipSegmentButton.text = when (currentSegment?.type) {
+                                FindroidSegmentType.INTRO -> getString(CoreR.string.skip_intro_button)
+                                FindroidSegmentType.CREDITS -> {
+                                    if (binding.playerView.player?.hasNextMediaItem() == true) {
+                                        getString(CoreR.string.skip_credit_button)
+                                    } else {
+                                        getString(CoreR.string.skip_credit_button_last)
+                                    }
                                 }
+                                else -> ""
                             }
                             // Buttons visibility
-                            when (currentSegment?.type) {
-                                "intro", "credit" -> {
-                                    skipSegmentLayout.isVisible = !isInPictureInPictureMode && !skipSegmentDismissed && showSkip == true
+                            skipSegmentLayout.isVisible = when (currentSegment?.type) {
+                                FindroidSegmentType.INTRO, FindroidSegmentType.CREDITS -> {
+                                    !isInPictureInPictureMode && !skipSegmentDismissed && showSkip == true
                                 }
-                                else -> {
-                                    skipSegmentLayout.isVisible = false
-                                }
+                                else -> false
                             }
                             // onClick
                             skipSegmentButton.setOnClickListener {
                                 when (currentSegment?.type) {
-                                    "intro" -> {
+                                    FindroidSegmentType.INTRO -> {
                                         currentSegment?.let {
                                             binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
                                         }
                                     }
-
-                                    "credit" -> {
+                                    FindroidSegmentType.CREDITS -> {
                                         if (binding.playerView.player?.hasNextMediaItem() == true) {
                                             binding.playerView.player?.seekToNext()
                                         } else {
                                             finish()
                                         }
                                     }
+                                    else -> Unit
                                 }
                                 skipSegmentDismissed = true
                                 skipSegmentLayout.isVisible = false
