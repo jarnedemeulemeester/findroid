@@ -733,7 +733,7 @@ class JellyfinRepositoryImpl(
         playSessionId: String,
         videoBitrate: Int,
     ): String {
-        val isAuto = videoBitrate == VideoQuality.getBitrate(VideoQuality.PAuto)
+        val isAuto = videoBitrate == VideoQuality.getBitrate(VideoQuality.Auto)
         val url =
             if (!isAuto) {
                 jellyfinApi.api.dynamicHlsApi.getMasterHlsVideoPlaylistUrl(

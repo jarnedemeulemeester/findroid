@@ -2,24 +2,28 @@ package dev.jdtech.jellyfin.models
 
 enum class VideoQuality(
     val bitrate: Int,
-    val qualityString: String,
-    val qualityInt: Int,
+    val height: Int,
+    val width: Int,
+    val original: Boolean,
 ) {
-    PAuto(10000000, "Auto", 1080),
-    POriginal(1000000000, "Original", 1080),
-    P1080(8000000, "1080p", 1080),
-    P720(3000000, "720p", 720),
-    P480(1500000, "480p", 480),
-    P360(800000, "360p", 360),
-    ;
+    Auto(10000000, 1080, 1920, false),
+    Original(1000000000, 1080, 1920, true),
+    P1080(8000000, 1080, 1920, false),
+    P720(3000000, 720, 1280, false),
+    P480(1500000, 480, 854, false),
+    P360(800000, 360, 640, false);
+
+    override fun toString(): String = when (this) {
+        Auto -> "Auto"
+        Original -> "Original"
+        else -> "${height}p"
+    }
 
     companion object {
-        fun fromString(quality: String): VideoQuality? = entries.find { it.qualityString == quality }
-
+        fun fromString(quality: String): VideoQuality? = entries.find { it.toString() == quality }
         fun getBitrate(quality: VideoQuality): Int = quality.bitrate
-
-        fun getQualityString(quality: VideoQuality): String = quality.qualityString
-
-        fun getQualityInt(quality: VideoQuality): Int = quality.qualityInt
+        fun getHeight(quality: VideoQuality): Int = quality.height
+        fun getWidth(quality: VideoQuality): Int = quality.width
+        fun getOriginal(quality: VideoQuality): Boolean = quality.original
     }
 }

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
@@ -38,6 +39,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.models.VideoQuality
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -288,6 +290,7 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(args.items)
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
@@ -348,45 +351,29 @@ class PlayerActivity : BasePlayerActivity() {
         } catch (_: IllegalArgumentException) { }
     }
 
+    private var selectedIndex = 1  // Default to "Original" (index 1)
     private fun showQualitySelectionDialog() {
-        val height = viewModel.getOriginalHeight()
+        val originalHeight = viewModel.getOriginalHeight() // TODO: Rework getting originalHeight
         val qualityEntries = resources.getStringArray(CoreR.array.quality_entries).toList()
         val qualityValues = resources.getStringArray(CoreR.array.quality_values).toList()
 
-        // Map entries to values
-        val qualityMap = qualityEntries.zip(qualityValues).toMap()
+        val qualities = qualityEntries.toMutableList()
+        val closestQuality = VideoQuality.entries
+            .filter { it != VideoQuality.Auto && it != VideoQuality.Original }
+            .minByOrNull { kotlin.math.abs(it.height - originalHeight) }
 
-        val qualities: List<String> =
-            when (height) {
-                0 -> qualityEntries
-                in 1001..1999 ->
-                    listOf(
-                        qualityEntries[0],
-                        "${qualityEntries[1]} (1080p)",
-                        qualityEntries[2],
-                        qualityEntries[3],
-                        qualityEntries[4],
-                        qualityEntries[5],
-                    )
-                in 2000..3000 ->
-                    listOf(
-                        qualityEntries[0],
-                        "${qualityEntries[1]} (4K)",
-                        qualityEntries[2],
-                        qualityEntries[3],
-                        qualityEntries[4],
-                        qualityEntries[5],
-                    )
-                else -> qualityEntries
-            }
+        if (closestQuality != null) {
+            qualities[1] = "${qualities[1]} (${closestQuality})"
+        }
         MaterialAlertDialogBuilder(this)
             .setTitle("Select Video Quality")
-            .setItems(qualities.toTypedArray()) { _, which ->
-                val selectedQualityEntry = qualities[which]
-                val selectedQualityValue =
-                    qualityMap.entries.find { it.key.contains(selectedQualityEntry.split(" ")[0]) }?.value ?: selectedQualityEntry
+            .setSingleChoiceItems(qualities.toTypedArray(), selectedIndex) { dialog, which ->
+                selectedIndex = which
+                val selectedQualityValue = qualityValues[which]
                 viewModel.changeVideoQuality(selectedQualityValue)
-            }.show()
+                dialog.dismiss()
+            }
+            .show()
     }
 
     override fun onPictureInPictureModeChanged(

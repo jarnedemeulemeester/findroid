@@ -524,13 +524,13 @@ constructor(
 
 
                 val allSubtitles =
-                    if (VideoQuality.getQualityString(videoQuality) == "Original") {
+                    if (VideoQuality.getOriginal(videoQuality)) {
                         externalSubtitles
                     }else {
                         embeddedSubtitles.apply { addAll(externalSubtitles) }
                     }
 
-                val url = if (VideoQuality.getQualityString(videoQuality) == "Original"){
+                val url = if (VideoQuality.getOriginal(videoQuality)){
                     jellyfinRepository.getStreamUrl(currentItem.itemId, currentItem.mediaSourceId, playSessionId)
                 } else {
                     val mediaSourceId = mediaSources[currentMediaItemIndex].id

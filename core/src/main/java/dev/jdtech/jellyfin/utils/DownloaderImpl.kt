@@ -416,7 +416,7 @@ class DownloaderImpl(
                     playSessionId,
                     VideoQuality.getBitrate(videoQuality),
                     "ts",
-                    VideoQuality.getQualityInt(videoQuality),
+                    VideoQuality.getHeight(videoQuality),
                 )
 
             downloadUrl.toUri()
