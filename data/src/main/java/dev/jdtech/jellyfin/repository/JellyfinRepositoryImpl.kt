@@ -786,4 +786,8 @@ class JellyfinRepositoryImpl(
             playSessionId = playSessionId,
         )
     }
+
+    override suspend fun getAccessToken(): String? {
+        return jellyfinApi.api.accessToken
+    }
 }

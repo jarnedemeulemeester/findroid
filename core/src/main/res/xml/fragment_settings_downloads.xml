@@ -9,7 +9,6 @@
         android:defaultValue="false"
         app:key="pref_downloads_roaming"
         app:title="@string/download_roaming" />
-<!-- TODO: Strings -->
     <ListPreference
         android:key="pref_downloads_quality"
         android:title="@string/download_quality"

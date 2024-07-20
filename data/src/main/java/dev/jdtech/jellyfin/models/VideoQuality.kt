@@ -4,7 +4,7 @@ enum class VideoQuality(
     val bitrate: Int,
     val height: Int,
     val width: Int,
-    val original: Boolean,
+    val isOriginalQuality: Boolean,
 ) {
     Auto(10000000, 1080, 1920, false),
     Original(1000000000, 1080, 1920, true),
@@ -26,6 +26,6 @@ enum class VideoQuality(
         fun getBitrate(quality: VideoQuality): Int = quality.bitrate
         fun getHeight(quality: VideoQuality): Int = quality.height
         fun getWidth(quality: VideoQuality): Int = quality.width
-        fun getOriginal(quality: VideoQuality): Boolean = quality.original
+        fun getIsOriginalQuality(quality: VideoQuality): Boolean = quality.isOriginalQuality
     }
 }

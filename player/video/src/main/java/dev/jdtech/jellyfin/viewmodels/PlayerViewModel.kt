@@ -18,6 +18,7 @@ import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.setSubtitlesMimeTypes
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -126,6 +127,7 @@ class PlayerViewModel @Inject internal constructor(
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
+
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
@@ -136,7 +138,7 @@ class PlayerViewModel @Inject internal constructor(
         } else {
             mediaSources[mediaSourceIndex]
         }
-        // Embedded Sub externally for offline prep next commit
+        // Embedded Sub externally for offline playback
         val externalSubtitles = if (mediaSource.type.toString() == "LOCAL" ) {
             mediaSource.mediaStreams
                 .filter { mediaStream ->
@@ -147,13 +149,7 @@ class PlayerViewModel @Inject internal constructor(
                         mediaStream.title,
                         mediaStream.language,
                         Uri.parse(mediaStream.path!!),
-                        when (mediaStream.codec) {
-                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.APPLICATION_SUBRIP
-                            "pgs" -> MimeTypes.APPLICATION_PGS
-                            "ass" -> MimeTypes.TEXT_SSA
-                            else -> MimeTypes.TEXT_UNKNOWN
-                        },
+                        setSubtitlesMimeTypes(mediaStream.codec),
                     )
                 }
         }else {
@@ -166,13 +162,7 @@ class PlayerViewModel @Inject internal constructor(
                     mediaStream.title,
                     mediaStream.language,
                     Uri.parse(mediaStream.path!!),
-                    when (mediaStream.codec) {
-                        "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                        "webvtt" -> MimeTypes.APPLICATION_SUBRIP
-                        "pgs" -> MimeTypes.APPLICATION_PGS
-                        "ass" -> MimeTypes.TEXT_SSA
-                        else -> MimeTypes.TEXT_UNKNOWN
-                    },
+                    setSubtitlesMimeTypes(mediaStream.codec)
                 )
             }
         }

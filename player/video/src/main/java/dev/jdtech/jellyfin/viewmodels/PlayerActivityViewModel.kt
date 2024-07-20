@@ -14,22 +14,20 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
-import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.models.VideoQuality
+import dev.jdtech.jellyfin.setSubtitlesMimeTypes
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -57,7 +55,6 @@ class PlayerActivityViewModel
 constructor(
     private val application: Application,
     private val jellyfinRepository: JellyfinRepository,
-    private val jellyfinApi: JellyfinApi,
     private val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
@@ -510,29 +507,13 @@ constructor(
                 val embeddedSubtitles = mediaSources[currentMediaItemIndex].mediaStreams
                     .filter { it.type == MediaStreamType.SUBTITLE && !it.isExternal && it.path != null }
                     .map { mediaStream ->
-                        val test = mediaStream.codec
-                        Timber.d("Deliver: %s", test)
                         var deliveryUrl = mediaStream.path
                         Timber.d("Deliverurl: %s", deliveryUrl)
+//                         Not sure if still needed
                         if (mediaStream.codec == "webvtt") {
                             deliveryUrl = deliveryUrl?.replace("Stream.srt", "Stream.vtt")}
                         MediaItem.SubtitleConfiguration.Builder(Uri.parse(deliveryUrl))
-                            .setMimeType(
-                                when (mediaStream.codec) {
-                                    "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                                    "webvtt" -> MimeTypes.TEXT_VTT
-                                    "ssa" -> MimeTypes.TEXT_SSA
-                                    "pgs" -> MimeTypes.APPLICATION_PGS
-                                    "ass" -> MimeTypes.TEXT_SSA
-                                    "srt" -> MimeTypes.APPLICATION_SUBRIP
-                                    "vtt" -> MimeTypes.TEXT_VTT
-                                    "ttml" -> MimeTypes.APPLICATION_TTML
-                                    "dfxp" -> MimeTypes.APPLICATION_TTML
-                                    "stl" -> MimeTypes.APPLICATION_TTML
-                                    "sbv" -> MimeTypes.APPLICATION_SUBRIP
-                                    else -> MimeTypes.TEXT_UNKNOWN
-                                }
-                            )
+                            .setMimeType(setSubtitlesMimeTypes(mediaStream.codec))
                             .setLanguage(mediaStream.language.ifBlank { "Unknown" })
                             .setLabel("Embedded")
                             .build()
@@ -541,20 +522,20 @@ constructor(
 
 
                 val allSubtitles =
-                    if (VideoQuality.getOriginal(videoQuality)) {
+                    if (VideoQuality.getIsOriginalQuality(videoQuality)) {
                         externalSubtitles
                     }else {
                         embeddedSubtitles.apply { addAll(externalSubtitles) }
                     }
 
-                val url = if (VideoQuality.getOriginal(videoQuality)){
+                val url = if (VideoQuality.getIsOriginalQuality(videoQuality)){
                     jellyfinRepository.getStreamUrl(currentItem.itemId, currentItem.mediaSourceId, playSessionId)
                 } else {
                     val mediaSourceId = mediaSources[currentMediaItemIndex].id
                     val deviceId = jellyfinRepository.getDeviceId()
                     val url = jellyfinRepository.getTranscodedVideoStream(currentItem.itemId, deviceId ,mediaSourceId, playSessionId!!, VideoQuality.getBitrate(videoQuality))
                     val uriBuilder = url.toUri().buildUpon()
-                    val apiKey = jellyfinApi.api.accessToken // TODO: add in repo
+                    val apiKey = jellyfinRepository.getAccessToken()
                     uriBuilder.appendQueryParameter("api_key",apiKey )
                     val newUri = uriBuilder.build()
                     newUri.toString()
@@ -591,7 +572,7 @@ constructor(
         }
     }
 
-    fun getoriginalResolution(): Int? {
+    fun getOriginalResolution(): Int? {
         return originalResolution
     }
 }

@@ -353,7 +353,7 @@ class PlayerActivity : BasePlayerActivity() {
 
     private var selectedIndex = 1  // Default to "Original" (index 1)
     private fun showQualitySelectionDialog() {
-        val originalResolution = viewModel.getoriginalResolution() ?: 0// TODO: Rework getting originalResolution
+        val originalResolution = viewModel.getOriginalResolution() ?: 0
         val qualityEntries = resources.getStringArray(CoreR.array.quality_entries).toList()
         val qualityValues = resources.getStringArray(CoreR.array.quality_values).toList()
 

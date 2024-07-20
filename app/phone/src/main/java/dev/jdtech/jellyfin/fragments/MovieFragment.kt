@@ -209,11 +209,11 @@ class MovieFragment : Fragment() {
         } else if (!appPreferences.downloadQualityDefault) {
             createPickQualityDialog()
         } else {
-            download()
+            startDownload()
         }
     }
 
-    private fun download() {
+    private fun startDownload() {
         binding.itemActions.downloadButton.setIconResource(android.R.color.transparent)
         binding.itemActions.progressDownload.isIndeterminate = true
         binding.itemActions.progressDownload.isVisible = true
@@ -520,7 +520,7 @@ class MovieFragment : Fragment() {
         }
         builder.setPositiveButton("Download") { dialog, _ ->
             appPreferences.downloadQuality = selectedQuality
-            download()
+            startDownload()
             dialog.dismiss()
         }
         builder.setNegativeButton("Cancel") { dialog, _ ->

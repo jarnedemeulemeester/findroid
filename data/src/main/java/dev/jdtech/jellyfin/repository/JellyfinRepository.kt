@@ -175,4 +175,6 @@ interface JellyfinRepository {
     ): Response<PlaybackInfoResponse>
 
     suspend fun stopEncodingProcess(playSessionId: String)
+
+    suspend fun getAccessToken(): String?
 }

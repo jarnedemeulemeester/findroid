@@ -372,4 +372,8 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun stopEncodingProcess(playSessionId: String) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getAccessToken(): String? {
+        TODO("Not yet implemented")
+    }
 }
