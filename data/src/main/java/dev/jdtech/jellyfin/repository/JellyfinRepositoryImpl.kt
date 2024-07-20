@@ -337,7 +337,7 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment> =
+    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
             val segments = database.getSegments(itemId).map { it.toFindroidSegment() }
 

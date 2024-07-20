@@ -177,7 +177,7 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment> =
+    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
             database.getSegments(itemId).map { it.toFindroidSegment() }
         }
