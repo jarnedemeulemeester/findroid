@@ -55,4 +55,8 @@
         <item>480p</item>
         <item>360p</item>
     </string-array>
+    <string-array name="codecs">
+        <item>h264</item>
+        <item>hevc</item>
+    </string-array>
 </resources>

@@ -103,6 +103,11 @@ constructor(
         Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString(),
     )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
 
+    val transcodeCodec get() = sharedPreferences.getString(
+        Constants.PREF_NETWORK_CODEC,
+        Constants.NETWORK_DEFAULT_CODEC,
+    )
+
     // Cache
     val imageCache get() = sharedPreferences.getBoolean(
         Constants.PREF_IMAGE_CACHE,
