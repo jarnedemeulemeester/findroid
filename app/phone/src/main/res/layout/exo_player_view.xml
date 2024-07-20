@@ -103,7 +103,7 @@
             app:icon="@drawable/ic_skip_forward"
             app:iconTint="@android:color/white"
             app:strokeColor="@android:color/white"
-            tools:text="@string/skip_intro_button" />
+            tools:text="@string/player_controls_skip_intro" />
 
     </LinearLayout>
 

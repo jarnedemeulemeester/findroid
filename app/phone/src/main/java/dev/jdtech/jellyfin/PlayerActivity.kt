@@ -47,7 +47,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
 
@@ -147,12 +147,12 @@ class PlayerActivity : BasePlayerActivity() {
                             if (currentSegment != oldSegment) skipSegmentDismissed = false
                             // Button text
                             skipSegmentButton.text = when (currentSegment?.type) {
-                                FindroidSegmentType.INTRO -> getString(CoreR.string.skip_intro_button)
+                                FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
                                 FindroidSegmentType.CREDITS -> {
                                     if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                        getString(CoreR.string.skip_credits_button)
+                                        getString(VideoR.string.player_controls_skip_credits)
                                     } else {
-                                        getString(CoreR.string.skip_credits_button_last)
+                                        getString(VideoR.string.player_controls_close_player)
                                     }
                                 }
                                 else -> ""

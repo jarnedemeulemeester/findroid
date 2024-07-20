@@ -8,6 +8,7 @@
     <string name="player_controls_exit">Quitter le lecteur</string>
     <string name="player_controls_rewind">Rembobiner</string>
     <string name="player_controls_fast_forward">Avance rapide</string>
+    <string name="player_controls_skip_intro">Ignorer l\'introduction</string>
     <string name="player_controls_lock">Verrouille le lecteur</string>
     <string name="player_controls_play_pause">Lecture / Pause</string>
     <string name="player_controls_skip_back">Retour en arrière</string>

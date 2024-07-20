@@ -10,6 +10,7 @@
     <string name="player_controls_lock">Låser afspilleren</string>
     <string name="player_controls_skip_back">Hop tilbage</string>
     <string name="player_controls_exit">Stop afspiller</string>
+    <string name="player_controls_skip_intro">Spring over intro</string>
     <string name="player_controls_fast_forward">Spol frem</string>
     <string name="player_controls_skip_forward">Spring frem</string>
     <string name="player_trickplay">Spole afspille</string>

@@ -8,6 +8,7 @@
     <string name="player_controls_rewind">되감기</string>
     <string name="player_controls_fast_forward">빨리 감기</string>
     <string name="player_controls_exit">플레이어 나가기</string>
+    <string name="player_controls_skip_intro">오프닝 스킵</string>
     <string name="player_controls_lock">플레이어 잠금</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_skip_back">뒤로 건너뛰기</string>

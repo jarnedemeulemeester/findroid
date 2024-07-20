@@ -11,9 +11,11 @@
     <string name="player_controls_play_pause">Play pause</string>
     <string name="player_controls_rewind">Rewind</string>
     <string name="player_controls_exit">Exit player</string>
+    <string name="player_controls_skip_intro">Skip intro</string>
+    <string name="player_controls_skip_credits">Next episode</string>
+    <string name="player_controls_close_player">Close player</string>
     <string name="player_controls_fast_forward">Fast forward</string>
     <string name="player_controls_skip_forward">Skip forward</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Progress bar</string>
-    <string name="player_watch_credits">Watch credits</string>
 </resources>

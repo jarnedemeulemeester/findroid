@@ -14,6 +14,7 @@
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_play_pause">Начало пауза</string>
     <string name="player_controls_exit">Излез от плейъра</string>
+    <string name="player_controls_skip_intro">Пропусни интро</string>
     <string name="player_controls_picture_in_picture">Влез в режим картина-в-картина</string>
     <string name="none">Нищо</string>
 </resources>

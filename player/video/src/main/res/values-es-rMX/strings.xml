@@ -8,6 +8,7 @@
     <string name="player_controls_exit">Salir de reproductor</string>
     <string name="player_controls_rewind">Atrasar</string>
     <string name="player_controls_fast_forward">Avanzar</string>
+    <string name="player_controls_skip_intro">Saltar intro</string>
     <string name="player_controls_skip_forward">Saltar adelante</string>
     <string name="player_trickplay">Avance</string>
     <string name="player_controls_lock">Bloquea el reproductor</string>

@@ -185,9 +185,6 @@
     <string name="live_tv">Diretta TV</string>
     <string name="play">Riproduci</string>
     <string name="remove_from_favorites">Rimuovi dai preferiti</string>
-    <string name="skip_intro_button">Salta intro</string>
-    <string name="skip_credits_button">Prossimo episodio</string>
-    <string name="skip_credits_button_last">Chiudi player</string>
     <string name="player_gestures_chapter_skip">Gesto per le scene</string>
     <string name="pref_player_chapter_markers">Marcatori delle scene</string>
     <string name="pref_player_chapter_markers_summary">Mostra i marcatori delle scene sulla timebar</string>

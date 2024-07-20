@@ -8,6 +8,7 @@
     <string name="player_controls_exit">Zavrieť prehrávač</string>
     <string name="player_controls_rewind">Pretočiť dozadu</string>
     <string name="player_controls_fast_forward">Pretočiť dopredu</string>
+    <string name="player_controls_skip_intro">Preskočiť úvodnú zvučku</string>
     <string name="player_controls_lock">Zamkne prehrávač</string>
     <string name="player_controls_skip_back">Preskočiť späť</string>
     <string name="player_controls_skip_forward">Preskočiť dopredu</string>
