@@ -28,6 +28,7 @@ import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
+import dev.jdtech.jellyfin.models.VideoQuality
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -464,17 +465,6 @@ constructor(
         eventsChannel.trySend(PlayerEvents.IsPlayingChanged(isPlaying))
     }
 
-    private fun getTranscodeResolutions(preferredQuality: String): Int {
-        return when (preferredQuality) {
-            "1080p" -> 1080 // TODO: 1080p this logic is based on 1080p being original
-            "720p - 2Mbps" -> 720
-            "480p - 1Mbps" -> 480
-            "360p - 800kbps" -> 360
-            "Auto" -> 1
-            else -> 1080 //default to Original
-        }
-    }
-
     fun changeVideoQuality(quality: String) {
         val mediaId = player.currentMediaItem?.mediaId ?: return
         val currentItem = items.firstOrNull { it.itemId.toString() == mediaId } ?: return
@@ -482,12 +472,9 @@ constructor(
 
         viewModelScope.launch {
             try {
-                val transcodingResolution = getTranscodeResolutions(quality)
-                val (videoBitRate, audioBitRate) = jellyfinRepository.getVideoTranscodeBitRate(
-                    transcodingResolution
-                )
-                val deviceProfile = jellyfinRepository.buildDeviceProfile(videoBitRate, "mkv", EncodingContext.STREAMING)
-                val playbackInfo = jellyfinRepository.getPostedPlaybackInfo(currentItem.itemId,true,deviceProfile,videoBitRate)
+                val videoQuality = VideoQuality.fromString(quality)!!
+                val deviceProfile = jellyfinRepository.buildDeviceProfile(VideoQuality.getBitrate(videoQuality), "mkv", EncodingContext.STREAMING)
+                val playbackInfo = jellyfinRepository.getPostedPlaybackInfo(currentItem.itemId,true,deviceProfile,VideoQuality.getBitrate(videoQuality))
                 val playSessionId = playbackInfo.content.playSessionId
                 if (playSessionId != null) {
                     jellyfinRepository.stopEncodingProcess(playSessionId)
@@ -537,18 +524,18 @@ constructor(
 
 
                 val allSubtitles =
-                    if (transcodingResolution == 1080) {
+                    if (VideoQuality.getQualityString(videoQuality) == "Original") {
                         externalSubtitles
                     }else {
                         embeddedSubtitles.apply { addAll(externalSubtitles) }
                     }
 
-                val url = if (transcodingResolution == 1080){
+                val url = if (VideoQuality.getQualityString(videoQuality) == "Original"){
                     jellyfinRepository.getStreamUrl(currentItem.itemId, currentItem.mediaSourceId, playSessionId)
                 } else {
                     val mediaSourceId = mediaSources[currentMediaItemIndex].id
                     val deviceId = jellyfinRepository.getDeviceId()
-                    val url = jellyfinRepository.getTranscodedVideoStream(currentItem.itemId, deviceId ,mediaSourceId, playSessionId!!, videoBitRate)
+                    val url = jellyfinRepository.getTranscodedVideoStream(currentItem.itemId, deviceId ,mediaSourceId, playSessionId!!, VideoQuality.getBitrate(videoQuality))
                     val uriBuilder = url.toUri().buildUpon()
                     val apiKey = jellyfinApi.api.accessToken // TODO: add in repo
                     uriBuilder.appendQueryParameter("api_key",apiKey )

@@ -330,10 +330,6 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getVideoTranscodeBitRate(transcodeResolution: Int): Pair<Int, Int> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun buildDeviceProfile(
         maxBitrate: Int,
         container: String,
@@ -349,6 +345,7 @@ class JellyfinRepositoryOfflineImpl(
         playSessionId: String,
         videoBitrate: Int,
         container: String,
+        maxHeight: Int,
     ): String {
         TODO("Not yet implemented")
     }

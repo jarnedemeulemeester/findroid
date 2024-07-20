@@ -143,8 +143,6 @@ interface JellyfinRepository {
 
     suspend fun getDeviceId(): String
 
-    suspend fun getVideoTranscodeBitRate(transcodeResolution: Int): Pair<Int, Int>
-
     suspend fun buildDeviceProfile(
         maxBitrate: Int,
         container: String,
@@ -156,10 +154,9 @@ interface JellyfinRepository {
         deviceId: String,
         mediaSourceId: String,
         playSessionId: String,
-        videoBitrate:
-            @Suppress("ktlint:standard:max-line-length")
-            Int,
+        videoBitrate: Int,
         container: String,
+        maxHeight: Int,
     ): String
 
     suspend fun getTranscodedVideoStream(

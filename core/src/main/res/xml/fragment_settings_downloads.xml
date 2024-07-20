@@ -14,8 +14,8 @@
         android:key="pref_downloads_quality"
         android:title="Download Quality"
         android:defaultValue="Original"
-        android:entries="@array/quality_entries"
-        android:entryValues="@array/quality_values"
+        android:entries="@array/download_quality_entries"
+        android:entryValues="@array/download_quality_values"
         android:summary="%s" />
     <SwitchPreferenceCompat
         android:defaultValue="false"

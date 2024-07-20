@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.models.FindroidTrickplayInfo
 import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.models.VideoQuality
 import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
@@ -395,19 +396,12 @@ class DownloaderImpl(
         itemId: UUID,
         quality: String,
     ): Uri? {
-        val maxBitrate =
-            when (quality) {
-                "720p" -> 2000000 // 2 Mbps
-                "480p" -> 1000000 // 1 Mbps
-                "360p" -> 800000 // 800Kbps
-                else -> 2000000
-            }
-
+        val videoQuality = VideoQuality.fromString(quality)!!
         return try {
             val deviceProfile =
-                jellyfinRepository.buildDeviceProfile(maxBitrate, "mkv", EncodingContext.STATIC)
+                jellyfinRepository.buildDeviceProfile(VideoQuality.getBitrate(videoQuality), "mkv", EncodingContext.STATIC)
             val playbackInfo =
-                jellyfinRepository.getPostedPlaybackInfo(itemId, false, deviceProfile, maxBitrate)
+                jellyfinRepository.getPostedPlaybackInfo(itemId, false, deviceProfile, VideoQuality.getBitrate(videoQuality))
             val mediaSourceId =
                 playbackInfo.content.mediaSources
                     .firstOrNull()
@@ -420,36 +414,14 @@ class DownloaderImpl(
                     deviceId,
                     mediaSourceId,
                     playSessionId,
-                    maxBitrate,
+                    VideoQuality.getBitrate(videoQuality),
                     "ts",
+                    VideoQuality.getQualityInt(videoQuality)
                 )
 
-            val transcodeUri = buildTranscodeUri(downloadUrl, maxBitrate, quality)
-            transcodeUri
+            downloadUrl.toUri()
         } catch (e: Exception) {
             null
         }
-    }
-
-    // TODO: I believe building upon the uri is not necessary anymore all is handled in the sdk api
-    private fun buildTranscodeUri(
-        transcodingUrl: String,
-        maxBitrate: Int,
-        quality: String,
-    ): Uri {
-        val resolution =
-            when (quality) {
-                "720p" -> "720"
-                "480p" -> "480"
-                "360p" -> "360"
-                else -> "720"
-            }
-        return Uri
-            .parse(transcodingUrl)
-            .buildUpon()
-            .appendQueryParameter("MaxVideoHeight", resolution)
-            .appendQueryParameter("MaxVideoBitRate", maxBitrate.toString())
-            .appendQueryParameter("subtitleMethod", "External")
-            .build()
     }
 }

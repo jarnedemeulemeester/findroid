@@ -506,8 +506,8 @@ class MovieFragment : Fragment() {
     }
 
     private fun createPickQualityDialog() {
-        val qualityEntries = resources.getStringArray(CoreR.array.quality_entries)
-        val qualityValues = resources.getStringArray(CoreR.array.quality_values)
+        val qualityEntries = resources.getStringArray(CoreR.array.download_quality_entries)
+        val qualityValues = resources.getStringArray(CoreR.array.download_quality_values)
         val quality = appPreferences.downloadQuality
         val currentQualityIndex = qualityValues.indexOf(quality)
         var selectedQuality = quality

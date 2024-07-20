@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.VideoQuality
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
@@ -609,15 +610,6 @@ class JellyfinRepositoryImpl(
 
     override fun getUserId(): UUID = jellyfinApi.userId!!
 
-    override suspend fun getVideoTranscodeBitRate(transcodeResolution: Int): Pair<Int, Int> =
-        when (transcodeResolution) {
-            1080 -> 8000000 to 384000 // Adjusted for personal can be other values
-            720 -> 2000000 to 384000 // 720p
-            480 -> 1000000 to 384000 // 480p
-            360 -> 800000 to 128000 // 360p
-            else -> 12000000 to 384000 // its adaptive but setting max here
-        }
-
     override suspend fun buildDeviceProfile(
         maxBitrate: Int,
         container: String,
@@ -631,7 +623,7 @@ class JellyfinRepositoryImpl(
                 supportsPersistentIdentifier = true,
                 deviceProfile =
                     DeviceProfile(
-                        name = "AnanasUser",
+                        name = "FindroidUser",
                         id = getUserId().toString(),
                         maxStaticBitrate = maxBitrate,
                         maxStreamingBitrate = maxBitrate,
@@ -648,8 +640,8 @@ class JellyfinRepositoryImpl(
                                     container = container,
                                     context = context,
                                     protocol = MediaStreamProtocol.HLS,
-                                    audioCodec = "aac,ac3,eac3",
-                                    videoCodec = "hevc,h264",
+                                    audioCodec = "aac",
+                                    videoCodec = "h264",
                                     type = DlnaProfileType.VIDEO,
                                     conditions =
                                         listOf(
@@ -712,6 +704,7 @@ class JellyfinRepositoryImpl(
         playSessionId: String,
         videoBitrate: Int,
         container: String,
+        maxHeight: Int,
     ): String {
         val url =
             jellyfinApi.videosApi.getVideoStreamByContainerUrl(
@@ -721,10 +714,11 @@ class JellyfinRepositoryImpl(
                 mediaSourceId = mediaSourceId,
                 playSessionId = playSessionId,
                 videoBitRate = videoBitrate,
-                audioBitRate = 384000,
-                videoCodec = "hevc",
-                audioCodec = "aac,ac3,eac3",
+                audioBitRate = 128000,
+                videoCodec = "h264",
+                audioCodec = "aac",
                 container = container,
+                maxHeight = maxHeight,
                 startTimeTicks = 0,
                 copyTimestamps = true,
                 subtitleMethod = SubtitleDeliveryMethod.EXTERNAL,
@@ -739,7 +733,7 @@ class JellyfinRepositoryImpl(
         playSessionId: String,
         videoBitrate: Int,
     ): String {
-        val isAuto = videoBitrate == 12000000
+        val isAuto = videoBitrate == VideoQuality.getBitrate(VideoQuality.PAuto)
         val url =
             if (!isAuto) {
                 jellyfinApi.api.dynamicHlsApi.getMasterHlsVideoPlaylistUrl(
@@ -750,9 +744,9 @@ class JellyfinRepositoryImpl(
                     playSessionId = playSessionId,
                     videoBitRate = videoBitrate,
                     enableAdaptiveBitrateStreaming = false,
-                    audioBitRate = 384000, // could also be passed with audioBitrate but i preferred not as its not much data anyways
-                    videoCodec = "hevc,h264",
-                    audioCodec = "aac,ac3,eac3",
+                    audioBitRate = 128000,
+                    videoCodec = "h264",
+                    audioCodec = "aac",
                     startTimeTicks = 0,
                     copyTimestamps = true,
                     subtitleMethod = SubtitleDeliveryMethod.EXTERNAL,
@@ -768,8 +762,8 @@ class JellyfinRepositoryImpl(
                     mediaSourceId = mediaSourceId,
                     playSessionId = playSessionId,
                     enableAdaptiveBitrateStreaming = true,
-                    videoCodec = "hevc",
-                    audioCodec = "aac,ac3,eac3",
+                    videoCodec = "h264",
+                    audioCodec = "aac",
                     startTimeTicks = 0,
                     copyTimestamps = true,
                     subtitleMethod = SubtitleDeliveryMethod.EXTERNAL,
@@ -782,10 +776,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getDeviceId(): String {
-        val devices = jellyfinApi.devicesApi.getDevices(getUserId())
-        return devices.content.items
-            ?.firstOrNull()
-            ?.id!!
+        return jellyfinApi.api.deviceInfo.id
     }
 
     override suspend fun stopEncodingProcess(playSessionId: String) {

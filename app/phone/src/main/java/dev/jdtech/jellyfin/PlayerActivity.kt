@@ -45,6 +45,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 var isControlsLocked: Boolean = false
 
@@ -348,20 +349,44 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private fun showQualitySelectionDialog() {
-       val height = viewModel.getOriginalHeight() // TODO: rewrite getting height stuff I don't like that its only update after changing quality
-        val qualities = when (height) {
-            0 -> arrayOf("Auto", "Original - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
-            in 1001..1999 -> arrayOf("Auto", "Original (1080p) - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
-            in 2000..3000 ->  arrayOf("Auto", "Original (4K) - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
-            else -> arrayOf("Auto", "Original - Max", "720p - 2Mbps", "480p - 1Mbps", "360p - 800kbps")
-        }
+        val height = viewModel.getOriginalHeight()
+        val qualityEntries = resources.getStringArray(CoreR.array.quality_entries).toList()
+        val qualityValues = resources.getStringArray(CoreR.array.quality_values).toList()
+
+        // Map entries to values
+        val qualityMap = qualityEntries.zip(qualityValues).toMap()
+
+        val qualities: List<String> =
+            when (height) {
+                0 -> qualityEntries
+                in 1001..1999 ->
+                    listOf(
+                        qualityEntries[0],
+                        "${qualityEntries[1]} (1080p)",
+                        qualityEntries[2],
+                        qualityEntries[3],
+                        qualityEntries[4],
+                        qualityEntries[5],
+                    )
+                in 2000..3000 ->
+                    listOf(
+                        qualityEntries[0],
+                        "${qualityEntries[1]} (4K)",
+                        qualityEntries[2],
+                        qualityEntries[3],
+                        qualityEntries[4],
+                        qualityEntries[5],
+                    )
+                else -> qualityEntries
+            }
         MaterialAlertDialogBuilder(this)
             .setTitle("Select Video Quality")
-            .setItems(qualities) { _, which ->
-                val selectedQuality = qualities[which]
-                viewModel.changeVideoQuality(selectedQuality)
-            }
-            .show()
+            .setItems(qualities.toTypedArray()) { _, which ->
+                val selectedQualityEntry = qualities[which]
+                val selectedQualityValue =
+                    qualityMap.entries.find { it.key.contains(selectedQualityEntry.split(" ")[0]) }?.value ?: selectedQualityEntry
+                viewModel.changeVideoQuality(selectedQualityValue)
+            }.show()
     }
 
     override fun onPictureInPictureModeChanged(
