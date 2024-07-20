@@ -236,19 +236,7 @@ constructor(
         }
         val segmentCheckRunnable = object : Runnable {
             override fun run() {
-                if (currentSegments.isNotEmpty()) {
-                    val seconds = player.currentPosition / 1000.0
-
-                    val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
-                    _uiState.update { it.copy(currentSegment = currentSegment) }
-                    Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
-
-                    if (currentSegment?.type == "intro") {
-                        val showSkip =
-                            currentSegment.let { seconds in it.showAt..<it.hideAt }
-                        _uiState.update { it.copy(showSkip = showSkip) }
-                    }
-                }
+                updateCurrentSegment()
                 handler.postDelayed(this, 1000L)
             }
         }
@@ -380,6 +368,19 @@ constructor(
         jellyfinRepository.getSegmentsTimestamps(item.itemId)?.let { segments ->
             currentSegments = segments
         }
+    }
+
+    private fun updateCurrentSegment() {
+        if (currentSegments.isEmpty()) {
+            return
+        }
+        val seconds = player.currentPosition / 1000.0
+
+        val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
+        Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
+
+        val showSkip = currentSegment?.let { seconds in it.showAt..<it.hideAt }
+        _uiState.update { it.copy(currentSegment = currentSegment, showSkip = showSkip) }
     }
 
     /**

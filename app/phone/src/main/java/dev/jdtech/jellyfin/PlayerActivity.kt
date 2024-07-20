@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -61,7 +62,9 @@ class PlayerActivity : BasePlayerActivity() {
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
     private var oldSegment: FindroidSegment? = null
-    private var buttonPressed: Boolean = false
+    private var skipSegmentDismissed: Boolean = false
+
+    private lateinit var skipSegmentLayout: LinearLayout
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -123,8 +126,9 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
-        val skipButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
-        val watchCreditsButton = binding.playerView.findViewById<Button>(R.id.btn_watch_credits)
+        skipSegmentLayout = binding.playerView.findViewById(R.id.layout_skip_segment)
+        val skipSegmentButton = binding.playerView.findViewById<Button>(R.id.btn_skip_segment)
+        val skipSegmentDismissButton = binding.playerView.findViewById<Button>(R.id.btn_skip_segment_dismiss)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
@@ -139,59 +143,31 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip Button
-                            if (currentSegment != oldSegment) buttonPressed = false
-                            // Button Visibility and Text
+                            if (currentSegment != oldSegment) skipSegmentDismissed = false
+                            // Button text
                             when (currentSegment?.type) {
-                                "intro" -> {
-                                    skipButton.text =
-                                        getString(CoreR.string.skip_intro_button)
-                                    skipButton.isVisible =
-                                        !isInPictureInPictureMode && !buttonPressed && (showSkip == true || binding.playerView.isControllerFullyVisible)
-                                    watchCreditsButton.isVisible = false
-                                }
+                                "intro" -> skipSegmentButton.text = getString(CoreR.string.skip_intro_button)
 
                                 "credit" -> {
-                                    skipButton.text =
+                                    skipSegmentButton.text =
                                         if (binding.playerView.player?.hasNextMediaItem() == true) {
                                             getString(CoreR.string.skip_credit_button)
                                         } else {
                                             getString(CoreR.string.skip_credit_button_last)
                                         }
-                                    skipButton.isVisible =
-                                        !isInPictureInPictureMode && !buttonPressed && !binding.playerView.isControllerFullyVisible
-                                    watchCreditsButton.isVisible = skipButton.isVisible
                                 }
-
+                            }
+                            // Buttons visibility
+                            when (currentSegment?.type) {
+                                "intro", "credit" -> {
+                                    skipSegmentLayout.isVisible = !isInPictureInPictureMode && !skipSegmentDismissed && showSkip == true
+                                }
                                 else -> {
-                                    skipButton.isVisible = false
-                                    watchCreditsButton.isVisible = false
+                                    skipSegmentLayout.isVisible = false
                                 }
                             }
-                            binding.playerView.setControllerVisibilityListener(
-                                PlayerView.ControllerVisibilityListener { visibility ->
-                                    when (currentSegment?.type) {
-                                        "intro" -> {
-                                            skipButton.isVisible =
-                                                !buttonPressed && (showSkip == true || visibility == View.VISIBLE)
-                                        }
-
-                                        "credit" -> {
-                                            skipButton.isVisible =
-                                                !buttonPressed && visibility == View.GONE
-                                            watchCreditsButton.isVisible = skipButton.isVisible
-                                        }
-                                    }
-                                },
-                            )
                             // onClick
-                            if (currentSegment?.type == "credit") {
-                                watchCreditsButton.setOnClickListener {
-                                    buttonPressed = true
-                                    skipButton.isVisible = false
-                                    watchCreditsButton.isVisible = false
-                                }
-                            }
-                            skipButton.setOnClickListener {
+                            skipSegmentButton.setOnClickListener {
                                 when (currentSegment?.type) {
                                     "intro" -> {
                                         currentSegment?.let {
@@ -207,9 +183,12 @@ class PlayerActivity : BasePlayerActivity() {
                                         }
                                     }
                                 }
-                                buttonPressed = true
-                                skipButton.isVisible = false
-                                watchCreditsButton.isVisible = false
+                                skipSegmentDismissed = true
+                                skipSegmentLayout.isVisible = false
+                            }
+                            skipSegmentDismissButton.setOnClickListener {
+                                skipSegmentDismissed = true
+                                skipSegmentLayout.isVisible = false
                             }
                             oldSegment = currentSegment
 
@@ -422,7 +401,7 @@ class PlayerActivity : BasePlayerActivity() {
         when (isInPictureInPictureMode) {
             true -> {
                 binding.playerView.useController = false
-                binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
+                skipSegmentLayout.isVisible = false
 
                 wasZoom = playerGestureHelper?.isZoomEnabled ?: false
                 playerGestureHelper?.updateZoomMode(false)
