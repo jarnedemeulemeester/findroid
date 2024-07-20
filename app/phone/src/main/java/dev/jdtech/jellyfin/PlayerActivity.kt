@@ -150,9 +150,9 @@ class PlayerActivity : BasePlayerActivity() {
                                 FindroidSegmentType.INTRO -> getString(CoreR.string.skip_intro_button)
                                 FindroidSegmentType.CREDITS -> {
                                     if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                        getString(CoreR.string.skip_credit_button)
+                                        getString(CoreR.string.skip_credits_button)
                                     } else {
-                                        getString(CoreR.string.skip_credit_button_last)
+                                        getString(CoreR.string.skip_credits_button_last)
                                     }
                                 }
                                 else -> ""
