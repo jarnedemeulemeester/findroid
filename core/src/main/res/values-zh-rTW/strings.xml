@@ -128,7 +128,7 @@
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
     <string name="quick_connect">快速連接</string>
     <string name="pref_player_intro_skipper">片頭跳過器</string>
-    <string name="pref_player_intro_skipper_summary">需要在服務器上安裝ConfusedPolarBear的Intro Skipper挿件</string>
+    <string name="pref_player_intro_skipper_summary">需要在服務器上安裝jumoog的Intro Skipper挿件</string>
     <string name="pref_player_mpv_hwdec">硬體解碼</string>
     <string name="pref_player_mpv_vo">視頻輸出</string>
     <string name="pref_player_mpv_ao">音頻輸出</string>
