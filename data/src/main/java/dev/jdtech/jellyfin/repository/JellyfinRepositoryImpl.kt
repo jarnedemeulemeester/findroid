@@ -22,7 +22,7 @@ import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
-import dev.jdtech.jellyfin.models.toFindroidSegments
+import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import io.ktor.util.toByteArray
@@ -339,9 +339,9 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
-            val segments = database.getSegments(itemId)?.toFindroidSegments()
+            val segments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
-            if (segments != null) {
+            if (segments.isNotEmpty()) {
                 return@withContext segments
             }
 

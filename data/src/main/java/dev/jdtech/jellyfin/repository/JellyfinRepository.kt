@@ -83,7 +83,7 @@ interface JellyfinRepository {
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
-    suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>?
+    suspend fun getSegmentsTimestamps(itemId: UUID): List<FindroidSegment>
 
     suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray?
 

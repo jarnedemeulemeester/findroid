@@ -1,19 +1,37 @@
 package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
 import java.util.UUID
 
-@Entity(tableName = "segments")
-data class FindroidSegmentsDto(
-    @PrimaryKey
+@Entity(
+    tableName = "segments",
+    primaryKeys = ["itemId", "type"],
+    foreignKeys = [
+        ForeignKey(
+            entity = FindroidEpisodeDto::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("itemId"),
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
+data class FindroidSegmentDto(
     val itemId: UUID,
-    val segments: List<FindroidSegment>,
+    val type: FindroidSegmentType,
+    val startTime: Double,
+    val endTime: Double,
+    val showAt: Double,
+    val hideAt: Double,
 )
 
-fun List<FindroidSegment>.toFindroidSegmentsDto(itemId: UUID): FindroidSegmentsDto {
-    return FindroidSegmentsDto(
+fun FindroidSegment.toFindroidSegmentsDto(itemId: UUID): FindroidSegmentDto {
+    return FindroidSegmentDto(
         itemId = itemId,
-        segments = this,
+        type = type,
+        startTime = startTime,
+        endTime = endTime,
+        showAt = showAt,
+        hideAt = hideAt,
     )
 }

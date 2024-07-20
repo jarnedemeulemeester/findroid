@@ -20,14 +20,12 @@ data class FindroidSegment(
     val hideAt: Double,
 )
 
-fun FindroidSegmentsDto.toFindroidSegments(): List<FindroidSegment> {
-    return segments.map { segment ->
-        FindroidSegment(
-            type = segment.type,
-            startTime = segment.startTime,
-            endTime = segment.endTime,
-            showAt = segment.showAt,
-            hideAt = segment.hideAt,
-        )
-    }
+fun FindroidSegmentDto.toFindroidSegment(): FindroidSegment {
+    return FindroidSegment(
+        type = type,
+        startTime = startTime,
+        endTime = endTime,
+        showAt = showAt,
+        hideAt = hideAt,
+    )
 }

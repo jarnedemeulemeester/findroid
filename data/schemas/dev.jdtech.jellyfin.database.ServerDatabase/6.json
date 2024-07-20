@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "8b765f00961c1833893fc376339db699",
+    "identityHash": "6af606178158c0a6b0ef94005de71275",
     "entities": [
       {
         "tableName": "servers",
@@ -696,7 +696,7 @@
       },
       {
         "tableName": "segments",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `segments` TEXT NOT NULL, PRIMARY KEY(`itemId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` TEXT NOT NULL, `type` TEXT NOT NULL, `startTime` REAL NOT NULL, `endTime` REAL NOT NULL, `showAt` REAL NOT NULL, `hideAt` REAL NOT NULL, PRIMARY KEY(`itemId`, `type`), FOREIGN KEY(`itemId`) REFERENCES `episodes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "itemId",
@@ -705,20 +705,57 @@
             "notNull": true
           },
           {
-            "fieldPath": "segments",
-            "columnName": "segments",
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "startTime",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "endTime",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showAt",
+            "columnName": "showAt",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hideAt",
+            "columnName": "hideAt",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "itemId"
+            "itemId",
+            "type"
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "episodes",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "itemId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "userdata",
@@ -849,7 +886,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8b765f00961c1833893fc376339db699')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6af606178158c0a6b0ef94005de71275')"
     ]
   }
 }

@@ -364,8 +364,7 @@ constructor(
     }
 
     private suspend fun getSegments(item: PlayerItem) {
-        currentSegments = emptyList()
-        jellyfinRepository.getSegmentsTimestamps(item.itemId)?.let { segments ->
+        jellyfinRepository.getSegmentsTimestamps(item.itemId).let { segments ->
             currentSegments = segments
         }
     }

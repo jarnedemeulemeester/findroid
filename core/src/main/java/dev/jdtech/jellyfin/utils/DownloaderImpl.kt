@@ -79,8 +79,8 @@ class DownloaderImpl(
                     if (trickplayInfo != null) {
                         downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
-                    if (segments != null) {
-                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
+                    segments.forEach {
+                        database.insertSegment(it.toFindroidSegmentsDto(item.id))
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -108,8 +108,8 @@ class DownloaderImpl(
                     if (trickplayInfo != null) {
                         downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
-                    if (segments != null) {
-                        database.insertSegments(segments.toFindroidSegmentsDto(item.id))
+                    segments.forEach {
+                        database.insertSegment(it.toFindroidSegmentsDto(item.id))
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -170,8 +170,6 @@ class DownloaderImpl(
         database.deleteMediaStreamsBySourceId(source.id)
 
         database.deleteUserData(item.id)
-
-        database.deleteSegments(item.id)
 
         File(context.filesDir, "trickplay/${item.id}").deleteRecursively()
     }
