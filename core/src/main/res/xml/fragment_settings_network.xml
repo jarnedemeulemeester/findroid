@@ -15,4 +15,11 @@
         app:key="pref_network_socket_timeout"
         app:title="@string/settings_socket_timeout"
         app:useSimpleSummaryProvider="true" />
+    <ListPreference
+        app:defaultValue="h264"
+        app:key="pref_network_codec"
+        app:title="@string/settings_quality_codec"
+        app:useSimpleSummaryProvider="true"
+        app:entries="@array/codecs"
+        app:entryValues="@array/codecs" />
 </PreferenceScreen>

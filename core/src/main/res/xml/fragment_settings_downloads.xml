@@ -9,4 +9,15 @@
         android:defaultValue="false"
         app:key="pref_downloads_roaming"
         app:title="@string/download_roaming" />
+    <ListPreference
+        android:key="pref_downloads_quality"
+        android:title="@string/download_quality"
+        android:defaultValue="@string/quality_original"
+        android:entries="@array/download_quality_entries"
+        android:entryValues="@array/download_quality_values"
+        android:summary="%s" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        app:key="pref_downloads_quality_default"
+        app:summary="@string/quality_default" />
 </PreferenceScreen>

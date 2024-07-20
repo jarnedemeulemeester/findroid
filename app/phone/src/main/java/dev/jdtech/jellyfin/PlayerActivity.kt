@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin
 
+import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
 import android.content.Context
@@ -33,10 +34,12 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.models.VideoQuality
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -44,6 +47,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 var isControlsLocked: Boolean = false
 
@@ -82,6 +86,10 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val changeQualityButton: ImageButton = findViewById(R.id.btnChangeQuality)
+        changeQualityButton.setOnClickListener {
+            showQualitySelectionDialog()
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
@@ -282,6 +290,7 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(args.items)
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
@@ -340,6 +349,31 @@ class PlayerActivity : BasePlayerActivity() {
         try {
             enterPictureInPictureMode(pipParams())
         } catch (_: IllegalArgumentException) { }
+    }
+
+    private var selectedIndex = 1  // Default to "Original" (index 1)
+    private fun showQualitySelectionDialog() {
+        val originalResolution = viewModel.getOriginalResolution() ?: 0
+        val qualityEntries = resources.getStringArray(CoreR.array.quality_entries).toList()
+        val qualityValues = resources.getStringArray(CoreR.array.quality_values).toList()
+
+        val qualities = qualityEntries.toMutableList()
+        val closestQuality = VideoQuality.entries
+            .filter { it != VideoQuality.Auto && it != VideoQuality.Original }
+            .minByOrNull { kotlin.math.abs(it.height*it.width - originalResolution) }
+
+        if (closestQuality != null) {
+            qualities[1] = "${qualities[1]} (${closestQuality})"
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(CoreR.string.select_quality)
+            .setSingleChoiceItems(qualities.toTypedArray(), selectedIndex) { dialog, which ->
+                selectedIndex = which
+                val selectedQualityValue = qualityValues[which]
+                viewModel.changeVideoQuality(selectedQualityValue)
+                dialog.dismiss()
+            }
+            .show()
     }
 
     override fun onPictureInPictureModeChanged(

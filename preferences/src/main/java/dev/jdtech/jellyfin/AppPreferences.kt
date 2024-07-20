@@ -103,6 +103,11 @@ constructor(
         Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString(),
     )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
 
+    val transcodeCodec get() = sharedPreferences.getString(
+        Constants.PREF_NETWORK_CODEC,
+        Constants.NETWORK_DEFAULT_CODEC,
+    )
+
     // Cache
     val imageCache get() = sharedPreferences.getBoolean(
         Constants.PREF_IMAGE_CACHE,
@@ -122,6 +127,19 @@ constructor(
         Constants.PREF_DOWNLOADS_ROAMING,
         false,
     )
+
+    var downloadQuality get() = sharedPreferences.getString(
+        Constants.PREF_DOWNLOADS_QUALITY,
+        "Original")
+        set(value) {
+            sharedPreferences.edit().putString(Constants.PREF_DOWNLOADS_QUALITY, value).apply()
+        }
+
+    val downloadQualityDefault get() = sharedPreferences.getBoolean(
+        Constants.PREF_DOWNLOADS_QUALITY_DEFAULT,
+        false,
+        )
+
 
     // Sorting
     var sortBy: String

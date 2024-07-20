@@ -139,6 +139,7 @@
     <string name="settings_request_timeout">Request timeout (ms)</string>
     <string name="settings_connect_timeout">Connect timeout (ms)</string>
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
+    <string name="settings_quality_codec">Transcoding codec</string>
     <string name="users">Users</string>
     <string name="add_user">Add user</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
@@ -192,4 +193,13 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="quality_default">Default to selected download quality</string>
+    <string name="download_quality">Download Quality</string>
+    <string name="select_quality">Select Video Quality</string>
+    <string name="quality_auto">Auto</string>
+    <string name="quality_original">Original</string>
+    <string name="quality_1080p">1080p - 8Mbps</string>
+    <string name="quality_720p">720p - 3Mbps</string>
+    <string name="quality_480p">480p - 1.5Mbps</string>
+    <string name="quality_360p">360p - 0.8Mbps</string>
 </resources>

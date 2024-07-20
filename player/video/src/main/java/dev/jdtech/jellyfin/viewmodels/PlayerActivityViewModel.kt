@@ -3,8 +3,10 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +26,8 @@ import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
+import dev.jdtech.jellyfin.models.VideoQuality
+import dev.jdtech.jellyfin.setSubtitlesMimeTypes
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -38,6 +42,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.model.api.EncodingContext
+import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -53,6 +59,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
     val player: Player
+    private var originalResolution: Int? = null
 
     private val _uiState = MutableStateFlow(
         UiState(
@@ -170,6 +177,22 @@ constructor(
                             .setSubtitleConfigurations(mediaSubtitles)
                             .build()
                     mediaItems.add(mediaItem)
+
+
+                    player.addListener(object : Player.Listener {
+                        override fun onPlaybackStateChanged(state: Int) {
+                            if (state == Player.STATE_READY) {
+                                val videoSize = player.videoSize
+                                val initialHeight = videoSize.height
+                                val initialWidth = videoSize.width
+
+                                originalResolution = initialHeight * initialWidth
+                                Timber.d("Initial video size: $initialWidth x $initialHeight")
+
+                                player.removeListener(this)
+                            }
+                        }
+                    })
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -455,7 +478,105 @@ constructor(
         super.onIsPlayingChanged(isPlaying)
         eventsChannel.trySend(PlayerEvents.IsPlayingChanged(isPlaying))
     }
+
+    fun changeVideoQuality(quality: String) {
+        val mediaId = player.currentMediaItem?.mediaId ?: return
+        val currentItem = items.firstOrNull { it.itemId.toString() == mediaId } ?: return
+        val currentPosition = player.currentPosition
+
+        viewModelScope.launch {
+            try {
+                val videoQuality = VideoQuality.fromString(quality)!!
+                val deviceProfile = jellyfinRepository.buildDeviceProfile(VideoQuality.getBitrate(videoQuality), "mkv", EncodingContext.STREAMING)
+                val playbackInfo = jellyfinRepository.getPostedPlaybackInfo(currentItem.itemId,true,deviceProfile,VideoQuality.getBitrate(videoQuality))
+                val playSessionId = playbackInfo.content.playSessionId
+                if (playSessionId != null) {
+                    jellyfinRepository.stopEncodingProcess(playSessionId)
+                }
+                val mediaSources = jellyfinRepository.getMediaSources(currentItem.itemId, true)
+
+                // TODO: can maybe tidy the sub stuff up
+                val externalSubtitles = currentItem.externalSubtitles.map { externalSubtitle ->
+                    MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                        .setLabel(externalSubtitle.title.ifBlank { application.getString(R.string.external) })
+                        .setLanguage(externalSubtitle.language.ifBlank { "Unknown" })
+                        .setMimeType(externalSubtitle.mimeType)
+                        .build()
+                }
+
+                val embeddedSubtitles = mediaSources[currentMediaItemIndex].mediaStreams
+                    .filter { it.type == MediaStreamType.SUBTITLE && !it.isExternal && it.path != null }
+                    .map { mediaStream ->
+                        var deliveryUrl = mediaStream.path
+                        Timber.d("Deliverurl: %s", deliveryUrl)
+//                         Not sure if still needed
+                        if (mediaStream.codec == "webvtt") {
+                            deliveryUrl = deliveryUrl?.replace("Stream.srt", "Stream.vtt")}
+                        MediaItem.SubtitleConfiguration.Builder(Uri.parse(deliveryUrl))
+                            .setMimeType(setSubtitlesMimeTypes(mediaStream.codec))
+                            .setLanguage(mediaStream.language.ifBlank { "Unknown" })
+                            .setLabel("Embedded")
+                            .build()
+                    }
+                    .toMutableList()
+
+
+                val allSubtitles =
+                    if (VideoQuality.getIsOriginalQuality(videoQuality)) {
+                        externalSubtitles
+                    }else {
+                        embeddedSubtitles.apply { addAll(externalSubtitles) }
+                    }
+
+                val url = if (VideoQuality.getIsOriginalQuality(videoQuality)){
+                    jellyfinRepository.getStreamUrl(currentItem.itemId, currentItem.mediaSourceId, playSessionId)
+                } else {
+                    val mediaSourceId = mediaSources[currentMediaItemIndex].id
+                    val deviceId = jellyfinRepository.getDeviceId()
+                    val url = jellyfinRepository.getTranscodedVideoStream(currentItem.itemId, deviceId ,mediaSourceId, playSessionId!!, VideoQuality.getBitrate(videoQuality))
+                    val uriBuilder = url.toUri().buildUpon()
+                    val apiKey = jellyfinRepository.getAccessToken()
+                    uriBuilder.appendQueryParameter("api_key",apiKey )
+                    val newUri = uriBuilder.build()
+                    newUri.toString()
+                }
+
+
+
+                Timber.e("URI IS %s", url)
+                val mediaItemBuilder = MediaItem.Builder()
+                    .setMediaId(currentItem.itemId.toString())
+                    .setUri(url)
+                    .setSubtitleConfigurations(allSubtitles)
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setTitle(currentItem.name)
+                            .build(),
+                    )
+
+
+                player.pause()
+                player.setMediaItem(mediaItemBuilder.build())
+                player.prepare()
+                player.seekTo(currentPosition)
+                playWhenReady = true
+                player.play()
+
+
+
+
+                //isQualityChangeInProgress = true
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getOriginalResolution(): Int? {
+        return originalResolution
+    }
 }
+
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents

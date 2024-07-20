@@ -18,6 +18,7 @@ import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.setSubtitlesMimeTypes
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -126,6 +127,7 @@ class PlayerViewModel @Inject internal constructor(
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
     }
 
+
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
@@ -136,7 +138,22 @@ class PlayerViewModel @Inject internal constructor(
         } else {
             mediaSources[mediaSourceIndex]
         }
-        val externalSubtitles = mediaSource.mediaStreams
+        // Embedded Sub externally for offline playback
+        val externalSubtitles = if (mediaSource.type.toString() == "LOCAL" ) {
+            mediaSource.mediaStreams
+                .filter { mediaStream ->
+                    mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
+                }
+                .map { mediaStream ->
+                    ExternalSubtitle(
+                        mediaStream.title,
+                        mediaStream.language,
+                        Uri.parse(mediaStream.path!!),
+                        setSubtitlesMimeTypes(mediaStream.codec),
+                    )
+                }
+        }else {
+          mediaSource.mediaStreams
             .filter { mediaStream ->
                 mediaStream.isExternal && mediaStream.type == MediaStreamType.SUBTITLE && !mediaStream.path.isNullOrBlank()
             }
@@ -145,14 +162,10 @@ class PlayerViewModel @Inject internal constructor(
                     mediaStream.title,
                     mediaStream.language,
                     Uri.parse(mediaStream.path!!),
-                    when (mediaStream.codec) {
-                        "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                        "webvtt" -> MimeTypes.APPLICATION_SUBRIP
-                        "ass" -> MimeTypes.TEXT_SSA
-                        else -> MimeTypes.TEXT_UNKNOWN
-                    },
+                    setSubtitlesMimeTypes(mediaStream.codec)
                 )
             }
+        }
         val trickplayInfo = when (this) {
             is FindroidSources -> {
                 this.trickplayInfo?.get(mediaSource.id)?.let {
