@@ -353,14 +353,14 @@ class PlayerActivity : BasePlayerActivity() {
 
     private var selectedIndex = 1  // Default to "Original" (index 1)
     private fun showQualitySelectionDialog() {
-        val originalHeight = viewModel.getOriginalHeight() // TODO: Rework getting originalHeight
+        val originalResolution = viewModel.getoriginalResolution() // TODO: Rework getting originalResolution
         val qualityEntries = resources.getStringArray(CoreR.array.quality_entries).toList()
         val qualityValues = resources.getStringArray(CoreR.array.quality_values).toList()
 
         val qualities = qualityEntries.toMutableList()
         val closestQuality = VideoQuality.entries
             .filter { it != VideoQuality.Auto && it != VideoQuality.Original }
-            .minByOrNull { kotlin.math.abs(it.height - originalHeight) }
+            .minByOrNull { kotlin.math.abs(it.height*it.width - originalResolution!!) }
 
         if (closestQuality != null) {
             qualities[1] = "${qualities[1]} (${closestQuality})"

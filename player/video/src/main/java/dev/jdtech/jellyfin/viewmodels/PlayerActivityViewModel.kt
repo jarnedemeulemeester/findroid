@@ -18,6 +18,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
+import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -61,7 +62,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
     val player: Player
-    private var originalHeight: Int = 0
+    private var originalResolution: Int? = null
 
     private val _uiState = MutableStateFlow(
         UiState(
@@ -179,6 +180,22 @@ constructor(
                             .setSubtitleConfigurations(mediaSubtitles)
                             .build()
                     mediaItems.add(mediaItem)
+
+
+                    player.addListener(object : Player.Listener {
+                        override fun onPlaybackStateChanged(state: Int) {
+                            if (state == Player.STATE_READY) {
+                                val videoSize = player.videoSize
+                                val initialHeight = videoSize.height
+                                val initialWidth = videoSize.width
+
+                                originalResolution = initialHeight * initialWidth
+                                Timber.d("Initial video size: $initialWidth x $initialHeight")
+
+                                player.removeListener(this)
+                            }
+                        }
+                    })
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -564,13 +581,8 @@ constructor(
                 playWhenReady = true
                 player.play()
 
-                val originalHeight = mediaSources[currentMediaItemIndex].mediaStreams
-                    .filter { it.type == MediaStreamType.VIDEO }
-                    .map {mediaStream -> mediaStream.height}.first() ?: 1080
 
 
-                // Store the original height
-                this@PlayerActivityViewModel.originalHeight = originalHeight
 
                 //isQualityChangeInProgress = true
             } catch (e: Exception) {
@@ -579,8 +591,8 @@ constructor(
         }
     }
 
-    fun getOriginalHeight(): Int {
-        return originalHeight
+    fun getoriginalResolution(): Int? {
+        return originalResolution
     }
 }
 
