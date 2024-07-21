@@ -148,38 +148,15 @@ class PlayerActivity : BasePlayerActivity() {
                             // Button text
                             skipSegmentButton.text = when (currentSegment?.type) {
                                 FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                FindroidSegmentType.CREDITS -> {
-                                    if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                        getString(VideoR.string.player_controls_skip_credits)
-                                    } else {
-                                        getString(VideoR.string.player_controls_close_player)
-                                    }
-                                }
+                                FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
                                 else -> ""
                             }
                             // Buttons visibility
-                            skipSegmentLayout.isVisible = when (currentSegment?.type) {
-                                FindroidSegmentType.INTRO, FindroidSegmentType.CREDITS -> {
-                                    !isInPictureInPictureMode && !skipSegmentDismissed && showSkip == true
-                                }
-                                else -> false
-                            }
+                            skipSegmentLayout.isVisible = currentSegment?.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode && !skipSegmentDismissed && showSkip == true
                             // onClick
                             skipSegmentButton.setOnClickListener {
-                                when (currentSegment?.type) {
-                                    FindroidSegmentType.INTRO -> {
-                                        currentSegment?.let {
-                                            binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
-                                        }
-                                    }
-                                    FindroidSegmentType.CREDITS -> {
-                                        if (binding.playerView.player?.hasNextMediaItem() == true) {
-                                            binding.playerView.player?.seekToNext()
-                                        } else {
-                                            finish()
-                                        }
-                                    }
-                                    else -> Unit
+                                currentSegment?.let {
+                                    binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
                                 }
                                 skipSegmentDismissed = true
                                 skipSegmentLayout.isVisible = false
