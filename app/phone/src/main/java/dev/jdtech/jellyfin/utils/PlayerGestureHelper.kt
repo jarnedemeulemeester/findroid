@@ -279,7 +279,7 @@ class PlayerGestureHelper(
                         if (appPreferences.playerTrickplayGesture) {
                             if (currentTrickplay != null) {
                                 activity.binding.imagePreviewGesture.visibility = View.VISIBLE
-                                onMove(newPos)
+                                updateTrickplayImage(newPos)
                             } else {
                                 activity.binding.imagePreviewGesture.visibility = View.GONE
                             }
@@ -491,7 +491,7 @@ class PlayerGestureHelper(
         return false
     }
 
-    fun onMove(position: Long) {
+    fun updateTrickplayImage(position: Long) {
         val trickplay = currentTrickplay ?: return
         val image = trickplay.images[position.div(trickplay.interval).toInt()]
 
