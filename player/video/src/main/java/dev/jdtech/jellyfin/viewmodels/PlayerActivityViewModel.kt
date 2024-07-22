@@ -30,6 +30,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +59,6 @@ constructor(
         UiState(
             currentItemTitle = "",
             currentSegment = null,
-            showSkip = false,
             currentTrickplay = null,
             currentChapters = null,
             fileLoaded = false,
@@ -72,7 +72,6 @@ constructor(
     data class UiState(
         val currentItemTitle: String,
         val currentSegment: FindroidSegment?,
-        val showSkip: Boolean?,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
@@ -377,9 +376,7 @@ constructor(
 
         val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
-
-        val showSkip = currentSegment?.let { seconds in it.showAt..<it.hideAt }
-        _uiState.update { it.copy(currentSegment = currentSegment, showSkip = showSkip) }
+        _uiState.update { it.copy(currentSegment = currentSegment) }
     }
 
     /**
