@@ -85,8 +85,12 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private val handler = Handler(Looper.getMainLooper())
+    private var skipButtonTimeoutExpired: Boolean = false
     private val skipButtonTimeout = Runnable {
-        if (!binding.playerView.isControllerFullyVisible) skipSegmentLayout.isVisible = false
+        if (!binding.playerView.isControllerFullyVisible) {
+            skipSegmentLayout.isVisible = false
+            skipButtonTimeoutExpired = true
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,6 +164,7 @@ class PlayerActivity : BasePlayerActivity() {
                                 // Buttons visibility
                                 skipSegmentLayout.isVisible = currentSegment?.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
                                 if (skipSegmentLayout.isVisible) {
+                                    skipButtonTimeoutExpired = false
                                     handler.postDelayed(skipButtonTimeout, 5000)
                                 }
                             } else {
@@ -305,10 +310,10 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (segment != null) {
+                if (segment != null && skipButtonTimeoutExpired) {
                     skipSegmentLayout.visibility = visibility
                 }
-            }
+            },
         )
 
         viewModel.initializePlayer(args.items)
