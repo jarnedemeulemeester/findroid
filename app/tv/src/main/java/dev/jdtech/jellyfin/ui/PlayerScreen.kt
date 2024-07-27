@@ -32,11 +32,12 @@ import androidx.media3.session.MediaSession
 import androidx.media3.ui.PlayerView
 import androidx.tv.material3.MaterialTheme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.VideoPlayerTrackSelectorDialogDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.destinations.VideoPlayerTrackSelectorDialogDestination
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Track
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
@@ -54,7 +55,7 @@ import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun PlayerScreen(
     navigator: DestinationsNavigator,

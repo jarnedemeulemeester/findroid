@@ -55,9 +55,10 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
+import com.ramcosta.composedestinations.generated.destinations.SeasonScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
-import dev.jdtech.jellyfin.destinations.SeasonScreenDestination
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -72,7 +73,7 @@ import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun ShowScreen(
     navigator: DestinationsNavigator,

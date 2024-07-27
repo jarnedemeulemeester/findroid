@@ -5,10 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var startRoute = NavGraphs.root.startRoute
+        var startRoute = NavGraphs.root.startRoute(Unit)
         if (checkServersEmpty()) {
             startRoute = AddServerScreenDestination
         } else if (checkUser()) {
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
             FindroidTheme {
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
-                    startRoute = startRoute,
+                    start = startRoute,
                 )
             }
         }

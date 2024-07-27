@@ -6,13 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.ActivityDestination
-import com.ramcosta.composedestinations.manualcomposablecalls.composable
-import com.ramcosta.composedestinations.scope.resultRecipient
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
+import com.ramcosta.composedestinations.generated.destinations.PlayerScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
-import dev.jdtech.jellyfin.destinations.PlayerScreenDestination
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.ui.PlayerScreen
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 
 data class PlayerActivityNavArgs(
@@ -20,8 +19,8 @@ data class PlayerActivityNavArgs(
 )
 
 @AndroidEntryPoint
-@ActivityDestination(
-    navArgsDelegate = PlayerActivityNavArgs::class,
+@ActivityDestination<RootGraph>(
+    navArgs = PlayerActivityNavArgs::class,
 )
 class PlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,16 +34,8 @@ class PlayerActivity : ComponentActivity() {
             FindroidTheme {
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
-                    startRoute = PlayerScreenDestination,
-                ) {
-                    composable(PlayerScreenDestination) {
-                        PlayerScreen(
-                            navigator = destinationsNavigator,
-                            items = args.items,
-                            resultRecipient = resultRecipient(),
-                        )
-                    }
-                }
+                    start = PlayerScreenDestination(args.items),
+                )
             }
         }
     }

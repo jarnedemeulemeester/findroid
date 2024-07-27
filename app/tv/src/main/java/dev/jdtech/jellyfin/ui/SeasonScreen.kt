@@ -21,8 +21,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
@@ -35,7 +36,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import java.util.UUID
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SeasonScreen(
     navigator: DestinationsNavigator,

@@ -29,6 +29,7 @@ import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
@@ -44,7 +45,7 @@ data class VideoPlayerTrackSelectorDialogResult(
     val index: Int,
 ) : Parcelable
 
-@Destination(style = BaseDialogStyle::class)
+@Destination<RootGraph>(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(
     trackType: @C.TrackType Int,

@@ -28,11 +28,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.Constants
-import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
-import dev.jdtech.jellyfin.destinations.SettingsScreenDestination
-import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
 import dev.jdtech.jellyfin.models.PreferenceSelect
@@ -48,7 +49,7 @@ import dev.jdtech.jellyfin.viewmodels.SettingsEvent
 import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SettingsSubScreen(
     indexes: IntArray = intArrayOf(),

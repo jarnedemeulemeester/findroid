@@ -21,10 +21,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.LibraryScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.MovieScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ShowScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.LibraryScreenDestination
-import dev.jdtech.jellyfin.destinations.MovieScreenDestination
-import dev.jdtech.jellyfin.destinations.ShowScreenDestination
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -40,7 +41,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun LibraryScreen(
     navigator: DestinationsNavigator,
