@@ -12,6 +12,8 @@ import android.graphics.Rect
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Process
 import android.provider.Settings
 import android.util.Rational
@@ -37,6 +39,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -44,6 +48,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
 
@@ -58,6 +63,9 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
+    private var segment: FindroidSegment? = null
+
+    private lateinit var skipSegmentButton: Button
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -72,6 +80,13 @@ class PlayerActivity : BasePlayerActivity() {
         } else {
             @Suppress("DEPRECATION")
             appOps?.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val skipButtonTimeout = Runnable {
+        if (!binding.playerView.isControllerFullyVisible) {
+            skipSegmentButton.isVisible = false
         }
     }
 
@@ -119,7 +134,7 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
-        val skipIntroButton = binding.playerView.findViewById<Button>(R.id.btn_skip_intro)
+        skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
@@ -133,12 +148,29 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip Intro button
-                            skipIntroButton.isVisible = !isInPictureInPictureMode && currentIntro != null
-                            skipIntroButton.setOnClickListener {
-                                currentIntro?.let {
-                                    binding.playerView.player?.seekTo((it.introEnd * 1000).toLong())
+                            // Skip segment button
+                            segment = currentSegment
+                            currentSegment?.let { segment ->
+                                // Button text
+                                skipSegmentButton.text = when (segment.type) {
+                                    FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+                                    FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
+                                    else -> ""
                                 }
+                                // Buttons visibility
+                                skipSegmentButton.isVisible = segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                if (skipSegmentButton.isVisible) {
+                                    handler.removeCallbacks(skipButtonTimeout)
+                                    handler.postDelayed(skipButtonTimeout, 5000)
+                                }
+
+                                // onClick
+                                skipSegmentButton.setOnClickListener {
+                                    binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+                                    skipSegmentButton.isVisible = false
+                                }
+                            } ?: run {
+                                skipSegmentButton.isVisible = false
                             }
 
                             // Trickplay
@@ -270,6 +302,14 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
+        binding.playerView.setControllerVisibilityListener(
+            PlayerView.ControllerVisibilityListener { visibility ->
+                if (segment != null) {
+                    skipSegmentButton.visibility = visibility
+                }
+            },
+        )
+
         viewModel.initializePlayer(args.items)
         hideSystemUI()
     }
@@ -350,7 +390,7 @@ class PlayerActivity : BasePlayerActivity() {
         when (isInPictureInPictureMode) {
             true -> {
                 binding.playerView.useController = false
-                binding.playerView.findViewById<Button>(R.id.btn_skip_intro).isVisible = false
+                skipSegmentButton.isVisible = false
 
                 wasZoom = playerGestureHelper?.isZoomEnabled ?: false
                 playerGestureHelper?.updateZoomMode(false)

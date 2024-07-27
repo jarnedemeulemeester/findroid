@@ -12,18 +12,19 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.Intro
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
-import dev.jdtech.jellyfin.models.toIntro
 import io.ktor.util.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -336,25 +337,35 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getIntroTimestamps(itemId: UUID): Intro? =
+    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
-            val intro = database.getIntro(itemId)?.toIntro()
+            val segments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
-            if (intro != null) {
-                return@withContext intro
+            if (segments.isNotEmpty()) {
+                return@withContext segments
             }
 
-            // https://github.com/ConfusedPolarBear/intro-skipper/blob/master/docs/api.md
-            val pathParameters = mutableMapOf<String, UUID>()
-            pathParameters["itemId"] = itemId
-
+            // https://github.com/jumoog/intro-skipper/blob/master/docs/api.md
             try {
-                return@withContext jellyfinApi.api.get<Intro>(
-                    "/Episode/{itemId}/IntroTimestamps/v1",
-                    pathParameters,
+                val segmentsMap = jellyfinApi.api.get<Map<String, FindroidSegment>>(
+                    pathTemplate = "/Episode/{itemId}/IntroSkipperSegments",
+                    pathParameters = mapOf("itemId" to itemId),
                 ).content
+
+                for ((type, segment) in segmentsMap) {
+                    segment.type = when (type) {
+                        "Introduction" -> FindroidSegmentType.INTRO
+                        "Credits" -> FindroidSegmentType.CREDITS
+                        else -> FindroidSegmentType.UNKNOWN
+                    }
+                }
+
+                Timber.tag("SegmentInfo").d("segments: %s", segmentsMap.values)
+
+                return@withContext segmentsMap.values.toList()
             } catch (e: Exception) {
-                return@withContext null
+                Timber.e(e)
+                return@withContext emptyList()
             }
         }
 

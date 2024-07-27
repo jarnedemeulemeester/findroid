@@ -144,7 +144,7 @@
     <string name="settings_socket_timeout">Timeout för socket (ms)</string>
     <string name="pref_player_mpv_hwdec">Hårdvaruavkodning</string>
     <string name="pref_player_intro_skipper">Introskippare</string>
-    <string name="pref_player_intro_skipper_summary">Kräver ConfusedPolarBears Intro Skipper-plugin installerat på servern</string>
+    <string name="pref_player_intro_skipper_summary">Kräver jumoog Intro Skipper-plugin installerat på servern</string>
     <string name="add_server_error_outdated">Serverversionen är ej aktuell: %1$s. Vänligen uppdatera din server</string>
     <string name="add_server_error_version">Serverversion stöds ej: %1$s Vänligen uppdatera din server</string>
 </resources>

@@ -120,7 +120,7 @@
     <string name="seek_back_increment">Шаг перемотки назад (мс)</string>
     <string name="settings_category_network">Сеть</string>
     <string name="pref_player_mpv_ao">Вывод звука</string>
-    <string name="pref_player_intro_skipper_summary">Требуется, чтобы на сервере был установлен плагин Intro Skipper от ConfusedPolarBear</string>
+    <string name="pref_player_intro_skipper_summary">Требуется, чтобы на сервере был установлен плагин Intro Skipper от jumoog</string>
     <string name="episodes_label">Эпизоды</string>
     <string name="image_description_backdrop">%1$s фон</string>
     <string name="seeking">Перемотка</string>

@@ -135,7 +135,7 @@
     <string name="add">Dodaj</string>
     <string name="quick_connect">Szybkie połączenie</string>
     <string name="pref_player_intro_skipper">Pomijać czołówek</string>
-    <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki ConfusedPolarBear\'s Intro Skipper</string>
+    <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki jumoog\'s Intro Skipper</string>
     <string name="player_gestures_seek">Gest przesuwania</string>
     <string name="player_gestures_seek_summary">Przesuń poziomo, aby przeszukać do przodu lub do tyłu</string>
     <string name="audio">Audio</string>
