@@ -23,7 +23,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -66,7 +65,7 @@ class PlayerActivity : BasePlayerActivity() {
     private var wasZoom: Boolean = false
     private var segment: FindroidSegment? = null
 
-    private lateinit var skipSegmentLayout: LinearLayout
+    private lateinit var skipSegmentButton: Button
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -85,11 +84,9 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private var skipButtonTimeoutExpired: Boolean = false
     private val skipButtonTimeout = Runnable {
         if (!binding.playerView.isControllerFullyVisible) {
-            skipSegmentLayout.isVisible = false
-            skipButtonTimeoutExpired = true
+            skipSegmentButton.isVisible = false
         }
     }
 
@@ -137,8 +134,7 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
-        skipSegmentLayout = binding.playerView.findViewById(R.id.layout_skip_segment)
-        val skipSegmentButton = binding.playerView.findViewById<Button>(R.id.btn_skip_segment)
+        skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
@@ -152,31 +148,29 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip Button
+                            // Skip segment button
                             segment = currentSegment
-                            if (currentSegment != null) {
+                            currentSegment?.let { segment ->
                                 // Button text
-                                skipSegmentButton.text = when (currentSegment!!.type) {
+                                skipSegmentButton.text = when (segment.type) {
                                     FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
                                     FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
                                     else -> ""
                                 }
                                 // Buttons visibility
-                                skipSegmentLayout.isVisible = currentSegment?.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
-                                if (skipSegmentLayout.isVisible) {
-                                    skipButtonTimeoutExpired = false
+                                skipSegmentButton.isVisible = segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                if (skipSegmentButton.isVisible) {
+                                    handler.removeCallbacks(skipButtonTimeout)
                                     handler.postDelayed(skipButtonTimeout, 5000)
                                 }
-                            } else {
-                                skipSegmentLayout.isVisible = false
-                            }
 
-                            // onClick
-                            skipSegmentButton.setOnClickListener {
-                                currentSegment?.let {
-                                    binding.playerView.player?.seekTo((it.endTime * 1000).toLong())
+                                // onClick
+                                skipSegmentButton.setOnClickListener {
+                                    binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+                                    skipSegmentButton.isVisible = false
                                 }
-                                skipSegmentLayout.isVisible = false
+                            } ?: run {
+                                skipSegmentButton.isVisible = false
                             }
 
                             // Trickplay
@@ -310,8 +304,8 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (segment != null && skipButtonTimeoutExpired) {
-                    skipSegmentLayout.visibility = visibility
+                if (segment != null) {
+                    skipSegmentButton.visibility = visibility
                 }
             },
         )
@@ -396,7 +390,7 @@ class PlayerActivity : BasePlayerActivity() {
         when (isInPictureInPictureMode) {
             true -> {
                 binding.playerView.useController = false
-                skipSegmentLayout.isVisible = false
+                skipSegmentButton.isVisible = false
 
                 wasZoom = playerGestureHelper?.isZoomEnabled ?: false
                 playerGestureHelper?.updateZoomMode(false)

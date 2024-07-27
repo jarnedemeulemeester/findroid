@@ -71,29 +71,21 @@
         android:layout_height="match_parent"
         app:animation_enabled="false"/>
 
-    <LinearLayout
-        android:id="@+id/layout_skip_segment"
+    <Button
+        android:id="@+id/btn_skip_segment"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="64dp"
-        android:orientation="horizontal"
+        android:textColor="@android:color/white"
         android:visibility="gone"
-        tools:visibility="visible">
-
-        <Button
-            android:id="@+id/btn_skip_segment"
-            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            app:backgroundTint="@color/player_background"
-            app:icon="@drawable/ic_skip_forward"
-            app:iconTint="@android:color/white"
-            app:strokeColor="@android:color/white"
-            tools:text="@string/player_controls_skip_intro" />
-
-    </LinearLayout>
+        app:backgroundTint="@color/player_background"
+        app:icon="@drawable/ic_skip_forward"
+        app:iconTint="@android:color/white"
+        app:strokeColor="@android:color/white"
+        tools:text="@string/player_controls_skip_intro"
+        tools:visibility="visible" />
 
 </merge>
