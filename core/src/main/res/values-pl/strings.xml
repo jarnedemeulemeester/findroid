@@ -135,7 +135,7 @@
     <string name="add">Dodaj</string>
     <string name="quick_connect">Szybkie połączenie</string>
     <string name="pref_player_intro_skipper">Pomijać czołówek</string>
-    <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki jumoog\'s Intro Skipper</string>
+    <string name="pref_player_intro_skipper_summary">Wymaga zainstalowania na serwerze wtyczki <i>jumoog\'s</i> <b>Intro Skipper</b></string>
     <string name="player_gestures_seek">Gest przesuwania</string>
     <string name="player_gestures_seek_summary">Przesuń poziomo, aby przeszukać do przodu lub do tyłu</string>
     <string name="audio">Audio</string>
@@ -190,4 +190,9 @@
     <string name="unmark_as_played">Zaznacz jako nieobejrzane</string>
     <string name="add_to_favorites">Dodaj do ulubionych</string>
     <string name="remove_from_favorites">Usuń z ulubionych</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_trickplay_summary">Wyświetlaj miniaturki podczas przewijania</string>
+    <string name="pref_player_gestures_seek_trickplay">Trickplay przy gestach przewijania</string>
+    <string name="trickplay">Trickplay</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Wyświetlaj miniaturki przy gestach przewijania</string>
 </resources>
