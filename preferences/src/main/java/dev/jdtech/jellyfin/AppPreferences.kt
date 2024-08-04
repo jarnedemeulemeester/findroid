@@ -47,6 +47,7 @@ constructor(
     val playerGesturesVB get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_VB, true)
     val playerGesturesZoom get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_ZOOM, true)
     val playerGesturesSeek get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_SEEK, true)
+    val playerGesturesSeekTrickplay get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_SEEK_TRICKPLAY, true)
     val playerGesturesChapterSkip get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES_CHAPTER_SKIP, true)
 
     val playerBrightnessRemember get() =
@@ -79,7 +80,6 @@ constructor(
     val playerMpvAo get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
     val playerIntroSkipper get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_INTRO_SKIPPER, true)
     val playerTrickplay get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICKPLAY, true)
-    val playerTrickplayGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICKPLAY_GESTURE, true)
     val showChapterMarkers get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_CHAPTER_MARKERS, true)
     val playerPipGesture get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_PIP_GESTURE, false)
 

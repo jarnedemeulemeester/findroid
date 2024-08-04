@@ -29,7 +29,7 @@
         tools:visibility="visible">
 
         <ImageView
-            android:id="@+id/image_preview_gesture"
+            android:id="@+id/progress_scrubber_trickplay"
             android:layout_width="272dp"
             android:layout_height="153dp"
             android:layout_gravity="center"

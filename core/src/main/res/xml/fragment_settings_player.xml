@@ -113,9 +113,9 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="pref_player_gestures_seek"
-            app:key="pref_player_trickplay_gesture"
-            app:summary="@string/pref_player_trickplay_gesture_summary"
-            app:title="@string/pref_player_trickplay_gesture" />
+            app:key="pref_player_gestures_seek_trickplay"
+            app:summary="@string/pref_player_gestures_seek_trickplay_summary"
+            app:title="@string/pref_player_gestures_seek_trickplay" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/picture_in_picture">

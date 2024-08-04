@@ -183,8 +183,8 @@
     <string name="live_tv">Diretta TV</string>
     <string name="play">Riproduci</string>
     <string name="remove_from_favorites">Rimuovi dai preferiti</string>
-    <string name="pref_player_trickplay_gesture">Anteprima in gesto posizionamento</string>
-    <string name="pref_player_trickplay_gesture_summary">Visualizza le immagini di anteprima quando si usa il gesto di posizionamento</string>
+    <string name="pref_player_gestures_seek_trickplay">Anteprima in gesto posizionamento</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Visualizza le immagini di anteprima quando si usa il gesto di posizionamento</string>
     <string name="player_gestures_chapter_skip">Gesto per le scene</string>
     <string name="pref_player_trickplay">Anteprima</string>
     <string name="pref_player_trickplay_summary">Visualizza le immagini di anteprima quando si cambia posizione</string>

@@ -176,7 +176,6 @@ class PlayerGestureHelper(
     }
 
     private fun displayChapter(chapter: PlayerChapter) {
-        activity.binding.imagePreviewGesture.visibility = View.GONE
         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
         activity.binding.progressScrubberText.text = chapter.name ?: ""
     }
@@ -276,12 +275,12 @@ class PlayerGestureHelper(
                         activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
 
-                        if (appPreferences.playerTrickplayGesture) {
+                        if (appPreferences.playerGesturesSeekTrickplay) {
                             if (currentTrickplay != null) {
-                                activity.binding.imagePreviewGesture.visibility = View.VISIBLE
+                                activity.binding.progressScrubberTrickplay.visibility = View.VISIBLE
                                 updateTrickplayImage(newPos)
                             } else {
-                                activity.binding.imagePreviewGesture.visibility = View.GONE
+                                activity.binding.progressScrubberTrickplay.visibility = View.GONE
                             }
                         }
 
@@ -496,7 +495,7 @@ class PlayerGestureHelper(
         val bitmap = trickplay.images[position.div(trickplay.interval).toInt()]
 
         if (currentTrickplayBitmap != bitmap) {
-            activity.binding.imagePreviewGesture.load(bitmap) {
+            activity.binding.progressScrubberTrickplay.load(bitmap) {
                 dispatcher(Dispatchers.Main.immediate)
                 transformations(trickplayRoundedCorners)
             }
@@ -507,9 +506,6 @@ class PlayerGestureHelper(
     init {
         if (appPreferences.playerBrightnessRemember) {
             activity.window.attributes.screenBrightness = appPreferences.playerBrightness
-        }
-        if (!appPreferences.playerTrickplayGesture) {
-            activity.binding.imagePreviewGesture.visibility = View.GONE
         }
 
         updateZoomMode(appPreferences.playerStartMaximized)
