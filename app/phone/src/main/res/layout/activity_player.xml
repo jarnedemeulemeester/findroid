@@ -16,8 +16,11 @@
 
     <LinearLayout
         android:id="@+id/progress_scrubber_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="64dp"
+        android:padding="10dp"
         android:background="@drawable/overlay_background"
         android:clickable="false"
         android:gravity="center"
@@ -25,10 +28,22 @@
         android:visibility="gone"
         tools:visibility="visible">
 
+        <ImageView
+            android:id="@+id/progress_scrubber_trickplay"
+            android:layout_width="272dp"
+            android:layout_height="153dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/player_trickplay"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <TextView
             android:id="@+id/progress_scrubber_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
             android:textColor="@android:color/white"
             tools:text="+00:00:10 [00:00:20]" />
