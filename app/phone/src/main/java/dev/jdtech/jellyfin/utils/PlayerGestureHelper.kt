@@ -68,8 +68,8 @@ class PlayerGestureHelper(
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
 
     var currentTrickplay: Trickplay? = null
-    private val roundedCorners = RoundedCornersTransformation(10f)
-    private var currentBitMap: Bitmap? = null
+    private val trickplayRoundedCorners = RoundedCornersTransformation(10f)
+    private var currentTrickplayBitmap: Bitmap? = null
 
     private var currentNumberOfPointers: Int = 0
 
@@ -493,14 +493,14 @@ class PlayerGestureHelper(
 
     fun updateTrickplayImage(position: Long) {
         val trickplay = currentTrickplay ?: return
-        val image = trickplay.images[position.div(trickplay.interval).toInt()]
+        val bitmap = trickplay.images[position.div(trickplay.interval).toInt()]
 
-        if (currentBitMap != image) {
-            activity.binding.imagePreviewGesture.load(image) {
+        if (currentTrickplayBitmap != bitmap) {
+            activity.binding.imagePreviewGesture.load(bitmap) {
                 dispatcher(Dispatchers.Main.immediate)
-                transformations(roundedCorners)
+                transformations(trickplayRoundedCorners)
             }
-            currentBitMap = image
+            currentTrickplayBitmap = bitmap
         }
     }
 
