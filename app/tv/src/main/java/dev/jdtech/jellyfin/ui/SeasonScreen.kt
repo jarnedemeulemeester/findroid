@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,13 +18,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
@@ -35,7 +36,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import java.util.UUID
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SeasonScreen(
     navigator: DestinationsNavigator,
@@ -109,7 +110,7 @@ private fun SeasonScreenLayout(
                         style = MaterialTheme.typography.headlineMedium,
                     )
                 }
-                TvLazyColumn(
+                LazyColumn(
                     contentPadding = PaddingValues(
                         top = MaterialTheme.spacings.large,
                         bottom = MaterialTheme.spacings.large,

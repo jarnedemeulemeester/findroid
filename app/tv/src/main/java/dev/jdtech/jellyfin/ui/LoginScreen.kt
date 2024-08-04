@@ -39,10 +39,10 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.popUpTo
-import dev.jdtech.jellyfin.NavGraphs
-import dev.jdtech.jellyfin.destinations.MainScreenDestination
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
@@ -51,7 +51,7 @@ import dev.jdtech.jellyfin.viewmodels.LoginEvent
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
@@ -152,7 +152,7 @@ private fun LoginScreenLayout(
                 label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next,
                 ),
@@ -175,7 +175,7 @@ private fun LoginScreenLayout(
                 label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Go,
                 ),

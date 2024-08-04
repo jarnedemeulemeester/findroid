@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <drawable name="exo_styled_controls_play" tools:ignore="PrivateResource">@drawable/ic_play</drawable>
-    <drawable name="exo_styled_controls_pause" tools:ignore="PrivateResource">@drawable/ic_pause</drawable>
+<resources>
+    <drawable name="exo_styled_controls_play">@drawable/ic_play</drawable>
+    <drawable name="exo_styled_controls_pause">@drawable/ic_pause</drawable>
+    <drawable name="exo_styled_controls_next">@drawable/ic_skip_forward</drawable>
+    <drawable name="exo_styled_controls_previous">@drawable/ic_skip_back</drawable>
+    <drawable name="exo_styled_controls_simple_fastforward">@drawable/ic_fast_forward</drawable>
+    <drawable name="exo_styled_controls_simple_rewind">@drawable/ic_rewind</drawable>
 </resources>

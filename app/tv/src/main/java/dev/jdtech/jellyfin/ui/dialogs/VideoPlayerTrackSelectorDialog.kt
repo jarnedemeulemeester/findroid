@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,8 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.ClickableSurfaceScale
@@ -29,6 +29,7 @@ import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
@@ -44,7 +45,7 @@ data class VideoPlayerTrackSelectorDialogResult(
     val index: Int,
 ) : Parcelable
 
-@Destination(style = BaseDialogStyle::class)
+@Destination<RootGraph>(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(
     trackType: @C.TrackType Int,
@@ -65,7 +66,7 @@ fun VideoPlayerTrackSelectorDialog(
                 style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-            TvLazyColumn(
+            LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {

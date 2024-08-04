@@ -125,7 +125,7 @@
     <string name="users">Utilisateurs</string>
     <string name="quick_connect">Connexion rapide</string>
     <string name="pref_player_intro_skipper">Passer l\'introduction</string>
-    <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de ConfusedPolarBear doit être installé sur le serveur</string>
+    <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de jumoog doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>
     <string name="video">Vidéo</string>
     <string name="audio">Audio</string>
@@ -190,4 +190,5 @@
     <string name="watch_trailer">Regarder la bande annonce</string>
     <string name="mark_as_played">Marquer comme joué</string>
     <string name="remove_from_favorites">Retirer des favoris</string>
+    <string name="pref_player_trickplay_summary">Afficher les images de prévisualisation pendant le balayage</string>
 </resources>

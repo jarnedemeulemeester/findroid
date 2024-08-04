@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,16 +22,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.MovieScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
+import com.ramcosta.composedestinations.generated.destinations.ShowScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.MovieScreenDestination
-import dev.jdtech.jellyfin.destinations.PlayerActivityDestination
-import dev.jdtech.jellyfin.destinations.ShowScreenDestination
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -45,7 +46,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
@@ -107,7 +108,7 @@ private fun HomeScreenLayout(
         }
         else -> Unit
     }
-    TvLazyColumn(
+    LazyColumn(
         contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +123,7 @@ private fun HomeScreenLayout(
                         modifier = Modifier.padding(start = MaterialTheme.spacings.large),
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                    TvLazyRow(
+                    LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
                     ) {
@@ -145,7 +146,7 @@ private fun HomeScreenLayout(
                         modifier = Modifier.padding(start = MaterialTheme.spacings.large),
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                    TvLazyRow(
+                    LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
                     ) {

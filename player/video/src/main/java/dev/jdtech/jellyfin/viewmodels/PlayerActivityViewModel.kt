@@ -20,7 +20,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.models.Intro
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
@@ -30,6 +30,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,7 +58,7 @@ constructor(
     private val _uiState = MutableStateFlow(
         UiState(
             currentItemTitle = "",
-            currentIntro = null,
+            currentSegment = null,
             currentTrickplay = null,
             currentChapters = null,
             fileLoaded = false,
@@ -68,11 +69,9 @@ constructor(
     private val eventsChannel = Channel<PlayerEvents>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    private val intros: MutableMap<UUID, Intro> = mutableMapOf()
-
     data class UiState(
         val currentItemTitle: String,
-        val currentIntro: Intro?,
+        val currentSegment: FindroidSegment?,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>?,
         val fileLoaded: Boolean,
@@ -84,6 +83,7 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
+    private var currentSegments: List<FindroidSegment> = emptyList()
 
     var playbackSpeed: Float = 1f
 
@@ -149,12 +149,6 @@ constructor(
                             .setMimeType(externalSubtitle.mimeType)
                             .setLanguage(externalSubtitle.language)
                             .build()
-                    }
-
-                    if (appPreferences.playerIntroSkipper) {
-                        jellyfinRepository.getIntroTimestamps(item.itemId)?.let { intro ->
-                            intros[item.itemId] = intro
-                        }
                     }
 
                     Timber.d("Stream url: $streamUrl")
@@ -239,24 +233,14 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
-        val introCheckRunnable = object : Runnable {
+        val segmentCheckRunnable = object : Runnable {
             override fun run() {
-                if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
-                    val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                    intros[itemId]?.let { intro ->
-                        val seconds = player.currentPosition / 1000.0
-                        if (seconds > intro.showSkipPromptAt && seconds < intro.hideSkipPromptAt) {
-                            _uiState.update { it.copy(currentIntro = intro) }
-                            return@let
-                        }
-                        _uiState.update { it.copy(currentIntro = null) }
-                    }
-                }
+                updateCurrentSegment()
                 handler.postDelayed(this, 1000L)
             }
         }
         handler.post(playbackProgressRunnable)
-        if (intros.isNotEmpty()) handler.post(introCheckRunnable)
+        handler.post(segmentCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -275,12 +259,22 @@ constructor(
                         } else {
                             item.name
                         }
-                        _uiState.update { it.copy(currentItemTitle = itemTitle, currentChapters = item.chapters, fileLoaded = false) }
+                        _uiState.update {
+                            it.copy(
+                                currentItemTitle = itemTitle,
+                                currentSegment = null,
+                                currentChapters = item.chapters,
+                                fileLoaded = false,
+                            )
+                        }
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
                         if (appPreferences.playerTrickplay) {
                             getTrickplay(item)
+                        }
+                        if (appPreferences.playerIntroSkipper) {
+                            getSegments(item)
                         }
                     }
             } catch (e: Exception) {
@@ -366,6 +360,23 @@ constructor(
             }
             _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
         }
+    }
+
+    private suspend fun getSegments(item: PlayerItem) {
+        jellyfinRepository.getSegments(item.itemId).let { segments ->
+            currentSegments = segments
+        }
+    }
+
+    private fun updateCurrentSegment() {
+        if (currentSegments.isEmpty()) {
+            return
+        }
+        val seconds = player.currentPosition / 1000.0
+
+        val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
+        Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
+        _uiState.update { it.copy(currentSegment = currentSegment) }
     }
 
     /**

@@ -103,7 +103,7 @@
     <string name="pref_player_mpv_vo">Video izhod</string>
     <string name="pref_player_mpv_ao">Avdio izhod</string>
     <string name="pref_player_intro_skipper">Preskoči uvode</string>
-    <string name="pref_player_intro_skipper_summary">Zahteven je vtičnik ConfusedPolarBear Intro Skipper</string>
+    <string name="pref_player_intro_skipper_summary">Zahteven je vtičnik jumoog Intro Skipper</string>
     <string name="addresses">Naslovi</string>
     <string name="add_address">Dodaj naslov</string>
     <string name="add_server_address">Dodajte naslov strežnika</string>

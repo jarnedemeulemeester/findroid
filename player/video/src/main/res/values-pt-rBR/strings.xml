@@ -17,4 +17,5 @@
     <string name="player_controls_progress">Barra de progresso</string>
     <string name="player_controls_picture_in_picture">Entrar no picture-in-picture</string>
     <string name="none">Nenhum</string>
+    <string name="player_controls_skip_credits">Pular créditos</string>
 </resources>

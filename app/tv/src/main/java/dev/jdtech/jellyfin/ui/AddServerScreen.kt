@@ -37,8 +37,9 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.LoginScreenDestination
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
@@ -46,7 +47,7 @@ import dev.jdtech.jellyfin.viewmodels.AddServerEvent
 import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun AddServerScreen(
     navigator: DestinationsNavigator,
@@ -115,7 +116,7 @@ private fun AddServerScreenLayout(
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Go,
                 ),

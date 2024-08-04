@@ -3,6 +3,10 @@ package dev.jdtech.jellyfin.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,17 +19,14 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.grid.TvGridCells
-import androidx.tv.foundation.lazy.grid.TvGridItemSpan
-import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
-import androidx.tv.foundation.lazy.grid.items
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SettingsSubScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.destinations.ServerSelectScreenDestination
-import dev.jdtech.jellyfin.destinations.SettingsSubScreenDestination
-import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
 import dev.jdtech.jellyfin.models.PreferenceSelect
@@ -40,7 +41,7 @@ import dev.jdtech.jellyfin.viewmodels.SettingsEvent
 import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SettingsScreen(
     navigator: DestinationsNavigator,
@@ -88,8 +89,8 @@ private fun SettingsScreenLayout(
 
     when (uiState) {
         is SettingsViewModel.UiState.Normal -> {
-            TvLazyVerticalGrid(
-                columns = TvGridCells.Fixed(3),
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
@@ -97,7 +98,7 @@ private fun SettingsScreenLayout(
                     .fillMaxSize()
                     .focusRequester(focusRequester),
             ) {
-                item(span = { TvGridItemSpan(this.maxLineSpan) }) {
+                item(span = { GridItemSpan(this.maxLineSpan) }) {
                     Text(
                         text = stringResource(id = CoreR.string.title_settings),
                         style = MaterialTheme.typography.displayMedium,

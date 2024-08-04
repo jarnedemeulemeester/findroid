@@ -81,15 +81,14 @@ ktlint {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(projects.player.video)
     implementation(libs.androidx.activity.compose)
-    implementation(composeBom)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.core)
@@ -99,7 +98,6 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.tv.foundation)
     implementation(libs.androidx.tv.material)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Icon
@@ -41,12 +41,12 @@ import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.popUpTo
-import dev.jdtech.jellyfin.NavGraphs
-import dev.jdtech.jellyfin.destinations.AddServerScreenDestination
-import dev.jdtech.jellyfin.destinations.MainScreenDestination
-import dev.jdtech.jellyfin.destinations.UserSelectScreenDestination
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
@@ -59,7 +59,7 @@ import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination
+@Destination<RootGraph>
 @Composable
 fun ServerSelectScreen(
     navigator: DestinationsNavigator,
@@ -172,7 +172,7 @@ private fun ServerSelectScreenLayout(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
-                TvLazyRow(
+                LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
                     modifier = Modifier.focusRequester(focusRequester),
