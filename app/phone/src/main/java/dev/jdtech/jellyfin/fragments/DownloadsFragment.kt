@@ -20,6 +20,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.restart
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import kotlinx.coroutines.launch
@@ -102,7 +103,7 @@ class DownloadsFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToMovieFragment(
                         item.id,
                         item.name,
@@ -110,7 +111,7 @@ class DownloadsFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(
                         item.id,
                         item.name,

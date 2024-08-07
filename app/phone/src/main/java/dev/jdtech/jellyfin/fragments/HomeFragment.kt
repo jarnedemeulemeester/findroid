@@ -29,6 +29,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.restart
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -203,7 +204,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToLibraryFragment(view: dev.jdtech.jellyfin.models.View) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             HomeFragmentDirections.actionNavigationHomeToLibraryFragment(
                 libraryId = view.id,
                 libraryName = view.name,
@@ -215,7 +216,7 @@ class HomeFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     HomeFragmentDirections.actionNavigationHomeToMovieFragment(
                         item.id,
                         item.name,
@@ -223,7 +224,7 @@ class HomeFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     HomeFragmentDirections.actionNavigationHomeToShowFragment(
                         item.id,
                         item.name,
@@ -231,7 +232,7 @@ class HomeFragment : Fragment() {
                 )
             }
             is FindroidEpisode -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     HomeFragmentDirections.actionNavigationHomeToEpisodeBottomSheetFragment(
                         item.id,
                     ),
@@ -241,13 +242,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToSettingsFragment() {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             HomeFragmentDirections.actionHomeFragmentToSettingsFragment(),
         )
     }
 
     private fun navigateToSearchResultFragment(query: String) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(query),
         )
     }

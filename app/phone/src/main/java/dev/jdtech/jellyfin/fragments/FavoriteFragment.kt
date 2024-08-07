@@ -20,6 +20,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.FavoriteViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -95,7 +96,7 @@ class FavoriteFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
                         item.id,
                         item.name,
@@ -103,7 +104,7 @@ class FavoriteFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
                         item.id,
                         item.name,
@@ -111,7 +112,7 @@ class FavoriteFragment : Fragment() {
                 )
             }
             is FindroidEpisode -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
                         item.id,
                     ),
