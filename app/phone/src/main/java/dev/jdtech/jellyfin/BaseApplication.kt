@@ -12,6 +12,7 @@ import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import dagger.hilt.android.HiltAndroidApp
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -60,6 +61,17 @@ class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactor
                 DiskCache.Builder()
                     .directory(this.cacheDir.resolve("image_cache"))
                     .maxSizeBytes(appPreferences.imageCacheSize * 1024L * 1024)
+                    .build()
+            }
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .addNetworkInterceptor { chain ->
+                        chain.proceed(
+                            chain.request().newBuilder()
+                                .header("Cache-Control", "stale-if-error")
+                                .build(),
+                        )
+                    }
                     .build()
             }
             .build()
