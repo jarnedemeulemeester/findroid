@@ -102,8 +102,15 @@ class MPVPlayer(
         MPVLib.setOptionString("sub-use-margins", "no")
 
         // Language
-        MPVLib.setOptionString("alang", trackSelectionParameters.preferredAudioLanguages.firstOrNull() ?: "")
-        MPVLib.setOptionString("slang", trackSelectionParameters.preferredTextLanguages.firstOrNull() ?: "")
+        // Split on "-" and use last part because media3 does some weird mapping
+        // See https://github.com/androidx/media/blob/1.4.0/libraries/common/src/main/java/androidx/media3/common/util/Util.java#L3742
+        trackSelectionParameters.preferredAudioLanguages.firstOrNull()?.let {
+            MPVLib.setOptionString("alang", it.split("-").last())
+        }
+        trackSelectionParameters.preferredTextLanguages.firstOrNull()?.let {
+            println(it.split("-").last())
+            MPVLib.setOptionString("slang", it.split("-").last())
+        }
 
         // Other options
         MPVLib.setOptionString("force-window", "no")
