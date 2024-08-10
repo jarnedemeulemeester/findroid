@@ -705,7 +705,7 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems.forEach{ mediaItem ->
+        internalMediaItems.forEach { mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
