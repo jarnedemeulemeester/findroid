@@ -82,6 +82,7 @@ class MPVPlayer(
         MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("opengl-es", "yes")
+        MPVLib.setOptionString("vid", "no")
 
         // Hardware video decoding
         MPVLib.setOptionString("hwdec", hwDec)
@@ -126,6 +127,7 @@ class MPVPlayer(
             Property("duration", MPVLib.MPV_FORMAT_INT64),
             Property("demuxer-cache-time", MPVLib.MPV_FORMAT_INT64),
             Property("speed", MPVLib.MPV_FORMAT_DOUBLE),
+            Property("playlist-current-pos", MPVLib.MPV_FORMAT_INT64),
         ).forEach { (name, format) ->
             MPVLib.observeProperty(name, format)
         }
@@ -175,6 +177,7 @@ class MPVPlayer(
     private var currentDurationMs: Long? = null
     private var currentCacheDurationMs: Long? = null
     private var initialCommands = mutableListOf<Array<String>>()
+    private var initialIndex: Int = 0
     private var initialSeekTo: Long = 0L
 
     // mpv events
@@ -202,10 +205,8 @@ class MPVPlayer(
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
-                        if (currentIndex < (internalMediaItems.size - 1)) {
-                            currentIndex += 1
-                            prepareMediaItem(currentIndex)
-                            play()
+                        if (currentMediaItemIndex < (internalMediaItems.size - 1)) {
+                            prepareMediaItem(currentMediaItemIndex + 1)
                         } else {
                             setPlayerStateAndNotifyIfChanged(
                                 playWhenReady = false,
@@ -256,6 +257,15 @@ class MPVPlayer(
                     }
                 }
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
+                "playlist-current-pos" -> {
+                    currentIndex = value.toInt()
+                    listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
+                        listener.onMediaItemTransition(
+                            currentMediaItem,
+                            Player.MEDIA_ITEM_TRANSITION_REASON_AUTO,
+                        )
+                    }
+                }
             }
         }
     }
@@ -555,6 +565,8 @@ class MPVPlayer(
      * by [.getCurrentWindowIndex] and [.getCurrentPosition].
      */
     override fun setMediaItems(mediaItems: MutableList<MediaItem>, resetPosition: Boolean) {
+        MPVLib.command(arrayOf("playlist-clear"))
+        MPVLib.command(arrayOf("playlist-remove", "current"))
         internalMediaItems = mediaItems
     }
 
@@ -576,8 +588,9 @@ class MPVPlayer(
         startPositionMs: Long,
     ) {
         MPVLib.command(arrayOf("playlist-clear"))
+        MPVLib.command(arrayOf("playlist-remove", "current"))
         internalMediaItems = mediaItems
-        currentIndex = startWindowIndex
+        initialIndex = startWindowIndex
         initialSeekTo = startPositionMs / 1000
     }
 
@@ -692,16 +705,16 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems.forEachIndexed { index, mediaItem ->
+        internalMediaItems.forEach{ mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
-                    if (index == 0) "replace" else "append",
+                    "append",
                 ),
             )
         }
-        prepareMediaItem(currentIndex)
+        prepareMediaItem(initialIndex)
     }
 
     /**
@@ -786,7 +799,20 @@ class MPVPlayer(
      * @param repeatMode The repeat mode.
      */
     override fun setRepeatMode(repeatMode: Int) {
-        TODO("Not yet implemented")
+        when (repeatMode) {
+            REPEAT_MODE_OFF -> {
+                MPVLib.setOptionString("loop-file", "no")
+                MPVLib.setOptionString("loop-playlist", "no")
+            }
+            REPEAT_MODE_ONE -> {
+                MPVLib.setOptionString("loop-file", "inf")
+                MPVLib.setOptionString("loop-playlist", "no")
+            }
+            REPEAT_MODE_ALL -> {
+                MPVLib.setOptionString("loop-file", "no")
+                MPVLib.setOptionString("loop-playlist", "inf")
+            }
+        }
     }
 
     /**
@@ -878,7 +904,6 @@ class MPVPlayer(
                     ),
                 )
             }
-            currentIndex = index
             // Only set the playlist index when the index is not the currently playing item. Otherwise playback will be restarted.
             // This is a problem on initial load when the first item is still loading causing duplicate external subtitle entries.
             if (MPVLib.getPropertyInt("playlist-current-pos") != index) {
@@ -886,12 +911,6 @@ class MPVPlayer(
             }
             listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->
                 listener.onTimelineChanged(timeline, Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
-            }
-            listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
-                listener.onMediaItemTransition(
-                    mediaItem,
-                    Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED,
-                )
             }
             setPlayerStateAndNotifyIfChanged(playbackState = Player.STATE_BUFFERING)
         }
@@ -949,7 +968,6 @@ class MPVPlayer(
         resetInternalState()
         MPVLib.removeObserver(this)
         MPVLib.destroy()
-        currentIndex = 0
     }
 
     override fun getCurrentTracks(): Tracks {
@@ -1343,6 +1361,7 @@ class MPVPlayer(
             MPVLib.attachSurface(holder.surface)
             MPVLib.setOptionString("force-window", "yes")
             MPVLib.setOptionString("vo", videoOutput)
+            MPVLib.setOptionString("vid", "auto")
         }
 
         /**
@@ -1375,6 +1394,7 @@ class MPVPlayer(
          * @param holder The SurfaceHolder whose surface is being destroyed.
          */
         override fun surfaceDestroyed(holder: SurfaceHolder) {
+            MPVLib.setOptionString("vid", "no")
             MPVLib.setOptionString("vo", "null")
             MPVLib.setOptionString("force-window", "no")
             MPVLib.detachSurface()
