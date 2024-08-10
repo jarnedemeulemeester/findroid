@@ -491,15 +491,20 @@ class PlayerGestureHelper(
     }
 
     fun updateTrickplayImage(position: Long) {
-        val trickplay = currentTrickplay ?: return
-        val bitmap = trickplay.images[position.div(trickplay.interval).toInt()]
+        try {
+            val trickplay = currentTrickplay ?: return
+            val bitmap = trickplay.images[position.div(trickplay.interval).toInt()]
 
-        if (currentTrickplayBitmap != bitmap) {
-            activity.binding.progressScrubberTrickplay.load(bitmap) {
-                dispatcher(Dispatchers.Main.immediate)
-                transformations(trickplayRoundedCorners)
+            if (currentTrickplayBitmap != bitmap) {
+                activity.binding.progressScrubberTrickplay.load(bitmap) {
+                    dispatcher(Dispatchers.Main.immediate)
+                    transformations(trickplayRoundedCorners)
+                }
+                currentTrickplayBitmap = bitmap
             }
-            currentTrickplayBitmap = bitmap
+        } catch (e: Exception) {
+            activity.binding.progressScrubberTrickplay.visibility = View.GONE
+            Timber.d(e)
         }
     }
 

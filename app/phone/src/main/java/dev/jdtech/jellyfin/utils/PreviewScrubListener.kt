@@ -35,32 +35,37 @@ class PreviewScrubListener(
     override fun onScrubMove(timeBar: TimeBar, position: Long) {
         Timber.d("Scrubbing to $position")
 
-        val trickplay = currentTrickplay ?: return
-        val image = trickplay.images[position.div(trickplay.interval).toInt()]
+        try {
+            val trickplay = currentTrickplay ?: return
+            val image = trickplay.images[position.div(trickplay.interval).toInt()]
 
-        val parent = scrubbingPreview.parent as ViewGroup
+            val parent = scrubbingPreview.parent as ViewGroup
 
-        val offset = position.toFloat() / player.duration
-        val minX = scrubbingPreview.left
-        val maxX = parent.width - parent.paddingRight
+            val offset = position.toFloat() / player.duration
+            val minX = scrubbingPreview.left
+            val maxX = parent.width - parent.paddingRight
 
-        val startX = timeBarView.left + (timeBarView.right - timeBarView.left) * offset - scrubbingPreview.width / 2
-        val endX = startX + scrubbingPreview.width
+            val startX = timeBarView.left + (timeBarView.right - timeBarView.left) * offset - scrubbingPreview.width / 2
+            val endX = startX + scrubbingPreview.width
 
-        val layoutX = when {
-            startX >= minX && endX <= maxX -> startX
-            startX < minX -> minX
-            else -> maxX - scrubbingPreview.width
-        }.toFloat()
+            val layoutX = when {
+                startX >= minX && endX <= maxX -> startX
+                startX < minX -> minX
+                else -> maxX - scrubbingPreview.width
+            }.toFloat()
 
-        scrubbingPreview.x = layoutX
+            scrubbingPreview.x = layoutX
 
-        if (currentBitMap != image) {
-            scrubbingPreview.load(image) {
-                dispatcher(Dispatchers.Main.immediate)
-                transformations(roundedCorners)
+            if (currentBitMap != image) {
+                scrubbingPreview.load(image) {
+                    dispatcher(Dispatchers.Main.immediate)
+                    transformations(roundedCorners)
+                }
+                currentBitMap = image
             }
-            currentBitMap = image
+        } catch (e: Exception) {
+            scrubbingPreview.visibility = View.GONE
+            Timber.e(e)
         }
     }
 
