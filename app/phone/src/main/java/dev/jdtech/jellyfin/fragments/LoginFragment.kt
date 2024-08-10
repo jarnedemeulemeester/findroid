@@ -20,6 +20,7 @@ import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.UserLoginListAdapter
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.FragmentLoginBinding
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.LoginEvent
 import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -184,6 +185,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToHomeFragment() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
+        findNavController().safeNavigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
     }
 }

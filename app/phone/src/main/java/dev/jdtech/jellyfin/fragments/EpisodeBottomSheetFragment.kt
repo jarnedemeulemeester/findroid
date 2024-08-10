@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel
@@ -405,7 +406,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
     ) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToPlayerActivity(
                 playerItems,
             ),
@@ -413,7 +414,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun navigateToSeries(id: UUID, name: String) {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToShowFragment(
                 itemId = id,
                 itemName = name,

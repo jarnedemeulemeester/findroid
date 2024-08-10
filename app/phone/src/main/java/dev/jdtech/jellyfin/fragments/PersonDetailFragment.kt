@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.PersonDetailViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -142,7 +143,7 @@ internal class PersonDetailFragment : Fragment() {
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
             is FindroidMovie -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
                         itemId = item.id,
                         itemName = item.name,
@@ -150,7 +151,7 @@ internal class PersonDetailFragment : Fragment() {
                 )
             }
             is FindroidShow -> {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
                         itemId = item.id,
                         itemName = item.name,

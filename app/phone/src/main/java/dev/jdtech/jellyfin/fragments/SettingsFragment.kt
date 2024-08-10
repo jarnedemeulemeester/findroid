@@ -9,6 +9,7 @@ import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.utils.restart
+import dev.jdtech.jellyfin.utils.safeNavigate
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -21,19 +22,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
 
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
-            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
+            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
             true
         }
 
         findPreference<Preference>("switchUser")?.setOnPreferenceClickListener {
             val serverId = appPreferences.currentServer!!
-            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
+            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
             true
         }
 
         findPreference<Preference>("switchAddress")?.setOnPreferenceClickListener {
             val serverId = appPreferences.currentServer!!
-            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerAddressesFragment(serverId))
+            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerAddressesFragment(serverId))
             true
         }
 
@@ -52,7 +53,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>("appInfo")?.setOnPreferenceClickListener {
-            findNavController().navigate(TwoPaneSettingsFragmentDirections.actionSettingsFragmentToAboutLibraries())
+            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionSettingsFragmentToAboutLibraries())
             true
         }
     }

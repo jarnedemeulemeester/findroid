@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.adapters.ServerAddressAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerAddressesBinding
 import dev.jdtech.jellyfin.dialogs.AddServerAddressDialog
 import dev.jdtech.jellyfin.dialogs.DeleteServerAddressDialog
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesEvent
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import kotlinx.coroutines.launch
@@ -93,6 +94,6 @@ class ServerAddressesFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
+        findNavController().safeNavigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
     }
 }

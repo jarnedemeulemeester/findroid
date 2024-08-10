@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.AppNavigationDirections
 import dev.jdtech.jellyfin.adapters.UserListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentUsersBinding
 import dev.jdtech.jellyfin.dialogs.DeleteUserDialogFragment
+import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.UsersEvent
 import dev.jdtech.jellyfin.viewmodels.UsersViewModel
 import kotlinx.coroutines.launch
@@ -90,12 +91,12 @@ class UsersFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().navigate(
+        findNavController().safeNavigate(
             AppNavigationDirections.actionGlobalLoginFragment(),
         )
     }
 
     private fun navigateToMainActivity() {
-        findNavController().navigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
+        findNavController().safeNavigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
     }
 }
