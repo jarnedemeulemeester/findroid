@@ -266,11 +266,13 @@ class MPVPlayer(
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
                 "playlist-current-pos" -> {
                     currentIndex = value.toInt()
-                    listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
-                        listener.onMediaItemTransition(
-                            currentMediaItem,
-                            Player.MEDIA_ITEM_TRANSITION_REASON_AUTO,
-                        )
+                    if (currentIndex > 0) {
+                        listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
+                            listener.onMediaItemTransition(
+                                currentMediaItem,
+                                Player.MEDIA_ITEM_TRANSITION_REASON_AUTO,
+                            )
+                        }
                     }
                 }
             }
@@ -712,12 +714,12 @@ class MPVPlayer(
 
     /** Prepares the player.  */
     override fun prepare() {
-        internalMediaItems.forEach { mediaItem ->
+        internalMediaItems.forEachIndexed { index, mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
-                    "append",
+                    if (index == 0) "replace" else "append",
                 ),
             )
         }
@@ -913,7 +915,7 @@ class MPVPlayer(
             }
             // Only set the playlist index when the index is not the currently playing item. Otherwise playback will be restarted.
             // This is a problem on initial load when the first item is still loading causing duplicate external subtitle entries.
-            if (MPVLib.getPropertyInt("playlist-current-pos") != index) {
+            if (currentMediaItemIndex != index) {
                 MPVLib.command(arrayOf("playlist-play-index", "$index"))
             }
             listeners.sendEvent(Player.EVENT_TIMELINE_CHANGED) { listener ->

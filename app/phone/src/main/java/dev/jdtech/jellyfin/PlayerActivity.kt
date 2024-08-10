@@ -17,6 +17,7 @@ import android.os.Looper
 import android.os.Process
 import android.provider.Settings
 import android.util.Rational
+import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -126,7 +127,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
-            finish()
+            finishPlayback()
         }
 
         val videoNameTextView = binding.playerView.findViewById<TextView>(R.id.video_name)
@@ -214,7 +215,7 @@ class PlayerActivity : BasePlayerActivity() {
                 launch {
                     viewModel.eventsChannelFlow.collect { event ->
                         when (event) {
-                            is PlayerEvents.NavigateBack -> finish()
+                            is PlayerEvents.NavigateBack -> finishPlayback()
                             is PlayerEvents.IsPlayingChanged -> {
                                 if (appPreferences.playerPipGesture) {
                                     try {
@@ -335,6 +336,15 @@ class PlayerActivity : BasePlayerActivity() {
         ) {
             pictureInPicture()
         }
+    }
+
+    private fun finishPlayback() {
+        try {
+            viewModel.player.clearVideoSurfaceView(binding.playerView.videoSurfaceView as SurfaceView)
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+        finish()
     }
 
     private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
