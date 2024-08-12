@@ -266,13 +266,14 @@ class MPVPlayer(
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
                 "playlist-current-pos" -> {
                     currentIndex = value.toInt()
-                    if (currentIndex > 0) {
-                        listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
-                            listener.onMediaItemTransition(
-                                currentMediaItem,
-                                Player.MEDIA_ITEM_TRANSITION_REASON_AUTO,
-                            )
-                        }
+                    if (currentIndex < 0) {
+                        return@post
+                    }
+                    listeners.sendEvent(Player.EVENT_MEDIA_ITEM_TRANSITION) { listener ->
+                        listener.onMediaItemTransition(
+                            currentMediaItem,
+                            Player.MEDIA_ITEM_TRANSITION_REASON_AUTO,
+                        )
                     }
                 }
             }
