@@ -1,7 +1,7 @@
 [versions]
 aboutlibraries = "11.2.2"
 android-desugar-jdk-libs = "2.0.4"
-android-plugin = "8.5.1"
+android-plugin = "8.5.2"
 androidx-activity = "1.9.1"
 androidx-appcompat = "1.7.0"
 androidx-compose = "1.7.0-beta07"
