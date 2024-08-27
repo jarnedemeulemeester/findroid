@@ -147,7 +147,7 @@
     <string name="offline_mode">오프라인 모드</string>
     <string name="video">비디오</string>
     <string name="audio">오디오</string>
-    <string name="player_gestures_seek">제스처 탐색</string>
+    <string name="player_gestures_seek">탐색 제스처</string>
     <string name="player_gestures_seek_summary">화면 좌우로 스와이프하여 앞뒤로 이동</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
@@ -183,4 +183,16 @@
     <string name="remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="unmark_as_played">시청함으로 표시하지 않기</string>
     <string name="add_to_favorites">즐겨찾기에 추가</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_trickplay_summary">스크롤 중 미리보기 이미지 표시</string>
+    <string name="trickplay">Trickplay</string>
+    <string name="pref_player_gestures_seek_trickplay">탐색 제스처에 대한 Trickplay</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">탐색 제스처에 미리보기 이미지 표시</string>
+    <string name="player_start_maximized">최대화로 시작</string>
+    <string name="player_start_maximized_summary">기본적으로 최대화 모드로 동영상 열기</string>
+    <string name="player_gestures_chapter_skip">챕터 제스처</string>
+    <string name="player_gestures_chapter_skip_summary">왼쪽/오른쪽을 길게 눌러 챕터 건너뛰기 (2배속 제스처는 비활성화)</string>
+    <string name="pref_player_chapter_markers">챕터 마커</string>
+    <string name="pref_player_chapter_markers_summary">시간 표시줄에 챕터 마커 표시</string>
+    <string name="collection_no_media">이 컬렉션에는 미디어가 포함되어 있지 않습니다</string>
 </resources>
