@@ -42,7 +42,7 @@ import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryLabel
-import dev.jdtech.jellyfin.ui.components.SettingsDetailsCard
+import dev.jdtech.jellyfin.ui.components.SettingsDetailsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
@@ -197,7 +197,7 @@ private fun SettingsSubScreenLayout(
                         modifier = Modifier.weight(2f),
                     ) {
                         (focusedPreference as? PreferenceSelect)?.let {
-                            SettingsDetailsCard(
+                            SettingsDetailsSelectCard(
                                 preference = it,
                                 modifier = Modifier
                                     .fillMaxSize()
