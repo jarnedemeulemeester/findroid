@@ -8,6 +8,7 @@ import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceCategoryLabel
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import kotlinx.coroutines.channels.Channel
@@ -79,6 +80,7 @@ constructor(
                 }
             },
             nestedPreferences = listOf(
+                PreferenceCategoryLabel(nameStringResource = R.string.mpv_player),
                 PreferenceSwitch(
                     nameStringResource = R.string.mpv_player,
                     descriptionStringRes = R.string.mpv_player_summary,

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,11 +34,14 @@ import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDes
 import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.Constants
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceCategoryLabel
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
+import dev.jdtech.jellyfin.ui.components.SettingsCategoryLabel
 import dev.jdtech.jellyfin.ui.components.SettingsDetailsCard
 import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
@@ -139,8 +142,11 @@ private fun SettingsSubScreenLayout(
                             .weight(1f)
                             .focusRequester(focusRequester),
                     ) {
-                        items(uiState.preferences) { preference ->
+                        itemsIndexed(uiState.preferences) { index, preference ->
                             when (preference) {
+                                is PreferenceCategoryLabel -> SettingsCategoryLabel(
+                                    preference = preference,
+                                )
                                 is PreferenceCategory -> SettingsCategoryCard(
                                     preference = preference,
                                     modifier = Modifier.onFocusChanged {
@@ -224,6 +230,7 @@ private fun SettingsSubScreenLayoutPreview() {
         SettingsSubScreenLayout(
             uiState = SettingsViewModel.UiState.Normal(
                 listOf(
+                    PreferenceCategoryLabel(nameStringResource = R.string.mpv_player),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_hwdec,
                         backendName = Constants.PREF_PLAYER_MPV_HWDEC,
