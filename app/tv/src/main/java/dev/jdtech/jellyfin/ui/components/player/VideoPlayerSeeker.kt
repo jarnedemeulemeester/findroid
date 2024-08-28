@@ -22,6 +22,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -91,7 +92,10 @@ fun VideoPlayerSeeker(
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             VideoPlayerSeekBar(
-                progress = (contentProgress / contentDuration).toFloat(),
+                contentProgress = contentProgress,
+                contentDuration = contentDuration,
+                // TODO: pass param from setting cache
+                seekProgressStep = 30.seconds,
                 onSeek = onSeek,
                 state = state,
             )
