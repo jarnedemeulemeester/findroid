@@ -24,18 +24,20 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VideoPlayerSeekBar(
     contentProgress: Duration,
     contentDuration: Duration,
-    seekProgressStep: Duration,
+    seekBackIncrement: Duration,
+    seekForwardIncrement: Duration,
     onSeek: (seekProgress: Float) -> Unit,
     state: VideoPlayerState,
 ) {
@@ -80,14 +82,14 @@ fun VideoPlayerSeekBar(
                 },
                 onLeft = {
                     if (isSelected) {
-                        seekContentProgress = (seekContentProgress - seekProgressStep).coerceAtLeast(Duration.ZERO)
+                        seekContentProgress = (seekContentProgress - seekBackIncrement).coerceAtLeast(Duration.ZERO)
                     } else {
                         focusManager.moveFocus(FocusDirection.Left)
                     }
                 },
                 onRight = {
                     if (isSelected) {
-                        seekContentProgress = (seekContentProgress + seekProgressStep).coerceAtMost(contentDuration)
+                        seekContentProgress = (seekContentProgress + seekForwardIncrement).coerceAtMost(contentDuration)
                     } else {
                         focusManager.moveFocus(FocusDirection.Right)
                     }
@@ -131,7 +133,8 @@ fun VideoPlayerSeekBarPreview() {
         VideoPlayerSeekBar(
             contentProgress = Duration.parse("7m 51s"),
             contentDuration = Duration.parse("23m 40s"),
-            seekProgressStep = 30.seconds,
+            seekBackIncrement = C.DEFAULT_SEEK_BACK_INCREMENT_MS.milliseconds,
+            seekForwardIncrement = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS.milliseconds,
             onSeek = {},
             state = rememberVideoPlayerState(),
         )

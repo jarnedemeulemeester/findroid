@@ -238,6 +238,8 @@ fun VideoPlayerControls(
                 onSeek = { player.seekTo(player.duration.times(it).toLong()) },
                 contentProgress = contentCurrentPosition.milliseconds,
                 contentDuration = player.duration.milliseconds,
+                seekBackIncrement = player.seekBackIncrement.milliseconds,
+                seekForwardIncrement = player.seekForwardIncrement.milliseconds,
             )
         },
         mediaActions = {
