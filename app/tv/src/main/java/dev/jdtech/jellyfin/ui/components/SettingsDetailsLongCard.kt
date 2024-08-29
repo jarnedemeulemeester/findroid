@@ -46,7 +46,7 @@ fun SettingsDetailsLongCard(
         ) {
             Text(
                 text = stringResource(id = preference.nameStringResource),
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
             )
             preference.descriptionStringRes?.let {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
@@ -64,7 +64,7 @@ fun SettingsDetailsLongCard(
                         }
                     },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Box {
@@ -85,7 +85,6 @@ fun SettingsDetailsLongCard(
                         }
                     }
                 }
-
             }
         }
     }

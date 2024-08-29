@@ -238,7 +238,7 @@ private fun SettingsSubScreenLayout(
                                         val newPreference = it.copy(value = value)
                                         onUpdate(newPreference)
                                         focusedPreference = newPreference
-                                    }
+                                    },
                                 )
                             }
                         }

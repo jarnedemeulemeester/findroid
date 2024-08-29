@@ -19,7 +19,7 @@ fun SettingsCategoryLabel(
     Text(
         text = stringResource(id = preference.nameStringResource),
         style = MaterialTheme.typography.titleSmall,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
@@ -28,7 +28,7 @@ fun SettingsCategoryLabel(
 private fun SettingsLabelPreview() {
     FindroidTheme {
         SettingsCategoryLabel(
-            preference = PreferenceCategoryLabel(nameStringResource = CoreR.string.mpv_player)
+            preference = PreferenceCategoryLabel(nameStringResource = CoreR.string.mpv_player),
         )
     }
 }

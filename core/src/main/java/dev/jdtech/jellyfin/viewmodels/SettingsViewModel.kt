@@ -211,8 +211,8 @@ constructor(
                             enabled = preference.dependencies.all { getBoolean(it, false) },
                             value = getString(
                                 preference.backendName,
-                                preference.backendDefaultValue.toString()
-                            )!!.toLongOrNull() ?: preference.backendDefaultValue
+                                preference.backendDefaultValue.toString(),
+                            )!!.toLongOrNull() ?: preference.backendDefaultValue,
                         )
                     }
                     else -> preference
