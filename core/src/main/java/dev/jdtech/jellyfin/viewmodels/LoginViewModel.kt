@@ -71,8 +71,10 @@ constructor(
 
     private fun loadDisclaimer() {
         viewModelScope.launch {
-            loginDisclaimer = jellyfinApi.brandingApi.getBrandingOptions().content.loginDisclaimer
-            _uiState.emit(UiState.Normal(loginDisclaimer))
+            try {
+                loginDisclaimer = jellyfinApi.brandingApi.getBrandingOptions().content.loginDisclaimer
+                _uiState.emit(UiState.Normal(loginDisclaimer))
+            } catch (_: Exception) {}
         }
     }
 
