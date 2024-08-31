@@ -2,6 +2,9 @@ package dev.jdtech.jellyfin.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.player.video.R
@@ -29,5 +32,16 @@ class SpeedSelectionDialogFragment(
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Fix for hiding the system bars on API < 30
+        activity?.window?.let {
+            WindowCompat.getInsetsController(it, it.decorView).apply {
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                hide(WindowInsetsCompat.Type.systemBars())
+            }
+        }
     }
 }
