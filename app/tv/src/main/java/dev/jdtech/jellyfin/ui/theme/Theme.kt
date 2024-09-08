@@ -11,9 +11,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.tv.material3.contentColorFor as contentColorForTv
 import androidx.tv.material3.LocalContentColor as LocalContentColorTv
 import androidx.tv.material3.MaterialTheme as MaterialThemeTv
+import androidx.tv.material3.contentColorFor as contentColorForTv
 
 @Composable
 fun FindroidTheme(
@@ -27,7 +27,7 @@ fun FindroidTheme(
         MaterialThemeTv(
             colorScheme = ColorSchemeTv,
             typography = TypographyTv,
-            shapes = shapesTv
+            shapes = shapesTv,
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
@@ -42,7 +42,7 @@ fun FindroidTheme(
                                 Color(0xFF001721),
                             ),
                         ),
-                    )
+                    ),
                 ) {
                     content()
                 }
