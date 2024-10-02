@@ -9,7 +9,7 @@ object Versions {
     const val minSdk = 28
     const val targetSdk = 35
 
-    val java = JavaVersion.VERSION_17
+    val java = JavaVersion.VERSION_21
 
     const val ktlint = "0.50.0"
 }
