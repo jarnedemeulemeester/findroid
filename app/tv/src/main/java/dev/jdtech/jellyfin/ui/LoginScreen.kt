@@ -182,7 +182,7 @@ private fun LoginScreenLayout(
                     imeAction = ImeAction.Go,
                 ),
                 keyboardActions = KeyboardActions(
-                    onGo = { doLogin() }
+                    onGo = { doLogin() },
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = isError,
