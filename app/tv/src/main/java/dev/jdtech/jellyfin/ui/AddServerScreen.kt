@@ -123,7 +123,7 @@ private fun AddServerScreenLayout(
                     imeAction = ImeAction.Go,
                 ),
                 keyboardActions = KeyboardActions(
-                    onGo = { doConnect() }
+                    onGo = { doConnect() },
                 ),
                 isError = isError,
                 enabled = !isLoading,
