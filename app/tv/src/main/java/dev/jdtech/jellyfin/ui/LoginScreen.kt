@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -124,6 +125,7 @@ private fun LoginScreenLayout(
     val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
 
     val focusRequester = remember { FocusRequester() }
+    val doLogin = remember { { onLoginClick(username, password) } }
 
     Box(
         modifier = Modifier
@@ -179,6 +181,9 @@ private fun LoginScreenLayout(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Go,
                 ),
+                keyboardActions = KeyboardActions(
+                    onGo = { doLogin() }
+                ),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = isError,
                 enabled = !isLoading,
@@ -196,9 +201,7 @@ private fun LoginScreenLayout(
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             Box {
                 Button(
-                    onClick = {
-                        onLoginClick(username, password)
-                    },
+                    onClick = { doLogin() },
                     enabled = !isLoading,
                     modifier = Modifier.width(360.dp),
                 ) {
@@ -224,9 +227,7 @@ private fun LoginScreenLayout(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Box {
                     OutlinedButton(
-                        onClick = {
-                            onQuickConnectClick()
-                        },
+                        onClick = { onQuickConnectClick() },
                         modifier = Modifier.width(360.dp),
                     ) {
                         Box(
