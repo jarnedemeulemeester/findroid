@@ -12,4 +12,9 @@
         android:id="@+id/action_sort_order"
         android:title="@string/sort_order"
         app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/action_column_size"
+        android:title="@string/column_size"
+        app:showAsAction="collapseActionView" />
 </menu>
