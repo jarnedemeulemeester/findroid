@@ -214,7 +214,7 @@ class ShowFragment : Fragment() {
             }
             binding.officialRating.text = item.officialRating
             item.communityRating?.also {
-                binding.communityRating.text = item.communityRating.toString()
+                binding.communityRating.text = String.format(resources.configuration.locales.get(0), "%.1f", it)
                 binding.communityRating.isVisible = true
             }
 
@@ -302,7 +302,7 @@ class ShowFragment : Fragment() {
     }
 
     private fun bindPlayerItemsError(error: Exception) {
-        Timber.e(error.message)
+        Timber.e(error)
         binding.playerItemsError.visibility = View.VISIBLE
         playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {

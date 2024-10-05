@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -125,6 +126,8 @@ private fun MovieScreenLayout(
     onFavoriteClick: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val configuration = LocalConfiguration.current
+    val locale = configuration.locales.get(0)
 
     when (uiState) {
         is MovieViewModel.UiState.Loading -> Text(text = "LOADING")
@@ -205,7 +208,7 @@ private fun MovieScreenLayout(
                                 )
                                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                                 Text(
-                                    text = String.format("%.1f", item.communityRating),
+                                    text = String.format(locale, "%.1f", it),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                             }

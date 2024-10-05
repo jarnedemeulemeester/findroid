@@ -291,7 +291,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             binding.year.text = formatDateTime(episode.premiereDate)
             binding.playtime.text = getString(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000))
             episode.communityRating?.also {
-                binding.communityRating.text = episode.communityRating.toString()
+                binding.communityRating.text = String.format(resources.configuration.locales.get(0), "%.1f", episode.communityRating)
                 binding.communityRating.isVisible = true
             }
             binding.missingIcon.isVisible = false
@@ -353,7 +353,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun bindPlayerItemsError(error: Exception) {
-        Timber.e(error.message)
+        Timber.e(error)
         binding.playerItemsError.isVisible = true
         playButtonNormal()
         binding.playerItemsErrorDetails.setOnClickListener {

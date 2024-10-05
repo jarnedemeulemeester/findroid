@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin
 
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -75,7 +74,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         // Check if PiP is enabled for the app
-        val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager?
+        val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             appOps?.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
         } else {
@@ -122,7 +121,7 @@ class PlayerActivity : BasePlayerActivity() {
                 appPreferences,
                 this,
                 binding.playerView,
-                getSystemService(Context.AUDIO_SERVICE) as AudioManager,
+                getSystemService(AUDIO_SERVICE) as AudioManager,
             )
         }
 
@@ -406,7 +405,7 @@ class PlayerActivity : BasePlayerActivity() {
                 binding.playerView.useController = false
                 skipSegmentButton.isVisible = false
 
-                wasZoom = playerGestureHelper?.isZoomEnabled ?: false
+                wasZoom = playerGestureHelper?.isZoomEnabled == true
                 playerGestureHelper?.updateZoomMode(false)
 
                 // Brightness mode Auto

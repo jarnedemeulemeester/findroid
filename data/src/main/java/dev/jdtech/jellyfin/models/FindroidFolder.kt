@@ -27,8 +27,8 @@ fun BaseItemDto.toFindroidFolder(
     return FindroidFolder(
         id = id,
         name = name.orEmpty(),
-        played = userData?.played ?: false,
-        favorite = userData?.isFavorite ?: false,
+        played = userData?.played == true,
+        favorite = userData?.isFavorite == true,
         unplayedItemCount = userData?.unplayedItemCount,
         images = toFindroidImages(jellyfinRepository),
     )
