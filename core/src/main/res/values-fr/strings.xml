@@ -112,7 +112,7 @@
     <string name="libraries">Librairies</string>
     <string name="settings_category_network">Réseau</string>
     <string name="subtitles">Sous-titres</string>
-    <string name="subtitles_summary">Customiser l\'apparence des sous-titres</string>
+    <string name="subtitles_summary">Personnaliser l\'apparence des sous-titres</string>
     <string name="theme_light">Clair</string>
     <string name="theme_dark">Sombre</string>
     <string name="episodes_label">Épisodes</string>
@@ -191,4 +191,8 @@
     <string name="mark_as_played">Marquer comme joué</string>
     <string name="remove_from_favorites">Retirer des favoris</string>
     <string name="pref_player_trickplay_summary">Afficher les images de prévisualisation pendant le balayage</string>
+    <string name="pref_player_trickplay">Vignettes d’aperçu</string>
+    <string name="trickplay">Vignettes d’aperçu</string>
+    <string name="pref_player_gestures_seek_trickplay">Vignettes d’aperçu lors du déplacement du curseur de lecture</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Afficher des vignettes d’aperçu lors du déplacement du curseur de lecture</string>
 </resources>
