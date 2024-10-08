@@ -177,4 +177,22 @@
     <string name="player_gestures_chapter_skip_summary">Clic prolongado en el lado Izquierdo / Derecho para saltar capítulos (sobreescribe el gesto velocidad x2)</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Mostrar marcadores de capítulo en la barra de tiempo</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
+    <string name="no_users_found">No se encontraron usuarios</string>
+    <string name="no_servers_found">No se encontraron servidores</string>
+    <string name="picture_in_picture">Pantalla en pantalla</string>
+    <string name="picture_in_picture_gesture">Gesto de pantalla en pantalla</string>
+    <string name="select_user">Elija usuario</string>
+    <string name="live_tv">TV en vivo</string>
+    <string name="play">Reproducir</string>
+    <string name="watch_trailer">Ver trailer</string>
+    <string name="mark_as_played">Marcar como reproducido</string>
+    <string name="unmark_as_played">Desmarca como reproducido</string>
+    <string name="add_to_favorites">Agregar a favoritos</string>
+    <string name="remove_from_favorites">Quitar de favoritos</string>
+    <string name="pref_player_gestures_seek_trickplay">Previsualizaciones al navegar en la barra de progreso</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Muestra previsualizaciones al navegar en la barra de progreso</string>
+    <string name="trickplay">Trickplay</string>
+    <string name="picture_in_picture_gesture_summary">Use el botón Home o gesto para cambiar a pantalla en pantalla mientras se reproduce el video</string>
 </resources>
