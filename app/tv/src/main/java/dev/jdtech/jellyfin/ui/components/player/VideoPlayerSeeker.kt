@@ -29,7 +29,7 @@ fun VideoPlayerSeeker(
     focusRequester: FocusRequester,
     state: VideoPlayerState,
     isPlaying: Boolean,
-    onPlayPauseToggle: (Boolean) -> Unit,
+    onPlayPauseToggle: () -> Unit,
     onSeek: (Float) -> Unit,
     contentProgress: Duration,
     contentDuration: Duration,
@@ -56,7 +56,7 @@ fun VideoPlayerSeeker(
     ) {
         IconButton(
             onClick = {
-                onPlayPauseToggle(!isPlaying)
+                onPlayPauseToggle()
             },
             modifier = Modifier.focusRequester(focusRequester),
         ) {

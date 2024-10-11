@@ -107,13 +107,24 @@ fun PlayerScreen(
         mutableLongStateOf(0L)
     }
     var isPlaying by remember {
-        mutableStateOf(viewModel.player.isPlaying)
+        mutableStateOf(true)
+    }
+    val onPause = {
+        viewModel.player.pause()
+        isPlaying = false
+    }
+    val onPlayPauseToggle = {
+        if (isPlaying)
+            onPause()
+        else {
+            viewModel.player.play()
+            isPlaying = true
+        }
     }
     LaunchedEffect(Unit) {
         while (true) {
             delay(300)
             currentPosition = viewModel.player.currentPosition
-            isPlaying = viewModel.player.isPlaying
         }
     }
 
@@ -147,6 +158,7 @@ fun PlayerScreen(
         modifier = Modifier
             .dPadEvents(
                 exoPlayer = viewModel.player,
+                onPause = onPause,
                 videoPlayerState = videoPlayerState,
             )
             .focusable(),
@@ -195,6 +207,7 @@ fun PlayerScreen(
                     contentCurrentPosition = currentPosition,
                     player = viewModel.player,
                     state = videoPlayerState,
+                    onPlayPauseToggle = onPlayPauseToggle,
                     focusRequester = focusRequester,
                     navigator = navigator,
                 )
@@ -211,16 +224,10 @@ fun VideoPlayerControls(
     contentCurrentPosition: Long,
     player: Player,
     state: VideoPlayerState,
+    onPlayPauseToggle: () -> Unit,
     focusRequester: FocusRequester,
     navigator: DestinationsNavigator,
 ) {
-    val onPlayPauseToggle = { shouldPlay: Boolean ->
-        if (shouldPlay) {
-            player.play()
-        } else {
-            player.pause()
-        }
-    }
 
     VideoPlayerControlsLayout(
         mediaTitle = {
@@ -269,6 +276,7 @@ fun VideoPlayerControls(
 
 private fun Modifier.dPadEvents(
     exoPlayer: Player,
+    onPause: () -> Unit,
     videoPlayerState: VideoPlayerState,
 ): Modifier = this.handleDPadKeyEvents(
     onLeft = {},
@@ -276,7 +284,7 @@ private fun Modifier.dPadEvents(
     onUp = {},
     onDown = {},
     onEnter = {
-        exoPlayer.pause()
+        onPause()
         videoPlayerState.showControls()
     },
 )
