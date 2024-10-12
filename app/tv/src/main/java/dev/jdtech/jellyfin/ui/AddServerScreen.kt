@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -84,6 +85,7 @@ private fun AddServerScreenLayout(
     val context = LocalContext.current
 
     val focusRequester = remember { FocusRequester() }
+    val doConnect = { onConnectClick(serverAddress) }
 
     Box(
         modifier = Modifier
@@ -120,6 +122,9 @@ private fun AddServerScreenLayout(
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Go,
                 ),
+                keyboardActions = KeyboardActions(
+                    onGo = { doConnect() },
+                ),
                 isError = isError,
                 enabled = !isLoading,
                 supportingText = {
@@ -141,9 +146,7 @@ private fun AddServerScreenLayout(
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Box {
                 Button(
-                    onClick = {
-                        onConnectClick(serverAddress)
-                    },
+                    onClick = { doConnect() },
                     enabled = !isLoading,
                     modifier = Modifier.width(360.dp),
                 ) {
