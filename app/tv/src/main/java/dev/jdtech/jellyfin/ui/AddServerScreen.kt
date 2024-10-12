@@ -85,7 +85,7 @@ private fun AddServerScreenLayout(
     val context = LocalContext.current
 
     val focusRequester = remember { FocusRequester() }
-    val doConnect = remember { { onConnectClick(serverAddress) } }
+    val doConnect = { onConnectClick(serverAddress) }
 
     Box(
         modifier = Modifier

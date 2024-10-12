@@ -125,7 +125,7 @@ private fun LoginScreenLayout(
     val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
 
     val focusRequester = remember { FocusRequester() }
-    val doLogin = remember { { onLoginClick(username, password) } }
+    val doLogin = { onLoginClick(username, password) }
 
     Box(
         modifier = Modifier
