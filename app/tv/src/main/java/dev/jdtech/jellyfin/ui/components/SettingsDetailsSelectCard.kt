@@ -33,7 +33,7 @@ import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun SettingsDetailsCard(
+fun SettingsDetailsSelectCard(
     preference: PreferenceSelect,
     modifier: Modifier = Modifier,
     onOptionSelected: (String) -> Unit,
@@ -100,9 +100,9 @@ fun SettingsDetailsCard(
 
 @Preview
 @Composable
-private fun SettingsDetailCardPreview() {
+private fun SettingsDetailsSelectCardPreview() {
     FindroidTheme {
-        SettingsDetailsCard(
+        SettingsDetailsSelectCard(
             preference = PreferenceSelect(
                 nameStringResource = CoreR.string.settings_preferred_audio_language,
                 backendName = Constants.PREF_AUDIO_LANGUAGE,
