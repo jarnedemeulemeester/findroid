@@ -214,6 +214,7 @@ class MPVPlayer(
                     if (value && isPlayerReady) {
                         if (currentMediaItemIndex < (internalMediaItems.size - 1)) {
                             prepareMediaItem(currentMediaItemIndex + 1)
+                            play()
                         } else {
                             setPlayerStateAndNotifyIfChanged(
                                 playWhenReady = false,
