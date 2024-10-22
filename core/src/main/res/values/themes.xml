@@ -46,7 +46,7 @@
         <item name="toolbarStyle">@style/Widget.Material3.Toolbar.Surface</item>
 
         <!-- Navigation bar -->
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
         <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
 
         <!-- Extra -->
@@ -54,10 +54,6 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
-    </style>
-
-    <style name="ThemeOverlay.Findroid.DynamicColors" parent="ThemeOverlay.Material3.DynamicColors.DayNight">
-        <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
     </style>
 
     <string-array name="themes">
