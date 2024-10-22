@@ -12,6 +12,13 @@
         <item>@string/ascending</item>
         <item>@string/descending</item>
     </string-array>
+    <integer-array name="column_size_options">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </integer-array>
     <string-array name="mpv_hwdec">
         <item>no</item>
         <item>mediacodec</item>
