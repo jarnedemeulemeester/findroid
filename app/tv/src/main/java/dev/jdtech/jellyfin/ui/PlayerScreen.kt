@@ -260,8 +260,6 @@ fun VideoPlayerControls(
             ) {
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_speaker),
-                    state = state,
-                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
                         navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
@@ -269,8 +267,6 @@ fun VideoPlayerControls(
                 )
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_closed_caption),
-                    state = state,
-                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
                         navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
