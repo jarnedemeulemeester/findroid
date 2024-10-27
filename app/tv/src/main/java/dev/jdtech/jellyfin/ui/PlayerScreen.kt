@@ -298,14 +298,17 @@ private fun Modifier.dPadEvents(
                 exoPlayer.seekForward()
             }
         },
-        onUp = {},
+        onUp = {
+            if (isFocused) {
+                videoPlayerState.showControls()
+            }
+        },
         onDown = {},
         onEnter = {
             if (isFocused) {
                 onPause()
                 videoPlayerState.showControls()
             }
-
         },
     )
 
