@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -154,14 +155,20 @@ fun PlayerScreen(
         }
     }
 
+
+    var isFocused by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
+            .onFocusChanged {
+                isFocused = it.isFocused
+            }
             .dPadEvents(
+                isFocused = isFocused,
                 exoPlayer = viewModel.player,
                 onPause = onPause,
                 videoPlayerState = videoPlayerState,
             )
-            .focusable(),
+            .focusable()
     ) {
         AndroidView(
             factory = { context ->
@@ -275,19 +282,32 @@ fun VideoPlayerControls(
 }
 
 private fun Modifier.dPadEvents(
+    isFocused: Boolean,
     exoPlayer: Player,
     onPause: () -> Unit,
     videoPlayerState: VideoPlayerState,
-): Modifier = this.handleDPadKeyEvents(
-    onLeft = {},
-    onRight = {},
-    onUp = {},
-    onDown = {},
-    onEnter = {
-        onPause()
-        videoPlayerState.showControls()
-    },
-)
+): Modifier =
+    this.handleDPadKeyEvents(
+        onLeft = {
+            if (isFocused) {
+                exoPlayer.seekBack()
+            }
+        },
+        onRight = {
+            if (isFocused) {
+                exoPlayer.seekForward()
+            }
+        },
+        onUp = {},
+        onDown = {},
+        onEnter = {
+            if (isFocused) {
+                onPause()
+                videoPlayerState.showControls()
+            }
+
+        },
+    )
 
 @androidx.annotation.OptIn(UnstableApi::class)
 private fun getTracks(player: Player, type: Int): Array<Track> {
