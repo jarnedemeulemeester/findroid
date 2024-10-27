@@ -115,9 +115,9 @@ fun PlayerScreen(
         isPlaying = false
     }
     val onPlayPauseToggle = {
-        if (isPlaying)
+        if (isPlaying) {
             onPause()
-        else {
+        } else {
             viewModel.player.play()
             isPlaying = true
         }
@@ -155,7 +155,6 @@ fun PlayerScreen(
         }
     }
 
-
     var isFocused by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
@@ -168,7 +167,7 @@ fun PlayerScreen(
                 onPause = onPause,
                 videoPlayerState = videoPlayerState,
             )
-            .focusable()
+            .focusable(),
     ) {
         AndroidView(
             factory = { context ->
@@ -234,7 +233,6 @@ fun VideoPlayerControls(
     focusRequester: FocusRequester,
     navigator: DestinationsNavigator,
 ) {
-
     VideoPlayerControlsLayout(
         mediaTitle = {
             VideoPlayerMediaTitle(

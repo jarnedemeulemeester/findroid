@@ -54,7 +54,6 @@ fun VideoPlayerSeeker(
     val onPause =
         { if (isPlaying) onPlayPauseToggle() }
 
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
