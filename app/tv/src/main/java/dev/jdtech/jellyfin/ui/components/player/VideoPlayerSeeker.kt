@@ -51,6 +51,10 @@ fun VideoPlayerSeeker(
             }
         }
 
+    val onPause =
+        { if (isPlaying) onPlayPauseToggle() }
+
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -92,6 +96,7 @@ fun VideoPlayerSeeker(
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             VideoPlayerSeekBar(
                 progress = (contentProgress / contentDuration).toFloat(),
+                onPause = onPause,
                 onSeek = onSeek,
                 state = state,
             )
