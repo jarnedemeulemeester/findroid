@@ -48,6 +48,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.times
 import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
@@ -166,7 +167,19 @@ class PlayerActivity : BasePlayerActivity() {
 
                                 // onClick
                                 skipSegmentButton.setOnClickListener {
-                                    binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+                                    // Check if the segment's end time is within 5 seconds of the player's total duration
+                                    val segmentEndTimeMillis = segment.endTime * 1000
+                                    val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
+                                    val thresholdMillis = playerDurationMillis - 5000
+
+                                    if (segment.type == FindroidSegmentType.CREDITS &&
+                                        binding.playerView.player?.hasNextMediaItem() == true &&
+                                        segmentEndTimeMillis > thresholdMillis)
+                                    {
+                                        binding.playerView.player?.seekToNextMediaItem()
+                                    } else {
+                                        binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+                                        }
                                     skipSegmentButton.isVisible = false
                                 }
                             } ?: run {
