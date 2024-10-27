@@ -18,6 +18,9 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         findPreference<EditTextPreference>("pref_player_seek_forward_inc")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
+        findPreference<EditTextPreference>("pref_player_intro_skipper_next_episode_threshold")?.setOnBindEditTextListener { editText ->
+            editText.inputType = InputType.TYPE_CLASS_NUMBER
+        }
         findPreference<Preference>("pref_player_subtitles")?.setOnPreferenceClickListener {
             startActivity(Intent(Settings.ACTION_CAPTIONING_SETTINGS))
             true
