@@ -25,4 +25,15 @@
         <item>audiotrack</item>
         <item>opensles</item>
     </string-array>
+
+    <string-array name="intro_skipper_auto_skip">
+        <item>@string/auto_skip_never</item>
+        <item>@string/auto_skip_pip</item>
+        <item>@string/auto_skip_always</item>
+    </string-array>
+    <string-array name="intro_skipper_auto_skip_values">
+        <item>never</item>
+        <item>pip</item>
+        <item>always</item>
+    </string-array>
 </resources>

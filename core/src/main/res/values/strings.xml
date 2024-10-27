@@ -146,6 +146,11 @@
     <string name="pref_player_mpv_ao">Audio output</string>
     <string name="pref_player_intro_skipper">Intro Skipper</string>
     <string name="pref_player_intro_skipper_summary">Requires <i>jumoog\'s</i> <b>Intro Skipper</b> plugin to be installed on the server</string>
+    <string name="pref_player_intro_skipper_auto">Auto skip</string>
+    <string name="auto_skip_never">never</string>
+    <string name="auto_skip_pip">only in pip mode</string>
+    <string name="auto_skip_always">always</string>
+    <string name="intro_skipper_next_episode_threshold">Skip to next episode threshold (ms)</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Display preview images while scrubbing</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>

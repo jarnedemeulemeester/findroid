@@ -48,7 +48,6 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.times
 import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
@@ -149,38 +148,34 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip segment button
+                            // Skip segment
                             segment = currentSegment
                             currentSegment?.let { segment ->
-                                // Button text
-                                skipSegmentButton.text = when (segment.type) {
-                                    FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                    FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
-                                    else -> ""
-                                }
-                                // Buttons visibility
-                                skipSegmentButton.isVisible = segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
-                                if (skipSegmentButton.isVisible) {
-                                    handler.removeCallbacks(skipButtonTimeout)
-                                    handler.postDelayed(skipButtonTimeout, 5000)
-                                }
+                                // Auto skip
+                                if (appPreferences.playerIntroSkipperAutoSkip == "always" ||
+                                    (appPreferences.playerIntroSkipperAutoSkip == "pip" && isInPictureInPictureMode)
+                                ) {
+                                    skipSegment(segment)
+                                } else {
+                                    // Button text
+                                    skipSegmentButton.text = when (segment.type) {
+                                        FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+                                        FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
+                                        else -> ""
+                                    }
+                                    // Buttons visibility
+                                    skipSegmentButton.isVisible =
+                                        segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                    if (skipSegmentButton.isVisible) {
+                                        handler.removeCallbacks(skipButtonTimeout)
+                                        handler.postDelayed(skipButtonTimeout, 5000)
+                                    }
 
-                                // onClick
-                                skipSegmentButton.setOnClickListener {
-                                    // Check if the segment's end time is within 5 seconds of the player's total duration
-                                    val segmentEndTimeMillis = segment.endTime * 1000
-                                    val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
-                                    val thresholdMillis = playerDurationMillis - 5000
-
-                                    if (segment.type == FindroidSegmentType.CREDITS &&
-                                        binding.playerView.player?.hasNextMediaItem() == true &&
-                                        segmentEndTimeMillis > thresholdMillis)
-                                    {
-                                        binding.playerView.player?.seekToNextMediaItem()
-                                    } else {
-                                        binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
-                                        }
-                                    skipSegmentButton.isVisible = false
+                                    // onClick
+                                    skipSegmentButton.setOnClickListener {
+                                        skipSegment(segment)
+                                        skipSegmentButton.isVisible = false
+                                    }
                                 }
                             } ?: run {
                                 skipSegmentButton.isVisible = false
@@ -329,6 +324,22 @@ class PlayerActivity : BasePlayerActivity() {
 
         viewModel.initializePlayer(args.items)
         hideSystemUI()
+    }
+
+    private fun skipSegment(segment: FindroidSegment) {
+        // Check if the segment's end time is within n milliseconds of the player's total duration
+        val segmentEndTimeMillis = segment.endTime * 1000
+        val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
+        val thresholdMillis = playerDurationMillis - appPreferences.playerIntroSkipperNextEpisodeThreshold
+
+        if (segment.type == FindroidSegmentType.CREDITS &&
+            binding.playerView.player?.hasNextMediaItem() == true &&
+            segmentEndTimeMillis > thresholdMillis
+        ) {
+            binding.playerView.player?.seekToNextMediaItem()
+        } else {
+            binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
