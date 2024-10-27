@@ -34,8 +34,6 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
 import org.jellyfin.sdk.model.api.DeviceProfile
-import org.jellyfin.sdk.model.api.DirectPlayProfile
-import org.jellyfin.sdk.model.api.DlnaProfileType
 import org.jellyfin.sdk.model.api.GeneralCommandType
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
@@ -62,7 +60,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getUserViews(): List<BaseItemDto> = withContext(Dispatchers.IO) {
-        jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items.orEmpty()
+        jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items
     }
 
     override suspend fun getItem(itemId: UUID): BaseItemDto = withContext(Dispatchers.IO) {
@@ -106,7 +104,6 @@ class JellyfinRepositoryImpl(
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
             ).content.items
-                .orEmpty()
                 .mapNotNull { it.toFindroidCollection(this@JellyfinRepositoryImpl) }
         }
 
@@ -130,7 +127,6 @@ class JellyfinRepositoryImpl(
                 startIndex = startIndex,
                 limit = limit,
             ).content.items
-                .orEmpty()
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
@@ -170,7 +166,6 @@ class JellyfinRepositoryImpl(
             includeItemTypes = includeTypes,
             recursive = recursive,
         ).content.items
-            .orEmpty()
             .mapNotNull {
                 it.toFindroidItem(this@JellyfinRepositoryImpl, database)
             }
@@ -188,7 +183,6 @@ class JellyfinRepositoryImpl(
                 ),
                 recursive = true,
             ).content.items
-                .orEmpty()
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
@@ -204,7 +198,6 @@ class JellyfinRepositoryImpl(
                 ),
                 recursive = true,
             ).content.items
-                .orEmpty()
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
@@ -214,7 +207,7 @@ class JellyfinRepositoryImpl(
                 jellyfinApi.userId!!,
                 limit = 12,
                 includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
-            ).content.items.orEmpty()
+            ).content.items
         }
         return items.mapNotNull {
             it.toFindroidItem(this, database)
@@ -238,7 +231,6 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             if (!offline) {
                 jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
-                    .orEmpty()
                     .map { it.toFindroidSeason(this@JellyfinRepositoryImpl) }
             } else {
                 database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
@@ -253,7 +245,6 @@ class JellyfinRepositoryImpl(
                 seriesId = seriesId,
                 enableResumable = false,
             ).content.items
-                .orEmpty()
                 .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
@@ -275,7 +266,6 @@ class JellyfinRepositoryImpl(
                     startItemId = startItemId,
                     limit = limit,
                 ).content.items
-                    .orEmpty()
                     .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
             } else {
                 database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
@@ -296,10 +286,7 @@ class JellyfinRepositoryImpl(
                             maxStreamingBitrate = 1_000_000_000,
                             codecProfiles = emptyList(),
                             containerProfiles = emptyList(),
-                            directPlayProfiles = listOf(
-                                DirectPlayProfile(type = DlnaProfileType.VIDEO),
-                                DirectPlayProfile(type = DlnaProfileType.AUDIO),
-                            ),
+                            directPlayProfiles = emptyList(),
                             transcodingProfiles = emptyList(),
                             subtitleProfiles = listOf(
                                 SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
@@ -379,7 +366,7 @@ class JellyfinRepositoryImpl(
                 } catch (_: Exception) { }
 
                 return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content.toByteArray()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 return@withContext null
             }
         }
@@ -442,7 +429,7 @@ class JellyfinRepositoryImpl(
                     itemId,
                     positionTicks = positionTicks,
                 )
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
@@ -462,7 +449,7 @@ class JellyfinRepositoryImpl(
                     positionTicks = positionTicks,
                     isPaused = isPaused,
                 )
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
@@ -473,7 +460,7 @@ class JellyfinRepositoryImpl(
             database.setFavorite(jellyfinApi.userId!!, itemId, true)
             try {
                 jellyfinApi.userLibraryApi.markFavoriteItem(itemId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
@@ -484,7 +471,7 @@ class JellyfinRepositoryImpl(
             database.setFavorite(jellyfinApi.userId!!, itemId, false)
             try {
                 jellyfinApi.userLibraryApi.unmarkFavoriteItem(itemId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
@@ -495,7 +482,7 @@ class JellyfinRepositoryImpl(
             database.setPlayed(jellyfinApi.userId!!, itemId, true)
             try {
                 jellyfinApi.playStateApi.markPlayedItem(itemId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
@@ -506,7 +493,7 @@ class JellyfinRepositoryImpl(
             database.setPlayed(jellyfinApi.userId!!, itemId, false)
             try {
                 jellyfinApi.playStateApi.markUnplayedItem(itemId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
         }
