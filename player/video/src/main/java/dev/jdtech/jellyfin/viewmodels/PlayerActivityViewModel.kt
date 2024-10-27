@@ -104,6 +104,7 @@ constructor(
                 videoOutput = appPreferences.playerMpvVo,
                 audioOutput = appPreferences.playerMpvAo,
                 hwDec = appPreferences.playerMpvHwdec,
+                pauseAtEndOfMediaItems = true,
             )
         } else {
             val renderersFactory =
@@ -128,6 +129,7 @@ constructor(
                 )
                 .setSeekBackIncrementMs(appPreferences.playerSeekBackIncrement)
                 .setSeekForwardIncrementMs(appPreferences.playerSeekForwardIncrement)
+                .setPauseAtEndOfMediaItems(true)
                 .build()
         }
     }
@@ -279,6 +281,28 @@ constructor(
                     }
             } catch (e: Exception) {
                 Timber.e(e)
+            }
+        }
+    }
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        // Report playback stopped for current item and transition to the next one
+        if (!playWhenReady && reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM && player.playbackState == ExoPlayer.STATE_READY) {
+            viewModelScope.launch {
+                val mediaId = player.currentMediaItem?.mediaId
+                val position = player.currentPosition
+                val duration = player.duration
+                try {
+                    jellyfinRepository.postPlaybackStop(
+                        UUID.fromString(mediaId),
+                        position.times(10000),
+                        position.div(duration.toFloat()).times(100).toInt(),
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+                player.seekToNextMediaItem()
+                player.play()
             }
         }
     }

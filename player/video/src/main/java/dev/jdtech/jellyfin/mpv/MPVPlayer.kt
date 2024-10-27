@@ -53,6 +53,7 @@ class MPVPlayer(
     videoOutput: String = "gpu-next",
     audioOutput: String = "audiotrack",
     hwDec: String = "mediacodec",
+    private val pauseAtEndOfMediaItems: Boolean = false,
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -213,8 +214,16 @@ class MPVPlayer(
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
                         if (currentMediaItemIndex < (internalMediaItems.size - 1)) {
-                            prepareMediaItem(currentMediaItemIndex + 1)
-                            play()
+                            if (pauseAtEndOfMediaItems) {
+                                setPlayerStateAndNotifyIfChanged(
+                                    playWhenReady = false,
+                                    playWhenReadyChangeReason = PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM,
+                                    playbackState = STATE_READY,
+                                )
+                            } else {
+                                prepareMediaItem(currentMediaItemIndex + 1)
+                                play()
+                            }
                         } else {
                             setPlayerStateAndNotifyIfChanged(
                                 playWhenReady = false,
