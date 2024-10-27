@@ -188,7 +188,6 @@ fun PlayerScreen(
                 when (lifecycle) {
                     Lifecycle.Event.ON_PAUSE -> {
                         it.onPause()
-                        it.player?.pause()
                     }
 
                     Lifecycle.Event.ON_RESUME -> {
