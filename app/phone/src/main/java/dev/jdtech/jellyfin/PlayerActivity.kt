@@ -63,7 +63,7 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
-    private var segment: FindroidSegment? = null
+    private var currentSegmentPrivate: FindroidSegment? = null
 
     private lateinit var skipSegmentButton: Button
 
@@ -149,7 +149,7 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip segment
-                            segment = currentSegment
+                            currentSegmentPrivate = currentSegment
                             currentSegment?.let { segment ->
                                 // Auto skip
                                 if (appPreferences.playerIntroSkipperAutoSkip == "always" ||
@@ -174,6 +174,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     // onClick
                                     skipSegmentButton.setOnClickListener {
                                         skipSegment(segment)
+                                        currentSegmentPrivate = null
                                         skipSegmentButton.isVisible = false
                                     }
                                 }
@@ -316,7 +317,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (segment != null) {
+                if (currentSegmentPrivate != null) {
                     skipSegmentButton.visibility = visibility
                 }
             },
