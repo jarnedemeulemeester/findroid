@@ -66,7 +66,8 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
-    private var currentSegmentPrivate: FindroidSegment? = null
+    private var currentMediaSegment: FindroidSegment? = null
+    private var showSkipButton: Boolean = false
 
     private lateinit var skipSegmentButton: Button
 
@@ -90,6 +91,7 @@ class PlayerActivity : BasePlayerActivity() {
     private val skipButtonTimeout = Runnable {
         if (!binding.playerView.isControllerFullyVisible) {
             skipSegmentButton.isVisible = false
+            showSkipButton = false
         }
     }
 
@@ -157,7 +159,7 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Skip segment
-                            currentSegmentPrivate = currentSegment
+                            currentMediaSegment = currentSegment
                             currentSegment?.let { segment ->
                                 // Check if the outro segment's end time is within n milliseconds of the player's total duration
                                 val skipToNextEpisode = if (segment.type == MediaSegmentType.OUTRO &&
@@ -192,14 +194,15 @@ class PlayerActivity : BasePlayerActivity() {
                                     skipSegmentButton.isVisible =
                                         segment.type != MediaSegmentType.UNKNOWN && !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
+                                        showSkipButton = true
                                         handler.removeCallbacks(skipButtonTimeout)
-                                        handler.postDelayed(skipButtonTimeout, 5000)
+                                        handler.postDelayed(skipButtonTimeout, 10000)
                                     }
 
                                     // onClick
                                     skipSegmentButton.setOnClickListener {
                                         skipSegment(segment, skipToNextEpisode)
-                                        currentSegmentPrivate = null
+                                        currentMediaSegment = null
                                         skipSegmentButton.isVisible = false
                                     }
                                 }
@@ -342,7 +345,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (currentSegmentPrivate != null) {
+                if (currentMediaSegment != null && !showSkipButton) {
                     skipSegmentButton.visibility = visibility
                 }
             },
