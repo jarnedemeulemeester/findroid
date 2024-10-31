@@ -48,6 +48,7 @@ import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.MediaSegmentType
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as VideoR
@@ -166,13 +167,16 @@ class PlayerActivity : BasePlayerActivity() {
                                 } else {
                                     // Button text
                                     skipSegmentButton.text = when (segment.type) {
-                                        FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
+                                        MediaSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+                                        MediaSegmentType.OUTRO -> getString(VideoR.string.player_controls_skip_credits)
+                                        MediaSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
+                                        MediaSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
+                                        MediaSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
                                         else -> ""
                                     }
                                     // Buttons visibility
                                     skipSegmentButton.isVisible =
-                                        segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                        segment.type != MediaSegmentType.UNKNOWN && !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         handler.removeCallbacks(skipButtonTimeout)
                                         handler.postDelayed(skipButtonTimeout, 5000)
@@ -336,17 +340,17 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun skipSegment(segment: FindroidSegment) {
         // Check if the segment's end time is within n milliseconds of the player's total duration
-        val segmentEndTimeMillis = segment.endTime * 1000
+        val segmentEndTimeMillis = segment.endTicks
         val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
         val thresholdMillis = playerDurationMillis - appPreferences.playerIntroSkipperNextEpisodeThreshold
 
-        if (segment.type == FindroidSegmentType.CREDITS &&
+        if (segment.type == MediaSegmentType.OUTRO &&
             binding.playerView.player?.hasNextMediaItem() == true &&
             segmentEndTimeMillis > thresholdMillis
         ) {
             binding.playerView.player?.seekToNextMediaItem()
         } else {
-            binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
+            binding.playerView.player?.seekTo((segment.endTicks).toLong())
         }
     }
 
