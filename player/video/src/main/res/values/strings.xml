@@ -17,4 +17,7 @@
     <string name="player_controls_skip_forward">Skip forward</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Progress bar</string>
+    <string name="player_controls_skip_recap">Skip recap</string>
+    <string name="player_controls_skip_preview">Skip preview</string>
+    <string name="player_controls_skip_commercial">Skip commercial</string>
 </resources>

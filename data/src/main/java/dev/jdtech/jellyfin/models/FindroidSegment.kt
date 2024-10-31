@@ -1,31 +1,26 @@
 package dev.jdtech.jellyfin.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import org.jellyfin.sdk.model.api.MediaSegmentDto
+import org.jellyfin.sdk.model.api.MediaSegmentType
 
-enum class FindroidSegmentType {
-    INTRO, CREDITS, UNKNOWN
-}
-
-@Serializable
 data class FindroidSegment(
-    var type: FindroidSegmentType = FindroidSegmentType.UNKNOWN,
-    @SerialName("IntroStart")
-    val startTime: Double,
-    @SerialName("IntroEnd")
-    val endTime: Double,
-    @SerialName("ShowSkipPromptAt")
-    val showAt: Double,
-    @SerialName("HideSkipPromptAt")
-    val hideAt: Double,
+    var type: MediaSegmentType = MediaSegmentType.UNKNOWN,
+    val startTicks: Long,
+    val endTicks: Long,
 )
 
 fun FindroidSegmentDto.toFindroidSegment(): FindroidSegment {
     return FindroidSegment(
         type = type,
-        startTime = startTime,
-        endTime = endTime,
-        showAt = showAt,
-        hideAt = hideAt,
+        startTicks = startTicks,
+        endTicks = endTicks,
+    )
+}
+
+fun MediaSegmentDto.toFindroidSegment(): FindroidSegment {
+    return FindroidSegment(
+        type = type,
+        startTicks = startTicks / 10000,
+        endTicks = endTicks / 10000,
     )
 }

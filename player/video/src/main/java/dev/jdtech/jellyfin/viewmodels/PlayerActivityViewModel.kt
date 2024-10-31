@@ -396,9 +396,9 @@ constructor(
         if (currentSegments.isEmpty()) {
             return
         }
-        val seconds = player.currentPosition / 1000.0
+        val milliSeconds = player.currentPosition
 
-        val currentSegment = currentSegments.find { segment -> seconds in segment.startTime..<segment.endTime }
+        val currentSegment = currentSegments.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
         _uiState.update { it.copy(currentSegment = currentSegment) }
     }
