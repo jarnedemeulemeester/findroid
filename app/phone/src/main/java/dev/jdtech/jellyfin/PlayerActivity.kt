@@ -159,16 +159,30 @@ class PlayerActivity : BasePlayerActivity() {
                             // Skip segment
                             currentSegmentPrivate = currentSegment
                             currentSegment?.let { segment ->
+                                // Check if the outro segment's end time is within n milliseconds of the player's total duration
+                                val skipToNextEpisode = if (segment.type == MediaSegmentType.OUTRO &&
+                                    binding.playerView.player?.hasNextMediaItem() == true
+                                ) {
+                                    val segmentEndTimeMillis = segment.endTicks
+                                    val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
+                                    val thresholdMillis = playerDurationMillis - appPreferences.playerIntroSkipperNextEpisodeThreshold
+
+                                    segmentEndTimeMillis > thresholdMillis
+                                } else {
+                                    false
+                                }
                                 // Auto skip
                                 if (appPreferences.playerIntroSkipperAutoSkip == "always" ||
                                     (appPreferences.playerIntroSkipperAutoSkip == "pip" && isInPictureInPictureMode)
                                 ) {
-                                    skipSegment(segment)
+                                    skipSegment(segment, skipToNextEpisode)
                                 } else {
                                     // Button text
                                     skipSegmentButton.text = when (segment.type) {
                                         MediaSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        MediaSegmentType.OUTRO -> getString(VideoR.string.player_controls_skip_credits)
+                                        MediaSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else {
+                                            getString(VideoR.string.player_controls_skip_credits)
+                                        }
                                         MediaSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
                                         MediaSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
                                         MediaSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
@@ -184,7 +198,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                                     // onClick
                                     skipSegmentButton.setOnClickListener {
-                                        skipSegment(segment)
+                                        skipSegment(segment, skipToNextEpisode)
                                         currentSegmentPrivate = null
                                         skipSegmentButton.isVisible = false
                                     }
@@ -338,16 +352,8 @@ class PlayerActivity : BasePlayerActivity() {
         hideSystemUI()
     }
 
-    private fun skipSegment(segment: FindroidSegment) {
-        // Check if the segment's end time is within n milliseconds of the player's total duration
-        val segmentEndTimeMillis = segment.endTicks
-        val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
-        val thresholdMillis = playerDurationMillis - appPreferences.playerIntroSkipperNextEpisodeThreshold
-
-        if (segment.type == MediaSegmentType.OUTRO &&
-            binding.playerView.player?.hasNextMediaItem() == true &&
-            segmentEndTimeMillis > thresholdMillis
-        ) {
+    private fun skipSegment(segment: FindroidSegment, skipToNextEpisode: Boolean) {
+        if (skipToNextEpisode) {
             binding.playerView.player?.seekToNextMediaItem()
         } else {
             binding.playerView.player?.seekTo((segment.endTicks).toLong())
