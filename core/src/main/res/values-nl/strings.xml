@@ -134,7 +134,6 @@
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="quick_connect">Snel verbinden</string>
-    <string name="pref_player_intro_skipper_summary">Jumoog\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="subtitle">Ondertiteling</string>
     <string name="extra_info">Extra informatie weergeven</string>
@@ -162,7 +161,6 @@
     <string name="amoled_theme_summary">Gebruik AMOLED thema met een compleet zwarte achtergrond</string>
     <string name="downloading_error">Fout tijdens het downloaden</string>
     <string name="temp">tijdelijk</string>
-    <string name="pref_player_intro_skipper">Intro Overslaan</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>

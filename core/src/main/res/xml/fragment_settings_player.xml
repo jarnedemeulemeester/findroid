@@ -96,28 +96,44 @@
         app:title="@string/pref_player_chapter_markers"
         app:widgetLayout="@layout/preference_material3_switch" />
 
-    <PreferenceCategory app:title="@string/pref_player_intro_skipper">
+    <PreferenceCategory app:title="@string/pref_player_media_segments">
         <SwitchPreferenceCompat
             app:defaultValue="true"
-            app:key="pref_player_intro_skipper"
-            app:summary="@string/pref_player_intro_skipper_summary"
-            app:title="@string/pref_player_intro_skipper"
+            app:key="pref_player_media_segments_skip_button"
+            app:title="@string/pref_player_media_segments_skip_button"
+            app:summary="@string/pref_player_media_segments_skip_button_summary"
             app:widgetLayout="@layout/preference_material3_switch" />
+
+        <MultiSelectListPreference
+            app:dependency="pref_player_media_segments_skip_button"
+            app:key="pref_player_media_segments_skip_button_type"
+            app:title="@string/pref_player_media_segments_skip_button_type"
+            app:entries="@array/media_segments_type" />
+
+        <EditTextPreference
+            app:defaultValue="10"
+            app:dependency="pref_player_media_segments_skip_button"
+            app:key="pref_player_media_segments_skip_button_duration"
+            app:title="@string/pref_player_media_segments_skip_button_duration"
+            app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="never"
-            app:dependency="pref_player_intro_skipper"
-            app:entries="@array/intro_skipper_auto_skip"
-            app:entryValues="@array/intro_skipper_auto_skip_values"
-            app:key="pref_player_intro_skipper_auto_skip"
-            app:title="@string/pref_player_intro_skipper_auto"
+            app:key="pref_player_media_segments_auto_skip"
+            app:title="@string/pref_player_media_segments_auto_skip"
+            app:entries="@array/media_segments_auto_skip"
+            app:entryValues="@array/media_segments_auto_skip_values"
             app:useSimpleSummaryProvider="true" />
+
+        <MultiSelectListPreference
+            app:key="pref_player_media_segments_auto_skip_type"
+            app:title="@string/pref_player_media_segments_auto_skip_type"
+            app:entries="@array/media_segments_type" />
 
         <EditTextPreference
             app:defaultValue="5000"
-            app:dependency="pref_player_intro_skipper"
-            app:key="pref_player_intro_skipper_next_episode_threshold"
-            app:title="@string/intro_skipper_next_episode_threshold"
+            app:key="pref_player_media_segments_next_episode_threshold"
+            app:title="@string/media_segments_next_episode_threshold"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

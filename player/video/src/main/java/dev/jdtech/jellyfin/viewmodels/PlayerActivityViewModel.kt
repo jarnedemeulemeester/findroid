@@ -275,7 +275,7 @@ constructor(
                         if (appPreferences.playerTrickplay) {
                             getTrickplay(item)
                         }
-                        if (appPreferences.playerIntroSkipper) {
+                        if (appPreferences.playerMediaSegmentsSkipButton || appPreferences.playerMediaSegmentsAutoSkip != "never") {
                             getSegments(item)
                         }
                     }

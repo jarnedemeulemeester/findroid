@@ -152,6 +152,7 @@ class PlayerActivity : BasePlayerActivity() {
 
                             // Skip segment
                             currentMediaSegment = currentSegment
+                            Timber.d("Preferences: %s", appPreferences.playerMediaSegmentsSkipButtonType)
                             currentSegment?.let { segment ->
                                 // Check if the outro segment's end time is within n milliseconds of the player's total duration
                                 val skipToNextEpisode = if (segment.type == MediaSegmentType.OUTRO &&
@@ -159,38 +160,37 @@ class PlayerActivity : BasePlayerActivity() {
                                 ) {
                                     val segmentEndTimeMillis = segment.endTicks
                                     val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
-                                    val thresholdMillis = playerDurationMillis - appPreferences.playerIntroSkipperNextEpisodeThreshold
+                                    val thresholdMillis = playerDurationMillis - appPreferences.playerMediaSegmentsNextEpisodeThreshold
 
                                     segmentEndTimeMillis > thresholdMillis
                                 } else {
                                     false
                                 }
-                                // Auto skip
-                                if (appPreferences.playerIntroSkipperAutoSkip == "always" ||
-                                    (appPreferences.playerIntroSkipperAutoSkip == "pip" && isInPictureInPictureMode)
+
+                                if ((appPreferences.playerMediaSegmentsAutoSkip == "always" || (appPreferences.playerMediaSegmentsAutoSkip == "pip" && isInPictureInPictureMode)) &&
+                                    appPreferences.playerMediaSegmentsAutoSkipType?.contains(segment.type.toString()) == true
                                 ) {
+                                    // Auto skip
                                     skipSegment(segment, skipToNextEpisode)
-                                } else {
+                                } else if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(segment.type.toString()) == true) {
+                                    // Skip Button
                                     // Button text
                                     skipSegmentButton.text = when (segment.type) {
                                         MediaSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        MediaSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else {
-                                            getString(VideoR.string.player_controls_skip_credits)
-                                        }
+                                        MediaSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_credits) }
                                         MediaSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
                                         MediaSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
                                         MediaSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
                                         else -> ""
                                     }
-                                    // Buttons visibility
+                                    // Button visibility
                                     skipSegmentButton.isVisible =
                                         segment.type != MediaSegmentType.UNKNOWN && !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         showSkipButton = true
                                         handler.removeCallbacks(skipButtonTimeout)
-                                        handler.postDelayed(skipButtonTimeout, 10000)
+                                        handler.postDelayed(skipButtonTimeout, appPreferences.playerMediaSegmentsSkipButtonDuration * 1000)
                                     }
-
                                     // onClick
                                     skipSegmentButton.setOnClickListener {
                                         skipSegment(segment, skipToNextEpisode)

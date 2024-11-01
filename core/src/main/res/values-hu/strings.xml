@@ -108,12 +108,10 @@
     <string name="seeking">Seekelés</string>
     <string name="pref_player_mpv_vo">Videó kimenet</string>
     <string name="pref_player_mpv_ao">Hang kimenet</string>
-    <string name="pref_player_intro_skipper">Intro átugró</string>
     <string name="addresses">Címek</string>
     <string name="add_address">Cím hozzáadása</string>
     <string name="add_server_address">Szerver címének hozzáadása</string>
     <string name="add">Hozzáadás</string>
-    <string name="pref_player_intro_skipper_summary">Jumoog Intro Skipper pluginja szükséges hogy telepítve legyen a szerveren</string>
     <string name="episodes_label">Epizódok</string>
     <string name="player_gestures_vb">Hang és fény gesztusok</string>
     <string name="player_gestures_zoom">Zoom gesztus</string>

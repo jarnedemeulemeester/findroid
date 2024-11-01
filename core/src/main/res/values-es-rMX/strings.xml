@@ -119,8 +119,6 @@
     <string name="theme_dark">Oscuro</string>
     <string name="episodes_label">Episodios</string>
     <string name="quick_connect">Conexión rápida</string>
-    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="settings_category_network">Red</string>
     <string name="settings_connect_timeout">Espera de conexión (ms)</string>
     <string name="settings_socket_timeout">Espera del conector (ms)</string>

@@ -109,7 +109,6 @@
     <string name="sort_by_options_3">Дата Добавен</string>
     <string name="seek_back_increment">Инкремент за връщане назад(ms)</string>
     <string name="pref_player_mpv_vo">Изхода на видеото</string>
-    <string name="pref_player_intro_skipper_summary">Изисква Confused Polar Bears Intro Skipper да бъде инсталиран на сървъра</string>
     <string name="remove_user">Премахване на потребител</string>
     <string name="remove_user_dialog_text">Сигурни ли сте, че искате да премахнете потребител %1$s</string>
     <string name="quick_connect">Бързо Свързване</string>
@@ -159,7 +158,6 @@
     <string name="sort_by_options_5">Дата на издаване</string>
     <string name="select_video_version_title">Изберете версия</string>
     <string name="theme_dark">Тъмна</string>
-    <string name="pref_player_intro_skipper">Пропускане на интрота</string>
     <string name="addresses">Адреси</string>
     <string name="add_server_address">Добави адрес на сървър</string>
     <string name="player_gestures_zoom">Жест за приближаване (zoom)</string>

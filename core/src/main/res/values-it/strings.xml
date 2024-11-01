@@ -134,8 +134,6 @@
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
     <string name="quick_connect">Connessione Rapida</string>
-    <string name="pref_player_intro_skipper">Salta intro (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>jumoog</i> installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
     <string name="player_gestures_seek">Gesto posizionamento</string>
     <string name="audio">Audio</string>

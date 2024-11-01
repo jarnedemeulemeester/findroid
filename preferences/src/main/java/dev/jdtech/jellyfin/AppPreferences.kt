@@ -79,12 +79,18 @@ constructor(
     val playerMpvVo get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_VO, "gpu-next")!!
     val playerMpvAo get() = sharedPreferences.getString(Constants.PREF_PLAYER_MPV_AO, "audiotrack")!!
 
-    val playerIntroSkipper get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_INTRO_SKIPPER, true)
-    val playerIntroSkipperAutoSkip get() = sharedPreferences.getString(Constants.PREF_PLAYER_INTRO_SKIPPER_AUTO_SKIP, null)!!
-    val playerIntroSkipperNextEpisodeThreshold get() = sharedPreferences.getString(
-        Constants.PREF_PLAYER_INTRO_SKIPPER_NEXT_EPISODE_THRESHOLD,
-        Constants.DEFAULT_PLAYER_INTRO_SKIPPER_NEXT_EPISODE_THRESHOLD.toString(),
-    )!!.toLongOrNull() ?: Constants.DEFAULT_PLAYER_INTRO_SKIPPER_NEXT_EPISODE_THRESHOLD
+    val playerMediaSegmentsSkipButton get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON, true)
+    val playerMediaSegmentsSkipButtonType get() = sharedPreferences.getStringSet(Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_TYPE, setOf("Intro", "Outro"))
+    val playerMediaSegmentsSkipButtonDuration get() = sharedPreferences.getString(
+        Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION,
+        Constants.DEFAULT_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION.toString(),
+    )!!.toLongOrNull() ?: Constants.DEFAULT_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION
+    val playerMediaSegmentsAutoSkip get() = sharedPreferences.getString(Constants.PREF_PLAYER_MEDIA_SEGMENTS_AUTO_SKIP, "never")!!
+    val playerMediaSegmentsAutoSkipType get() = sharedPreferences.getStringSet(Constants.PREF_PLAYER_MEDIA_SEGMENTS_AUTO_SKIP_TYPE, emptySet())
+    val playerMediaSegmentsNextEpisodeThreshold get() = sharedPreferences.getString(
+        Constants.PREF_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD,
+        Constants.DEFAULT_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD.toString(),
+    )!!.toLongOrNull() ?: Constants.DEFAULT_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD
 
     val playerTrickplay get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_TRICKPLAY, true)
     val showChapterMarkers get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_CHAPTER_MARKERS, true)
