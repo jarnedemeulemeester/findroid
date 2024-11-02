@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.models
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import org.jellyfin.sdk.model.api.MediaSegmentType
 import java.util.UUID
 
 @Entity(
@@ -19,7 +18,7 @@ import java.util.UUID
 )
 data class FindroidSegmentDto(
     val itemId: UUID,
-    val type: MediaSegmentType,
+    val type: FindroidSegmentType,
     val startTicks: Long,
     val endTicks: Long,
 )

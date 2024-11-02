@@ -210,4 +210,5 @@
     <string name="pref_player_gestures_seek_trickplay">Trickplay on seek gesture</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Display preview images on seek gesture</string>
     <string name="trickplay">Trickplay</string>
+    <string name="media_segments_type_summary_none">None</string>
 </resources>

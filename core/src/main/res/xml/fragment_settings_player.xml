@@ -105,10 +105,12 @@
             app:widgetLayout="@layout/preference_material3_switch" />
 
         <MultiSelectListPreference
+            app:defaultValue="@array/media_segments_type_default"
             app:dependency="pref_player_media_segments_skip_button"
             app:key="pref_player_media_segments_skip_button_type"
             app:title="@string/pref_player_media_segments_skip_button_type"
-            app:entries="@array/media_segments_type" />
+            app:entries="@array/media_segments_type"
+            app:entryValues="@array/media_segments_type_values" />
 
         <EditTextPreference
             app:defaultValue="10"
@@ -126,9 +128,11 @@
             app:useSimpleSummaryProvider="true" />
 
         <MultiSelectListPreference
+            app:defaultValue="@array/media_segments_type_default"
             app:key="pref_player_media_segments_auto_skip_type"
             app:title="@string/pref_player_media_segments_auto_skip_type"
-            app:entries="@array/media_segments_type" />
+            app:entries="@array/media_segments_type"
+            app:entryValues="@array/media_segments_type_values" />
 
         <EditTextPreference
             app:defaultValue="5000"

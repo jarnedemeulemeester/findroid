@@ -40,12 +40,12 @@ import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
-import org.jellyfin.sdk.model.api.MediaSegmentType
 import timber.log.Timber
 import javax.inject.Inject
 import dev.jdtech.jellyfin.player.video.R as VideoR
@@ -155,7 +155,7 @@ class PlayerActivity : BasePlayerActivity() {
                             Timber.d("Preferences: %s", appPreferences.playerMediaSegmentsSkipButtonType)
                             currentSegment?.let { segment ->
                                 // Check if the outro segment's end time is within n milliseconds of the player's total duration
-                                val skipToNextEpisode = if (segment.type == MediaSegmentType.OUTRO &&
+                                val skipToNextEpisode = if (segment.type == FindroidSegmentType.OUTRO &&
                                     binding.playerView.player?.hasNextMediaItem() == true
                                 ) {
                                     val segmentEndTimeMillis = segment.endTicks
@@ -176,16 +176,16 @@ class PlayerActivity : BasePlayerActivity() {
                                     // Skip Button
                                     // Button text
                                     skipSegmentButton.text = when (segment.type) {
-                                        MediaSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        MediaSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_credits) }
-                                        MediaSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
-                                        MediaSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
-                                        MediaSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
+                                        FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+                                        FindroidSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_credits) }
+                                        FindroidSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
+                                        FindroidSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
+                                        FindroidSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
                                         else -> ""
                                     }
                                     // Button visibility
                                     skipSegmentButton.isVisible =
-                                        segment.type != MediaSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                        segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         showSkipButton = true
                                         handler.removeCallbacks(skipButtonTimeout)

@@ -9,7 +9,6 @@ import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import org.jellyfin.sdk.model.api.MediaSegmentType
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class SettingsPlayerFragment : PreferenceFragmentCompat() {
@@ -29,7 +28,10 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         // Media Segments - Skip Button
         val buttonSkipTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_skip_button_type")
 
-        buttonSkipTypePreference?.entryValues = MediaSegmentType.entries.map { it.serialName }.toTypedArray()
+        buttonSkipTypePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+            buttonSkipTypePreference.summary = createSummary(newValue as Set<*>)
+            true
+        }
         findPreference<EditTextPreference>("pref_player_media_segments_skip_button_duration")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
@@ -38,16 +40,35 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         val autoSkipPreference = findPreference<ListPreference>("pref_player_media_segments_auto_skip")
         val autoSkipTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_auto_skip_type")
 
-        autoSkipTypePreference?.entryValues = MediaSegmentType.entries.map { it.serialName }.toTypedArray()
+        autoSkipTypePreference?.isEnabled = autoSkipPreference?.value != "never" // Set initial state based on default value
         autoSkipPreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
             val isEnabled = newValue != "never" // Enable if value is not "never"
             autoSkipTypePreference?.isEnabled = isEnabled
             true
         }
-        autoSkipTypePreference?.isEnabled = autoSkipPreference?.value != "never" // Set initial state based on default value
+        autoSkipTypePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+            autoSkipTypePreference.summary = createSummary(newValue as Set<*>)
+            true
+        }
 
         findPreference<EditTextPreference>("pref_player_media_segments_next_episode_threshold")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
+        }
+    }
+
+    private val valueToDisplayMap: Map<String, String> by lazy {
+        val values = resources.getStringArray(CoreR.array.media_segments_type_values)
+        val displays = resources.getStringArray(CoreR.array.media_segments_type)
+        values.zip(displays).toMap()
+    }
+
+    private fun createSummary(selectedValues: Set<*>): String {
+        return if (selectedValues.isEmpty()) {
+            getString(CoreR.string.media_segments_type_summary_none)
+        } else {
+            selectedValues.map { value ->
+                valueToDisplayMap[value] ?: value
+            }.joinToString(", ")
         }
     }
 }
