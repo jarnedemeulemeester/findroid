@@ -102,5 +102,6 @@
     <string name="unmark_as_played">Unmark as played</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="none">None</string>
     <string name="not_set">Not set</string>
 </resources>
