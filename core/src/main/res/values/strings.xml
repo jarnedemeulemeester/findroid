@@ -118,6 +118,7 @@
     <string name="sort_by_options_3">Date Added</string>
     <string name="sort_by_options_4">Date Played</string>
     <string name="sort_by_options_5">Release Date</string>
+    <string name="sort_by_options_6">Random</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
