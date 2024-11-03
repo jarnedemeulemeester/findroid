@@ -53,8 +53,4 @@
         <item>COMMERCIAL</item>
         <item>UNKNOWN</item>
     </string-array>
-    <string-array name="media_segments_type_default">
-        <item>INTRO</item>
-        <item>OUTRO</item>
-    </string-array>
 </resources>

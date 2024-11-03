@@ -26,12 +26,12 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         }
 
         // Media Segments - Skip Button
-        val buttonSkipTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_skip_button_type")
+        val skipButtonTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_skip_button_type")
 
-        buttonSkipTypePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-            buttonSkipTypePreference.summary = createSummary(newValue as Set<*>)
-            true
+        skipButtonTypePreference?.let {
+            setupMultiSelectPreference(it)
         }
+
         findPreference<EditTextPreference>("pref_player_media_segments_skip_button_duration")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
@@ -40,19 +40,26 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         val autoSkipPreference = findPreference<ListPreference>("pref_player_media_segments_auto_skip")
         val autoSkipTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_auto_skip_type")
 
-        autoSkipTypePreference?.isEnabled = autoSkipPreference?.value != "never" // Set initial state based on default value
+        autoSkipTypePreference?.let {
+            setupMultiSelectPreference(it)
+            it.isEnabled = autoSkipPreference?.value != "never"
+        }
         autoSkipPreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
             val isEnabled = newValue != "never" // Enable if value is not "never"
             autoSkipTypePreference?.isEnabled = isEnabled
             true
         }
-        autoSkipTypePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-            autoSkipTypePreference.summary = createSummary(newValue as Set<*>)
-            true
-        }
 
         findPreference<EditTextPreference>("pref_player_media_segments_next_episode_threshold")?.setOnBindEditTextListener { editText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
+        }
+    }
+
+    private fun setupMultiSelectPreference(preference: MultiSelectListPreference) {
+        preference.summary = createSummary(preference.values)
+        preference.setOnPreferenceChangeListener { _, newValue ->
+            preference.summary = createSummary(newValue as Set<*>)
+            true
         }
     }
 
