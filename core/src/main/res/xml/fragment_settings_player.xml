@@ -105,6 +105,7 @@
             app:widgetLayout="@layout/preference_material3_switch" />
 
         <MultiSelectListPreference
+            app:defaultValue="@array/media_segments_type_default_values"
             app:dependency="pref_player_media_segments_skip_button"
             app:key="pref_player_media_segments_skip_button_type"
             app:title="@string/pref_player_media_segments_skip_button_type"
@@ -127,6 +128,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <MultiSelectListPreference
+            app:defaultValue="@array/media_segments_type_default_values"
             app:key="pref_player_media_segments_auto_skip_type"
             app:title="@string/pref_player_media_segments_auto_skip_type"
             app:entries="@array/media_segments_type"

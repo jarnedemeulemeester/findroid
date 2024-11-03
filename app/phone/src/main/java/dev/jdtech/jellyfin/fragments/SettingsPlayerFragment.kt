@@ -29,7 +29,7 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         val skipButtonTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_skip_button_type")
 
         skipButtonTypePreference?.let {
-            setupMultiSelectPreference(it)
+            setupMultiSelectPreference(it, valueToDisplaySegmentsType)
         }
 
         findPreference<EditTextPreference>("pref_player_media_segments_skip_button_duration")?.setOnBindEditTextListener { editText ->
@@ -41,7 +41,7 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         val autoSkipTypePreference = findPreference<MultiSelectListPreference>("pref_player_media_segments_auto_skip_type")
 
         autoSkipTypePreference?.let {
-            setupMultiSelectPreference(it)
+            setupMultiSelectPreference(it, valueToDisplaySegmentsType)
             it.isEnabled = autoSkipPreference?.value != "never"
         }
         autoSkipPreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
@@ -55,23 +55,23 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun setupMultiSelectPreference(preference: MultiSelectListPreference) {
-        preference.summary = createSummary(preference.values)
-        preference.setOnPreferenceChangeListener { _, newValue ->
-            preference.summary = createSummary(newValue as Set<*>)
-            true
-        }
-    }
-
-    private val valueToDisplayMap: Map<String, String> by lazy {
+    private val valueToDisplaySegmentsType: Map<String, String> by lazy {
         val values = resources.getStringArray(CoreR.array.media_segments_type_values)
         val displays = resources.getStringArray(CoreR.array.media_segments_type)
         values.zip(displays).toMap()
     }
 
-    private fun createSummary(selectedValues: Set<*>): String {
+    private fun setupMultiSelectPreference(preference: MultiSelectListPreference, valueToDisplayMap: Map<String, String>) {
+        preference.summary = createSummary(preference.values, valueToDisplayMap)
+        preference.setOnPreferenceChangeListener { _, newValue ->
+            preference.summary = createSummary(newValue as Set<*>, valueToDisplayMap)
+            true
+        }
+    }
+
+    private fun createSummary(selectedValues: Set<*>, valueToDisplayMap: Map<String, String>): String {
         return if (selectedValues.isEmpty()) {
-            getString(CoreR.string.media_segments_type_summary_none)
+            getString(CoreR.string.multi_select_preference_summary_none)
         } else {
             selectedValues.map { value ->
                 valueToDisplayMap[value] ?: value
