@@ -183,12 +183,12 @@
     <string name="no_servers_found">No se encontraron servidores</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>
     <string name="picture_in_picture_gesture">Gesto de pantalla en pantalla</string>
-    <string name="select_user">Elija usuario</string>
+    <string name="select_user">Seleccione usuario</string>
     <string name="live_tv">TV en vivo</string>
     <string name="play">Reproducir</string>
-    <string name="watch_trailer">Ver trailer</string>
+    <string name="watch_trailer">Mirar avances</string>
     <string name="mark_as_played">Marcar como reproducido</string>
-    <string name="unmark_as_played">Desmarca como reproducido</string>
+    <string name="unmark_as_played">Desmarcar como reproducido</string>
     <string name="add_to_favorites">Agregar a favoritos</string>
     <string name="remove_from_favorites">Quitar de favoritos</string>
     <string name="pref_player_gestures_seek_trickplay">Previsualizaciones al navegar en la barra de progreso</string>
