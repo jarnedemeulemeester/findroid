@@ -189,7 +189,6 @@ constructor(
             )
             player.prepare()
             player.play()
-            mediaItemSegments = MediaItemSegments(items[currentMediaItemIndex].itemId, emptyList())
             pollPosition(player)
         }
     }
@@ -241,14 +240,7 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
-        val segmentCheckRunnable = object : Runnable {
-            override fun run() {
-                updateCurrentSegment()
-                handler.postDelayed(this, 1000L)
-            }
-        }
         handler.post(playbackProgressRunnable)
-        handler.post(segmentCheckRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -283,6 +275,13 @@ constructor(
                         }
                         if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) || appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip != "never")) {
                             getSegments(item)
+                            val segmentCheckRunnable = object : Runnable {
+                                override fun run() {
+                                    updateCurrentSegment()
+                                    handler.postDelayed(this, 1000L)
+                                }
+                            }
+                            handler.post(segmentCheckRunnable)
                         }
                     }
             } catch (e: Exception) {
