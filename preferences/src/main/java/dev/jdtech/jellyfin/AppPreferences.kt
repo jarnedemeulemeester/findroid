@@ -84,7 +84,7 @@ constructor(
 
     // Player - Media Segments
     val playerMediaSegmentsSkipButton get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON, true)
-    val playerMediaSegmentsSkipButtonType get() = sharedPreferences.getStringSet(Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_TYPE, setOf("INTRO", "OUTRO"))
+    val playerMediaSegmentsSkipButtonType get() = sharedPreferences.getStringSet(Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_TYPE, emptySet())
     val playerMediaSegmentsSkipButtonDuration get() = sharedPreferences.getString(
         Constants.PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION,
         Constants.DEFAULT_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION.toString(),

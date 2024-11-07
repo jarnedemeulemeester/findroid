@@ -83,7 +83,12 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
-    private var currentSegments: List<FindroidSegment> = emptyList()
+    private lateinit var mediaItemSegments: MediaItemSegments
+
+    data class MediaItemSegments(
+        val itemId: UUID,
+        val segments: List<FindroidSegment>,
+    )
 
     var playbackSpeed: Float = 1f
 
@@ -184,6 +189,7 @@ constructor(
             )
             player.prepare()
             player.play()
+            mediaItemSegments = MediaItemSegments(items[currentMediaItemIndex].itemId, emptyList())
             pollPosition(player)
         }
     }
@@ -388,17 +394,17 @@ constructor(
 
     private suspend fun getSegments(item: PlayerItem) {
         jellyfinRepository.getSegments(item.itemId).let { segments ->
-            currentSegments = segments
+            mediaItemSegments = MediaItemSegments(item.itemId, segments)
         }
     }
 
     private fun updateCurrentSegment() {
-        if (currentSegments.isEmpty()) {
+        if (mediaItemSegments.segments.isEmpty() || player.currentMediaItem?.mediaId != mediaItemSegments.itemId.toString()) {
             return
         }
         val milliSeconds = player.currentPosition
 
-        val currentSegment = currentSegments.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
+        val currentSegment = mediaItemSegments.segments.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
         _uiState.update { it.copy(currentSegment = currentSegment) }
     }
