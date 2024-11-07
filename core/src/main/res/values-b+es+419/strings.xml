@@ -195,4 +195,5 @@
     <string name="pref_player_gestures_seek_trickplay_summary">Muestra previsualizaciones al navegar en la barra de progreso</string>
     <string name="player_gestures_chapter_skip">Gesto para cambiar capítulos</string>
     <string name="player_gestures_chapter_skip_summary">Toque prolongado en el lado izquierdo/derecho para saltar capítulos (sobreescribe el gesto de velocidad x2)</string>
+    <string name="sort_by_options_6">Aleatorio</string>
 </resources>
