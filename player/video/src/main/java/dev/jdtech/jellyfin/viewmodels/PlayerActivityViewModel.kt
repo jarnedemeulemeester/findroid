@@ -83,10 +83,10 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
-    private lateinit var mediaItemSegments: MediaItemSegments
+    private var mediaItemSegments = MediaItemSegments(null, emptyList())
 
     data class MediaItemSegments(
-        val itemId: UUID,
+        val itemId: UUID?,
         val segments: List<FindroidSegment>,
     )
 
@@ -240,6 +240,15 @@ constructor(
                 handler.postDelayed(this, 5000L)
             }
         }
+        val segmentCheckRunnable = object : Runnable {
+            override fun run() {
+                updateCurrentSegment()
+                handler.postDelayed(this, 1000L)
+            }
+        }
+        if (appPreferences.playerMediaSegmentsSkipButton || appPreferences.playerMediaSegmentsAutoSkip != "never") {
+            handler.post(segmentCheckRunnable)
+        }
         handler.post(playbackProgressRunnable)
     }
 
@@ -275,13 +284,6 @@ constructor(
                         }
                         if (appPreferences.playerMediaSegmentsSkipButton || appPreferences.playerMediaSegmentsAutoSkip != "never") {
                             getSegments(item)
-                            val segmentCheckRunnable = object : Runnable {
-                                override fun run() {
-                                    updateCurrentSegment()
-                                    handler.postDelayed(this, 1000L)
-                                }
-                            }
-                            handler.post(segmentCheckRunnable)
                         }
                     }
             } catch (e: Exception) {
