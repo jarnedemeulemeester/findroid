@@ -184,15 +184,15 @@ class PlayerActivity : BasePlayerActivity() {
                                     // Button text
                                     skipSegmentButton.text = when (segment.type) {
                                         FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        FindroidSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_credits) }
+                                        FindroidSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_outro) }
                                         FindroidSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
                                         FindroidSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
                                         FindroidSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
+                                        FindroidSegmentType.UNKNOWN -> getString(VideoR.string.player_controls_skip_unknown)
                                         else -> ""
                                     }
                                     // Button visibility
-                                    skipSegmentButton.isVisible =
-                                        segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                    skipSegmentButton.isVisible = !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         showSkipButton = true
                                         handler.removeCallbacks(skipButtonTimeout)

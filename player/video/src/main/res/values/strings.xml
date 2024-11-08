@@ -11,14 +11,15 @@
     <string name="player_controls_play_pause">Play pause</string>
     <string name="player_controls_rewind">Rewind</string>
     <string name="player_controls_exit">Exit player</string>
-    <string name="player_controls_skip_intro">Skip intro</string>
-    <string name="player_controls_skip_credits">Skip credits</string>
     <string name="player_controls_fast_forward">Fast forward</string>
     <string name="player_controls_skip_forward">Skip forward</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Progress bar</string>
+    <string name="player_controls_skip_intro">Skip intro</string>
+    <string name="player_controls_skip_outro">Skip credits</string>
+    <string name="player_controls_next_episode">Next episode</string>
     <string name="player_controls_skip_recap">Skip recap</string>
     <string name="player_controls_skip_preview">Skip preview</string>
     <string name="player_controls_skip_commercial">Skip commercial</string>
-    <string name="player_controls_next_episode">Next episode</string>
+    <string name="player_controls_skip_unknown">Skip</string>
 </resources>
