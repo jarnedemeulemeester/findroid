@@ -2,6 +2,7 @@
 <resources>
     <string-array name="sort_by_options">
         <item>@string/sort_by_options_0</item>
+        <item>@string/sort_by_options_6</item>
         <item>@string/sort_by_options_1</item>
         <item>@string/sort_by_options_2</item>
         <item>@string/sort_by_options_3</item>
