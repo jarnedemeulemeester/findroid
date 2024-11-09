@@ -152,6 +152,7 @@
     <string name="pref_player_media_segments_skip_button_duration">Seconds to display the skip button</string>
     <string name="pref_player_media_segments_auto_skip">Auto skip</string>
     <string name="pref_player_media_segments_auto_skip_type">Segment type to auto skip</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Skip to next episode threshold (ms)</string>
     <string name="media_segments_auto_skip_never">never</string>
     <string name="media_segments_auto_skip_pip">only in pip mode</string>
     <string name="media_segments_auto_skip_always">always</string>
@@ -161,7 +162,6 @@
     <string name="media_segments_type_recap">Recap</string>
     <string name="media_segments_type_outro">Credits</string>
     <string name="media_segments_type_intro">Intro</string>
-    <string name="media_segments_next_episode_threshold">Skip to next episode threshold (ms)</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Display preview images while scrubbing</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>
