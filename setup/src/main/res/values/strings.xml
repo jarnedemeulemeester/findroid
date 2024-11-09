@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Welcome to Findroid</string>
+    <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
+    <string name="welcome_btn_continue">Continue</string>
+    <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
+    <string name="discover_server_title">Discover server</string>
+    <string name="discover_server_no_servers_found">No servers were found</string>
+    <string name="discover_server_manual_add">If your server is not found, you can enter it manually</string>
+    <string name="discover_server_btn_manual_add">Manually add server</string>
+</resources>

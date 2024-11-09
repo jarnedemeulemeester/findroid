@@ -1,0 +1,176 @@
+package dev.jdtech.jellyfin.presentation.setup.addserver
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.presentation.setup.components.LoadingButton
+import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerAction
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerEvent
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.core.R as CoreR
+
+@Composable
+fun AddServerScreen(
+    onSuccess: () -> Unit,
+    onBackClick: () -> Unit,
+    viewModel: AddServerViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is AddServerEvent.Success -> {
+                onSuccess()
+            }
+        }
+    }
+
+    AddServerScreenLayout(
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is AddServerAction.OnBackClick -> onBackClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        },
+    )
+}
+
+@Composable
+private fun AddServerScreenLayout(
+    state: AddServerState,
+    onAction: (AddServerAction) -> Unit,
+) {
+    val context = LocalContext.current
+    val scrollState = rememberScrollState()
+    var serverAddress by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
+
+    RootLayout {
+        IconButton(
+            onClick = { onAction(AddServerAction.OnBackClick) },
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+        }
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(horizontal = 24.dp)
+                .widthIn(max = 480.dp)
+                .align(Alignment.Center)
+                .verticalScroll(scrollState),
+        ) {
+            Icon(
+                painter = painterResource(id = CoreR.drawable.ic_banner),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .width(250.dp)
+                    .align(Alignment.CenterHorizontally),
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = stringResource(CoreR.string.add_server), style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedTextField(
+                value = serverAddress,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_server),
+                        contentDescription = null,
+                    )
+                },
+                onValueChange = { serverAddress = it },
+                label = {
+                    Text(
+                        text = stringResource(CoreR.string.edit_text_server_address_hint),
+                    )
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Uri,
+                    imeAction = ImeAction.Go,
+                ),
+                keyboardActions = KeyboardActions(
+                    onGo = { doConnect() },
+                ),
+                isError = state.error != null,
+                enabled = !state.isLoading,
+                supportingText = {
+                    if (state.error != null) {
+                        Text(
+                            text = state.error!!.joinToString {
+                                it.asString(
+                                    context.resources,
+                                )
+                            },
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            LoadingButton(
+                text = stringResource(CoreR.string.button_connect),
+                onClick = { doConnect() },
+                isLoading = state.isLoading,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Preview
+@Composable
+private fun AddServerScreenLayoutPreview() {
+    FindroidTheme {
+        AddServerScreenLayout(
+            state = AddServerState(),
+            onAction = {},
+        )
+    }
+}

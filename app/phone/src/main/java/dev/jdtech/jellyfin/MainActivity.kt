@@ -1,35 +1,28 @@
 package dev.jdtech.jellyfin
 
 import android.os.Bundle
-import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUiSaveStateControl
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.compose.rememberNavController
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.databinding.ActivityMainBinding
+import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -41,30 +34,42 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    private lateinit var navController: NavController
+    // private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        scheduleUserDataSync()
-        applyTheme()
-        setupActivity()
-
-        // Temp fix insets because SDK 35 enables edge to edge by default. This will probably be removed once we move to compose
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val bars = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars()
-                    or WindowInsetsCompat.Type.displayCutout(),
-            )
-            v.updatePadding(
-                left = bars.left,
-                top = bars.top,
-                right = bars.right,
-                bottom = bars.bottom,
-            )
-            WindowInsetsCompat.CONSUMED
+        enableEdgeToEdge()
+        setContent {
+            FindroidTheme {
+                val navController = rememberNavController()
+                NavigationRoot(
+                    navController = navController,
+                    hasServers = false,
+                    isLoggedIn = false,
+                )
+            }
         }
+//        scheduleUserDataSync()
+//        applyTheme()
+//        setupActivity()
+
+//        // Temp fix insets because SDK 35 enables edge to edge by default. This will probably be removed once we move to compose
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+//            val bars = insets.getInsets(
+//                WindowInsetsCompat.Type.systemBars()
+//                    or WindowInsetsCompat.Type.displayCutout(),
+//            )
+//            v.updatePadding(
+//                left = bars.left,
+//                top = bars.top,
+//                right = bars.right,
+//                bottom = bars.bottom,
+//            )
+//            WindowInsetsCompat.CONSUMED
+//        }
     }
 
+/*
     @OptIn(NavigationUiSaveStateControl::class)
     private fun setupActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -123,6 +128,7 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
     }
+*/
 
     private fun checkServersEmpty(graph: NavGraph, onServersEmpty: () -> Unit = {}) {
         if (!viewModel.startDestinationChanged) {

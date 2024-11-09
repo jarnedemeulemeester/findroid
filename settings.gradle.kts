@@ -9,6 +9,7 @@ include(":data")
 include(":preferences")
 include(":player:core")
 include(":player:video")
+include(":setup")
 
 pluginManagement {
     repositories {
