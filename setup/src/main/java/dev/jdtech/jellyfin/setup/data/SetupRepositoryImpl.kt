@@ -23,6 +23,7 @@ import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 import timber.log.Timber
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 class SetupRepositoryImpl(
     private val jellyfinApi: JellyfinApi,
@@ -47,7 +48,7 @@ class SetupRepositoryImpl(
     override suspend fun connectToServer(address: String): Server {
         // Check if address is not blank
         if (address.isBlank()) {
-            throw ExceptionUiText(UiText.StringResource(CoreR.string.add_server_error_empty_address))
+            throw ExceptionUiText(UiText.StringResource(SetupR.string.add_server_error_empty_address))
         }
 
         val candidates = jellyfinApi.jellyfin.discovery.getAddressCandidates(address)
@@ -78,14 +79,14 @@ class SetupRepositoryImpl(
                 throw ExceptionUiTexts(createIssuesString(okServer))
             }
             else -> {
-                throw ExceptionUiText(UiText.StringResource(CoreR.string.add_server_error_not_found))
+                throw ExceptionUiText(UiText.StringResource(SetupR.string.add_server_error_not_found))
             }
         }
     }
 
     private suspend fun saveServerInDatabase(recommendedServerInfo: RecommendedServerInfo): Server {
         val serverInfo = recommendedServerInfo.systemInfo.getOrNull()
-            ?: throw ExceptionUiText(UiText.StringResource(CoreR.string.add_server_error_no_id))
+            ?: throw ExceptionUiText(UiText.StringResource(SetupR.string.add_server_error_no_id))
 
         Timber.d("Connecting to server: ${serverInfo.serverName}")
 
@@ -153,16 +154,16 @@ class SetupRepositoryImpl(
         return server.issues.map {
             when (it) {
                 is RecommendedServerIssue.OutdatedServerVersion -> {
-                    UiText.StringResource(CoreR.string.add_server_error_outdated, it.version)
+                    UiText.StringResource(SetupR.string.add_server_error_outdated, it.version)
                 }
                 is RecommendedServerIssue.InvalidProductName -> {
-                    UiText.StringResource(CoreR.string.add_server_error_not_jellyfin, it.productName ?: "")
+                    UiText.StringResource(SetupR.string.add_server_error_not_jellyfin, it.productName ?: "")
                 }
                 is RecommendedServerIssue.UnsupportedServerVersion -> {
-                    UiText.StringResource(CoreR.string.add_server_error_version, it.version)
+                    UiText.StringResource(SetupR.string.add_server_error_version, it.version)
                 }
                 is RecommendedServerIssue.SlowResponse -> {
-                    UiText.StringResource(CoreR.string.add_server_error_slow, it.responseTime)
+                    UiText.StringResource(SetupR.string.add_server_error_slow, it.responseTime)
                 }
                 else -> {
                     UiText.StringResource(CoreR.string.unknown_error)

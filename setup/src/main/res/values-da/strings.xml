@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Tilføj server</string>
+   <string name="add_server_btn_connect">Forbind</string>
+   <string name="add_server_error_empty_address">Tom server-adresse</string>
+   <string name="add_server_error_no_id">Server har ikke noget id. Der ser ud til at være noget galt med serveren</string>
+   <string name="add_server_error_not_found">Server ikke fundet</string>
+   <string name="add_server_error_not_jellyfin">Ikke en Jellyfin-server: %1$s</string>
+   <string name="add_server_error_outdated">Serverversion outdated: %1$s. Opdater venligst din server</string>
+   <string name="add_server_error_slow">Server er for langsom til at svare: %1$s</string>
+   <string name="add_server_error_version">Ikke-understøttet serverversion: %1$s. Opdater venligst din server</string>
+   <string name="edit_text_password_hint">Adgangskode</string>
+   <string name="edit_text_server_address_hint">Server-adresse</string>
+   <string name="edit_text_username_hint">Brugernavn</string>
+   <string name="login">Login</string>
+   <string name="login_btn_login">Login</string>
+   <string name="login_error_wrong_username_password">Forkert brugernavn eller adgangskode</string>
+</resources>

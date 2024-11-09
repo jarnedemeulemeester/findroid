@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin横幅</string>
-    <string name="add_server">添加服务器</string>
     <string name="writers">作者</string>
-    <string name="add_server_error_not_jellyfin">不是Jellyfin服务器：%1$s</string>
-    <string name="add_server_error_empty_address">服务器地址为空</string>
-    <string name="add_server_error_not_found">未找到服务器</string>
-    <string name="login">登录</string>
     <string name="select_server">选择服务器</string>
-    <string name="edit_text_username_hint">用户名</string>
-    <string name="edit_text_password_hint">密码</string>
-    <string name="button_connect">连接</string>
     <string name="remove_server">删除服务器</string>
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
@@ -84,22 +76,15 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分钟</string>
     <string name="select_video_version_title">选择版本</string>
-    <string name="add_server_error_no_id">服务器没有id，它可能出了问题</string>
     <string name="trailer_button_description">观看宣传片</string>
     <string name="mpv_player_summary">使用实验性的mpv播放器播放视频。mpv支持更多视频、音频和字幕格式。</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">第三方原生Jellyfin app</string>
-    <string name="login_error_wrong_username_password">用户名或密码错误</string>
     <string name="latest_library">最新%1$s</string>
     <string name="player_gestures_vb_summary">在屏幕右侧上下划动来调整音量，在屏幕左侧上下划动来调整亮度</string>
-    <string name="add_server_error_outdated">服务器版本过旧：%1$s。请更新您的服务器</string>
-    <string name="edit_text_server_address_hint">服务器地址</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>
-    <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级您的服务器</string>
-    <string name="button_login">登录</string>
     <string name="settings_use_cache_summary">把图片缓存到磁盘上来加快加载时间。将会在应用程序重启后生效。</string>
-    <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
     <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
     <string name="settings_cache_size">缓存大小 (MB)</string>
     <string name="title_home">首页</string>
@@ -134,7 +119,6 @@
     <string name="add_address">添加地址</string>
     <string name="add_server_address">添加服务器地址</string>
     <string name="add">添加</string>
-    <string name="quick_connect">快速连接</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
     <string name="pref_player_intro_skipper_summary">需要在服务器上安装 jumoog 的 Intro Skipper 插件</string>
     <string name="player_gestures_seek">搜索手势</string>

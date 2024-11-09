@@ -83,9 +83,9 @@ class ServerSelectFragment : Fragment() {
     }
 
     private fun navigateToAddServerFragment() {
-        findNavController().safeNavigate(
-            ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment(),
-        )
+//        findNavController().safeNavigate(
+//            ServerSelectFragmentDirections.actionServerSelectFragmentToAddServerFragment(),
+//        )
     }
 
     private fun navigateToMainActivity() {
@@ -93,6 +93,6 @@ class ServerSelectFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().safeNavigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
+        // findNavController().safeNavigate(ServerSelectFragmentDirections.actionServerSelectFragmentToLoginFragment())
     }
 }

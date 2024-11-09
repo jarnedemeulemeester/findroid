@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
         if (!viewModel.startDestinationChanged) {
             val numOfServers = database.getServersCount()
             if (numOfServers < 1) {
-                graph.setStartDestination(R.id.addServerFragment)
+                // graph.setStartDestination(R.id.addServerFragment)
                 viewModel.startDestinationChanged = true
                 onServersEmpty()
             }

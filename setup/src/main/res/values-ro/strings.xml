@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Adaugă un server</string>
+    <string name="login_btn_quick_connect">Conectare rapidă</string>
+    <string name="add_server_error_version">Versiunea serverului nu este suportată: %1$s. Va rugăm să actualizați serverul dumneavoastră</string>
+</resources>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server">Sunucu ekle</string>
-    <string name="login">Giriş yap</string>
-    <string name="edit_text_server_address_hint">Sunucu adresi</string>
-    <string name="edit_text_password_hint">Şifre</string>
-    <string name="button_connect">Bağlan</string>
-    <string name="button_login">Giriş yap</string>
     <string name="remove_server">Sunucuyu kaldır</string>
     <string name="remove_user">Kullanıcıyı kaldır</string>
     <string name="title_download">İndirilenler</string>
@@ -33,12 +27,10 @@
     <string name="sort_by_options_0">Başlık</string>
     <string name="add_user">Kullanıcı ekle</string>
     <string name="subtitle">Altyazılar</string>
-    <string name="add_server_error_not_found">Sunucu bulunamadı</string>
     <string name="title_settings">Ayarlar</string>
     <string name="select_server">Sunucu seç</string>
     <string name="theme">Tema</string>
     <string name="share">Paylaş</string>
-    <string name="edit_text_username_hint">Kullanıcı adı</string>
     <string name="seasons">Sezonlar</string>
     <string name="libraries">Kütüphaneler</string>
     <string name="settings_category_device">Cihaz</string>
@@ -46,7 +38,6 @@
     <string name="search">Ara</string>
     <string name="about">Hakkında</string>
     <string name="player_brightness_remember">Parlaklık seviyesini hatırla</string>
-    <string name="login_error_wrong_username_password">Hatalı kullanıcı adı veya şifre</string>
     <string name="sort_by_options_5">Çıkış Tarihi</string>
     <string name="settings_category_servers">Sunucular</string>
     <string name="movies_label">Filmler</string>
@@ -54,7 +45,6 @@
     <string name="add">Ekle</string>
     <string name="users">Kullanıcılar</string>
     <string name="settings_preferred_subtitle_language">Tercih edilen altyazı dili</string>
-    <string name="add_server_error_version">Desteklenmeyen sunucu sürümü: %1$s. Lütfen sunucunuzu güncelleyin</string>
     <string name="latest_library">En son %1$s</string>
     <string name="settings_category_player">Oynatıcı</string>
     <string name="settings_category_appearance">Görünüş</string>
@@ -77,13 +67,9 @@
     <string name="remove_from_favorites">Favorilerden çıkar</string>
     <string name="add_to_favorites">Favorilere ekle</string>
     <string name="select_user">Kullanıcı seç</string>
-    <string name="add_server_error_empty_address">Boş sunucu adresi</string>
     <string name="theme_system">Sistemi takip et</string>
     <string name="app_description">Üçüncü parti yerel Jellyfin uygulaması</string>
     <string name="jellyfin_banner">Jellyfin afişi</string>
-    <string name="add_server_error_outdated">Sunucu sürümü güncel değil: %1$s. Lütfen sunucunuzu güncelleyin</string>
-    <string name="add_server_error_not_jellyfin">Jellyfin sunucusu değil: %1$s</string>
-    <string name="add_server_error_slow">Sunucu yanıt vermekte çok yavaş: %1$s</string>
     <string name="remove_server_dialog_text">%1$s sunucusunu kaldırmak istediğinizden emin misiniz</string>
     <string name="remove_user_dialog_text">%1$s kullanıcısını kaldırmak istediğinizden emin misiniz</string>
     <string name="remove_server_address">Sunucu adresini kaldır</string>

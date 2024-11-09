@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Thêm máy chủ</string>
+    <string name="add_server_error_not_jellyfin">Không phải là máy chủ Jellyfin: %1$s</string>
+    <string name="add_server_error_slow">Máy chủ phản hồi quá chậm: %1$s</string>
+    <string name="add_server_error_not_found">Máy chủ không tồn tại</string>
+    <string name="login">Đăng nhập</string>
+    <string name="login_error_wrong_username_password">Sai tên người dùng hoặc mật khẩu</string>
+    <string name="edit_text_server_address_hint">Địa chỉ máy chủ</string>
+    <string name="edit_text_username_hint">Tên người dùng</string>
+    <string name="edit_text_password_hint">Mật khẩu</string>
+    <string name="add_server_btn_connect">Kết nối</string>
+    <string name="login_btn_login">Đăng nhập</string>
+    <string name="login_btn_quick_connect">Kết nối nhanh</string>
+    <string name="add_server_error_outdated">Phiên bản của máy chủ đã lỗi thời: %1$s. Vui lòng cập nhật máy chủ</string>
+    <string name="add_server_error_version">Không hỗ trợ phiên bản máy chủ này: %1$s. Vui lòng cập nhật máy chủ</string>
+    <string name="add_server_error_empty_address">Địa chỉ máy chủ rỗng</string>
+    <string name="add_server_error_no_id">Máy chủ không có id, đã có vấn đề xảy ra từ phía máy chủ</string>
+</resources>

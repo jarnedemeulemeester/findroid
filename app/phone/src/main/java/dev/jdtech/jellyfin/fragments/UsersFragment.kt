@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppNavigationDirections
 import dev.jdtech.jellyfin.adapters.UserListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentUsersBinding
 import dev.jdtech.jellyfin.dialogs.DeleteUserDialogFragment
@@ -91,9 +90,9 @@ class UsersFragment : Fragment() {
     }
 
     private fun navigateToLoginFragment() {
-        findNavController().safeNavigate(
-            AppNavigationDirections.actionGlobalLoginFragment(),
-        )
+        // findNavController().safeNavigate(
+        //     AppNavigationDirections.actionGlobalLoginFragment(),
+        // )
     }
 
     private fun navigateToMainActivity() {

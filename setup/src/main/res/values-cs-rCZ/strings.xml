@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Přidat server</string>
+   <string name="add_server_btn_connect">Připojit</string>
+   <string name="add_server_error_empty_address">Prázdná adresa serveru</string>
+   <string name="add_server_error_no_id">Server nemá žádné ID, zdá se, že se serverem není něco v pořádku</string>
+   <string name="add_server_error_not_found">Server nebyl nalezen</string>
+   <string name="add_server_error_not_jellyfin">Nejedná se o Jellyfin server: %1$s</string>
+   <string name="add_server_error_outdated">Zastaralá verze serveru: %1$s. Prosím aktualizujte Váš server</string>
+   <string name="add_server_error_slow">Serveru trvalo příliš dlouho odpovědět: %1$s</string>
+   <string name="add_server_error_version">Nepodporovaná verze serveru: %1$s. Prosím aktualizujte Váš server</string>
+   <string name="edit_text_password_hint">Heslo</string>
+   <string name="edit_text_server_address_hint">Adresa serveru</string>
+   <string name="edit_text_username_hint">Přihlašovací jméno</string>
+   <string name="login">Přihlásit</string>
+   <string name="login_btn_login">Přihlásit se</string>
+   <string name="login_btn_quick_connect">Rychlé připojení</string>
+   <string name="login_error_wrong_username_password">Nesprávné uživatelské jméno nebo heslo</string>
+</resources>

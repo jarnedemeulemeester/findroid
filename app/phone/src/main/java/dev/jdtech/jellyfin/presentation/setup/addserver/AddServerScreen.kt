@@ -45,6 +45,7 @@ import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun AddServerScreen(
@@ -112,7 +113,7 @@ private fun AddServerScreenLayout(
                     .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(CoreR.string.add_server), style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
                 value = serverAddress,
@@ -125,7 +126,7 @@ private fun AddServerScreenLayout(
                 onValueChange = { serverAddress = it },
                 label = {
                     Text(
-                        text = stringResource(CoreR.string.edit_text_server_address_hint),
+                        text = stringResource(SetupR.string.edit_text_server_address_hint),
                     )
                 },
                 singleLine = true,
@@ -154,7 +155,7 @@ private fun AddServerScreenLayout(
                 modifier = Modifier.fillMaxWidth(),
             )
             LoadingButton(
-                text = stringResource(CoreR.string.button_connect),
+                text = stringResource(SetupR.string.add_server_btn_connect),
                 onClick = { doConnect() },
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),

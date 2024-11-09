@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Server hinzufügen</string>
+   <string name="add_server_btn_connect">Verbinden</string>
+   <string name="add_server_error_empty_address">Leere Server Adresse</string>
+   <string name="add_server_error_no_id">Server hat keine ID. Irgendetwas mit dem Server scheint nicht in Ordnung zu sein</string>
+   <string name="add_server_error_not_found">Server wurde nicht gefunden</string>
+   <string name="add_server_error_not_jellyfin">Kein Jellyfin Server: %1$s</string>
+   <string name="add_server_error_outdated">Server Version ist veraltet: %1$s. Bitte aktualisiere deinen Server</string>
+   <string name="add_server_error_slow">Server braucht zu lange, um zu antworten: %1$s</string>
+   <string name="add_server_error_version">Nicht unterstützte Server Version: %1$s. Bitte aktualisiere deinen Server</string>
+   <string name="edit_text_password_hint">Passwort</string>
+   <string name="edit_text_server_address_hint">Server Adresse</string>
+   <string name="edit_text_username_hint">Benutzername</string>
+   <string name="login">Anmelden</string>
+   <string name="login_btn_login">Anmelden</string>
+   <string name="login_btn_quick_connect">Quick Connect</string>
+   <string name="login_error_wrong_username_password">Falscher Benutzername oder Passwort</string>
+</resources>

@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_version">גרסת שרת אינה נתמכת: %1$s. אנא עדכן את השרת שלך</string>
-    <string name="add_server_error_empty_address">כתובת שרת ריקה</string>
     <string name="app_description">אפליקציית צד-שלישי ל-Jellyfin</string>
     <string name="jellyfin_banner">באנר Jellyfin</string>
-    <string name="add_server_error_slow">השרת מגיב באיטיות: %1$s</string>
-    <string name="add_server_error_not_found">שרת לא נמצא</string>
-    <string name="add_server_error_no_id">לשרת אין מזהה, ככל הנראה משהו בשרת אינו תקין</string>
-    <string name="login">התחברות</string>
-    <string name="login_error_wrong_username_password">שם משתמש או סיסמה שגויים</string>
     <string name="select_server">בחר שרת</string>
-    <string name="edit_text_server_address_hint">כתובת שרת</string>
-    <string name="edit_text_username_hint">שם משתמש</string>
-    <string name="edit_text_password_hint">סיסמה</string>
-    <string name="button_connect">התחבר</string>
     <string name="remove_server">שרת מרוחק</string>
     <string name="remove_user">הסר משתמש</string>
     <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה להסיר את המשתמש %1$s</string>
@@ -111,7 +100,6 @@
     <string name="add_address">הוסף כתובת</string>
     <string name="add_server_address">הוסף כתובת שרת</string>
     <string name="add">הוסף</string>
-    <string name="quick_connect">חיבור מהיר</string>
     <string name="video">וידאו</string>
     <string name="audio">שמע</string>
     <string name="subtitle">כתוביות</string>
@@ -124,9 +112,6 @@
     <string name="subtitle_chip_text">כתוביות</string>
     <string name="temp">זמני</string>
     <string name="extra_info_summary">מציג מידע מפורט על שמע, וידאו וכתוביות</string>
-    <string name="add_server">הוסף שרת</string>
-    <string name="add_server_error_outdated">גרסת שרת מיושנת: %1$s. אנא עדכן את השרת שלך</string>
-    <string name="button_login">התחבר</string>
     <string name="remove_server_dialog_text">האם אתה בטוח שברצונך להסיר את השרת %1$s</string>
     <string name="title_home">בית</string>
     <string name="check_button_description">סמן כנצפה או לא נצפה</string>
@@ -138,7 +123,6 @@
     <string name="gestures">מחוות</string>
     <string name="player_gestures_vb">מחוות עוצמת שמע ובהירות</string>
     <string name="sort_by_options_5">תאריך שחרור</string>
-    <string name="add_server_error_not_jellyfin">לא שרת Jellyfin: %1$s</string>
     <string name="latest_library">%1$s שיצאו לאחרונה</string>
     <string name="settings_use_cache_title">מטמון תמונות</string>
     <string name="settings_use_cache_summary">שמור תמונות במטמון כדי להאיץ זמני טעינה. ייכנס לתוקף לאחר הפעלה מחדש של היישומון.</string>

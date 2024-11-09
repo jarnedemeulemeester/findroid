@@ -162,7 +162,7 @@ private fun AddServerScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = CoreR.string.button_connect),
+                            text = stringResource(id = CoreR.string.add_server_btn_connect),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }

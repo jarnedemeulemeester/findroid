@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_slow">Zbyt wolna odpowiedź serwera: %1$s</string>
+    <string name="add_server_error_empty_address">Pusty adres serwera</string>
+    <string name="add_server_error_not_found">Nie znaleziono serwera</string>
+    <string name="add_server_error_no_id">Serwer nie ma ID. Błędna konfiguracja serwera</string>
+    <string name="login">Zaloguj</string>
+    <string name="login_error_wrong_username_password">Błędna nazwa użytkownika lub hasło</string>
+    <string name="edit_text_server_address_hint">Adres serwera</string>
+    <string name="add_server">Dodaj serwer</string>
+    <string name="add_server_error_outdated">Przestarzała wersja serwera: %1$s. Zaktualizuj serwer</string>
+    <string name="add_server_error_not_jellyfin">To nie jest serwer Jellyfin: %1$s</string>
+    <string name="add_server_error_version">Niewspierana wersja serwera %1$s. Zaktualizuj serwer</string>
+    <string name="edit_text_password_hint">Hasło</string>
+    <string name="add_server_btn_connect">Połącz</string>
+    <string name="edit_text_username_hint">Użytkownik</string>
+    <string name="login_btn_quick_connect">Szybkie połączenie</string>
+    <string name="login_btn_login">Zaloguj</string>
+</resources>

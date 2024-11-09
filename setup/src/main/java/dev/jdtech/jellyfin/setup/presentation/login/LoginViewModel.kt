@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @HiltViewModel
 class LoginViewModel
@@ -66,7 +67,7 @@ constructor(
             } catch (e: Exception) {
                 val message =
                     if (e.message?.contains("401") == true) {
-                        UiText.StringResource(CoreR.string.login_error_wrong_username_password)
+                        UiText.StringResource(SetupR.string.login_error_wrong_username_password)
                     } else {
                         UiText.StringResource(
                             CoreR.string.unknown_error,

@@ -19,18 +19,8 @@
     <string name="genres">Genres</string>
     <string name="view_all">Tout afficher</string>
     <string name="writers">Réalisateurs</string>
-    <string name="add_server">Ajouter un serveur</string>
-    <string name="add_server_error_outdated">Version du serveur obsolète : %1$s. Veuillez mettre à jour le serveur</string>
-    <string name="add_server_error_slow">Le serveur est trop lent à répondre : %1$s</string>
     <string name="shows_label">Séries</string>
-    <string name="add_server_error_not_jellyfin">Ceci n\'est pas un serveur Jellyfin : %1$s</string>
-    <string name="add_server_error_empty_address">L\'adresse du serveur est vide</string>
-    <string name="add_server_error_not_found">Serveur introuvable</string>
     <string name="select_server">Choix du serveur</string>
-    <string name="edit_text_server_address_hint">Adresse du serveur</string>
-    <string name="edit_text_password_hint">Mot de passe</string>
-    <string name="button_connect">Connexion</string>
-    <string name="edit_text_username_hint">Nom d\'utilisateur</string>
     <string name="hide">Cacher</string>
     <string name="sort_by">Trier par</string>
     <string name="sort_order">Ordre de tri</string>
@@ -74,10 +64,6 @@
     <string name="latest_library">Derniers %1$s</string>
     <string name="search_hint">Rechercher…</string>
     <string name="jellyfin_banner">Bannière Jellyfin</string>
-    <string name="add_server_error_version">Version du serveur non supportée : %1$s. Veuillez mettre à jour le serveur</string>
-    <string name="login">Se connecter</string>
-    <string name="button_login">Authentification</string>
-    <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>
     <string name="check_button_description">Marquer comme vu / non vu</string>
     <string name="favorite_button_description">Favori</string>
     <string name="no_downloads">Vous n\'avez aucun téléchargement</string>
@@ -86,7 +72,6 @@
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="mpv_player_summary">Utiliser le lecteur MPV (expérimental). Ce lecteur supporte d\'avantage de codecs vidéos, audios et sous-titres.</string>
     <string name="app_description">Client natif officieux pour Jellyfin</string>
-    <string name="add_server_error_no_id">Le serveur n\'a pas d\'ID, quelque chose semble ne pas fonctionner correctement sur le serveur</string>
     <string name="image_description_poster">Affiche %1$s</string>
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="gestures">Gestes</string>
@@ -123,7 +108,6 @@
     <string name="remove_user">Supprimer l\'utilisateur</string>
     <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
     <string name="users">Utilisateurs</string>
-    <string name="quick_connect">Connexion rapide</string>
     <string name="pref_player_intro_skipper">Passer l\'introduction</string>
     <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de jumoog doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>

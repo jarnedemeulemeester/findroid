@@ -217,7 +217,7 @@ private fun LoginScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = CoreR.string.button_login),
+                            text = stringResource(id = CoreR.string.login_btn_login),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }

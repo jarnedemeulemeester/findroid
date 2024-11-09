@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_not_jellyfin">Geen Jellyfin server: %1$s</string>
-    <string name="add_server_error_version">Niet ondersteunde server versie: %1$s. Werk uw server bij</string>
-    <string name="add_server_error_slow">Server reageert te traag: %1$s</string>
-    <string name="add_server">Server toevoegen</string>
-    <string name="add_server_error_outdated">Server verouderd: %1$s. Werk uw server bij</string>
+
     <string name="app_description">Derde-partij Jellyfin app</string>
-    <string name="add_server_error_empty_address">Leeg server adres</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="add_server_error_not_found">Server niet gevonden</string>
-    <string name="login_error_wrong_username_password">Verkeerde gebruikersnaam of wachtwoord</string>
     <string name="select_server">Selecteer server</string>
-    <string name="edit_text_username_hint">Gebruikersnaam</string>
-    <string name="edit_text_password_hint">Wachtwoord</string>
-    <string name="button_connect">Verbinden</string>
     <string name="remove_server">Server verwijderen</string>
     <string name="remove">Verwijderen</string>
-    <string name="edit_text_server_address_hint">Server adres</string>
-    <string name="login">Inloggen</string>
-    <string name="button_login">Inloggen</string>
     <string name="title_favorite">Favorieten</string>
-    <string name="add_server_error_no_id">Server heeft geen id, er lijkt iets miss te zijn met de server</string>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Speler</string>
@@ -133,7 +119,6 @@
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
-    <string name="quick_connect">Snel verbinden</string>
     <string name="pref_player_intro_skipper_summary">Jumoog\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="subtitle">Ondertiteling</string>

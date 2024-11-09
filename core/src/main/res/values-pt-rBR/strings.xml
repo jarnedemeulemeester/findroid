@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_outdated">Versão do servidor desatualizada: %1$s. Por favor atualize seu servidor</string>
-    <string name="add_server_error_version">Versão do servidor não suportada: %1$s. Por favor atualize seu servidor</string>
-    <string name="add_server_error_slow">O servidor é lendo demais para responder: %1$s</string>
-    <string name="add_server_error_empty_address">Endereço de servidor vazio</string>
-    <string name="add_server_error_no_id">Servidor não possui id, algo parece errado como servidor</string>
-    <string name="login">Entrar</string>
-    <string name="login_error_wrong_username_password">Nome de usuário ou senha incorretos</string>
     <string name="select_server">Selecione o servidor</string>
-    <string name="edit_text_server_address_hint">Endereço do servidor</string>
-    <string name="edit_text_password_hint">Senha</string>
-    <string name="button_connect">Conectar</string>
-    <string name="button_login">Entrar</string>
     <string name="remove_server">Excluir servidor</string>
     <string name="remove">Excluir</string>
     <string name="cancel">Cancelar</string>
@@ -72,10 +61,6 @@
     <string name="image_description_poster">%1$s pôster</string>
     <string name="image_description_backdrop">%1$s imagem de fundo</string>
     <string name="gestures">Gestos</string>
-    <string name="add_server">Adicionar servidor</string>
-    <string name="add_server_error_not_jellyfin">Não é um servidor do jellyfin: %1$s</string>
-    <string name="add_server_error_not_found">Servidor não encontrado</string>
-    <string name="edit_text_username_hint">Nome de usuário</string>
     <string name="remove_server_dialog_text">Tem certeza que deseja excluir o servidor (%1$s)</string>
     <string name="check_button_description">Marcar como assistido ou não assistido</string>
     <string name="no_downloads">Você não tem nada baixado</string>
@@ -133,7 +118,6 @@
     <string name="settings_socket_timeout">Tempo limite do soquete (ms)</string>
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
-    <string name="quick_connect">Conexão Rápida</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do jumoog seja instalado no servidor</string>
     <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="video">Vídeo</string>

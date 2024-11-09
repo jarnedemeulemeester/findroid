@@ -2,20 +2,7 @@
 <resources>
     <string name="app_description">Neoficiální nativní Jellyfin aplikace</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
-    <string name="add_server">Přidat server</string>
-    <string name="add_server_error_outdated">Zastaralá verze serveru: %1$s. Prosím aktualizujte Váš server</string>
-    <string name="add_server_error_not_jellyfin">Nejedná se o Jellyfin server: %1$s</string>
-    <string name="add_server_error_version">Nepodporovaná verze serveru: %1$s. Prosím aktualizujte Váš server</string>
-    <string name="add_server_error_slow">Serveru trvalo příliš dlouho odpovědět: %1$s</string>
-    <string name="add_server_error_empty_address">Prázdná adresa serveru</string>
-    <string name="add_server_error_not_found">Server nebyl nalezen</string>
-    <string name="login">Přihlásit</string>
     <string name="select_server">Vybrat server</string>
-    <string name="edit_text_server_address_hint">Adresa serveru</string>
-    <string name="edit_text_username_hint">Přihlašovací jméno</string>
-    <string name="edit_text_password_hint">Heslo</string>
-    <string name="button_connect">Připojit</string>
-    <string name="button_login">Přihlásit se</string>
     <string name="remove_server">Odstranit server</string>
     <string name="remove_server_dialog_text">Určitě si přejete odstranit server %1$s</string>
     <string name="remove">Odstranit</string>
@@ -81,8 +68,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="stop_download">Zastavit stahování</string>
-    <string name="add_server_error_no_id">Server nemá žádné ID, zdá se, že se serverem není něco v pořádku</string>
-    <string name="login_error_wrong_username_password">Nesprávné uživatelské jméno nebo heslo</string>
     <string name="remove_user">Odebrat uživatele</string>
     <string name="remove_user_dialog_text">Jste si jistí, že chcete odebrat uživatele %1$s</string>
     <string name="close">Zavřít</string>
@@ -99,7 +84,6 @@
     <string name="sort_by_options_4">Datum přehrání</string>
     <string name="sort_by_options_3">Datum přidání</string>
     <string name="subtitles">Titulky</string>
-    <string name="quick_connect">Rychlé připojení</string>
     <string name="audio">Zvuk</string>
     <string name="subtitle">Titulky</string>
     <string name="amoled_theme">Černý motiv AMOLED</string>

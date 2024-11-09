@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_version">גרסת שרת אינה נתמכת: %1$s. אנא עדכן את השרת שלך</string>
+    <string name="add_server_error_empty_address">כתובת שרת ריקה</string>
+    <string name="add_server_error_slow">השרת מגיב באיטיות: %1$s</string>
+    <string name="add_server_error_not_found">שרת לא נמצא</string>
+    <string name="add_server_error_no_id">לשרת אין מזהה, ככל הנראה משהו בשרת אינו תקין</string>
+    <string name="login">התחברות</string>
+    <string name="login_error_wrong_username_password">שם משתמש או סיסמה שגויים</string>
+    <string name="edit_text_server_address_hint">כתובת שרת</string>
+    <string name="edit_text_username_hint">שם משתמש</string>
+    <string name="edit_text_password_hint">סיסמה</string>
+    <string name="login_btn_quick_connect">חיבור מהיר</string>
+    <string name="add_server_btn_connect">התחבר</string>
+    <string name="add_server">הוסף שרת</string>
+    <string name="add_server_error_outdated">גרסת שרת מיושנת: %1$s. אנא עדכן את השרת שלך</string>
+    <string name="login_btn_login">התחבר</string>
+    <string name="add_server_error_not_jellyfin">לא שרת Jellyfin: %1$s</string>
+</resources>

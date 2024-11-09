@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="welcome">Welcome to Findroid</string>
-    <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
-    <string name="welcome_btn_continue">Continue</string>
-    <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
-    <string name="discover_server_title">Discover server</string>
-    <string name="discover_server_no_servers_found">No servers were found</string>
-    <string name="discover_server_manual_add">If your server is not found, you can enter it manually</string>
-    <string name="discover_server_btn_manual_add">Manually add server</string>
+   <string name="add_server">Add server</string>
+   <string name="add_server_btn_connect">Connect</string>
+   <string name="add_server_error_empty_address">Empty server address</string>
+   <string name="add_server_error_no_id">Server has no id, something seems to be wrong with the server</string>
+   <string name="add_server_error_not_found">Server not found</string>
+   <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
+   <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
+   <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
+   <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
+   <string name="discover_server">Discover server</string>
+   <string name="discover_server_btn_manual_add">Manually add server</string>
+   <string name="discover_server_manual_add">If your server is not found, you can enter it manually</string>
+   <string name="discover_server_no_servers_found">No servers were found</string>
+   <string name="edit_text_password_hint">Password</string>
+   <string name="edit_text_server_address_hint">Server address</string>
+   <string name="edit_text_username_hint">Username</string>
+   <string name="login">Login</string>
+   <string name="login_btn_login">Login</string>
+   <string name="login_btn_quick_connect">Quick Connect</string>
+   <string name="login_error_wrong_username_password">Wrong username or password</string>
+   <string name="welcome">Welcome to Findroid</string>
+   <string name="welcome_btn_continue">Continue</string>
+   <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
+   <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
 </resources>

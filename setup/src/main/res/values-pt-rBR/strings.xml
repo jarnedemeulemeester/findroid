@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_outdated">Versão do servidor desatualizada: %1$s. Por favor atualize seu servidor</string>
+    <string name="add_server_error_version">Versão do servidor não suportada: %1$s. Por favor atualize seu servidor</string>
+    <string name="add_server_error_slow">O servidor é lendo demais para responder: %1$s</string>
+    <string name="add_server_error_empty_address">Endereço de servidor vazio</string>
+    <string name="add_server_error_no_id">Servidor não possui id, algo parece errado como servidor</string>
+    <string name="login">Entrar</string>
+    <string name="login_error_wrong_username_password">Nome de usuário ou senha incorretos</string>
+    <string name="edit_text_server_address_hint">Endereço do servidor</string>
+    <string name="edit_text_password_hint">Senha</string>
+    <string name="add_server_btn_connect">Conectar</string>
+    <string name="login_btn_login">Entrar</string>
+    <string name="add_server">Adicionar servidor</string>
+    <string name="add_server_error_not_jellyfin">Não é um servidor do jellyfin: %1$s</string>
+    <string name="add_server_error_not_found">Servidor não encontrado</string>
+    <string name="edit_text_username_hint">Nome de usuário</string>
+    <string name="login_btn_quick_connect">Conexão Rápida</string>
+</resources>

@@ -106,7 +106,7 @@ private fun DiscoverServerScreenLayout(
                     .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.discover_server_title), style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(SetupR.string.discover_server), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(32.dp))
             Box(
                 modifier = Modifier.weight(1f),

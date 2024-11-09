@@ -50,6 +50,7 @@ import dev.jdtech.jellyfin.setup.presentation.login.LoginViewModel
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun LoginScreen(
@@ -123,7 +124,7 @@ private fun LoginScreenLayout(
                     .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(CoreR.string.login), style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(SetupR.string.login), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextField(
                 value = username,
@@ -136,7 +137,7 @@ private fun LoginScreenLayout(
                 onValueChange = { username = it },
                 label = {
                     Text(
-                        text = stringResource(CoreR.string.edit_text_username_hint),
+                        text = stringResource(SetupR.string.edit_text_username_hint),
                     )
                 },
                 singleLine = true,
@@ -160,7 +161,7 @@ private fun LoginScreenLayout(
                 onValueChange = { password = it },
                 label = {
                     Text(
-                        text = stringResource(CoreR.string.edit_text_password_hint),
+                        text = stringResource(SetupR.string.edit_text_password_hint),
                     )
                 },
                 singleLine = true,
@@ -185,7 +186,7 @@ private fun LoginScreenLayout(
                 modifier = Modifier.fillMaxWidth(),
             )
             LoadingButton(
-                text = stringResource(CoreR.string.button_login),
+                text = stringResource(SetupR.string.login_btn_login),
                 onClick = { doLogin() },
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
@@ -205,7 +206,7 @@ private fun LoginScreenLayout(
                         onClick = { onAction(LoginAction.OnQuickConnectClick) },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text(text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(CoreR.string.quick_connect))
+                        Text(text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect))
                     }
                 }
             }

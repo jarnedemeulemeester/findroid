@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Banner di Jellyfin</string>
-    <string name="add_server">Aggiungi server</string>
-    <string name="add_server_error_not_jellyfin">Non è un server Jellyfin: %1$s</string>
-    <string name="add_server_error_slow">Il server ha impiegato troppo tempo per rispondere: %1$s</string>
-    <string name="add_server_error_empty_address">Indirizzo server vuoto</string>
-    <string name="login">Accedi</string>
-    <string name="login_error_wrong_username_password">Nome utente o Password errati</string>
     <string name="select_server">Seleziona server</string>
-    <string name="edit_text_server_address_hint">Indirizzo server</string>
-    <string name="edit_text_username_hint">Nome utente</string>
-    <string name="edit_text_password_hint">Password</string>
-    <string name="button_connect">Connetti</string>
-    <string name="button_login">Accedi</string>
     <string name="remove_server">Rimuovi server</string>
     <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
     <string name="remove">Rimuovi</string>
@@ -54,13 +43,9 @@
     <string name="view_details">Mostra dettagli</string>
     <string name="view_details_underlined"><u>Vedi dettagli</u></string>
     <string name="app_description">Applicazione nativa di terze parti per Jellyfin</string>
-    <string name="add_server_error_outdated">Versione del server obsoleta: %1$s. Aggiorna il tuo server</string>
     <string name="no_favorites">Non hai nessun preferito</string>
-    <string name="add_server_error_not_found">Server non trovato</string>
     <string name="no_downloads">Non hai scaricato ancora nulla</string>
-    <string name="add_server_error_no_id">Il server non ha un ID, c\'è qualcosa di strano con questo server</string>
     <string name="device_name">Nome del dispositivo</string>
-    <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
     <string name="settings_category_cache">Cache</string>
     <string name="error_loading_data">Errore nel caricamento dei dati</string>
     <string name="settings_use_cache_summary">La cache delle immagini permette di ridurre i tempi di caricamento. Dovrai riavviare l\'app.</string>
@@ -133,7 +118,6 @@
     <string name="add_address">Aggiungi indirizzo</string>
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
-    <string name="quick_connect">Connessione Rapida</string>
     <string name="pref_player_intro_skipper">Salta intro (Intro Skipper)</string>
     <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>jumoog</i> installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>

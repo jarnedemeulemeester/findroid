@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server">Adaugă un server</string>
     <string name="title_home">Acasă</string>
     <string name="remove_user">Eliminați utilizatorul</string>
     <string name="remove_user_dialog_text">Sunteți sigur că doriți să eliminați utilizatorul %1$s</string>
@@ -83,7 +82,6 @@
     <string name="addresses">Adrese</string>
     <string name="add_address">Adaugă o adresă</string>
     <string name="add_server_address">Adaugă o adresă de server</string>
-    <string name="quick_connect">Conectare rapidă</string>
     <string name="size">Mărime</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
@@ -105,7 +103,6 @@
     <string name="cancel_download">Anulează descărcarea</string>
     <string name="stop_download">Oprește descărcarea</string>
     <string name="privacy_policy_notice">Prin utilizarea Findroid sunteți de acord cu <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privacy Policy</a> care spune că nu colectăm nicio informație</string>
-    <string name="add_server_error_version">Versiunea serverului nu este suportată: %1$s. Va rugăm să actualizați serverul dumneavoastră</string>
     <string name="cancel">Anulează</string>
     <string name="title_media">Media mea</string>
     <string name="remove_server">Eliminați serverul</string>
