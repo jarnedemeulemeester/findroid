@@ -64,6 +64,7 @@ constructor(
                 _state.emit(
                     _state.value.copy(isLoading = false),
                 )
+                eventsChannel.send(LoginEvent.Success)
             } catch (e: Exception) {
                 val message =
                     if (e.message?.contains("401") == true) {

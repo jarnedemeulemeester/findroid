@@ -63,6 +63,11 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(true) {
+        viewModel.loadDisclaimer()
+        viewModel.loadQuickConnectEnabled()
+    }
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.Success -> {
@@ -239,7 +244,9 @@ private fun LoginScreenLayout(
 private fun LoginScreenLayoutPreview() {
     FindroidTheme {
         LoginScreenLayout(
-            state = LoginState(),
+            state = LoginState(
+                quickConnectEnabled = true,
+            ),
             onAction = {},
         )
     }

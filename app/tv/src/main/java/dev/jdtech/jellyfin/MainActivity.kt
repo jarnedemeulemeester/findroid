@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
         var startRoute = NavGraphs.root.startRoute(Unit)
         if (checkServersEmpty()) {
-            startRoute = AddServerScreenDestination
+            startRoute = WelcomeScreenDestination
         } else if (checkUser()) {
             startRoute = LoginScreenDestination
         }
