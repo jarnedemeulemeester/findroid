@@ -1,12 +1,9 @@
 package dev.jdtech.jellyfin
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.discoverserver.DiscoverServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen

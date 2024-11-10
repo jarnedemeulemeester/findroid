@@ -58,6 +58,7 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
 import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
@@ -193,7 +194,7 @@ private fun ServerSelectScreenLayout(
             OutlinedButton(
                 onClick = { onAddServerClick() },
             ) {
-                Text(text = stringResource(id = CoreR.string.add_server))
+                Text(text = stringResource(id = SetupR.string.add_server))
             }
         }
     }

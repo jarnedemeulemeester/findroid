@@ -45,27 +45,27 @@ import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.setup.presentation.login.LoginAction
+import dev.jdtech.jellyfin.setup.presentation.login.LoginEvent
+import dev.jdtech.jellyfin.setup.presentation.login.LoginState
+import dev.jdtech.jellyfin.setup.presentation.login.LoginViewModel
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.LoginEvent
-import dev.jdtech.jellyfin.viewmodels.LoginViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
-    loginViewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val delegatedUiState by loginViewModel.uiState.collectAsState()
-    val delegatedQuickConnectUiState by loginViewModel.quickConnectUiState.collectAsState(
-        initial = LoginViewModel.QuickConnectUiState.Disabled,
-    )
+    val state by viewModel.state.collectAsState()
 
-    ObserveAsEvents(loginViewModel.eventsChannelFlow) { event ->
+    ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is LoginEvent.NavigateToHome -> {
+            is LoginEvent.Success -> {
                 navigator.navigate(MainScreenDestination) {
                     popUpTo(NavGraphs.root) {
                         inclusive = true
@@ -76,23 +76,17 @@ fun LoginScreen(
     }
 
     LoginScreenLayout(
-        uiState = delegatedUiState,
-        quickConnectUiState = delegatedQuickConnectUiState,
-        onLoginClick = { username, password ->
-            loginViewModel.login(username, password)
-        },
-        onQuickConnectClick = {
-            loginViewModel.useQuickConnect()
+        state = state,
+        onAction = { action ->
+            viewModel.onAction(action)
         },
     )
 }
 
 @Composable
 private fun LoginScreenLayout(
-    uiState: LoginViewModel.UiState,
-    quickConnectUiState: LoginViewModel.QuickConnectUiState,
-    onLoginClick: (String, String) -> Unit,
-    onQuickConnectClick: () -> Unit,
+    state: LoginState,
+    onAction: (LoginAction) -> Unit,
 ) {
     var username by rememberSaveable {
         mutableStateOf("")
@@ -101,31 +95,8 @@ private fun LoginScreenLayout(
         mutableStateOf("")
     }
 
-    var quickConnectValue = stringResource(id = CoreR.string.quick_connect)
-
-    when (quickConnectUiState) {
-        is LoginViewModel.QuickConnectUiState.Waiting -> {
-            quickConnectValue = quickConnectUiState.code
-        }
-        else -> Unit
-    }
-
-    var disclaimer: String? by remember {
-        mutableStateOf(null)
-    }
-
-    if (uiState is LoginViewModel.UiState.Normal) {
-        disclaimer = uiState.disclaimer
-    }
-
-    val isError = uiState is LoginViewModel.UiState.Error
-    val isLoading = uiState is LoginViewModel.UiState.Loading
-
-    val quickConnectEnabled = quickConnectUiState !is LoginViewModel.QuickConnectUiState.Disabled
-    val isWaiting = quickConnectUiState is LoginViewModel.QuickConnectUiState.Waiting
-
     val focusRequester = remember { FocusRequester() }
-    val doLogin = { onLoginClick(username, password) }
+    val doLogin = { onAction(LoginAction.OnLoginClick(username, password)) }
 
     Box(
         modifier = Modifier
@@ -138,7 +109,7 @@ private fun LoginScreenLayout(
                 .align(Alignment.Center),
         ) {
             Text(
-                text = stringResource(id = CoreR.string.login),
+                text = stringResource(id = SetupR.string.login),
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
@@ -151,15 +122,15 @@ private fun LoginScreenLayout(
                     )
                 },
                 onValueChange = { username = it },
-                label = { Text(text = stringResource(id = CoreR.string.edit_text_username_hint)) },
+                label = { Text(text = stringResource(id = SetupR.string.edit_text_username_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next,
                 ),
-                isError = isError,
-                enabled = !isLoading,
+                isError = state.error != null,
+                enabled = !state.isLoading,
                 modifier = Modifier
                     .width(360.dp)
                     .focusRequester(focusRequester),
@@ -174,7 +145,7 @@ private fun LoginScreenLayout(
                     )
                 },
                 onValueChange = { password = it },
-                label = { Text(text = stringResource(id = CoreR.string.edit_text_password_hint)) },
+                label = { Text(text = stringResource(id = SetupR.string.edit_text_password_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
@@ -185,12 +156,12 @@ private fun LoginScreenLayout(
                     onGo = { doLogin() },
                 ),
                 visualTransformation = PasswordVisualTransformation(),
-                isError = isError,
-                enabled = !isLoading,
+                isError = state.error != null,
+                enabled = !state.isLoading,
                 supportingText = {
-                    if (isError) {
+                    if (state.error != null) {
                         Text(
-                            text = (uiState as LoginViewModel.UiState.Error).message.asString(),
+                            text = state.error!!.asString(),
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
@@ -202,13 +173,13 @@ private fun LoginScreenLayout(
             Box {
                 Button(
                     onClick = { doLogin() },
-                    enabled = !isLoading,
+                    enabled = !state.isLoading,
                     modifier = Modifier.width(360.dp),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        if (isLoading) {
+                        if (state.isLoading) {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
@@ -217,23 +188,23 @@ private fun LoginScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = CoreR.string.login_btn_login),
+                            text = stringResource(id = SetupR.string.login_btn_login),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
                 }
             }
-            if (quickConnectEnabled) {
+            if (state.quickConnectEnabled) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Box {
                     OutlinedButton(
-                        onClick = { onQuickConnectClick() },
+                        onClick = { onAction(LoginAction.OnQuickConnectClick) },
                         modifier = Modifier.width(360.dp),
                     ) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            if (isWaiting) {
+                            if (state.quickConnectCode != null) {
                                 CircularProgressIndicator(
                                     color = LocalContentColor.current,
                                     modifier = Modifier
@@ -242,17 +213,19 @@ private fun LoginScreenLayout(
                                 )
                             }
                             Text(
-                                text = quickConnectValue,
+                                text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect),
                                 modifier = Modifier.align(Alignment.Center),
                             )
                         }
                     }
                 }
             }
-            Text(
-                text = disclaimer ?: "",
-                modifier = Modifier.padding(MaterialTheme.spacings.default),
-            )
+            if (state.disclaimer != null) {
+                Text(
+                    text = state.disclaimer!!,
+                    modifier = Modifier.padding(MaterialTheme.spacings.default),
+                )
+            }
         }
     }
 
@@ -266,10 +239,8 @@ private fun LoginScreenLayout(
 private fun LoginScreenLayoutPreview() {
     FindroidTheme {
         LoginScreenLayout(
-            uiState = LoginViewModel.UiState.Normal(),
-            quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
-            onLoginClick = { _, _ -> },
-            onQuickConnectClick = {},
+            state = LoginState(),
+            onAction = {},
         )
     }
 }
@@ -279,10 +250,8 @@ private fun LoginScreenLayoutPreview() {
 private fun LoginScreenLayoutPreviewError() {
     FindroidTheme {
         LoginScreenLayout(
-            uiState = LoginViewModel.UiState.Error(UiText.DynamicString("Invalid username or password")),
-            quickConnectUiState = LoginViewModel.QuickConnectUiState.Normal,
-            onLoginClick = { _, _ -> },
-            onQuickConnectClick = {},
+            state = LoginState(error = UiText.DynamicString("Invalid username or password")),
+            onAction = {},
         )
     }
 }

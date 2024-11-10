@@ -91,6 +91,7 @@ dependencies {
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.preferences)
+    implementation(projects.setup)
     implementation(projects.player.core)
     implementation(projects.player.video)
     implementation(libs.androidx.activity.compose)

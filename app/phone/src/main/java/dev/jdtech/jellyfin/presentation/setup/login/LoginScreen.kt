@@ -226,7 +226,7 @@ private fun AddServerScreenLayoutPreview() {
         LoginScreenLayout(
             state = LoginState(
                 quickConnectEnabled = true,
-                disclaimer = "Sample disclaimer"
+                disclaimer = "Sample disclaimer",
             ),
             onAction = {},
         )

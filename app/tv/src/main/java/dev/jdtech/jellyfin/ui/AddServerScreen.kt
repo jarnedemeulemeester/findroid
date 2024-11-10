@@ -41,51 +41,53 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerAction
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerEvent
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
+import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.AddServerEvent
-import dev.jdtech.jellyfin.viewmodels.AddServerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
 fun AddServerScreen(
     navigator: DestinationsNavigator,
-    addServerViewModel: AddServerViewModel = hiltViewModel(),
+    viewModel: AddServerViewModel = hiltViewModel(),
 ) {
-    val uiState by addServerViewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    ObserveAsEvents(addServerViewModel.eventsChannelFlow) { event ->
+    ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is AddServerEvent.NavigateToLogin -> {
+            is AddServerEvent.Success -> {
                 navigator.navigate(LoginScreenDestination)
             }
+            else -> Unit
         }
     }
 
     AddServerScreenLayout(
-        uiState = uiState,
-        onConnectClick = { serverAddress ->
-            addServerViewModel.checkServer(serverAddress)
+        state = state,
+        onAction = { action ->
+            viewModel.onAction(action)
         },
     )
 }
 
 @Composable
 private fun AddServerScreenLayout(
-    uiState: AddServerViewModel.UiState,
-    onConnectClick: (String) -> Unit,
+    state: AddServerState,
+    onAction: (AddServerAction) -> Unit,
 ) {
     var serverAddress by rememberSaveable {
         mutableStateOf("")
     }
-    val isError = uiState is AddServerViewModel.UiState.Error
-    val isLoading = uiState is AddServerViewModel.UiState.Loading
     val context = LocalContext.current
 
     val focusRequester = remember { FocusRequester() }
-    val doConnect = { onConnectClick(serverAddress) }
+    val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
 
     Box(
         modifier = Modifier
@@ -98,7 +100,7 @@ private fun AddServerScreenLayout(
                 .align(Alignment.Center),
         ) {
             Text(
-                text = stringResource(id = CoreR.string.add_server),
+                text = stringResource(id = SetupR.string.add_server),
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
@@ -113,7 +115,7 @@ private fun AddServerScreenLayout(
                 onValueChange = { serverAddress = it },
                 label = {
                     Text(
-                        text = stringResource(id = CoreR.string.edit_text_server_address_hint),
+                        text = stringResource(id = SetupR.string.edit_text_server_address_hint),
                     )
                 },
                 singleLine = true,
@@ -125,12 +127,12 @@ private fun AddServerScreenLayout(
                 keyboardActions = KeyboardActions(
                     onGo = { doConnect() },
                 ),
-                isError = isError,
-                enabled = !isLoading,
+                isError = state.error != null,
+                enabled = !state.isLoading,
                 supportingText = {
-                    if (isError) {
+                    if (state.error != null) {
                         Text(
-                            text = (uiState as AddServerViewModel.UiState.Error).message.joinToString {
+                            text = state.error!!.joinToString {
                                 it.asString(
                                     context.resources,
                                 )
@@ -147,13 +149,13 @@ private fun AddServerScreenLayout(
             Box {
                 Button(
                     onClick = { doConnect() },
-                    enabled = !isLoading,
+                    enabled = !state.isLoading,
                     modifier = Modifier.width(360.dp),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        if (isLoading) {
+                        if (state.isLoading) {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
@@ -162,7 +164,7 @@ private fun AddServerScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = CoreR.string.add_server_btn_connect),
+                            text = stringResource(id = SetupR.string.add_server_btn_connect),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
@@ -181,8 +183,8 @@ private fun AddServerScreenLayout(
 private fun AddServerScreenLayoutPreview() {
     FindroidTheme {
         AddServerScreenLayout(
-            uiState = AddServerViewModel.UiState.Normal,
-            onConnectClick = {},
+            state = AddServerState(),
+            onAction = {},
         )
     }
 }
