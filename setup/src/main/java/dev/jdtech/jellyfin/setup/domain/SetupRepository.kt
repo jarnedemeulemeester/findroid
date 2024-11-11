@@ -8,6 +8,10 @@ import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 interface SetupRepository {
     suspend fun discoverServers(): Flow<ServerDiscoveryInfo>
 
+    suspend fun getServers(): List<Server>
+
+    suspend fun deleteServer(serverId: String)
+
     suspend fun getIsQuickConnectEnabled(): Boolean
 
     suspend fun initiateQuickConnect(): QuickConnectResult

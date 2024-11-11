@@ -9,9 +9,7 @@ import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
@@ -31,6 +29,14 @@ class SetupRepositoryImpl(
 ) : SetupRepository {
     override suspend fun discoverServers(): Flow<ServerDiscoveryInfo> {
         return jellyfinApi.jellyfin.discovery.discoverLocalServers()
+    }
+
+    override suspend fun getServers(): List<Server> {
+        return database.getAllServersSync()
+    }
+
+    override suspend fun deleteServer(serverId: String) {
+        database.delete(serverId)
     }
 
     override suspend fun getIsQuickConnectEnabled(): Boolean {
@@ -84,7 +90,7 @@ class SetupRepositoryImpl(
         }
     }
 
-    private suspend fun saveServerInDatabase(recommendedServerInfo: RecommendedServerInfo): Server {
+    private fun saveServerInDatabase(recommendedServerInfo: RecommendedServerInfo): Server {
         val serverInfo = recommendedServerInfo.systemInfo.getOrNull()
             ?: throw ExceptionUiText(UiText.StringResource(SetupR.string.add_server_error_no_id))
 
@@ -95,9 +101,7 @@ class SetupRepositoryImpl(
         // Check if server is already in the database
         // If so only add a new address to that server if it's different
         val server = if (serverInDatabase != null) {
-            val addresses = withContext(Dispatchers.IO) {
-                database.getServerWithAddresses(serverInDatabase.id).addresses
-            }
+            val addresses = database.getServerWithAddresses(serverInDatabase.id).addresses
             // If address is not in database, add it
             if (addresses.none { it.address == recommendedServerInfo.address }) {
                 val serverAddress = ServerAddress(
@@ -106,9 +110,7 @@ class SetupRepositoryImpl(
                     address = recommendedServerInfo.address,
                 )
 
-                withContext(Dispatchers.IO) {
-                    database.insertServerAddress(serverAddress)
-                }
+                database.insertServerAddress(serverAddress)
             }
             serverInDatabase
         } else {
@@ -125,12 +127,8 @@ class SetupRepositoryImpl(
                 currentUserId = null,
             )
 
-            withContext(Dispatchers.IO) {
-                database.insertServer(server)
-            }
-            withContext(Dispatchers.IO) {
-                database.insertServerAddress(serverAddress)
-            }
+            database.insertServer(server)
+            database.insertServerAddress(serverAddress)
             server
         }
 
@@ -195,7 +193,7 @@ class SetupRepositoryImpl(
         saveAuthenticationResult(authenticationResult)
     }
 
-    private suspend fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
+    private fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
         val user = User(
             id = authenticationResult.user!!.id,
             name = authenticationResult.user!!.name!!,
@@ -203,10 +201,8 @@ class SetupRepositoryImpl(
             accessToken = authenticationResult.accessToken!!,
         )
 
-        withContext(Dispatchers.IO) {
-            database.insertUser(user)
-            database.updateServerCurrentUser(authenticationResult.serverId!!, user.id)
-        }
+        database.insertUser(user)
+        database.updateServerCurrentUser(authenticationResult.serverId!!, user.id)
 
         jellyfinApi.apply {
             api.update(accessToken = authenticationResult.accessToken)

@@ -20,8 +20,14 @@
    <string name="login_btn_login">Login</string>
    <string name="login_btn_quick_connect">Quick Connect</string>
    <string name="login_error_wrong_username_password">Wrong username or password</string>
+   <string name="servers">Servers</string>
+   <string name="servers_btn_add_server">Add server</string>
+   <string name="remove_server_dialog">Remove server</string>
+   <string name="remove_server_dialog_text">Are you sure you want to remove the server %s?</string>
    <string name="welcome">Welcome to Findroid</string>
    <string name="welcome_btn_continue">Continue</string>
    <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
    <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
+   <string name="confirm">Confirm</string>
+   <string name="cancel">Cancel</string>
 </resources>

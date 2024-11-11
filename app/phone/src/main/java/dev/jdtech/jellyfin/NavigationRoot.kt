@@ -7,11 +7,15 @@ import androidx.navigation.compose.composable
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.discoverserver.DiscoverServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
+import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object WelcomeRoute
+
+@Serializable
+data object ServersScreenRoute
 
 @Serializable
 data object DiscoverServerRoute
@@ -37,8 +41,20 @@ fun NavigationRoot(
     ) {
         composable<WelcomeRoute> {
             WelcomeScreen(onContinueClick = {
-                navController.navigate(DiscoverServerRoute)
+                navController.navigate(ServersScreenRoute)
             })
+        }
+        composable<ServersScreenRoute> {
+            ServersScreen(
+                navigateToUsers = {},
+                navigateToLogin = {},
+                onAddClick = {
+                    navController.navigate(AddServerRoute)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
         }
         composable<DiscoverServerRoute> {
             DiscoverServerScreen(
