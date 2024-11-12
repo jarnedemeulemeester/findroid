@@ -16,5 +16,6 @@
     <string name="player_controls_picture_in_picture">輸入畫中畫</string>
     <string name="player_trickplay">特技播放</string>
     <string name="player_controls_progress">進度條</string>
-    <string name="none">一個也沒有</string>
+    <string name="none">無</string>
+    <string name="player_controls_skip_credits">跳過片尾</string>
 </resources>
