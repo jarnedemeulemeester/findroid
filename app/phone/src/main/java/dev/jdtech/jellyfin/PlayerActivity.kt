@@ -154,36 +154,15 @@ class PlayerActivity : BasePlayerActivity() {
                             currentMediaSegment = currentSegment
                             Timber.d("Preferences: %s", appPreferences.playerMediaSegmentsSkipButtonType)
                             currentSegment?.let { segment ->
-                                // Check if the outro segment's end time is within n milliseconds of the player's total duration
-                                val skipToNextEpisode = if (segment.type == FindroidSegmentType.OUTRO &&
-                                    binding.playerView.player?.hasNextMediaItem() == true
-                                ) {
-                                    val segmentEndTimeMillis = segment.endTicks
-                                    val playerDurationMillis = binding.playerView.player?.duration ?: 0 // Handle null duration
-                                    val thresholdMillis = playerDurationMillis - appPreferences.playerMediaSegmentsNextEpisodeThreshold
-
-                                    segmentEndTimeMillis > thresholdMillis
-                                } else {
-                                    false
-                                }
-
                                 if ((appPreferences.playerMediaSegmentsAutoSkip == "always" || (appPreferences.playerMediaSegmentsAutoSkip == "pip" && isInPictureInPictureMode)) &&
                                     appPreferences.playerMediaSegmentsAutoSkipType?.contains(segment.type.toString()) == true
                                 ) {
                                     // Auto skip
-                                    skipSegment(segment, skipToNextEpisode)
+                                    viewModel.skipSegment(segment)
                                 } else if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(segment.type.toString()) == true) {
                                     // Skip Button
                                     // Button text
-                                    skipSegmentButton.text = when (segment.type) {
-                                        FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                        FindroidSegmentType.OUTRO -> if (skipToNextEpisode) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_outro) }
-                                        FindroidSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
-                                        FindroidSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
-                                        FindroidSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
-                                        FindroidSegmentType.UNKNOWN -> getString(VideoR.string.player_controls_skip_unknown)
-                                        else -> ""
-                                    }
+                                    skipSegmentButton.text = getSkipButtonText(segment)
                                     // Button visibility
                                     skipSegmentButton.isVisible = !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
@@ -193,7 +172,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     }
                                     // onClick
                                     skipSegmentButton.setOnClickListener {
-                                        skipSegment(segment, skipToNextEpisode)
+                                        viewModel.skipSegment(segment)
                                         currentMediaSegment = null
                                         skipSegmentButton.isVisible = false
                                     }
@@ -347,14 +326,6 @@ class PlayerActivity : BasePlayerActivity() {
         hideSystemUI()
     }
 
-    private fun skipSegment(segment: FindroidSegment, skipToNextEpisode: Boolean) {
-        if (skipToNextEpisode) {
-            binding.playerView.player?.seekToNextMediaItem()
-        } else {
-            binding.playerView.player?.seekTo((segment.endTicks).toLong())
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
@@ -381,6 +352,18 @@ class PlayerActivity : BasePlayerActivity() {
             Timber.e(e)
         }
         finish()
+    }
+
+    private fun getSkipButtonText(segment: FindroidSegment): String {
+        return when (segment.type) {
+            FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+            FindroidSegmentType.OUTRO -> if (viewModel.skipToNextEpisode(segment)) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_outro) }
+            FindroidSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
+            FindroidSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
+            FindroidSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
+            FindroidSegmentType.UNKNOWN -> getString(VideoR.string.player_controls_skip_unknown)
+            else -> ""
+        }
     }
 
     private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {

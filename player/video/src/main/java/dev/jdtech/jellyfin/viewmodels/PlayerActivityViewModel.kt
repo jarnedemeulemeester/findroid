@@ -21,6 +21,7 @@ import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Trickplay
@@ -408,6 +409,27 @@ constructor(
         val currentSegment = mediaItemSegments.segments.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
         _uiState.update { it.copy(currentSegment = currentSegment) }
+    }
+
+    fun skipSegment(segment: FindroidSegment) {
+        if (skipToNextEpisode(segment)) {
+            player.seekToNextMediaItem()
+        } else {
+            player.seekTo((segment.endTicks).toLong())
+        }
+    }
+
+    // Check if the outro segment's end time is within n milliseconds of the player's total duration
+    fun skipToNextEpisode(segment: FindroidSegment): Boolean {
+        return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem() == true) {
+            val segmentEndTimeMillis = segment.endTicks
+            val playerDurationMillis = player.duration
+            val thresholdMillis = playerDurationMillis - appPreferences.playerMediaSegmentsNextEpisodeThreshold
+
+            segmentEndTimeMillis > thresholdMillis
+        } else {
+            false
+        }
     }
 
     /**
