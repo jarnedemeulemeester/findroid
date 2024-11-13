@@ -46,7 +46,10 @@ I am developing this application in my spare time.
 - Media chapters
   - Timeline markers
   - Chapter navigation gestures
-- Skip Intro and Credits (requires Jellyfin version 10.10 or higher)
+- Trickplay (requires Jellyfin version 10.9 or higher)
+- Media segments (requires Jellyfin version 10.10 or higher)
+  - Skip button
+  - Auto skip
 
 ## Planned features
 - Android TV
