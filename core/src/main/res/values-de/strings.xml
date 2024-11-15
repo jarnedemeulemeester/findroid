@@ -7,7 +7,7 @@
     <string name="add_server_error_outdated">Server Version ist veraltet: %1$s. Bitte aktualisiere deinen Server</string>
     <string name="add_server_error_not_jellyfin">Kein Jellyfin Server: %1$s</string>
     <string name="add_server_error_empty_address">Leere Server Adresse</string>
-    <string name="add_server_error_not_found">Server wurde nicht gefunden</string>
+    <string name="add_server_error_not_found">Server nicht gefunden</string>
     <string name="add_server_error_no_id">Server hat keine ID. Irgendetwas mit dem Server scheint nicht in Ordnung zu sein</string>
     <string name="select_server">Server auswählen</string>
     <string name="edit_text_server_address_hint">Server Adresse</string>
@@ -24,7 +24,7 @@
     <string name="genres">Genres</string>
     <string name="director">Regisseur</string>
     <string name="writers">Autoren</string>
-    <string name="cast_amp_crew">Besetzung und Crew</string>
+    <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Staffeln</string>
     <string name="check_button_description">Als gesehen oder ungesehen markieren</string>
     <string name="favorite_button_description">Favorit</string>
@@ -102,7 +102,7 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
     <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
-    <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen, und auf der linken Seite, um die Helligkeit anzupassen</string>
+    <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen und auf der linken Seite, um die Helligkeit anzupassen</string>
     <string name="seeking">Suchen</string>
     <string name="subtitles">Untertitel</string>
     <string name="subtitles_summary">Untertitel anpassen</string>
@@ -111,9 +111,9 @@
     <string name="episodes_label">Episoden</string>
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="dynamic_colors_summary">Dynamische Farben nutzen (ab Android 12 verfügbar)</string>
-    <string name="player_gestures_vb">Lautsärke und Helligkeits-Gesten</string>
+    <string name="player_gestures_vb">Lautstärke und Helligkeits-Gesten</string>
     <string name="player_gestures_zoom">Zoom Geste</string>
-    <string name="player_gestures_zoom_summary">Ziehen um das Video an den Bildschirm anzupassen</string>
+    <string name="player_gestures_zoom_summary">Zwei-Finger-Zoom um das Video an den Bildschirm anzupassen</string>
     <string name="libraries">Bibliotheken</string>
     <string name="remove_user">Benutzer entfernen</string>
     <string name="remove_user_dialog_text">Bist du sicher, dass du den Benutzer %1$s löschen möchtest</string>
@@ -131,7 +131,7 @@
     <string name="seek_back_increment">Zurückspulstufe (ms)</string>
     <string name="users">Benutzer</string>
     <string name="pref_player_intro_skipper">Intro überspringen</string>
-    <string name="pref_player_intro_skipper_summary">Benötigt jumoog Intro Skipper Plugin installiert auf dem Server</string>
+    <string name="pref_player_intro_skipper_summary">Benötigt <i>jumoog\'s</i> <b>Intro Skipper</b> Plugin installiert auf dem Server</string>
     <string name="theme_system">Übernehme Systemeinstellung</string>
     <string name="pref_player_mpv_hwdec">Hardware-Dekodierung</string>
     <string name="pref_player_mpv_vo">Videoausgang</string>
@@ -144,7 +144,7 @@
     <string name="amoled_theme_summary">Verwenden Sie den Modus für AMOLED mit einem tiefschwarzen Hintergrund</string>
     <string name="amoled_theme">Vollständig dunkler Modus (für AMOLED Bildschirme)</string>
     <string name="audio">Ton/Audio</string>
-    <string name="player_gestures_seek_summary">Wischen Sie horizontal, um vorwärts oder rückwärts zu suchen</string>
+    <string name="player_gestures_seek_summary">Horizontal streichen, um vorwärts oder rückwärts zu suchen</string>
     <string name="player_gestures_seek">Suchgeste</string>
     <string name="extra_info">Extra Infos anzeigen</string>
     <string name="size">Größe</string>
@@ -159,7 +159,7 @@
     <string name="offline_mode_icon">Offline-Modus Icon</string>
     <string name="not_enough_storage">Dieses Element benötigt %1$s an freiem Speicher, aber es sind nur %2$s verfügbar</string>
     <string name="select_storage_location">Speicherort auswählen</string>
-    <string name="no_server_connection">Keine Verbindung zum Jellyfin-Server, aktivieren Sie den Offline-Modus, um offline zu schauen</string>
+    <string name="no_server_connection">Keine Verbindung zum Jellyfin-Server, aktiviere den Offline-Modus in den Einstellungen</string>
     <string name="storage_unavailable">Speicherort nicht verfügbar</string>
     <string name="internal">Intern</string>
     <string name="external">Extern</string>
@@ -174,7 +174,7 @@
     <string name="no_users_found">Keine Benutzer gefunden</string>
     <string name="picture_in_picture">Bild-in-Bild</string>
     <string name="remove_server_address_dialog_text">Bist du sicher, dass du die Server Adresse \"%1$s\" entfernen möchtest?</string>
-    <string name="remove_server_address">Server Adresse entfernen</string>
+    <string name="remove_server_address">Serveradresse entfernen</string>
     <string name="collection_no_media">Diese Sammlung enthält keine Medien</string>
     <string name="player_start_maximized">Maximiert starten</string>
     <string name="player_start_maximized_summary">Video standardmäßig maximiert öffnen</string>
@@ -185,4 +185,15 @@
     <string name="add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="player_gestures_chapter_skip">Kapitel Geste</string>
     <string name="player_gestures_chapter_skip_summary">Drücke lange auf der linken/rechten Seite um Kapitel zu überspringen (überschreibt die 2x-Geschwindigkeitsgesten)</string>
+    <string name="pref_player_trickplay">Pseudovideo</string>
+    <string name="pref_player_trickplay_summary">Vorschaubilder beim Spulen anzeigen</string>
+    <string name="play">Abspielen</string>
+    <string name="picture_in_picture_gesture">Bild-in-Bild bei Home-Aktion</string>
+    <string name="picture_in_picture_gesture_summary">Verwenden von Home-Taste oder Geste, um während der Videowiedergabe in den Bild-in-Bild-Modus zu wechseln</string>
+    <string name="pref_player_gestures_seek_trickplay">Pseudovideo bei der Suchgeste</string>
+    <string name="trickplay">Pseudovideo</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Vorschaubilder bei der Suchgeste anzeigen</string>
+    <string name="live_tv">Live Fernsehen</string>
+    <string name="unmark_as_played">Als nicht gesehen markieren</string>
+    <string name="sort_by_options_6">Zufällig</string>
 </resources>
