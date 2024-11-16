@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.ExceptionUiText
 import dev.jdtech.jellyfin.models.ExceptionUiTexts
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,11 +32,32 @@ constructor(
     private val eventsChannel = Channel<AddServerEvent>()
     val events = eventsChannel.receiveAsFlow()
 
+    fun discoverServers() {
+        viewModelScope.launch {
+            val discoveredServers = mutableListOf<DiscoveredServer>()
+            val serversDiscovery = repository.discoverServers()
+            serversDiscovery.collect { serverDiscoveryInfo ->
+                discoveredServers.add(
+                    DiscoveredServer(
+                        serverDiscoveryInfo.id,
+                        serverDiscoveryInfo.name,
+                        serverDiscoveryInfo.address,
+                    ),
+                )
+                _state.emit(
+                    _state.value.copy(discoveredServers = discoveredServers),
+                )
+            }
+        }
+    }
+
     private fun connectToServer(address: String) {
         viewModelScope.launch {
             _state.emit(
                 _state.value.copy(isLoading = true, error = null),
             )
+
+            delay(2000)
 
             try {
                 val server = repository.connectToServer(address)

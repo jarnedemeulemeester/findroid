@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.setup.domain
 
 import dev.jdtech.jellyfin.models.Server
+import dev.jdtech.jellyfin.models.ServerWithAddresses
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.QuickConnectResult
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
@@ -8,7 +9,7 @@ import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 interface SetupRepository {
     suspend fun discoverServers(): Flow<ServerDiscoveryInfo>
 
-    suspend fun getServers(): List<Server>
+    suspend fun getServers(): List<ServerWithAddresses>
 
     suspend fun deleteServer(serverId: String)
 

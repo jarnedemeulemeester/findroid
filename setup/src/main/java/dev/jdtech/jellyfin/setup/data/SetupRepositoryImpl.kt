@@ -6,6 +6,7 @@ import dev.jdtech.jellyfin.models.ExceptionUiText
 import dev.jdtech.jellyfin.models.ExceptionUiTexts
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
@@ -31,8 +32,8 @@ class SetupRepositoryImpl(
         return jellyfinApi.jellyfin.discovery.discoverLocalServers()
     }
 
-    override suspend fun getServers(): List<Server> {
-        return database.getAllServersSync()
+    override suspend fun getServers(): List<ServerWithAddresses> {
+        return database.getServersWithAddresses()
     }
 
     override suspend fun deleteServer(serverId: String) {

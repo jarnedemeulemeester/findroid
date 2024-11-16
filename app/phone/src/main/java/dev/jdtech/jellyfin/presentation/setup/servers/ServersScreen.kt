@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.models.Server
+import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
@@ -42,6 +44,7 @@ import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
 
@@ -121,15 +124,16 @@ private fun ServersScreenLayout(
             ) {
                 items(state.servers) { server ->
                     ServerItem(
-                        server = server,
+                        name = server.server.name,
+                        address = server.addresses.first().address,
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             onAction(
-                                ServersAction.OnServerClick(serverId = server.id),
+                                ServersAction.OnServerClick(serverId = server.server.id),
                             )
                         },
                         onLongClick = {
-                            selectedServer = server
+                            selectedServer = server.server
                             openDeleteDialog = true
                         },
                     )
@@ -142,7 +146,7 @@ private fun ServersScreenLayout(
             text = { Text(text = stringResource(SetupR.string.servers_btn_add_server)) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp)
+                .padding(24.dp),
         )
     }
 
@@ -188,11 +192,21 @@ private fun ServersScreenLayoutEmptyPreview() {
         ServersScreenLayout(
             state = ServersState(
                 servers = listOf(
-                    Server(
-                        id = "",
-                        name = "Jellyfin Server",
-                        currentServerAddressId = null,
-                        currentUserId = null,
+                    ServerWithAddresses(
+                        server = Server(
+                            id = "",
+                            name = "Jellyfin Server",
+                            currentServerAddressId = null,
+                            currentUserId = null,
+                        ),
+                        addresses = listOf(
+                            ServerAddress(
+                                id = UUID.randomUUID(),
+                                address = "http://192.168.0.10:8096",
+                                serverId = "",
+                            ),
+                        ),
+                        user = null,
                     ),
                 ),
             ),

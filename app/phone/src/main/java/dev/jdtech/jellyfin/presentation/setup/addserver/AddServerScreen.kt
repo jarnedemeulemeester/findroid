@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.presentation.setup.components.DiscoveredServerItem
 import dev.jdtech.jellyfin.presentation.setup.components.LoadingButton
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerAction
@@ -54,6 +58,10 @@ fun AddServerScreen(
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.discoverServers()
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -114,7 +122,19 @@ private fun AddServerScreenLayout(
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyRow {
+                items(state.discoveredServers) { discoveredServer ->
+                    DiscoveredServerItem(
+                        name = discoveredServer.name,
+                        onClick = {
+                            serverAddress = discoveredServer.address
+                            onAction(AddServerAction.OnConnectClick(discoveredServer.address))
+                        },
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = serverAddress,
                 leadingIcon = {
