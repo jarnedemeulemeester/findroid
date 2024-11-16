@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.setup.servers
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,13 +103,12 @@ private fun ServersScreenLayout(
                 .padding(horizontal = 24.dp)
                 .widthIn(max = 480.dp)
                 .fillMaxWidth()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
-            Icon(
+            Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
-                tint = Color.Unspecified,
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),

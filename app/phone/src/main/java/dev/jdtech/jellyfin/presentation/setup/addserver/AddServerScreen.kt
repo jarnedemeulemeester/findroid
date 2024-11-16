@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.presentation.setup.addserver
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +30,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -112,10 +113,9 @@ private fun AddServerScreenLayout(
                 .align(Alignment.Center)
                 .verticalScroll(scrollState),
         ) {
-            Icon(
+            Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
-                tint = Color.Unspecified,
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),
@@ -123,15 +123,18 @@ private fun AddServerScreenLayout(
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
-            LazyRow {
-                items(state.discoveredServers) { discoveredServer ->
-                    DiscoveredServerItem(
-                        name = discoveredServer.name,
-                        onClick = {
-                            serverAddress = discoveredServer.address
-                            onAction(AddServerAction.OnConnectClick(discoveredServer.address))
-                        },
-                    )
+            AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
+                LazyRow {
+                    items(state.discoveredServers) { discoveredServer ->
+                        DiscoveredServerItem(
+                            name = discoveredServer.name,
+                            onClick = {
+                                serverAddress = discoveredServer.address
+                                onAction(AddServerAction.OnConnectClick(discoveredServer.address))
+                            },
+                            modifier = Modifier.animateItem(),
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
