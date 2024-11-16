@@ -102,7 +102,8 @@ private fun ServersScreenLayout(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
                 .widthIn(max = 480.dp)
-                .align(Alignment.Center),
+                .fillMaxWidth()
+                .align(Alignment.Center)
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Icon(
@@ -121,6 +122,7 @@ private fun ServersScreenLayout(
                     text = stringResource(SetupR.string.servers_no_servers),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                Spacer(modifier = Modifier.weight(1f))
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
