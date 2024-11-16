@@ -55,7 +55,6 @@
     <string name="storage_name">%1$s (%2$d MB ledig)</string>
     <string name="stop_download">Stop download</string>
     <string name="no_users_found">Ingen brugere fundet</string>
-    <string name="no_servers_found">Ingen servere fundet</string>
     <string name="unmark_as_played">Marker som ikke-afspillet</string>
     <string name="mark_as_played">Marker som afspillet</string>
     <string name="search_hint">Søg film, serier, episoder…</string>

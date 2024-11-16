@@ -164,7 +164,6 @@
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
     <string name="no_users_found">No se encontraron usuarios</string>
-    <string name="no_servers_found">No se encontraron servidores</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>
     <string name="picture_in_picture_gesture">Gesto de pantalla en pantalla</string>
     <string name="select_user">Seleccione usuario</string>

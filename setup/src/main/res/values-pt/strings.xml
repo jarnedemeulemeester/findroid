@@ -16,4 +16,5 @@
     <string name="login_btn_login">Iníciar Sessão</string>
     <string name="login_btn_quick_connect">Conexão rápida</string>
     <string name="login_error_wrong_username_password">Nome de utilizador ou palavra-passe errados</string>
+    <string name="servers_no_servers">Nenhum servidor encontrado</string>
 </resources>

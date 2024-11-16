@@ -158,7 +158,6 @@
     <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
     <string name="unmark_as_played">Non marqué comme joué</string>
-    <string name="no_servers_found">Aucun serveur trouvé</string>
     <string name="no_users_found">Aucun utilisateur trouvé</string>
     <string name="select_user">Sélectionner un utilisateur</string>
     <string name="live_tv">Direct TV</string>

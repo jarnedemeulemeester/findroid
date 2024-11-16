@@ -16,4 +16,5 @@
    <string name="login_btn_login">Вход</string>
    <string name="login_btn_quick_connect">Бързо Свързване</string>
    <string name="login_error_wrong_username_password">Грешно потребителско име или парола</string>
+   <string name="servers_no_servers">Не са намерени сървъри</string>
 </resources>

@@ -160,7 +160,6 @@
     <string name="picture_in_picture_gesture">画中画返回手势</string>
     <string name="select_user">选择用户</string>
     <string name="live_tv">电视直播</string>
-    <string name="no_servers_found">没有找到服务器</string>
     <string name="no_users_found">找不到用户</string>
     <string name="unmark_as_played">取消标记已播放</string>
     <string name="add_to_favorites">加入收藏</string>

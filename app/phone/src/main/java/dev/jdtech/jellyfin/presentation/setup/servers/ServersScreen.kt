@@ -116,27 +116,34 @@ private fun ServersScreenLayout(
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = stringResource(SetupR.string.servers), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(32.dp))
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-            ) {
-                items(state.servers) { server ->
-                    ServerItem(
-                        name = server.server.name,
-                        address = server.addresses.first().address,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            onAction(
-                                ServersAction.OnServerClick(serverId = server.server.id),
-                            )
-                        },
-                        onLongClick = {
-                            selectedServer = server.server
-                            openDeleteDialog = true
-                        },
-                    )
+            if (state.servers.isEmpty()) {
+                Text(
+                    text = stringResource(SetupR.string.servers_no_servers),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                ) {
+                    items(state.servers) { server ->
+                        ServerItem(
+                            name = server.server.name,
+                            address = server.addresses.first().address,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onAction(
+                                    ServersAction.OnServerClick(serverId = server.server.id),
+                                )
+                            },
+                            onLongClick = {
+                                selectedServer = server.server
+                                openDeleteDialog = true
+                            },
+                        )
+                    }
                 }
             }
         }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,8 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,100 +32,69 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
-import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.jdtech.jellyfin.models.DiscoveredServer
-import dev.jdtech.jellyfin.models.Server
+import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.models.ServerWithAddresses
+import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
+import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
+import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
+import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
-import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServers
-import dev.jdtech.jellyfin.ui.dummy.dummyServers
+import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.ServerSelectEvent
-import dev.jdtech.jellyfin.viewmodels.ServerSelectViewModel
-import dev.jdtech.jellyfin.core.R as CoreR
+import java.util.UUID
 import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
 fun ServerSelectScreen(
     navigator: DestinationsNavigator,
-    serverSelectViewModel: ServerSelectViewModel = hiltViewModel(),
+    viewModel: ServersViewModel = hiltViewModel(),
 ) {
-    val delegatedUiState by serverSelectViewModel.uiState.collectAsState()
-    val delegatedDiscoveredServersState by serverSelectViewModel.discoveredServersState.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    ObserveAsEvents(serverSelectViewModel.eventsChannelFlow) { event ->
+    LaunchedEffect(true) {
+        viewModel.loadServers()
+    }
+
+    ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            ServerSelectEvent.NavigateToLogin -> {
+            is ServersEvent.NavigateToLogin -> {
                 navigator.navigate(UserSelectScreenDestination)
             }
-            ServerSelectEvent.NavigateToHome -> {
-                navigator.navigate(MainScreenDestination) {
-                    popUpTo(NavGraphs.root) {
-                        inclusive = true
-                    }
-                }
+            is ServersEvent.NavigateToUsers -> {
+                navigator.navigate(UserSelectScreenDestination)
             }
         }
     }
 
     ServerSelectScreenLayout(
-        uiState = delegatedUiState,
-        discoveredServersState = delegatedDiscoveredServersState,
-        onServerClick = { server ->
-            serverSelectViewModel.connectToServer(
-                Server(
-                    id = server.id,
-                    name = server.name,
-                    currentUserId = null,
-                    currentServerAddressId = null,
-                ),
-            )
-        },
-        onAddServerClick = {
-            navigator.navigate(AddServerScreenDestination)
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is ServersAction.OnAddClick -> navigator.navigate(AddServerScreenDestination)
+                else -> Unit
+            }
+            viewModel.onAction(action)
         },
     )
 }
 
 @Composable
 private fun ServerSelectScreenLayout(
-    uiState: ServerSelectViewModel.UiState,
-    discoveredServersState: ServerSelectViewModel.DiscoveredServersState,
-    onServerClick: (DiscoveredServer) -> Unit,
-    onAddServerClick: () -> Unit,
+    state: ServersState,
+    onAction: (ServersAction) -> Unit,
 ) {
-    var servers = emptyList<DiscoveredServer>()
-    var discoveredServers = emptyList<DiscoveredServer>()
-
-    when (uiState) {
-        is ServerSelectViewModel.UiState.Normal -> {
-            servers =
-                uiState.servers.map { DiscoveredServer(id = it.id, name = it.name, address = "") }
-        }
-
-        else -> Unit
-    }
-    when (discoveredServersState) {
-        is ServerSelectViewModel.DiscoveredServersState.Servers -> {
-            discoveredServers = discoveredServersState.servers
-        }
-
-        else -> Unit
-    }
-
     val focusRequester = remember { FocusRequester() }
 
     Box(
@@ -142,34 +108,13 @@ private fun ServerSelectScreenLayout(
                 .align(Alignment.Center),
         ) {
             Text(
-                text = stringResource(id = CoreR.string.select_server),
+                text = stringResource(id = SetupR.string.servers),
                 style = MaterialTheme.typography.displayMedium,
             )
-            if (discoveredServers.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        painter = painterResource(id = CoreR.drawable.ic_sparkles),
-                        contentDescription = null,
-                        tint = Color(0xFFBDBDBD),
-                    )
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
-                    Text(
-                        text = pluralStringResource(
-                            id = CoreR.plurals.discovered_servers,
-                            count = discoveredServers.count(),
-                            discoveredServers.count(),
-                        ),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFFBDBDBD),
-                    )
-                }
-            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
-            if (servers.isEmpty() && discoveredServers.isEmpty()) {
+            if (state.servers.isEmpty()) {
                 Text(
-                    text = stringResource(id = CoreR.string.no_servers_found),
+                    text = stringResource(id = SetupR.string.servers_no_servers),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
@@ -178,11 +123,8 @@ private fun ServerSelectScreenLayout(
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
                     modifier = Modifier.focusRequester(focusRequester),
                 ) {
-                    items(servers) { server ->
-                        ServerComponent(server) { onServerClick(it) }
-                    }
-                    items(discoveredServers) {
-                        ServerComponent(it, discovered = true)
+                    items(state.servers) { server ->
+                        ServerComponent(name = server.server.name, address = server.addresses.first().address) { onAction(ServersAction.OnServerClick(server.server.id)) }
                     }
                 }
 
@@ -192,7 +134,7 @@ private fun ServerSelectScreenLayout(
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(
-                onClick = { onAddServerClick() },
+                onClick = { onAction(ServersAction.OnAddClick) },
             ) {
                 Text(text = stringResource(id = SetupR.string.add_server))
             }
@@ -205,27 +147,20 @@ private fun ServerSelectScreenLayout(
 private fun ServerSelectScreenLayoutPreview() {
     FindroidTheme {
         ServerSelectScreenLayout(
-            uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
-            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                dummyDiscoveredServers,
+            state = ServersState(
+                servers = listOf(
+                    ServerWithAddresses(
+                        server = dummyServer,
+                        addresses = listOf(ServerAddress(
+                            id = UUID.randomUUID(),
+                            address = dummyDiscoveredServer.address,
+                            serverId = "",
+                        )),
+                        user = null,
+                    )
+                )
             ),
-            onServerClick = {},
-            onAddServerClick = {},
-        )
-    }
-}
-
-@Preview(device = "id:tv_1080p")
-@Composable
-private fun ServerSelectScreenLayoutPreviewNoDiscovered() {
-    FindroidTheme {
-        ServerSelectScreenLayout(
-            uiState = ServerSelectViewModel.UiState.Normal(dummyServers),
-            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                emptyList(),
-            ),
-            onServerClick = {},
-            onAddServerClick = {},
+            onAction = {}
         )
     }
 }
@@ -235,26 +170,20 @@ private fun ServerSelectScreenLayoutPreviewNoDiscovered() {
 private fun ServerSelectScreenLayoutPreviewNoServers() {
     FindroidTheme {
         ServerSelectScreenLayout(
-            uiState = ServerSelectViewModel.UiState.Normal(emptyList()),
-            discoveredServersState = ServerSelectViewModel.DiscoveredServersState.Servers(
-                emptyList(),
-            ),
-            onServerClick = {},
-            onAddServerClick = {},
+            state = ServersState(),
+            onAction = {}
         )
     }
 }
 
 @Composable
 private fun ServerComponent(
-    server: DiscoveredServer,
-    discovered: Boolean = false,
-    onClick: (DiscoveredServer) -> Unit = {},
+    name: String,
+    address: String,
+    onClick: () -> Unit = {},
 ) {
     Surface(
-        onClick = {
-            onClick(server)
-        },
+        onClick = onClick,
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color(0xFF132026),
             focusedContainerColor = Color(0xFF132026),
@@ -274,14 +203,6 @@ private fun ServerComponent(
             .height(115.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (discovered) {
-                Icon(
-                    painter = painterResource(id = CoreR.drawable.ic_sparkles),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.padding(start = MaterialTheme.spacings.default / 2, top = MaterialTheme.spacings.default / 2),
-                )
-            }
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
@@ -293,13 +214,13 @@ private fun ServerComponent(
                     ),
             ) {
                 Text(
-                    text = server.name,
+                    text = name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
                 Text(
-                    text = server.address,
+                    text = address,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFFBDBDBD),
                     overflow = TextOverflow.Ellipsis,
@@ -314,17 +235,9 @@ private fun ServerComponent(
 @Composable
 private fun ServerComponentPreview() {
     FindroidTheme {
-        ServerComponent(dummyDiscoveredServer)
-    }
-}
-
-@Preview
-@Composable
-private fun ServerComponentPreviewDiscovered() {
-    FindroidTheme {
         ServerComponent(
-            server = dummyDiscoveredServer,
-            discovered = true,
+            name = dummyDiscoveredServer.name,
+            address = dummyDiscoveredServer.address,
         )
     }
 }

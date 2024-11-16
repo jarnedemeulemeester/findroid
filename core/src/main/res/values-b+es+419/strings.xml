@@ -154,7 +154,6 @@
     <string name="app_language">Idioma de la aplicación</string>
     <string name="remove_server_address">Remover dirección del servidor</string>
     <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
-    <string name="no_servers_found">No se encontraron servidores</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>

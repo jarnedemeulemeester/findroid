@@ -16,4 +16,5 @@
     <string name="add_server_error_not_found">Servidor não encontrado</string>
     <string name="edit_text_username_hint">Nome de usuário</string>
     <string name="login_btn_quick_connect">Conexão Rápida</string>
+    <string name="servers_no_servers">Nenhum servidor encontrado</string>
 </resources>

@@ -165,7 +165,6 @@
     <string name="player_gestures_chapter_skip_summary">Дълго задържане на Лявата / Дясната страна, за пропускане на глава (отменя жеста за 2x скорост)</string>
     <string name="pref_player_chapter_markers">Маркери за глави</string>
     <string name="pref_player_chapter_markers_summary">Показвай маркери за глави на времевата линия</string>
-    <string name="no_servers_found">Не са намерени сървъри</string>
     <string name="no_users_found">Не са намерени потребители</string>
     <string name="select_user">Избери потребител</string>
     <string name="live_tv">Телевизия На Живо</string>

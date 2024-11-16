@@ -158,7 +158,6 @@
     <string name="picture_in_picture">Obraz w obrazie</string>
     <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
     <string name="collection_no_media">Ta kolekcja nie zawiera żadnych elementów</string>
-    <string name="no_servers_found">Nie znaleziono żadnego serwera</string>
     <string name="no_users_found">Nie znaleziono użytkowników</string>
     <string name="select_user">Wybierz użytkownika</string>
     <string name="live_tv">Telewizja na żywo</string>

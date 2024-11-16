@@ -17,6 +17,7 @@
    <string name="login_btn_quick_connect">Quick Connect</string>
    <string name="login_error_wrong_username_password">Wrong username or password</string>
    <string name="servers">Servers</string>
+   <string name="servers_no_servers">No servers found</string>
    <string name="servers_btn_add_server">Add server</string>
    <string name="remove_server_dialog">Remove server</string>
    <string name="remove_server_dialog_text">Are you sure you want to remove the server %s?</string>

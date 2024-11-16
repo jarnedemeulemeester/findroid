@@ -159,7 +159,6 @@
     <string name="picture_in_picture_gesture_summary">A home gomb vagy a gesztus használatával lépjen be a kép-a-képbe a videó lejátszása közben</string>
     <string name="no_users_found">Nincs felhasználó</string>
     <string name="select_user">Válassz felhasználót</string>
-    <string name="no_servers_found">Nem található szerver</string>
     <string name="unmark_as_played">Megjelölés nem megtekintettként</string>
     <string name="add_to_favorites">Hozzáadás kedvencekhez</string>
     <string name="remove_from_favorites">Eltávolítás kedvencekből</string>

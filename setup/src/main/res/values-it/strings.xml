@@ -16,4 +16,5 @@
     <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
     <string name="login_btn_quick_connect">Connessione Rapida</string>
     <string name="add_server_error_not_found">Server non trovato</string>
+    <string name="servers_no_servers">Nessun server trovato</string>
 </resources>

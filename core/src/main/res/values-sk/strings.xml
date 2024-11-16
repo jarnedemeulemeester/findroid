@@ -157,7 +157,6 @@
     <string name="picture_in_picture">Obraz v obraze</string>
     <string name="picture_in_picture_gesture">Gesto domov obrazu v obraze</string>
     <string name="picture_in_picture_gesture_summary">Použi tlačidlo domov alebo gesto na prechod do režimu obrazu v obraze počas prehrávania videa</string>
-    <string name="no_servers_found">Neboli nájdené žiadne servery</string>
     <string name="no_users_found">Nenašli sa žiadni užívatelia</string>
     <string name="select_user">Vybrať užívateľa</string>
     <string name="live_tv">Živá TV</string>

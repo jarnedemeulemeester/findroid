@@ -16,4 +16,5 @@
     <string name="login_btn_login">Inloggen</string>
     <string name="login_btn_quick_connect">Snel verbinden</string>
     <string name="add_server_error_no_id">Server heeft geen id, er lijkt iets miss te zijn met de server</string>
+    <string name="servers_no_servers">Geen servers gevonden</string>
 </resources>

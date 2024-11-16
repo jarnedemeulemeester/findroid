@@ -16,4 +16,5 @@
     <string name="add_server_error_version">%1$s 은(는) 지원되지 않는 버전입니다. 서버를 업데이트 해주십시오.</string>
     <string name="login_btn_quick_connect">Quick Connect</string>
     <string name="login_btn_login">로그인</string>
+    <string name="servers_no_servers">서버가 발견되지 않았습니다</string>
 </resources>

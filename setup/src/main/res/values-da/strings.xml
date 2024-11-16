@@ -15,4 +15,5 @@
    <string name="login">Login</string>
    <string name="login_btn_login">Login</string>
    <string name="login_error_wrong_username_password">Forkert brugernavn eller adgangskode</string>
+   <string name="servers_no_servers">Ingen servere fundet</string>
 </resources>

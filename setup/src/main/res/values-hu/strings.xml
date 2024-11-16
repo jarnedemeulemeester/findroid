@@ -16,4 +16,5 @@
     <string name="add_server_btn_connect">Csatlakozás</string>
     <string name="login_btn_login">Bejelentkezés</string>
     <string name="login_btn_quick_connect">Gyors csatlakozás</string>
+    <string name="servers_no_servers">Nem található szerver</string>
 </resources>

@@ -16,4 +16,5 @@
     <string name="edit_text_username_hint">Użytkownik</string>
     <string name="login_btn_quick_connect">Szybkie połączenie</string>
     <string name="login_btn_login">Zaloguj</string>
+    <string name="servers_no_servers">Nie znaleziono żadnego serwera</string>
 </resources>
