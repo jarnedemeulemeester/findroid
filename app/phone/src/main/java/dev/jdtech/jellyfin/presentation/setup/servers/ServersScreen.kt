@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -135,13 +135,15 @@ private fun ServersScreenLayout(
                     )
                 }
             }
-            OutlinedButton(
-                onClick = { onAction(ServersAction.OnAddClick) },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(text = stringResource(SetupR.string.servers_btn_add_server))
-            }
         }
+        ExtendedFloatingActionButton(
+            onClick = { onAction(ServersAction.OnAddClick) },
+            icon = { Icon(painterResource(CoreR.drawable.ic_plus), contentDescription = null) },
+            text = { Text(text = stringResource(SetupR.string.servers_btn_add_server)) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp)
+        )
     }
 
     if (openDeleteDialog && selectedServer != null) {
