@@ -52,6 +52,19 @@ class SetupRepositoryImpl(
         return jellyfinApi.quickConnectApi.getQuickConnectState(secret).content
     }
 
+    override suspend fun setCurrentServer(serverId: String) {
+        val serverWithAddressAndUser = database.getServerWithAddressAndUser(serverId) ?: return
+        val serverAddress = serverWithAddressAndUser.address ?: return
+
+        jellyfinApi.apply {
+            api.update(
+                baseUrl = serverAddress.address,
+                accessToken = null,
+            )
+            userId = null
+        }
+    }
+
     override suspend fun addServer(address: String): Server {
         // Check if address is not blank
         if (address.isBlank()) {

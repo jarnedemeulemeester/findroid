@@ -19,6 +19,8 @@ interface SetupRepository {
 
     suspend fun getQuickConnectState(secret: String): QuickConnectResult
 
+    suspend fun setCurrentServer(serverId: String)
+
     suspend fun addServer(address: String): Server
 
     suspend fun loadDisclaimer(): String?
