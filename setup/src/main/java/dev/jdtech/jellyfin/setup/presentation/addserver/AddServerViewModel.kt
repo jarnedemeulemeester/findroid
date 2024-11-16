@@ -11,7 +11,6 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -56,8 +55,6 @@ constructor(
             _state.emit(
                 _state.value.copy(isLoading = true, error = null),
             )
-
-            delay(2000)
 
             try {
                 val server = repository.addServer(address)
