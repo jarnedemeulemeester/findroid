@@ -1,10 +1,8 @@
 package dev.jdtech.jellyfin.presentation.setup.welcome
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -59,36 +57,29 @@ private fun WelcomeScreenLayout(
         padding = PaddingValues(horizontal = 24.dp),
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxHeight()
                 .align(Alignment.Center)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    painter = painterResource(id = CoreR.drawable.ic_banner),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.width(250.dp),
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = stringResource(SetupR.string.welcome),
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(SetupR.string.welcome_text),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = CoreR.drawable.ic_banner),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier.width(250.dp),
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(SetupR.string.welcome),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(SetupR.string.welcome_text),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = Modifier.widthIn(max = 480.dp),
             ) {
