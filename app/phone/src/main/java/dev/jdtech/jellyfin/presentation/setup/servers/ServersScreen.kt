@@ -119,7 +119,7 @@ private fun ServersScreenLayout(
             if (state.servers.isEmpty()) {
                 Text(
                     text = stringResource(SetupR.string.servers_no_servers),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
                 LazyColumn(

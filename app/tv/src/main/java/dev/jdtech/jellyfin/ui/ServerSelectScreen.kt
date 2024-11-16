@@ -151,16 +151,18 @@ private fun ServerSelectScreenLayoutPreview() {
                 servers = listOf(
                     ServerWithAddresses(
                         server = dummyServer,
-                        addresses = listOf(ServerAddress(
-                            id = UUID.randomUUID(),
-                            address = dummyDiscoveredServer.address,
-                            serverId = "",
-                        )),
+                        addresses = listOf(
+                            ServerAddress(
+                                id = UUID.randomUUID(),
+                                address = dummyDiscoveredServer.address,
+                                serverId = "",
+                            ),
+                        ),
                         user = null,
-                    )
-                )
+                    ),
+                ),
             ),
-            onAction = {}
+            onAction = {},
         )
     }
 }
@@ -171,7 +173,7 @@ private fun ServerSelectScreenLayoutPreviewNoServers() {
     FindroidTheme {
         ServerSelectScreenLayout(
             state = ServersState(),
-            onAction = {}
+            onAction = {},
         )
     }
 }

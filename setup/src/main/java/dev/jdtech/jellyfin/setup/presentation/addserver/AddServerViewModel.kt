@@ -60,7 +60,7 @@ constructor(
             delay(2000)
 
             try {
-                val server = repository.connectToServer(address)
+                val server = repository.addServer(address)
                 appPreferences.currentServer = server.id
                 _state.emit(
                     _state.value.copy(isLoading = false, error = null),

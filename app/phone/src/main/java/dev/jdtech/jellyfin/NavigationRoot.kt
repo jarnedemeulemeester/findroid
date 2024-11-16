@@ -43,7 +43,9 @@ fun NavigationRoot(
         composable<ServersScreenRoute> {
             ServersScreen(
                 navigateToUsers = {},
-                navigateToLogin = {},
+                navigateToLogin = {
+                    navController.navigate(LoginRoute)
+                },
                 onAddClick = {
                     navController.navigate(AddServerRoute)
                 },

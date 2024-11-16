@@ -68,9 +68,6 @@
         android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
         android:label="@string/title_settings">
         <action
-            android:id="@+id/action_navigation_settings_to_serverSelectFragment"
-            app:destination="@id/serverSelectFragment" />
-        <action
             android:id="@+id/action_navigation_settings_to_usersFragment"
             app:destination="@id/usersFragment" />
         <action
@@ -274,17 +271,6 @@
         <argument
             android:name="query"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/serverSelectFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
-        android:label="@string/select_server"
-        tools:layout="@layout/fragment_server_select">
-        <action
-            android:id="@+id/action_serverSelectFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

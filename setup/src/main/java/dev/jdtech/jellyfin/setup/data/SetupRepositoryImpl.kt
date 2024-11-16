@@ -52,7 +52,7 @@ class SetupRepositoryImpl(
         return jellyfinApi.quickConnectApi.getQuickConnectState(secret).content
     }
 
-    override suspend fun connectToServer(address: String): Server {
+    override suspend fun addServer(address: String): Server {
         // Check if address is not blank
         if (address.isBlank()) {
             throw ExceptionUiText(UiText.StringResource(SetupR.string.add_server_error_empty_address))

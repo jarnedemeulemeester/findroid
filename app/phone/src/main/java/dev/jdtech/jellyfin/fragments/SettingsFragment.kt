@@ -22,7 +22,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
 
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
-            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
+            // findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
             true
         }
 

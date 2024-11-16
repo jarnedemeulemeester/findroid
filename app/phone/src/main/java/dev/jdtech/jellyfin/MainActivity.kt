@@ -146,7 +146,7 @@ class MainActivity : ComponentActivity() {
             appPreferences.currentServer?.let {
                 val currentUser = database.getServerCurrentUser(it)
                 if (currentUser == null) {
-                    graph.setStartDestination(R.id.serverSelectFragment)
+                    // graph.setStartDestination(R.id.serverSelectFragment)
                     viewModel.startDestinationChanged = true
                     onNoUser()
                 }
