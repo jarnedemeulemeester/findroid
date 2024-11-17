@@ -16,5 +16,5 @@
     <string name="login_btn_login">登录</string>
     <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
     <string name="login_btn_quick_connect">快速连接</string>
-    <string name="servers_no_servers_found">没有找到服务器</string>
+    <string name="servers_no_servers">没有找到服务器</string>
 </resources>
