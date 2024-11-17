@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -200,6 +203,19 @@ private fun LoginScreenLayout(
                 }
             }
             if (state.quickConnectEnabled) {
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.width(360.dp)
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                    Text(
+                        text = stringResource(SetupR.string.or),
+                        color = DividerDefaults.color,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Box {
                     OutlinedButton(
