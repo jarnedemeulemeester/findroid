@@ -202,7 +202,7 @@ private fun LoginScreenLayout(
                     Text(
                         text = stringResource(SetupR.string.or),
                         color = DividerDefaults.color,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
                 }

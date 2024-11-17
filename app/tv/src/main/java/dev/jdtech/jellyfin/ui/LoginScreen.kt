@@ -206,13 +206,13 @@ private fun LoginScreenLayout(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.width(360.dp)
+                    modifier = Modifier.width(360.dp),
                 ) {
                     HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
                     Text(
                         text = stringResource(SetupR.string.or),
                         color = DividerDefaults.color,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
                 }

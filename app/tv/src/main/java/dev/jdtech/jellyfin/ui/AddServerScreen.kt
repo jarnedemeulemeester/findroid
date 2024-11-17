@@ -1,13 +1,18 @@
 package dev.jdtech.jellyfin.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,10 +46,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.presentation.setup.components.DiscoveredServerItem
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerAction
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerEvent
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
+import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.ui.theme.FindroidTheme
 import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
@@ -58,6 +65,10 @@ fun AddServerScreen(
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(true) {
+        viewModel.discoverServers()
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -103,7 +114,25 @@ private fun AddServerScreenLayout(
                 text = stringResource(id = SetupR.string.add_server),
                 style = MaterialTheme.typography.displayMedium,
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
+            AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
+                ) {
+                    items(state.discoveredServers) { discoveredServer ->
+                        DiscoveredServerItem(
+                            name = discoveredServer.name,
+                            onClick = {
+                                serverAddress = discoveredServer.address
+                                onAction(AddServerAction.OnConnectClick(discoveredServer.address))
+                            },
+                            modifier = Modifier.animateItem(),
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             OutlinedTextField(
                 value = serverAddress,
                 leadingIcon = {
@@ -184,6 +213,19 @@ private fun AddServerScreenLayoutPreview() {
     FindroidTheme {
         AddServerScreenLayout(
             state = AddServerState(),
+            onAction = {},
+        )
+    }
+}
+
+@Preview(device = "id:tv_1080p")
+@Composable
+private fun AddServerScreenLayoutDiscoveredPreview() {
+    FindroidTheme {
+        AddServerScreenLayout(
+            state = AddServerState(
+                discoveredServers = listOf(dummyDiscoveredServer),
+            ),
             onAction = {},
         )
     }
