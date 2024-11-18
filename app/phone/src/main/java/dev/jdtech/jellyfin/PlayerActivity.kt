@@ -323,7 +323,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (currentMediaSegment != null && !showSkipButton) {
+                if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(currentMediaSegment.type.toString()) && !showSkipButton) {
                     skipSegmentButton.visibility = visibility
                 }
             },
