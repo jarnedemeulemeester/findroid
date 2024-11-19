@@ -94,7 +94,6 @@ class PlayerActivity : BasePlayerActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
