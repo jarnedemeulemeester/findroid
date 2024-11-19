@@ -66,7 +66,7 @@ class PlayerActivity : BasePlayerActivity() {
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
     private var currentMediaSegment: FindroidSegment? = null
-    private var showSkipButton: Boolean = false
+    private var skipButtonTimeoutExpired: Boolean = true
 
     private lateinit var skipSegmentButton: Button
 
@@ -90,9 +90,10 @@ class PlayerActivity : BasePlayerActivity() {
     private val skipButtonTimeout = Runnable {
         if (!binding.playerView.isControllerFullyVisible) {
             skipSegmentButton.isVisible = false
-            showSkipButton = false
+            skipButtonTimeoutExpired = true
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,7 +174,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     // Button visibility
                                     skipSegmentButton.isVisible = !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
-                                        showSkipButton = true
+                                        skipButtonTimeoutExpired = false
                                         handler.removeCallbacks(skipButtonTimeout)
                                         handler.postDelayed(skipButtonTimeout, appPreferences.playerMediaSegmentsSkipButtonDuration * 1000)
                                     }
@@ -323,7 +324,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(currentMediaSegment?.type.toString()) == true && !showSkipButton) {
+                if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(currentMediaSegment?.type.toString()) == true && skipButtonTimeoutExpired) {
                     skipSegmentButton.visibility = visibility
                 }
             },
