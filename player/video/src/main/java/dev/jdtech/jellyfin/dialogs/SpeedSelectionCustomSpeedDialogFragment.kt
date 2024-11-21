@@ -25,9 +25,11 @@ class SpeedSelectionCustomSpeedDialogFragment(
 
             val builtDialog = MaterialAlertDialogBuilder(activity)
                 .setTitle(getString(R.string.custom_playback_speed))
-                .setView(editText).create()
+                .setView(editText)
+                .create()
 
             editText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                // Accepting ENTER KeyEvents should provide better support for physical keyboards.
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                     val newSpeed = textView.text.toString().toFloatOrNull()
                     if (newSpeed != null && newSpeed <= 3f && newSpeed >= 0.25f) {
@@ -35,7 +37,6 @@ class SpeedSelectionCustomSpeedDialogFragment(
                     }
                     builtDialog.dismiss()
                 }
-
                 true
             }
 
