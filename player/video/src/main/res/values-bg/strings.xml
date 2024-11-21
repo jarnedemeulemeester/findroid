@@ -3,6 +3,7 @@
     <string name="select_audio_track">Изберете аудиопът</string>
     <string name="select_subtile_track">Изберете писта за субтитри</string>
     <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
+    <string name="custom_playback_speed_label">да поръчам</string>
     <string name="select_a_version">Изберете версия</string>
     <string name="external">Външно</string>
     <string name="player_controls_skip_back">Пусни предишен</string>
@@ -17,4 +18,5 @@
     <string name="player_controls_skip_intro">Пропусни интро</string>
     <string name="player_controls_picture_in_picture">Влез в режим картина-в-картина</string>
     <string name="none">Нищо</string>
+    <string name="custom_playback_speed">скорост</string>
 </resources>

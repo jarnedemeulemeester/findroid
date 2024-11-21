@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">mérték utáni</string>
     <string name="select_a_version">Verzió kiválasztása</string>
     <string name="select_audio_track">Hangsáv kiválasztása</string>
     <string name="select_subtile_track">Felirat kiválasztása</string>
@@ -18,4 +19,5 @@
     <string name="player_controls_picture_in_picture">Belépés kép a képben</string>
     <string name="none">Nincs</string>
     <string name="player_controls_skip_credits">Stáblista kihagyása</string>
+    <string name="custom_playback_speed">Sebesség</string>
 </resources>

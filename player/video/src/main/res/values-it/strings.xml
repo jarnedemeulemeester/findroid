@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">su misura</string>
     <string name="select_a_version">Seleziona una versione</string>
     <string name="select_audio_track">Traccia audio</string>
     <string name="select_subtile_track">Traccia dei sottotitoli</string>
@@ -18,4 +19,5 @@
     <string name="player_controls_picture_in_picture">Attiva picture in picture</string>
     <string name="none">Nessuno</string>
     <string name="player_controls_skip_credits">Salta crediti</string>
+    <string name="custom_playback_speed">Velocità</string>
 </resources>

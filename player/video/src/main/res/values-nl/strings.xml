@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">op maat</string>
     <string name="select_a_version">Kies een versie</string>
     <string name="select_audio_track">Selecteer audiotrack</string>
     <string name="select_subtile_track">Selecteer ondertiteling</string>
@@ -17,4 +18,5 @@
     <string name="player_controls_play_pause">Speel pauze</string>
     <string name="player_controls_skip_forward">Vooruit springen</string>
     <string name="player_trickplay">Trickplay</string>
+    <string name="custom_playback_speed">Snelheid</string>
 </resources>

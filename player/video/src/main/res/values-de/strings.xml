@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">maßgeschneidert</string>
     <string name="select_a_version">Wähle eine Version</string>
     <string name="select_audio_track">Wähle eine Audiospur</string>
     <string name="select_subtile_track">Wähle eine Untertitelspur</string>
@@ -18,4 +19,5 @@
     <string name="player_controls_picture_in_picture">Bild-in-Bild öffnen</string>
     <string name="player_controls_skip_credits">Abspann überspringen</string>
     <string name="player_trickplay">Pseudovideo</string>
+    <string name="custom_playback_speed">Geschwindigkeit</string>
 </resources>

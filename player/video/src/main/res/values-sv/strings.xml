@@ -2,6 +2,7 @@
 <resources>
     <string name="select_subtile_track">Välj textningsspår</string>
     <string name="select_playback_speed">Välj uppspelningshastighet</string>
+    <string name="custom_playback_speed_label">skräddarsydda</string>
     <string name="select_a_version">Välj en version</string>
     <string name="external">Extern</string>
     <string name="select_audio_track">Välj ljudspår</string>
@@ -9,4 +10,5 @@
     <string name="player_controls_rewind">Spola tillbaka</string>
     <string name="player_controls_fast_forward">Spola framåt</string>
     <string name="player_controls_skip_intro">Hoppa över intro</string>
+    <string name="custom_playback_speed">hastighet</string>
 </resources>

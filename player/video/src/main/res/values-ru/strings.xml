@@ -2,6 +2,7 @@
 <resources>
     <string name="select_subtile_track">Выбрать субтитры</string>
     <string name="select_playback_speed">Выбрать скорость воспроизведения</string>
+    <string name="custom_playback_speed_label">сделанный на заказ</string>
     <string name="select_a_version">Выбрать версию</string>
     <string name="select_audio_track">Выбрать аудиодорожку</string>
     <string name="external">Внешнее</string>
@@ -18,4 +19,5 @@
     <string name="none">Отключить</string>
     <string name="player_controls_picture_in_picture">Картинка в картинке</string>
     <string name="player_controls_skip_credits">Пропустить титры</string>
+    <string name="custom_playback_speed">Скорость</string>
 </resources>

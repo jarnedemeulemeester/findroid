@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">personalizada</string>
     <string name="select_a_version">Selecione uma versão</string>
     <string name="select_audio_track">Selecione uma faixa de áudio</string>
     <string name="select_subtile_track">Selecione uma legenda</string>
@@ -18,4 +19,5 @@
     <string name="player_controls_picture_in_picture">Entrar no picture-in-picture</string>
     <string name="none">Nenhum</string>
     <string name="player_controls_skip_credits">Pular créditos</string>
+    <string name="custom_playback_speed">Velocidade</string>
 </resources>

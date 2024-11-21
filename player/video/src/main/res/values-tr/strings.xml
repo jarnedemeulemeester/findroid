@@ -3,6 +3,8 @@
     <string name="select_audio_track">Ses parçasını seç</string>
     <string name="select_subtile_track">Altyazı parçasını seç</string>
     <string name="select_playback_speed">Oynatma hızını seç</string>
+    <string name="custom_playback_speed_label">ısmarlama</string>
     <string name="select_a_version">Bir sürüm seç</string>
     <string name="none">Hiçbiri</string>
+    <string name="custom_playback_speed">hız</string>
 </resources>

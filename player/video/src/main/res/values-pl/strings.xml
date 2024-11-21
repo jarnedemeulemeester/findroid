@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="custom_playback_speed_label">obstalunkowy</string>
     <string name="select_a_version">Wybierz wersję</string>
     <string name="select_audio_track">Wybierz ścieżkę audio</string>
     <string name="select_subtile_track">Wybierz ścieżkę napisów</string>
@@ -18,4 +19,5 @@
     <string name="player_controls_picture_in_picture">Wejdź w tryb obrazu w obrazie</string>
     <string name="none">Brak</string>
     <string name="player_controls_skip_credits">Pomiń napisy końcowe</string>
+    <string name="custom_playback_speed">Prędkość</string>
 </resources>
