@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="custom_playback_speed_label">sur mesure</string>
     <string name="select_a_version">Choisissez une version</string>
     <string name="select_audio_track">Choix de la piste audio</string>
     <string name="select_subtile_track">Choix de la piste des sous-titres</string>
@@ -18,5 +17,4 @@
     <string name="player_controls_progress">Barre de progression</string>
     <string name="player_controls_picture_in_picture">Détacher la fenêtre flottante</string>
     <string name="none">Aucun</string>
-    <string name="custom_playback_speed">Vitesse</string>
 </resources>

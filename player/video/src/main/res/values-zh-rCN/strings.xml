@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="custom_playback_speed_label">定制的</string>
     <string name="select_a_version">选择版本</string>
     <string name="select_audio_track">选择音轨</string>
     <string name="select_subtile_track">选择字幕轨</string>
@@ -19,5 +18,4 @@
     <string name="player_controls_picture_in_picture">进入画中画</string>
     <string name="none">无</string>
     <string name="player_controls_skip_credits">跳过片尾</string>
-    <string name="custom_playback_speed">速度</string>
 </resources>

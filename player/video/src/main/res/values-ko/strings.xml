@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="custom_playback_speed_label">맞춤형</string>
     <string name="select_a_version">버전 선택</string>
     <string name="select_audio_track">오디오 트랙 선택</string>
     <string name="select_subtile_track">자막 트랙 선택</string>
@@ -19,5 +18,4 @@
     <string name="player_controls_picture_in_picture">picture-in-picture 전환</string>
     <string name="none">없음</string>
     <string name="player_controls_skip_credits">엔딩 스킵</string>
-    <string name="custom_playback_speed">속도</string>
 </resources>

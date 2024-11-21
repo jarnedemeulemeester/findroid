@@ -3,7 +3,6 @@
     <string name="select_audio_track">בחר רצועת שמע</string>
     <string name="select_playback_speed">בחר מהירות הפעלה</string>
     <string name="external">חיצוני</string>
-    <string name="custom_playback_speed_label">בהזמנה אישית</string>
     <string name="select_a_version">בחר גרסה</string>
     <string name="select_subtile_track">בחר רצועת כתוביות</string>
     <string name="player_controls_exit">צא מהנגן</string>
@@ -17,5 +16,4 @@
     <string name="player_controls_progress">סרגל התקדמות</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_picture_in_picture">הפעל תמונה-בתוך-תמונה</string>
-    <string name="custom_playback_speed">מְהִירוּת</string>
 </resources>

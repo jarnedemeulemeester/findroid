@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="custom_playback_speed_label">hecho a la medida</string>
     <string name="select_a_version">Selecciona una versión</string>
     <string name="select_audio_track">Selecciona la pista de audio</string>
     <string name="select_subtile_track">Selecciona la pista de subtitulo</string>
@@ -19,5 +18,4 @@
     <string name="player_controls_picture_in_picture">Entrar en modo PIP</string>
     <string name="none">Ninguno</string>
     <string name="player_controls_skip_credits">Saltar créditos</string>
-    <string name="custom_playback_speed">velocidad</string>
 </resources>

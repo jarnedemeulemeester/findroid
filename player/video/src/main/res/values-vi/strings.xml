@@ -2,7 +2,6 @@
 <resources>
     <string name="select_subtile_track">Chọn dòng phụ đề</string>
     <string name="select_playback_speed">Chọn tốc độ phát</string>
-    <string name="custom_playback_speed_label">đặt làm riêng</string>
     <string name="select_a_version">Chọn phiên bản</string>
     <string name="external">Ngoại</string>
     <string name="select_audio_track">Chọn dòng âm thanh</string>
@@ -17,5 +16,4 @@
     <string name="player_controls_skip_forward">Tiến tới</string>
     <string name="player_trickplay">Tua mượt mà</string>
     <string name="player_controls_progress">Thanh tiến trình</string>
-    <string name="custom_playback_speed">tốc độ</string>
 </resources>

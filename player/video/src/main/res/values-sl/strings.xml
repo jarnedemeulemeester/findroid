@@ -3,7 +3,6 @@
     <string name="select_audio_track">Izberite zvočno sled</string>
     <string name="select_subtile_track">Izberite podnapise</string>
     <string name="select_playback_speed">Izberite hitrost predvajanja</string>
-    <string name="custom_playback_speed_label">po meri</string>
     <string name="select_a_version">Izberite različico</string>
     <string name="external">Zunanjo</string>
     <string name="player_controls_exit">Izhod iz predvajalnika</string>
@@ -15,5 +14,4 @@
     <string name="player_controls_play_pause">Predvajaj ustavi</string>
     <string name="player_controls_progress">Vrstica napredka</string>
     <string name="player_controls_skip_forward">Preskoči naprej</string>
-    <string name="custom_playback_speed">Hitrost</string>
 </resources>

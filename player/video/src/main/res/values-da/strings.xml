@@ -4,7 +4,6 @@
     <string name="player_controls_play_pause">Afspilnings pause</string>
     <string name="select_subtile_track">Vælg undertekster</string>
     <string name="select_playback_speed">Vælg afspilnings hastighed</string>
-    <string name="custom_playback_speed_label">skræddersyet</string>
     <string name="select_a_version">Vælg en version</string>
     <string name="external">Ekstern</string>
     <string name="player_controls_picture_in_picture">Start billed i billed</string>
@@ -18,5 +17,4 @@
     <string name="none">Ingen</string>
     <string name="player_controls_progress">Process indikator</string>
     <string name="player_controls_rewind">Spol tilbage</string>
-    <string name="custom_playback_speed">Hastighed</string>
 </resources>
