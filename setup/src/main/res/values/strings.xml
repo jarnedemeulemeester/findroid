@@ -28,4 +28,5 @@
    <string name="confirm">Confirm</string>
    <string name="cancel">Cancel</string>
    <string name="or">OR</string>
+   <string name="server_subtitle">Server: %s</string>
 </resources>

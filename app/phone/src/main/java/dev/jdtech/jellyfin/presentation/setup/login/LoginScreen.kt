@@ -65,6 +65,7 @@ fun LoginScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
+        viewModel.loadServer()
         viewModel.loadDisclaimer()
         viewModel.loadQuickConnectEnabled()
     }
@@ -128,7 +129,9 @@ private fun LoginScreenLayout(
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = stringResource(SetupR.string.login), style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""), style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(
                 value = username,
                 leadingIcon = {
@@ -243,6 +246,7 @@ private fun AddServerScreenLayoutPreview() {
     FindroidTheme {
         LoginScreenLayout(
             state = LoginState(
+                serverName = "Demo Server",
                 quickConnectEnabled = true,
                 disclaimer = "Sample disclaimer",
             ),

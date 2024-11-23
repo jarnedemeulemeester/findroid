@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.setup.data
 
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.ExceptionUiText
@@ -27,6 +28,7 @@ import dev.jdtech.jellyfin.setup.R as SetupR
 class SetupRepositoryImpl(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
+    private val appPreferences: AppPreferences,
 ) : SetupRepository {
     override suspend fun discoverServers(): Flow<ServerDiscoveryInfo> {
         return jellyfinApi.jellyfin.discovery.discoverLocalServers()
@@ -34,6 +36,12 @@ class SetupRepositoryImpl(
 
     override suspend fun getServers(): List<ServerWithAddresses> {
         return database.getServersWithAddresses()
+    }
+
+    override suspend fun getCurrentServer(): Server? {
+        return appPreferences.currentServer?.let { id ->
+            database.get(id)
+        }
     }
 
     override suspend fun deleteServer(serverId: String) {

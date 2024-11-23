@@ -11,6 +11,8 @@ interface SetupRepository {
 
     suspend fun getServers(): List<ServerWithAddresses>
 
+    suspend fun getCurrentServer(): Server?
+
     suspend fun deleteServer(serverId: String)
 
     suspend fun getIsQuickConnectEnabled(): Boolean

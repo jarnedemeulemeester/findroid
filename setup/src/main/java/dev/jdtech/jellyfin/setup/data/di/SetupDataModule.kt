@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.setup.data.SetupRepositoryImpl
@@ -18,7 +19,8 @@ object SetupDataModule {
     fun provideSetupRepository(
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
+        appPreferences: AppPreferences,
     ): SetupRepository {
-        return SetupRepositoryImpl(jellyfinApi = jellyfinApi, database = serverDatabase)
+        return SetupRepositoryImpl(jellyfinApi = jellyfinApi, database = serverDatabase, appPreferences = appPreferences)
     }
 }

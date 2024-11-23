@@ -68,6 +68,7 @@ fun LoginScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true) {
+        viewModel.loadServer()
         viewModel.loadDisclaimer()
         viewModel.loadQuickConnectEnabled()
     }
@@ -121,7 +122,12 @@ private fun LoginScreenLayout(
                 text = stringResource(id = SetupR.string.login),
                 style = MaterialTheme.typography.displayMedium,
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
+            Text(
+                text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             OutlinedTextField(
                 value = username,
                 leadingIcon = {
@@ -264,6 +270,7 @@ private fun LoginScreenLayoutPreview() {
     FindroidTheme {
         LoginScreenLayout(
             state = LoginState(
+                serverName = "Demo Server",
                 quickConnectEnabled = true,
             ),
             onAction = {},
@@ -276,7 +283,10 @@ private fun LoginScreenLayoutPreview() {
 private fun LoginScreenLayoutPreviewError() {
     FindroidTheme {
         LoginScreenLayout(
-            state = LoginState(error = UiText.DynamicString("Invalid username or password")),
+            state = LoginState(
+                serverName = "Demo Server",
+                error = UiText.DynamicString("Invalid username or password"),
+            ),
             onAction = {},
         )
     }

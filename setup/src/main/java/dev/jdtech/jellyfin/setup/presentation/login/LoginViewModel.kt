@@ -30,6 +30,17 @@ constructor(
 
     private var quickConnectJob: Job? = null
 
+    fun loadServer() {
+        viewModelScope.launch {
+            try {
+                val server = repository.getCurrentServer()
+                _state.emit(
+                    _state.value.copy(serverName = server?.name),
+                )
+            } catch (_: Exception) {}
+        }
+    }
+
     fun loadDisclaimer() {
         viewModelScope.launch {
             try {
