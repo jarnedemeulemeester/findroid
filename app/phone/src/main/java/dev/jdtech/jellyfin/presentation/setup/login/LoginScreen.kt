@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.setup.login
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -193,35 +194,37 @@ private fun LoginScreenLayout(
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             )
-            if (state.quickConnectEnabled) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
-                    Text(
-                        text = stringResource(SetupR.string.or),
-                        color = DividerDefaults.color,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Box {
-                    if (state.quickConnectCode != null) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .align(Alignment.CenterStart)
-                                .offset(x = 8.dp),
-                        )
-                    }
-                    OutlinedButton(
-                        onClick = { onAction(LoginAction.OnQuickConnectClick) },
-                        modifier = Modifier.fillMaxWidth(),
+            AnimatedVisibility(state.quickConnectEnabled) {
+                Column {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect))
+                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                        Text(
+                            text = stringResource(SetupR.string.or),
+                            color = DividerDefaults.color,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box {
+                        if (state.quickConnectCode != null) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .align(Alignment.CenterStart)
+                                    .offset(x = 8.dp),
+                            )
+                        }
+                        OutlinedButton(
+                            onClick = { onAction(LoginAction.OnQuickConnectClick) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect))
+                        }
                     }
                 }
             }
