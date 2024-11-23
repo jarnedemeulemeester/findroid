@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -202,41 +203,43 @@ private fun LoginScreenLayout(
                     }
                 }
             }
-            if (state.quickConnectEnabled) {
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.width(360.dp),
-                ) {
-                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
-                    Text(
-                        text = stringResource(SetupR.string.or),
-                        color = DividerDefaults.color,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
-                }
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                Box {
-                    OutlinedButton(
-                        onClick = { onAction(LoginAction.OnQuickConnectClick) },
+            AnimatedVisibility(state.quickConnectEnabled) {
+                Column {
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.width(360.dp),
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
+                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                        Text(
+                            text = stringResource(SetupR.string.or),
+                            color = DividerDefaults.color,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                    }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                    Box {
+                        OutlinedButton(
+                            onClick = { onAction(LoginAction.OnQuickConnectClick) },
+                            modifier = Modifier.width(360.dp),
                         ) {
-                            if (state.quickConnectCode != null) {
-                                CircularProgressIndicator(
-                                    color = LocalContentColor.current,
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .align(Alignment.CenterStart),
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                if (state.quickConnectCode != null) {
+                                    CircularProgressIndicator(
+                                        color = LocalContentColor.current,
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .align(Alignment.CenterStart),
+                                    )
+                                }
+                                Text(
+                                    text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect),
+                                    modifier = Modifier.align(Alignment.Center),
                                 )
                             }
-                            Text(
-                                text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect),
-                                modifier = Modifier.align(Alignment.Center),
-                            )
                         }
                     }
                 }
