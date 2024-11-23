@@ -67,6 +67,14 @@ fun NavigationRoot(
         composable<LoginRoute> {
             LoginScreen(
                 onSuccess = {},
+                onChangeServerClick = {
+                    navController.navigate(ServersScreenRoute) {
+                        popUpTo(LoginRoute) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
                 onBackClick = {
                     navController.popBackStack()
                 },

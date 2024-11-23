@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.setup.R as SetupR
 @Composable
 fun LoginScreen(
     onSuccess: () -> Unit,
+    onChangeServerClick: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
@@ -81,6 +82,7 @@ fun LoginScreen(
         state = state,
         onAction = { action ->
             when (action) {
+                is LoginAction.OnChangeServerClick -> onChangeServerClick()
                 is LoginAction.OnBackClick -> onBackClick()
                 else -> Unit
             }
@@ -105,12 +107,6 @@ private fun LoginScreenLayout(
     val doLogin = { onAction(LoginAction.OnLoginClick(username, password)) }
 
     RootLayout {
-        IconButton(
-            onClick = { onAction(LoginAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
-        }
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -128,9 +124,15 @@ private fun LoginScreenLayout(
                     .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.login), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(SetupR.string.login),
+                style = MaterialTheme.typography.headlineMedium
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""), style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
+                style = MaterialTheme.typography.titleMedium,
+            )
             Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(
                 value = username,
@@ -235,6 +237,20 @@ private fun LoginScreenLayout(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = state.disclaimer!!)
             }
+        }
+        IconButton(
+            onClick = { onAction(LoginAction.OnBackClick) },
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+        }
+        IconButton(
+            onClick = { onAction(LoginAction.OnChangeServerClick) },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(end = 8.dp),
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
         }
     }
 }

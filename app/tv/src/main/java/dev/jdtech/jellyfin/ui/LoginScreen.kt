@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
+import androidx.tv.material3.IconButton
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
@@ -46,7 +47,9 @@ import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.setup.presentation.login.LoginAction
@@ -88,6 +91,19 @@ fun LoginScreen(
     LoginScreenLayout(
         state = state,
         onAction = { action ->
+            when (action) {
+                is LoginAction.OnChangeServerClick -> {
+                    navigator.navigate(
+                        ServerSelectScreenDestination
+                    ) {
+                        popUpTo(LoginScreenDestination) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+                else -> Unit
+            }
             viewModel.onAction(action)
         },
     )
@@ -112,6 +128,16 @@ private fun LoginScreenLayout(
         modifier = Modifier
             .fillMaxSize(),
     ) {
+        IconButton(
+            onClick = {
+                onAction(LoginAction.OnChangeServerClick)
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(MaterialTheme.spacings.small)
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
