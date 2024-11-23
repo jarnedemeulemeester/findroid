@@ -330,7 +330,8 @@ class JellyfinRepositoryImpl(
             }
 
             try {
-                val apiSegments = jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map { it.toFindroidSegment() }
+                val apiSegments =
+                    jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map { it.toFindroidSegment() }
 
                 Timber.tag("SegmentInfo").d("segments: %s", apiSegments)
 

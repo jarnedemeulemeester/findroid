@@ -36,11 +36,11 @@ import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.Constants.PlayerMediaSegmentsAutoSkip
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
-import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
@@ -50,7 +50,6 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
 
@@ -65,7 +64,7 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
-    private var currentMediaSegment: FindroidSegment? = null
+    private var currentMediaSegment: PlayerSegment? = null
     private var skipButtonTimeoutExpired: Boolean = true
 
     private lateinit var skipSegmentButton: Button
@@ -161,23 +160,25 @@ class PlayerActivity : BasePlayerActivity() {
                             currentMediaSegment = currentSegment
                             Timber.d("Preferences: %s", appPreferences.playerMediaSegmentsSkipButtonType)
                             currentSegment?.let { segment ->
-                                if ((appPreferences.playerMediaSegmentsAutoSkip == "always" || (appPreferences.playerMediaSegmentsAutoSkip == "pip" && isInPictureInPictureMode)) &&
+                                if ((
+                                        appPreferences.playerMediaSegmentsAutoSkip == PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                                            (appPreferences.playerMediaSegmentsAutoSkip == PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
+                                        ) &&
                                     appPreferences.playerMediaSegmentsAutoSkipType?.contains(segment.type.toString()) == true
                                 ) {
                                     // Auto skip
                                     viewModel.skipSegment(segment)
                                 } else if (appPreferences.playerMediaSegmentsSkipButtonType?.contains(segment.type.toString()) == true) {
-                                    // Skip Button
-                                    // Button text
-                                    skipSegmentButton.text = getSkipButtonText(segment)
-                                    // Button visibility
+                                    // Skip Button - text
+                                    skipSegmentButton.text = getString(viewModel.getSkipButtonTextStringId(segment))
+                                    // Skip Button - visibility
                                     skipSegmentButton.isVisible = !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         skipButtonTimeoutExpired = false
                                         handler.removeCallbacks(skipButtonTimeout)
                                         handler.postDelayed(skipButtonTimeout, appPreferences.playerMediaSegmentsSkipButtonDuration * 1000)
                                     }
-                                    // onClick
+                                    // Skip Button - onClick
                                     skipSegmentButton.setOnClickListener {
                                         viewModel.skipSegment(segment)
                                         currentMediaSegment = null
@@ -358,19 +359,8 @@ class PlayerActivity : BasePlayerActivity() {
         } catch (e: Exception) {
             Timber.e(e)
         }
+        handler.removeCallbacks(skipButtonTimeout)
         finish()
-    }
-
-    private fun getSkipButtonText(segment: FindroidSegment): String {
-        return when (segment.type) {
-            FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-            FindroidSegmentType.OUTRO -> if (viewModel.skipToNextEpisode(segment)) { getString(VideoR.string.player_controls_next_episode) } else { getString(VideoR.string.player_controls_skip_outro) }
-            FindroidSegmentType.RECAP -> getString(VideoR.string.player_controls_skip_recap)
-            FindroidSegmentType.PREVIEW -> getString(VideoR.string.player_controls_skip_preview)
-            FindroidSegmentType.COMMERCIAL -> getString(VideoR.string.player_controls_skip_commercial)
-            FindroidSegmentType.UNKNOWN -> getString(VideoR.string.player_controls_skip_unknown)
-            else -> ""
-        }
     }
 
     private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
