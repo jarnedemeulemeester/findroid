@@ -94,7 +94,7 @@ fun LoginScreen(
             when (action) {
                 is LoginAction.OnChangeServerClick -> {
                     navigator.navigate(
-                        ServerSelectScreenDestination
+                        ServerSelectScreenDestination,
                     ) {
                         popUpTo(LoginScreenDestination) {
                             inclusive = true
@@ -134,7 +134,7 @@ private fun LoginScreenLayout(
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(MaterialTheme.spacings.small)
+                .padding(MaterialTheme.spacings.small),
         ) {
             Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
         }

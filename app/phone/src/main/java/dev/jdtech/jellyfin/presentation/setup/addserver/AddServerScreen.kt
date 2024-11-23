@@ -98,12 +98,6 @@ private fun AddServerScreenLayout(
     val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
 
     RootLayout {
-        IconButton(
-            onClick = { onAction(AddServerAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
-        }
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -183,6 +177,12 @@ private fun AddServerScreenLayout(
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             )
+        }
+        IconButton(
+            onClick = { onAction(AddServerAction.OnBackClick) },
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
         }
     }
 }

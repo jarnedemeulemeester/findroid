@@ -92,12 +92,6 @@ private fun ServersScreenLayout(
     var selectedServer by remember { mutableStateOf<Server?>(null) }
 
     RootLayout {
-        IconButton(
-            onClick = { onAction(ServersAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
-        }
         Column(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -147,6 +141,12 @@ private fun ServersScreenLayout(
                     }
                 }
             }
+        }
+        IconButton(
+            onClick = { onAction(ServersAction.OnBackClick) },
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
         }
         ExtendedFloatingActionButton(
             onClick = { onAction(ServersAction.OnAddClick) },
