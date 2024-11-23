@@ -17,7 +17,7 @@ private fun MediaSegmentType.toFindroidSegmentType(): FindroidSegmentType = when
 }
 
 data class FindroidSegment(
-    var type: FindroidSegmentType = FindroidSegmentType.UNKNOWN,
+    val type: FindroidSegmentType,
     val startTicks: Long,
     val endTicks: Long,
 )

@@ -65,6 +65,11 @@ object Constants {
     // player
     const val DEFAULT_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION = 10L
     const val DEFAULT_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD = 5_000L
+    object PlayerMediaSegmentsAutoSkip {
+        const val ALWAYS = "always"
+        const val PIP = "pip"
+        const val NEVER = "never"
+    }
 
     // network
     const val NETWORK_DEFAULT_REQUEST_TIMEOUT = 30_000L

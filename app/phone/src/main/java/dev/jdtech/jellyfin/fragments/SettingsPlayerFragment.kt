@@ -9,6 +9,7 @@ import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import dev.jdtech.jellyfin.Constants.PlayerMediaSegmentsAutoSkip
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class SettingsPlayerFragment : PreferenceFragmentCompat() {
@@ -42,10 +43,10 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
 
         autoSkipTypePreference?.let {
             setupMultiSelectPreference(it, valueToDisplaySegmentsType)
-            it.isEnabled = autoSkipPreference?.value != "never"
+            it.isEnabled = autoSkipPreference?.value != PlayerMediaSegmentsAutoSkip.NEVER
         }
         autoSkipPreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-            val isEnabled = newValue != "never" // Enable if value is not "never"
+            val isEnabled = newValue != PlayerMediaSegmentsAutoSkip.NEVER // Enable if value is not "never"
             autoSkipTypePreference?.isEnabled = isEnabled
             true
         }
