@@ -29,7 +29,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ServersScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -70,7 +70,7 @@ fun SettingsSubScreen(
                 navigator.navigate(UserSelectScreenDestination)
             }
             is SettingsEvent.NavigateToServers -> {
-                navigator.navigate(ServerSelectScreenDestination)
+                navigator.navigate(ServersScreenDestination)
             }
         }
     }

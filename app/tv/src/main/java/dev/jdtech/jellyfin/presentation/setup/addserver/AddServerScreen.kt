@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.setup.addserver
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -49,14 +49,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.presentation.setup.components.DiscoveredServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.setup.R
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerAction
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerEvent
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
@@ -75,6 +74,7 @@ fun AddServerScreen(
             is AddServerEvent.Success -> {
                 navigator.navigate(LoginScreenDestination)
             }
+
             else -> Unit
         }
     }
@@ -111,7 +111,7 @@ private fun AddServerScreenLayout(
                 .align(Alignment.Center),
         ) {
             Text(
-                text = stringResource(id = SetupR.string.add_server),
+                text = stringResource(id = R.string.add_server),
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -137,14 +137,14 @@ private fun AddServerScreenLayout(
                 value = serverAddress,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = CoreR.drawable.ic_server),
+                        painter = painterResource(id = dev.jdtech.jellyfin.core.R.drawable.ic_server),
                         contentDescription = null,
                     )
                 },
                 onValueChange = { serverAddress = it },
                 label = {
                     Text(
-                        text = stringResource(id = SetupR.string.edit_text_server_address_hint),
+                        text = stringResource(id = R.string.edit_text_server_address_hint),
                     )
                 },
                 singleLine = true,
@@ -193,7 +193,7 @@ private fun AddServerScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = SetupR.string.add_server_btn_connect),
+                            text = stringResource(id = R.string.add_server_btn_connect),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }

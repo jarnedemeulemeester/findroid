@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.setup.login
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -49,8 +49,9 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ServersScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -59,8 +60,6 @@ import dev.jdtech.jellyfin.setup.presentation.login.LoginEvent
 import dev.jdtech.jellyfin.setup.presentation.login.LoginState
 import dev.jdtech.jellyfin.setup.presentation.login.LoginViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Destination<RootGraph>
 @Composable
@@ -94,7 +93,7 @@ fun LoginScreen(
             when (action) {
                 is LoginAction.OnChangeServerClick -> {
                     navigator.navigate(
-                        ServerSelectScreenDestination,
+                        ServersScreenDestination,
                     ) {
                         popUpTo(LoginScreenDestination) {
                             inclusive = true
@@ -136,7 +135,7 @@ private fun LoginScreenLayout(
                 .align(Alignment.TopEnd)
                 .padding(MaterialTheme.spacings.small),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
+            Icon(painter = painterResource(R.drawable.ic_server), contentDescription = null)
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -145,12 +144,15 @@ private fun LoginScreenLayout(
                 .align(Alignment.Center),
         ) {
             Text(
-                text = stringResource(id = SetupR.string.login),
+                text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.login),
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             Text(
-                text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
+                text = stringResource(
+                    dev.jdtech.jellyfin.setup.R.string.server_subtitle,
+                    state.serverName ?: "",
+                ),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -158,12 +160,12 @@ private fun LoginScreenLayout(
                 value = username,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = CoreR.drawable.ic_user),
+                        painter = painterResource(id = R.drawable.ic_user),
                         contentDescription = null,
                     )
                 },
                 onValueChange = { username = it },
-                label = { Text(text = stringResource(id = SetupR.string.edit_text_username_hint)) },
+                label = { Text(text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.edit_text_username_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
@@ -181,12 +183,12 @@ private fun LoginScreenLayout(
                 value = password,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = CoreR.drawable.ic_lock),
+                        painter = painterResource(id = R.drawable.ic_lock),
                         contentDescription = null,
                     )
                 },
                 onValueChange = { password = it },
-                label = { Text(text = stringResource(id = SetupR.string.edit_text_password_hint)) },
+                label = { Text(text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.edit_text_password_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
@@ -229,7 +231,7 @@ private fun LoginScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(id = SetupR.string.login_btn_login),
+                            text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.login_btn_login),
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
@@ -242,13 +244,17 @@ private fun LoginScreenLayout(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.width(360.dp),
                     ) {
-                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                        )
                         Text(
-                            text = stringResource(SetupR.string.or),
+                            text = stringResource(dev.jdtech.jellyfin.setup.R.string.or),
                             color = DividerDefaults.color,
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                        )
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                     Box {
@@ -268,7 +274,13 @@ private fun LoginScreenLayout(
                                     )
                                 }
                                 Text(
-                                    text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect),
+                                    text = if (state.quickConnectCode != null) {
+                                        state.quickConnectCode!!
+                                    } else {
+                                        stringResource(
+                                            dev.jdtech.jellyfin.setup.R.string.login_btn_quick_connect,
+                                        )
+                                    },
                                     modifier = Modifier.align(Alignment.Center),
                                 )
                             }
