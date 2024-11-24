@@ -28,8 +28,8 @@ import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.PreferenceSwitch
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun SettingsSwitchCard(

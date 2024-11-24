@@ -38,12 +38,12 @@ import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
 import dev.jdtech.jellyfin.ui.components.SettingsDetailsCard
 import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.SettingsEvent
 import dev.jdtech.jellyfin.viewmodels.SettingsViewModel

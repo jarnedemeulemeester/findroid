@@ -40,6 +40,7 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Track
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaTitle
@@ -48,7 +49,6 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
 import dev.jdtech.jellyfin.ui.dialogs.VideoPlayerTrackSelectorDialogResult
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import kotlinx.coroutines.delay

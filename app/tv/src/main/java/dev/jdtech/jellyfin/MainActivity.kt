@@ -10,7 +10,7 @@ import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestin
 import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
 

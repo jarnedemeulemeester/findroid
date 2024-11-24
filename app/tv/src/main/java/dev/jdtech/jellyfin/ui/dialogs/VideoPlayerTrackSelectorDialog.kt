@@ -33,8 +33,8 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.parcelize.Parcelize
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR

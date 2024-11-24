@@ -26,10 +26,10 @@ import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDes
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
 import dev.jdtech.jellyfin.ui.dummy.dummyEpisodeItems
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel

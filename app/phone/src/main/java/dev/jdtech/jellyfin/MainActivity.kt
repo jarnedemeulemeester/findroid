@@ -14,8 +14,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.databinding.ActivityMainBinding
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
@@ -24,8 +23,6 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-
     private val viewModel: MainViewModel by viewModels()
 
     @Inject
@@ -33,8 +30,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
-
-    // private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,21 +47,6 @@ class MainActivity : ComponentActivity() {
 //        scheduleUserDataSync()
 //        applyTheme()
 //        setupActivity()
-
-//        // Temp fix insets because SDK 35 enables edge to edge by default. This will probably be removed once we move to compose
-//        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-//            val bars = insets.getInsets(
-//                WindowInsetsCompat.Type.systemBars()
-//                    or WindowInsetsCompat.Type.displayCutout(),
-//            )
-//            v.updatePadding(
-//                left = bars.left,
-//                top = bars.top,
-//                right = bars.right,
-//                bottom = bars.bottom,
-//            )
-//            WindowInsetsCompat.CONSUMED
-//        }
     }
 
 /*

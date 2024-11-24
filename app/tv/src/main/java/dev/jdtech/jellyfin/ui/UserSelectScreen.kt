@@ -49,11 +49,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import dev.jdtech.jellyfin.ui.dummy.dummyUsers
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.UserSelectEvent
 import dev.jdtech.jellyfin.viewmodels.UserSelectViewModel

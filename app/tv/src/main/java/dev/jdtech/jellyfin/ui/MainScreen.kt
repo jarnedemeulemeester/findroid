@@ -42,13 +42,13 @@ import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDes
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import dev.jdtech.jellyfin.models.User
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.ui.dummy.dummyUser
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 

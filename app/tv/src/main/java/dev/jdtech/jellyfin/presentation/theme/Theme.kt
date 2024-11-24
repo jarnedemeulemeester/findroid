@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui.theme
+package dev.jdtech.jellyfin.presentation.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 import androidx.tv.material3.LocalContentColor as LocalContentColorTv
 import androidx.tv.material3.MaterialTheme as MaterialThemeTv
 import androidx.tv.material3.contentColorFor as contentColorForTv
@@ -20,19 +21,19 @@ fun FindroidTheme(
     content: @Composable BoxScope.() -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = ColorScheme,
+        colorScheme = darkScheme,
         typography = Typography,
         shapes = shapes,
     ) {
         MaterialThemeTv(
-            colorScheme = ColorSchemeTv,
+            colorScheme = darkSchemeTv,
             typography = TypographyTv,
             shapes = shapesTv,
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
                 LocalContentColorTv provides contentColorForTv(MaterialThemeTv.colorScheme.background),
-                LocalSpacings provides Spacings(),
+                LocalSpacings provides Spacings,
             ) {
                 Box(
                     modifier = Modifier.background(

@@ -12,7 +12,7 @@ import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDes
 import com.ramcosta.composedestinations.generated.destinations.PlayerScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 
 data class PlayerActivityNavArgs(
     val items: ArrayList<PlayerItem>,
