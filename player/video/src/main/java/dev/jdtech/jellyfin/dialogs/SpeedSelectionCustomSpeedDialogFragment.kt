@@ -9,12 +9,24 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.player.video.R
-import java.util.Locale
+import kotlin.math.exp
+import kotlin.math.ln
 
 class SpeedSelectionCustomSpeedDialogFragment(
     private val speedSelectionDialog: SpeedSelectionDialogFragment,
     private val currentSpeed: Float
 ): DialogFragment() {
+
+    /**
+     * Define the key values for the speed selection slide bar. Chosen for the logarithmic scaling.
+     */
+    private object SeekBarConstants {
+        private const val MAX_SPEED = 4.01f
+        private const val MIN_SPEED = 1/4f
+        const val NORMALIZATION = 1000
+        val MAX = (NORMALIZATION * ln(MAX_SPEED)).toInt()
+        val MIN = (NORMALIZATION * ln(MIN_SPEED)).toInt()
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -24,28 +36,20 @@ class SpeedSelectionCustomSpeedDialogFragment(
             speedText.text = createLabel(currentSpeed)
             speedText.gravity = Gravity.CENTER
 
-            // Use a SeekBar with a range scaled 100x from the intended playback speed multiplier.
             val seekBar = SeekBar(activity.baseContext)
-            seekBar.min = 25
-            seekBar.max = 400
+            seekBar.min = SeekBarConstants.MIN
+            seekBar.max = SeekBarConstants.MAX
             seekBar.progress = speedToSeekBarValue(currentSpeed)
 
             val listener = object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
+
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     speedText.text = createLabel(seekBarValueToSpeed(seekBar?.progress ?: 100))
                 }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    // NO-OP
-                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {} // NO-OP
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    // NO-OP
-                }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {} // NO-OP
             }
             seekBar.setOnSeekBarChangeListener(listener)
 
@@ -67,24 +71,28 @@ class SpeedSelectionCustomSpeedDialogFragment(
 
     /**
      * Scale the integer value from the SeekBar to the associated playback speed multiplier.
+     * Uses a logarithmic scale so that X speed and 1/X speed are equidistant from 1x speed.
+     * Discards precision beyond 2 decimal places.
      * Inverted by [speedToSeekBarValue].
      */
     private fun seekBarValueToSpeed(int: Int): Float {
-        return int.toFloat() / 100
+        val preciseSpeed = exp((int.toFloat()/SeekBarConstants.NORMALIZATION))
+        return ((100 * preciseSpeed).toInt()/ 100f)
     }
 
     /**
      * Scale a float playback speed multiplier to the associated progress value for the SeekBar.
+     * Uses a logarithmic scale so that X speed and 1/X speed are equidistant from 1x speed.
      * Inverted by [seekBarValueToSpeed].
      */
     private fun speedToSeekBarValue(float: Float): Int {
-        return (float * 100).toInt()
+        return (SeekBarConstants.NORMALIZATION * ln(float)).toInt()
     }
 
     /**
      * Create a formatted string for a label describing the selected playback speed multiplier.
      */
     private fun createLabel(float: Float): String {
-        return String.format(Locale.getDefault(), "%.2f x", float)
+        return "%.2fx".format(float)
     }
 }

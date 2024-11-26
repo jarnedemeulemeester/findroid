@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import java.util.Locale
 
 class SpeedSelectionDialogFragment(
     private val viewModel: PlayerActivityViewModel,
@@ -22,7 +23,7 @@ class SpeedSelectionDialogFragment(
         val speedNumbers = mutableListOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
 
         if (currentSpeed !in speedNumbers) {
-            speedTexts.add(customLabel + ": " + currentSpeed + "x")
+            speedTexts.add("%s: %.2fx".format(Locale.getDefault(), customLabel, currentSpeed))
             speedNumbers.add(currentSpeed)
         }
         else {
