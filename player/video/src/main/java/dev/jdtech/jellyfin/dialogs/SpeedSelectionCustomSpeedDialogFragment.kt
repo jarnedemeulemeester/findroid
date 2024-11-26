@@ -14,22 +14,21 @@ import kotlin.math.ln
 
 class SpeedSelectionCustomSpeedDialogFragment(
     private val speedSelectionDialog: SpeedSelectionDialogFragment,
-    private val currentSpeed: Float
-): DialogFragment() {
+    private val currentSpeed: Float,
+) : DialogFragment() {
 
     /**
      * Define the key values for the speed selection slide bar. Chosen for the logarithmic scaling.
      */
     private object SeekBarConstants {
         private const val MAX_SPEED = 4.01f
-        private const val MIN_SPEED = 1/4f
+        private const val MIN_SPEED = 1 / 4f
         const val NORMALIZATION = 1000
         val MAX = (NORMALIZATION * ln(MAX_SPEED)).toInt()
         val MIN = (NORMALIZATION * ln(MIN_SPEED)).toInt()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         return activity?.let { activity ->
 
             val speedText = TextView(activity.baseContext)
@@ -66,7 +65,7 @@ class SpeedSelectionCustomSpeedDialogFragment(
                     dialog.dismiss()
                 }
                 .create()
-        } ?: throw IllegalStateException("Activity cannot be null");
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     /**
@@ -76,8 +75,8 @@ class SpeedSelectionCustomSpeedDialogFragment(
      * Inverted by [speedToSeekBarValue].
      */
     private fun seekBarValueToSpeed(int: Int): Float {
-        val preciseSpeed = exp((int.toFloat()/SeekBarConstants.NORMALIZATION))
-        return ((100 * preciseSpeed).toInt()/ 100f)
+        val preciseSpeed = exp((int.toFloat() / SeekBarConstants.NORMALIZATION))
+        return ((100 * preciseSpeed).toInt() / 100f)
     }
 
     /**

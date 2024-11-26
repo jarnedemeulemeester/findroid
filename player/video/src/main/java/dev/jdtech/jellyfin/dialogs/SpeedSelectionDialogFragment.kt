@@ -25,8 +25,7 @@ class SpeedSelectionDialogFragment(
         if (currentSpeed !in speedNumbers) {
             speedTexts.add("%s: %.2fx".format(Locale.getDefault(), customLabel, currentSpeed))
             speedNumbers.add(currentSpeed)
-        }
-        else {
+        } else {
             speedTexts.add(customLabel)
         }
 
@@ -41,8 +40,7 @@ class SpeedSelectionDialogFragment(
                         // Use a secondary dialog to determine the speed to set.
                         SpeedSelectionCustomSpeedDialogFragment(this, currentSpeed)
                             .show(activity.supportFragmentManager, "customSpeedSelection")
-                    }
-                    else {
+                    } else {
                         setCustomSpeed(speedNumbers[which])
                     }
                     dialog.dismiss()
