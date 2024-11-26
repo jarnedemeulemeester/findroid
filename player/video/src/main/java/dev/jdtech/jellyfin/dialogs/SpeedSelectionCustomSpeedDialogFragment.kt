@@ -43,7 +43,7 @@ class SpeedSelectionCustomSpeedDialogFragment(
             val listener = object : SeekBar.OnSeekBarChangeListener {
 
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    speedText.text = createLabel(seekBarValueToSpeed(seekBar?.progress ?: 100))
+                    speedText.text = createLabel(seekBarValueToSpeed(seekBar?.progress ?: 0))
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {} // NO-OP
@@ -58,7 +58,7 @@ class SpeedSelectionCustomSpeedDialogFragment(
             container.addView(seekBar)
 
             MaterialAlertDialogBuilder(activity)
-                .setTitle(getString(R.string.custom_playback_speed))
+                .setTitle(R.string.custom_playback_speed)
                 .setView(container)
                 .setPositiveButton(R.string.custom_playback_speed_confirm_button_label) { dialog, _ ->
                     speedSelectionDialog.setCustomSpeed(seekBarValueToSpeed(seekBar.progress))
