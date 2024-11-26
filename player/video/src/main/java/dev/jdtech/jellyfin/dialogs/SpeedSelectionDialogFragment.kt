@@ -38,7 +38,7 @@ class SpeedSelectionDialogFragment(
                 ) { dialog, which ->
                     if (speedTexts[which].startsWith(customLabel)) {
                         // Use a secondary dialog to determine the speed to set.
-                        SpeedSelectionCustomSpeedDialogFragment(this)
+                        SpeedSelectionCustomSpeedDialogFragment(this, currentSpeed)
                             .show(activity.supportFragmentManager, "customSpeedSelection")
                     }
                     else {
