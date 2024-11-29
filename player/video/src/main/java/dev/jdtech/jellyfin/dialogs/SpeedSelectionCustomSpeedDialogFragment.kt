@@ -23,7 +23,7 @@ class SpeedSelectionCustomSpeedDialogFragment(
     private object SeekBarConstants {
         private const val MAX_SPEED = 4.01f
         private const val MIN_SPEED = 1 / 4f
-        const val NORMALIZATION = 1000
+        const val NORMALIZATION = 2000
         val MAX = (NORMALIZATION * ln(MAX_SPEED)).toInt()
         val MIN = (NORMALIZATION * ln(MIN_SPEED)).toInt()
     }
