@@ -27,12 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.presentation.setup.components.UserItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -45,51 +39,43 @@ import dev.jdtech.jellyfin.ui.dummy.dummyUsers
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.setup.R as SetupR
 
-@Destination<RootGraph>
 @Composable
-fun UserSelectScreen(
-    navigator: DestinationsNavigator,
+fun UsersScreen(
+    navigateToHome: () -> Unit,
+    onChangeServerClick: () -> Unit,
+    onAddClick: () -> Unit,
     viewModel: UsersViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val api = JellyfinApi.getInstance(context)
     val state by viewModel.state.collectAsState()
 
-    ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
-            is UsersEvent.NavigateToHome -> {
-                navigator.navigate(MainScreenDestination) {
-                    popUpTo(NavGraphs.root) {
-                        inclusive = true
-                    }
-                }
-            }
-            else -> Unit
-        }
-    }
-
     LaunchedEffect(true) {
         viewModel.loadUsers()
     }
 
-    UserSelectScreenLayout(
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is UsersEvent.NavigateToHome -> navigateToHome()
+        }
+    }
+
+    UsersScreenLayout(
         state = state,
         onAction = { action ->
             when (action) {
-                is UsersAction.OnChangeServerClick -> Unit
-                is UsersAction.OnAddClick -> {
-                    navigator.navigate(LoginScreenDestination)
-                }
+                is UsersAction.OnChangeServerClick -> onChangeServerClick()
+                is UsersAction.OnAddClick -> onAddClick()
                 else -> Unit
             }
             viewModel.onAction(action)
         },
-        api.api.baseUrl ?: "",
+        baseUrl = api.api.baseUrl ?: "",
     )
 }
 
 @Composable
-private fun UserSelectScreenLayout(
+private fun UsersScreenLayout(
     state: UsersState,
     onAction: (UsersAction) -> Unit,
     baseUrl: String,
@@ -155,9 +141,9 @@ private fun UserSelectScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun UserSelectScreenLayoutPreview() {
+private fun UsersScreenLayoutPreview() {
     FindroidTheme {
-        UserSelectScreenLayout(
+        UsersScreenLayout(
             state = UsersState(users = dummyUsers, serverName = "Demo"),
             onAction = {},
             baseUrl = "https://demo.jellyfin.org/stable",
@@ -167,9 +153,9 @@ private fun UserSelectScreenLayoutPreview() {
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun UserSelectScreenLayoutPreviewNoUsers() {
+private fun UsersScreenLayoutPreviewNoUsers() {
     FindroidTheme {
-        UserSelectScreenLayout(
+        UsersScreenLayout(
             state = UsersState(serverName = "Demo"),
             onAction = {},
             baseUrl = "https://demo.jellyfin.org/stable",

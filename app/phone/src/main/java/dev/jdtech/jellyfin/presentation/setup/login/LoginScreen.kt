@@ -74,7 +74,6 @@ fun LoginScreen(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.Success -> onSuccess()
-            else -> Unit
         }
     }
 

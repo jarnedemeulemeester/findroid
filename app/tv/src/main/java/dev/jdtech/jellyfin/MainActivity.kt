@@ -3,22 +3,14 @@ package dev.jdtech.jellyfin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.WelcomeScreenDestination
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val viewModel: MainViewModel by viewModels()
-
     @Inject
     lateinit var database: ServerDatabaseDao
 
@@ -28,44 +20,33 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var startRoute = NavGraphs.root.startRoute(Unit)
-        if (checkServersEmpty()) {
-            startRoute = WelcomeScreenDestination
-        } else if (checkUser()) {
-            startRoute = LoginScreenDestination
-        }
-
         setContent {
             FindroidTheme {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    start = startRoute,
+                val navController = rememberNavController()
+                NavigationRoot(
+                    navController = navController,
+                    hasServers = checkHasServers(),
+                    hasCurrentServer = checkHasCurrentServer(),
+                    hasCurrentUser = checkHasCurrentUser(),
                 )
             }
         }
     }
 
-    private fun checkServersEmpty(): Boolean {
-        if (!viewModel.startDestinationChanged) {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                viewModel.startDestinationChanged = true
-                return true
-            }
-        }
-        return false
+    private fun checkHasServers(): Boolean {
+        val nServers = database.getServersCount()
+        return nServers > 0
     }
 
-    private fun checkUser(): Boolean {
-        if (!viewModel.startDestinationChanged) {
-            appPreferences.currentServer?.let {
-                val currentUser = database.getServerCurrentUser(it)
-                if (currentUser == null) {
-                    viewModel.startDestinationChanged = true
-                    return true
-                }
-            }
-        }
-        return false
+    private fun checkHasCurrentServer(): Boolean {
+        return appPreferences.currentServer?.let {
+            database.get(it) != null
+        } == true
+    }
+
+    private fun checkHasCurrentUser(): Boolean {
+        return appPreferences.currentServer?.let {
+            database.getServerCurrentUser(it) != null
+        } == true
     }
 }

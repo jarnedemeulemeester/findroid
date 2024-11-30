@@ -66,9 +66,7 @@ fun AddServerScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is AddServerEvent.Success -> {
-                onSuccess()
-            }
+            is AddServerEvent.Success -> onSuccess()
         }
     }
 

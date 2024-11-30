@@ -40,17 +40,19 @@ fun NavigationRoot(
         },
     ) {
         composable<WelcomeRoute> {
-            WelcomeScreen(onContinueClick = {
-                navController.navigate(ServersScreenRoute)
-            })
+            WelcomeScreen(
+                onContinueClick = {
+                    navController.navigate(ServersScreenRoute)
+                },
+            )
         }
         composable<ServersScreenRoute> {
             ServersScreen(
-                navigateToUsers = {
-                    navController.navigate(UsersRoute)
-                },
                 navigateToLogin = {
                     navController.navigate(LoginRoute)
+                },
+                navigateToUsers = {
+                    navController.navigate(UsersRoute)
                 },
                 onAddClick = {
                     navController.navigate(AddServerRoute)

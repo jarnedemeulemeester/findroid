@@ -39,10 +39,10 @@ fun WelcomeScreen(
     WelcomeScreenLayout(
         onAction = { action ->
             when (action) {
+                is WelcomeAction.OnContinueClick -> onContinueClick()
                 is WelcomeAction.OnLearnMoreClick -> {
                     uriHandler.openUri("https://jellyfin.org/")
                 }
-                is WelcomeAction.OnContinueClick -> onContinueClick()
             }
         },
     )

@@ -44,13 +44,6 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ServersScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -61,10 +54,10 @@ import dev.jdtech.jellyfin.setup.presentation.login.LoginState
 import dev.jdtech.jellyfin.setup.presentation.login.LoginViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 
-@Destination<RootGraph>
 @Composable
 fun LoginScreen(
-    navigator: DestinationsNavigator,
+    onSuccess: () -> Unit,
+    onChangeServerClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -77,13 +70,7 @@ fun LoginScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is LoginEvent.Success -> {
-                navigator.navigate(MainScreenDestination) {
-                    popUpTo(NavGraphs.root) {
-                        inclusive = true
-                    }
-                }
-            }
+            is LoginEvent.Success -> onSuccess()
         }
     }
 
@@ -91,16 +78,7 @@ fun LoginScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                is LoginAction.OnChangeServerClick -> {
-                    navigator.navigate(
-                        ServersScreenDestination,
-                    ) {
-                        popUpTo(LoginScreenDestination) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
+                is LoginAction.OnChangeServerClick -> onChangeServerClick()
                 else -> Unit
             }
             viewModel.onAction(action)

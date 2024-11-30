@@ -42,10 +42,6 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.presentation.setup.components.DiscoveredServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -57,10 +53,9 @@ import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 
-@Destination<RootGraph>
 @Composable
 fun AddServerScreen(
-    navigator: DestinationsNavigator,
+    onSuccess: () -> Unit,
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -71,11 +66,7 @@ fun AddServerScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is AddServerEvent.Success -> {
-                navigator.navigate(LoginScreenDestination)
-            }
-
-            else -> Unit
+            is AddServerEvent.Success -> onSuccess()
         }
     }
 

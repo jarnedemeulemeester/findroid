@@ -45,14 +45,11 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -67,11 +64,10 @@ import org.jellyfin.sdk.model.api.PersonKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination<RootGraph>
 @Composable
 fun MovieScreen(
-    navigator: DestinationsNavigator,
     itemId: UUID,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     movieViewModel: MovieViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -82,9 +78,7 @@ fun MovieScreen(
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
-            }
+            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
     }

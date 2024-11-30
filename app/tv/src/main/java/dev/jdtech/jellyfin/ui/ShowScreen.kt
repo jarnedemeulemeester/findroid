@@ -55,13 +55,9 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
-import com.ramcosta.composedestinations.generated.destinations.SeasonScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
@@ -74,24 +70,22 @@ import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination<RootGraph>
 @Composable
 fun ShowScreen(
-    navigator: DestinationsNavigator,
     itemId: UUID,
+    navigateToSeason: (seriesId: UUID, seasonId: UUID, seriesName: String, seasonName: String) -> Unit,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     showViewModel: ShowViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(true) {
         showViewModel.loadData(itemId, false)
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
-            }
+            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
     }
@@ -122,7 +116,7 @@ fun ShowScreen(
             showViewModel.toggleFavorite()
         },
         onSeasonClick = { season ->
-            navigator.navigate(SeasonScreenDestination(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name))
+            navigateToSeason(season.seriesId, season.id, season.seriesName, season.name)
         },
     )
 }

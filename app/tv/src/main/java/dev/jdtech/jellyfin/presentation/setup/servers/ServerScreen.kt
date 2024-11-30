@@ -25,11 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
@@ -45,10 +40,11 @@ import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
 
-@Destination<RootGraph>
 @Composable
 fun ServersScreen(
-    navigator: DestinationsNavigator,
+    navigateToLogin: () -> Unit,
+    navigateToUsers: () -> Unit,
+    onAddClick: () -> Unit,
     viewModel: ServersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -59,13 +55,8 @@ fun ServersScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToLogin -> {
-                navigator.navigate(UserSelectScreenDestination)
-            }
-
-            is ServersEvent.NavigateToUsers -> {
-                navigator.navigate(UserSelectScreenDestination)
-            }
+            is ServersEvent.NavigateToLogin -> navigateToLogin()
+            is ServersEvent.NavigateToUsers -> navigateToUsers()
         }
     }
 
@@ -73,7 +64,7 @@ fun ServersScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                is ServersAction.OnAddClick -> navigator.navigate(AddServerScreenDestination)
+                is ServersAction.OnAddClick -> onAddClick()
                 else -> Unit
             }
             viewModel.onAction(action)

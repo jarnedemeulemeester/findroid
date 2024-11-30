@@ -25,28 +25,21 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
 
-@Destination<RootGraph>
 @Composable
 fun WelcomeScreen(
-    navigator: DestinationsNavigator,
+    onContinueClick: () -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
 
     WelcomeScreenLayout(
         onAction = { action ->
             when (action) {
-                is WelcomeAction.OnContinueClick -> {
-                    navigator.navigate(AddServerScreenDestination)
-                }
+                is WelcomeAction.OnContinueClick -> onContinueClick()
                 is WelcomeAction.OnLearnMoreClick -> {
                     uriHandler.openUri("https://jellyfin.org/")
                 }

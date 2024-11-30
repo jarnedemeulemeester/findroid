@@ -24,17 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.MovieScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
-import com.ramcosta.composedestinations.generated.destinations.ShowScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.HomeItem
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
@@ -44,12 +39,14 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.HomeViewModel
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination<RootGraph>
 @Composable
 fun HomeScreen(
-    navigator: DestinationsNavigator,
+    navigateToMovie: (itemId: UUID) -> Unit,
+    navigateToShow: (itemId: UUID) -> Unit,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
     isLoading: (Boolean) -> Unit,
@@ -60,9 +57,7 @@ fun HomeScreen(
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
-            }
+            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
     }
@@ -74,12 +69,8 @@ fun HomeScreen(
         isLoading = isLoading,
         onClick = { item ->
             when (item) {
-                is FindroidMovie -> {
-                    navigator.navigate(MovieScreenDestination(item.id))
-                }
-                is FindroidShow -> {
-                    navigator.navigate(ShowScreenDestination(item.id))
-                }
+                is FindroidMovie -> navigateToMovie(item.id)
+                is FindroidShow -> navigateToShow(item.id)
                 is FindroidEpisode -> {
                     playerViewModel.loadPlayerItems(item = item)
                 }

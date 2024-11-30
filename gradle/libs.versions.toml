@@ -26,7 +26,6 @@ androidx-tv-material3 = "1.0.0"
 androidx-work = "2.10.0"
 coil = "2.7.0"
 hilt = "2.52"
-compose-destinations = "2.1.0-beta14"
 jellyfin = "1.6.1"
 junit = "4.13.2"
 kotlin = "2.0.21"
@@ -86,8 +85,6 @@ androidx-work-testing = { group = "androidx.work", name = "work-testing", versio
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
-compose-destinations-core = { group = "io.github.raamcosta.compose-destinations", name = "core", version.ref = "compose-destinations" }
-compose-destinations-ksp = { group = "io.github.raamcosta.compose-destinations", name = "ksp", version.ref = "compose-destinations" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
