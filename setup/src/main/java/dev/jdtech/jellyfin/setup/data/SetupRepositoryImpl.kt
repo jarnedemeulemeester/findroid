@@ -231,4 +231,37 @@ class SetupRepositoryImpl(
             userId = authenticationResult.user?.id
         }
     }
+
+    override suspend fun getUsers(serverId: String): List<User> {
+        return database.getUsers(serverId)
+    }
+
+    override suspend fun getCurrentUser(): User? {
+        val currentServer = getCurrentServer() ?: return null
+        return database.getServerCurrentUser(currentServer.id)
+    }
+
+    override suspend fun deleteUser(userId: UUID) {
+        // Let the user delete the current active user for now
+        /*val currentUser = getCurrentUser() ?: return
+        if (userId == currentUser.id) {
+            Timber.e("You cannot delete the current user")
+            return
+        }*/
+        database.deleteUser(userId)
+    }
+
+    override suspend fun setCurrentUser(userId: UUID) {
+        val server = getCurrentServer() ?: return
+        val user = database.getUser(userId) ?: return
+        server.currentUserId = user.id
+        database.update(server)
+
+        jellyfinApi.apply {
+            api.update(
+                accessToken = user.accessToken,
+            )
+            this.userId = user.id
+        }
+    }
 }

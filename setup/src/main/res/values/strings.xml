@@ -29,4 +29,9 @@
    <string name="cancel">Cancel</string>
    <string name="or">OR</string>
    <string name="server_subtitle">Server: %s</string>
+   <string name="users">Users</string>
+   <string name="users_no_users">No users found</string>
+   <string name="users_btn_add_user">Add user</string>
+   <string name="remove_user_dialog">Remove user</string>
+   <string name="remove_user_dialog_text">Are you sure you want to remove the user %s?</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
+import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 
@@ -18,6 +19,9 @@ data object ServersScreenRoute
 
 @Serializable
 data object AddServerRoute
+
+@Serializable
+data object UsersRoute
 
 @Serializable
 data object LoginRoute
@@ -42,7 +46,9 @@ fun NavigationRoot(
         }
         composable<ServersScreenRoute> {
             ServersScreen(
-                navigateToUsers = {},
+                navigateToUsers = {
+                    navController.navigate(UsersRoute)
+                },
                 navigateToLogin = {
                     navController.navigate(LoginRoute)
                 },
@@ -64,13 +70,32 @@ fun NavigationRoot(
                 },
             )
         }
+        composable<UsersRoute> {
+            UsersScreen(
+                navigateToHome = {},
+                onChangeServerClick = {
+                    navController.navigate(ServersScreenRoute) {
+                        popUpTo(ServersScreenRoute) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onAddClick = {
+                    navController.navigate(LoginRoute)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
         composable<LoginRoute> {
             LoginScreen(
                 onSuccess = {},
                 onChangeServerClick = {
                     navController.navigate(ServersScreenRoute) {
-                        popUpTo(LoginRoute) {
-                            inclusive = true
+                        popUpTo(ServersScreenRoute) {
+                            inclusive = false
                         }
                         launchSingleTop = true
                     }

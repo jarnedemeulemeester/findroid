@@ -2,9 +2,11 @@ package dev.jdtech.jellyfin.setup.domain
 
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerWithAddresses
+import dev.jdtech.jellyfin.models.User
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.QuickConnectResult
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
+import java.util.UUID
 
 interface SetupRepository {
     suspend fun discoverServers(): Flow<ServerDiscoveryInfo>
@@ -30,4 +32,12 @@ interface SetupRepository {
     suspend fun login(username: String, password: String)
 
     suspend fun loginWithSecret(secret: String)
+
+    suspend fun getUsers(serverId: String): List<User>
+
+    suspend fun getCurrentUser(): User?
+
+    suspend fun deleteUser(userId: UUID)
+
+    suspend fun setCurrentUser(userId: UUID)
 }

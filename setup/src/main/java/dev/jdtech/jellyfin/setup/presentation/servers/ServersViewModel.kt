@@ -40,7 +40,13 @@ constructor(
 
             appPreferences.currentServer = serverId
 
-            eventsChannel.send(ServersEvent.NavigateToLogin)
+            val users = repository.getUsers(serverId)
+
+            if (users.isEmpty()) {
+                eventsChannel.send(ServersEvent.NavigateToLogin)
+            } else {
+                eventsChannel.send(ServersEvent.NavigateToUsers)
+            }
         }
     }
 

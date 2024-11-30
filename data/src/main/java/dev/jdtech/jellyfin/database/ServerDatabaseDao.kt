@@ -48,6 +48,9 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM servers WHERE id = :id")
     fun getServerWithAddresses(id: String): ServerWithAddresses
 
+    @Query("SELECT * FROM users WHERE serverId = :serverId")
+    fun getUsers(serverId: String): List<User>
+
     @Transaction
     @Query("SELECT * FROM servers WHERE id = :id")
     fun getServerWithUsers(id: String): ServerWithUsers
