@@ -84,7 +84,7 @@ fun UserSelectScreen(
             }
             viewModel.onAction(action)
         },
-        api.api.baseUrl ?: ""
+        api.api.baseUrl ?: "",
     )
 }
 
@@ -133,7 +133,7 @@ private fun UserSelectScreenLayout(
                             onClick = { user ->
                                 onAction(UsersAction.OnUserClick(user.id))
                             },
-                            baseUrl = baseUrl
+                            baseUrl = baseUrl,
                         )
                     }
                 }

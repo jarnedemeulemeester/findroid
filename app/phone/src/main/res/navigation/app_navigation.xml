@@ -68,9 +68,6 @@
         android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
         android:label="@string/title_settings">
         <action
-            android:id="@+id/action_navigation_settings_to_usersFragment"
-            app:destination="@id/usersFragment" />
-        <action
             android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
             app:destination="@id/serverAddressesFragment" />
         <action
@@ -302,21 +299,6 @@
     </activity>
 
     <include app:graph="@navigation/aboutlibs_navigation" />
-
-    <fragment
-        android:id="@+id/usersFragment"
-        android:name="dev.jdtech.jellyfin.fragments.UsersFragment"
-        android:label="@string/users"
-        tools:layout="@layout/fragment_users">
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="serverId"
-            app:argType="string" />
-    </fragment>
 
     <fragment
         android:id="@+id/serverAddressesFragment"

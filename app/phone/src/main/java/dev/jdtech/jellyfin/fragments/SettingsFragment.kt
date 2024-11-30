@@ -28,7 +28,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("switchUser")?.setOnPreferenceClickListener {
             val serverId = appPreferences.currentServer!!
-            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
+            // findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
             true
         }
 

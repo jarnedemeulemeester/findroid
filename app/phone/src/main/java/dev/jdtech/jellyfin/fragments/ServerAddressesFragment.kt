@@ -27,7 +27,7 @@ class ServerAddressesFragment : Fragment() {
 
     private lateinit var binding: FragmentServerAddressesBinding
     private val viewModel: ServerAddressesViewModel by viewModels()
-    private val args: UsersFragmentArgs by navArgs()
+    private val args: ServerAddressesFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +94,6 @@ class ServerAddressesFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        findNavController().safeNavigate(UsersFragmentDirections.actionUsersFragmentToHomeFragment())
+        findNavController().safeNavigate(ServerAddressesFragmentDirections.actionUsersFragmentToHomeFragment())
     }
 }
