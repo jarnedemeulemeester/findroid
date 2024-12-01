@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 data object WelcomeRoute
 
 @Serializable
-data object ServersScreenRoute
+data object ServersRoute
 
 @Serializable
 data object AddServerRoute
@@ -30,23 +30,27 @@ data object LoginRoute
 fun NavigationRoot(
     navController: NavHostController,
     hasServers: Boolean,
-    isLoggedIn: Boolean,
+    hasCurrentServer: Boolean,
+    hasCurrentUser: Boolean,
 ) {
+    val startDestination = when {
+        hasServers && hasCurrentServer && hasCurrentUser -> UsersRoute // TODO: change to MainRoute
+        hasServers && hasCurrentServer -> UsersRoute
+        hasServers -> ServersRoute
+        else -> WelcomeRoute
+    }
     NavHost(
         navController = navController,
-        startDestination = when {
-            hasServers && !isLoggedIn -> LoginRoute
-            else -> WelcomeRoute
-        },
+        startDestination = startDestination,
     ) {
         composable<WelcomeRoute> {
             WelcomeScreen(
                 onContinueClick = {
-                    navController.navigate(ServersScreenRoute)
+                    navController.navigate(ServersRoute)
                 },
             )
         }
-        composable<ServersScreenRoute> {
+        composable<ServersRoute> {
             ServersScreen(
                 navigateToLogin = {
                     navController.navigate(LoginRoute)
@@ -76,8 +80,8 @@ fun NavigationRoot(
             UsersScreen(
                 navigateToHome = {},
                 onChangeServerClick = {
-                    navController.navigate(ServersScreenRoute) {
-                        popUpTo(ServersScreenRoute) {
+                    navController.navigate(ServersRoute) {
+                        popUpTo(ServersRoute) {
                             inclusive = false
                         }
                         launchSingleTop = true
@@ -95,8 +99,8 @@ fun NavigationRoot(
             LoginScreen(
                 onSuccess = {},
                 onChangeServerClick = {
-                    navController.navigate(ServersScreenRoute) {
-                        popUpTo(ServersScreenRoute) {
+                    navController.navigate(ServersRoute) {
+                        popUpTo(ServersRoute) {
                             inclusive = false
                         }
                         launchSingleTop = true
