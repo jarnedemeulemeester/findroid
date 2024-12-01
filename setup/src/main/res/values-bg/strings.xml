@@ -17,4 +17,7 @@
    <string name="login_btn_quick_connect">Бързо Свързване</string>
    <string name="login_error_wrong_username_password">Грешно потребителско име или парола</string>
    <string name="servers_no_servers">Не са намерени сървъри</string>
+   <string name="users">Потребители</string>
+   <string name="remove_user_dialog">Премахване на потребител</string>
+   <string name="remove_user_dialog_text">Сигурни ли сте, че искате да премахнете потребител %1$s</string>
 </resources>

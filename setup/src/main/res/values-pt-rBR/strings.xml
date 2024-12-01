@@ -17,4 +17,9 @@
     <string name="edit_text_username_hint">Nome de usuário</string>
     <string name="login_btn_quick_connect">Conexão Rápida</string>
     <string name="servers_no_servers">Nenhum servidor encontrado</string>
+    <string name="users">Usuários</string>
+    <string name="users_btn_add_user">Adicionar usuário</string>
+    <string name="remove_user_dialog">Excluir usuário</string>
+    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário (%1$s)</string>
+    <string name="users_no_users">Usuários não encontrados</string>
 </resources>

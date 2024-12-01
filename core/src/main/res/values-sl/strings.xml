@@ -4,8 +4,6 @@
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="remove_server">Odstrani strežnik</string>
-    <string name="remove_user">Odstrani uporabnika</string>
-    <string name="remove_user_dialog_text">Ali ste prepričani, da želite odstraniti uporabnika %1$s</string>
     <string name="remove">Odstrani</string>
     <string name="cancel">Prekliči</string>
     <string name="title_home">Dom</string>
@@ -86,8 +84,6 @@
     <string name="settings_category_network">Omrežje</string>
     <string name="settings_request_timeout">Časovna omejitev zahteve (ms)</string>
     <string name="settings_socket_timeout">Časovna omejitev vtičnice (ms)</string>
-    <string name="users">Uporabniki</string>
-    <string name="add_user">Dodaj uporabnika</string>
     <string name="pref_player_mpv_hwdec">Strojno dekodiranje</string>
     <string name="pref_player_mpv_vo">Video izhod</string>
     <string name="pref_player_mpv_ao">Avdio izhod</string>

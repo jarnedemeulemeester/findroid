@@ -108,12 +108,8 @@
     <string name="settings_connect_timeout">Esperar conexión (ms)</string>
     <string name="settings_request_timeout">Esperar solicitudes (ms)</string>
     <string name="settings_socket_timeout">Esperar zócalo (ms)</string>
-    <string name="users">Usuarios</string>
-    <string name="add_user">Agregar usuario</string>
     <string name="pref_player_mpv_vo">Salida de video</string>
     <string name="pref_player_mpv_ao">Salida de audio</string>
-    <string name="remove_user">Quitar usuario</string>
-    <string name="remove_user_dialog_text">¿Está seguro de querer eliminar el usuario %1$s</string>
     <string name="pref_player_intro_skipper">Saltador de intros</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="addresses">Direcciones</string>
@@ -163,10 +159,8 @@
     <string name="pref_player_chapter_markers_summary">Mostrar marcadores de capítulo en la barra de tiempo</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
-    <string name="no_users_found">No se encontraron usuarios</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>
     <string name="picture_in_picture_gesture">Gesto de pantalla en pantalla</string>
-    <string name="select_user">Seleccione usuario</string>
     <string name="live_tv">TV en vivo</string>
     <string name="play">Reproducir</string>
     <string name="watch_trailer">Mirar avances</string>

@@ -17,4 +17,9 @@
     <string name="login_btn_quick_connect">Connessione Rapida</string>
     <string name="add_server_error_not_found">Server non trovato</string>
     <string name="servers_no_servers">Nessun server trovato</string>
+    <string name="remove_user_dialog">Rimuovi utente</string>
+    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %1$s</string>
+    <string name="users">Utenti</string>
+    <string name="users_btn_add_user">Aggiungi utente</string>
+    <string name="users_no_users">Nessun utente trovato</string>
 </resources>

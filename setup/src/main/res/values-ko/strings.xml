@@ -17,4 +17,9 @@
     <string name="login_btn_quick_connect">Quick Connect</string>
     <string name="login_btn_login">로그인</string>
     <string name="servers_no_servers">서버가 발견되지 않았습니다</string>
+    <string name="remove_user_dialog">유저 제거</string>
+    <string name="remove_user_dialog_text">정말로 %1$s 유저를 제거하시겠습니까\?</string>
+    <string name="users">유저</string>
+    <string name="users_btn_add_user">유저 추가</string>
+    <string name="users_no_users">사용자가 발견되지 않았습니다</string>
 </resources>

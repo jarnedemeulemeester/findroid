@@ -15,4 +15,7 @@
    <string name="login">लॉगिन</string>
    <string name="login_btn_login">लॉगिन</string>
    <string name="login_error_wrong_username_password">गलत उपयोगकर्ता का नाम या पासवर्ड</string>
+   <string name="remove_user_dialog">उपयोगकर्ता हटाएं</string>
+   <string name="remove_user_dialog_text">क्या आप सुनिश्चित हैं कि आप उपयोगकर्ता %1$s को हटाना चाहते हैं</string>
+   <string name="users">उपयोगकर्ता</string>
 </resources>

@@ -82,7 +82,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="image_description_backdrop">Фон на %1$s</string>
-    <string name="users">Потребители</string>
     <string name="no_server_connection">Няма връзка към Jellyfin сървъра, за да гледате офлайн пуснете Режим без Интернет</string>
     <string name="privacy_policy_notice">При ползването на Findroid, вие се съгласявате с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Политиката за поверителност</a> , която гласи, че не събираме никаква информация</string>
     <string name="app_description">Неофициално приложение за Jellyfin с \"native\" елементи</string>
@@ -96,8 +95,6 @@
     <string name="seek_back_increment">Инкремент за връщане назад(ms)</string>
     <string name="pref_player_mpv_vo">Изхода на видеото</string>
     <string name="pref_player_intro_skipper_summary">Изисква Confused Polar Bears Intro Skipper да бъде инсталиран на сървъра</string>
-    <string name="remove_user">Премахване на потребител</string>
-    <string name="remove_user_dialog_text">Сигурни ли сте, че искате да премахнете потребител %1$s</string>
     <string name="extra_info_summary">Показва детайлна информация за Аудио, Видео и Субтитри</string>
     <string name="subtitle_chip_text">Затворени субтитри</string>
     <string name="temp">временно</string>

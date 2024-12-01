@@ -17,4 +17,9 @@
     <string name="login_error_wrong_username_password">Nesprávne meno alebo heslo</string>
     <string name="edit_text_password_hint">Heslo</string>
     <string name="servers_no_servers">Neboli nájdené žiadne servery</string>
+    <string name="remove_user_dialog">Odstrániť používateľa</string>
+    <string name="remove_user_dialog_text">Ste si istí, že chcete odstrániť používateľa %1$s</string>
+    <string name="users">Používatelia</string>
+    <string name="users_btn_add_user">Pridať používateľa</string>
+    <string name="users_no_users">Nenašli sa žiadni užívatelia</string>
 </resources>

@@ -16,4 +16,8 @@
     <string name="add_server_btn_connect">Подключиться</string>
     <string name="login_btn_quick_connect">Быстрое подключение</string>
     <string name="login_btn_login">Вход</string>
+    <string name="users">Пользователи</string>
+    <string name="users_btn_add_user">Добавить пользователя</string>
+    <string name="remove_user_dialog">Удалить пользователя</string>
+    <string name="remove_user_dialog_text">Вы уверены, что хотите удалить пользователя %1$s</string>
 </resources>

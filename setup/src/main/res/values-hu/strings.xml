@@ -17,4 +17,7 @@
     <string name="login_btn_login">Bejelentkezés</string>
     <string name="login_btn_quick_connect">Gyors csatlakozás</string>
     <string name="servers_no_servers">Nem található szerver</string>
+    <string name="users_btn_add_user">Felhasználó hozzádása</string>
+    <string name="users">Felhasználók</string>
+    <string name="remove_user_dialog">Felhasználó eltávolítása</string>
 </resources>

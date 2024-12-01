@@ -17,4 +17,9 @@
     <string name="login_btn_login">登入</string>
     <string name="login_btn_quick_connect">快速連接</string>
     <string name="servers_no_servers">未找到伺服器</string>
+    <string name="remove_user_dialog">移除使用者</string>
+    <string name="remove_user_dialog_text">您確定要移除使用者 %1$s</string>
+    <string name="users">使用者</string>
+    <string name="users_btn_add_user">添加使用者</string>
+    <string name="users_no_users">未找到相應的用戶</string>
 </resources>

@@ -99,8 +99,6 @@
     <string name="libraries">Librerie</string>
     <string name="dynamic_colors">Colori dinamici</string>
     <string name="dynamic_colors_summary">Usa i colori dinamici Material You (disponibile solo per Android 12+)</string>
-    <string name="remove_user">Rimuovi utente</string>
-    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %1$s</string>
     <string name="episodes_label">Episodi</string>
     <string name="theme_system">Usa le impostazioni di sistema</string>
     <string name="settings_request_timeout">Timeout richiesta (ms)</string>
@@ -110,8 +108,6 @@
     <string name="settings_category_network">Rete</string>
     <string name="settings_connect_timeout">Timeout connessione (ms)</string>
     <string name="settings_socket_timeout">Timeout socket (ms)</string>
-    <string name="users">Utenti</string>
-    <string name="add_user">Aggiungi utente</string>
     <string name="pref_player_mpv_hwdec">Decodifica hardware</string>
     <string name="pref_player_mpv_vo">Output video</string>
     <string name="addresses">Indirizzi</string>
@@ -157,8 +153,6 @@
     <string name="picture_in_picture">Immagine nell\'immagine</string>
     <string name="picture_in_picture_gesture">Gesto/pulsante home</string>
     <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
-    <string name="no_users_found">Nessun utente trovato</string>
-    <string name="select_user">Seleziona utente</string>
     <string name="watch_trailer">Guarda Trailer</string>
     <string name="add_to_favorites">Aggiungi ai preferiti</string>
     <string name="mark_as_played">Segna come visto</string>

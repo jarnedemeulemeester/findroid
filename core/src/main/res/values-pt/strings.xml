@@ -105,8 +105,6 @@
     <string name="settings_use_cache_summary">Cache de imagens em memória para acelerar o tempo de carregamento. Terá efeito após o reinício da aplicação.</string>
     <string name="remove_server_address">Remover endereço do servidor</string>
     <string name="external">Externo</string>
-    <string name="remove_user">Remover utilizador</string>
-    <string name="remove_user_dialog_text">Tem certeza de que deseja remover o utilizador %1$s</string>
     <string name="pref_player_mpv_vo">Saida de video</string>
     <string name="pref_player_mpv_ao">Saída de áudio</string>
     <string name="add_address">Adicionar endereço</string>
@@ -119,13 +117,11 @@
     <string name="add_server_address">Adicionar endereço do servidor</string>
     <string name="player_gestures_seek">Procure gesto</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para avançar ou retroceder</string>
-    <string name="add_user">Adicionar usuário</string>
     <string name="amoled_theme">Tema escuro AMOLED</string>
     <string name="amoled_theme_summary">Use tema AMOLED com fundo preto puro</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="users">Usuários</string>
     <string name="app_language">Idioma do aplicativo</string>
     <string name="add">Adicionar</string>
     <string name="downloaded_indicator">Indicador de transferido</string>
@@ -160,8 +156,6 @@
     <string name="collection_no_media">Esta coleção não contém nenhum conteúdo</string>
     <string name="player_start_maximized">Inicie maximizado</string>
     <string name="player_start_maximized_summary">Abra o vídeo no modo maximizado por padrão</string>
-    <string name="no_users_found">Nenhum utilizador encontrado</string>
-    <string name="select_user">Seleccione um utilizador</string>
     <string name="live_tv">TV ao vivo</string>
     <string name="play">Reproduzir</string>
     <string name="player_gestures_chapter_skip">Gesto de capítulo</string>

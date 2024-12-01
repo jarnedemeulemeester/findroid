@@ -16,4 +16,8 @@
     <string name="add_server_error_outdated">גרסת שרת מיושנת: %1$s. אנא עדכן את השרת שלך</string>
     <string name="login_btn_login">התחבר</string>
     <string name="add_server_error_not_jellyfin">לא שרת Jellyfin: %1$s</string>
+    <string name="remove_user_dialog">הסר משתמש</string>
+    <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה להסיר את המשתמש %1$s</string>
+    <string name="users">משתמשים</string>
+    <string name="users_btn_add_user">הוסף משתמש</string>
 </resources>

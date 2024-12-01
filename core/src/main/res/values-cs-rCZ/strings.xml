@@ -68,8 +68,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="stop_download">Zastavit stahování</string>
-    <string name="remove_user">Odebrat uživatele</string>
-    <string name="remove_user_dialog_text">Jste si jistí, že chcete odebrat uživatele %1$s</string>
     <string name="close">Zavřít</string>
     <string name="theme_system">Podle systému</string>
     <string name="dynamic_colors">Dynamické barvy</string>
@@ -108,8 +106,6 @@
     <string name="theme_dark">Tmavý</string>
     <string name="seek_back_increment">Posunout zpět (ms)</string>
     <string name="amoled_theme_summary">Použití motivu AMOLED s čistě černým pozadím</string>
-    <string name="users">Uživatelé</string>
-    <string name="add_user">Přidat uživatele</string>
     <string name="addresses">Adresy</string>
     <string name="add_server_address">Přidat adresu serveru</string>
     <string name="pref_player_mpv_ao">Výstup zvuku</string>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_home">Acasă</string>
-    <string name="remove_user">Eliminați utilizatorul</string>
-    <string name="remove_user_dialog_text">Sunteți sigur că doriți să eliminați utilizatorul %1$s</string>
     <string name="remove_server_address">Eliminați adresa serverului</string>
     <string name="remove">Eliminare</string>
     <string name="title_favorite">Favorite</string>
@@ -73,8 +71,6 @@
     <string name="theme_light">Deschisă</string>
     <string name="theme_dark">Întunecată</string>
     <string name="settings_category_network">Rețea</string>
-    <string name="users">Utilizatori</string>
-    <string name="add_user">Adaugă un utilizator</string>
     <string name="pref_player_mpv_hwdec">Decodare hardware</string>
     <string name="pref_player_mpv_vo">Ieșire video</string>
     <string name="pref_player_mpv_ao">Ieșire audio</string>

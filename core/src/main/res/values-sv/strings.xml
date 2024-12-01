@@ -3,7 +3,6 @@
     <string name="app_description">Tredjeparts nativ Jellyfin-app</string>
     <string name="jellyfin_banner">Jellyfinbanderoll</string>
     <string name="select_server">Välj server</string>
-    <string name="remove_user">Ta bort användare</string>
     <string name="title_home">Hem</string>
     <string name="title_media">Min media</string>
     <string name="title_settings">Inställningar</string>
@@ -79,8 +78,6 @@
     <string name="theme_dark">Mörkt</string>
     <string name="settings_request_timeout">Timeout för begäran (ms)</string>
     <string name="settings_connect_timeout">Timeout för anslutning (ms)</string>
-    <string name="users">Användare</string>
-    <string name="add_user">Lägg till användare</string>
     <string name="pref_player_mpv_vo">Videooutput</string>
     <string name="pref_player_mpv_ao">Ljudoutput</string>
     <string name="addresses">Adresser</string>
@@ -96,7 +93,6 @@
     <string name="extra_info_summary">Visa detaljerad information om ljud, video och textning</string>
     <string name="remove_server">Ta bort server</string>
     <string name="remove_server_dialog_text">Är du säker på att du vill ta bort servern %1$s</string>
-    <string name="remove_user_dialog_text">Är du säker på att du vill ta bort användaren %1$s</string>
     <string name="remove">Ta bort</string>
     <string name="cancel">Avbryt</string>
     <string name="title_favorite">Favoriter</string>

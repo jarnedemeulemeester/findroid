@@ -4,8 +4,6 @@
     <string name="jellyfin_banner">באנר Jellyfin</string>
     <string name="select_server">בחר שרת</string>
     <string name="remove_server">שרת מרוחק</string>
-    <string name="remove_user">הסר משתמש</string>
-    <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה להסיר את המשתמש %1$s</string>
     <string name="remove">הסר</string>
     <string name="cancel">ביטול</string>
     <string name="title_media">המדיה שלי</string>
@@ -93,8 +91,6 @@
     <string name="theme_system">השתמש בערכת המערכת</string>
     <string name="settings_request_timeout">זמן קצוב לבקשה (מילי שניות)</string>
     <string name="settings_connect_timeout">זמן קצוב לחיבור (מילי שניות)</string>
-    <string name="users">משתמשים</string>
-    <string name="add_user">הוסף משתמש</string>
     <string name="pref_player_mpv_hwdec">פענוח חומרה</string>
     <string name="addresses">כתובות</string>
     <string name="add_address">הוסף כתובת</string>

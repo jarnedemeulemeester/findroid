@@ -17,4 +17,9 @@
     <string name="login_btn_quick_connect">Szybkie połączenie</string>
     <string name="login_btn_login">Zaloguj</string>
     <string name="servers_no_servers">Nie znaleziono żadnego serwera</string>
+    <string name="users">Użytkownicy</string>
+    <string name="users_btn_add_user">Dodaj użytkownika</string>
+    <string name="remove_user_dialog">Usuń użytkownika</string>
+    <string name="remove_user_dialog_text">Czy na pewno chcesz usunąć użytkownika %1$s</string>
+    <string name="users_no_users">Nie znaleziono użytkowników</string>
 </resources>

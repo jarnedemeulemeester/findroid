@@ -106,14 +106,10 @@
     <string name="theme_light">Jasny</string>
     <string name="theme_dark">Ciemny</string>
     <string name="episodes_label">Odcinki</string>
-    <string name="add_user">Dodaj użytkownika</string>
     <string name="pref_player_mpv_vo">Wyjście wideo</string>
     <string name="pref_player_mpv_ao">Wyjście audio</string>
     <string name="seek_back_increment">Krok przesuwania wstecznego (ms)</string>
     <string name="seek_forward_increment">Krok przesuwania do przodu (ms)</string>
-    <string name="remove_user">Usuń użytkownika</string>
-    <string name="remove_user_dialog_text">Czy na pewno chcesz usunąć użytkownika %1$s</string>
-    <string name="users">Użytkownicy</string>
     <string name="addresses">Adresy</string>
     <string name="add_address">Dodaj adres</string>
     <string name="add_server_address">Dodaj adres serwera</string>
@@ -158,8 +154,6 @@
     <string name="picture_in_picture">Obraz w obrazie</string>
     <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
     <string name="collection_no_media">Ta kolekcja nie zawiera żadnych elementów</string>
-    <string name="no_users_found">Nie znaleziono użytkowników</string>
-    <string name="select_user">Wybierz użytkownika</string>
     <string name="live_tv">Telewizja na żywo</string>
     <string name="play">Odtwórz</string>
     <string name="watch_trailer">Odtwórz trailer</string>

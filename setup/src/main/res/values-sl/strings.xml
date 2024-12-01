@@ -16,4 +16,8 @@
     <string name="add_server_error_outdated">Različica strežnika je zastarela:%1$s. Prosim posodobite vaš strežnik</string>
     <string name="add_server_error_no_id">Strežnik nima ID-ja, nekaj je narobe s strežnikom</string>
     <string name="edit_text_password_hint">Geslo</string>
+    <string name="remove_user_dialog">Odstrani uporabnika</string>
+    <string name="remove_user_dialog_text">Ali ste prepričani, da želite odstraniti uporabnika %1$s</string>
+    <string name="users">Uporabniki</string>
+    <string name="users_btn_add_user">Dodaj uporabnika</string>
 </resources>

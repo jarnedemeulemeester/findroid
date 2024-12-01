@@ -109,8 +109,6 @@
     <string name="settings_connect_timeout">Espera de conexión (ms)</string>
     <string name="settings_socket_timeout">Espera del conector (ms)</string>
     <string name="settings_request_timeout">Espera de respuestas (ms)</string>
-    <string name="users">Usuarios</string>
-    <string name="add_user">Agregar usuario</string>
     <string name="pref_player_mpv_hwdec">Decodificación por hardware</string>
     <string name="pref_player_mpv_vo">Salida de video</string>
     <string name="pref_player_mpv_ao">Salida de audio</string>
@@ -118,8 +116,6 @@
     <string name="add_address">Agregar dirección</string>
     <string name="add_server_address">Agregar dirección del servidor</string>
     <string name="add">Agregar</string>
-    <string name="remove_user">Quitar usuario</string>
-    <string name="remove_user_dialog_text">¿Está seguro de querer remover el usuario %1$s</string>
     <string name="amoled_theme_summary">Use el tema AMOLED con un fondo negro puro</string>
     <string name="size">Tamaño</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
@@ -158,10 +154,8 @@
     <string name="player_gestures_chapter_skip">Gesto para cambiar capítulos</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
-    <string name="no_users_found">No se encontraron usuarios</string>
     <string name="remove_from_favorites">Quitar de favoritos</string>
     <string name="add_to_favorites">Agregar a favoritos</string>
-    <string name="select_user">Elija usuario</string>
     <string name="live_tv">TV en vivo</string>
     <string name="play">Reproducir</string>
     <string name="watch_trailer">Ver trailer</string>

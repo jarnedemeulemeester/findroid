@@ -4,7 +4,6 @@
     <string name="select_server">選擇伺服器</string>
     <string name="remove_server">移除伺服器</string>
     <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
-    <string name="remove_user">移除使用者</string>
     <string name="remove">移除</string>
     <string name="cancel">取消</string>
     <string name="title_home">主畫面</string>
@@ -92,10 +91,7 @@
     <string name="settings_request_timeout">請求超時（毫秒）</string>
     <string name="settings_connect_timeout">連接超時（毫秒）</string>
     <string name="settings_socket_timeout">Socket 超時（毫秒）</string>
-    <string name="users">使用者</string>
-    <string name="add_user">添加使用者</string>
     <string name="app_description">第三方原生 Jellyfin 應用程式</string>
-    <string name="remove_user_dialog_text">您確定要移除使用者 %1$s</string>
     <string name="title_favorite">收藏夾</string>
     <string name="error_loading_data">載入資料時發生錯誤</string>
     <string name="episode_watched_indicator">影集觀看指標</string>
@@ -158,8 +154,6 @@
     <string name="remove_server_address">刪除伺服器位址</string>
     <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
     <string name="temp">臨時文件</string>
-    <string name="no_users_found">未找到相應的用戶</string>
-    <string name="select_user">選擇用戶</string>
     <string name="live_tv">電視直播</string>
     <string name="play">播放</string>
     <string name="watch_trailer">觀看預告</string>

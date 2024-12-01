@@ -103,11 +103,7 @@
     <string name="episodes_label">Épisodes</string>
     <string name="dynamic_colors">Couleurs dynamiques</string>
     <string name="dynamic_colors_summary">Utiliser les couleurs dynamiques Material You (disponible uniquement sur Android 12+)</string>
-    <string name="add_user">Ajouter un utilisateur</string>
     <string name="pref_player_mpv_hwdec">Décodage matériel</string>
-    <string name="remove_user">Supprimer l\'utilisateur</string>
-    <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
-    <string name="users">Utilisateurs</string>
     <string name="pref_player_intro_skipper">Passer l\'introduction</string>
     <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de jumoog doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>
@@ -158,8 +154,6 @@
     <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
     <string name="unmark_as_played">Non marqué comme joué</string>
-    <string name="no_users_found">Aucun utilisateur trouvé</string>
-    <string name="select_user">Sélectionner un utilisateur</string>
     <string name="live_tv">Direct TV</string>
     <string name="add_to_favorites">Ajouter aux favoris</string>
     <string name="collection_no_media">Cette collection ne contient aucun média</string>

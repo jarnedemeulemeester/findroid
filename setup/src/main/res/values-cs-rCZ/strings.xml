@@ -16,4 +16,8 @@
    <string name="login_btn_login">Přihlásit se</string>
    <string name="login_btn_quick_connect">Rychlé připojení</string>
    <string name="login_error_wrong_username_password">Nesprávné uživatelské jméno nebo heslo</string>
+   <string name="remove_user_dialog">Odebrat uživatele</string>
+   <string name="remove_user_dialog_text">Jste si jistí, že chcete odebrat uživatele %1$s</string>
+   <string name="users">Uživatelé</string>
+   <string name="users_btn_add_user">Přidat uživatele</string>
 </resources>

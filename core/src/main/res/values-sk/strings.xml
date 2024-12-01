@@ -2,8 +2,6 @@
 <resources>
     <string name="select_server">Vyberte server</string>
     <string name="remove_server">Odstrániť server</string>
-    <string name="remove_user">Odstrániť používateľa</string>
-    <string name="remove_user_dialog_text">Ste si istí, že chcete odstrániť používateľa %1$s</string>
     <string name="cancel">Zrušiť</string>
     <string name="title_home">Domov</string>
     <string name="title_media">Moje média</string>
@@ -88,7 +86,6 @@
     <string name="settings_request_timeout">Limit čakania na odpoveď (ms)</string>
     <string name="settings_connect_timeout">Limit čakania na pripojenie (ms)</string>
     <string name="settings_socket_timeout">Limit čakania na socket (ms)</string>
-    <string name="users">Používatelia</string>
     <string name="pref_player_mpv_hwdec">Hardvérové dekódovanie</string>
     <string name="pref_player_mpv_vo">Výstup videa</string>
     <string name="pref_player_mpv_ao">Výstup zvuku</string>
@@ -121,7 +118,6 @@
     <string name="player_gestures_vb_summary">Potiahnite prstom hore a dole na pravej strane obrazovky na nastavenie hlasitosti a na ľavej na zmenu jasu</string>
     <string name="sort_by_options_5">Dátum vydania</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
-    <string name="add_user">Pridať používateľa</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Titulky</string>
@@ -157,8 +153,6 @@
     <string name="picture_in_picture">Obraz v obraze</string>
     <string name="picture_in_picture_gesture">Gesto domov obrazu v obraze</string>
     <string name="picture_in_picture_gesture_summary">Použi tlačidlo domov alebo gesto na prechod do režimu obrazu v obraze počas prehrávania videa</string>
-    <string name="no_users_found">Nenašli sa žiadni užívatelia</string>
-    <string name="select_user">Vybrať užívateľa</string>
     <string name="live_tv">Živá TV</string>
     <string name="play">Prehrať</string>
     <string name="watch_trailer">Prehrať trailer</string>

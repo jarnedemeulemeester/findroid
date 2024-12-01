@@ -103,14 +103,10 @@
     <string name="theme_light">라이트 모드</string>
     <string name="theme_dark">다크 모드</string>
     <string name="episodes_label">에피소드</string>
-    <string name="remove_user_dialog_text">정말로 %1$s 유저를 제거하시겠습니까\?</string>
     <string name="settings_category_network">네트워크</string>
     <string name="settings_request_timeout">요청시간 초과(ms)</string>
     <string name="settings_connect_timeout">연결시간 초과(ms)</string>
     <string name="settings_socket_timeout">소켓시간 초과(ms)</string>
-    <string name="remove_user">유저 제거</string>
-    <string name="users">유저</string>
-    <string name="add_user">유저 추가</string>
     <string name="pref_player_mpv_hwdec">하드웨어 디코딩</string>
     <string name="add_server_address">서버 주소 추가</string>
     <string name="pref_player_mpv_vo">비디오 출력</string>
@@ -157,8 +153,6 @@
     <string name="picture_in_picture_gesture">Picture-in-picture 홈 제스쳐</string>
     <string name="picture_in_picture_gesture_summary">영상 재생 중 홈 버튼 또는 제스쳐를 이용해 picture-in-picture 변경</string>
     <string name="picture_in_picture">Picture-in-picture 기능</string>
-    <string name="no_users_found">사용자가 발견되지 않았습니다</string>
-    <string name="select_user">사용자를 선택하세요</string>
     <string name="play">재생</string>
     <string name="live_tv">라이브 TV</string>
     <string name="watch_trailer">예고편 보기</string>

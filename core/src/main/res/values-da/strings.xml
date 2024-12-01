@@ -5,8 +5,6 @@
     <string name="select_server">Vælg server</string>
     <string name="remove_server">Fjern server</string>
     <string name="remove_server_dialog_text">Er du sikker på, at du vil fjerne serveren %1$s</string>
-    <string name="remove_user">Fjern bruger</string>
-    <string name="remove_user_dialog_text">Er du sikker på, at du vil fjerne brugeren %1$s</string>
     <string name="remove_server_address">Fjern server-adresse</string>
     <string name="remove_server_address_dialog_text">Er du sikker på, at du vil fjerne server-adressen %1$s</string>
     <string name="remove">Fjern</string>
@@ -54,7 +52,6 @@
     <string name="internal">Intern</string>
     <string name="storage_name">%1$s (%2$d MB ledig)</string>
     <string name="stop_download">Stop download</string>
-    <string name="no_users_found">Ingen brugere fundet</string>
     <string name="unmark_as_played">Marker som ikke-afspillet</string>
     <string name="mark_as_played">Marker som afspillet</string>
     <string name="search_hint">Søg film, serier, episoder…</string>
@@ -96,8 +93,6 @@
     <string name="theme_light">Lyst</string>
     <string name="theme_dark">Mørkt</string>
     <string name="settings_category_network">Netværk</string>
-    <string name="users">Brugere</string>
-    <string name="add_user">Tilføj bruger</string>
     <string name="pref_player_chapter_markers">Kapitelmarkører</string>
     <string name="addresses">Adresser</string>
     <string name="add_address">Tilføj adresse</string>
@@ -107,7 +102,6 @@
     <string name="subtitle">Undertekster</string>
     <string name="preparing_download">Forbereder download</string>
     <string name="cancel_download">Annuller download</string>
-    <string name="select_user">Vælg bruger</string>
     <string name="play">Afspil</string>
     <string name="watch_trailer">Se trailer</string>
     <string name="add_to_favorites">Tilføj til favoritter</string>

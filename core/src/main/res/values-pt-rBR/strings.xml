@@ -97,16 +97,12 @@
     <string name="player_gestures_zoom_summary">Aperte para preencher a tela com o vídeo</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecione a versão</string>
-    <string name="users">Usuários</string>
-    <string name="add_user">Adicionar usuário</string>
     <string name="pref_player_mpv_hwdec">Decodificação de hardware</string>
     <string name="sort_by_options_3">Data de Adição</string>
     <string name="sort_by_options_4">Data de Reprodução</string>
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
     <string name="pref_player_mpv_vo">Saida de vídeo</string>
-    <string name="remove_user">Excluir usuário</string>
-    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
     <string name="addresses">Endereços</string>
     <string name="add_address">Adicionar endereço</string>
@@ -161,8 +157,6 @@
     <string name="unmark_as_played">Desmarcar como reproduzido</string>
     <string name="add_to_favorites">Adicionar aos favoritos</string>
     <string name="remove_from_favorites">Remover dos favoritos</string>
-    <string name="no_users_found">Usuários não encontrados</string>
-    <string name="select_user">Selecione o usuário</string>
     <string name="live_tv">TV ao vivo</string>
     <string name="play">Reproduzir</string>
     <string name="watch_trailer">Assista o trailer</string>

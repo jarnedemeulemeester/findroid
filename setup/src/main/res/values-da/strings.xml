@@ -16,4 +16,9 @@
    <string name="login_btn_login">Login</string>
    <string name="login_error_wrong_username_password">Forkert brugernavn eller adgangskode</string>
    <string name="servers_no_servers">Ingen servere fundet</string>
+   <string name="remove_user_dialog">Fjern bruger</string>
+   <string name="remove_user_dialog_text">Er du sikker på, at du vil fjerne brugeren %1$s</string>
+   <string name="users_no_users">Ingen brugere fundet</string>
+   <string name="users">Brugere</string>
+   <string name="users_btn_add_user">Tilføj bruger</string>
 </resources>

@@ -5,7 +5,6 @@
     <string name="jellyfin_banner">जेलीफिन बैनर</string>
     <string name="select_server">सर्वर चुनें</string>
     <string name="remove_server">सर्वर हटाएं</string>
-    <string name="remove_user">उपयोगकर्ता हटाएं</string>
     <string name="remove_server_address">सर्वर का पता हटाएं</string>
     <string name="remove_server_address_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर का पता %1$s हटाना चाहते हैं</string>
     <string name="remove">हटाएं</string>
@@ -69,9 +68,7 @@
     <string name="select_video_version_title">वर्ज़न चुने</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="settings_category_network">नेटवर्क</string>
-    <string name="users">उपयोगकर्ता</string>
     <string name="app_description">थर्ड-पार्टी नेटिव जेलीफिन ऐप</string>
-    <string name="remove_user_dialog_text">क्या आप सुनिश्चित हैं कि आप उपयोगकर्ता %1$s को हटाना चाहते हैं</string>
     <string name="episode_name_extended_with_end">स%1$d:ए%2$d-%3$d - %4$s</string>
     <string name="series_poster">श्रृंखला पोस्टर</string>
     <string name="no_downloads">आपने कुछ भी डाउनलोड नहीं किया है</string>

@@ -16,4 +16,8 @@
     <string name="add_server_error_version">Không hỗ trợ phiên bản máy chủ này: %1$s. Vui lòng cập nhật máy chủ</string>
     <string name="add_server_error_empty_address">Địa chỉ máy chủ rỗng</string>
     <string name="add_server_error_no_id">Máy chủ không có id, đã có vấn đề xảy ra từ phía máy chủ</string>
+    <string name="remove_user_dialog">Xoá người dùng</string>
+    <string name="remove_user_dialog_text">Bạn có chắc chắn muốn xoá người dùng này không %1$s</string>
+    <string name="users">Người dùng</string>
+    <string name="users_btn_add_user">Thêm người dùng</string>
 </resources>

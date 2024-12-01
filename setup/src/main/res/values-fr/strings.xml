@@ -17,4 +17,9 @@
    <string name="login_btn_quick_connect">Connexion rapide</string>
    <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>
    <string name="servers_no_servers">Aucun serveur trouvé</string>
+   <string name="users_btn_add_user">Ajouter un utilisateur</string>
+   <string name="remove_user_dialog">Supprimer l\'utilisateur</string>
+   <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
+   <string name="users">Utilisateurs</string>
+   <string name="users_no_users">Aucun utilisateur trouvé</string>
 </resources>

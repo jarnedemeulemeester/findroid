@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="remove_server">Видалити сервер</string>
-    <string name="remove_user">Видалити користувача</string>
     <string name="remove">Видалити</string>
     <string name="cancel">Відміна</string>
     <string name="title_home">Головна</string>
@@ -84,8 +83,6 @@
     <string name="settings_category_network">Мережа</string>
     <string name="settings_request_timeout">Таймаут запиту (мс)</string>
     <string name="settings_socket_timeout">Таймаут сокета (мс)</string>
-    <string name="users">Користувачі</string>
-    <string name="add_user">Додати користувача</string>
     <string name="pref_player_mpv_hwdec">Апаратне декодування</string>
     <string name="pref_player_mpv_vo">Виведення відео</string>
     <string name="pref_player_mpv_ao">Виведення аудіо</string>
@@ -113,7 +110,6 @@
     <string name="jellyfin_banner">Jellyfin банер</string>
     <string name="select_server">Виберіть сервер</string>
     <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
-    <string name="remove_user_dialog_text">Ви впевнені, що хочете видалити користувача %1$s</string>
     <string name="title_media">Мої медіа</string>
     <string name="title_settings">Налаштування</string>
     <string name="genres">Жанри</string>

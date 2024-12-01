@@ -111,10 +111,6 @@
     <string name="player_gestures_zoom_summary">Ущипните, чтобы растянуть видео на весь экран</string>
     <string name="dynamic_colors">Динамические цвета</string>
     <string name="dynamic_colors_summary">Использовать динамические цвета Material You (доступно только на Android 12+)</string>
-    <string name="users">Пользователи</string>
-    <string name="add_user">Добавить пользователя</string>
-    <string name="remove_user">Удалить пользователя</string>
-    <string name="remove_user_dialog_text">Вы уверены, что хотите удалить пользователя %1$s</string>
     <string name="libraries">Медиатеки</string>
     <string name="latest_library">Последние %1$s</string>
     <string name="settings_request_timeout">Время ожидания запроса (мс)</string>

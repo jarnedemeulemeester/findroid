@@ -104,14 +104,10 @@
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>
     <string name="episodes_label">季</string>
-    <string name="remove_user">移除用户</string>
-    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗</string>
     <string name="settings_category_network">网络</string>
     <string name="settings_request_timeout">请求超时</string>
     <string name="settings_connect_timeout">连接超时</string>
     <string name="settings_socket_timeout">Socket超时</string>
-    <string name="users">用户</string>
-    <string name="add_user">添加用户</string>
     <string name="pref_player_mpv_hwdec">硬解</string>
     <string name="pref_player_mpv_vo">视频输出</string>
     <string name="pref_player_mpv_ao">音频输出</string>
@@ -158,9 +154,7 @@
     <string name="picture_in_picture">画中画</string>
     <string name="picture_in_picture_gesture_summary">在视频播放时使用主页按钮或手势进入画中画模式</string>
     <string name="picture_in_picture_gesture">画中画返回手势</string>
-    <string name="select_user">选择用户</string>
     <string name="live_tv">电视直播</string>
-    <string name="no_users_found">找不到用户</string>
     <string name="unmark_as_played">取消标记已播放</string>
     <string name="add_to_favorites">加入收藏</string>
     <string name="remove_from_favorites">从收藏中删除</string>

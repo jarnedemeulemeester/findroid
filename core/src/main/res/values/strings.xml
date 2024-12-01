@@ -5,8 +5,6 @@
     <string name="select_server">Select server</string>
     <string name="remove_server">Remove server</string>
     <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
-    <string name="remove_user">Remove user</string>
-    <string name="remove_user_dialog_text">Are you sure you want to remove the user %1$s</string>
     <string name="remove_server_address">Remove server address</string>
     <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
@@ -125,8 +123,6 @@
     <string name="settings_request_timeout">Request timeout (ms)</string>
     <string name="settings_connect_timeout">Connect timeout (ms)</string>
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
-    <string name="users">Users</string>
-    <string name="add_user">Add user</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
@@ -167,8 +163,6 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
-    <string name="no_users_found">No users found</string>
-    <string name="select_user">Select user</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Play</string>
     <string name="watch_trailer">Watch trailer</string>

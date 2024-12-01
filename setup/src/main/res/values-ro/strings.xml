@@ -3,4 +3,8 @@
     <string name="add_server">Adaugă un server</string>
     <string name="login_btn_quick_connect">Conectare rapidă</string>
     <string name="add_server_error_version">Versiunea serverului nu este suportată: %1$s. Va rugăm să actualizați serverul dumneavoastră</string>
+    <string name="remove_user_dialog">Eliminați utilizatorul</string>
+    <string name="remove_user_dialog_text">Sunteți sigur că doriți să eliminați utilizatorul %1$s</string>
+    <string name="users">Utilizatori</string>
+    <string name="users_btn_add_user">Adaugă un utilizator</string>
 </resources>
