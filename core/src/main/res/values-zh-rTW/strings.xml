@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin 橫幅</string>
-    <string name="select_server">選擇伺服器</string>
-    <string name="remove_server">移除伺服器</string>
-    <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
     <string name="remove">移除</string>
     <string name="cancel">取消</string>
     <string name="title_home">主畫面</string>

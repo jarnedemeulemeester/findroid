@@ -20,4 +20,6 @@
     <string name="remove_user_dialog_text">Är du säker på att du vill ta bort användaren %1$s</string>
     <string name="users">Användare</string>
     <string name="users_btn_add_user">Lägg till användare</string>
+    <string name="remove_server_dialog">Ta bort server</string>
+    <string name="remove_server_dialog_text">Är du säker på att du vill ta bort servern %1$s</string>
 </resources>

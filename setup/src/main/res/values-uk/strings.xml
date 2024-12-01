@@ -20,4 +20,6 @@
     <string name="remove_user_dialog_text">Ви впевнені, що хочете видалити користувача %1$s</string>
     <string name="users">Користувачі</string>
     <string name="users_btn_add_user">Додати користувача</string>
+    <string name="remove_server_dialog">Видалити сервер</string>
+    <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
 </resources>

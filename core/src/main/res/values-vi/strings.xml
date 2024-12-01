@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Ảnh bìa của Jellyfin</string>
-    <string name="select_server">Chọn máy chủ</string>
-    <string name="remove_server">Xoá máy chủ</string>
     <string name="remove">Xoá</string>
     <string name="cancel">Huỷ</string>
     <string name="title_home">Trang chủ</string>
@@ -94,7 +92,6 @@
     <string name="add_server_address">Thêm địa chỉ máy chủ</string>
     <string name="add">Thêm</string>
     <string name="app_description">Máy khách native không chính thức cho Jellyfin</string>
-    <string name="remove_server_dialog_text">Bạn có chắc chắn muốn xoá máy chủ này không %1$s</string>
     <string name="genres">Thể loại</string>
     <string name="cast_amp_crew">Diễn viên &amp; Êkíp</string>
     <string name="check_button_description">Đánh dấu là đã xem hoặc chưa xem</string>

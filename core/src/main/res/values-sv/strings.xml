@@ -2,7 +2,6 @@
 <resources>
     <string name="app_description">Tredjeparts nativ Jellyfin-app</string>
     <string name="jellyfin_banner">Jellyfinbanderoll</string>
-    <string name="select_server">Välj server</string>
     <string name="title_home">Hem</string>
     <string name="title_media">Min media</string>
     <string name="title_settings">Inställningar</string>
@@ -91,8 +90,6 @@
     <string name="extra_info">Visa extra information</string>
     <string name="subtitle">Textning</string>
     <string name="extra_info_summary">Visa detaljerad information om ljud, video och textning</string>
-    <string name="remove_server">Ta bort server</string>
-    <string name="remove_server_dialog_text">Är du säker på att du vill ta bort servern %1$s</string>
     <string name="remove">Ta bort</string>
     <string name="cancel">Avbryt</string>
     <string name="title_favorite">Favoriter</string>

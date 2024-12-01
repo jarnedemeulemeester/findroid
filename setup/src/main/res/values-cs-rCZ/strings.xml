@@ -20,4 +20,6 @@
    <string name="remove_user_dialog_text">Jste si jistí, že chcete odebrat uživatele %1$s</string>
    <string name="users">Uživatelé</string>
    <string name="users_btn_add_user">Přidat uživatele</string>
+   <string name="remove_server_dialog">Odstranit server</string>
+   <string name="remove_server_dialog_text">Určitě si přejete odstranit server %1$s</string>
 </resources>

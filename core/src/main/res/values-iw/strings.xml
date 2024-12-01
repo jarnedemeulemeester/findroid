@@ -2,8 +2,6 @@
 <resources>
     <string name="app_description">אפליקציית צד-שלישי ל-Jellyfin</string>
     <string name="jellyfin_banner">באנר Jellyfin</string>
-    <string name="select_server">בחר שרת</string>
-    <string name="remove_server">שרת מרוחק</string>
     <string name="remove">הסר</string>
     <string name="cancel">ביטול</string>
     <string name="title_media">המדיה שלי</string>
@@ -108,7 +106,6 @@
     <string name="subtitle_chip_text">כתוביות</string>
     <string name="temp">זמני</string>
     <string name="extra_info_summary">מציג מידע מפורט על שמע, וידאו וכתוביות</string>
-    <string name="remove_server_dialog_text">האם אתה בטוח שברצונך להסיר את השרת %1$s</string>
     <string name="title_home">בית</string>
     <string name="check_button_description">סמן כנצפה או לא נצפה</string>
     <string name="settings_category_language">שפה</string>

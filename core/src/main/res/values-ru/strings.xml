@@ -3,8 +3,6 @@
     <string name="play_button_description">Воспроизвести медиа</string>
     <string name="episode_watched_indicator">Индикатор просмотра эпизодов</string>
     <string name="app_description">Стороннее нативное приложение Jellyfin</string>
-    <string name="select_server">Выберите сервер</string>
-    <string name="remove_server">Удалить сервер</string>
     <string name="remove">Удалить</string>
     <string name="cancel">Отмена</string>
     <string name="title_home">Главная</string>
@@ -50,7 +48,6 @@
     <string name="app_info">Информация о приложении</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="search_hint">Поиск кино, сериалов, эпизодов…</string>
-    <string name="remove_server_dialog_text">Вы уверены, что хотите удалить сервер %1$s</string>
     <string name="no_downloads">Вы ничего не скачивали</string>
     <string name="settings_preferred_subtitle_language">Предпочитаемый язык субтитров</string>
     <string name="settings_category_device">Устройство</string>

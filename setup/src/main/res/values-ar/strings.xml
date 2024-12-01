@@ -15,4 +15,5 @@
    <string name="login">تسجيل دخول</string>
    <string name="login_btn_login">تسجيل دخول</string>
    <string name="login_error_wrong_username_password">اسم المستخدم او الكلمه السريه غير صحيحه</string>
+   <string name="remove_server_dialog">حذف الخادم</string>
 </resources>

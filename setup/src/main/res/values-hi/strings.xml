@@ -18,4 +18,6 @@
    <string name="remove_user_dialog">उपयोगकर्ता हटाएं</string>
    <string name="remove_user_dialog_text">क्या आप सुनिश्चित हैं कि आप उपयोगकर्ता %1$s को हटाना चाहते हैं</string>
    <string name="users">उपयोगकर्ता</string>
+   <string name="remove_server_dialog">सर्वर हटाएं</string>
+   <string name="remove_server_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर %1$s को हटाना चाहते हैं</string>
 </resources>

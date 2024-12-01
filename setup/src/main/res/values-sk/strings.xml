@@ -22,4 +22,6 @@
     <string name="users">Používatelia</string>
     <string name="users_btn_add_user">Pridať používateľa</string>
     <string name="users_no_users">Nenašli sa žiadni užívatelia</string>
+    <string name="remove_server_dialog">Odstrániť server</string>
+    <string name="remove_server_dialog_text">Ste si istí, že chcete odstrániť server %1$s</string>
 </resources>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="remove_server">Supprimer le serveur</string>
-    <string name="remove_server_dialog_text">Êtes-vous certain de vouloir supprimer le serveur %1$s</string>
     <string name="remove">Supprimer</string>
     <string name="cancel">Annuler</string>
     <string name="title_home">Accueil</string>
@@ -20,7 +18,6 @@
     <string name="view_all">Tout afficher</string>
     <string name="writers">Réalisateurs</string>
     <string name="shows_label">Séries</string>
-    <string name="select_server">Choix du serveur</string>
     <string name="hide">Cacher</string>
     <string name="sort_by">Trier par</string>
     <string name="sort_order">Ordre de tri</string>

@@ -22,4 +22,6 @@
    <string name="remove_user_dialog">Quitar usuario</string>
    <string name="remove_user_dialog_text">¿Está seguro de querer remover el usuario %1$s</string>
    <string name="users_no_users">No se encontraron usuarios</string>
+   <string name="remove_server_dialog">Quitar servidor</string>
+   <string name="remove_server_dialog_text">¿Está seguro de quitar el servidor %1$s</string>
 </resources>

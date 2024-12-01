@@ -3,8 +3,6 @@
     <string name="title_settings">Einstellungen</string>
     <string name="title_download">Downloads</string>
     <string name="view_all">Alle anzeigen</string>
-    <string name="select_server">Server auswählen</string>
-    <string name="remove_server">Server entfernen</string>
     <string name="remove">Entfernen</string>
     <string name="cancel">Abbrechen</string>
     <string name="title_home">Startseite</string>
@@ -86,7 +84,6 @@
     <string name="select_video_version_title">Version auswählen</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">Native Drittanbieter Jellyfin App</string>
-    <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
     <string name="player_gestures_vb_summary">Wische auf der rechten Seite des Bildschirms hoch und runter, um die Lautstärke anzupassen, und auf der linken Seite, um die Helligkeit anzupassen</string>
     <string name="seeking">Suchen</string>
     <string name="subtitles">Untertitel</string>

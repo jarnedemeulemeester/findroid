@@ -2,9 +2,6 @@
     <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="select_server">Select server</string>
-    <string name="remove_server">Remove server</string>
-    <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
     <string name="remove_server_address">Remove server address</string>
     <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>

@@ -20,4 +20,6 @@
     <string name="remove_user_dialog_text">Bạn có chắc chắn muốn xoá người dùng này không %1$s</string>
     <string name="users">Người dùng</string>
     <string name="users_btn_add_user">Thêm người dùng</string>
+    <string name="remove_server_dialog">Xoá máy chủ</string>
+    <string name="remove_server_dialog_text">Bạn có chắc chắn muốn xoá máy chủ này không %1$s</string>
 </resources>

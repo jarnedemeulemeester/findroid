@@ -20,4 +20,6 @@
     <string name="remove_user_dialog_text">Ali ste prepričani, da želite odstraniti uporabnika %1$s</string>
     <string name="users">Uporabniki</string>
     <string name="users_btn_add_user">Dodaj uporabnika</string>
+    <string name="remove_server_dialog">Odstrani strežnik</string>
+    <string name="remove_server_dialog_text">Ali ste prepričani, da želite odstraniti strežnik %1$s</string>
 </resources>

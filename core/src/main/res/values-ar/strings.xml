@@ -1,5 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_server">اختر الخادم</string>
-    <string name="remove_server">حذف الخادم</string>
 </resources>

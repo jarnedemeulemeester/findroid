@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_server">Vyberte server</string>
-    <string name="remove_server">Odstrániť server</string>
     <string name="cancel">Zrušiť</string>
     <string name="title_home">Domov</string>
     <string name="title_media">Moje média</string>
@@ -97,7 +95,6 @@
     <string name="pref_player_intro_skipper">Preskakovanie úvodnej zvučky</string>
     <string name="app_description">Neoficiálna natívna Jellyfin aplikácia</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
-    <string name="remove_server_dialog_text">Ste si istí, že chcete odstrániť server %1$s</string>
     <string name="remove">Odstrániť</string>
     <string name="title_settings">Nastavenia</string>
     <string name="writers">Scenáristi</string>

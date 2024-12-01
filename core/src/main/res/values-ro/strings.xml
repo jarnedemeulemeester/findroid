@@ -101,8 +101,6 @@
     <string name="privacy_policy_notice">Prin utilizarea Findroid sunteți de acord cu <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privacy Policy</a> care spune că nu colectăm nicio informație</string>
     <string name="cancel">Anulează</string>
     <string name="title_media">Media mea</string>
-    <string name="remove_server">Eliminați serverul</string>
-    <string name="remove_server_dialog_text">Sunteți sigur că doriți să eliminați serverul %1$s</string>
     <string name="remove_server_address_dialog_text">Sunteți sigur că doriți să eliminați adresa serverului %1$s</string>
     <string name="error_loading_data">Eroare la încărcarea datelor</string>
     <string name="favorite_button_description">Favorite</string>

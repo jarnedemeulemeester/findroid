@@ -2,8 +2,6 @@
 <resources>
     <string name="jellyfin_banner">Jellyfin横幅</string>
     <string name="writers">作者</string>
-    <string name="select_server">选择服务器</string>
-    <string name="remove_server">删除服务器</string>
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
     <string name="title_media">我的媒体</string>
@@ -85,7 +83,6 @@
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>
     <string name="settings_use_cache_summary">把图片缓存到磁盘上来加快加载时间。将会在应用程序重启后生效。</string>
-    <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
     <string name="settings_cache_size">缓存大小 (MB)</string>
     <string name="title_home">首页</string>
     <string name="settings_cache_size_message">应用程序将会利用这些MB的磁盘空间来存储Jellyfin服务器的图片。在较慢的网络下，更大的数值可能会更好。</string>

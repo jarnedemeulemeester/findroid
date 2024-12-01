@@ -22,4 +22,6 @@
    <string name="users_btn_add_user">Benutzer hinzufügen</string>
    <string name="users">Benutzer</string>
    <string name="users_no_users">Keine Benutzer gefunden</string>
+   <string name="remove_server_dialog">Server entfernen</string>
+   <string name="remove_server_dialog_text">Sicher, dass du den Server %1$s entfernen willst</string>
 </resources>

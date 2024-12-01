@@ -22,4 +22,6 @@
     <string name="users">使用者</string>
     <string name="users_btn_add_user">添加使用者</string>
     <string name="users_no_users">未找到相應的用戶</string>
+    <string name="remove_server_dialog">移除伺服器</string>
+    <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
 </resources>

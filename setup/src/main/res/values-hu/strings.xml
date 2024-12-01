@@ -19,5 +19,9 @@
     <string name="servers_no_servers">Nem található szerver</string>
     <string name="users_btn_add_user">Felhasználó hozzádása</string>
     <string name="users">Felhasználók</string>
+    <string name="users_no_users">Nincs felhasználó</string>
     <string name="remove_user_dialog">Felhasználó eltávolítása</string>
+    <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
+    <string name="remove_server_dialog">Szerver törlése</string>
+    <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
 </resources>

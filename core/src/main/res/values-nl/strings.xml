@@ -3,14 +3,11 @@
 
     <string name="app_description">Derde-partij Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="select_server">Selecteer server</string>
-    <string name="remove_server">Server verwijderen</string>
     <string name="remove">Verwijderen</string>
     <string name="title_favorite">Favorieten</string>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Speler</string>
-    <string name="remove_server_dialog_text">Weet je zeker dat je de server wilt verwijderen %1$s</string>
     <string name="mpv_player">mpv speler</string>
     <string name="download_mobile_data">Download met mobiele data</string>
     <string name="download_roaming">Download met roaming</string>

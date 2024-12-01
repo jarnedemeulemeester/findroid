@@ -2,9 +2,6 @@
 <resources>
     <string name="external">Ekstern</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="select_server">Vælg server</string>
-    <string name="remove_server">Fjern server</string>
-    <string name="remove_server_dialog_text">Er du sikker på, at du vil fjerne serveren %1$s</string>
     <string name="remove_server_address">Fjern server-adresse</string>
     <string name="remove_server_address_dialog_text">Er du sikker på, at du vil fjerne server-adressen %1$s</string>
     <string name="remove">Fjern</string>

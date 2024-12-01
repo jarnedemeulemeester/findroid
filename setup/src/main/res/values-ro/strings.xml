@@ -7,4 +7,6 @@
     <string name="remove_user_dialog_text">Sunteți sigur că doriți să eliminați utilizatorul %1$s</string>
     <string name="users">Utilizatori</string>
     <string name="users_btn_add_user">Adaugă un utilizator</string>
+    <string name="remove_server_dialog">Eliminați serverul</string>
+    <string name="remove_server_dialog_text">Sunteți sigur că doriți să eliminați serverul %1$s</string>
 </resources>

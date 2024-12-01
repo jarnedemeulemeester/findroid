@@ -3,8 +3,6 @@
     <string name="next_up">अगला</string>
     <string name="no_favorites">आपके पास कोई पसंदीदा नहीं है</string>
     <string name="jellyfin_banner">जेलीफिन बैनर</string>
-    <string name="select_server">सर्वर चुनें</string>
-    <string name="remove_server">सर्वर हटाएं</string>
     <string name="remove_server_address">सर्वर का पता हटाएं</string>
     <string name="remove_server_address_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर का पता %1$s हटाना चाहते हैं</string>
     <string name="remove">हटाएं</string>
@@ -73,7 +71,6 @@
     <string name="series_poster">श्रृंखला पोस्टर</string>
     <string name="no_downloads">आपने कुछ भी डाउनलोड नहीं किया है</string>
     <string name="error_preparing_player_items">प्लेयर आइटम्स तैयार करते समय त्रुटि हुई।</string>
-    <string name="remove_server_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर %1$s को हटाना चाहते हैं</string>
     <string name="title_favorite">पसंदीदा</string>
     <string name="error_loading_data">डेटा लोड करने में त्रुटि</string>
     <string name="check_button_description">देखा हुआ या न देखा हुआ चिह्नित करें</string>

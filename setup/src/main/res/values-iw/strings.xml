@@ -20,4 +20,6 @@
     <string name="remove_user_dialog_text">האם אתה בטוח שאתה רוצה להסיר את המשתמש %1$s</string>
     <string name="users">משתמשים</string>
     <string name="users_btn_add_user">הוסף משתמש</string>
+    <string name="remove_server_dialog">שרת מרוחק</string>
+    <string name="remove_server_dialog_text">האם אתה בטוח שברצונך להסיר את השרת %1$s</string>
 </resources>

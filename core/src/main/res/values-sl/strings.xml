@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_server">Izberite strežnik</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="remove_server">Odstrani strežnik</string>
     <string name="remove">Odstrani</string>
     <string name="cancel">Prekliči</string>
     <string name="title_home">Dom</string>
@@ -93,7 +91,6 @@
     <string name="add_address">Dodaj naslov</string>
     <string name="add_server_address">Dodajte naslov strežnika</string>
     <string name="add">Dodaj</string>
-    <string name="remove_server_dialog_text">Ali ste prepričani, da želite odstraniti strežnik %1$s</string>
     <string name="error_loading_data">Napaka pri nalaganju podatkov</string>
     <string name="retry">Poskusite znova</string>
     <string name="check_button_description">Označi kot gledano ali ne-ogledano</string>

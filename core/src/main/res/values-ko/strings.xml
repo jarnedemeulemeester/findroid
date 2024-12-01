@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="remove_server">서버 제거</string>
     <string name="settings_use_cache_title">캐시 이미지</string>
     <string name="settings_category_cache">캐시</string>
     <string name="theme">테마</string>
@@ -53,12 +52,10 @@
     <string name="no_downloads">다운로드된 항목 없음</string>
     <string name="retry">재시도</string>
     <string name="share">공유</string>
-    <string name="select_server">서버 선택</string>
     <string name="cast_amp_crew">배역 및 제작진</string>
     <string name="app_description">Jellyfin의 서드파티 앱</string>
     <string name="trailer_button_description">예고편 보기</string>
     <string name="jellyfin_banner">Jellyfin 배너</string>
-    <string name="remove_server_dialog_text">%1$s 서버를 제거하시겠습니까\?</string>
     <string name="cancel">취소</string>
     <string name="title_home">홈</string>
     <string name="title_favorite">즐겨찾기</string>

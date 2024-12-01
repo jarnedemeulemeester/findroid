@@ -19,4 +19,6 @@
     <string name="users">Kullanıcılar</string>
     <string name="users_btn_add_user">Kullanıcı ekle</string>
     <string name="users_no_users">Kullanıcı bulunamadı</string>
+    <string name="remove_server_dialog">Sunucuyu kaldır</string>
+    <string name="remove_server_dialog_text">%1$s sunucusunu kaldırmak istediğinizden emin misiniz</string>
 </resources>

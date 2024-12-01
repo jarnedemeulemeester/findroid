@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="remove_server">Видалити сервер</string>
     <string name="remove">Видалити</string>
     <string name="cancel">Відміна</string>
     <string name="title_home">Головна</string>
@@ -108,8 +107,6 @@
     <string name="cancel_download_message">Ви впевнені, що хочете скасувати завантаження\?</string>
     <string name="app_description">Сторонній нативний додаток для Jellyfin</string>
     <string name="jellyfin_banner">Jellyfin банер</string>
-    <string name="select_server">Виберіть сервер</string>
-    <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
     <string name="title_media">Мої медіа</string>
     <string name="title_settings">Налаштування</string>
     <string name="genres">Жанри</string>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Banner di Jellyfin</string>
-    <string name="select_server">Seleziona server</string>
-    <string name="remove_server">Rimuovi server</string>
-    <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
     <string name="remove">Rimuovi</string>
     <string name="cancel">Annulla</string>
     <string name="title_home">Home</string>

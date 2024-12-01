@@ -2,9 +2,6 @@
 <resources>
     <string name="app_description">Neoficiální nativní Jellyfin aplikace</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
-    <string name="select_server">Vybrat server</string>
-    <string name="remove_server">Odstranit server</string>
-    <string name="remove_server_dialog_text">Určitě si přejete odstranit server %1$s</string>
     <string name="remove">Odstranit</string>
     <string name="cancel">Zrušit</string>
     <string name="title_home">Domov</string>
