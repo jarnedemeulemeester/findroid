@@ -152,11 +152,6 @@ dependencies {
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
-    androidTestImplementation(libs.androidx.room.runtime)
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.bundles.androidx.test)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.android.compiler)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
