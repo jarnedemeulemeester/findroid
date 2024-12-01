@@ -62,7 +62,7 @@ fun DiscoveredServerItem(
 @Composable
 @Preview
 private fun DiscoveredServerItemPreview() {
-    FindroidTheme() {
+    FindroidTheme {
         DiscoveredServerItem(
             name = "Jellyfin Server",
         )
