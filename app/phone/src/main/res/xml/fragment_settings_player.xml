@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        android:key="pref_player_seek_back_inc"
+        android:title="@string/player_seek_back_inc"
+        android:defaultValue="10"
+        android:inputType="number" />
+
+    <EditTextPreference
+        android:key="pref_player_seek_forward_inc"
+        android:title="@string/player_seek_forward_inc"
+        android:defaultValue="10"
+        android:inputType="number" />
+
+    <Preference
+        android:key="pref_player_subtitles"
+        android:title="@string/player_subtitles"
+        android:summary="@string/player_subtitles_summary" />
+
+    <SwitchPreferenceCompat
+        android:key="pref_auto_landscape_rotation"
+        android:title="@string/auto_landscape_rotation"
+        android:summary="@string/auto_landscape_rotation_summary"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

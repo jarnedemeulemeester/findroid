@@ -7,6 +7,7 @@ import android.text.InputType
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import dev.jdtech.jellyfin.core.R as CoreR
 
 class SettingsPlayerFragment : PreferenceFragmentCompat() {
@@ -20,6 +21,10 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         }
         findPreference<Preference>("pref_player_subtitles")?.setOnPreferenceClickListener {
             startActivity(Intent(Settings.ACTION_CAPTIONING_SETTINGS))
+            true
+        }
+        findPreference<SwitchPreferenceCompat>("pref_auto_landscape_rotation")?.setOnPreferenceChangeListener { _, newValue ->
+            // Handle the preference change if needed
             true
         }
     }
