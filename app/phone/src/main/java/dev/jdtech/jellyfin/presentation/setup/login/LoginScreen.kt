@@ -40,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
@@ -101,6 +103,9 @@ private fun LoginScreenLayout(
     }
     var password by rememberSaveable {
         mutableStateOf("")
+    }
+    var passwordVisible by rememberSaveable {
+        mutableStateOf(false)
     }
 
     val doLogin = { onAction(LoginAction.OnLoginClick(username, password)) }
@@ -165,6 +170,16 @@ private fun LoginScreenLayout(
                         contentDescription = null,
                     )
                 },
+                trailingIcon = {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible },
+                    ) {
+                        Icon(
+                            painter = if (passwordVisible) painterResource(CoreR.drawable.ic_eye_off) else painterResource(CoreR.drawable.ic_eye),
+                            contentDescription = null,
+                        )
+                    }
+                },
                 onValueChange = { password = it },
                 label = {
                     Text(
@@ -180,6 +195,7 @@ private fun LoginScreenLayout(
                 keyboardActions = KeyboardActions(
                     onGo = { doLogin() },
                 ),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
