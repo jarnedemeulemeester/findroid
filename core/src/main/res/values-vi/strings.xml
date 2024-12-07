@@ -134,8 +134,6 @@
     <string name="dynamic_colors_summary">Dùng hệ thống đổi màu động của ngôn ngữ thiết kế Material You (chỉ khả dụng cho Android 12+)</string>
     <string name="settings_connect_timeout">Thời gian kết nối hết hạn (ms)</string>
     <string name="add_user">Thêm người dùng</string>
-    <string name="pref_player_intro_skipper">Bỏ qua đoạn mở đầu</string>
-    <string name="pref_player_intro_skipper_summary">Yêu cầu phần mở rộng \"Intro Skipper\" của jumoog đã được cài đặt trên máy chủ</string>
     <string name="player_gestures_seek_summary">Vuốt ngang để tua tới hoặc tua lui</string>
     <string name="player_gestures_seek">Cử chỉ tua</string>
     <string name="offline_mode_icon">Biểu tượng Chế độ Ngoại tuyến</string>

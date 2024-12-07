@@ -76,11 +76,11 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
                     segments.forEach {
                         database.insertSegment(it.toFindroidSegmentsDto(item.id))
+                    }
+                    if (trickplayInfo != null) {
+                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -105,11 +105,11 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
                     segments.forEach {
                         database.insertSegment(it.toFindroidSegmentsDto(item.id))
+                    }
+                    if (trickplayInfo != null) {
+                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)

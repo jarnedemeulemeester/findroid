@@ -134,8 +134,6 @@
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
     <string name="quick_connect">Conexão Rápida</string>
-    <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do jumoog seja instalado no servidor</string>
-    <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="video">Vídeo</string>
     <string name="audio">Áudio</string>
     <string name="subtitle_chip_text">CC</string>

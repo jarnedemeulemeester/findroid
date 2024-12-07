@@ -130,8 +130,6 @@
     <string name="remove_user">Quitar usuario</string>
     <string name="remove_user_dialog_text">¿Está seguro de querer eliminar el usuario %1$s</string>
     <string name="quick_connect">Conexión rápida</string>
-    <string name="pref_player_intro_skipper">Saltador de intros</string>
-    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="addresses">Direcciones</string>
     <string name="add_address">Añadir dirección</string>
     <string name="add_server_address">Agregar dirección de servidor</string>

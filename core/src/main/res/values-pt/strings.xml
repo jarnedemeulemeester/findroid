@@ -129,8 +129,6 @@
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="remove_server_address_dialog_text">Tem certeza de que deseja remover o endereço do servidor %1$s</string>
     <string name="runtime_minutes">%1$d minutos</string>
-    <string name="pref_player_intro_skipper">Capitão de introdução</string>
-    <string name="pref_player_intro_skipper_summary">Requer que o plugin Confused Polar Bears Intro Skipper esteja instalado no servidor</string>
     <string name="add_server_address">Adicionar endereço do servidor</string>
     <string name="player_gestures_seek">Procure gesto</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para avançar ou retroceder</string>

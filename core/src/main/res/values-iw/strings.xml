@@ -119,8 +119,6 @@
     <string name="settings_socket_timeout">זמן קצוב ל-Socket (מילי שניות)</string>
     <string name="pref_player_mpv_vo">יציאת וידאו</string>
     <string name="pref_player_mpv_ao">יציאת שמע</string>
-    <string name="pref_player_intro_skipper">מדלג פתיחים</string>
-    <string name="pref_player_intro_skipper_summary">דורש שתוסף מדלג פתיחים של jumoog יהיה מותקן על השרת</string>
     <string name="subtitle_chip_text">כתוביות</string>
     <string name="temp">זמני</string>
     <string name="extra_info_summary">מציג מידע מפורט על שמע, וידאו וכתוביות</string>

@@ -27,7 +27,6 @@ object Constants {
     const val PREF_PLAYER_MPV_HWDEC = "pref_player_mpv_hwdec"
     const val PREF_PLAYER_MPV_VO = "pref_player_mpv_vo"
     const val PREF_PLAYER_MPV_AO = "pref_player_mpv_ao"
-    const val PREF_PLAYER_INTRO_SKIPPER = "pref_player_intro_skipper"
     const val PREF_PLAYER_TRICKPLAY = "pref_player_trickplay"
     const val PREF_PLAYER_CHAPTER_MARKERS = "pref_player_chapter_markers"
     const val PREF_PLAYER_PIP_GESTURE = "pref_player_picture_in_picture_gesture"
@@ -47,6 +46,14 @@ object Constants {
     const val PREF_SORT_ORDER = "pref_sort_order"
     const val PREF_DISPLAY_EXTRA_INFO = "pref_display_extra_info"
 
+    // pref - MediaSegments
+    const val PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON = "pref_player_media_segments_skip_button"
+    const val PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_TYPE = "pref_player_media_segments_skip_button_type"
+    const val PREF_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION = "pref_player_media_segments_skip_button_duration"
+    const val PREF_PLAYER_MEDIA_SEGMENTS_AUTO_SKIP = "pref_player_media_segments_auto_skip"
+    const val PREF_PLAYER_MEDIA_SEGMENTS_AUTO_SKIP_TYPE = "pref_player_media_segments_auto_skip_type"
+    const val PREF_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD = "pref_player_media_segments_next_episode_threshold"
+
     // caching
     const val DEFAULT_CACHE_SIZE = 20
 
@@ -54,6 +61,15 @@ object Constants {
     const val FAVORITE_TYPE_MOVIES = 0
     const val FAVORITE_TYPE_SHOWS = 1
     const val FAVORITE_TYPE_EPISODES = 2
+
+    // player
+    const val DEFAULT_PLAYER_MEDIA_SEGMENTS_SKIP_BUTTON_DURATION = 10L
+    const val DEFAULT_PLAYER_MEDIA_SEGMENTS_NEXT_EPISODE_THRESHOLD = 5_000L
+    object PlayerMediaSegmentsAutoSkip {
+        const val ALWAYS = "always"
+        const val PIP = "pip"
+        const val NEVER = "never"
+    }
 
     // network
     const val NETWORK_DEFAULT_REQUEST_TIMEOUT = 30_000L

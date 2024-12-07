@@ -11,11 +11,13 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.channels.Channel
@@ -181,6 +183,7 @@ class PlayerViewModel @Inject internal constructor(
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            segments = repository.getSegments(id).toPlayerSegments(),
         )
     }
 
@@ -189,6 +192,16 @@ class PlayerViewModel @Inject internal constructor(
             PlayerChapter(
                 startPosition = chapter.startPosition,
                 name = chapter.name,
+            )
+        }
+    }
+
+    private fun List<FindroidSegment>?.toPlayerSegments(): List<PlayerSegment>? {
+        return this?.map { segment ->
+            PlayerSegment(
+                type = segment.type,
+                startTicks = segment.startTicks,
+                endTicks = segment.endTicks,
             )
         }
     }
