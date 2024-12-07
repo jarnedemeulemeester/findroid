@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +39,27 @@ class ViewListAdapter(
             binding.viewAll.setOnClickListener {
                 onClickListener(view)
             }
+
+            binding.toggleView.setOnClickListener {
+                val isExpanded = !binding.itemsRecyclerView.isVisible
+
+                // Animate RecyclerView's visibility
+                binding.itemsRecyclerView
+                    .animate()
+                    .setDuration(200)
+                    .alpha(if (isExpanded) 1f else 0f)
+                    .withEndAction {
+                        binding.itemsRecyclerView.visibility =
+                            if (isExpanded) android.view.View.VISIBLE else android.view.View.GONE
+                    }
+
+                // Rotate the arrow
+                binding.toggleView
+                    .animate()
+                    .setDuration(200)
+                    .rotation(if (isExpanded) 0f else -90f)
+                    .start()
+            }
         }
     }
 
@@ -50,6 +72,27 @@ class ViewListAdapter(
             binding.sectionName.text = section.homeSection.name.asString(binding.sectionName.context.resources)
             binding.itemsRecyclerView.adapter = HomeEpisodeListAdapter(onClickListener)
             (binding.itemsRecyclerView.adapter as HomeEpisodeListAdapter).submitList(section.homeSection.items)
+
+            binding.toggleView.setOnClickListener {
+                val isExpanded = !binding.itemsRecyclerView.isVisible
+
+                // Animate RecyclerView's visibility
+                binding.itemsRecyclerView
+                    .animate()
+                    .setDuration(200)
+                    .alpha(if (isExpanded) 1f else 0f)
+                    .withEndAction {
+                        binding.itemsRecyclerView.visibility =
+                            if (isExpanded) android.view.View.VISIBLE else android.view.View.GONE
+                    }
+
+                // Rotate the arrow
+                binding.toggleView
+                    .animate()
+                    .setDuration(200)
+                    .rotation(if (isExpanded) 0f else -90f)
+                    .start()
+            }
         }
     }
 
