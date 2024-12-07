@@ -1,7 +1,14 @@
 package dev.jdtech.jellyfin
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -47,11 +54,17 @@ fun NavigationRoot(
     NavHost(
         navController = navController,
         startDestination = startDestination,
+        enterTransition = {
+            fadeIn(tween(300))
+        },
+        exitTransition = {
+            fadeOut(tween(300))
+        },
     ) {
         composable<WelcomeRoute> {
             WelcomeScreen(
                 onContinueClick = {
-                    navController.navigate(ServersRoute())
+                    navController.safeNavigate(ServersRoute())
                 },
             )
         }
@@ -59,16 +72,16 @@ fun NavigationRoot(
             val route: ServersRoute = backStackEntry.toRoute()
             ServersScreen(
                 navigateToLogin = {
-                    navController.navigate(LoginRoute)
+                    navController.safeNavigate(LoginRoute)
                 },
                 navigateToUsers = {
-                    navController.navigate(UsersRoute())
+                    navController.safeNavigate(UsersRoute())
                 },
                 onAddClick = {
-                    navController.navigate(AddServerRoute)
+                    navController.safeNavigate(AddServerRoute)
                 },
                 onBackClick = {
-                    navController.popBackStack()
+                    navController.safePopBackStack()
                 },
                 showBack = route.showBack,
             )
@@ -76,10 +89,10 @@ fun NavigationRoot(
         composable<AddServerRoute> {
             AddServerScreen(
                 onSuccess = {
-                    navController.navigate(LoginRoute)
+                    navController.safeNavigate(LoginRoute)
                 },
                 onBackClick = {
-                    navController.popBackStack()
+                    navController.safePopBackStack()
                 },
             )
         }
@@ -88,7 +101,7 @@ fun NavigationRoot(
             UsersScreen(
                 navigateToHome = {},
                 onChangeServerClick = {
-                    navController.navigate(ServersRoute()) {
+                    navController.safeNavigate(ServersRoute()) {
                         popUpTo(ServersRoute()) {
                             inclusive = false
                         }
@@ -96,10 +109,10 @@ fun NavigationRoot(
                     }
                 },
                 onAddClick = {
-                    navController.navigate(LoginRoute)
+                    navController.safeNavigate(LoginRoute)
                 },
                 onBackClick = {
-                    navController.popBackStack()
+                    navController.safePopBackStack()
                 },
                 showBack = route.showBack,
             )
@@ -108,7 +121,7 @@ fun NavigationRoot(
             LoginScreen(
                 onSuccess = {},
                 onChangeServerClick = {
-                    navController.navigate(ServersRoute()) {
+                    navController.safeNavigate(ServersRoute()) {
                         popUpTo(ServersRoute()) {
                             inclusive = false
                         }
@@ -116,9 +129,29 @@ fun NavigationRoot(
                     }
                 },
                 onBackClick = {
-                    navController.popBackStack()
+                    navController.safePopBackStack()
                 },
             )
         }
+    }
+}
+
+private fun <T : Any> NavHostController.safeNavigate(route: T, navOptions: NavOptions? = null, navigatorExtras: Navigator.Extras? = null) {
+    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+        this.navigate(route, navOptions, navigatorExtras)
+    }
+}
+
+private fun <T : Any> NavHostController.safeNavigate(route: T, builder: NavOptionsBuilder.() -> Unit) {
+    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+        this.navigate(route, builder)
+    }
+}
+
+private fun NavHostController.safePopBackStack(): Boolean {
+    return if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+        this.popBackStack()
+    } else {
+        false
     }
 }
