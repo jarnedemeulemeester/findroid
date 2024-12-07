@@ -54,6 +54,7 @@ fun ServersScreen(
     navigateToUsers: () -> Unit,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
+    showBack: Boolean = true,
     viewModel: ServersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,6 +72,7 @@ fun ServersScreen(
 
     ServersScreenLayout(
         state = state,
+        showBack = showBack,
         onAction = { action ->
             when (action) {
                 is ServersAction.OnAddClick -> onAddClick()
@@ -85,6 +87,7 @@ fun ServersScreen(
 @Composable
 private fun ServersScreenLayout(
     state: ServersState,
+    showBack: Boolean = true,
     onAction: (ServersAction) -> Unit,
 ) {
     var openDeleteDialog by remember { mutableStateOf(false) }
@@ -141,11 +144,13 @@ private fun ServersScreenLayout(
                 }
             }
         }
-        IconButton(
-            onClick = { onAction(ServersAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+        if (showBack) {
+            IconButton(
+                onClick = { onAction(ServersAction.OnBackClick) },
+                modifier = Modifier.padding(start = 8.dp),
+            ) {
+                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            }
         }
         ExtendedFloatingActionButton(
             onClick = { onAction(ServersAction.OnAddClick) },

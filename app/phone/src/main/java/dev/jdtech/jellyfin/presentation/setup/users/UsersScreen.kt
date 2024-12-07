@@ -52,6 +52,7 @@ fun UsersScreen(
     onChangeServerClick: () -> Unit,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
+    showBack: Boolean = true,
     viewModel: UsersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -68,6 +69,7 @@ fun UsersScreen(
 
     UsersScreenLayout(
         state = state,
+        showBack = showBack,
         onAction = { action ->
             when (action) {
                 is UsersAction.OnChangeServerClick -> onChangeServerClick()
@@ -83,6 +85,7 @@ fun UsersScreen(
 @Composable
 private fun UsersScreenLayout(
     state: UsersState,
+    showBack: Boolean = true,
     onAction: (UsersAction) -> Unit,
 ) {
     var openDeleteDialog by remember { mutableStateOf(false) }
@@ -105,7 +108,10 @@ private fun UsersScreenLayout(
                     .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.users), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(SetupR.string.users),
+                style = MaterialTheme.typography.headlineMedium,
+            )
             Text(
                 text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
                 style = MaterialTheme.typography.titleMedium,
@@ -140,11 +146,13 @@ private fun UsersScreenLayout(
                 }
             }
         }
-        IconButton(
-            onClick = { onAction(UsersAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+        if (showBack) {
+            IconButton(
+                onClick = { onAction(UsersAction.OnBackClick) },
+                modifier = Modifier.padding(start = 8.dp),
+            ) {
+                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            }
         }
         IconButton(
             onClick = { onAction(UsersAction.OnChangeServerClick) },
