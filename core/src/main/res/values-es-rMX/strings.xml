@@ -169,4 +169,5 @@
     <string name="pref_player_chapter_markers_summary">Muestra marcadores de capítulo en la barra de progreso</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="player_gestures_chapter_skip_summary">Toque prolongado en el lado izquierdo/derecho para saltar capítulos (sobreescribe el gesto de velocidad x2)</string>
+    <string name="sort_by_options_6">Aleatorio</string>
 </resources>
