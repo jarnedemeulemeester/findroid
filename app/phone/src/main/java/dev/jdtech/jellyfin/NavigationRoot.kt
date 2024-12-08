@@ -77,7 +77,7 @@ fun NavigationRoot(
                 onBackClick = {
                     navController.safePopBackStack()
                 },
-                showBack = navController.previousBackStackEntry != null && navController.previousBackStackEntry != backStackEntry,
+                showBack = navController.previousBackStackEntry != null,
             )
         }
         composable<AddServerRoute> {
@@ -107,7 +107,7 @@ fun NavigationRoot(
                 onBackClick = {
                     navController.safePopBackStack()
                 },
-                showBack = navController.previousBackStackEntry != null && navController.previousBackStackEntry != backStackEntry,
+                showBack = navController.previousBackStackEntry != null,
             )
         }
         composable<LoginRoute> {
