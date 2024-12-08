@@ -30,7 +30,7 @@ class SetupRepositoryImpl(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : SetupRepository {
-    override suspend fun discoverServers(): Flow<ServerDiscoveryInfo> {
+    override fun discoverServers(): Flow<ServerDiscoveryInfo> {
         return jellyfinApi.jellyfin.discovery.discoverLocalServers()
     }
 

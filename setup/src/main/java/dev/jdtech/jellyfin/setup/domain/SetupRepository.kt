@@ -9,7 +9,7 @@ import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 import java.util.UUID
 
 interface SetupRepository {
-    suspend fun discoverServers(): Flow<ServerDiscoveryInfo>
+    fun discoverServers(): Flow<ServerDiscoveryInfo>
 
     suspend fun getServers(): List<ServerWithAddresses>
 
