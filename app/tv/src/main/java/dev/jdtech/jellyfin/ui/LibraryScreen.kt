@@ -20,34 +20,29 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.LibraryScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MovieScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ShowScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyMovies
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
 
-@Destination<RootGraph>
 @Composable
 fun LibraryScreen(
-    navigator: DestinationsNavigator,
     libraryId: UUID,
     libraryName: String,
     libraryType: CollectionType,
+    navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
+    navigateToMovie: (itemId: UUID) -> Unit,
+    navigateToShow: (itemId: UUID) -> Unit,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
@@ -61,15 +56,9 @@ fun LibraryScreen(
         uiState = delegatedUiState,
         onClick = { item ->
             when (item) {
-                is FindroidMovie -> {
-                    navigator.navigate(MovieScreenDestination(item.id))
-                }
-                is FindroidShow -> {
-                    navigator.navigate(ShowScreenDestination(item.id))
-                }
-                is FindroidFolder -> {
-                    navigator.navigate(LibraryScreenDestination(item.id, item.name, libraryType))
-                }
+                is FindroidMovie -> navigateToMovie(item.id)
+                is FindroidShow -> navigateToShow(item.id)
+                is FindroidFolder -> navigateToLibrary(item.id, item.name, libraryType)
             }
         },
     )

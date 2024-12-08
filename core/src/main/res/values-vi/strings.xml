@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Ảnh bìa của Jellyfin</string>
-    <string name="add_server">Thêm máy chủ</string>
-    <string name="add_server_error_not_jellyfin">Không phải là máy chủ Jellyfin: %1$s</string>
-    <string name="add_server_error_slow">Máy chủ phản hồi quá chậm: %1$s</string>
-    <string name="add_server_error_not_found">Máy chủ không tồn tại</string>
-    <string name="login">Đăng nhập</string>
-    <string name="login_error_wrong_username_password">Sai tên người dùng hoặc mật khẩu</string>
-    <string name="select_server">Chọn máy chủ</string>
-    <string name="edit_text_server_address_hint">Địa chỉ máy chủ</string>
-    <string name="edit_text_username_hint">Tên người dùng</string>
-    <string name="edit_text_password_hint">Mật khẩu</string>
-    <string name="button_connect">Kết nối</string>
-    <string name="button_login">Đăng nhập</string>
-    <string name="remove_server">Xoá máy chủ</string>
-    <string name="remove_user">Xoá người dùng</string>
     <string name="remove">Xoá</string>
     <string name="cancel">Huỷ</string>
     <string name="title_home">Trang chủ</string>
@@ -98,7 +84,6 @@
     <string name="settings_category_network">Mạng</string>
     <string name="settings_request_timeout">Thời gian yêu cầu hết hạn (ms)</string>
     <string name="settings_socket_timeout">Thời gian socket hết hạn (ms)</string>
-    <string name="users">Người dùng</string>
     <string name="pref_player_mpv_hwdec">Giải mã phần cứng</string>
     <string name="pref_player_mpv_vo">Đầu ra hình ảnh</string>
     <string name="pref_player_mpv_ao">Đầu ra âm thanh</string>
@@ -106,14 +91,7 @@
     <string name="add_address">Thêm địa chỉ</string>
     <string name="add_server_address">Thêm địa chỉ máy chủ</string>
     <string name="add">Thêm</string>
-    <string name="quick_connect">Kết nối nhanh</string>
     <string name="app_description">Máy khách native không chính thức cho Jellyfin</string>
-    <string name="add_server_error_outdated">Phiên bản của máy chủ đã lỗi thời: %1$s. Vui lòng cập nhật máy chủ</string>
-    <string name="add_server_error_version">Không hỗ trợ phiên bản máy chủ này: %1$s. Vui lòng cập nhật máy chủ</string>
-    <string name="add_server_error_empty_address">Địa chỉ máy chủ rỗng</string>
-    <string name="add_server_error_no_id">Máy chủ không có id, đã có vấn đề xảy ra từ phía máy chủ</string>
-    <string name="remove_server_dialog_text">Bạn có chắc chắn muốn xoá máy chủ này không %1$s</string>
-    <string name="remove_user_dialog_text">Bạn có chắc chắn muốn xoá người dùng này không %1$s</string>
     <string name="genres">Thể loại</string>
     <string name="cast_amp_crew">Diễn viên &amp; Êkíp</string>
     <string name="check_button_description">Đánh dấu là đã xem hoặc chưa xem</string>
@@ -133,7 +111,6 @@
     <string name="sort_by_options_2">Phân loại phim bởi phụ huynh</string>
     <string name="dynamic_colors_summary">Dùng hệ thống đổi màu động của ngôn ngữ thiết kế Material You (chỉ khả dụng cho Android 12+)</string>
     <string name="settings_connect_timeout">Thời gian kết nối hết hạn (ms)</string>
-    <string name="add_user">Thêm người dùng</string>
     <string name="pref_player_intro_skipper">Bỏ qua đoạn mở đầu</string>
     <string name="pref_player_intro_skipper_summary">Yêu cầu phần mở rộng \"Intro Skipper\" của jumoog đã được cài đặt trên máy chủ</string>
     <string name="player_gestures_seek_summary">Vuốt ngang để tua tới hoặc tua lui</string>

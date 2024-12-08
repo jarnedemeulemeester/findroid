@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server">Pridať server</string>
-    <string name="add_server_error_not_jellyfin">Nie je to Jellyfin server: %1$s</string>
-    <string name="add_server_error_slow">Serveru trvalo príliš dlho odpovedať: %1$s</string>
-    <string name="add_server_error_empty_address">Prázdna adresa serveru</string>
-    <string name="add_server_error_not_found">Server nebol nájdený</string>
-    <string name="login">Prihlásenie</string>
-    <string name="select_server">Vyberte server</string>
-    <string name="edit_text_server_address_hint">Adresa servera</string>
-    <string name="edit_text_username_hint">Prihlasovacie meno</string>
-    <string name="button_connect">Pripojiť</string>
-    <string name="button_login">Prihlásenie</string>
-    <string name="remove_server">Odstrániť server</string>
-    <string name="remove_user">Odstrániť používateľa</string>
-    <string name="remove_user_dialog_text">Ste si istí, že chcete odstrániť používateľa %1$s</string>
     <string name="cancel">Zrušiť</string>
     <string name="title_home">Domov</string>
     <string name="title_media">Moje média</string>
@@ -98,7 +84,6 @@
     <string name="settings_request_timeout">Limit čakania na odpoveď (ms)</string>
     <string name="settings_connect_timeout">Limit čakania na pripojenie (ms)</string>
     <string name="settings_socket_timeout">Limit čakania na socket (ms)</string>
-    <string name="users">Používatelia</string>
     <string name="pref_player_mpv_hwdec">Hardvérové dekódovanie</string>
     <string name="pref_player_mpv_vo">Výstup videa</string>
     <string name="pref_player_mpv_ao">Výstup zvuku</string>
@@ -107,16 +92,9 @@
     <string name="add_address">Pridať adresu</string>
     <string name="add_server_address">Pridať adresu servera</string>
     <string name="add">Pridať</string>
-    <string name="quick_connect">Rýchle pripojenie</string>
     <string name="pref_player_intro_skipper">Preskakovanie úvodnej zvučky</string>
     <string name="app_description">Neoficiálna natívna Jellyfin aplikácia</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
-    <string name="add_server_error_outdated">Zastaralá verzia serveru: %1$s. Prosím aktualizujte Váš server</string>
-    <string name="add_server_error_version">Nepodporovaná verzia serveru: %1$s. Prosím aktualizujte Váš server</string>
-    <string name="add_server_error_no_id">Server nemá id, niečo s ním nie je v poriadku</string>
-    <string name="login_error_wrong_username_password">Nesprávne meno alebo heslo</string>
-    <string name="edit_text_password_hint">Heslo</string>
-    <string name="remove_server_dialog_text">Ste si istí, že chcete odstrániť server %1$s</string>
     <string name="remove">Odstrániť</string>
     <string name="title_settings">Nastavenia</string>
     <string name="writers">Scenáristi</string>
@@ -137,7 +115,6 @@
     <string name="player_gestures_vb_summary">Potiahnite prstom hore a dole na pravej strane obrazovky na nastavenie hlasitosti a na ľavej na zmenu jasu</string>
     <string name="sort_by_options_5">Dátum vydania</string>
     <string name="dynamic_colors_summary">Použiť dynamické farby Dynamic You (iba pre Android 12+)</string>
-    <string name="add_user">Pridať používateľa</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Titulky</string>
@@ -173,9 +150,6 @@
     <string name="picture_in_picture">Obraz v obraze</string>
     <string name="picture_in_picture_gesture">Gesto domov obrazu v obraze</string>
     <string name="picture_in_picture_gesture_summary">Použi tlačidlo domov alebo gesto na prechod do režimu obrazu v obraze počas prehrávania videa</string>
-    <string name="no_servers_found">Neboli nájdené žiadne servery</string>
-    <string name="no_users_found">Nenašli sa žiadni užívatelia</string>
-    <string name="select_user">Vybrať užívateľa</string>
     <string name="live_tv">Živá TV</string>
     <string name="play">Prehrať</string>
     <string name="watch_trailer">Prehrať trailer</string>

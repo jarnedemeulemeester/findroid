@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">सर्वर जोड़ें</string>
+   <string name="add_server_btn_connect">कनेक्ट करें</string>
+   <string name="add_server_error_empty_address">सर्वर का पता खाली है</string>
+   <string name="add_server_error_no_id">सर्वर के पास कोई आईडी नहीं है, सर्वर में कुछ गड़बड़ हो सकती है</string>
+   <string name="add_server_error_not_found">सर्वर नहीं मिला</string>
+   <string name="add_server_error_not_jellyfin">जेलीफिन सर्वर नहीं है: %1$s</string>
+   <string name="add_server_error_outdated">सर्वर संस्करण पुराना है: %1$s। कृपया अपने सर्वर को अपडेट करें।</string>
+   <string name="add_server_error_slow">सर्वर की प्रतिक्रिया बहुत धीमी है: %1$s</string>
+   <string name="add_server_error_version">असमर्थित सर्वर संस्करण: %1$s। कृपया अपने सर्वर को अपडेट करें।</string>
+   <string name="edit_text_password_hint">पासवर्ड</string>
+   <string name="edit_text_server_address_hint">सर्वर का पता</string>
+   <string name="edit_text_username_hint">उपयोगकर्ता का नाम</string>
+   <string name="login">लॉगिन</string>
+   <string name="login_btn_login">लॉगिन</string>
+   <string name="login_error_wrong_username_password">गलत उपयोगकर्ता का नाम या पासवर्ड</string>
+   <string name="remove_user_dialog">उपयोगकर्ता हटाएं</string>
+   <string name="remove_user_dialog_text">क्या आप सुनिश्चित हैं कि आप उपयोगकर्ता %1$s को हटाना चाहते हैं</string>
+   <string name="users">उपयोगकर्ता</string>
+   <string name="remove_server_dialog">सर्वर हटाएं</string>
+   <string name="remove_server_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर %1$s को हटाना चाहते हैं</string>
+</resources>

@@ -20,30 +20,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.PlayerActivityDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
 import dev.jdtech.jellyfin.ui.dummy.dummyEpisodeItems
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import java.util.UUID
 
-@Destination<RootGraph>
 @Composable
 fun SeasonScreen(
-    navigator: DestinationsNavigator,
     seriesId: UUID,
     seasonId: UUID,
     seriesName: String,
     seasonName: String,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     seasonViewModel: SeasonViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -57,9 +53,7 @@ fun SeasonScreen(
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
         when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                navigator.navigate(PlayerActivityDestination(items = ArrayList(event.items)))
-            }
+            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
     }

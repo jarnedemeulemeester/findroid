@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server">Додати сервер</string>
-    <string name="add_server_error_version">Непідтримувана версія сервера: %1$s. Будь ласка, оновіть ваш сервер</string>
-    <string name="add_server_error_not_found">Сервер не знайдено</string>
-    <string name="login">Логін</string>
-    <string name="login_error_wrong_username_password">Невірне ім\'я користувача або пароль</string>
-    <string name="edit_text_server_address_hint">Адреса сервера</string>
-    <string name="edit_text_username_hint">Ім\'я користувача</string>
-    <string name="edit_text_password_hint">Пароль</string>
-    <string name="button_login">Вхід</string>
-    <string name="remove_server">Видалити сервер</string>
-    <string name="remove_user">Видалити користувача</string>
     <string name="remove">Видалити</string>
     <string name="cancel">Відміна</string>
     <string name="title_home">Головна</string>
@@ -93,8 +82,6 @@
     <string name="settings_category_network">Мережа</string>
     <string name="settings_request_timeout">Таймаут запиту (мс)</string>
     <string name="settings_socket_timeout">Таймаут сокета (мс)</string>
-    <string name="users">Користувачі</string>
-    <string name="add_user">Додати користувача</string>
     <string name="pref_player_mpv_hwdec">Апаратне декодування</string>
     <string name="pref_player_mpv_vo">Виведення відео</string>
     <string name="pref_player_mpv_ao">Виведення аудіо</string>
@@ -103,7 +90,6 @@
     <string name="addresses">Адреси</string>
     <string name="add_address">Додати адресу</string>
     <string name="add_server_address">Додати адресу сервера</string>
-    <string name="quick_connect">Quick Connect</string>
     <string name="size">Розмір</string>
     <string name="video">Відео</string>
     <string name="subtitle_chip_text">Приховані субтитри</string>
@@ -121,15 +107,6 @@
     <string name="cancel_download_message">Ви впевнені, що хочете скасувати завантаження\?</string>
     <string name="app_description">Сторонній нативний додаток для Jellyfin</string>
     <string name="jellyfin_banner">Jellyfin банер</string>
-    <string name="add_server_error_outdated">Версія сервера застаріла: %1$s. Будь ласка, оновіть ваш сервер</string>
-    <string name="add_server_error_not_jellyfin">Це не сервер Jellyfin: %1$s</string>
-    <string name="add_server_error_slow">Сервер занадто повільно відповідає: %1$s</string>
-    <string name="add_server_error_empty_address">Пуста адреса сервера</string>
-    <string name="add_server_error_no_id">Сервер не має ID, схоже, з сервером щось не так</string>
-    <string name="select_server">Виберіть сервер</string>
-    <string name="button_connect">Підключитися</string>
-    <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
-    <string name="remove_user_dialog_text">Ви впевнені, що хочете видалити користувача %1$s</string>
     <string name="title_media">Мої медіа</string>
     <string name="title_settings">Налаштування</string>
     <string name="genres">Жанри</string>

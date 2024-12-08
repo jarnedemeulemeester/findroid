@@ -19,7 +19,8 @@ constructor(
     private val appPreferences: AppPreferences,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
-    var startDestinationChanged = false
+    private val _state = MutableStateFlow(MainState())
+    val state = _state.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -30,10 +31,23 @@ constructor(
     }
 
     init {
-        loadServerAndUser()
+        check()
     }
 
-    private fun loadServerAndUser() {
+    private fun check() {
+        viewModelScope.launch {
+            _state.emit(MainState(isLoading = true))
+            val mainState = MainState(
+                isLoading = false,
+                hasServers = checkHasServers(),
+                hasCurrentServer = checkHasCurrentServer(),
+                hasCurrentUser = checkHasCurrentUser(),
+            )
+            _state.emit(mainState)
+        }
+    }
+
+    fun loadServerAndUser() {
         viewModelScope.launch {
             val serverId = appPreferences.currentServer
             serverId?.let { id ->
@@ -45,4 +59,28 @@ constructor(
             }
         }
     }
+
+    private fun checkHasServers(): Boolean {
+        val nServers = database.getServersCount()
+        return nServers > 0
+    }
+
+    private fun checkHasCurrentServer(): Boolean {
+        return appPreferences.currentServer?.let {
+            database.get(it) != null
+        } == true
+    }
+
+    private fun checkHasCurrentUser(): Boolean {
+        return appPreferences.currentServer?.let {
+            database.getServerCurrentUser(it) != null
+        } == true
+    }
 }
+
+data class MainState(
+    val isLoading: Boolean = true,
+    val hasServers: Boolean = false,
+    val hasCurrentServer: Boolean = false,
+    val hasCurrentUser: Boolean = false,
+)

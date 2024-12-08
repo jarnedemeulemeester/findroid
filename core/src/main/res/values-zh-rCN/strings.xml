@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin横幅</string>
-    <string name="add_server">添加服务器</string>
     <string name="writers">作者</string>
-    <string name="add_server_error_not_jellyfin">不是Jellyfin服务器：%1$s</string>
-    <string name="add_server_error_empty_address">服务器地址为空</string>
-    <string name="add_server_error_not_found">未找到服务器</string>
-    <string name="login">登录</string>
-    <string name="select_server">选择服务器</string>
-    <string name="edit_text_username_hint">用户名</string>
-    <string name="edit_text_password_hint">密码</string>
-    <string name="button_connect">连接</string>
-    <string name="remove_server">删除服务器</string>
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
     <string name="title_media">我的媒体</string>
@@ -84,23 +74,15 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分钟</string>
     <string name="select_video_version_title">选择版本</string>
-    <string name="add_server_error_no_id">服务器没有id，它可能出了问题</string>
     <string name="trailer_button_description">观看宣传片</string>
     <string name="mpv_player_summary">使用实验性的mpv播放器播放视频。mpv支持更多视频、音频和字幕格式。</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">第三方原生Jellyfin app</string>
-    <string name="login_error_wrong_username_password">用户名或密码错误</string>
     <string name="latest_library">最新%1$s</string>
     <string name="player_gestures_vb_summary">在屏幕右侧上下划动来调整音量，在屏幕左侧上下划动来调整亮度</string>
-    <string name="add_server_error_outdated">服务器版本过旧：%1$s。请更新您的服务器</string>
-    <string name="edit_text_server_address_hint">服务器地址</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>
-    <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级您的服务器</string>
-    <string name="button_login">登录</string>
     <string name="settings_use_cache_summary">把图片缓存到磁盘上来加快加载时间。将会在应用程序重启后生效。</string>
-    <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
-    <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
     <string name="settings_cache_size">缓存大小 (MB)</string>
     <string name="title_home">首页</string>
     <string name="settings_cache_size_message">应用程序将会利用这些MB的磁盘空间来存储Jellyfin服务器的图片。在较慢的网络下，更大的数值可能会更好。</string>
@@ -119,14 +101,10 @@
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>
     <string name="episodes_label">季</string>
-    <string name="remove_user">移除用户</string>
-    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗</string>
     <string name="settings_category_network">网络</string>
     <string name="settings_request_timeout">请求超时</string>
     <string name="settings_connect_timeout">连接超时</string>
     <string name="settings_socket_timeout">Socket超时</string>
-    <string name="users">用户</string>
-    <string name="add_user">添加用户</string>
     <string name="pref_player_mpv_hwdec">硬解</string>
     <string name="pref_player_mpv_vo">视频输出</string>
     <string name="pref_player_mpv_ao">音频输出</string>
@@ -134,7 +112,6 @@
     <string name="add_address">添加地址</string>
     <string name="add_server_address">添加服务器地址</string>
     <string name="add">添加</string>
-    <string name="quick_connect">快速连接</string>
     <string name="pref_player_intro_skipper">片头跳过器</string>
     <string name="pref_player_intro_skipper_summary">需要在服务器上安装 jumoog 的 Intro Skipper 插件</string>
     <string name="player_gestures_seek">搜索手势</string>
@@ -174,10 +151,7 @@
     <string name="picture_in_picture">画中画</string>
     <string name="picture_in_picture_gesture_summary">在视频播放时使用主页按钮或手势进入画中画模式</string>
     <string name="picture_in_picture_gesture">画中画返回手势</string>
-    <string name="select_user">选择用户</string>
     <string name="live_tv">电视直播</string>
-    <string name="no_servers_found">没有找到服务器</string>
-    <string name="no_users_found">找不到用户</string>
     <string name="unmark_as_played">取消标记已播放</string>
     <string name="add_to_favorites">加入收藏</string>
     <string name="remove_from_favorites">从收藏中删除</string>

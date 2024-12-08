@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin 橫幅</string>
-    <string name="add_server">添加伺服器</string>
-    <string name="add_server_error_version">不支援的伺服器版本：%1$s。 請更新您的伺服器</string>
-    <string name="add_server_error_slow">伺服器回應太慢：%1$s</string>
-    <string name="add_server_error_not_found">找不到伺服器</string>
-    <string name="add_server_error_no_id">伺服器沒有id，伺服器可能有問題</string>
-    <string name="login">登入</string>
-    <string name="login_error_wrong_username_password">錯誤的使用者名稱或密碼</string>
-    <string name="select_server">選擇伺服器</string>
-    <string name="edit_text_server_address_hint">伺服器地址</string>
-    <string name="edit_text_username_hint">使用者名稱</string>
-    <string name="edit_text_password_hint">密碼</string>
-    <string name="button_connect">連接</string>
-    <string name="remove_server">移除伺服器</string>
-    <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
-    <string name="remove_user">移除使用者</string>
     <string name="remove">移除</string>
     <string name="cancel">取消</string>
     <string name="title_home">主畫面</string>
@@ -103,14 +88,7 @@
     <string name="settings_request_timeout">請求超時（毫秒）</string>
     <string name="settings_connect_timeout">連接超時（毫秒）</string>
     <string name="settings_socket_timeout">Socket 超時（毫秒）</string>
-    <string name="users">使用者</string>
-    <string name="add_user">添加使用者</string>
     <string name="app_description">第三方原生 Jellyfin 應用程式</string>
-    <string name="add_server_error_outdated">伺服器版本已過時：%1$s。 請更新您的伺服器</string>
-    <string name="add_server_error_not_jellyfin">不是 Jellyfin 伺服器：%1$s</string>
-    <string name="add_server_error_empty_address">空的伺服器地址</string>
-    <string name="button_login">登入</string>
-    <string name="remove_user_dialog_text">您確定要移除使用者 %1$s</string>
     <string name="title_favorite">收藏夾</string>
     <string name="error_loading_data">載入資料時發生錯誤</string>
     <string name="episode_watched_indicator">影集觀看指標</string>
@@ -127,7 +105,6 @@
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
     <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
-    <string name="quick_connect">快速連接</string>
     <string name="pref_player_intro_skipper">片頭跳過器</string>
     <string name="pref_player_intro_skipper_summary">需要在服務器上安裝jumoog的Intro Skipper挿件</string>
     <string name="pref_player_mpv_hwdec">硬體解碼</string>
@@ -174,9 +151,6 @@
     <string name="remove_server_address">刪除伺服器位址</string>
     <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
     <string name="temp">臨時文件</string>
-    <string name="no_servers_found">未找到伺服器</string>
-    <string name="no_users_found">未找到相應的用戶</string>
-    <string name="select_user">選擇用戶</string>
     <string name="live_tv">電視直播</string>
     <string name="play">播放</string>
     <string name="watch_trailer">觀看預告</string>

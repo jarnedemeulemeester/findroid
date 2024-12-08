@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Banner di Jellyfin</string>
-    <string name="add_server">Aggiungi server</string>
-    <string name="add_server_error_not_jellyfin">Non è un server Jellyfin: %1$s</string>
-    <string name="add_server_error_slow">Il server ha impiegato troppo tempo per rispondere: %1$s</string>
-    <string name="add_server_error_empty_address">Indirizzo server vuoto</string>
-    <string name="login">Accedi</string>
-    <string name="login_error_wrong_username_password">Nome utente o Password errati</string>
-    <string name="select_server">Seleziona server</string>
-    <string name="edit_text_server_address_hint">Indirizzo server</string>
-    <string name="edit_text_username_hint">Nome utente</string>
-    <string name="edit_text_password_hint">Password</string>
-    <string name="button_connect">Connetti</string>
-    <string name="button_login">Accedi</string>
-    <string name="remove_server">Rimuovi server</string>
-    <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
     <string name="remove">Rimuovi</string>
     <string name="cancel">Annulla</string>
     <string name="title_home">Home</string>
@@ -54,13 +40,9 @@
     <string name="view_details">Mostra dettagli</string>
     <string name="view_details_underlined"><u>Vedi dettagli</u></string>
     <string name="app_description">Applicazione nativa di terze parti per Jellyfin</string>
-    <string name="add_server_error_outdated">Versione del server obsoleta: %1$s. Aggiorna il tuo server</string>
     <string name="no_favorites">Non hai nessun preferito</string>
-    <string name="add_server_error_not_found">Server non trovato</string>
     <string name="no_downloads">Non hai scaricato ancora nulla</string>
-    <string name="add_server_error_no_id">Il server non ha un ID, c\'è qualcosa di strano con questo server</string>
     <string name="device_name">Nome del dispositivo</string>
-    <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
     <string name="settings_category_cache">Cache</string>
     <string name="error_loading_data">Errore nel caricamento dei dati</string>
     <string name="settings_use_cache_summary">La cache delle immagini permette di ridurre i tempi di caricamento. Dovrai riavviare l\'app.</string>
@@ -114,8 +96,6 @@
     <string name="libraries">Librerie</string>
     <string name="dynamic_colors">Colori dinamici</string>
     <string name="dynamic_colors_summary">Usa i colori dinamici Material You (disponibile solo per Android 12+)</string>
-    <string name="remove_user">Rimuovi utente</string>
-    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %1$s</string>
     <string name="episodes_label">Episodi</string>
     <string name="theme_system">Usa le impostazioni di sistema</string>
     <string name="settings_request_timeout">Timeout richiesta (ms)</string>
@@ -125,15 +105,12 @@
     <string name="settings_category_network">Rete</string>
     <string name="settings_connect_timeout">Timeout connessione (ms)</string>
     <string name="settings_socket_timeout">Timeout socket (ms)</string>
-    <string name="users">Utenti</string>
-    <string name="add_user">Aggiungi utente</string>
     <string name="pref_player_mpv_hwdec">Decodifica hardware</string>
     <string name="pref_player_mpv_vo">Output video</string>
     <string name="addresses">Indirizzi</string>
     <string name="add_address">Aggiungi indirizzo</string>
     <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
-    <string name="quick_connect">Connessione Rapida</string>
     <string name="pref_player_intro_skipper">Salta intro (Intro Skipper)</string>
     <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>jumoog</i> installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
@@ -173,9 +150,6 @@
     <string name="picture_in_picture">Immagine nell\'immagine</string>
     <string name="picture_in_picture_gesture">Gesto/pulsante home</string>
     <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
-    <string name="no_servers_found">Nessun server trovato</string>
-    <string name="no_users_found">Nessun utente trovato</string>
-    <string name="select_user">Seleziona utente</string>
     <string name="watch_trailer">Guarda Trailer</string>
     <string name="add_to_favorites">Aggiungi ai preferiti</string>
     <string name="mark_as_played">Segna come visto</string>

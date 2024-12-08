@@ -18,24 +18,19 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.LibraryScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.ui.dummy.dummyCollections
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import java.util.UUID
 
-@Destination<RootGraph>
 @Composable
 fun LibrariesScreen(
-    navigator: DestinationsNavigator,
+    navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     isLoading: (Boolean) -> Unit,
     mediaViewModel: MediaViewModel = hiltViewModel(),
 ) {
@@ -44,9 +39,7 @@ fun LibrariesScreen(
     LibrariesScreenLayout(
         uiState = delegatedUiState,
         isLoading = isLoading,
-        onClick = { libraryId, libraryName, libraryType ->
-            navigator.navigate(LibraryScreenDestination(libraryId, libraryName, libraryType))
-        },
+        onClick = navigateToLibrary,
     )
 }
 

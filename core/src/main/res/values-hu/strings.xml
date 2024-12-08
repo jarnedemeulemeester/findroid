@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin zászló</string>
-    <string name="add_server">Szerver hozzáadása</string>
-    <string name="add_server_error_outdated">Elavult szerver verzió: %1$s. Kérlek frissítsd a szervert</string>
-    <string name="add_server_error_not_jellyfin">Nem egy Jellyfin szerver: %1$s</string>
-    <string name="add_server_error_version">Nem támogatott szerver verzió: %1$s. Kérlek frissítsd a szervert</string>
-    <string name="add_server_error_slow">A szerver túl lassan válaszol: %1$s</string>
-    <string name="add_server_error_empty_address">Üres szerver cím</string>
-    <string name="add_server_error_not_found">A szerver nem található</string>
-    <string name="add_server_error_no_id">A szervernek nincs id-je, úgy tűnik valami probléma van a szerverrel</string>
-    <string name="login">Bejelentkezés</string>
-    <string name="login_error_wrong_username_password">Hibás felhasználónév vagy jelszó</string>
-    <string name="select_server">Szerver kiválasztása</string>
-    <string name="edit_text_server_address_hint">Szerver címe</string>
-    <string name="edit_text_username_hint">Felhasználónév</string>
-    <string name="edit_text_password_hint">Jelszó</string>
-    <string name="button_connect">Csatlakozás</string>
-    <string name="button_login">Bejelentkezés</string>
     <string name="remove">Törlés</string>
     <string name="cancel">Mégsem</string>
     <string name="title_home">Kezdőlap</string>
@@ -63,7 +47,6 @@
     <string name="app_info">Alkalmazás információ</string>
     <string name="unknown_error">Ismeretlen hiba</string>
     <string name="app_description">Egy egyedi, natív Jellyfin alkalmazás</string>
-    <string name="remove_server">Szerver törlése</string>
     <string name="mpv_player">mpv lejátszó</string>
     <string name="download_roaming">Letöltés roaming közben</string>
     <string name="download_button_description">Letöltés</string>
@@ -89,7 +72,6 @@
     <string name="descending">Csökkenő</string>
     <string name="runtime_minutes">%1$d perc</string>
     <string name="select_video_version_title">Verzió kiválasztása</string>
-    <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
     <string name="title_download">Letöltések</string>
     <string name="play_button_description">Média lejátszása</string>
     <string name="episode_watched_indicator">Megtekintett epizód indikátor</string>
@@ -103,7 +85,6 @@
     <string name="image_description_poster">%1$s poszter</string>
     <string name="player_gestures_vb_summary">Húzd az ujjad fel és le a képernyő jobb oldalán, hogy változtasd a hangerőt, és a bal oldalán, hogy változtasd a fényerőt</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="quick_connect">Gyors csatlakozás</string>
     <string name="subtitles">Feliratok</string>
     <string name="seeking">Seekelés</string>
     <string name="pref_player_mpv_vo">Videó kimenet</string>
@@ -126,16 +107,12 @@
     <string name="theme_system">Kövesd a rendszert</string>
     <string name="seek_forward_increment">Előre seekelési sebesség növekedése (ms)</string>
     <string name="settings_connect_timeout">Csatlakozási időtúllépés (ms)</string>
-    <string name="add_user">Felhasználó hozzádása</string>
     <string name="pref_player_mpv_hwdec">Hardveres dekódolás</string>
     <string name="settings_socket_timeout">Socket időtúllépése (ms)</string>
     <string name="settings_request_timeout">Lekérdezési idő túllépés (ms)</string>
     <string name="dynamic_colors">Dinamikus színek</string>
     <string name="seek_back_increment">Vissza seekelési sebesség növekedése (ms)</string>
-    <string name="users">Felhasználók</string>
-    <string name="remove_user">Felhasználó eltávolítása</string>
     <string name="libraries">Könyvtárak</string>
-    <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
     <string name="downloaded_indicator">Letöltött indikátor</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
@@ -173,9 +150,6 @@
     <string name="picture_in_picture">Kép a képben</string>
     <string name="picture_in_picture_gesture">Kép a képben otthoni gesztus</string>
     <string name="picture_in_picture_gesture_summary">A home gomb vagy a gesztus használatával lépjen be a kép-a-képbe a videó lejátszása közben</string>
-    <string name="no_users_found">Nincs felhasználó</string>
-    <string name="select_user">Válassz felhasználót</string>
-    <string name="no_servers_found">Nem található szerver</string>
     <string name="unmark_as_played">Megjelölés nem megtekintettként</string>
     <string name="add_to_favorites">Hozzáadás kedvencekhez</string>
     <string name="remove_from_favorites">Eltávolítás kedvencekből</string>

@@ -2,26 +2,6 @@
     <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="add_server">Add server</string>
-    <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
-    <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
-    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
-    <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
-    <string name="add_server_error_empty_address">Empty server address</string>
-    <string name="add_server_error_not_found">Server not found</string>
-    <string name="add_server_error_no_id">Server has no id, something seems to be wrong with the server</string>
-    <string name="login">Login</string>
-    <string name="login_error_wrong_username_password">Wrong username or password</string>
-    <string name="select_server">Select server</string>
-    <string name="edit_text_server_address_hint">Server address</string>
-    <string name="edit_text_username_hint">Username</string>
-    <string name="edit_text_password_hint">Password</string>
-    <string name="button_connect">Connect</string>
-    <string name="button_login">Login</string>
-    <string name="remove_server">Remove server</string>
-    <string name="remove_server_dialog_text">Are you sure you want to remove the server %1$s</string>
-    <string name="remove_user">Remove user</string>
-    <string name="remove_user_dialog_text">Are you sure you want to remove the user %1$s</string>
     <string name="remove_server_address">Remove server address</string>
     <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
@@ -140,8 +120,6 @@
     <string name="settings_request_timeout">Request timeout (ms)</string>
     <string name="settings_connect_timeout">Connect timeout (ms)</string>
     <string name="settings_socket_timeout">Socket timeout (ms)</string>
-    <string name="users">Users</string>
-    <string name="add_user">Add user</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
@@ -155,7 +133,6 @@
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
-    <string name="quick_connect">Quick Connect</string>
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-picture home gesture</string>
     <string name="picture_in_picture_gesture_summary">Use home button or gesture to enter picture-in-picture while the video is playing</string>
@@ -183,9 +160,6 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
-    <string name="no_servers_found">No servers found</string>
-    <string name="no_users_found">No users found</string>
-    <string name="select_user">Select user</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Play</string>
     <string name="watch_trailer">Watch trailer</string>
@@ -196,4 +170,5 @@
     <string name="pref_player_gestures_seek_trickplay">Trickplay on seek gesture</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Display preview images on seek gesture</string>
     <string name="trickplay">Trickplay</string>
+    <string name="users">Users</string>
 </resources>

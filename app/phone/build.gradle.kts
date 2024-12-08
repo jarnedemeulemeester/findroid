@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
@@ -81,6 +83,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     dependenciesInfo {
@@ -107,10 +110,22 @@ dependencies {
     implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(projects.player.video)
+    implementation(projects.setup)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
+
+    // Compose
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.hilt.navigation.compose)
+
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
@@ -125,6 +140,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)
     implementation(libs.coil)
+    implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -136,9 +152,7 @@ dependencies {
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
-    androidTestImplementation(libs.androidx.room.runtime)
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.bundles.androidx.test)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.android.compiler)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 }

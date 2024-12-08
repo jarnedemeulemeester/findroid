@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_version">Неподдържана версия на сървъра: %1$s. Моля ъпдейтнете вашия сървър</string>
-    <string name="add_server_error_no_id">Сървърът няма id, изглежда, че нещо не е наред със сървъра</string>
-    <string name="remove_server">Премахване на сървъра</string>
     <string name="sort_by">Сортирайте по</string>
     <string name="download_roaming">Свалете при роуминг</string>
     <string name="mpv_player_summary">Използвайте експерименталният mpv плейър за да пускане на видеа. mpv поддържа повече кодекси за видео, аудио и субтитри.</string>
     <string name="jellyfin_banner">Jellyfin банер</string>
-    <string name="add_server_error_empty_address">Празен сървърен адрес</string>
-    <string name="add_server_error_not_found">Сървърът не е намерен</string>
-    <string name="login">Вход</string>
-    <string name="login_error_wrong_username_password">Грешно потребителско име или парола</string>
-    <string name="add_server_error_not_jellyfin">Не е Jellyfin сървър: %1$s</string>
-    <string name="add_server_error_slow">Сървърът реагира твърде бавно: %1$s</string>
     <string name="remove">Премахване</string>
     <string name="cancel">Отменяне</string>
     <string name="title_home">Начало</string>
-    <string name="button_connect">Свързване</string>
-    <string name="button_login">Вход</string>
-    <string name="remove_server_dialog_text">Сигурни ли сте, че искате да премахнете сървъра %1$s</string>
     <string name="title_media">Моята медия</string>
-    <string name="edit_text_server_address_hint">Адрес на сървъра</string>
-    <string name="edit_text_username_hint">Потребителско име</string>
-    <string name="edit_text_password_hint">Парола</string>
     <string name="title_favorite">Любими</string>
     <string name="title_settings">Настройки</string>
     <string name="title_download">Свалени</string>
@@ -76,9 +61,6 @@
     <string name="app_info">Информация за приложението</string>
     <string name="unknown_error">Непозната грешка</string>
     <string name="search_hint">Търсене на филми, предавания, епизоди…</string>
-    <string name="select_server">Изберете сървър</string>
-    <string name="add_server">Добавете сървър</string>
-    <string name="add_server_error_outdated">Версията на сървъра е остаряла: %1$s. Моля ъпдейтнете сървъра</string>
     <string name="cast_amp_crew">Актьори и Екипаж</string>
     <string name="check_button_description">Маркирайте като гледано или негледано</string>
     <string name="series_poster">Постер на сериала</string>
@@ -96,7 +78,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="image_description_backdrop">Фон на %1$s</string>
-    <string name="users">Потребители</string>
     <string name="no_server_connection">Няма връзка към Jellyfin сървъра, за да гледате офлайн пуснете Режим без Интернет</string>
     <string name="privacy_policy_notice">При ползването на Findroid, вие се съгласявате с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Политиката за поверителност</a> , която гласи, че не събираме никаква информация</string>
     <string name="app_description">Неофициално приложение за Jellyfin с \"native\" елементи</string>
@@ -110,9 +91,6 @@
     <string name="seek_back_increment">Инкремент за връщане назад(ms)</string>
     <string name="pref_player_mpv_vo">Изхода на видеото</string>
     <string name="pref_player_intro_skipper_summary">Изисква Confused Polar Bears Intro Skipper да бъде инсталиран на сървъра</string>
-    <string name="remove_user">Премахване на потребител</string>
-    <string name="remove_user_dialog_text">Сигурни ли сте, че искате да премахнете потребител %1$s</string>
-    <string name="quick_connect">Бързо Свързване</string>
     <string name="extra_info_summary">Показва детайлна информация за Аудио, Видео и Субтитри</string>
     <string name="subtitle_chip_text">Затворени субтитри</string>
     <string name="temp">временно</string>
@@ -164,7 +142,6 @@
     <string name="add_server_address">Добави адрес на сървър</string>
     <string name="player_gestures_zoom">Жест за приближаване (zoom)</string>
     <string name="settings_connect_timeout">Лимит на свързването (ms)</string>
-    <string name="add_user">Добави потребител</string>
     <string name="add">Добави</string>
     <string name="picture_in_picture">Режим Картина-в-картина</string>
     <string name="picture_in_picture_gesture">Жест за Режим Картина-в-картина</string>
@@ -180,9 +157,6 @@
     <string name="player_gestures_chapter_skip_summary">Дълго задържане на Лявата / Дясната страна, за пропускане на глава (отменя жеста за 2x скорост)</string>
     <string name="pref_player_chapter_markers">Маркери за глави</string>
     <string name="pref_player_chapter_markers_summary">Показвай маркери за глави на времевата линия</string>
-    <string name="no_servers_found">Не са намерени сървъри</string>
-    <string name="no_users_found">Не са намерени потребители</string>
-    <string name="select_user">Избери потребител</string>
     <string name="live_tv">Телевизия На Живо</string>
     <string name="play">Пусни</string>
     <string name="mark_as_played">Маркирай като гледано</string>

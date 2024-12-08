@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_not_jellyfin">Geen Jellyfin server: %1$s</string>
-    <string name="add_server_error_version">Niet ondersteunde server versie: %1$s. Werk uw server bij</string>
-    <string name="add_server_error_slow">Server reageert te traag: %1$s</string>
-    <string name="add_server">Server toevoegen</string>
-    <string name="add_server_error_outdated">Server verouderd: %1$s. Werk uw server bij</string>
+
     <string name="app_description">Derde-partij Jellyfin app</string>
-    <string name="add_server_error_empty_address">Leeg server adres</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="add_server_error_not_found">Server niet gevonden</string>
-    <string name="login_error_wrong_username_password">Verkeerde gebruikersnaam of wachtwoord</string>
-    <string name="select_server">Selecteer server</string>
-    <string name="edit_text_username_hint">Gebruikersnaam</string>
-    <string name="edit_text_password_hint">Wachtwoord</string>
-    <string name="button_connect">Verbinden</string>
-    <string name="remove_server">Server verwijderen</string>
     <string name="remove">Verwijderen</string>
-    <string name="edit_text_server_address_hint">Server adres</string>
-    <string name="login">Inloggen</string>
-    <string name="button_login">Inloggen</string>
     <string name="title_favorite">Favorieten</string>
-    <string name="add_server_error_no_id">Server heeft geen id, er lijkt iets miss te zijn met de server</string>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
     <string name="settings_category_servers">Servers</string>
     <string name="settings_category_player">Speler</string>
-    <string name="remove_server_dialog_text">Weet je zeker dat je de server wilt verwijderen %1$s</string>
     <string name="mpv_player">mpv speler</string>
     <string name="download_mobile_data">Download met mobiele data</string>
     <string name="download_roaming">Download met roaming</string>
@@ -66,7 +49,6 @@
     <string name="settings_request_timeout">Time-out verzoek (ms)</string>
     <string name="settings_connect_timeout">Verbinding time-out (ms)</string>
     <string name="settings_socket_timeout">Socket time-out (ms)</string>
-    <string name="users">Gebruikers</string>
     <string name="seek_forward_increment">Zoek vooruitstap (ms)</string>
     <string name="select_video_version_title">Selecteer versie</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
@@ -75,7 +57,6 @@
     <string name="libraries">Bibliotheken</string>
     <string name="search">Zoek</string>
     <string name="no_search_results">Geen zoekresultaten</string>
-    <string name="add_user">Gebruiker toevoegen</string>
     <string name="settings_category_language">Taal</string>
     <string name="settings_preferred_audio_language">Gewenste audio taal</string>
     <string name="descending">Aflopend</string>
@@ -91,8 +72,6 @@
     <string name="genres">Categorieën</string>
     <string name="director">Regisseur</string>
     <string name="writers">Schrijvers</string>
-    <string name="remove_user">Verwijder gebruiker</string>
-    <string name="remove_user_dialog_text">Weet je zeker dat je de gebruiker wilt verwijderen %1$s</string>
     <string name="cast_amp_crew">Cast en bemanning</string>
     <string name="seasons">Seizoenen</string>
     <string name="play_button_description">Speel de media af</string>
@@ -133,7 +112,6 @@
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
-    <string name="quick_connect">Snel verbinden</string>
     <string name="pref_player_intro_skipper_summary">Jumoog\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="subtitle">Ondertiteling</string>
@@ -168,12 +146,10 @@
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="downloaded_indicator">Gedownloade indicator</string>
     <string name="player_gestures_seek">Zoek gebaar</string>
-    <string name="no_users_found">Geen gebruikers gevonden</string>
     <string name="picture_in_picture">Scherm-in-scherm</string>
     <string name="picture_in_picture_gesture_summary">Gebruik de startknop of een gebaar om beeld-in-beeld te openen terwijl de video wordt afgespeeld</string>
     <string name="picture_in_picture_gesture">Scherm-in-scherm huisgebaar</string>
     <string name="player_gestures_chapter_skip">Hoofdstuk gebaar</string>
-    <string name="no_servers_found">Geen servers gevonden</string>
     <string name="player_gestures_chapter_skip_summary">Druk lang op de linker-/rechterkant om hoofdstukken over te slaan (overschrijft 2x snelheidsgebaar)</string>
     <string name="watch_trailer">Bekijk trailer</string>
     <string name="mark_as_played">Markeer als afgespeeld</string>
@@ -184,7 +160,6 @@
     <string name="player_start_maximized_summary">Open video standaard in de gemaximaliseerde modus</string>
     <string name="pref_player_chapter_markers">Hoofdstukmarkeringen</string>
     <string name="pref_player_chapter_markers_summary">Geef hoofdstukmarkeringen weer op de tijdbalk</string>
-    <string name="select_user">Selecteer gebruiker</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Afspelen</string>
     <string name="add_to_favorites">Aan favorieten toevoegen</string>

@@ -2,24 +2,6 @@
 <resources>
     <string name="app_description">Aplicación nativa de terceros para Jellyfin</string>
     <string name="jellyfin_banner">Emblema Jellyfin</string>
-    <string name="add_server">Agregar servidor</string>
-    <string name="add_server_error_outdated">Versión del servidor desactualizada: %1$s. Por favor actualice su servidor</string>
-    <string name="add_server_error_not_jellyfin">No es un servidor Jellyfin: %1$s</string>
-    <string name="add_server_error_version">Versión del servidor sin soporte: %1$s. Por favor actualice su servidor</string>
-    <string name="add_server_error_slow">Servidor muy lento al responder: %1$s</string>
-    <string name="add_server_error_empty_address">Dirección del servidor vacia</string>
-    <string name="add_server_error_not_found">Servidor no encontrado</string>
-    <string name="add_server_error_no_id">El servidor no tiene identificador, ocurrió un error en el servidor</string>
-    <string name="login">Acceso</string>
-    <string name="login_error_wrong_username_password">Usuario o contraseña erroneos</string>
-    <string name="select_server">Seleccionar servidor</string>
-    <string name="edit_text_server_address_hint">Dirección del servidor</string>
-    <string name="edit_text_username_hint">Usuario</string>
-    <string name="edit_text_password_hint">Contraseña</string>
-    <string name="button_connect">Conectar</string>
-    <string name="button_login">Acceder</string>
-    <string name="remove_server">Quitar servidor</string>
-    <string name="remove_server_dialog_text">¿Está seguro de quitar el servidor %1$s</string>
     <string name="remove">Quitar</string>
     <string name="cancel">Cancelar</string>
     <string name="title_home">Inicio</string>
@@ -126,14 +108,9 @@
     <string name="add_address">Agregar dirección</string>
     <string name="add_server_address">Agregar dirección del servidor</string>
     <string name="add">Agregar</string>
-    <string name="remove_user">Remover usuario</string>
-    <string name="remove_user_dialog_text">¿Está seguro de querer remover el usuario %1$s</string>
     <string name="settings_request_timeout">Tiempo de espera de solicitud (ms)</string>
     <string name="settings_connect_timeout">Tiempo de espera de conexión (ms)</string>
     <string name="settings_socket_timeout">Tiempo de espera del socket (ms)</string>
-    <string name="users">Usuarios</string>
-    <string name="add_user">Agregar usuario</string>
-    <string name="quick_connect">Conexión rápida</string>
     <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
     <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
@@ -170,7 +147,6 @@
     <string name="app_language">Idioma de la aplicación</string>
     <string name="remove_server_address">Remover dirección del servidor</string>
     <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
-    <string name="no_servers_found">No se encontraron servidores</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>
@@ -181,8 +157,6 @@
     <string name="player_start_maximized_summary">Abrir por defecto el vídeo en modo maximizado</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="player_start_maximized">Iniciar maximizado</string>
-    <string name="no_users_found">No se encontraron usuarios</string>
-    <string name="select_user">Elija usuario</string>
     <string name="live_tv">TV en vivo</string>
     <string name="play">Reproducir</string>
     <string name="watch_trailer">Ver trailer</string>

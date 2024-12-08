@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server">添加服务器</string>
-    <string name="add_server_error_outdated">服务器版本已过期：%1$s。唔该更新服务器</string>
-    <string name="add_server_error_not_jellyfin">唔系Jellyfin服务器：%1$s</string>
-    <string name="add_server_error_slow">服务器回应过慢：%1$s</string>
-    <string name="add_server_error_empty_address">服务器地址为空</string>
-    <string name="add_server_error_not_found">搵唔到服务器</string>
-    <string name="add_server_error_no_id">服务器冇id，服务器似乎有问题</string>
-    <string name="login">登录</string>
-    <string name="login_error_wrong_username_password">用户名或密码错误</string>
-    <string name="select_server">选择服务器</string>
-    <string name="edit_text_server_address_hint">服务器地址</string>
-    <string name="edit_text_username_hint">用户名</string>
-    <string name="edit_text_password_hint">密码</string>
-    <string name="button_connect">连接</string>
     <string name="jellyfin_banner">Jellyfin横幅</string>
-    <string name="add_server_error_version">唔支持嘅服务器版本：%1$s。唔该更新服务器</string>
     <string name="app_description">第三方原生Jellyfin应用程式</string>
-    <string name="button_login">登录</string>
 </resources>

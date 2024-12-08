@@ -27,34 +27,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ServerSelectScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.UserSelectScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
 import dev.jdtech.jellyfin.ui.components.SettingsDetailsCard
 import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.SettingsEvent
 import dev.jdtech.jellyfin.viewmodels.SettingsViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination<RootGraph>
 @Composable
 fun SettingsSubScreen(
     indexes: IntArray = intArrayOf(),
     @StringRes title: Int,
-    navigator: DestinationsNavigator,
+    navigateToSubSettings: (indexes: IntArray, title: Int) -> Unit,
+    navigateToServers: () -> Unit,
+    navigateToUsers: () -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
@@ -63,15 +58,9 @@ fun SettingsSubScreen(
 
     ObserveAsEvents(settingsViewModel.eventsChannelFlow) { event ->
         when (event) {
-            is SettingsEvent.NavigateToSettings -> {
-                navigator.navigate(SettingsScreenDestination)
-            }
-            is SettingsEvent.NavigateToUsers -> {
-                navigator.navigate(UserSelectScreenDestination)
-            }
-            is SettingsEvent.NavigateToServers -> {
-                navigator.navigate(ServerSelectScreenDestination)
-            }
+            is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes, event.title)
+            is SettingsEvent.NavigateToUsers -> navigateToUsers()
+            is SettingsEvent.NavigateToServers -> navigateToServers()
         }
     }
 

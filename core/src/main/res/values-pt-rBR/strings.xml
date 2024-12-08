@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_server_error_outdated">Versão do servidor desatualizada: %1$s. Por favor atualize seu servidor</string>
-    <string name="add_server_error_version">Versão do servidor não suportada: %1$s. Por favor atualize seu servidor</string>
-    <string name="add_server_error_slow">O servidor é lendo demais para responder: %1$s</string>
-    <string name="add_server_error_empty_address">Endereço de servidor vazio</string>
-    <string name="add_server_error_no_id">Servidor não possui id, algo parece errado como servidor</string>
-    <string name="login">Entrar</string>
-    <string name="login_error_wrong_username_password">Nome de usuário ou senha incorretos</string>
-    <string name="select_server">Selecione o servidor</string>
-    <string name="edit_text_server_address_hint">Endereço do servidor</string>
-    <string name="edit_text_password_hint">Senha</string>
-    <string name="button_connect">Conectar</string>
-    <string name="button_login">Entrar</string>
-    <string name="remove_server">Excluir servidor</string>
     <string name="remove">Excluir</string>
     <string name="cancel">Cancelar</string>
     <string name="title_home">Início</string>
@@ -72,11 +59,6 @@
     <string name="image_description_poster">%1$s pôster</string>
     <string name="image_description_backdrop">%1$s imagem de fundo</string>
     <string name="gestures">Gestos</string>
-    <string name="add_server">Adicionar servidor</string>
-    <string name="add_server_error_not_jellyfin">Não é um servidor do jellyfin: %1$s</string>
-    <string name="add_server_error_not_found">Servidor não encontrado</string>
-    <string name="edit_text_username_hint">Nome de usuário</string>
-    <string name="remove_server_dialog_text">Tem certeza que deseja excluir o servidor (%1$s)</string>
     <string name="check_button_description">Marcar como assistido ou não assistido</string>
     <string name="no_downloads">Você não tem nada baixado</string>
     <string name="settings_category_servers">Servidores</string>
@@ -112,16 +94,12 @@
     <string name="player_gestures_zoom_summary">Aperte para preencher a tela com o vídeo</string>
     <string name="runtime_minutes">%1$d minutos</string>
     <string name="select_video_version_title">Selecione a versão</string>
-    <string name="users">Usuários</string>
-    <string name="add_user">Adicionar usuário</string>
     <string name="pref_player_mpv_hwdec">Decodificação de hardware</string>
     <string name="sort_by_options_3">Data de Adição</string>
     <string name="sort_by_options_4">Data de Reprodução</string>
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
     <string name="pref_player_mpv_vo">Saida de vídeo</string>
-    <string name="remove_user">Excluir usuário</string>
-    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário (%1$s)</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
     <string name="addresses">Endereços</string>
     <string name="add_address">Adicionar endereço</string>
@@ -133,7 +111,6 @@
     <string name="settings_socket_timeout">Tempo limite do soquete (ms)</string>
     <string name="settings_request_timeout">Tempo limite da requisição (ms)</string>
     <string name="settings_connect_timeout">Tempo limite da conexão (ms)</string>
-    <string name="quick_connect">Conexão Rápida</string>
     <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do jumoog seja instalado no servidor</string>
     <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="video">Vídeo</string>
@@ -173,13 +150,10 @@
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-Picture</string>
     <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
-    <string name="no_servers_found">Nenhum servidor encontrado</string>
     <string name="mark_as_played">Marcar como reproduzido</string>
     <string name="unmark_as_played">Desmarcar como reproduzido</string>
     <string name="add_to_favorites">Adicionar aos favoritos</string>
     <string name="remove_from_favorites">Remover dos favoritos</string>
-    <string name="no_users_found">Usuários não encontrados</string>
-    <string name="select_user">Selecione o usuário</string>
     <string name="live_tv">TV ao vivo</string>
     <string name="play">Reproduzir</string>
     <string name="watch_trailer">Assista o trailer</string>

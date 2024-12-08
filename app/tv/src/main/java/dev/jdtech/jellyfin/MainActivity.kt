@@ -4,68 +4,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.AddServerScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val viewModel: MainViewModel by viewModels()
-
-    @Inject
-    lateinit var database: ServerDatabaseDao
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var startRoute = NavGraphs.root.startRoute(Unit)
-        if (checkServersEmpty()) {
-            startRoute = AddServerScreenDestination
-        } else if (checkUser()) {
-            startRoute = LoginScreenDestination
-        }
-
         setContent {
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
             FindroidTheme {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    start = startRoute,
-                )
-            }
-        }
-    }
-
-    private fun checkServersEmpty(): Boolean {
-        if (!viewModel.startDestinationChanged) {
-            val nServers = database.getServersCount()
-            if (nServers < 1) {
-                viewModel.startDestinationChanged = true
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun checkUser(): Boolean {
-        if (!viewModel.startDestinationChanged) {
-            appPreferences.currentServer?.let {
-                val currentUser = database.getServerCurrentUser(it)
-                if (currentUser == null) {
-                    viewModel.startDestinationChanged = true
-                    return true
+                val navController = rememberNavController()
+                if (!state.isLoading) {
+                    NavigationRoot(
+                        navController = navController,
+                        hasServers = state.hasServers,
+                        hasCurrentServer = state.hasCurrentServer,
+                        hasCurrentUser = state.hasCurrentUser,
+                    )
                 }
             }
         }
-        return false
     }
 }

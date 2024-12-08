@@ -42,11 +42,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_homeFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_homeFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
     </fragment>
@@ -72,12 +67,6 @@
         android:id="@+id/twoPaneSettingsFragment"
         android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
         android:label="@string/title_settings">
-        <action
-            android:id="@+id/action_navigation_settings_to_serverSelectFragment"
-            app:destination="@id/serverSelectFragment" />
-        <action
-            android:id="@+id/action_navigation_settings_to_usersFragment"
-            app:destination="@id/usersFragment" />
         <action
             android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
             app:destination="@id/serverAddressesFragment" />
@@ -280,47 +269,6 @@
             android:name="query"
             app:argType="string" />
     </fragment>
-    <fragment
-        android:id="@+id/addServerFragment"
-        android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
-        android:label="@string/add_server"
-        tools:layout="@layout/fragment_add_server">
-        <action
-            android:id="@+id/action_addServerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/serverSelectFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
-        android:label="@string/select_server"
-        tools:layout="@layout/fragment_server_select">
-        <action
-            android:id="@+id/action_serverSelectFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment" />
-        <action
-            android:id="@+id/action_serverSelectFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_serverSelectFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="reLogin"
-            android:defaultValue="false"
-            app:argType="boolean" />
-    </fragment>
 
     <fragment
         android:id="@+id/personDetailFragment"
@@ -351,27 +299,6 @@
     </activity>
 
     <include app:graph="@navigation/aboutlibs_navigation" />
-    <action
-        android:id="@+id/action_global_loginFragment"
-        app:destination="@id/loginFragment" />
-
-    <fragment
-        android:id="@+id/usersFragment"
-        android:name="dev.jdtech.jellyfin.fragments.UsersFragment"
-        android:label="@string/users"
-        tools:layout="@layout/fragment_users">
-        <action
-            android:id="@+id/action_usersFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="serverId"
-            app:argType="string" />
-    </fragment>
 
     <fragment
         android:id="@+id/serverAddressesFragment"

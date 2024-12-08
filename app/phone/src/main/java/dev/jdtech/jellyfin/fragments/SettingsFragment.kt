@@ -22,13 +22,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(CoreR.xml.fragment_settings, rootKey)
 
         findPreference<Preference>("switchServer")?.setOnPreferenceClickListener {
-            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
+            // findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToServerSelectFragment())
             true
         }
 
         findPreference<Preference>("switchUser")?.setOnPreferenceClickListener {
             val serverId = appPreferences.currentServer!!
-            findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
+            // findNavController().safeNavigate(TwoPaneSettingsFragmentDirections.actionNavigationSettingsToUsersFragment(serverId))
             true
         }
 
