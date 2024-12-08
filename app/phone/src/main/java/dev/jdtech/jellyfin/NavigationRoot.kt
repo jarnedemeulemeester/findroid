@@ -11,7 +11,6 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -23,17 +22,13 @@ import kotlinx.serialization.Serializable
 data object WelcomeRoute
 
 @Serializable
-data class ServersRoute(
-    val showBack: Boolean = true,
-)
+data object ServersRoute
 
 @Serializable
 data object AddServerRoute
 
 @Serializable
-data class UsersRoute(
-    val showBack: Boolean = true,
-)
+data object UsersRoute
 
 @Serializable
 data object LoginRoute
@@ -46,9 +41,9 @@ fun NavigationRoot(
     hasCurrentUser: Boolean,
 ) {
     val startDestination = when {
-        hasServers && hasCurrentServer && hasCurrentUser -> UsersRoute(showBack = false) // TODO: change to MainRoute
-        hasServers && hasCurrentServer -> UsersRoute(showBack = false)
-        hasServers -> ServersRoute(showBack = false)
+        hasServers && hasCurrentServer && hasCurrentUser -> UsersRoute // TODO: change to MainRoute
+        hasServers && hasCurrentServer -> UsersRoute
+        hasServers -> ServersRoute
         else -> WelcomeRoute
     }
     NavHost(
@@ -64,18 +59,17 @@ fun NavigationRoot(
         composable<WelcomeRoute> {
             WelcomeScreen(
                 onContinueClick = {
-                    navController.safeNavigate(ServersRoute())
+                    navController.safeNavigate(ServersRoute)
                 },
             )
         }
         composable<ServersRoute> { backStackEntry ->
-            val route: ServersRoute = backStackEntry.toRoute()
             ServersScreen(
                 navigateToLogin = {
                     navController.safeNavigate(LoginRoute)
                 },
                 navigateToUsers = {
-                    navController.safeNavigate(UsersRoute())
+                    navController.safeNavigate(UsersRoute)
                 },
                 onAddClick = {
                     navController.safeNavigate(AddServerRoute)
@@ -83,7 +77,7 @@ fun NavigationRoot(
                 onBackClick = {
                     navController.safePopBackStack()
                 },
-                showBack = route.showBack,
+                showBack = navController.previousBackStackEntry != null && navController.previousBackStackEntry != backStackEntry,
             )
         }
         composable<AddServerRoute> {
@@ -97,12 +91,11 @@ fun NavigationRoot(
             )
         }
         composable<UsersRoute> { backStackEntry ->
-            val route: UsersRoute = backStackEntry.toRoute()
             UsersScreen(
                 navigateToHome = {},
                 onChangeServerClick = {
-                    navController.safeNavigate(ServersRoute()) {
-                        popUpTo(ServersRoute()) {
+                    navController.safeNavigate(ServersRoute) {
+                        popUpTo(ServersRoute) {
                             inclusive = false
                         }
                         launchSingleTop = true
@@ -114,15 +107,15 @@ fun NavigationRoot(
                 onBackClick = {
                     navController.safePopBackStack()
                 },
-                showBack = route.showBack,
+                showBack = navController.previousBackStackEntry != null && navController.previousBackStackEntry != backStackEntry,
             )
         }
         composable<LoginRoute> {
             LoginScreen(
                 onSuccess = {},
                 onChangeServerClick = {
-                    navController.safeNavigate(ServersRoute()) {
-                        popUpTo(ServersRoute()) {
+                    navController.safeNavigate(ServersRoute) {
+                        popUpTo(ServersRoute) {
                             inclusive = false
                         }
                         launchSingleTop = true
