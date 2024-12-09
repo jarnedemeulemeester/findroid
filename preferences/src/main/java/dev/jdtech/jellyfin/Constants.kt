@@ -46,6 +46,7 @@ object Constants {
     const val PREF_SORT_BY = "pref_sort_by"
     const val PREF_SORT_ORDER = "pref_sort_order"
     const val PREF_DISPLAY_EXTRA_INFO = "pref_display_extra_info"
+    const val PREF_COLUMN_SIZE = "pref_column_size"
 
     // caching
     const val DEFAULT_CACHE_SIZE = 20
