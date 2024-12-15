@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -25,14 +24,20 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VideoPlayerSeekBar(
-    progress: Float,
+    contentProgress: Duration,
+    contentDuration: Duration,
+    seekBackIncrement: Duration,
+    seekForwardIncrement: Duration,
     onSeek: (seekProgress: Float) -> Unit,
     state: VideoPlayerState,
 ) {
@@ -49,7 +54,9 @@ fun VideoPlayerSeekBar(
     val animatedHeight by animateDpAsState(
         targetValue = 8.dp.times(if (isFocused) 2f else 1f),
     )
-    var seekProgress by remember { mutableFloatStateOf(0f) }
+    val progress = (contentProgress / contentDuration).toFloat()
+    var seekContentProgress by remember { mutableStateOf(Duration.ZERO) }
+    fun seekProgress(): Float = (seekContentProgress / contentDuration).toFloat()
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(isSelected) {
@@ -66,23 +73,23 @@ fun VideoPlayerSeekBar(
             .handleDPadKeyEvents(
                 onEnter = {
                     if (isSelected) {
-                        onSeek(seekProgress)
+                        onSeek(seekProgress())
                         focusManager.moveFocus(FocusDirection.Exit)
                     } else {
-                        seekProgress = progress
+                        seekContentProgress = contentProgress
                     }
                     isSelected = !isSelected
                 },
                 onLeft = {
                     if (isSelected) {
-                        seekProgress = (seekProgress - 0.05f).coerceAtLeast(0f)
+                        seekContentProgress = (seekContentProgress - seekBackIncrement).coerceAtLeast(Duration.ZERO)
                     } else {
                         focusManager.moveFocus(FocusDirection.Left)
                     }
                 },
                 onRight = {
                     if (isSelected) {
-                        seekProgress = (seekProgress + 0.05f).coerceAtMost(1f)
+                        seekContentProgress = (seekContentProgress + seekForwardIncrement).coerceAtMost(contentDuration)
                     } else {
                         focusManager.moveFocus(FocusDirection.Right)
                     }
@@ -102,7 +109,7 @@ fun VideoPlayerSeekBar(
             color = color,
             start = Offset(x = 0f, y = yOffset),
             end = Offset(
-                x = size.width.times(if (isSelected) seekProgress else progress),
+                x = size.width.times(if (isSelected) seekProgress() else progress),
                 y = yOffset,
             ),
             strokeWidth = size.height.div(2),
@@ -112,7 +119,7 @@ fun VideoPlayerSeekBar(
             color = Color.White,
             radius = size.height.div(2),
             center = Offset(
-                x = size.width.times(if (isSelected) seekProgress else progress),
+                x = size.width.times(if (isSelected) seekProgress() else progress),
                 y = yOffset,
             ),
         )
@@ -124,7 +131,10 @@ fun VideoPlayerSeekBar(
 fun VideoPlayerSeekBarPreview() {
     FindroidTheme {
         VideoPlayerSeekBar(
-            progress = 0.4f,
+            contentProgress = Duration.parse("7m 51s"),
+            contentDuration = Duration.parse("23m 40s"),
+            seekBackIncrement = C.DEFAULT_SEEK_BACK_INCREMENT_MS.milliseconds,
+            seekForwardIncrement = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS.milliseconds,
             onSeek = {},
             state = rememberVideoPlayerState(),
         )
