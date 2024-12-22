@@ -11,15 +11,17 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import com.google.android.material.button.MaterialButton
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.View
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.io.Serializable
 import java.nio.charset.StandardCharsets
 
-fun BaseItemDto.toView(): View {
+fun BaseItemDto.toView(items: List<FindroidItem>): View {
     return View(
         id = id,
         name = name ?: "",
+        items = items,
         type = CollectionType.fromString(collectionType?.serialName),
     )
 }

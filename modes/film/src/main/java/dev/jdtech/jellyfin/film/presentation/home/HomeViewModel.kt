@@ -85,7 +85,7 @@ constructor(
             .filter { view -> CollectionType.fromString(view.collectionType?.serialName) in CollectionType.supported }
             .map { view -> view to repository.getLatestMedia(view.id) }
             .filter { (_, latest) -> latest.isNotEmpty() }
-            .map { (view, latest) -> view.toView().apply { items = latest } }
+            .map { (view, latest) -> view.toView(latest) }
             .map { HomeItem.ViewItem(it) }
         _state.emit(
             _state.value.copy(views = items),

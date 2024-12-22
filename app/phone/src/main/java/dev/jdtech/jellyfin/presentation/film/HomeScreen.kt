@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.presentation.film
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -25,10 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -86,7 +86,7 @@ private fun HomeScreenLayout(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .semantics { isTraversalGroup = true }
+            .semantics { isTraversalGroup = true },
     ) {
         SearchBar(
             inputField = {
@@ -100,16 +100,16 @@ private fun HomeScreenLayout(
                     leadingIcon = {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_search),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         if (state.isLoading) {
                             CircularProgressIndicator(
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(32.dp),
                             )
                         }
-                    }
+                    },
                 )
             },
             expanded = expanded,
@@ -117,66 +117,74 @@ private fun HomeScreenLayout(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .semantics { traversalIndex = 0f },
-            ) { }
+        ) { }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .semantics { traversalIndex = 1f },
             contentPadding = PaddingValues(
                 top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 72.dp },
-                bottom = MaterialTheme.spacings.default
+                bottom = MaterialTheme.spacings.default,
             ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             items(state.sections) { section ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(42.dp)
-                        .padding(contentPadding)
+                Column(
+                    modifier = Modifier.animateItem(),
                 ) {
-                    Text(
-                        text = section.homeSection.name.asString(),
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    )
-                }
-                LazyRow(
-                    contentPadding = contentPadding,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)
-                ) {
-                    items(section.homeSection.items) { items ->
-                        Box(
-                            modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp)
+                            .padding(contentPadding),
+                    ) {
+                        Text(
+                            text = section.homeSection.name.asString(),
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            style = MaterialTheme.typography.titleMedium,
                         )
+                    }
+                    LazyRow(
+                        contentPadding = contentPadding,
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                    ) {
+                        items(section.homeSection.items) { items ->
+                            Box(
+                                modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer),
+                            )
+                        }
                     }
                 }
             }
             items(state.views) { view ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(42.dp)
-                        .padding(contentPadding)
+                Column(
+                    modifier = Modifier.animateItem(),
                 ) {
-                    Text(
-                        text = stringResource(FilmR.string.latest_library, view.view.name),
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    )
-                    TextButton(
-                        onClick = {},
-                        modifier = Modifier.align(Alignment.CenterEnd)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp)
+                            .padding(contentPadding),
                     ) {
-                        Text(stringResource(CoreR.string.view_all))
+                        Text(
+                            text = stringResource(FilmR.string.latest_library, view.view.name),
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        TextButton(
+                            onClick = {},
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                        ) {
+                            Text(stringResource(CoreR.string.view_all))
+                        }
                     }
-                }
-                if (view.view.items != null) {
                     LazyRow(
                         contentPadding = contentPadding,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                     ) {
-                        items(view.view.items!!) { items ->
+                        items(view.view.items) { items ->
                             Box(
-                                modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer)
+                                modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer),
                             )
                         }
                     }
@@ -184,7 +192,6 @@ private fun HomeScreenLayout(
             }
         }
     }
-
 }
 
 @PreviewScreenSizes
@@ -196,7 +203,7 @@ private fun HomeScrmeenLayoutPreview() {
             state = HomeState(
                 sections = listOf(dummyHomeSection),
                 views = listOf(dummyHomeView),
-            )
+            ),
         )
     }
 }
