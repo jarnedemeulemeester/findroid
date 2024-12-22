@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -129,7 +130,7 @@ private fun HomeScreenLayout(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
-            items(state.sections) { section ->
+            items(state.sections, key = { it.id }) { section ->
                 Column(
                     modifier = Modifier.animateItem(),
                 ) {
@@ -145,11 +146,12 @@ private fun HomeScreenLayout(
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     LazyRow(
                         contentPadding = contentPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
-                        items(section.homeSection.items) { item ->
+                        items(section.homeSection.items, key = { it.id }) { item ->
                             ItemCard(
                                 item = item,
                                 direction = Direction.HORIZONTAL,
@@ -159,10 +161,8 @@ private fun HomeScreenLayout(
                     }
                 }
             }
-            items(state.views) { view ->
-                Column(
-                    modifier = Modifier.animateItem(),
-                ) {
+            items(state.views, key = { it.id }) { view ->
+                Column {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -181,11 +181,12 @@ private fun HomeScreenLayout(
                             Text(stringResource(CoreR.string.view_all))
                         }
                     }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     LazyRow(
                         contentPadding = contentPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
-                        items(view.view.items) { item ->
+                        items(view.view.items, key = { it.id }) { item ->
                             ItemCard(
                                 item = item,
                                 direction = Direction.VERTICAL,
