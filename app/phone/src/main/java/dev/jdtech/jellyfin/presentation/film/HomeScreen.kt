@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +46,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
+import dev.jdtech.jellyfin.presentation.film.components.Direction
+import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -124,7 +125,7 @@ private fun HomeScreenLayout(
                 .semantics { traversalIndex = 1f },
             contentPadding = PaddingValues(
                 top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 72.dp },
-                bottom = MaterialTheme.spacings.default,
+                bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
@@ -146,11 +147,13 @@ private fun HomeScreenLayout(
                     }
                     LazyRow(
                         contentPadding = contentPadding,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
-                        items(section.homeSection.items) { items ->
-                            Box(
-                                modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer),
+                        items(section.homeSection.items) { item ->
+                            ItemCard(
+                                item = item,
+                                direction = Direction.HORIZONTAL,
+                                onClick = {},
                             )
                         }
                     }
@@ -180,11 +183,13 @@ private fun HomeScreenLayout(
                     }
                     LazyRow(
                         contentPadding = contentPadding,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
-                        items(view.view.items) { items ->
-                            Box(
-                                modifier = Modifier.size(120.dp, 180.dp).background(MaterialTheme.colorScheme.errorContainer),
+                        items(view.view.items) { item ->
+                            ItemCard(
+                                item = item,
+                                direction = Direction.VERTICAL,
+                                onClick = {},
                             )
                         }
                     }
