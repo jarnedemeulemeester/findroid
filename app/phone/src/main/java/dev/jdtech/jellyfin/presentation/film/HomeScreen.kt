@@ -147,9 +147,7 @@ private fun HomeScreenLayout(
                                 }
                             } else {
                                 IconButton(
-                                    onClick = {
-                                        expanded = false
-                                    },
+                                    onClick = {},
                                 ) {
                                     Icon(
                                         painter = painterResource(CoreR.drawable.ic_user),
