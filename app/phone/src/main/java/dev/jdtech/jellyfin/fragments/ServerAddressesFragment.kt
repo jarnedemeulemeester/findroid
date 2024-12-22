@@ -94,6 +94,6 @@ class ServerAddressesFragment : Fragment() {
     }
 
     private fun navigateToMainActivity() {
-        findNavController().safeNavigate(ServerAddressesFragmentDirections.actionUsersFragmentToHomeFragment())
+        // findNavController().safeNavigate(ServerAddressesFragmentDirections.actionUsersFragmentToHomeFragment())
     }
 }
