@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,6 +86,11 @@ private fun HomeScreenLayout(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
+    val searchBarPadding by animateDpAsState(
+        targetValue = if (expanded) 0.dp else MaterialTheme.spacings.default,
+        label = "search_bar_padding",
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -126,10 +130,33 @@ private fun HomeScreenLayout(
                         }
                     },
                     trailingIcon = {
-                        if (state.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(32.dp),
-                            )
+                        AnimatedContent(
+                            targetState = expanded,
+                            label = "search_to_back",
+                        ) { targetExpanded ->
+                            if (targetExpanded) {
+                                IconButton(
+                                    onClick = {
+                                        searchQuery = ""
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(CoreR.drawable.ic_x),
+                                        contentDescription = null,
+                                    )
+                                }
+                            } else {
+                                IconButton(
+                                    onClick = {
+                                        expanded = false
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(CoreR.drawable.ic_user),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
                     },
                 )
@@ -137,7 +164,8 @@ private fun HomeScreenLayout(
             expanded = expanded,
             onExpandedChange = { expanded = it },
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .padding(horizontal = searchBarPadding)
                 .semantics { traversalIndex = 0f },
         ) { }
         LazyColumn(
