@@ -36,7 +36,7 @@ constructor(
 
     fun loadData() {
         viewModelScope.launch(Dispatchers.Default) {
-            _state.emit(_state.value.copy(isLoading = true))
+            _state.emit(_state.value.copy(isLoading = true, error = null))
             try {
                 if (appPreferences.offlineMode) _state.emit(_state.value.copy(isOffline = true))
 
@@ -90,5 +90,13 @@ constructor(
         _state.emit(
             _state.value.copy(views = items),
         )
+    }
+
+    fun onAction(action: HomeAction) {
+        when (action) {
+            is HomeAction.OnRetryClick -> {
+                loadData()
+            }
+        }
     }
 }

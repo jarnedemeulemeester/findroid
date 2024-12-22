@@ -46,9 +46,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
+import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.Direction
+import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -67,6 +69,9 @@ fun HomeScreen(
 
     HomeScreenLayout(
         state = state,
+        onAction = { action ->
+            viewModel.onAction(action)
+        },
     )
 }
 
@@ -74,6 +79,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenLayout(
     state: HomeState,
+    onAction: (HomeAction) -> Unit,
 ) {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
@@ -89,6 +95,14 @@ private fun HomeScreenLayout(
     val searchBarPadding by animateDpAsState(
         targetValue = if (expanded) 0.dp else MaterialTheme.spacings.default,
         label = "search_bar_padding",
+    )
+    val contentTopPadding by animateDpAsState(
+        targetValue = if (state.error != null) {
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
+        } else {
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp }
+        },
+        label = "content_padding",
     )
 
     Box(
@@ -171,10 +185,10 @@ private fun HomeScreenLayout(
                 .fillMaxSize()
                 .semantics { traversalIndex = 1f },
             contentPadding = PaddingValues(
-                top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 72.dp },
+                top = contentTopPadding,
                 bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
             ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
             items(state.sections, key = { it.id }) { section ->
                 Column(
@@ -243,6 +257,20 @@ private fun HomeScreenLayout(
                 }
             }
         }
+        if (state.error != null) {
+            ErrorCard(
+                onRetryClick = {
+                    onAction(HomeAction.OnRetryClick)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = MaterialTheme.spacings.default,
+                        top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
+                        end = MaterialTheme.spacings.default,
+                    ),
+            )
+        }
     }
 }
 
@@ -255,7 +283,9 @@ private fun HomeScrmeenLayoutPreview() {
             state = HomeState(
                 sections = listOf(dummyHomeSection),
                 views = listOf(dummyHomeView),
+                error = Exception("Brol"),
             ),
+            onAction = {},
         )
     }
 }
