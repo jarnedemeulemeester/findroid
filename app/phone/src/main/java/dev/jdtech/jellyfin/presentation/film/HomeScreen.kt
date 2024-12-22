@@ -39,7 +39,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -84,18 +83,27 @@ private fun HomeScreenLayout(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val contentPadding = PaddingValues(
-        start = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() + MaterialTheme.spacings.default },
-        end = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() + MaterialTheme.spacings.default },
+    val startPadding = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() + MaterialTheme.spacings.default }
+    val endPadding = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() + MaterialTheme.spacings.default }
+
+    val itemsPadding = PaddingValues(
+        start = startPadding,
+        end = endPadding,
     )
 
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    val searchBarPadding by animateDpAsState(
-        targetValue = if (expanded) 0.dp else MaterialTheme.spacings.default,
-        label = "search_bar_padding",
+    val searchBarPaddingStart by animateDpAsState(
+        targetValue = if (expanded) 0.dp else startPadding,
+        label = "search_bar_padding_start",
     )
+
+    val searchBarPaddingEnd by animateDpAsState(
+        targetValue = if (expanded) 0.dp else endPadding,
+        label = "search_bar_padding_end",
+    )
+
     val contentTopPadding by animateDpAsState(
         targetValue = if (state.error != null) {
             with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
@@ -177,7 +185,10 @@ private fun HomeScreenLayout(
             onExpandedChange = { expanded = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = searchBarPadding)
+                .padding(
+                    start = searchBarPaddingStart,
+                    end = searchBarPaddingEnd,
+                )
                 .semantics { traversalIndex = 0f },
         ) { }
         LazyColumn(
@@ -198,7 +209,7 @@ private fun HomeScreenLayout(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(42.dp)
-                            .padding(contentPadding),
+                            .padding(itemsPadding),
                     ) {
                         Text(
                             text = section.homeSection.name.asString(),
@@ -208,7 +219,7 @@ private fun HomeScreenLayout(
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     LazyRow(
-                        contentPadding = contentPadding,
+                        contentPadding = itemsPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
                         items(section.homeSection.items, key = { it.id }) { item ->
@@ -227,7 +238,7 @@ private fun HomeScreenLayout(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(42.dp)
-                            .padding(contentPadding),
+                            .padding(itemsPadding),
                     ) {
                         Text(
                             text = stringResource(FilmR.string.latest_library, view.view.name),
@@ -243,7 +254,7 @@ private fun HomeScreenLayout(
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     LazyRow(
-                        contentPadding = contentPadding,
+                        contentPadding = itemsPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
                         items(view.view.items, key = { it.id }) { item ->
@@ -266,9 +277,9 @@ private fun HomeScreenLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = MaterialTheme.spacings.default,
+                        start = startPadding,
                         top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
-                        end = MaterialTheme.spacings.default,
+                        end = endPadding,
                     ),
             )
         }
@@ -276,9 +287,8 @@ private fun HomeScreenLayout(
 }
 
 @PreviewScreenSizes
-@Preview
 @Composable
-private fun HomeScrmeenLayoutPreview() {
+private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(

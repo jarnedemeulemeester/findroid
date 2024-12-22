@@ -40,6 +40,7 @@ constructor(
             try {
                 if (appPreferences.offlineMode) _state.emit(_state.value.copy(isOffline = true))
 
+                // Load sequentially instead of in parallel because if the views load faster then the dynamic items, the dynamic items will appear above it but the scroll position will remain the same creating a weird look.
                 loadDynamicItems()
                 loadViews()
             } catch (e: Exception) {
