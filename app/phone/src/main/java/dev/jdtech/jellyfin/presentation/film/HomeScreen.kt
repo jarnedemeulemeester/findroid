@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -100,10 +102,28 @@ private fun HomeScreenLayout(
                     onExpandedChange = { expanded = it },
                     placeholder = { Text("Search movies and TV shows") },
                     leadingIcon = {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_search),
-                            contentDescription = null,
-                        )
+                        AnimatedContent(
+                            targetState = expanded,
+                            label = "search_to_back",
+                        ) { targetExpanded ->
+                            if (targetExpanded) {
+                                IconButton(
+                                    onClick = {
+                                        expanded = false
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(CoreR.drawable.ic_arrow_left),
+                                        contentDescription = null,
+                                    )
+                                }
+                            } else {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_search),
+                                    contentDescription = null,
+                                )
+                            }
+                        }
                     },
                     trailingIcon = {
                         if (state.isLoading) {
