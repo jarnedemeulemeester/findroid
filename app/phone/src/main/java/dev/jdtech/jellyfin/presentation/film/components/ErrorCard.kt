@@ -4,24 +4,26 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ErrorCard(
+    onShowStacktrace: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -48,14 +50,33 @@ fun ErrorCard(
                     .weight(1f)
                     .align(Alignment.CenterVertically),
             )
-            TextButton(
-                onClick = onRetryClick,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                ),
+            IconButton(
+                onClick = onShowStacktrace,
             ) {
-                Text("Retry")
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_logs),
+                    contentDescription = stringResource(CoreR.string.show_stacktrace),
+                )
+            }
+            IconButton(
+                onClick = onRetryClick,
+            ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                    contentDescription = stringResource(CoreR.string.retry),
+                )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ErrorCardPreview() {
+    FindroidTheme {
+        ErrorCard(
+            onShowStacktrace = {},
+            onRetryClick = {},
+        )
     }
 }

@@ -259,6 +259,7 @@ private fun HomeScreenLayout(
         }
         if (state.error != null) {
             ErrorCard(
+                onShowStacktrace = {},
                 onRetryClick = {
                     onAction(HomeAction.OnRetryClick)
                 },
