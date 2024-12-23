@@ -62,7 +62,7 @@
     <string name="gestures">手勢</string>
     <string name="player_gestures">撥放器手勢</string>
     <string name="player_gestures_zoom">縮放手勢</string>
-    <string name="player_gestures_zoom_summary">捏合以用影片填充螢幕</string>
+    <string name="player_gestures_zoom_summary">兩指縮放使影片填滿螢幕</string>
     <string name="player_brightness_remember">記住亮度級別</string>
     <string name="sort_by_options_0">標題</string>
     <string name="sort_by_options_1">IMDB 評分</string>
@@ -104,18 +104,18 @@
     <string name="player_gestures_vb">音量和亮度手勢</string>
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
     <string name="seek_forward_increment">尋回向前增量（毫秒）</string>
-    <string name="dynamic_colors_summary">使用 Material You Dynamic 顏色（僅適用於 Android 12+）</string>
+    <string name="dynamic_colors_summary">使用 Material You 動態配色（僅適用於 Android 12+）</string>
     <string name="pref_player_intro_skipper">片頭跳過器</string>
     <string name="pref_player_intro_skipper_summary">需要在服務器上安裝jumoog的Intro Skipper挿件</string>
     <string name="pref_player_mpv_hwdec">硬體解碼</string>
-    <string name="pref_player_mpv_vo">視頻輸出</string>
-    <string name="pref_player_mpv_ao">音頻輸出</string>
+    <string name="pref_player_mpv_vo">視訊輸出</string>
+    <string name="pref_player_mpv_ao">音訊輸出</string>
     <string name="addresses">地址</string>
     <string name="add_address">添加地址</string>
     <string name="add_server_address">添加伺服器地址</string>
     <string name="add">添加</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
-    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="episode_name_extended_with_end">第%1$d季：第%2$d-%3$d集 - %4$s</string>
     <string name="downloading_error">下載時出錯</string>
     <string name="size">大小</string>
     <string name="no_server_connection">未連接到 Jellyfin 服務器，要離線觀看請啟用離線模式</string>
@@ -128,9 +128,9 @@
     <string name="stop_download">停止下載</string>
     <string name="subtitle">字幕</string>
     <string name="subtitle_chip_text">隱藏式字幕</string>
-    <string name="extra_info">顯示額外信息</string>
-    <string name="video">視頻</string>
-    <string name="audio">音頻</string>
+    <string name="extra_info">顯示額外資訊</string>
+    <string name="video">視訊</string>
+    <string name="audio">音訊</string>
     <string name="cancel_download_message">您確定要取消下載嗎？</string>
     <string name="privacy_policy_notice">使用 Findroid 即表示您同意 <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">隱私政策</a>，其中聲明我們不收集任何數據</string>
     <string name="cancel_download">取消下載</string>
@@ -138,7 +138,7 @@
     <string name="amoled_theme_summary">使用帶有純黑色背景的 AMOLED 主題</string>
     <string name="amoled_theme">AMOLED 深色主題</string>
     <string name="app_language">程式界面語言</string>
-    <string name="extra_info_summary">顯示有關音頻、視頻和字幕的詳細信息</string>
+    <string name="extra_info_summary">顯示有關音訊、視訊和字幕的詳細資訊</string>
     <string name="downloaded_indicator">下載指示器</string>
     <string name="offline_mode">離線模式</string>
     <string name="offline_mode_icon">離線模式圖標</string>
@@ -159,7 +159,7 @@
     <string name="add_to_favorites">加入收藏夾</string>
     <string name="remove_from_favorites">從收藏夾中刪除</string>
     <string name="player_start_maximized">開始最大化</string>
-    <string name="player_start_maximized_summary">預設以最大化模式開啟視頻</string>
+    <string name="player_start_maximized_summary">預設以最大化模式開啟影片</string>
     <string name="player_gestures_chapter_skip">章節手勢</string>
     <string name="player_gestures_chapter_skip_summary">長按左/右側可跳過章節（覆蓋 2 倍速度手勢）</string>
     <string name="pref_player_chapter_markers">章節標記</string>
@@ -168,4 +168,5 @@
     <string name="pref_player_trickplay_summary">快轉時顯示預覽畫面</string>
     <string name="pref_player_gestures_seek_trickplay">滑動快轉時啟用特技播放</string>
     <string name="pref_player_gestures_seek_trickplay_summary">手勢尋找時顯示預覽畫面</string>
+    <string name="users">使用者</string>
 </resources>
