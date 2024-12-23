@@ -290,7 +290,7 @@ private fun HomeScreenLayout(
             if (showErrorDialog) {
                 ErrorDialog(
                     exception = state.error!!,
-                    onDismissRequest = { showErrorDialog = false }
+                    onDismissRequest = { showErrorDialog = false },
                 )
             }
         }

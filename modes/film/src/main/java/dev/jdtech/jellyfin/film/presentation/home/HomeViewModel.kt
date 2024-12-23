@@ -98,6 +98,7 @@ constructor(
             is HomeAction.OnRetryClick -> {
                 loadData()
             }
+            else -> Unit
         }
     }
 }

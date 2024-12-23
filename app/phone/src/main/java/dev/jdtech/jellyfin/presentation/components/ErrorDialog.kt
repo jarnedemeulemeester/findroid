@@ -38,13 +38,13 @@ fun ErrorDialog(
     val context = LocalContext.current
 
     Dialog(
-        onDismissRequest = { onDismissRequest() }
+        onDismissRequest = { onDismissRequest() },
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(200.dp, max = 540.dp),
-            shape = RoundedCornerShape(28.dp)
+            shape = RoundedCornerShape(28.dp),
         ) {
             Column {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -53,7 +53,7 @@ fun ErrorDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = MaterialTheme.spacings.default),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 HorizontalDivider()
@@ -61,13 +61,13 @@ fun ErrorDialog(
                     modifier = Modifier
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                     Text(
                         text = exception.stackTraceToString(),
                         fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 HorizontalDivider()
@@ -79,9 +79,9 @@ fun ErrorDialog(
                             start = MaterialTheme.spacings.medium,
                             top = MaterialTheme.spacings.extraSmall,
                             end = MaterialTheme.spacings.medium,
-                            bottom = MaterialTheme.spacings.small
+                            bottom = MaterialTheme.spacings.small,
                         ),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
                         onClick = {
@@ -92,12 +92,12 @@ fun ErrorDialog(
                             }
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
-                        }
+                        },
                     ) {
                         Text(stringResource(CoreR.string.share))
                     }
                     TextButton(
-                        onClick = { onDismissRequest() }
+                        onClick = { onDismissRequest() },
                     ) {
                         Text(stringResource(CoreR.string.close))
                     }
@@ -113,7 +113,7 @@ private fun ErrorDialogPreview() {
     FindroidTheme {
         ErrorDialog(
             exception = Exception("Error loading data"),
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 }
