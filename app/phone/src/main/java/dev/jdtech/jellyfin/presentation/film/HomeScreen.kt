@@ -48,6 +48,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
+import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
@@ -112,6 +113,8 @@ private fun HomeScreenLayout(
         },
         label = "content_padding",
     )
+
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -270,7 +273,9 @@ private fun HomeScreenLayout(
         }
         if (state.error != null) {
             ErrorCard(
-                onShowStacktrace = {},
+                onShowStacktrace = {
+                    showErrorDialog = true
+                },
                 onRetryClick = {
                     onAction(HomeAction.OnRetryClick)
                 },
@@ -282,6 +287,12 @@ private fun HomeScreenLayout(
                         end = endPadding,
                     ),
             )
+            if (showErrorDialog) {
+                ErrorDialog(
+                    exception = state.error!!,
+                    onDismissRequest = { showErrorDialog = false }
+                )
+            }
         }
     }
 }
