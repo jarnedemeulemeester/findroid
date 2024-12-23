@@ -25,7 +25,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.dummy.dummyUser
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import org.jellyfin.sdk.model.api.ImageType
 
 @Composable
