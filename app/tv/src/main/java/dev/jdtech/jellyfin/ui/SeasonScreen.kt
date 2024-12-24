@@ -20,13 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisodeItems
 import dev.jdtech.jellyfin.models.EpisodeItem
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
-import dev.jdtech.jellyfin.ui.dummy.dummyEpisodeItems
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel

@@ -26,10 +26,10 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.ui.dummy.dummyUser
 import org.jellyfin.sdk.model.api.ImageType
 import dev.jdtech.jellyfin.core.R as CoreR
 

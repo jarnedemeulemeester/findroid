@@ -18,13 +18,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
-import dev.jdtech.jellyfin.ui.dummy.dummyCollections
 import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import java.util.UUID
 

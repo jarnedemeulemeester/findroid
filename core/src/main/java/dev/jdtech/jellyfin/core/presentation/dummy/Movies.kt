@@ -1,23 +1,19 @@
-package dev.jdtech.jellyfin.ui.dummy
+package dev.jdtech.jellyfin.core.presentation.dummy
 
-import dev.jdtech.jellyfin.models.EpisodeItem
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.FindroidMediaStream
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import org.jellyfin.sdk.model.api.MediaStreamType
 import java.time.LocalDateTime
 import java.util.UUID
 
-val dummyEpisode = FindroidEpisode(
+val dummyMovie = FindroidMovie(
     id = UUID.randomUUID(),
-    name = "Mother and Children",
+    name = "Alita: Battle Angel",
     originalTitle = null,
-    overview = "Stories are lies meant to entertain, and idols lie to fans eager to believe. This is Ai’s story. It is a lie, but it is also true.",
-    indexNumber = 1,
-    indexNumberEnd = null,
-    parentIndexNumber = 1,
+    overview = "When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past.",
     sources = listOf(
         FindroidSource(
             id = "",
@@ -43,26 +39,26 @@ val dummyEpisode = FindroidEpisode(
             ),
         ),
     ),
-    played = true,
+    played = false,
     favorite = true,
     canPlay = true,
     canDownload = true,
     runtimeTicks = 20L,
-    playbackPositionTicks = 0L,
+    playbackPositionTicks = 15L,
     premiereDate = LocalDateTime.parse("2019-02-14T00:00:00"),
-    seriesName = "Oshi no Ko",
-    seriesId = UUID.randomUUID(),
-    seasonId = UUID.randomUUID(),
-    communityRating = 9.2f,
+    people = emptyList(),
+    genres = listOf("Action", "Sience Fiction", "Adventure"),
+    communityRating = 7.2f,
+    officialRating = "PG-13",
+    status = "Ended",
+    productionYear = 2019,
+    endDate = null,
+    trailer = "https://www.youtube.com/watch?v=puKWa8hrvA8",
     images = FindroidImages(),
     chapters = null,
     trickplayInfo = null,
 )
 
-val dummyEpisodes = listOf(
-    dummyEpisode,
-)
-
-val dummyEpisodeItems = listOf(
-    EpisodeItem.Episode(dummyEpisode),
+val dummyMovies = listOf(
+    dummyMovie,
 )

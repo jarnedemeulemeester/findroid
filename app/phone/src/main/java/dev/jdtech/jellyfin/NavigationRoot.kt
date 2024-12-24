@@ -11,6 +11,8 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -33,6 +35,12 @@ data object UsersRoute
 @Serializable
 data object LoginRoute
 
+@Serializable
+data object FilmGraphRoute
+
+@Serializable
+data object HomeRoute
+
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
@@ -41,7 +49,7 @@ fun NavigationRoot(
     hasCurrentUser: Boolean,
 ) {
     val startDestination = when {
-        hasServers && hasCurrentServer && hasCurrentUser -> UsersRoute // TODO: change to MainRoute
+        hasServers && hasCurrentServer && hasCurrentUser -> FilmGraphRoute
         hasServers && hasCurrentServer -> UsersRoute
         hasServers -> ServersRoute
         else -> WelcomeRoute
@@ -112,7 +120,14 @@ fun NavigationRoot(
         }
         composable<LoginRoute> {
             LoginScreen(
-                onSuccess = {},
+                onSuccess = {
+                    navController.safeNavigate(FilmGraphRoute) {
+                        popUpTo(FilmGraphRoute) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
                 onChangeServerClick = {
                     navController.safeNavigate(ServersRoute) {
                         popUpTo(ServersRoute) {
@@ -125,6 +140,13 @@ fun NavigationRoot(
                     navController.safePopBackStack()
                 },
             )
+        }
+        navigation<FilmGraphRoute>(
+            startDestination = HomeRoute,
+        ) {
+            composable<HomeRoute> {
+                HomeScreen()
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ include(":preferences")
 include(":player:core")
 include(":player:video")
 include(":setup")
+include(":modes:film")
 
 pluginManagement {
     repositories {

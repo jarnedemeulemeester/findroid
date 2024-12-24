@@ -3,48 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/homeFragment">
-
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_navigation_home_to_libraryFragment"
-            app:destination="@id/libraryFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_showFragment"
-            app:destination="@id/showFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/twoPaneSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_homeFragment_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
+    app:startDestination="@+id/mediaFragment">
 
     <fragment
         android:id="@+id/mediaFragment"
@@ -305,11 +264,6 @@
         android:name="dev.jdtech.jellyfin.fragments.ServerAddressesFragment"
         android:label="@string/addresses"
         tools:layout="@layout/fragment_server_addresses">
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="serverId"
             app:argType="string" />

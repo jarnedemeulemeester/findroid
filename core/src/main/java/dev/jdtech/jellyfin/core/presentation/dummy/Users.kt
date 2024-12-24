@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui.dummy
+package dev.jdtech.jellyfin.core.presentation.dummy
 
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
