@@ -21,8 +21,6 @@
     <string name="episode_name_extended">С%1$d:Е%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">С%1$d:Е%2$d-%3$d - %4$s</string>
     <string name="next_up">Наступний</string>
-    <string name="continue_watching">Продовжити перегляд</string>
-    <string name="latest_library">Останні %1$s</string>
     <string name="libraries">Бібліотеки</string>
     <string name="series_poster">Постер серіалу</string>
     <string name="no_favorites">У тебе немає обраних</string>

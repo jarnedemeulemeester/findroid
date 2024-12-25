@@ -25,8 +25,6 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">С%1$d:Е%2$d - %3$s</string>
     <string name="next_up">Следва</string>
-    <string name="continue_watching">Продължете да гледате</string>
-    <string name="latest_library">Последният %1$s</string>
     <string name="no_favorites">Вие нямате любими</string>
     <string name="no_downloads">Вие нямате нищо свалено</string>
     <string name="search">Търсене</string>

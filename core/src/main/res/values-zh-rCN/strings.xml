@@ -22,7 +22,6 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="next_up">接下来</string>
-    <string name="continue_watching">继续观看</string>
     <string name="series_poster">节目海报</string>
     <string name="no_downloads">你没有下载过任何东西</string>
     <string name="search">搜索</string>
@@ -78,7 +77,6 @@
     <string name="mpv_player_summary">使用实验性的mpv播放器播放视频。mpv支持更多视频、音频和字幕格式。</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="app_description">第三方原生Jellyfin app</string>
-    <string name="latest_library">最新%1$s</string>
     <string name="player_gestures_vb_summary">在屏幕右侧上下划动来调整音量，在屏幕左侧上下划动来调整亮度</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>

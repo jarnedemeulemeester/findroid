@@ -17,8 +17,6 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="next_up">Nasledujúce</string>
-    <string name="continue_watching">Pokračovať v pozeraní</string>
-    <string name="latest_library">Najnovšie %1$s</string>
     <string name="libraries">Knižnice</string>
     <string name="series_poster">Plagát seriálu</string>
     <string name="no_favorites">Nemáte žiadne obľúbené položky</string>

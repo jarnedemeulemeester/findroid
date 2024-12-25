@@ -16,7 +16,6 @@
     <string name="seasons">עונות</string>
     <string name="favorite_button_description">מועדף</string>
     <string name="episode_name">%1$d. %2$s</string>
-    <string name="continue_watching">המשך לצפות</string>
     <string name="libraries">ספריות</string>
     <string name="genres">ז\'אנרים</string>
     <string name="play_button_description">נגן את המדיה</string>
@@ -116,7 +115,6 @@
     <string name="gestures">מחוות</string>
     <string name="player_gestures_vb">מחוות עוצמת שמע ובהירות</string>
     <string name="sort_by_options_5">תאריך שחרור</string>
-    <string name="latest_library">%1$s שיצאו לאחרונה</string>
     <string name="settings_use_cache_title">מטמון תמונות</string>
     <string name="settings_use_cache_summary">שמור תמונות במטמון כדי להאיץ זמני טעינה. ייכנס לתוקף לאחר הפעלה מחדש של היישומון.</string>
     <string name="mpv_player_summary">השתמש בנגן mpv הניסיוני כדי לנגן וידאו. ל-mpv יש תמיכה ביותר מפענחי וידאו, שמע וכתוביות.</string>

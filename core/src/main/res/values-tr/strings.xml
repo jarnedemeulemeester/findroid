@@ -13,7 +13,6 @@
     <string name="retry">Yeniden dene</string>
     <string name="play_button_description">Medyayı oynat</string>
     <string name="next_up">Sıradaki</string>
-    <string name="continue_watching">İzlemeye Devam Et</string>
     <string name="settings_category_language">Dil</string>
     <string name="app_language">Uygulama dili</string>
     <string name="settings_preferred_audio_language">Tercih edilen ses dili</string>
@@ -40,7 +39,6 @@
     <string name="subtitles">Altyazılar</string>
     <string name="add">Ekle</string>
     <string name="settings_preferred_subtitle_language">Tercih edilen altyazı dili</string>
-    <string name="latest_library">En son %1$s</string>
     <string name="settings_category_player">Oynatıcı</string>
     <string name="settings_category_appearance">Görünüş</string>
     <string name="device_name">Cihaz adı</string>

@@ -82,8 +82,6 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:A%2$d - %3$s</string>
     <string name="next_up">Volgende</string>
-    <string name="continue_watching">Doorgaan met kijken</string>
-    <string name="latest_library">Laatste %1$s</string>
     <string name="series_poster">Series poster</string>
     <string name="no_favorites">Jij hebt geen favoriten</string>
     <string name="no_downloads">Jij hebt niks gedownload</string>

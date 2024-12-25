@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="latest_library">最新上架的 %1$s</string>
+    <string name="next_up">接下來</string>
+    <string name="continue_watching">繼續觀看</string>
+</resources>

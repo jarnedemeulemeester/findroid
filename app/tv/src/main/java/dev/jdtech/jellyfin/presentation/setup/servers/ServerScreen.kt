@@ -25,6 +25,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyDiscoveredServer
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
@@ -35,8 +37,6 @@ import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
-import dev.jdtech.jellyfin.ui.dummy.dummyDiscoveredServer
-import dev.jdtech.jellyfin.ui.dummy.dummyServer
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
 

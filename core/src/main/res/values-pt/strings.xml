@@ -18,7 +18,6 @@
     <string name="check_button_description">Marcar como visto ou não visto</string>
     <string name="play_button_description">Reproduzir conteúdo</string>
     <string name="libraries">Biblioteca</string>
-    <string name="latest_library">Última %1$s</string>
     <string name="next_up">A seguir</string>
     <string name="series_poster">Cartaz de Séries</string>
     <string name="no_favorites">Não tem favoritos</string>
@@ -91,7 +90,6 @@
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
-    <string name="continue_watching">Continuar a ver</string>
     <string name="settings_category_language">Idioma</string>
     <string name="player_gestures_vb_summary">Deslizar para cima e para baixo no lado direito do ecrã para alterar o volume e no lado esquerdo para alterar a luminosidade</string>
     <string name="error_preparing_player_items">Erro na preparação de itens do reprodutor.</string>

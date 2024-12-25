@@ -116,8 +116,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="continue_watching">Fortsæt med at se</string>
-    <string name="latest_library">Seneste %1$s</string>
     <string name="sort_order">Sorteringsrækkefølge</string>
     <string name="player_gestures">Afspillerbevægelser</string>
     <string name="player_gestures_vb">Bevægelser for lydstyrke og lysstyrke</string>

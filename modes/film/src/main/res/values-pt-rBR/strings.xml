@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="latest_library">%1$s mais recentes</string>
+    <string name="next_up">A seguir</string>
+    <string name="continue_watching">Continuar assistindo</string>
+</resources>

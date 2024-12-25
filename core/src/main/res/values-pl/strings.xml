@@ -13,8 +13,6 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="next_up">Do obejrzenia</string>
-    <string name="continue_watching">Kontynuuj odtwarzanie</string>
-    <string name="latest_library">Najnowsze %1$s</string>
     <string name="no_favorites">Nie masz ulubionych</string>
     <string name="no_downloads">Nic nie pobrałeś</string>
     <string name="search">Szukaj</string>
