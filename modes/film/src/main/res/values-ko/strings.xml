@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">이어서 보기</string>
+    <string name="next_up">다음</string>
+    <string name="latest_library">최근 업데이트 된 %1$s</string>
+</resources>

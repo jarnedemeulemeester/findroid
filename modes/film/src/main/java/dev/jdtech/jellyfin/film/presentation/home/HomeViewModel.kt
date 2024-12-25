@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
-import dev.jdtech.jellyfin.film.R as MoviesR
+import dev.jdtech.jellyfin.film.R as FilmR
 
 @HiltViewModel
 class HomeViewModel
@@ -31,8 +31,8 @@ constructor(
     private val uuidContinueWatching = UUID(4937169328197226115, -4704919157662094443) // 44845958-8326-4e83-beb4-c4f42e9eeb95
     private val uuidNextUp = UUID(1783371395749072194, -6164625418200444295) // 18bfced5-f237-4d42-aa72-d9d7fed19279
 
-    private val uiTextContinueWatching = UiText.StringResource(MoviesR.string.continue_watching)
-    private val uiTextNextUp = UiText.StringResource(MoviesR.string.next_up)
+    private val uiTextContinueWatching = UiText.StringResource(FilmR.string.continue_watching)
+    private val uiTextNextUp = UiText.StringResource(FilmR.string.next_up)
 
     fun loadData() {
         viewModelScope.launch(Dispatchers.Default) {

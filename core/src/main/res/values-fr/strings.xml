@@ -35,7 +35,6 @@
     <string name="runtime_minutes">%1$d minutes</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="next_up">À suivre</string>
-    <string name="continue_watching">Reprendre la lecture</string>
     <string name="no_favorites">Vous n\'avez aucun favoris</string>
     <string name="search">Rechercher</string>
     <string name="no_search_results">Aucun résultat</string>
@@ -58,7 +57,6 @@
     <string name="download_mobile_data">Télécharger via données mobiles</string>
     <string name="download_button_description">Télécharger</string>
     <string name="movies_label">Films</string>
-    <string name="latest_library">Derniers %1$s</string>
     <string name="search_hint">Rechercher…</string>
     <string name="jellyfin_banner">Bannière Jellyfin</string>
     <string name="check_button_description">Marquer comme vu / non vu</string>

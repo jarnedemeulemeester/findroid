@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">İzlemeye Devam Et</string>
+    <string name="next_up">Sıradaki</string>
+    <string name="latest_library">En son %1$s</string>
+</resources>

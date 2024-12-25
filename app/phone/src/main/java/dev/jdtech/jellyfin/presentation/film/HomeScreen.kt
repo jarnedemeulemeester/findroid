@@ -129,7 +129,7 @@ private fun HomeScreenLayout(
                     onSearch = { expanded = true },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search movies and TV shows") },
+                    placeholder = { Text(stringResource(FilmR.string.search_placeholder)) },
                     leadingIcon = {
                         AnimatedContent(
                             targetState = expanded,
@@ -305,7 +305,7 @@ private fun HomeScreenLayoutPreview() {
             state = HomeState(
                 sections = listOf(dummyHomeSection),
                 views = listOf(dummyHomeView),
-                error = Exception("Brol"),
+                error = Exception("Failed to load data"),
             ),
             onAction = {},
         )

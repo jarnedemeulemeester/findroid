@@ -40,7 +40,7 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeScreen(
@@ -137,7 +137,7 @@ private fun HomeScreenLayout(
                 modifier = Modifier.animateItem(),
             ) {
                 Text(
-                    text = stringResource(id = CoreR.string.latest_library, view.view.name),
+                    text = stringResource(id = FilmR.string.latest_library, view.view.name),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(start = MaterialTheme.spacings.large),
                 )
