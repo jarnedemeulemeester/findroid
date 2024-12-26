@@ -22,6 +22,9 @@
 
 -keepnames class dev.jdtech.jellyfin.models.PlayerItem
 
+# Keep class names of all classes for easy debugging (and fix navigation route checking)
+-keepnames class dev.jdtech.jellyfin.** { *; }
+
 # ProGuard thinks all SettingsFragments are unused
 -keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment
 -keep class dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment
