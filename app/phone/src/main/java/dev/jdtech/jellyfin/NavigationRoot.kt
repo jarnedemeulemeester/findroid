@@ -122,9 +122,7 @@ fun NavigationRoot(
             LoginScreen(
                 onSuccess = {
                     navController.safeNavigate(FilmGraphRoute) {
-                        popUpTo(FilmGraphRoute) {
-                            inclusive = false
-                        }
+                        popUpTo(0)
                         launchSingleTop = true
                     }
                 },
