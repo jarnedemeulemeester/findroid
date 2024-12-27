@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
+import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -52,6 +53,9 @@ data object FilmGraphRoute
 @Serializable
 data object HomeRoute
 
+@Serializable
+data object MediaRoute
+
 data class TabBarItem(
     val title: String,
     @DrawableRes val icon: Int,
@@ -59,10 +63,10 @@ data class TabBarItem(
 )
 
 val homeTab = TabBarItem(title = "Home", icon = CoreR.drawable.ic_home, route = HomeRoute)
-// val mediaTab = TabBarItem(title = "Media", icon = CoreR.drawable.ic_library, route = Unit)
+val mediaTab = TabBarItem(title = "Media", icon = CoreR.drawable.ic_library, route = MediaRoute)
 // val downloadsTab = TabBarItem(title = "Downloads", icon = CoreR.drawable.ic_download, route = Unit)
 
-val tabBarItems = listOf(homeTab)
+val tabBarItems = listOf(homeTab, mediaTab)
 
 @Composable
 fun NavigationRoot(
@@ -210,6 +214,9 @@ fun NavigationRoot(
             ) {
                 composable<HomeRoute> {
                     HomeScreen()
+                }
+                composable<MediaRoute> {
+                    MediaScreen()
                 }
             }
         }
