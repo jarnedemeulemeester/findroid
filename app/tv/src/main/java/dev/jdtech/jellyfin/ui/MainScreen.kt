@@ -43,6 +43,7 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
+import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.LoadingIndicator
@@ -202,7 +203,7 @@ private fun MainScreenLayout(
                 )
             }
             2 -> {
-                LibrariesScreen(
+                MediaScreen(
                     navigateToLibrary = navigateToLibrary,
                     isLoading = { isLoading = it },
                 )

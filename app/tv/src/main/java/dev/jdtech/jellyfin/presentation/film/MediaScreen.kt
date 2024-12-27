@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -19,52 +17,56 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
+import dev.jdtech.jellyfin.film.presentation.media.MediaAction
+import dev.jdtech.jellyfin.film.presentation.media.MediaState
+import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
-import dev.jdtech.jellyfin.viewmodels.MediaViewModel
 import java.util.UUID
 
 @Composable
-fun LibrariesScreen(
+fun MediaScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     isLoading: (Boolean) -> Unit,
-    mediaViewModel: MediaViewModel = hiltViewModel(),
+    viewModel: MediaViewModel = hiltViewModel(),
 ) {
-    val delegatedUiState by mediaViewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(true) {
+        viewModel.loadData()
+    }
+
+    LaunchedEffect(state.isLoading) {
+        isLoading(state.isLoading)
+    }
 
     LibrariesScreenLayout(
-        uiState = delegatedUiState,
-        isLoading = isLoading,
-        onClick = navigateToLibrary,
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is MediaAction.OnItemClick -> {
+                    navigateToLibrary(action.item.id, action.item.name, action.item.type)
+                }
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        },
     )
 }
 
 @Composable
 private fun LibrariesScreenLayout(
-    uiState: MediaViewModel.UiState,
-    isLoading: (Boolean) -> Unit,
-    onClick: (UUID, String, CollectionType) -> Unit,
+    state: MediaState,
+    onAction: (MediaAction) -> Unit,
 ) {
-    var collections: List<FindroidCollection> by remember {
-        mutableStateOf(emptyList())
-    }
-
-    when (uiState) {
-        is MediaViewModel.UiState.Normal -> {
-            collections = uiState.collections
-            isLoading(false)
-        }
-        is MediaViewModel.UiState.Loading -> {
-            isLoading(true)
-        }
-        else -> Unit
-    }
-
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(state.libraries) {
+        focusRequester.requestFocus()
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -78,18 +80,15 @@ private fun LibrariesScreenLayout(
         ),
         modifier = Modifier.focusRequester(focusRequester),
     ) {
-        items(collections, key = { it.id }) { collection ->
+        items(state.libraries, key = { it.id }) { library ->
             ItemCard(
-                item = collection,
+                item = library,
                 direction = Direction.HORIZONTAL,
                 onClick = {
-                    onClick(collection.id, collection.name, collection.type)
+                    onAction(MediaAction.OnItemClick(library))
                 },
             )
         }
-    }
-    LaunchedEffect(collections) {
-        focusRequester.requestFocus()
     }
 }
 
@@ -98,9 +97,8 @@ private fun LibrariesScreenLayout(
 private fun LibrariesScreenLayoutPreview() {
     FindroidTheme {
         LibrariesScreenLayout(
-            uiState = MediaViewModel.UiState.Normal(dummyCollections),
-            isLoading = {},
-            onClick = { _, _, _ -> },
+            state = MediaState(libraries = dummyCollections),
+            onAction = {},
         )
     }
 }
