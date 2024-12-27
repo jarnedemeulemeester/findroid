@@ -5,23 +5,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
@@ -71,18 +72,27 @@ private fun MediaScreenLayout(
         label = "content_padding",
     )
 
-    Box {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.EXPANDED -> 320.dp
+        WindowWidthSizeClass.MEDIUM -> 240.dp
+        else -> 160.dp
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
         FilmSearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { traversalIndex = 0f },
+            modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
             inputPaddingStart = safePaddingStart,
             inputPaddingEnd = safePaddingEnd,
         )
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 160.dp),
+            columns = GridCells.Adaptive(minSize = minColumnSize),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = paddingStart,
                 top = contentPaddingTop,
