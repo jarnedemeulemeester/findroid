@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,11 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -51,6 +45,7 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
+import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -84,28 +79,18 @@ private fun HomeScreenLayout(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val startPadding = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() + MaterialTheme.spacings.default }
-    val endPadding = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() + MaterialTheme.spacings.default }
+    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+
+    val paddingStart = safePaddingStart + MaterialTheme.spacings.default
+    val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
 
     val itemsPadding = PaddingValues(
-        start = startPadding,
-        end = endPadding,
+        start = paddingStart,
+        end = paddingEnd,
     )
 
-    var searchQuery by rememberSaveable { mutableStateOf("") }
-    var expanded by rememberSaveable { mutableStateOf(false) }
-
-    val searchBarPaddingStart by animateDpAsState(
-        targetValue = if (expanded) 0.dp else startPadding,
-        label = "search_bar_padding_start",
-    )
-
-    val searchBarPaddingEnd by animateDpAsState(
-        targetValue = if (expanded) 0.dp else endPadding,
-        label = "search_bar_padding_end",
-    )
-
-    val contentTopPadding by animateDpAsState(
+    val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
             with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
         } else {
@@ -121,85 +106,21 @@ private fun HomeScreenLayout(
             .fillMaxSize()
             .semantics { isTraversalGroup = true },
     ) {
-        SearchBar(
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    onSearch = { expanded = true },
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                    placeholder = { Text(stringResource(FilmR.string.search_placeholder)) },
-                    leadingIcon = {
-                        AnimatedContent(
-                            targetState = expanded,
-                            label = "search_to_back",
-                        ) { targetExpanded ->
-                            if (targetExpanded) {
-                                IconButton(
-                                    onClick = {
-                                        expanded = false
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(CoreR.drawable.ic_arrow_left),
-                                        contentDescription = null,
-                                    )
-                                }
-                            } else {
-                                Icon(
-                                    painter = painterResource(CoreR.drawable.ic_search),
-                                    contentDescription = null,
-                                )
-                            }
-                        }
-                    },
-                    trailingIcon = {
-                        AnimatedContent(
-                            targetState = expanded,
-                            label = "search_to_back",
-                        ) { targetExpanded ->
-                            if (targetExpanded) {
-                                IconButton(
-                                    onClick = {
-                                        searchQuery = ""
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(CoreR.drawable.ic_x),
-                                        contentDescription = null,
-                                    )
-                                }
-                            } else {
-                                IconButton(
-                                    onClick = {},
-                                ) {
-                                    Icon(
-                                        painter = painterResource(CoreR.drawable.ic_user),
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                        }
-                    },
-                )
-            },
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
+        FilmSearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = searchBarPaddingStart,
-                    end = searchBarPaddingEnd,
-                )
                 .semantics { traversalIndex = 0f },
-        ) { }
+            paddingStart = paddingStart,
+            paddingEnd = paddingEnd,
+            inputPaddingStart = safePaddingStart,
+            inputPaddingEnd = safePaddingEnd,
+        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .semantics { traversalIndex = 1f },
             contentPadding = PaddingValues(
-                top = contentTopPadding,
+                top = contentPaddingTop,
                 bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
@@ -236,7 +157,9 @@ private fun HomeScreenLayout(
                 }
             }
             items(state.views, key = { it.id }) { view ->
-                Column {
+                Column(
+                    modifier = Modifier.animateItem(),
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -282,9 +205,9 @@ private fun HomeScreenLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = startPadding,
+                        start = paddingStart,
                         top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
-                        end = endPadding,
+                        end = paddingEnd,
                     ),
             )
             if (showErrorDialog) {
