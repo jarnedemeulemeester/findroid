@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -16,6 +17,9 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -28,7 +32,9 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
+import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
+import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -68,12 +74,14 @@ private fun MediaScreenLayout(
 
     val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 142.dp }
         } else {
             with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 88.dp }
         },
         label = "content_padding",
     )
+
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
@@ -117,6 +125,29 @@ private fun MediaScreenLayout(
                 )
             }
         }
+        if (state.error != null) {
+            ErrorCard(
+                onShowStacktrace = {
+                    showErrorDialog = true
+                },
+                onRetryClick = {
+                    onAction(MediaAction.OnRetryClick)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = paddingStart,
+                        top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
+                        end = paddingEnd,
+                    ),
+            )
+            if (showErrorDialog) {
+                ErrorDialog(
+                    exception = state.error!!,
+                    onDismissRequest = { showErrorDialog = false },
+                )
+            }
+        }
     }
 }
 
@@ -125,7 +156,10 @@ private fun MediaScreenLayout(
 private fun MediaScreenLayoutPreview() {
     FindroidTheme {
         MediaScreenLayout(
-            state = MediaState(libraries = dummyCollections),
+            state = MediaState(
+                libraries = dummyCollections,
+                error = Exception("Failed to load data"),
+            ),
             onAction = {},
         )
     }
