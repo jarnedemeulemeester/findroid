@@ -69,16 +69,19 @@ private fun MediaScreenLayout(
     val layoutDirection = LocalLayoutDirection.current
 
     val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
     val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
     val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
+    val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
 
     val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 142.dp }
+            safePaddingTop + 142.dp
         } else {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 88.dp }
+            safePaddingTop + 88.dp
         },
         label = "content_padding",
     )
@@ -110,7 +113,7 @@ private fun MediaScreenLayout(
                 start = paddingStart,
                 top = contentPaddingTop,
                 end = paddingEnd,
-                bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
+                bottom = paddingBottom,
             ),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
@@ -146,7 +149,7 @@ private fun MediaScreenLayout(
                     .fillMaxWidth()
                     .padding(
                         start = paddingStart,
-                        top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
+                        top = safePaddingTop + 80.dp,
                         end = paddingEnd,
                     ),
             )
