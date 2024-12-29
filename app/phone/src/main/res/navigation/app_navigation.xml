@@ -3,24 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/mediaFragment">
-
-    <fragment
-        android:id="@+id/mediaFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
-        android:label="@string/title_media"
-        tools:layout="@layout/fragment_media">
-        <action
-            android:id="@+id/action_navigation_media_to_libraryFragment"
-            app:destination="@id/libraryFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_media_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
+    app:startDestination="@+id/twoPaneSettingsFragment">
 
     <fragment
         android:id="@+id/twoPaneSettingsFragment"
