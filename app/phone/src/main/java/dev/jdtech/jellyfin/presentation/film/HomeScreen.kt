@@ -54,6 +54,7 @@ import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeScreen(
+    onSettingsClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -65,6 +66,10 @@ fun HomeScreen(
     HomeScreenLayout(
         state = state,
         onAction = { action ->
+            when (action) {
+                is HomeAction.OnSettingsClick -> onSettingsClick()
+                else -> Unit
+            }
             viewModel.onAction(action)
         },
     )
@@ -107,6 +112,9 @@ private fun HomeScreenLayout(
             .semantics { isTraversalGroup = true },
     ) {
         FilmSearchBar(
+            onSettingsClick = {
+                onAction(HomeAction.OnSettingsClick)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { traversalIndex = 0f },

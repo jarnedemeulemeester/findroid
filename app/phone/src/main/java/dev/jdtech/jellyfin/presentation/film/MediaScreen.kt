@@ -44,6 +44,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun MediaScreen(
+    onSettingsClick: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -55,6 +56,10 @@ fun MediaScreen(
     MediaScreenLayout(
         state = state,
         onAction = { action ->
+            when (action) {
+                is MediaAction.OnSettingsClick -> onSettingsClick()
+                else -> Unit
+            }
             viewModel.onAction(action)
         },
     )
@@ -100,6 +105,9 @@ private fun MediaScreenLayout(
             .fillMaxSize(),
     ) {
         FilmSearchBar(
+            onSettingsClick = {
+                onAction(MediaAction.OnSettingsClick)
+            },
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,

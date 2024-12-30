@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.film.R as FilmR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilmSearchBar(
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     paddingStart: Dp = 0.dp,
     paddingEnd: Dp = 0.dp,
@@ -114,7 +115,7 @@ fun FilmSearchBar(
                             }
                         } else {
                             IconButton(
-                                onClick = {},
+                                onClick = onSettingsClick,
                             ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_user),

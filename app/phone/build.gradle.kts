@@ -112,6 +112,8 @@ dependencies {
     implementation(projects.player.video)
     implementation(projects.setup)
     implementation(projects.modes.film)
+    implementation(projects.settings)
+
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)
