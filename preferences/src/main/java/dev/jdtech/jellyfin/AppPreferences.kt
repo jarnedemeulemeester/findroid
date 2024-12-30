@@ -41,6 +41,13 @@ constructor(
                 putBoolean(Constants.PREF_DISPLAY_EXTRA_INFO, value)
             }
         }
+    var columnSize: Int
+        get() = sharedPreferences.getInt(Constants.PREF_COLUMN_SIZE, 2)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(Constants.PREF_COLUMN_SIZE, value)
+            }
+        }
 
     // Player
     val playerGestures get() = sharedPreferences.getBoolean(Constants.PREF_PLAYER_GESTURES, true)
