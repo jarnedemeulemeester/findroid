@@ -25,6 +25,7 @@ import androidx.navigation.navigation
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
+import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -56,6 +57,9 @@ data object HomeRoute
 
 @Serializable
 data object MediaRoute
+
+@Serializable
+data object SettingsRoute
 
 data class TabBarItem(
     val title: String,
@@ -216,11 +220,22 @@ fun NavigationRoot(
                 startDestination = HomeRoute,
             ) {
                 composable<HomeRoute> {
-                    HomeScreen()
+                    HomeScreen(
+                        onSettingsClick = {
+                            navController.safeNavigate(SettingsRoute)
+                        },
+                    )
                 }
                 composable<MediaRoute> {
-                    MediaScreen()
+                    MediaScreen(
+                        onSettingsClick = {
+                            navController.safeNavigate(SettingsRoute)
+                        },
+                    )
                 }
+            }
+            composable<SettingsRoute> {
+                SettingsScreen()
             }
         }
     }
