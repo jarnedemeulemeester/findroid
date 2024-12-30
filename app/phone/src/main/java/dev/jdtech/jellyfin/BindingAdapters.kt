@@ -16,12 +16,16 @@ import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
+private const val quality = 96
+private const val maxHeight = 408
+private const val maxWidth = 272
+
 fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
     val itemId =
         if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
 
     imageView
-        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}")
+        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality")
         .posterDescription(item.name)
 }
 
@@ -32,7 +36,7 @@ fun bindItemImage(imageView: ImageView, item: FindroidItem) {
     }
 
     imageView
-        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}")
+        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality")
         .posterDescription(item.name)
 }
 
@@ -40,7 +44,7 @@ fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
     if (item == null) return
 
     imageView
-        .loadImage("/items/${item.id}/Images/${ImageType.BACKDROP}")
+        .loadImage("/items/${item.id}/Images/${ImageType.BACKDROP}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality")
         .backdropDescription(item.name)
 }
 
@@ -50,7 +54,7 @@ fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
 
 fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
     imageView
-        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.person_placeholder)
+        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality", placeholderId = CoreR.drawable.person_placeholder)
         .posterDescription(person.name)
 }
 
@@ -66,12 +70,12 @@ fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
 }
 
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
-    imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}")
+    imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality")
 }
 
 fun bindUserImage(imageView: ImageView, user: User) {
     imageView
-        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.user_placeholder)
+        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}?fillHeight=$maxHeight&fillWidth=$maxWidth&quality=$quality", placeholderId = CoreR.drawable.user_placeholder)
         .posterDescription(user.name)
 }
 
