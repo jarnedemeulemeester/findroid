@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -27,18 +28,31 @@ import dev.jdtech.jellyfin.models.PreferenceCategory
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsCategoryCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun SettingsScreen(
+    navigateToSubSettings: (indexes: IntArray, title: Int) -> Unit,
+    navigateToServers: () -> Unit,
+    navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
         viewModel.loadPreferences()
+    }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes, event.title)
+            is SettingsEvent.NavigateToUsers -> navigateToUsers()
+            is SettingsEvent.NavigateToServers -> navigateToServers()
+        }
     }
 
     SettingsScreenLayout(
@@ -65,7 +79,9 @@ private fun SettingsScreenLayout(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 320.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(
             start = paddingStart,
             top = paddingTop,

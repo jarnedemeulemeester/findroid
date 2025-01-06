@@ -177,7 +177,12 @@ fun NavigationRoot(
             }
             composable<UsersRoute> { backStackEntry ->
                 UsersScreen(
-                    navigateToHome = {},
+                    navigateToHome = {
+                        navController.safeNavigate(FilmGraphRoute) {
+                            popUpTo(0)
+                            launchSingleTop = true
+                        }
+                    },
                     onChangeServerClick = {
                         navController.safeNavigate(ServersRoute) {
                             popUpTo(ServersRoute) {
@@ -235,7 +240,15 @@ fun NavigationRoot(
                 }
             }
             composable<SettingsRoute> {
-                SettingsScreen()
+                SettingsScreen(
+                    navigateToSubSettings = { _, _ -> },
+                    navigateToServers = {
+                        navController.safeNavigate(ServersRoute)
+                    },
+                    navigateToUsers = {
+                        navController.safeNavigate(UsersRoute)
+                    }
+                )
             }
         }
     }
