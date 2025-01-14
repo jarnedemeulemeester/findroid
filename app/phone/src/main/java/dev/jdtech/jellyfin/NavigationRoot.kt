@@ -247,7 +247,10 @@ fun NavigationRoot(
                     },
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
-                    }
+                    },
+                    navigateBack = {
+                        navController.safePopBackStack()
+                    },
                 )
             }
         }
