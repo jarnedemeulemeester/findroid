@@ -168,4 +168,6 @@
     <string name="trickplay">Trickplay</string>
     <string name="picture_in_picture_gesture_summary">Use el botón Home o gesto para cambiar a pantalla en pantalla mientras se reproduce el video</string>
     <string name="sort_by_options_6">Aleatorio</string>
+    <string name="show_stacktrace">Mostrar pila de llamadas</string>
+    <string name="users">Usuarios</string>
 </resources>
