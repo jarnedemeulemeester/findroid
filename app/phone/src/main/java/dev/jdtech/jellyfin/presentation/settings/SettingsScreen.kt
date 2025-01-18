@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,7 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceSelect
+import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsCategoryCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsSwitchCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -49,7 +54,8 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun SettingsScreen(
-    navigateToSubSettings: (indexes: IntArray, title: Int) -> Unit,
+    indexes: IntArray = intArrayOf(),
+    navigateToSettings: (indexes: IntArray) -> Unit,
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     navigateBack: () -> Unit,
@@ -58,22 +64,27 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
-        viewModel.loadPreferences()
+        viewModel.loadPreferences(indexes)
     }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes, event.title)
+            is SettingsEvent.NavigateToSettings -> navigateToSettings(event.indexes)
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
         }
     }
 
     SettingsScreenLayout(
+        title = indexes.last(),
         state = state,
         onAction = { action ->
             when (action) {
                 is SettingsAction.OnBackClick -> navigateBack()
+                is SettingsAction.OnUpdate -> {
+                    viewModel.onAction(action)
+                    viewModel.loadPreferences(indexes)
+                }
             }
         },
     )
@@ -82,6 +93,7 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
+    @StringRes title: Int,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
 ) {
@@ -106,7 +118,7 @@ private fun SettingsScreenLayout(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(CoreR.string.title_settings))
+                    Text(stringResource(title))
                 },
                 navigationIcon = {
                     IconButton(
@@ -148,6 +160,26 @@ private fun SettingsScreenLayout(
                             .fillMaxWidth()
                             .animateItem(),
                     )
+                    is PreferenceSwitch -> SettingsSwitchCard(
+                        preference = preference,
+                        onClick = {
+                            onAction(
+                                SettingsAction.OnUpdate(
+                                    preference.copy(value = !preference.value),
+                                ),
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(),
+                    )
+                    is PreferenceSelect -> SettingsSelectCard(
+                        preference = preference,
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(),
+                    )
                 }
             }
         }
@@ -159,6 +191,7 @@ private fun SettingsScreenLayout(
 private fun SettingsScreenLayoutPreview() {
     FindroidTheme {
         SettingsScreenLayout(
+            title = CoreR.string.title_settings,
             state = SettingsState(
                 preferences = listOf(
                     PreferenceCategory(

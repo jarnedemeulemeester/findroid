@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @HiltViewModel
 class SettingsViewModel
@@ -35,7 +36,7 @@ constructor(
             iconDrawableId = R.drawable.ic_languages,
             onClick = {
                 viewModelScope.launch {
-                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(0), it.nameStringResource))
+                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
                 }
             },
             nestedPreferences = listOf(
@@ -67,7 +68,7 @@ constructor(
             iconDrawableId = R.drawable.ic_play,
             onClick = {
                 viewModelScope.launch {
-                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(2), it.nameStringResource))
+                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
                 }
             },
             nestedPreferences = listOf(
@@ -136,7 +137,7 @@ constructor(
             iconDrawableId = R.drawable.ic_hard_drive,
             onClick = {
                 viewModelScope.launch {
-                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(7), it.nameStringResource))
+                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
                 }
             },
             nestedPreferences = listOf(
@@ -159,10 +160,14 @@ constructor(
         viewModelScope.launch {
             var preferences = topLevelPreferences
 
-            // Show preferences based on index (depth)
+            // Show preferences based on the name of the parent
             for (index in indexes) {
-                val preference = preferences[index]
-                if (preference is PreferenceCategory) {
+                // If index is root (Settings) don't search for category
+                if (index == CoreR.string.title_settings) {
+                    break
+                }
+                val preference = preferences.filterIsInstance<PreferenceCategory>().find { it.nameStringResource == index }
+                if (preference != null) {
                     preferences = preference.nestedPreferences
                 }
             }
@@ -172,14 +177,14 @@ constructor(
                 when (preference) {
                     is PreferenceSwitch -> {
                         preference.copy(
-                            enabled = preference.dependencies.all { getBoolean(it, false) },
-                            value = getBoolean(preference.backendName, preference.backendDefaultValue),
+                            enabled = preference.dependencies.all { appPreferences.getBoolean(it, false) },
+                            value = appPreferences.getBoolean(preference.backendName, preference.backendDefaultValue),
                         )
                     }
                     is PreferenceSelect -> {
                         preference.copy(
-                            enabled = preference.dependencies.all { getBoolean(it, false) },
-                            value = getString(preference.backendName, preference.backendDefaultValue),
+                            enabled = preference.dependencies.all { appPreferences.getBoolean(it, false) },
+                            value = appPreferences.getString(preference.backendName, preference.backendDefaultValue),
                         )
                     }
                     else -> preference
@@ -190,19 +195,15 @@ constructor(
         }
     }
 
-    private fun getBoolean(key: String, default: Boolean): Boolean {
-        return appPreferences.getBoolean(key, default)
-    }
-
-    fun setBoolean(key: String, value: Boolean) {
-        appPreferences.setBoolean(key, value)
-    }
-
-    private fun getString(key: String, default: String?): String? {
-        return appPreferences.getString(key, default)
-    }
-
-    fun setString(key: String, value: String?) {
-        appPreferences.setString(key, value)
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            is SettingsAction.OnUpdate -> {
+                when (action.preference) {
+                    is PreferenceSwitch -> appPreferences.setBoolean(action.preference.backendName, action.preference.value)
+                    is PreferenceSelect -> appPreferences.setString(action.preference.backendName, action.preference.value)
+                }
+            }
+            else -> Unit
+        }
     }
 }

@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -59,7 +60,9 @@ data object HomeRoute
 data object MediaRoute
 
 @Serializable
-data object SettingsRoute
+data class SettingsRoute(
+    val indexes: IntArray,
+)
 
 data class TabBarItem(
     val title: String,
@@ -227,21 +230,25 @@ fun NavigationRoot(
                 composable<HomeRoute> {
                     HomeScreen(
                         onSettingsClick = {
-                            navController.safeNavigate(SettingsRoute)
+                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
                     )
                 }
                 composable<MediaRoute> {
                     MediaScreen(
                         onSettingsClick = {
-                            navController.safeNavigate(SettingsRoute)
+                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
                     )
                 }
             }
-            composable<SettingsRoute> {
+            composable<SettingsRoute> { backStackEntry ->
+                val route: SettingsRoute = backStackEntry.toRoute()
                 SettingsScreen(
-                    navigateToSubSettings = { _, _ -> },
+                    indexes = route.indexes,
+                    navigateToSettings = { indexes ->
+                        navController.safeNavigate(SettingsRoute(indexes = indexes))
+                    },
                     navigateToServers = {
                         navController.safeNavigate(ServersRoute)
                     },
