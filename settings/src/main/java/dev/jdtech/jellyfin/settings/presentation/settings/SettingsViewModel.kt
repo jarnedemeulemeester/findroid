@@ -150,6 +150,31 @@ constructor(
                     backendName = Constants.PREF_PLAYER_START_MAXIMIZED,
                     backendDefaultValue = false,
                 ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_intro_skipper,
+                    descriptionStringRes = R.string.pref_player_intro_skipper_summary,
+                    backendName = Constants.PREF_PLAYER_INTRO_SKIPPER,
+                    backendDefaultValue = true,
+                ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_chapter_markers,
+                    descriptionStringRes = R.string.pref_player_chapter_markers_summary,
+                    backendName = Constants.PREF_PLAYER_CHAPTER_MARKERS,
+                    backendDefaultValue = true,
+                ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_trickplay,
+                    descriptionStringRes = R.string.pref_player_trickplay_summary,
+                    backendName = Constants.PREF_PLAYER_TRICKPLAY,
+                    backendDefaultValue = true,
+                ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.pref_player_gestures_seek_trickplay,
+                    descriptionStringRes = R.string.pref_player_gestures_seek_trickplay_summary,
+                    dependencies = listOf(Constants.PREF_PLAYER_TRICKPLAY),
+                    backendName = Constants.PREF_PLAYER_GESTURES_SEEK_TRICKPLAY,
+                    backendDefaultValue = true,
+                ),
             ),
         ),
         PreferenceCategory(
