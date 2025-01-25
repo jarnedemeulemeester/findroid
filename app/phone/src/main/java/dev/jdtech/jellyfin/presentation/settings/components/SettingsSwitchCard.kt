@@ -61,10 +61,11 @@ fun SettingsSwitchCard(
             }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             Switch(
-                checked = preference.value,
+                checked = preference.enabled && preference.value,
                 onCheckedChange = {
                     onClick()
                 },
+                enabled = preference.enabled,
             )
         }
     }
@@ -77,7 +78,23 @@ private fun SettingsSwitchCardPreview() {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = CoreR.string.settings_use_cache_title,
-                iconDrawableId = null,
+                backendName = "image-cache",
+                backendDefaultValue = false,
+                value = false,
+            ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsSwitchCardDisabledPreview() {
+    FindroidTheme {
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = CoreR.string.settings_use_cache_title,
+                enabled = false,
                 backendName = "image-cache",
                 backendDefaultValue = false,
             ),
