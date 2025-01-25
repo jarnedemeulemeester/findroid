@@ -196,6 +196,28 @@ constructor(
             },
         ),
         PreferenceCategory(
+            nameStringResource = R.string.title_download,
+            iconDrawableId = R.drawable.ic_download,
+            onClick = {
+                viewModelScope.launch {
+                    eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
+                }
+            },
+            nestedPreferences = listOf(
+                PreferenceSwitch(
+                    nameStringResource = R.string.download_mobile_data,
+                    backendName = Constants.PREF_DOWNLOADS_MOBILE_DATA,
+                    backendDefaultValue = false,
+                ),
+                PreferenceSwitch(
+                    nameStringResource = R.string.download_roaming,
+                    dependencies = listOf(Constants.PREF_DOWNLOADS_MOBILE_DATA),
+                    backendName = Constants.PREF_DOWNLOADS_ROAMING,
+                    backendDefaultValue = false,
+                ),
+            )
+        ),
+        PreferenceCategory(
             nameStringResource = R.string.settings_category_device,
             iconDrawableId = R.drawable.ic_smartphone,
             enabled = false,
