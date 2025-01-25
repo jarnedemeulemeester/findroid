@@ -170,4 +170,5 @@
     <string name="pref_player_gestures_seek_trickplay_summary">Display preview images on seek gesture</string>
     <string name="trickplay">Trickplay</string>
     <string name="users">Users</string>
+    <string name="not_set">Not set</string>
 </resources>

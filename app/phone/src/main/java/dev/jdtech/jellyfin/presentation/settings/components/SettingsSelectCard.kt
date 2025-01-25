@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.Constants
@@ -32,6 +33,25 @@ fun SettingsSelectCard(
     onUpdate: (value: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val optionValues = stringArrayResource(preference.optionValues)
+    val optionNames = stringArrayResource(preference.options)
+    val notSetString = stringResource(CoreR.string.not_set)
+
+    val options = remember(preference.nameStringResource) {
+        val options = mutableListOf<Pair<String?, String>>()
+
+        if (preference.optionsIncludeNull) {
+            options.add(Pair(null, notSetString))
+        }
+        options.addAll(optionValues.zip(optionNames))
+
+        options
+    }
+
+    val optionsMap = remember(options) {
+        options.toMap()
+    }
+
     var showDialog by remember {
         mutableStateOf(false)
     }
@@ -61,13 +81,11 @@ fun SettingsSelectCard(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
-                preference.value?.let {
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
+                Text(
+                    text = optionsMap.getOrDefault(preference.value, notSetString),
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
         }
     }
@@ -75,6 +93,7 @@ fun SettingsSelectCard(
     if (showDialog) {
         SettingsSelectDialog(
             preference = preference,
+            options = options,
             onUpdate = { value ->
                 showDialog = false
                 onUpdate(value)

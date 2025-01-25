@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,14 +37,10 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun SettingsSelectDialog(
     preference: PreferenceSelect,
+    options: List<Pair<String?, String>>,
     onUpdate: (value: String?) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val optionNames = stringArrayResource(preference.options)
-    val optionValues = stringArrayResource(preference.optionValues)
-
-    val options = optionNames.zip(optionValues)
-
     val lazyListState = rememberLazyListState()
 
     val isAtTop by remember {
@@ -79,38 +73,50 @@ fun SettingsSelectDialog(
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                        .fillMaxWidth(),
                     state = lazyListState,
                 ) {
                     items(options) { option ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onUpdate(option.second)
-                                }
-                                .padding(
-                                    horizontal = MaterialTheme.spacings.default,
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = option.second == preference.value,
-                                onClick = {
-                                    onUpdate(option.second)
-                                },
-                            )
-                            Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
-                            Text(
-                                text = option.first,
-                            )
-                        }
+                        SettingsSelectDialogItem(
+                            option = option,
+                            isSelected = option.first == preference.value,
+                            onSelect = onUpdate,
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsSelectDialogItem(
+    option: Pair<String?, String>,
+    isSelected: Boolean,
+    onSelect: (String?) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onSelect(option.first)
+            }
+            .padding(
+                horizontal = MaterialTheme.spacings.default,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = {
+                onSelect(option.first)
+            },
+        )
+        Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
+        Text(
+            text = option.second,
+        )
     }
 }
 
@@ -127,6 +133,7 @@ private fun ErrorDialogPreview() {
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),
+            options = emptyList(),
             onUpdate = {},
             onDismissRequest = {},
         )

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="languages">
-        <item>None</item>
         <item>Abkhazian</item>
         <item>Afar</item>
         <item>Afrikaans</item>
@@ -189,7 +188,6 @@
     </string-array>
 
     <string-array name="languages_values">
-        <item>null</item>
         <item>abk</item>
         <item>aar</item>
         <item>afr</item>

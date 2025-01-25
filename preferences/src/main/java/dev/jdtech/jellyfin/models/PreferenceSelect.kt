@@ -14,5 +14,6 @@ data class PreferenceSelect(
     val backendDefaultValue: String?,
     val options: Int,
     val optionValues: Int,
+    val optionsIncludeNull: Boolean = false,
     val value: String? = null,
 ) : Preference

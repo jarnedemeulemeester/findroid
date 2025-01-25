@@ -47,6 +47,7 @@ constructor(
                     backendDefaultValue = null,
                     options = R.array.languages,
                     optionValues = R.array.languages_values,
+                    optionsIncludeNull = true,
                 ),
                 PreferenceSelect(
                     nameStringResource = R.string.settings_preferred_subtitle_language,
@@ -55,6 +56,7 @@ constructor(
                     backendDefaultValue = null,
                     options = R.array.languages,
                     optionValues = R.array.languages_values,
+                    optionsIncludeNull = true,
                 ),
             ),
         ),
