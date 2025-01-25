@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.settings.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,18 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -41,6 +39,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun SettingsSelectDialog(
     preference: PreferenceSelect,
+    onUpdate: (value: String?) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val optionNames = stringArrayResource(preference.options)
@@ -48,8 +47,12 @@ fun SettingsSelectDialog(
 
     val options = optionNames.zip(optionValues)
 
-    var selectedOption by remember {
-        mutableStateOf(preference.value)
+    val lazyListState = rememberLazyListState()
+
+    val isAtTop by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0
+        }
     }
 
     Dialog(
@@ -58,7 +61,7 @@ fun SettingsSelectDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 540.dp),
+                .heightIn(max = 540.dp),
             shape = RoundedCornerShape(28.dp),
         ) {
             Column {
@@ -71,19 +74,21 @@ fun SettingsSelectDialog(
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                HorizontalDivider()
+                if (!isAtTop) {
+                    HorizontalDivider()
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant),
+                    state = lazyListState,
                 ) {
                     items(options) { option ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    selectedOption = option.second
+                                    onUpdate(option.second)
                                 }
                                 .padding(
                                     horizontal = MaterialTheme.spacings.default,
@@ -91,9 +96,9 @@ fun SettingsSelectDialog(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(
-                                selected = option.second == selectedOption,
+                                selected = option.second == preference.value,
                                 onClick = {
-                                    selectedOption = option.second
+                                    onUpdate(option.second)
                                 },
                             )
                             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
@@ -103,30 +108,7 @@ fun SettingsSelectDialog(
                         }
                     }
                 }
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = MaterialTheme.spacings.medium,
-                            top = MaterialTheme.spacings.extraSmall,
-                            end = MaterialTheme.spacings.medium,
-                            bottom = MaterialTheme.spacings.small,
-                        ),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    TextButton(
-                        onClick = {},
-                    ) {
-                        Text("Save")
-                    }
-                    TextButton(
-                        onClick = { onDismissRequest() },
-                    ) {
-                        Text(stringResource(CoreR.string.close))
-                    }
-                }
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             }
         }
     }
@@ -145,6 +127,7 @@ private fun ErrorDialogPreview() {
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),
+            onUpdate = {},
             onDismissRequest = {},
         )
     }

@@ -175,7 +175,13 @@ private fun SettingsScreenLayout(
                     )
                     is PreferenceSelect -> SettingsSelectCard(
                         preference = preference,
-                        onClick = {},
+                        onUpdate = { value ->
+                            onAction(
+                                SettingsAction.OnUpdate(
+                                    preference.copy(value = value),
+                                ),
+                            )
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .animateItem(),

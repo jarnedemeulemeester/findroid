@@ -29,7 +29,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun SettingsSelectCard(
     preference: PreferenceSelect,
-    onClick: () -> Unit,
+    onUpdate: (value: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showDialog by remember {
@@ -75,6 +75,10 @@ fun SettingsSelectCard(
     if (showDialog) {
         SettingsSelectDialog(
             preference = preference,
+            onUpdate = { value ->
+                showDialog = false
+                onUpdate(value)
+            },
             onDismissRequest = {
                 showDialog = false
             },
@@ -95,7 +99,7 @@ private fun SettingsSelectCardPreview() {
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),
-            onClick = {},
+            onUpdate = {},
         )
     }
 }
