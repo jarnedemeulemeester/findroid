@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
@@ -38,11 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.models.PreferenceCategory
-import dev.jdtech.jellyfin.models.PreferenceSelect
-import dev.jdtech.jellyfin.models.PreferenceSwitch
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsCategoryCard
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectCard
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsSwitchCard
+import dev.jdtech.jellyfin.models.PreferenceGroup
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -152,41 +148,11 @@ private fun SettingsScreenLayout(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
-            items(state.preferences) { preference ->
-                when (preference) {
-                    is PreferenceCategory -> SettingsCategoryCard(
-                        preference = preference,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
-                    )
-                    is PreferenceSwitch -> SettingsSwitchCard(
-                        preference = preference,
-                        onClick = {
-                            onAction(
-                                SettingsAction.OnUpdate(
-                                    preference.copy(value = !preference.value),
-                                ),
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
-                    )
-                    is PreferenceSelect -> SettingsSelectCard(
-                        preference = preference,
-                        onUpdate = { value ->
-                            onAction(
-                                SettingsAction.OnUpdate(
-                                    preference.copy(value = value),
-                                ),
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
-                    )
-                }
+            items(state.preferenceGroups) { group ->
+                SettingsGroupCard(
+                    group = group,
+                    onAction = onAction,
+                )
             }
         }
     }
@@ -199,14 +165,24 @@ private fun SettingsScreenLayoutPreview() {
         SettingsScreenLayout(
             title = CoreR.string.title_settings,
             state = SettingsState(
-                preferences = listOf(
-                    PreferenceCategory(
-                        nameStringResource = CoreR.string.settings_category_language,
-                        iconDrawableId = CoreR.drawable.ic_languages,
+                preferenceGroups = listOf(
+                    PreferenceGroup(
+                        nameStringResource = null,
+                        preferences = listOf(
+                            PreferenceCategory(
+                                nameStringResource = CoreR.string.settings_category_language,
+                                iconDrawableId = CoreR.drawable.ic_languages,
+                            ),
+                        ),
                     ),
-                    PreferenceCategory(
-                        nameStringResource = CoreR.string.settings_category_appearance,
-                        iconDrawableId = CoreR.drawable.ic_palette,
+                    PreferenceGroup(
+                        nameStringResource = null,
+                        preferences = listOf(
+                            PreferenceCategory(
+                                nameStringResource = CoreR.string.settings_category_appearance,
+                                iconDrawableId = CoreR.drawable.ic_palette,
+                            ),
+                        ),
                     ),
                 ),
             ),

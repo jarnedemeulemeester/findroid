@@ -10,5 +10,5 @@ data class PreferenceCategory(
     override val enabled: Boolean = true,
     override val dependencies: List<String> = emptyList(),
     val onClick: (Preference) -> Unit = {},
-    val nestedPreferences: List<Preference> = emptyList(),
+    val nestedPreferenceGroups: List<PreferenceGroup> = emptyList(),
 ) : Preference

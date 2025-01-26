@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,11 +55,11 @@ fun SettingsSelectCard(
         mutableStateOf(false)
     }
 
-    OutlinedCard(
+    SettingsBaseCard(
+        preference = preference,
         onClick = {
             showDialog = true
         },
-        enabled = preference.enabled,
         modifier = modifier,
     ) {
         Row(
