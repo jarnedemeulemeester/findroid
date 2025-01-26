@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
+import dev.jdtech.jellyfin.presentation.settings.SettingsSubScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -19,8 +21,6 @@ import dev.jdtech.jellyfin.ui.MainScreen
 import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
 import dev.jdtech.jellyfin.ui.SeasonScreen
-import dev.jdtech.jellyfin.ui.SettingsScreen
-import dev.jdtech.jellyfin.ui.SettingsSubScreen
 import dev.jdtech.jellyfin.ui.ShowScreen
 import dev.jdtech.jellyfin.utils.base64ToByteArray
 import dev.jdtech.jellyfin.utils.toBase64Str
@@ -99,7 +99,6 @@ data object SettingsRoute
 @Serializable
 data class SettingsSubRoute(
     val indexes: IntArray,
-    val title: Int,
 )
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -276,8 +275,8 @@ fun NavigationRoot(
                 navigateToServers = {
                     navController.navigate(ServersRoute)
                 },
-                navigateToSubSettings = { indexes, title ->
-                    navController.navigate(SettingsSubRoute(indexes = indexes, title = title))
+                navigateToSubSettings = { indexes ->
+                    navController.navigate(SettingsSubRoute(indexes = indexes))
                 },
             )
         }
@@ -285,15 +284,14 @@ fun NavigationRoot(
             val route: SettingsSubRoute = backStackEntry.toRoute()
             SettingsSubScreen(
                 indexes = route.indexes,
-                title = route.title,
                 navigateToUsers = {
                     navController.navigate(UsersRoute)
                 },
                 navigateToServers = {
                     navController.navigate(ServersRoute)
                 },
-                navigateToSubSettings = { indexes, title ->
-                    navController.navigate(SettingsSubRoute(indexes = indexes, title = title))
+                navigateToSubSettings = { indexes ->
+                    navController.navigate(SettingsSubRoute(indexes = indexes))
                 },
             )
         }

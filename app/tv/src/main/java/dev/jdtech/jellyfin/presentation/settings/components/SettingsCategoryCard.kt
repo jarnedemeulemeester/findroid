@@ -1,10 +1,9 @@
-package dev.jdtech.jellyfin.ui.components
+package dev.jdtech.jellyfin.presentation.settings.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,8 +54,7 @@ fun SettingsCategoryCard(
             ),
         ),
         scale = ClickableSurfaceScale.None,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
     ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),

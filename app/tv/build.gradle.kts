@@ -97,6 +97,7 @@ dependencies {
     implementation(projects.modes.film)
     implementation(projects.player.core)
     implementation(projects.player.video)
+    implementation(projects.settings)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)

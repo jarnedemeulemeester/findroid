@@ -1,6 +1,7 @@
-package dev.jdtech.jellyfin.ui.components
+package dev.jdtech.jellyfin.presentation.settings.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,22 +24,19 @@ import androidx.tv.material3.ClickableSurfaceScale
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
+import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.Constants
-import dev.jdtech.jellyfin.models.PreferenceSelect
+import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun SettingsSelectCard(
-    preference: PreferenceSelect,
+fun SettingsSwitchCard(
+    preference: PreferenceSwitch,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    val options = stringArrayResource(id = preference.options)
-    val optionValues = stringArrayResource(id = preference.optionValues)
-
     Surface(
         onClick = onClick,
         enabled = preference.enabled,
@@ -47,6 +44,7 @@ fun SettingsSelectCard(
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
             focusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface,
         ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
@@ -64,15 +62,15 @@ fun SettingsSelectCard(
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
             if (preference.iconDrawableId != null) {
                 Icon(
                     painter = painterResource(id = preference.iconDrawableId!!),
                     contentDescription = null,
                 )
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.width(16.dp))
             }
-
             Column(
                 modifier = Modifier.weight(1f),
             ) {
@@ -80,38 +78,70 @@ fun SettingsSelectCard(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                Text(
-                    text = if (preference.value != null) {
-                        val index = optionValues.indexOf(preference.value)
-                        if (index == -1) {
-                            "Unknown"
-                        } else {
-                            options[index]
-                        }
-                    } else {
-                        "Not set"
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                )
+                preference.descriptionStringRes?.let {
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
+                    Text(
+                        text = stringResource(id = it),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
             }
+
+            Switch(
+                checked = preference.value,
+                onCheckedChange = null,
+            )
         }
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSelectCardPreview() {
+private fun SettingsSwitchCardPreview() {
     FindroidTheme {
-        SettingsSelectCard(
-            preference = PreferenceSelect(
-                nameStringResource = CoreR.string.settings_preferred_audio_language,
-                iconDrawableId = CoreR.drawable.ic_speaker,
-                backendName = Constants.PREF_AUDIO_LANGUAGE,
-                backendDefaultValue = null,
-                options = CoreR.array.languages,
-                optionValues = CoreR.array.languages_values,
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                iconDrawableId = null,
+                backendName = "image-cache",
+                backendDefaultValue = false,
+                value = false,
+            ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsSwitchCardDisabledPreview() {
+    FindroidTheme {
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                iconDrawableId = null,
+                enabled = false,
+                backendName = "image-cache",
+                backendDefaultValue = false,
+                value = false,
+            ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsSwitchCardDescriptionPreview() {
+    FindroidTheme {
+        SettingsSwitchCard(
+            preference = PreferenceSwitch(
+                nameStringResource = R.string.settings_use_cache_title,
+                descriptionStringRes = R.string.settings_use_cache_summary,
+                iconDrawableId = null,
+                backendName = "image-cache",
+                backendDefaultValue = true,
+                value = true,
             ),
             onClick = {},
         )

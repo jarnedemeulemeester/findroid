@@ -133,7 +133,6 @@ private fun SettingsScreenLayout(
             )
         },
     ) { innerPadding ->
-
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 320.dp),
             modifier = Modifier
