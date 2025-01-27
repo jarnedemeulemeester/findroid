@@ -5,6 +5,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import dev.jdtech.jellyfin.models.Preference
 
 @Composable
@@ -19,6 +20,7 @@ fun SettingsBaseCard(
         onClick = onClick,
         modifier = modifier,
         enabled = preference.enabled,
+        color = Color.Transparent,
         contentColor = contentColor,
     ) {
         content()
