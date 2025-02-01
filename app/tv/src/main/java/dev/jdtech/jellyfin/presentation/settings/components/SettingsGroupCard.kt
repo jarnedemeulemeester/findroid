@@ -2,11 +2,15 @@ package dev.jdtech.jellyfin.presentation.settings.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.SurfaceDefaults
@@ -17,6 +21,7 @@ import dev.jdtech.jellyfin.models.PreferenceGroup
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -36,7 +41,7 @@ fun SettingsGroupCard(
             .fillMaxWidth(),
     ) {
         Column {
-            group.preferences.forEach { preference ->
+            group.preferences.fastForEachIndexed { index, preference ->
                 when (preference) {
                     is PreferenceCategory -> SettingsCategoryCard(
                         preference = preference,
@@ -69,6 +74,13 @@ fun SettingsGroupCard(
                             .onFocusChanged {
                                 onFocusChange(it, preference)
                             },
+                    )
+                }
+                if (index < group.preferences.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(horizontal = MaterialTheme.spacings.medium),
+                        color = DividerDefaults.color.copy(alpha = 0.4f)
                     )
                 }
             }
