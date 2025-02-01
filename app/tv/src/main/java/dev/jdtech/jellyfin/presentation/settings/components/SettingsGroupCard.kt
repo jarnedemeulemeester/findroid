@@ -91,9 +91,7 @@ fun SettingsGroupCard(
                     }
                     if (index < group.preferences.lastIndex) {
                         HorizontalDivider(
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacings.medium),
-                            color = DividerDefaults.color.copy(alpha = 0.4f)
+                            color = DividerDefaults.color.copy(alpha = 0.2f)
                         )
                     }
                 }
