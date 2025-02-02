@@ -29,9 +29,9 @@ import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.Constants
-import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -135,7 +135,6 @@ private fun SettingsDetailCardPreview() {
             preference = PreferenceSelect(
                 nameStringResource = CoreR.string.settings_preferred_audio_language,
                 backendName = Constants.PREF_AUDIO_LANGUAGE,
-                backendDefaultValue = null,
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),

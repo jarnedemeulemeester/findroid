@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.models
+package dev.jdtech.jellyfin.settings.presentation.models
 
 interface Preference {
     val nameStringResource: Int

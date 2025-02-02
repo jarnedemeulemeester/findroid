@@ -19,13 +19,13 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.SurfaceDefaults
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.Constants
-import dev.jdtech.jellyfin.models.Preference
-import dev.jdtech.jellyfin.models.PreferenceCategory
-import dev.jdtech.jellyfin.models.PreferenceGroup
-import dev.jdtech.jellyfin.models.PreferenceSelect
-import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.models.Preference
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -41,7 +41,7 @@ fun SettingsGroupCard(
             Text(
                 text = stringResource(it),
                 modifier = Modifier.padding(start = MaterialTheme.spacings.medium),
-                style = MaterialTheme.typography.titleSmall
+                style = MaterialTheme.typography.titleSmall,
             )
             Spacer(modifier.height(MaterialTheme.spacings.small))
         }
@@ -91,7 +91,7 @@ fun SettingsGroupCard(
                     }
                     if (index < group.preferences.lastIndex) {
                         HorizontalDivider(
-                            color = DividerDefaults.color.copy(alpha = 0.2f)
+                            color = DividerDefaults.color.copy(alpha = 0.2f),
                         )
                     }
                 }

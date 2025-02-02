@@ -6,7 +6,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import dev.jdtech.jellyfin.models.Preference
+import dev.jdtech.jellyfin.settings.presentation.models.Preference
 
 @Composable
 fun SettingsBaseCard(

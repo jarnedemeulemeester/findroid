@@ -1,19 +1,14 @@
-package dev.jdtech.jellyfin.models
+package dev.jdtech.jellyfin.settings.presentation.models
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class PreferenceSelect(
+data class PreferenceCategory(
     @StringRes override val nameStringResource: Int,
     @StringRes override val descriptionStringRes: Int? = null,
     @DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<String> = emptyList(),
     val onClick: (Preference) -> Unit = {},
-    val backendName: String,
-    val backendDefaultValue: String?,
-    val options: Int,
-    val optionValues: Int,
-    val optionsIncludeNull: Boolean = false,
-    val value: String? = null,
+    val nestedPreferenceGroups: List<PreferenceGroup> = emptyList(),
 ) : Preference

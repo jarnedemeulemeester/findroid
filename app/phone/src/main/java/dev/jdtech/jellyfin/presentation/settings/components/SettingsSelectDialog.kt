@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.jdtech.jellyfin.Constants
-import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -129,7 +129,6 @@ private fun ErrorDialogPreview() {
                 nameStringResource = CoreR.string.settings_preferred_audio_language,
                 iconDrawableId = CoreR.drawable.ic_speaker,
                 backendName = Constants.PREF_AUDIO_LANGUAGE,
-                backendDefaultValue = null,
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),

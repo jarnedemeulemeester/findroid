@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.models
+package dev.jdtech.jellyfin.settings.presentation.models
 
 import androidx.annotation.StringRes
 

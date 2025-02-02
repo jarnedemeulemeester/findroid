@@ -20,11 +20,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.models.PreferenceCategory
-import dev.jdtech.jellyfin.models.PreferenceGroup
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState

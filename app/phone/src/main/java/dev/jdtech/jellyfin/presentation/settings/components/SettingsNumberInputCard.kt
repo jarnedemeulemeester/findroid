@@ -8,28 +8,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.util.fastFilterNotNull
+import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun SettingsSwitchCard(
-    preference: PreferenceSwitch,
-    onClick: () -> Unit,
+fun SettingsNumberInputCard(
+    preference: PreferenceNumberInput,
+    onUpdate: (value: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
     SettingsBaseCard(
         preference = preference,
-        onClick = onClick,
+        onClick = {
+            showDialog = true
+        },
         modifier = modifier,
     ) {
         Row(
@@ -50,52 +61,28 @@ fun SettingsSwitchCard(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
-                preference.descriptionStringRes?.let {
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                    Text(
-                        text = stringResource(id = it),
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
+                Text(
+                    text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
-            Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
-            Switch(
-                checked = preference.enabled && preference.value,
-                onCheckedChange = {
-                    onClick()
-                },
-                enabled = preference.enabled,
-            )
         }
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardPreview() {
+private fun SettingsNumberInputCardPreview() {
     FindroidTheme {
-        SettingsSwitchCard(
-            preference = PreferenceSwitch(
-                nameStringResource = CoreR.string.settings_use_cache_title,
-                backendName = "",
-                value = false,
+        SettingsNumberInputCard(
+            preference = PreferenceNumberInput(
+                nameStringResource = CoreR.string.settings_cache_size,
+                backendName = Constants.PREF_IMAGE_CACHE_SIZE,
+                suffix = "MB",
+                value = 25,
             ),
-            onClick = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun SettingsSwitchCardDisabledPreview() {
-    FindroidTheme {
-        SettingsSwitchCard(
-            preference = PreferenceSwitch(
-                nameStringResource = CoreR.string.settings_use_cache_title,
-                backendName = "",
-                enabled = false,
-            ),
-            onClick = {},
+            onUpdate = {},
         )
     }
 }
