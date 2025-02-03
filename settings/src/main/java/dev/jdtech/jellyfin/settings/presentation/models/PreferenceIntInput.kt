@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
-data class PreferenceNumberInput(
+data class PreferenceIntInput(
     @StringRes override val nameStringResource: Int,
     @StringRes override val descriptionStringRes: Int? = null,
     @DrawableRes override val iconDrawableId: Int? = null,

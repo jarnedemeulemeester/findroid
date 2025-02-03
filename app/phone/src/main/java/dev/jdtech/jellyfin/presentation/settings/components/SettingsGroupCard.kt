@@ -21,7 +21,8 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -79,7 +80,19 @@ fun SettingsGroupCard(
                         modifier = Modifier
                             .fillMaxWidth(),
                     )
-                    is PreferenceNumberInput -> SettingsNumberInputCard(
+                    is PreferenceIntInput -> SettingsIntInputCard(
+                        preference = preference,
+                        onUpdate = { value ->
+                            onAction(
+                                SettingsAction.OnUpdate(
+                                    preference.copy(value = value),
+                                ),
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    )
+                    is PreferenceLongInput -> SettingsLongInputCard(
                         preference = preference,
                         onUpdate = { value ->
                             onAction(

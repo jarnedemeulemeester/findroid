@@ -7,7 +7,8 @@ import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import kotlinx.coroutines.channels.Channel
@@ -164,17 +165,16 @@ constructor(
                         PreferenceGroup(
                             nameStringResource = R.string.seeking,
                             preferences = listOf(
-                                // TODO: add support for longs
-//                                PreferenceNumberInput(
-//                                    nameStringResource = CoreR.string.seek_back_increment,
-//                                    backendName = appPreferences.playerSeekBackInc.backendName,
-//                                    suffix = "ms"
-//                                ),
-//                                PreferenceNumberInput(
-//                                    nameStringResource = CoreR.string.seek_forward_increment,
-//                                    backendName = appPreferences.playerSeekForwardInc.backendName,
-//                                    suffix = "ms"
-//                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = CoreR.string.seek_back_increment,
+                                    backendPreference = appPreferences.playerSeekBackInc,
+                                    suffix = "ms"
+                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = CoreR.string.seek_forward_increment,
+                                    backendPreference = appPreferences.playerSeekForwardInc,
+                                    suffix = "ms"
+                                ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_intro_skipper,
                                     descriptionStringRes = R.string.pref_player_intro_skipper_summary,
@@ -283,21 +283,21 @@ constructor(
                     nestedPreferenceGroups = listOf(
                         PreferenceGroup(
                             preferences = listOf(
-//                                PreferenceNumberInput(
-//                                    nameStringResource = CoreR.string.settings_request_timeout,
-//                                    backendName = appPreferences.requestTimeout.backendName,
-//                                    suffix = "ms"
-//                                ),
-//                                PreferenceNumberInput(
-//                                    nameStringResource = CoreR.string.settings_connect_timeout,
-//                                    backendName = appPreferences.connectTimeout.backendName,
-//                                    suffix = "ms"
-//                                ),
-//                                PreferenceNumberInput(
-//                                    nameStringResource = CoreR.string.settings_socket_timeout,
-//                                    backendName = appPreferences.socketTimeout.backendName,
-//                                    suffix = "ms"
-//                                )
+                                PreferenceLongInput(
+                                    nameStringResource = CoreR.string.settings_request_timeout,
+                                    backendPreference = appPreferences.requestTimeout,
+                                    suffix = "ms"
+                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = CoreR.string.settings_connect_timeout,
+                                    backendPreference = appPreferences.connectTimeout,
+                                    suffix = "ms"
+                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = CoreR.string.settings_socket_timeout,
+                                    backendPreference = appPreferences.socketTimeout,
+                                    suffix = "ms"
+                                )
                             ),
                         ),
                     ),
@@ -322,7 +322,7 @@ constructor(
                                     descriptionStringRes = R.string.settings_use_cache_summary,
                                     backendPreference = appPreferences.imageCache,
                                 ),
-                                PreferenceNumberInput(
+                                PreferenceIntInput(
                                     nameStringResource = CoreR.string.settings_cache_size,
                                     descriptionStringRes = CoreR.string.settings_cache_size_message,
                                     dependencies = listOf(appPreferences.imageCache),
@@ -379,7 +379,13 @@ constructor(
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
-                            is PreferenceNumberInput -> {
+                            is PreferenceIntInput -> {
+                                preference.copy(
+                                    enabled = preference.dependencies.all { appPreferences.getValue(it) },
+                                    value = appPreferences.getValue(preference.backendPreference),
+                                )
+                            }
+                            is PreferenceLongInput -> {
                                 preference.copy(
                                     enabled = preference.dependencies.all { appPreferences.getValue(it) },
                                     value = appPreferences.getValue(preference.backendPreference),

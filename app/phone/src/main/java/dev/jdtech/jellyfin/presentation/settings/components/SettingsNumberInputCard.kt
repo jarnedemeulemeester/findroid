@@ -22,14 +22,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastFilterNotNull
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.domain.models.Preference
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
+import dev.jdtech.jellyfin.settings.presentation.models.Preference
+import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun SettingsNumberInputCard(
-    preference: PreferenceNumberInput,
+fun SettingsIntInputCard(
+    preference: PreferenceIntInput,
     onUpdate: (value: Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SettingsNumberInputCard(
+        preference = preference,
+        text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingsLongInputCard(
+    preference: PreferenceLongInput,
+    onUpdate: (value: Long) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SettingsNumberInputCard(
+        preference = preference,
+        text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingsNumberInputCard(
+    preference: Preference,
+    text: String,
     modifier: Modifier = Modifier,
 ) {
     var showDialog by remember {
@@ -63,7 +91,7 @@ fun SettingsNumberInputCard(
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
-                    text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+                    text = text,
                     style = MaterialTheme.typography.labelMedium,
                 )
             }
@@ -73,12 +101,28 @@ fun SettingsNumberInputCard(
 
 @Preview
 @Composable
-private fun SettingsNumberInputCardPreview() {
+private fun SettingsIntInputCardPreview() {
     FindroidTheme {
-        SettingsNumberInputCard(
-            preference = PreferenceNumberInput(
+        SettingsIntInputCard(
+            preference = PreferenceIntInput(
                 nameStringResource = CoreR.string.settings_cache_size,
-                backendPreference = Preference("", 0),
+                backendPreference = PreferenceBackend("", 0),
+                suffix = "MB",
+                value = 25,
+            ),
+            onUpdate = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsLongInputCardPreview() {
+    FindroidTheme {
+        SettingsLongInputCard(
+            preference = PreferenceLongInput(
+                nameStringResource = CoreR.string.settings_cache_size,
+                backendPreference = PreferenceBackend("", 0L),
                 suffix = "MB",
                 value = 25,
             ),
