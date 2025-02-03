@@ -26,9 +26,9 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -117,8 +117,7 @@ private fun SettingsSelectCardPreview() {
             preference = PreferenceSelect(
                 nameStringResource = CoreR.string.settings_preferred_audio_language,
                 iconDrawableId = CoreR.drawable.ic_speaker,
-                backendName = Constants.PREF_AUDIO_LANGUAGE,
-                backendDefaultValue = null,
+                backendPreference = Preference("", ""),
                 options = CoreR.array.languages,
                 optionValues = CoreR.array.languages_values,
             ),

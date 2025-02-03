@@ -18,7 +18,6 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.SurfaceDefaults
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
@@ -28,6 +27,7 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
 fun SettingsGroupCard(
@@ -111,30 +111,26 @@ private fun SettingsGroupCardPreview() {
                     PreferenceSwitch(
                         nameStringResource = CoreR.string.mpv_player,
                         descriptionStringRes = CoreR.string.mpv_player_summary,
-                        backendName = Constants.PREF_PLAYER_MPV,
-                        backendDefaultValue = false,
+                        backendPreference = PreferenceBackend("", false),
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_hwdec,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_HWDEC,
-                        backendDefaultValue = "mediacodec",
+                        dependencies = listOf(PreferenceBackend("", false)),
+                        backendPreference = PreferenceBackend("", ""),
                         options = CoreR.array.mpv_hwdec,
                         optionValues = CoreR.array.mpv_hwdec,
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_vo,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_VO,
-                        backendDefaultValue = "gpu-next",
+                        dependencies = listOf(PreferenceBackend("", false)),
+                        backendPreference = PreferenceBackend("", ""),
                         options = CoreR.array.mpv_vos,
                         optionValues = CoreR.array.mpv_vos,
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_ao,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_AO,
-                        backendDefaultValue = "audiotrack",
+                        dependencies = listOf(PreferenceBackend("", false)),
+                        backendPreference = PreferenceBackend("", ""),
                         options = CoreR.array.mpv_aos,
                         optionValues = CoreR.array.mpv_aos,
                     ),

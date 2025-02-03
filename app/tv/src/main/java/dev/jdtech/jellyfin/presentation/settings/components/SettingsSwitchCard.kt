@@ -29,6 +29,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 
 @Composable
@@ -103,9 +104,7 @@ private fun SettingsSwitchCardPreview() {
             preference = PreferenceSwitch(
                 nameStringResource = R.string.settings_use_cache_title,
                 iconDrawableId = null,
-                backendName = "image-cache",
-                backendDefaultValue = false,
-                value = false,
+                backendPreference = Preference("", false),
             ),
             onClick = {},
         )
@@ -121,9 +120,7 @@ private fun SettingsSwitchCardDisabledPreview() {
                 nameStringResource = R.string.settings_use_cache_title,
                 iconDrawableId = null,
                 enabled = false,
-                backendName = "image-cache",
-                backendDefaultValue = false,
-                value = false,
+                backendPreference = Preference("", false),
             ),
             onClick = {},
         )
@@ -139,9 +136,7 @@ private fun SettingsSwitchCardDescriptionPreview() {
                 nameStringResource = R.string.settings_use_cache_title,
                 descriptionStringRes = R.string.settings_use_cache_summary,
                 iconDrawableId = null,
-                backendName = "image-cache",
-                backendDefaultValue = true,
-                value = true,
+                backendPreference = Preference("", false),
             ),
             onClick = {},
         )

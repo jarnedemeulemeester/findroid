@@ -168,12 +168,12 @@ constructor(
                                 PreferenceLongInput(
                                     nameStringResource = CoreR.string.seek_back_increment,
                                     backendPreference = appPreferences.playerSeekBackInc,
-                                    suffix = "ms"
+                                    suffix = "ms",
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = CoreR.string.seek_forward_increment,
                                     backendPreference = appPreferences.playerSeekForwardInc,
-                                    suffix = "ms"
+                                    suffix = "ms",
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_intro_skipper,
@@ -286,18 +286,18 @@ constructor(
                                 PreferenceLongInput(
                                     nameStringResource = CoreR.string.settings_request_timeout,
                                     backendPreference = appPreferences.requestTimeout,
-                                    suffix = "ms"
+                                    suffix = "ms",
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = CoreR.string.settings_connect_timeout,
                                     backendPreference = appPreferences.connectTimeout,
-                                    suffix = "ms"
+                                    suffix = "ms",
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = CoreR.string.settings_socket_timeout,
                                     backendPreference = appPreferences.socketTimeout,
-                                    suffix = "ms"
-                                )
+                                    suffix = "ms",
+                                ),
                             ),
                         ),
                     ),
