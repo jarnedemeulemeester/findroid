@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEachIndexed
-import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
@@ -113,26 +113,26 @@ private fun SettingsGroupCardPreview() {
                     PreferenceSwitch(
                         nameStringResource = CoreR.string.mpv_player,
                         descriptionStringRes = CoreR.string.mpv_player_summary,
-                        backendName = "",
+                        backendPreference = Preference("", false),
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_hwdec,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_HWDEC,
+                        dependencies = listOf(Preference("", false)),
+                        backendPreference = Preference("", ""),
                         options = CoreR.array.mpv_hwdec,
                         optionValues = CoreR.array.mpv_hwdec,
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_vo,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_VO,
+                        dependencies = listOf(Preference("", false)),
+                        backendPreference = Preference("", ""),
                         options = CoreR.array.mpv_vos,
                         optionValues = CoreR.array.mpv_vos,
                     ),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_ao,
-                        dependencies = listOf(Constants.PREF_PLAYER_MPV),
-                        backendName = Constants.PREF_PLAYER_MPV_AO,
+                        dependencies = listOf(Preference("", false)),
+                        backendPreference = Preference("", ""),
                         options = CoreR.array.mpv_aos,
                         optionValues = CoreR.array.mpv_aos,
                     ),

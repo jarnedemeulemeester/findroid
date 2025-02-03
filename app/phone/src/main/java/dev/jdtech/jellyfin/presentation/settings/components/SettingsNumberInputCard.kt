@@ -20,9 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastFilterNotNull
-import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceNumberInput
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -78,7 +78,7 @@ private fun SettingsNumberInputCardPreview() {
         SettingsNumberInputCard(
             preference = PreferenceNumberInput(
                 nameStringResource = CoreR.string.settings_cache_size,
-                backendName = Constants.PREF_IMAGE_CACHE_SIZE,
+                backendPreference = Preference("", 0),
                 suffix = "MB",
                 value = 25,
             ),

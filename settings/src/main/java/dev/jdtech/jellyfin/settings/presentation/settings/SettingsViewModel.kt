@@ -47,7 +47,7 @@ constructor(
                                 PreferenceSelect(
                                     nameStringResource = R.string.settings_preferred_audio_language,
                                     iconDrawableId = R.drawable.ic_speaker,
-                                    backendName = appPreferences.preferredAudioLanguage.backendName,
+                                    backendPreference = appPreferences.preferredAudioLanguage,
                                     options = R.array.languages,
                                     optionValues = R.array.languages_values,
                                     optionsIncludeNull = true,
@@ -55,7 +55,7 @@ constructor(
                                 PreferenceSelect(
                                     nameStringResource = R.string.settings_preferred_subtitle_language,
                                     iconDrawableId = R.drawable.ic_closed_caption,
-                                    backendName = appPreferences.preferredSubtitleLanguage.backendName,
+                                    backendPreference = appPreferences.preferredSubtitleLanguage,
                                     options = R.array.languages,
                                     optionValues = R.array.languages_values,
                                     optionsIncludeNull = true,
@@ -92,26 +92,26 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.mpv_player,
                                     descriptionStringRes = R.string.mpv_player_summary,
-                                    backendName = appPreferences.playerMpv.backendName,
+                                    backendPreference = appPreferences.playerMpv,
                                 ),
                                 PreferenceSelect(
                                     nameStringResource = R.string.pref_player_mpv_hwdec,
-                                    dependencies = listOf(appPreferences.playerMpv.backendName),
-                                    backendName = appPreferences.playerMpvHwdec.backendName,
+                                    dependencies = listOf(appPreferences.playerMpv),
+                                    backendPreference = appPreferences.playerMpvHwdec,
                                     options = R.array.mpv_hwdec,
                                     optionValues = R.array.mpv_hwdec,
                                 ),
                                 PreferenceSelect(
                                     nameStringResource = R.string.pref_player_mpv_vo,
-                                    dependencies = listOf(appPreferences.playerMpv.backendName),
-                                    backendName = appPreferences.playerMpvVo.backendName,
+                                    dependencies = listOf(appPreferences.playerMpv),
+                                    backendPreference = appPreferences.playerMpvVo,
                                     options = R.array.mpv_vos,
                                     optionValues = R.array.mpv_vos,
                                 ),
                                 PreferenceSelect(
                                     nameStringResource = R.string.pref_player_mpv_ao,
-                                    dependencies = listOf(appPreferences.playerMpv.backendName),
-                                    backendName = appPreferences.playerMpvAo.backendName,
+                                    dependencies = listOf(appPreferences.playerMpv),
+                                    backendPreference = appPreferences.playerMpvAo,
                                     options = R.array.mpv_aos,
                                     optionValues = R.array.mpv_aos,
                                 ),
@@ -122,42 +122,42 @@ constructor(
                             preferences = listOf(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures,
-                                    backendName = appPreferences.playerGestures.backendName,
+                                    backendPreference = appPreferences.playerGestures,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_vb,
                                     descriptionStringRes = R.string.player_gestures_vb_summary,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName),
-                                    backendName = appPreferences.playerGesturesVB.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures),
+                                    backendPreference = appPreferences.playerGesturesVB,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_seek,
                                     descriptionStringRes = R.string.player_gestures_seek_summary,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName),
-                                    backendName = appPreferences.playerGesturesSeek.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures),
+                                    backendPreference = appPreferences.playerGesturesSeek,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_zoom,
                                     descriptionStringRes = R.string.player_gestures_zoom_summary,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName),
-                                    backendName = appPreferences.playerGesturesZoom.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures),
+                                    backendPreference = appPreferences.playerGesturesZoom,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_chapter_skip,
                                     descriptionStringRes = R.string.player_gestures_chapter_skip_summary,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName),
-                                    backendName = appPreferences.playerGesturesChapterSkip.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures),
+                                    backendPreference = appPreferences.playerGesturesChapterSkip,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_brightness_remember,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName, appPreferences.playerGesturesVB.backendName),
-                                    backendName = appPreferences.playerGesturesBrightnessRemember.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures, appPreferences.playerGesturesVB),
+                                    backendPreference = appPreferences.playerGesturesBrightnessRemember,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_start_maximized,
                                     descriptionStringRes = R.string.player_start_maximized_summary,
-                                    dependencies = listOf(appPreferences.playerGestures.backendName),
-                                    backendName = appPreferences.playerGesturesStartMaximized.backendName,
+                                    dependencies = listOf(appPreferences.playerGestures),
+                                    backendPreference = appPreferences.playerGesturesStartMaximized,
                                 ),
                             ),
                         ),
@@ -178,12 +178,12 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_intro_skipper,
                                     descriptionStringRes = R.string.pref_player_intro_skipper_summary,
-                                    backendName = appPreferences.playerIntroSkipper.backendName,
+                                    backendPreference = appPreferences.playerIntroSkipper,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_chapter_markers,
                                     descriptionStringRes = R.string.pref_player_chapter_markers_summary,
-                                    backendName = appPreferences.playerChapterMarkers.backendName,
+                                    backendPreference = appPreferences.playerChapterMarkers,
                                 ),
                             ),
                         ),
@@ -193,13 +193,13 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_trickplay,
                                     descriptionStringRes = R.string.pref_player_trickplay_summary,
-                                    backendName = appPreferences.playerTrickplay.backendName,
+                                    backendPreference = appPreferences.playerTrickplay,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_gestures_seek_trickplay,
                                     descriptionStringRes = R.string.pref_player_gestures_seek_trickplay_summary,
-                                    dependencies = listOf(appPreferences.playerTrickplay.backendName),
-                                    backendName = appPreferences.playerGesturesSeekTrickplay.backendName,
+                                    dependencies = listOf(appPreferences.playerTrickplay),
+                                    backendPreference = appPreferences.playerGesturesSeekTrickplay,
                                 ),
                             ),
                         ),
@@ -248,12 +248,12 @@ constructor(
                             preferences = listOf(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.download_mobile_data,
-                                    backendName = appPreferences.downloadOverMobileData.backendName,
+                                    backendPreference = appPreferences.downloadOverMobileData,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.download_roaming,
-                                    dependencies = listOf(appPreferences.downloadOverMobileData.backendName),
-                                    backendName = appPreferences.downloadWhenRoaming.backendName,
+                                    dependencies = listOf(appPreferences.downloadOverMobileData),
+                                    backendPreference = appPreferences.downloadWhenRoaming,
                                 ),
                             ),
                         ),
@@ -320,13 +320,13 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.settings_use_cache_title,
                                     descriptionStringRes = R.string.settings_use_cache_summary,
-                                    backendName = appPreferences.imageCache.backendName,
+                                    backendPreference = appPreferences.imageCache,
                                 ),
                                 PreferenceNumberInput(
                                     nameStringResource = CoreR.string.settings_cache_size,
                                     descriptionStringRes = CoreR.string.settings_cache_size_message,
-                                    dependencies = listOf(appPreferences.imageCache.backendName),
-                                    backendName = appPreferences.imageCacheSize.backendName,
+                                    dependencies = listOf(appPreferences.imageCache),
+                                    backendPreference = appPreferences.imageCacheSize,
                                     suffix = "MB",
                                 ),
                             ),
@@ -370,19 +370,19 @@ constructor(
                             is PreferenceSwitch -> {
                                 preference.copy(
                                     enabled = preference.dependencies.all { appPreferences.getValue(it) },
-                                    value = appPreferences.getValue(preference.backendName),
+                                    value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             is PreferenceSelect -> {
                                 preference.copy(
                                     enabled = preference.dependencies.all { appPreferences.getValue(it) },
-                                    value = appPreferences.getValue(preference.backendName),
+                                    value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             is PreferenceNumberInput -> {
                                 preference.copy(
                                     enabled = preference.dependencies.all { appPreferences.getValue(it) },
-                                    value = appPreferences.getValue(preference.backendName),
+                                    value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             else -> preference
@@ -399,8 +399,8 @@ constructor(
         when (action) {
             is SettingsAction.OnUpdate -> {
                 when (action.preference) {
-                    is PreferenceSwitch -> appPreferences.setValue(action.preference.backendName, action.preference.value)
-                    is PreferenceSelect -> appPreferences.setValue(action.preference.backendName, action.preference.value)
+                    is PreferenceSwitch -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                 }
             }
             else -> Unit

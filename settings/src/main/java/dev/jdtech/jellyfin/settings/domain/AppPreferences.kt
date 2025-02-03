@@ -52,70 +52,25 @@ constructor(
     val imageCache = Preference("pref_image_cache", true)
     val imageCacheSize = Preference("pref_image_cache_size", 20)
 
-    val preferences = setOf(
-        preferredAudioLanguage,
-        preferredSubtitleLanguage,
-        playerMpv,
-        playerMpvHwdec,
-        playerMpvVo,
-        playerMpvAo,
-        playerGestures,
-        playerGesturesVB,
-        playerGesturesZoom,
-        playerGesturesSeek,
-        playerGesturesSeekTrickplay,
-        playerGesturesChapterSkip,
-        playerGesturesBrightnessRemember,
-        playerGesturesStartMaximized,
-        playerSeekBackInc,
-        playerSeekForwardInc,
-        playerIntroSkipper,
-        playerChapterMarkers,
-        playerTrickplay,
-        downloadOverMobileData,
-        downloadWhenRoaming,
-        requestTimeout,
-        connectTimeout,
-        socketTimeout,
-        imageCache,
-        imageCacheSize,
-    )
-
-    val preferencesMap = preferences.associate { preference ->
-        preference.backendName to preference
-    }
-
-    inline fun <reified T> Preference<T>.getValue(): T {
-        return when (defaultValue) {
-            is Boolean -> sharedPreferences.getBoolean(backendName, defaultValue) as T
-            is Int -> sharedPreferences.getInt(backendName, defaultValue) as T
-            is Long -> sharedPreferences.getLong(backendName, defaultValue) as T
-            is String? -> sharedPreferences.getString(backendName, defaultValue) as T
+    inline fun <reified T> getValue(preference: Preference<T>): T {
+        return when (preference.defaultValue) {
+            is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
+            is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
+            is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
+            is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
             else -> throw Exception()
         }
     }
 
-    inline fun <reified T> Preference<T>.setValue(value: T) {
+    inline fun <reified T> setValue(preference: Preference<T>, value: T) {
         val editor = sharedPreferences.edit()
-        when (defaultValue) {
-            is Boolean -> editor.putBoolean(backendName, value as Boolean)
-            is Int -> editor.putInt(backendName, value as Int)
-            is Long -> editor.putLong(backendName, value as Long)
-            is String? -> editor.putString(backendName, value as String?)
+        when (preference.defaultValue) {
+            is Boolean -> editor.putBoolean(preference.backendName, value as Boolean)
+            is Int -> editor.putInt(preference.backendName, value as Int)
+            is Long -> editor.putLong(preference.backendName, value as Long)
+            is String? -> editor.putString(preference.backendName, value as String?)
             else -> throw Exception()
         }
         editor.apply()
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> getValue(key: String): T {
-        val preference = preferencesMap[key]
-        return (preference as Preference<T>).getValue()
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> setValue(key: String, value: T) {
-        val preference = preferencesMap[key]
-        (preference as Preference<T>).setValue(value)
     }
 }

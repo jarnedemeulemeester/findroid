@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -77,7 +78,7 @@ private fun SettingsSwitchCardPreview() {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = CoreR.string.settings_use_cache_title,
-                backendName = "",
+                backendPreference = Preference("", true),
                 value = false,
             ),
             onClick = {},
@@ -92,7 +93,7 @@ private fun SettingsSwitchCardDisabledPreview() {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = CoreR.string.settings_use_cache_title,
-                backendName = "",
+                backendPreference = Preference("", true),
                 enabled = false,
             ),
             onClick = {},
