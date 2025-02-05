@@ -9,4 +9,13 @@
     <string name="player_controls_rewind">Spola tillbaka</string>
     <string name="player_controls_fast_forward">Spola framåt</string>
     <string name="player_controls_skip_intro">Hoppa över intro</string>
+    <string name="player_controls_play_pause">Spela pausa</string>
+    <string name="none">Ingen</string>
+    <string name="player_controls_lock">Låser spelaren</string>
+    <string name="player_controls_skip_back">Hoppa tillbaka</string>
+    <string name="player_controls_picture_in_picture">Använd bild-i-bild</string>
+    <string name="player_controls_skip_forward">Hoppa framåt</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_progress">Förloppsindikator</string>
+    <string name="player_controls_skip_credits">Hoppa över krediter</string>
 </resources>
