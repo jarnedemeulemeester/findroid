@@ -74,6 +74,7 @@
     <string name="hide">Hide</string>
     <string name="sort_by">Sort by</string>
     <string name="sort_order">Sort order</string>
+    <string name="column_size">Column size</string>
     <string name="close">Close</string>
     <string name="share">Share</string>
     <string name="image_description_poster">%1$s poster</string>

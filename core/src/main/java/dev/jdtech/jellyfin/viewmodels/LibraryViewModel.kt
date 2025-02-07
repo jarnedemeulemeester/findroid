@@ -10,7 +10,9 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -28,12 +30,21 @@ constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _columnFlow = MutableSharedFlow<Int>()
+    val columnFlow = _columnFlow.asSharedFlow()
+
     var itemsloaded = false
 
     sealed class UiState {
         data class Normal(val items: Flow<PagingData<FindroidItem>>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
+    }
+
+    fun setColumnCount(count: Int) {
+        viewModelScope.launch {
+            _columnFlow.emit(count)
+        }
     }
 
     fun loadItems(
