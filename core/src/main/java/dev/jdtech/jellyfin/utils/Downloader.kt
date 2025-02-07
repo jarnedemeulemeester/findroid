@@ -16,4 +16,6 @@ interface Downloader {
     suspend fun deleteItem(item: FindroidItem, source: FindroidSource)
 
     suspend fun getProgress(downloadId: Long?): Pair<Int, Int>
+
+    fun requeuePendingItems()
 }
