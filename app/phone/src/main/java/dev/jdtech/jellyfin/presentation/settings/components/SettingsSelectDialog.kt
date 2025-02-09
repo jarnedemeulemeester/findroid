@@ -122,7 +122,7 @@ private fun SettingsSelectDialogItem(
 
 @Preview
 @Composable
-private fun ErrorDialogPreview() {
+private fun SettingsSelectDialogPreview() {
     FindroidTheme {
         SettingsSelectDialog(
             preference = PreferenceSelect(

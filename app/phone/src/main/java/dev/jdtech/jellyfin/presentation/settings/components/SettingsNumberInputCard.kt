@@ -34,11 +34,31 @@ fun SettingsIntInputCard(
     onUpdate: (value: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
     SettingsNumberInputCard(
         preference = preference,
         text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        onClick = {
+            showDialog = true
+        },
         modifier = modifier,
     )
+
+    if (showDialog) {
+        SettingsIntInputDialog(
+            preference = preference,
+            onUpdate = { value ->
+                showDialog = false
+                onUpdate(value)
+            },
+            onDismissRequest = {
+                showDialog = false
+            },
+        )
+    }
 }
 
 @Composable
@@ -47,28 +67,43 @@ fun SettingsLongInputCard(
     onUpdate: (value: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
     SettingsNumberInputCard(
         preference = preference,
         text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        onClick = {
+            showDialog = true
+        },
         modifier = modifier,
     )
+
+    if (showDialog) {
+        SettingsLongInputDialog(
+            preference = preference,
+            onUpdate = { value ->
+                showDialog = false
+                onUpdate(value)
+            },
+            onDismissRequest = {
+                showDialog = false
+            },
+        )
+    }
 }
 
 @Composable
 fun SettingsNumberInputCard(
     preference: Preference,
     text: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-
     SettingsBaseCard(
         preference = preference,
-        onClick = {
-            showDialog = true
-        },
+        onClick = onClick,
         modifier = modifier,
     ) {
         Row(

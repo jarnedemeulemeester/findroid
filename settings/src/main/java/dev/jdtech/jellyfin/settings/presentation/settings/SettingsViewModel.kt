@@ -264,15 +264,6 @@ constructor(
         PreferenceGroup(
             preferences = listOf(
                 PreferenceCategory(
-                    nameStringResource = R.string.settings_category_device,
-                    iconDrawableId = R.drawable.ic_smartphone,
-                    enabled = false,
-                ),
-            ),
-        ),
-        PreferenceGroup(
-            preferences = listOf(
-                PreferenceCategory(
                     nameStringResource = R.string.settings_category_network,
                     iconDrawableId = R.drawable.ic_network,
                     onClick = {
@@ -407,6 +398,8 @@ constructor(
                 when (action.preference) {
                     is PreferenceSwitch -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceIntInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceLongInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                 }
             }
             else -> Unit
