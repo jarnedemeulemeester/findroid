@@ -32,7 +32,7 @@ constructor(
 
     // Player - seeking
     val playerSeekBackInc = Preference("pref_player_seek_back_inc", 5_000L)
-    val playerSeekForwardInc = Preference("pref_player_seek_back_inc", 15_000L)
+    val playerSeekForwardInc = Preference("pref_player_seek_forward_inc", 15_000L)
     val playerIntroSkipper = Preference("pref_player_intro_skipper", true)
     val playerChapterMarkers = Preference("pref_player_chapter_markers", true)
 
