@@ -16,7 +16,14 @@ constructor(
     val preferredAudioLanguage = Preference<String?>("pref_audio_language", null)
     val preferredSubtitleLanguage = Preference<String?>("pref_subtitle_language", null)
 
+    // Appearance
+    val theme = Preference("pref_theme", "system")
+    val dynamicColors = Preference("pref_dynamic_colors", true)
+    val displayExtraInfo = Preference("pref_display_extra_info", false)
+
     // Player
+    val playerBrightness = Preference("pref_player_brightness", -1.0f)
+
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", true)
     val playerMpvHwdec = Preference("pref_player_mpv_hwdec", "mediacodec")
@@ -42,6 +49,9 @@ constructor(
     // Player - trickplay
     val playerTrickplay = Preference("pref_player_trickplay", true)
 
+    // Player - PiP
+    val playerPipGesture = Preference("pref_player_picture_in_picture_gesture", false)
+
     // Downloads
     val downloadOverMobileData = Preference("pref_downloads_mobile_data", false)
     val downloadWhenRoaming = Preference("pref_downloads_roaming", false)
@@ -55,11 +65,19 @@ constructor(
     val imageCache = Preference("pref_image_cache", true)
     val imageCacheSize = Preference("pref_image_cache_size", 20)
 
+    // Sorting
+    val sortBy = Preference("pref_sort_by", "SortName")
+    val sortOrder = Preference("pref_sort_order", "Ascending")
+
+    // Ofline mode
+    val offlineMode = Preference("pref_offline_mode", false)
+
     inline fun <reified T> getValue(preference: Preference<T>): T {
         return when (preference.defaultValue) {
             is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
             is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
             is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
+            is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
             is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
             else -> throw Exception()
         }
@@ -71,6 +89,7 @@ constructor(
             is Boolean -> editor.putBoolean(preference.backendName, value as Boolean)
             is Int -> editor.putInt(preference.backendName, value as Int)
             is Long -> editor.putLong(preference.backendName, value as Long)
+            is Float -> editor.putFloat(preference.backendName, value as Float)
             is String? -> editor.putString(preference.backendName, value as String?)
             else -> throw Exception()
         }

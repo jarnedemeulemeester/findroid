@@ -107,7 +107,6 @@ aboutLibraries {
 dependencies {
     implementation(projects.core)
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(projects.player.video)
     implementation(projects.setup)

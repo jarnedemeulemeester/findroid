@@ -18,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.R
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.bindCardItemImage
@@ -40,7 +39,6 @@ import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
-import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
@@ -52,9 +50,6 @@ class ShowFragment : Fragment() {
     private val args: ShowFragmentArgs by navArgs()
 
     private lateinit var errorDialog: ErrorDialogFragment
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,

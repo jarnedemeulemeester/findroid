@@ -19,7 +19,6 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -27,6 +26,7 @@ import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -90,20 +90,20 @@ constructor(
     private val handler = Handler(Looper.getMainLooper())
 
     init {
-        if (appPreferences.playerMpv) {
+        if (appPreferences.getValue(appPreferences.playerMpv)) {
             val trackSelectionParameters = TrackSelectionParameters.Builder(application)
-                .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
-                .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage)
+                .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
+                .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage))
                 .build()
             player = MPVPlayer(
                 context = application,
                 requestAudioFocus = true,
                 trackSelectionParameters = trackSelectionParameters,
-                seekBackIncrement = appPreferences.playerSeekBackIncrement,
-                seekForwardIncrement = appPreferences.playerSeekForwardIncrement,
-                videoOutput = appPreferences.playerMpvVo,
-                audioOutput = appPreferences.playerMpvAo,
-                hwDec = appPreferences.playerMpvHwdec,
+                seekBackIncrement = appPreferences.getValue(appPreferences.playerSeekBackInc),
+                seekForwardIncrement = appPreferences.getValue(appPreferences.playerSeekForwardInc),
+                videoOutput = appPreferences.getValue(appPreferences.playerMpvVo),
+                audioOutput = appPreferences.getValue(appPreferences.playerMpvAo),
+                hwDec = appPreferences.getValue(appPreferences.playerMpvHwdec),
                 pauseAtEndOfMediaItems = true,
             )
         } else {
@@ -114,8 +114,8 @@ constructor(
             trackSelector.setParameters(
                 trackSelector.buildUponParameters()
                     .setTunnelingEnabled(true)
-                    .setPreferredAudioLanguage(appPreferences.preferredAudioLanguage)
-                    .setPreferredTextLanguage(appPreferences.preferredSubtitleLanguage),
+                    .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
+                    .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage)),
             )
             player = ExoPlayer.Builder(application, renderersFactory)
                 .setTrackSelector(trackSelector)
@@ -127,8 +127,8 @@ constructor(
                     /* handleAudioFocus = */
                     true,
                 )
-                .setSeekBackIncrementMs(appPreferences.playerSeekBackIncrement)
-                .setSeekForwardIncrementMs(appPreferences.playerSeekForwardIncrement)
+                .setSeekBackIncrementMs(appPreferences.getValue(appPreferences.playerSeekBackInc))
+                .setSeekForwardIncrementMs(appPreferences.getValue(appPreferences.playerSeekForwardInc))
                 .setPauseAtEndOfMediaItems(true)
                 .build()
         }
@@ -272,10 +272,10 @@ constructor(
 
                         jellyfinRepository.postPlaybackStart(item.itemId)
 
-                        if (appPreferences.playerTrickplay) {
+                        if (appPreferences.getValue(appPreferences.playerTrickplay)) {
                             getTrickplay(item)
                         }
-                        if (appPreferences.playerIntroSkipper) {
+                        if (appPreferences.getValue(appPreferences.playerIntroSkipper)) {
                             getSegments(item)
                         }
                     }
