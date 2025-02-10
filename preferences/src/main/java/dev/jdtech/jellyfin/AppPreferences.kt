@@ -46,16 +46,6 @@ constructor(
         Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT.toString(),
     )!!.toLongOrNull() ?: Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT
 
-    // Downloads
-    val downloadOverMobileData get() = sharedPreferences.getBoolean(
-        Constants.PREF_DOWNLOADS_MOBILE_DATA,
-        false,
-    )
-    val downloadWhenRoaming get() = sharedPreferences.getBoolean(
-        Constants.PREF_DOWNLOADS_ROAMING,
-        false,
-    )
-
     // Sorting
     var sortBy: String
         get() = sharedPreferences.getString(
