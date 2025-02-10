@@ -57,9 +57,9 @@ constructor(
     val downloadWhenRoaming = Preference("pref_downloads_roaming", false)
 
     // Network
-    val requestTimeout = Preference("pref_network_request_timeout", 30_000L)
-    val connectTimeout = Preference("pref_network_connect_timeout", 6_000L)
-    val socketTimeout = Preference("pref_network_socket_timeout", 10_000L)
+    val requestTimeout = Preference("pref_network_request_timeout", Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT)
+    val connectTimeout = Preference("pref_network_connect_timeout", Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT)
+    val socketTimeout = Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
 
     // Cache
     val imageCache = Preference("pref_image_cache", true)
