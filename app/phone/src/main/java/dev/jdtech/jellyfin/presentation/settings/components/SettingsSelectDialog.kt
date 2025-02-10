@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSelectDialog(
@@ -126,11 +127,11 @@ private fun SettingsSelectDialogPreview() {
     FindroidTheme {
         SettingsSelectDialog(
             preference = PreferenceSelect(
-                nameStringResource = CoreR.string.settings_preferred_audio_language,
+                nameStringResource = SettingsR.string.settings_preferred_audio_language,
                 iconDrawableId = CoreR.drawable.ic_speaker,
                 backendPreference = Preference("", ""),
-                options = CoreR.array.languages,
-                optionValues = CoreR.array.languages_values,
+                options = SettingsR.array.languages,
+                optionValues = SettingsR.array.languages_values,
             ),
             options = emptyList(),
             onUpdate = {},

@@ -9,6 +9,9 @@ class AppPreferences
 constructor(
     val sharedPreferences: SharedPreferences,
 ) {
+    // Server
+    val currentServer = Preference<String?>("pref_current_server", null)
+
     // Language
     val preferredAudioLanguage = Preference<String?>("pref_audio_language", null)
     val preferredSubtitleLanguage = Preference<String?>("pref_subtitle_language", null)

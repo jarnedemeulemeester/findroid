@@ -20,7 +20,7 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSwitchCard(
@@ -77,7 +77,7 @@ private fun SettingsSwitchCardPreview() {
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
-                nameStringResource = CoreR.string.settings_use_cache_title,
+                nameStringResource = SettingsR.string.settings_use_cache_title,
                 backendPreference = Preference("", true),
                 value = false,
             ),
@@ -92,7 +92,7 @@ private fun SettingsSwitchCardDisabledPreview() {
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
-                nameStringResource = CoreR.string.settings_use_cache_title,
+                nameStringResource = SettingsR.string.settings_use_cache_title,
                 backendPreference = Preference("", true),
                 enabled = false,
             ),

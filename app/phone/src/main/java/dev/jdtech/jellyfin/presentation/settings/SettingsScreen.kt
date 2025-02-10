@@ -47,6 +47,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsScreen(
@@ -169,8 +170,8 @@ private fun SettingsScreenLayoutPreview() {
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
-                                nameStringResource = CoreR.string.settings_category_language,
-                                iconDrawableId = CoreR.drawable.ic_languages,
+                                nameStringResource = SettingsR.string.settings_category_language,
+                                iconDrawableId = SettingsR.drawable.ic_languages,
                             ),
                         ),
                     ),
@@ -178,8 +179,8 @@ private fun SettingsScreenLayoutPreview() {
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
-                                nameStringResource = CoreR.string.settings_category_appearance,
-                                iconDrawableId = CoreR.drawable.ic_palette,
+                                nameStringResource = SettingsR.string.settings_category_appearance,
+                                iconDrawableId = SettingsR.drawable.ic_palette,
                             ),
                         ),
                     ),

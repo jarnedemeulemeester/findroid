@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.settings.presentation.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @HiltViewModel
 class SettingsViewModel
@@ -166,12 +165,12 @@ constructor(
                             nameStringResource = R.string.seeking,
                             preferences = listOf(
                                 PreferenceLongInput(
-                                    nameStringResource = CoreR.string.seek_back_increment,
+                                    nameStringResource = R.string.seek_back_increment,
                                     backendPreference = appPreferences.playerSeekBackInc,
                                     suffix = "ms",
                                 ),
                                 PreferenceLongInput(
-                                    nameStringResource = CoreR.string.seek_forward_increment,
+                                    nameStringResource = R.string.seek_forward_increment,
                                     backendPreference = appPreferences.playerSeekForwardInc,
                                     suffix = "ms",
                                 ),
@@ -275,17 +274,17 @@ constructor(
                         PreferenceGroup(
                             preferences = listOf(
                                 PreferenceLongInput(
-                                    nameStringResource = CoreR.string.settings_request_timeout,
+                                    nameStringResource = R.string.settings_request_timeout,
                                     backendPreference = appPreferences.requestTimeout,
                                     suffix = "ms",
                                 ),
                                 PreferenceLongInput(
-                                    nameStringResource = CoreR.string.settings_connect_timeout,
+                                    nameStringResource = R.string.settings_connect_timeout,
                                     backendPreference = appPreferences.connectTimeout,
                                     suffix = "ms",
                                 ),
                                 PreferenceLongInput(
-                                    nameStringResource = CoreR.string.settings_socket_timeout,
+                                    nameStringResource = R.string.settings_socket_timeout,
                                     backendPreference = appPreferences.socketTimeout,
                                     suffix = "ms",
                                 ),
@@ -314,8 +313,8 @@ constructor(
                                     backendPreference = appPreferences.imageCache,
                                 ),
                                 PreferenceIntInput(
-                                    nameStringResource = CoreR.string.settings_cache_size,
-                                    descriptionStringRes = CoreR.string.settings_cache_size_message,
+                                    nameStringResource = R.string.settings_cache_size,
+                                    descriptionStringRes = R.string.settings_cache_size_message,
                                     dependencies = listOf(appPreferences.imageCache),
                                     backendPreference = appPreferences.imageCacheSize,
                                     suffix = "MB",
@@ -344,7 +343,7 @@ constructor(
             // Show preferences based on the name of the parent
             for (index in indexes) {
                 // If index is root (Settings) don't search for category
-                if (index == CoreR.string.title_settings) {
+                if (index == R.string.title_settings) {
                     break
                 }
                 val preference = preferences.flatMap { it.preferences }.filterIsInstance<PreferenceCategory>().find { it.nameStringResource == index }

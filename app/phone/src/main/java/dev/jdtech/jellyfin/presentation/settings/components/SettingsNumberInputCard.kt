@@ -25,7 +25,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
@@ -140,7 +140,7 @@ private fun SettingsIntInputCardPreview() {
     FindroidTheme {
         SettingsIntInputCard(
             preference = PreferenceIntInput(
-                nameStringResource = CoreR.string.settings_cache_size,
+                nameStringResource = SettingsR.string.settings_cache_size,
                 backendPreference = PreferenceBackend("", 0),
                 suffix = "MB",
                 value = 25,
@@ -156,7 +156,7 @@ private fun SettingsLongInputCardPreview() {
     FindroidTheme {
         SettingsLongInputCard(
             preference = PreferenceLongInput(
-                nameStringResource = CoreR.string.settings_cache_size,
+                nameStringResource = SettingsR.string.settings_cache_size,
                 backendPreference = PreferenceBackend("", 0L),
                 suffix = "MB",
                 value = 25,

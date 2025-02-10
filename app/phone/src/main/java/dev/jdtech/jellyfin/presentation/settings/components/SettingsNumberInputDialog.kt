@@ -35,7 +35,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
@@ -162,8 +162,8 @@ private fun SettingsNumberInputDialogPreview() {
     FindroidTheme {
         SettingsNumberInputDialog(
             preference = PreferenceIntInput(
-                nameStringResource = CoreR.string.settings_cache_size,
-                descriptionStringRes = CoreR.string.settings_cache_size_message,
+                nameStringResource = SettingsR.string.settings_cache_size,
+                descriptionStringRes = SettingsR.string.settings_cache_size_message,
                 backendPreference = PreferenceBackend("", 0),
                 suffix = "MB",
             ),

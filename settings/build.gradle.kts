@@ -36,8 +36,6 @@ ktlint {
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.data)
     implementation(projects.preferences)
     implementation(libs.timber)
 
