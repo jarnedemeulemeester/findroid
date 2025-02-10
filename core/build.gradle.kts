@@ -50,7 +50,6 @@ ktlint {
 
 dependencies {
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(projects.settings)
     implementation(libs.androidx.appcompat)

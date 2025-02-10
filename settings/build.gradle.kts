@@ -36,7 +36,6 @@ ktlint {
 }
 
 dependencies {
-    implementation(projects.preferences)
     implementation(libs.timber)
 
     implementation(libs.androidx.compose.foundation)

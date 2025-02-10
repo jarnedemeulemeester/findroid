@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.setup.presentation.servers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ constructor(
         viewModelScope.launch {
             repository.setCurrentServer(serverId)
 
-            appPreferences.currentServer = serverId
+            appPreferences.setValue(appPreferences.currentServer, serverId)
 
             val users = repository.getUsers(serverId)
 

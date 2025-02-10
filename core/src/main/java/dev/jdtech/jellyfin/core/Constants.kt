@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.core
 
 object Constants {
-
     // player
     const val GESTURE_EXCLUSION_AREA_VERTICAL = 48
     const val GESTURE_EXCLUSION_AREA_HORIZONTAL = 24

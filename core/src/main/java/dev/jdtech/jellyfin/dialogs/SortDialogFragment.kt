@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import org.jellyfin.sdk.model.api.SortOrder
 import java.lang.IllegalStateException
@@ -30,11 +30,11 @@ class SortDialogFragment(
             val builder = MaterialAlertDialogBuilder(it)
 
             // Current sort by
-            val currentSortByString = appPreferences.sortBy
+            val currentSortByString = appPreferences.getValue(appPreferences.sortBy)
             val currentSortBy = SortBy.fromString(currentSortByString)
 
             // Current sort order
-            val currentSortOrderString = appPreferences.sortOrder
+            val currentSortOrderString = appPreferences.getValue(appPreferences.sortOrder)
             val currentSortOrder = try {
                 SortOrder.valueOf(currentSortOrderString)
             } catch (e: IllegalArgumentException) {
@@ -52,7 +52,7 @@ class SortDialogFragment(
                             currentSortBy.ordinal,
                         ) { dialog, which ->
                             val sortBy = sortByValues[which]
-                            appPreferences.sortBy = sortBy.name
+                            appPreferences.setValue(appPreferences.sortBy, sortBy.name)
                             viewModel.loadItems(
                                 parentId,
                                 libraryType,
@@ -78,7 +78,7 @@ class SortDialogFragment(
                                 SortOrder.ASCENDING
                             }
 
-                            appPreferences.sortOrder = sortOrder.name
+                            appPreferences.setValue(appPreferences.sortOrder, sortOrder.name)
 
                             viewModel.loadItems(
                                 parentId,

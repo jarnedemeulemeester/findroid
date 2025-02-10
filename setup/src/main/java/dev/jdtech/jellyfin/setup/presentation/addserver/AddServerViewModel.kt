@@ -3,11 +3,11 @@ package dev.jdtech.jellyfin.setup.presentation.addserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.models.DiscoveredServer
 import dev.jdtech.jellyfin.models.ExceptionUiText
 import dev.jdtech.jellyfin.models.ExceptionUiTexts
 import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
@@ -58,7 +58,7 @@ constructor(
 
             try {
                 val server = repository.addServer(address)
-                appPreferences.currentServer = server.id
+                appPreferences.setValue(appPreferences.currentServer, server.id)
                 _state.emit(
                     _state.value.copy(isLoading = false, error = null),
                 )

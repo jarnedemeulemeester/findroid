@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
@@ -25,6 +24,7 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import io.ktor.util.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -520,11 +520,11 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             val items = mutableListOf<FindroidItem>()
             items.addAll(
-                database.getMoviesByServerId(appPreferences.currentServer!!)
+                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
                     .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.currentServer!!)
+                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
                     .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
             )
             items
