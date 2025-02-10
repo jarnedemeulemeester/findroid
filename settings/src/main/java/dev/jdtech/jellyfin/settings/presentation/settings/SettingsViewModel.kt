@@ -202,6 +202,16 @@ constructor(
                                 ),
                             ),
                         ),
+                        PreferenceGroup(
+                            nameStringResource = R.string.picture_in_picture,
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.picture_in_picture_gesture,
+                                    descriptionStringRes = R.string.picture_in_picture_gesture_summary,
+                                    backendPreference = appPreferences.playerPipGesture,
+                                )
+                            )
+                        )
                     ),
                 ),
             ),

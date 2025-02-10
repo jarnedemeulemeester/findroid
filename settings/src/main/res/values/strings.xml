@@ -53,4 +53,7 @@
     <string name="title_download">Downloads</string>
     <string name="about">About</string>
     <string name="title_settings">Settings</string>
+    <string name="picture_in_picture">Picture-in-picture</string>
+    <string name="picture_in_picture_gesture">Picture-in-picture home gesture</string>
+    <string name="picture_in_picture_gesture_summary">Use home button or gesture to enter picture-in-picture while the video is playing</string>
 </resources>
