@@ -38,8 +38,8 @@ constructor(
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
                     backendPreference = appPreferences.offlineMode,
-                )
-            )
+                ),
+            ),
         ),
         PreferenceGroup(
             preferences = listOf(
@@ -219,9 +219,9 @@ constructor(
                                     nameStringResource = R.string.picture_in_picture_gesture,
                                     descriptionStringRes = R.string.picture_in_picture_gesture_summary,
                                     backendPreference = appPreferences.playerPipGesture,
-                                )
-                            )
-                        )
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),
