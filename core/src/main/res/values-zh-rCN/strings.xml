@@ -168,4 +168,5 @@
     <string name="pref_player_trickplay_summary">拖动进度条时显示缩略图</string>
     <string name="trickplay">特技播放</string>
     <string name="pref_player_gestures_seek_trickplay_summary">使用进度手势显示缩略图</string>
+    <string name="show_stacktrace">显示堆栈跟踪</string>
 </resources>
