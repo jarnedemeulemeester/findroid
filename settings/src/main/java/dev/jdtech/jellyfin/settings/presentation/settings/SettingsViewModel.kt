@@ -207,12 +207,12 @@ constructor(
                                 PreferenceLongInput(
                                     nameStringResource = R.string.seek_back_increment,
                                     backendPreference = appPreferences.playerSeekBackInc,
-                                    suffix = "ms",
+                                    suffixRes = R.string.ms,
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = R.string.seek_forward_increment,
                                     backendPreference = appPreferences.playerSeekForwardInc,
-                                    suffix = "ms",
+                                    suffixRes = R.string.ms,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_intro_skipper,
@@ -326,17 +326,17 @@ constructor(
                                 PreferenceLongInput(
                                     nameStringResource = R.string.settings_request_timeout,
                                     backendPreference = appPreferences.requestTimeout,
-                                    suffix = "ms",
+                                    suffixRes = R.string.ms,
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = R.string.settings_connect_timeout,
                                     backendPreference = appPreferences.connectTimeout,
-                                    suffix = "ms",
+                                    suffixRes = R.string.ms,
                                 ),
                                 PreferenceLongInput(
                                     nameStringResource = R.string.settings_socket_timeout,
                                     backendPreference = appPreferences.socketTimeout,
-                                    suffix = "ms",
+                                    suffixRes = R.string.ms,
                                 ),
                             ),
                         ),
@@ -367,7 +367,7 @@ constructor(
                                     descriptionStringRes = R.string.settings_cache_size_message,
                                     dependencies = listOf(appPreferences.imageCache),
                                     backendPreference = appPreferences.imageCacheSize,
-                                    suffix = "MB",
+                                    suffixRes = R.string.mb,
                                 ),
                             ),
                         ),

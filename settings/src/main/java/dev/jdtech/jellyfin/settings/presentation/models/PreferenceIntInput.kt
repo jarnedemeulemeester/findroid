@@ -12,7 +12,7 @@ data class PreferenceIntInput(
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
     val onClick: (Preference) -> Unit = {},
     val backendPreference: PreferenceBackend<Int>,
-    val prefix: String? = null,
-    val suffix: String? = null,
+    @StringRes val prefixRes: Int? = null,
+    @StringRes val suffixRes: Int? = null,
     val value: Int = -1,
 ) : Preference

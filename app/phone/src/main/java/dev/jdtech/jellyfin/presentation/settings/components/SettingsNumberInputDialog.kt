@@ -44,6 +44,10 @@ fun SettingsIntInputDialog(
     onUpdate: (value: Int) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val suffix = preference.suffixRes?.let {
+        stringResource(it)
+    }
+
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
@@ -53,7 +57,7 @@ fun SettingsIntInputDialog(
             }
         },
         onDismissRequest = onDismissRequest,
-        suffix = preference.suffix,
+        suffix = suffix,
     )
 }
 
@@ -63,6 +67,10 @@ fun SettingsLongInputDialog(
     onUpdate: (value: Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val suffix = preference.suffixRes?.let {
+        stringResource(it)
+    }
+
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
@@ -72,7 +80,7 @@ fun SettingsLongInputDialog(
             }
         },
         onDismissRequest = onDismissRequest,
-        suffix = preference.suffix,
+        suffix = suffix,
     )
 }
 
@@ -165,7 +173,7 @@ private fun SettingsNumberInputDialogPreview() {
                 nameStringResource = SettingsR.string.settings_cache_size,
                 descriptionStringRes = SettingsR.string.settings_cache_size_message,
                 backendPreference = PreferenceBackend("", 0),
-                suffix = "MB",
+                suffixRes = SettingsR.string.mb,
             ),
             initialValue = "20",
             onUpdate = {},

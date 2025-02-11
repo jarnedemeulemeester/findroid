@@ -12,7 +12,7 @@ data class PreferenceLongInput(
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
     val onClick: (Preference) -> Unit = {},
     val backendPreference: PreferenceBackend<Long>,
-    val prefix: String? = null,
-    val suffix: String? = null,
+    @StringRes val prefixRes: Int? = null,
+    @StringRes val suffixRes: Int? = null,
     val value: Long = -1L,
 ) : Preference

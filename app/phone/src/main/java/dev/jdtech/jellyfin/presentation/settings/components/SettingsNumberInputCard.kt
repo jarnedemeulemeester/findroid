@@ -38,9 +38,17 @@ fun SettingsIntInputCard(
         mutableStateOf(false)
     }
 
+    val prefix = preference.prefixRes?.let {
+        stringResource(it)
+    }
+
+    val suffix = preference.suffixRes?.let {
+        stringResource(it)
+    }
+
     SettingsNumberInputCard(
         preference = preference,
-        text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        text = listOf(prefix, preference.value, suffix).fastFilterNotNull().joinToString(" "),
         onClick = {
             showDialog = true
         },
@@ -71,9 +79,17 @@ fun SettingsLongInputCard(
         mutableStateOf(false)
     }
 
+    val prefix = preference.prefixRes?.let {
+        stringResource(it)
+    }
+
+    val suffix = preference.suffixRes?.let {
+        stringResource(it)
+    }
+
     SettingsNumberInputCard(
         preference = preference,
-        text = listOf(preference.prefix, preference.value, preference.suffix).fastFilterNotNull().joinToString(" "),
+        text = listOf(prefix, preference.value, suffix).fastFilterNotNull().joinToString(" "),
         onClick = {
             showDialog = true
         },
@@ -142,7 +158,7 @@ private fun SettingsIntInputCardPreview() {
             preference = PreferenceIntInput(
                 nameStringResource = SettingsR.string.settings_cache_size,
                 backendPreference = PreferenceBackend("", 0),
-                suffix = "MB",
+                suffixRes = SettingsR.string.mb,
                 value = 25,
             ),
             onUpdate = {},
@@ -158,7 +174,7 @@ private fun SettingsLongInputCardPreview() {
             preference = PreferenceLongInput(
                 nameStringResource = SettingsR.string.settings_cache_size,
                 backendPreference = PreferenceBackend("", 0L),
-                suffix = "MB",
+                suffixRes = SettingsR.string.mb,
                 value = 25,
             ),
             onUpdate = {},
