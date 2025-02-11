@@ -81,7 +81,37 @@ constructor(
                 PreferenceCategory(
                     nameStringResource = R.string.settings_category_appearance,
                     iconDrawableId = R.drawable.ic_palette,
-                    enabled = false,
+                    onClick = {
+                        viewModelScope.launch {
+                            eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
+                        }
+                    },
+                    nestedPreferenceGroups = listOf(
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceSelect(
+                                    nameStringResource = R.string.theme,
+                                    backendPreference = appPreferences.theme,
+                                    options = R.array.theme,
+                                    optionValues = R.array.theme_values,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.dynamic_colors,
+                                    descriptionStringRes = R.string.dynamic_colors_summary,
+                                    backendPreference = appPreferences.dynamicColors,
+                                ),
+                            ),
+                        ),
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.extra_info,
+                                    descriptionStringRes = R.string.extra_info_summary,
+                                    backendPreference = appPreferences.displayExtraInfo,
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),

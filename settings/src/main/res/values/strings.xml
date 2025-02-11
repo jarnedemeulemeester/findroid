@@ -58,4 +58,12 @@
     <string name="picture_in_picture_gesture_summary">Use home button or gesture to enter picture-in-picture while the video is playing</string>
     <string name="offline_mode">Offline Mode</string>
     <string name="offline_mode_summary">Watch movies and series without a connection to the server</string>
+    <string name="theme">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
+    <string name="extra_info">Display Extra Info</string>
+    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
 </resources>

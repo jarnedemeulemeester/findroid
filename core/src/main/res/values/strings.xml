@@ -40,7 +40,6 @@
     <string name="no_search_results">No search results</string>
     <string name="app_language">App language</string>
     <string name="device_name">Device name</string>
-    <string name="theme">Theme</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
     <string name="view_details_underlined"><u>View details</u></string>
@@ -72,15 +71,10 @@
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="dynamic_colors">Dynamic colors</string>
-    <string name="dynamic_colors_summary">Use Material You Dynamic colors (only available on Android 12+)</string>
     <string name="amoled_theme">AMOLED dark theme</string>
     <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
-    <string name="theme_system">Follow system</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
@@ -91,8 +85,6 @@
     <string name="subtitle">Subtitles</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temp</string>
-    <string name="extra_info">Display Extra Info</string>
-    <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
     <string name="offline_mode">Offline Mode</string>
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
