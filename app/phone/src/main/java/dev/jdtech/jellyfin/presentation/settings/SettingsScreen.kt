@@ -1,6 +1,9 @@
 package dev.jdtech.jellyfin.presentation.settings
 
+import android.app.UiModeManager
+import android.os.Build
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -58,6 +62,8 @@ fun SettingsScreen(
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -69,6 +75,21 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToSettings -> navigateToSettings(event.indexes)
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
+            is SettingsEvent.UpdateTheme -> {
+                val uiModeManager = context.getSystemService(UiModeManager::class.java)
+                val nightMode = when (event.theme) {
+                    "system" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    "light" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_NO
+                    "dark" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_YES
+                    else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    uiModeManager.setApplicationNightMode(nightMode)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(nightMode)
+                }
+            }
         }
     }
 

@@ -39,7 +39,6 @@ constructor(
             _state.emit(MainState(isLoading = true))
             val mainState = MainState(
                 isLoading = false,
-                isDarkTheme = checkIfDarkTheme(),
                 hasServers = checkHasServers(),
                 hasCurrentServer = checkHasCurrentServer(),
                 hasCurrentUser = checkHasCurrentUser(),
@@ -58,16 +57,6 @@ constructor(
                     )
                 }
             }
-        }
-    }
-
-    private fun checkIfDarkTheme(): Boolean? {
-        val theme = appPreferences.getValue(appPreferences.theme)
-        return when (theme) {
-            "system" -> null
-            "dark" -> true
-            "light" -> false
-            else -> null
         }
     }
 
@@ -91,7 +80,6 @@ constructor(
 
 data class MainState(
     val isLoading: Boolean = true,
-    val isDarkTheme: Boolean? = null,
     val hasServers: Boolean = false,
     val hasCurrentServer: Boolean = false,
     val hasCurrentUser: Boolean = false,

@@ -92,6 +92,11 @@ constructor(
                                 PreferenceSelect(
                                     nameStringResource = R.string.theme,
                                     backendPreference = appPreferences.theme,
+                                    onUpdate = { value ->
+                                        viewModelScope.launch {
+                                            eventsChannel.send(SettingsEvent.UpdateTheme(value ?: "system"))
+                                        }
+                                    },
                                     options = R.array.theme,
                                     optionValues = R.array.theme_values,
                                 ),

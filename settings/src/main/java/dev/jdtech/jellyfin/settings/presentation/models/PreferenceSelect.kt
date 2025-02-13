@@ -10,7 +10,7 @@ data class PreferenceSelect(
     @DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
-    val onClick: (Preference) -> Unit = {},
+    val onUpdate: (String?) -> Unit = {},
     val backendPreference: PreferenceBackend<String?>,
     val options: Int,
     val optionValues: Int,
