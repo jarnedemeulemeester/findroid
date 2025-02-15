@@ -142,7 +142,9 @@ fun SettingsNumberInputDialog(
                             textFieldValue = it
                         }
                     },
-                    modifier = Modifier.focusRequester(focusRequester),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     suffix = {
                         suffix?.let {
                             Text(text = it)
