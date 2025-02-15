@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,7 +31,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsScreen(
@@ -39,6 +40,8 @@ fun SettingsScreen(
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -50,6 +53,12 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes)
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
+            is SettingsEvent.UpdateTheme -> Unit
+            is SettingsEvent.LaunchIntent -> {
+                try {
+                    context.startActivity(event.intent)
+                } catch (_: Exception) { }
+            }
         }
     }
 
@@ -85,7 +94,7 @@ private fun SettingsScreenLayout(
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Text(
-                text = stringResource(id = CoreR.string.title_settings),
+                text = stringResource(id = SettingsR.string.title_settings),
                 style = MaterialTheme.typography.displayMedium,
             )
         }
@@ -112,8 +121,8 @@ private fun SettingsScreenLayoutPreview() {
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
-                                nameStringResource = CoreR.string.settings_category_language,
-                                iconDrawableId = CoreR.drawable.ic_languages,
+                                nameStringResource = SettingsR.string.settings_category_language,
+                                iconDrawableId = SettingsR.drawable.ic_languages,
                             ),
                         ),
                     ),
@@ -121,8 +130,8 @@ private fun SettingsScreenLayoutPreview() {
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
-                                nameStringResource = CoreR.string.settings_category_appearance,
-                                iconDrawableId = CoreR.drawable.ic_palette,
+                                nameStringResource = SettingsR.string.settings_category_appearance,
+                                iconDrawableId = SettingsR.drawable.ic_palette,
                             ),
                         ),
                     ),

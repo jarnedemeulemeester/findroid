@@ -27,7 +27,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsCategoryCard(
@@ -95,8 +95,8 @@ private fun SettingsCategoryCardPreview() {
     FindroidTheme {
         SettingsCategoryCard(
             preference = PreferenceCategory(
-                nameStringResource = CoreR.string.settings_category_player,
-                iconDrawableId = CoreR.drawable.ic_play,
+                nameStringResource = SettingsR.string.settings_category_player,
+                iconDrawableId = SettingsR.drawable.ic_play,
             ),
         )
     }

@@ -26,11 +26,11 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSwitchCard(
@@ -102,7 +102,7 @@ private fun SettingsSwitchCardPreview() {
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
-                nameStringResource = R.string.settings_use_cache_title,
+                nameStringResource = SettingsR.string.settings_use_cache_title,
                 iconDrawableId = null,
                 backendPreference = Preference("", false),
             ),
@@ -117,7 +117,7 @@ private fun SettingsSwitchCardDisabledPreview() {
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
-                nameStringResource = R.string.settings_use_cache_title,
+                nameStringResource = SettingsR.string.settings_use_cache_title,
                 iconDrawableId = null,
                 enabled = false,
                 backendPreference = Preference("", false),
@@ -133,8 +133,8 @@ private fun SettingsSwitchCardDescriptionPreview() {
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
-                nameStringResource = R.string.settings_use_cache_title,
-                descriptionStringRes = R.string.settings_use_cache_summary,
+                nameStringResource = SettingsR.string.settings_use_cache_title,
+                descriptionStringRes = SettingsR.string.settings_use_cache_summary,
                 iconDrawableId = null,
                 backendPreference = Preference("", false),
             ),

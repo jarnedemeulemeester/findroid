@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,7 +38,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSubScreen(
@@ -47,6 +48,8 @@ fun SettingsSubScreen(
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -58,6 +61,12 @@ fun SettingsSubScreen(
             is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes)
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
+            is SettingsEvent.UpdateTheme -> Unit
+            is SettingsEvent.LaunchIntent -> {
+                try {
+                    context.startActivity(event.intent)
+                } catch (_: Exception) { }
+            }
         }
     }
 
@@ -102,7 +111,7 @@ private fun SettingsSubScreenLayout(
                 style = MaterialTheme.typography.displayMedium,
             )
             Text(
-                text = stringResource(id = CoreR.string.title_settings),
+                text = stringResource(id = SettingsR.string.title_settings),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
@@ -159,16 +168,16 @@ private fun SettingsSubScreenLayout(
 private fun SettingsSubScreenLayoutPreview() {
     FindroidTheme {
         SettingsSubScreenLayout(
-            title = CoreR.string.title_settings,
+            title = SettingsR.string.title_settings,
             state = SettingsState(
                 preferenceGroups = listOf(
                     PreferenceGroup(
                         preferences = listOf(
                             PreferenceSelect(
-                                nameStringResource = CoreR.string.pref_player_mpv_hwdec,
+                                nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
                                 backendPreference = Preference("", ""),
-                                options = CoreR.array.mpv_hwdec,
-                                optionValues = CoreR.array.mpv_hwdec,
+                                options = SettingsR.array.mpv_hwdec,
+                                optionValues = SettingsR.array.mpv_hwdec,
                             ),
                         ),
                     ),
