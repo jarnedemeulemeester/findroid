@@ -173,7 +173,7 @@ private fun SettingsScreenLayout(
                     group = group,
                     onAction = onAction,
                     modifier = Modifier
-                        .widthIn(max = 640.dp)
+                        .widthIn(max = 640.dp),
                 )
             }
         }

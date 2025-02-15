@@ -84,7 +84,7 @@ fun SettingsSelectCard(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = optionsMap.getOrDefault(preference.value, notSetString),
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
