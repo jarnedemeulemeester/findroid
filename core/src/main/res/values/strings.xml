@@ -38,7 +38,6 @@
     <string name="no_downloads">You have nothing downloaded</string>
     <string name="search">Search</string>
     <string name="no_search_results">No search results</string>
-    <string name="app_language">App language</string>
     <string name="device_name">Device name</string>
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>

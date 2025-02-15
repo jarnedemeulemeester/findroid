@@ -1,10 +1,12 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
@@ -52,6 +54,15 @@ constructor(
                         }
                     },
                     nestedPreferenceGroups = listOf(
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceAppLanguage(
+                                    nameStringResource = R.string.app_language,
+                                    iconDrawableId = R.drawable.ic_languages,
+                                    enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
+                                ),
+                            ),
+                        ),
                         PreferenceGroup(
                             preferences = listOf(
                                 PreferenceSelect(
