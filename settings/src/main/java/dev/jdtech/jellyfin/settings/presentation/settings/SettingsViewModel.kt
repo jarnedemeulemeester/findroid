@@ -41,6 +41,7 @@ constructor(
                     nameStringResource = R.string.offline_mode,
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
+                    enabled = false,
                     backendPreference = appPreferences.offlineMode,
                 ),
             ),
