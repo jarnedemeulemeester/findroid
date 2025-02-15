@@ -114,6 +114,7 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.dynamic_colors,
                                     descriptionStringRes = R.string.dynamic_colors_summary,
+                                    enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
                                     backendPreference = appPreferences.dynamicColors,
                                 ),
                             ),
@@ -425,25 +426,25 @@ constructor(
                         when (preference) {
                             is PreferenceSwitch -> {
                                 preference.copy(
-                                    enabled = preference.dependencies.all { appPreferences.getValue(it) },
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             is PreferenceSelect -> {
                                 preference.copy(
-                                    enabled = preference.dependencies.all { appPreferences.getValue(it) },
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             is PreferenceIntInput -> {
                                 preference.copy(
-                                    enabled = preference.dependencies.all { appPreferences.getValue(it) },
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
                             is PreferenceLongInput -> {
                                 preference.copy(
-                                    enabled = preference.dependencies.all { appPreferences.getValue(it) },
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
