@@ -51,6 +51,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
@@ -89,6 +90,13 @@ fun SettingsScreen(
                     uiModeManager.setApplicationNightMode(nightMode)
                 } else {
                     AppCompatDelegate.setDefaultNightMode(nightMode)
+                }
+            }
+            is SettingsEvent.LaunchIntent -> {
+                try {
+                    context.startActivity(event.intent)
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
             }
         }

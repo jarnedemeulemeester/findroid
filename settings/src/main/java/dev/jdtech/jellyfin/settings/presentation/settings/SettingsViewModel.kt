@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
+import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -143,6 +145,26 @@ constructor(
                         }
                     },
                     nestedPreferenceGroups = listOf(
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceCategory(
+                                    nameStringResource = R.string.subtitles,
+                                    descriptionStringRes = R.string.subtitles_summary,
+                                    iconDrawableId = R.drawable.ic_closed_caption,
+                                    onClick = {
+                                        viewModelScope.launch {
+                                            eventsChannel.send(
+                                                SettingsEvent.LaunchIntent(
+                                                    Intent(
+                                                        Settings.ACTION_CAPTIONING_SETTINGS,
+                                                    ),
+                                                ),
+                                            )
+                                        }
+                                    },
+                                ),
+                            ),
+                        ),
                         PreferenceGroup(
                             nameStringResource = R.string.mpv_player,
                             preferences = listOf(

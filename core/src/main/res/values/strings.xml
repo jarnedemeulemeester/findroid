@@ -72,8 +72,6 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="amoled_theme">AMOLED dark theme</string>
     <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
-    <string name="subtitles">Subtitles</string>
-    <string name="subtitles_summary">Customize subtitles appearance</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>

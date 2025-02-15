@@ -69,4 +69,6 @@
     <string name="mb">MB</string>
     <string name="ms">ms</string>
     <string name="app_language">App language</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="subtitles_summary">Customize subtitles appearance</string>
 </resources>
