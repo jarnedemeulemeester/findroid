@@ -4,7 +4,6 @@ import android.app.UiModeManager
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,12 +11,13 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -155,11 +156,9 @@ private fun SettingsScreenLayout(
             )
         },
     ) { innerPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 320.dp),
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .fillMaxWidth(),
             contentPadding = PaddingValues(
                 start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
                 top = paddingTop + innerPadding.calculateTopPadding(),
@@ -167,12 +166,14 @@ private fun SettingsScreenLayout(
                 bottom = paddingBottom + innerPadding.calculateBottomPadding(),
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(state.preferenceGroups) { group ->
                 SettingsGroupCard(
                     group = group,
                     onAction = onAction,
+                    modifier = Modifier
+                        .widthIn(max = 640.dp)
                 )
             }
         }
