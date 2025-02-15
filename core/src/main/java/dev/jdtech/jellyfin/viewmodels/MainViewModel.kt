@@ -39,6 +39,7 @@ constructor(
             _state.emit(MainState(isLoading = true))
             val mainState = MainState(
                 isLoading = false,
+                isDynamicColors = checkIsDynamicColors(),
                 hasServers = checkHasServers(),
                 hasCurrentServer = checkHasCurrentServer(),
                 hasCurrentUser = checkHasCurrentUser(),
@@ -76,10 +77,15 @@ constructor(
             database.getServerCurrentUser(it) != null
         } == true
     }
+
+    private fun checkIsDynamicColors(): Boolean {
+        return appPreferences.getValue(appPreferences.dynamicColors)
+    }
 }
 
 data class MainState(
     val isLoading: Boolean = true,
+    val isDynamicColors: Boolean = true,
     val hasServers: Boolean = false,
     val hasCurrentServer: Boolean = false,
     val hasCurrentUser: Boolean = false,
