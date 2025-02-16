@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -69,7 +70,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
-        viewModel.loadPreferences(indexes)
+        viewModel.loadPreferences(indexes, DeviceType.PHONE)
     }
 
     ObserveAsEvents(viewModel.events) { event ->
@@ -110,7 +111,7 @@ fun SettingsScreen(
                 is SettingsAction.OnBackClick -> navigateBack()
                 is SettingsAction.OnUpdate -> {
                     viewModel.onAction(action)
-                    viewModel.loadPreferences(indexes)
+                    viewModel.loadPreferences(indexes, DeviceType.PHONE)
                 }
             }
         },

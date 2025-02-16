@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -105,6 +106,7 @@ constructor(
                             preferences = listOf(
                                 PreferenceSelect(
                                     nameStringResource = R.string.theme,
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.theme,
                                     onUpdate = { value ->
                                         viewModelScope.launch {
@@ -118,6 +120,7 @@ constructor(
                                     nameStringResource = R.string.dynamic_colors,
                                     descriptionStringRes = R.string.dynamic_colors_summary,
                                     enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.dynamicColors,
                                 ),
                             ),
@@ -203,40 +206,47 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures,
                                     backendPreference = appPreferences.playerGestures,
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_vb,
                                     descriptionStringRes = R.string.player_gestures_vb_summary,
                                     dependencies = listOf(appPreferences.playerGestures),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesVB,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_seek,
                                     descriptionStringRes = R.string.player_gestures_seek_summary,
                                     dependencies = listOf(appPreferences.playerGestures),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesSeek,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_zoom,
                                     descriptionStringRes = R.string.player_gestures_zoom_summary,
                                     dependencies = listOf(appPreferences.playerGestures),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesZoom,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_gestures_chapter_skip,
                                     descriptionStringRes = R.string.player_gestures_chapter_skip_summary,
                                     dependencies = listOf(appPreferences.playerGestures),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesChapterSkip,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_brightness_remember,
                                     dependencies = listOf(appPreferences.playerGestures, appPreferences.playerGesturesVB),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesBrightnessRemember,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.player_start_maximized,
                                     descriptionStringRes = R.string.player_start_maximized_summary,
                                     dependencies = listOf(appPreferences.playerGestures),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesStartMaximized,
                                 ),
                             ),
@@ -278,6 +288,7 @@ constructor(
                                     nameStringResource = R.string.pref_player_gestures_seek_trickplay,
                                     descriptionStringRes = R.string.pref_player_gestures_seek_trickplay_summary,
                                     dependencies = listOf(appPreferences.playerTrickplay),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerGesturesSeekTrickplay,
                                 ),
                             ),
@@ -288,6 +299,7 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.picture_in_picture_gesture,
                                     descriptionStringRes = R.string.picture_in_picture_gesture_summary,
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.playerPipGesture,
                                 ),
                             ),
@@ -327,6 +339,7 @@ constructor(
                 PreferenceCategory(
                     nameStringResource = R.string.title_download,
                     iconDrawableId = R.drawable.ic_download,
+                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                     onClick = {
                         viewModelScope.launch {
                             eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
@@ -337,11 +350,13 @@ constructor(
                             preferences = listOf(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.download_mobile_data,
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.downloadOverMobileData,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.download_roaming,
                                     dependencies = listOf(appPreferences.downloadOverMobileData),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.downloadWhenRoaming,
                                 ),
                             ),
@@ -426,7 +441,7 @@ constructor(
         ),
     )
 
-    fun loadPreferences(indexes: IntArray = intArrayOf()) {
+    fun loadPreferences(indexes: IntArray = intArrayOf(), deviceType: DeviceType) {
         viewModelScope.launch {
             var preferences = topLevelPreferences
 
@@ -445,7 +460,7 @@ constructor(
             // Update all (visible) preferences with there current values
             preferences = preferences.map { preferenceGroup ->
                 preferenceGroup.copy(
-                    preferences = preferenceGroup.preferences.map { preference ->
+                    preferences = preferenceGroup.preferences.filter { it.supportedDeviceTypes.contains(deviceType) }.map { preference ->
                         when (preference) {
                             is PreferenceSwitch -> {
                                 preference.copy(
@@ -475,7 +490,7 @@ constructor(
                         }
                     },
                 )
-            }
+            }.filter { it.preferences.isNotEmpty() }
 
             _state.emit(_state.value.copy(preferenceGroups = preferences))
         }

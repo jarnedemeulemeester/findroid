@@ -31,6 +31,7 @@ import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
+import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -53,7 +54,7 @@ fun SettingsSubScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
-        viewModel.loadPreferences(indexes)
+        viewModel.loadPreferences(indexes, DeviceType.TV)
     }
 
     ObserveAsEvents(viewModel.events) { event ->
@@ -77,7 +78,7 @@ fun SettingsSubScreen(
             when (action) {
                 is SettingsAction.OnUpdate -> {
                     viewModel.onAction(action)
-                    viewModel.loadPreferences(indexes)
+                    viewModel.loadPreferences(indexes, DeviceType.TV)
                 }
                 else -> Unit
             }
@@ -94,7 +95,7 @@ private fun SettingsSubScreenLayout(
     val focusRequester = remember { FocusRequester() }
 
     var focusedPreference by remember(state.preferenceGroups.isNotEmpty()) {
-        mutableStateOf(state.preferenceGroups.firstOrNull()?.preferences?.first())
+        mutableStateOf(state.preferenceGroups.firstOrNull()?.preferences?.firstOrNull())
     }
     Column(
         modifier = Modifier
