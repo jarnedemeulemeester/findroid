@@ -2,6 +2,7 @@ package dev.jdtech.jellyfin.settings.domain
 
 import android.content.SharedPreferences
 import dev.jdtech.jellyfin.settings.domain.models.Preference
+import timber.log.Timber
 import javax.inject.Inject
 
 class AppPreferences
@@ -73,13 +74,19 @@ constructor(
     val offlineMode = Preference("pref_offline_mode", false)
 
     inline fun <reified T> getValue(preference: Preference<T>): T {
-        return when (preference.defaultValue) {
-            is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
-            is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
-            is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
-            is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
-            is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
-            else -> throw Exception()
+        return try {
+            when (preference.defaultValue) {
+                is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
+                is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
+                is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
+                is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
+                is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
+                else -> preference.defaultValue
+            }
+        } catch (_: Exception) {
+            Timber.w("Failed to load ${preference.backendName} preference. Resetting to default value...")
+            setValue(preference, preference.defaultValue)
+            preference.defaultValue
         }
     }
 
