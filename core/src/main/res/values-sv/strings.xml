@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_description">Tredjeparts nativ Jellyfin-app</string>
     <string name="jellyfin_banner">Jellyfinbanderoll</string>
     <string name="title_home">Hem</string>
     <string name="title_media">Min media</string>
-    <string name="title_settings">Inställningar</string>
-    <string name="title_download">Nedladdningar</string>
     <string name="view_all">Visa alla</string>
     <string name="genres">Genrer</string>
     <string name="director">Regissör</string>
@@ -22,25 +20,9 @@
     <string name="favorite_button_description">Favorit</string>
     <string name="episode_watched_indicator">Episod sedd indikator</string>
     <string name="episode_name">%1$d. %2$s</string>
-    <string name="settings_category_language">Språk</string>
-    <string name="settings_preferred_audio_language">Föredraget ljudspråk</string>
-    <string name="settings_category_servers">Servrar</string>
-    <string name="settings_category_player">Spelare</string>
-    <string name="settings_category_download">Nedladdningar</string>
-    <string name="settings_category_appearance">Utseende</string>
     <string name="device_name">Enhetsnamn</string>
-    <string name="settings_category_device">Enhet</string>
-    <string name="settings_category_cache">Cache</string>
-    <string name="settings_cache_size">Lagringsstorlek (MB)</string>
-    <string name="theme">Tema</string>
     <string name="error_preparing_player_items">Fel vid förberedelse av spelarobjekt.</string>
-    <string name="about">Om</string>
-    <string name="privacy_policy">Integritetspolicy</string>
-    <string name="app_info">Appinfo</string>
     <string name="unknown_error">Okänt fel</string>
-    <string name="mpv_player">mpv spelaren</string>
-    <string name="download_mobile_data">Ladda ner med mobildata</string>
-    <string name="download_roaming">Ladda ner vid roaming</string>
     <string name="download_button_description">Ladda ner</string>
     <string name="person_detail_title">Information</string>
     <string name="episodes_label">Avsnitt</string>
@@ -50,12 +32,6 @@
     <string name="close">Stäng</string>
     <string name="share">Dela</string>
     <string name="image_description_backdrop">%1$s bakgrund</string>
-    <string name="gestures">Gester</string>
-    <string name="player_gestures">Spelargester</string>
-    <string name="player_gestures_zoom">Zoomgest</string>
-    <string name="player_gestures_vb">Volym- och ljusstyrkegester</string>
-    <string name="player_gestures_seek_summary">Svep horisontellt för att spola framåt eller bakåt</string>
-    <string name="player_brightness_remember">Kom ihåg ljusstyrkenivå</string>
     <string name="sort_by_options_0">Titel</string>
     <string name="sort_by_options_2">Åldersgräns</string>
     <string name="sort_by_options_3">Datum tillagt</string>
@@ -64,19 +40,6 @@
     <string name="descending">Fallande</string>
     <string name="runtime_minutes">%1$d minuter</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="seeking">Spolar</string>
-    <string name="seek_back_increment">Spola bakåt intervall (ms)</string>
-    <string name="seek_forward_increment">Spola framåt intervall (ms)</string>
-    <string name="amoled_theme">AMOLED-mörkt tema</string>
-    <string name="amoled_theme_summary">Använd AMOLED-tema med en helt svart bakgrund</string>
-    <string name="subtitles">Textning</string>
-    <string name="theme_system">Följ systemet</string>
-    <string name="theme_light">Ljust</string>
-    <string name="theme_dark">Mörkt</string>
-    <string name="settings_request_timeout">Timeout för begäran (ms)</string>
-    <string name="settings_connect_timeout">Timeout för anslutning (ms)</string>
-    <string name="pref_player_mpv_vo">Videooutput</string>
-    <string name="pref_player_mpv_ao">Ljudoutput</string>
     <string name="addresses">Adresser</string>
     <string name="add_address">Lägg till adress</string>
     <string name="add_server_address">Lägg till serveradress</string>
@@ -85,9 +48,7 @@
     <string name="audio">Ljud</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">temporär</string>
-    <string name="extra_info">Visa extra information</string>
     <string name="subtitle">Textning</string>
-    <string name="extra_info_summary">Visa detaljerad information om ljud, video och textning</string>
     <string name="remove">Ta bort</string>
     <string name="cancel">Avbryt</string>
     <string name="title_favorite">Favoriter</string>
@@ -97,29 +58,13 @@
     <string name="check_button_description">Markera som spelad eller ospelad</string>
     <string name="no_favorites">Du har inga favoriter</string>
     <string name="no_search_results">Inga sökresultat</string>
-    <string name="settings_preferred_subtitle_language">Föredraget textningsspråk</string>
-    <string name="settings_use_cache_title">Lagra bilder</string>
-    <string name="settings_use_cache_summary">Lagra bilder på disk för att snabba upp laddningstider. Tar effekt efter appen har startats om.</string>
-    <string name="settings_cache_size_message">Appen kommer att använda detta antal MB av ditt lagringsutrymme för att lagra bilder från Jellyfin-servern. Större värden kan vara fördelaktiga på långsammare nätverk.</string>
     <string name="view_details">Visa information</string>
     <string name="view_details_underlined"><u>Visa information</u></string>
     <string name="search_hint">Sök filmer, serier, avsnitt…</string>
-    <string name="mpv_player_summary">Använd den experimentella mpv-spelaren för att spela videor. mpv har stöd för fler video, ljud och textningsformat.</string>
     <string name="movies_label">Filmer</string>
     <string name="shows_label">Serier</string>
     <string name="image_description_poster">%1$s affisch</string>
-    <string name="player_gestures_seek">Spolningsgest</string>
-    <string name="player_gestures_vb_summary">Svep upp och ned på höger sida av skärmen för att ändra volymen och på vänster sida för att ändra ljusstyrkan</string>
-    <string name="player_gestures_zoom_summary">Nyp in för att fylla skärmen med videon</string>
     <string name="sort_by_options_1">IMDB-betyg</string>
     <string name="sort_by_options_4">Datum spelat</string>
     <string name="select_video_version_title">Välj version</string>
-    <string name="dynamic_colors">Dynamiska färger</string>
-    <string name="dynamic_colors_summary">Använd Material You dynamiska färger (endast tillgängligt på Android 12+)</string>
-    <string name="subtitles_summary">Anpassa textningens utseende</string>
-    <string name="settings_category_network">Nätverk</string>
-    <string name="settings_socket_timeout">Timeout för socket (ms)</string>
-    <string name="pref_player_mpv_hwdec">Hårdvaruavkodning</string>
-    <string name="pref_player_intro_skipper">Introskippare</string>
-    <string name="pref_player_intro_skipper_summary">Kräver jumoog Intro Skipper-plugin installerat på servern</string>
-</resources>
+    </resources>

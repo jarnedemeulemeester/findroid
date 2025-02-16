@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="play_button_description">Воспроизвести медиа</string>
     <string name="episode_watched_indicator">Индикатор просмотра эпизодов</string>
@@ -8,8 +8,6 @@
     <string name="title_home">Главная</string>
     <string name="title_media">Мои медиатеки</string>
     <string name="title_favorite">Избранное</string>
-    <string name="title_settings">Настройки</string>
-    <string name="title_download">Загрузки</string>
     <string name="view_all">Посмотреть все</string>
     <string name="error_loading_data">Ошибка загрузки данных</string>
     <string name="retry">Повторить</string>
@@ -28,34 +26,13 @@
     <string name="no_favorites">У вас нет избранного</string>
     <string name="search">Поиск</string>
     <string name="no_search_results">Нет результатов</string>
-    <string name="settings_category_language">Язык</string>
-    <string name="settings_preferred_audio_language">Предпочитаемый язык аудио</string>
-    <string name="settings_category_servers">Сервера</string>
-    <string name="settings_category_player">Проигрыватель</string>
-    <string name="settings_category_download">Загрузки</string>
-    <string name="settings_category_appearance">Внешний вид</string>
     <string name="device_name">Имя устройства</string>
-    <string name="settings_category_cache">Кэш</string>
-    <string name="settings_cache_size">Размер кэша (МБ)</string>
-    <string name="settings_cache_size_message">Приложение будет использовать этот объём памяти для хранения изображений с сервера Jellyfin. Большие значения могут быть полезны при медленном соединении.</string>
-    <string name="theme">Тема</string>
     <string name="error_preparing_player_items">Ошибка при подготовке элементов проигрывателя.</string>
     <string name="view_details">Детали</string>
     <string name="view_details_underlined"><u>Детали</u></string>
-    <string name="privacy_policy">Политика конфиденциальности</string>
-    <string name="about">О приложении</string>
-    <string name="app_info">Информация о приложении</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="search_hint">Поиск кино, сериалов, эпизодов…</string>
     <string name="no_downloads">Вы ничего не скачивали</string>
-    <string name="settings_preferred_subtitle_language">Предпочитаемый язык субтитров</string>
-    <string name="settings_category_device">Устройство</string>
-    <string name="settings_use_cache_title">Кэшировать изображения</string>
-    <string name="settings_use_cache_summary">Кэшировать изображения в памяти устройства для ускорения загрузок. Требуется перезапуск приложения.</string>
-    <string name="mpv_player">Проигрыватель mpv</string>
-    <string name="download_mobile_data">Скачивать через мобильный интернет</string>
-    <string name="download_roaming">Скачивать в роуминге</string>
-    <string name="mpv_player_summary">Использовать экспериментальный проигрыватель mpv для воспроизведения видео. mpv поддерживает больше форматов видео, аудио и субтитров.</string>
     <string name="download_button_description">Скачать</string>
     <string name="person_detail_title">Детали</string>
     <string name="movies_label">Фильмы</string>
@@ -66,12 +43,6 @@
     <string name="sort_order">Порядок сортировки</string>
     <string name="share">Поделиться</string>
     <string name="image_description_poster">%1$s постер</string>
-    <string name="gestures">Жесты</string>
-    <string name="player_gestures">Жесты проигрывателя</string>
-    <string name="player_gestures_vb">Жесты громкости и яркости</string>
-    <string name="player_gestures_zoom">Жесты масштаба</string>
-    <string name="player_gestures_vb_summary">Проведите пальцем вверх и вниз по правой стороне экрана для изменения громкости и по левой стороне для изменения яркости</string>
-    <string name="player_brightness_remember">Запоминать яркость</string>
     <string name="sort_by_options_0">Названию</string>
     <string name="sort_by_options_2">Родительскому рейтингу</string>
     <string name="sort_by_options_3">Дате добавления</string>
@@ -83,45 +54,19 @@
     <string name="sort_by_options_1">Рейтингу IMDB</string>
     <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>
-    <string name="seek_forward_increment">Шаг перемотки вперёд (мс)</string>
-    <string name="subtitles">Субтитры</string>
-    <string name="subtitles_summary">Изменить стиль субтитров</string>
-    <string name="theme_system">Как на устройстве</string>
-    <string name="theme_light">Светлая</string>
-    <string name="theme_dark">Тёмная</string>
-    <string name="pref_player_mpv_hwdec">Аппаратное декодирование</string>
-    <string name="pref_player_mpv_vo">Вывод видео</string>
-    <string name="pref_player_intro_skipper">Intro Skipper (Пропуск заставок)</string>
     <string name="addresses">Адреса</string>
     <string name="add_address">Добавить адрес</string>
     <string name="add_server_address">Добавить адрес сервера</string>
     <string name="add">Добавить</string>
     <string name="jellyfin_banner">Баннер Jellyfin</string>
-    <string name="seek_back_increment">Шаг перемотки назад (мс)</string>
-    <string name="settings_category_network">Сеть</string>
-    <string name="pref_player_mpv_ao">Вывод звука</string>
-    <string name="pref_player_intro_skipper_summary">Требуется, чтобы на сервере был установлен плагин Intro Skipper от jumoog</string>
     <string name="episodes_label">Эпизоды</string>
     <string name="image_description_backdrop">%1$s фон</string>
-    <string name="seeking">Перемотка</string>
-    <string name="player_gestures_zoom_summary">Ущипните, чтобы растянуть видео на весь экран</string>
-    <string name="dynamic_colors">Динамические цвета</string>
-    <string name="dynamic_colors_summary">Использовать динамические цвета Material You (доступно только на Android 12+)</string>
     <string name="libraries">Медиатеки</string>
-    <string name="settings_request_timeout">Время ожидания запроса (мс)</string>
-    <string name="settings_connect_timeout">Время ожидания соединения (мс)</string>
-    <string name="settings_socket_timeout">Время ожидания сокета (мс)</string>
     <string name="subtitle">Субтитры</string>
-    <string name="extra_info_summary">Показывает дополнительную информацию о Аудио, Видео и Субтитрах</string>
-    <string name="extra_info">Показывать дополнительную информацию</string>
     <string name="temp">temp</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="video">Видео</string>
     <string name="audio">Аудио</string>
-    <string name="player_gestures_seek_summary">Проведите горизонтально, чтобы перемотать вперёд или назад</string>
-    <string name="player_gestures_seek">Жест перемотки</string>
-    <string name="amoled_theme">Тёмная тема AMOLED</string>
-    <string name="amoled_theme_summary">Использовать тему AMOLED с чистым чёрным фоном</string>
     <string name="downloading_error">Ошибка во время скачивания</string>
     <string name="not_enough_storage">Для этого элемента требуется %1$s свободного места, но доступно только %2$s</string>
     <string name="no_server_connection">Нет соединения с сервером Jellyfin, для просмотра в автономном режиме включите Офлайн-Режим</string>
@@ -130,7 +75,6 @@
     <string name="select_storage_location">Выбрать место хранения</string>
     <string name="storage_unavailable">Место хранения недоступно</string>
     <string name="internal">Внутреннее</string>
-    <string name="offline_mode">Офлайн-Режим</string>
     <string name="offline_mode_icon">Иконка Офлайн-Режима</string>
     <string name="external">Внешнее</string>
     <string name="storage_name">%1$s (%2$d МБ свободно)</string>
@@ -142,7 +86,6 @@
     <string name="downloaded_indicator">Индикатор скачивания</string>
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
-    <string name="app_language">Язык приложения</string>
     <string name="remove_server_address">Удалить адрес сервера</string>
     <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
 </resources>

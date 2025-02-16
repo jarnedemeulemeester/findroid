@@ -11,12 +11,12 @@
     <string name="settings_category_cache">Cache</string>
     <string name="settings_use_cache_title">Cache images</string>
     <string name="settings_use_cache_summary">Cache images on disk to speed up loading times. Will take effect after app restart.</string>
-    <string name="settings_cache_size">Cache size (MB)</string>
+    <string name="settings_cache_size">Cache size</string>
     <string name="settings_cache_size_message">App will use this amount of MB of your disk space to store images from Jellyfin server. Larger values might be beneficial on slower networks.</string>
     <string name="settings_category_network">Network</string>
-    <string name="settings_request_timeout">Request timeout (ms)</string>
-    <string name="settings_connect_timeout">Connect timeout (ms)</string>
-    <string name="settings_socket_timeout">Socket timeout (ms)</string>
+    <string name="settings_request_timeout">Request timeout</string>
+    <string name="settings_connect_timeout">Connect timeout</string>
+    <string name="settings_socket_timeout">Socket timeout</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
@@ -46,8 +46,8 @@
     <string name="player_start_maximized">Start maximized</string>
     <string name="player_start_maximized_summary">Open video in maximized mode by default</string>
     <string name="seeking">Seeking</string>
-    <string name="seek_back_increment">Seek back increment (ms)</string>
-    <string name="seek_forward_increment">Seek forward increment (ms)</string>
+    <string name="seek_back_increment">Seek back increment</string>
+    <string name="seek_forward_increment">Seek forward increment</string>
     <string name="trickplay">Trickplay</string>
     <string name="users">Users</string>
     <string name="title_download">Downloads</string>
@@ -71,4 +71,7 @@
     <string name="app_language">App language</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="amoled_theme">AMOLED dark theme</string>
+    <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
 </resources>

@@ -42,8 +42,6 @@
     <string name="error_preparing_player_items">Error preparing player items.</string>
     <string name="view_details">View details</string>
     <string name="view_details_underlined"><u>View details</u></string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="app_info">App info</string>
     <string name="unknown_error">Unknown error</string>
   	<string name="search_hint">Search movies, shows, episodes…</string>
     <string name="download_button_description">Download</string>
@@ -70,8 +68,6 @@
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="amoled_theme">AMOLED dark theme</string>
-    <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
     <string name="addresses">Addresses</string>
     <string name="add_address">Add address</string>
     <string name="add_server_address">Add server address</string>
