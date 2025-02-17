@@ -3,22 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/twoPaneSettingsFragment">
+    app:startDestination="@+id/libraryFragment">
 
-    <fragment
-        android:id="@+id/twoPaneSettingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
-        android:label="@string/title_settings">
-        <action
-            android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
-            app:destination="@id/serverAddressesFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_about_libraries"
-            app:destination="@id/about_libraries" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment" />
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
