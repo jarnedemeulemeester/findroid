@@ -97,4 +97,5 @@
     <string name="play">播放</string>
     <string name="watch_trailer">观看预告</string>
     <string name="collection_no_media">该集合不包含任何媒体</string>
-    </resources>
+    <string name="show_stacktrace">显示堆栈跟踪</string>
+</resources>

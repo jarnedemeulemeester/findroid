@@ -97,4 +97,5 @@
     <string name="mark_as_played">Marcar como reproducido</string>
     <string name="unmark_as_played">Desmarca como reproducido</string>
     <string name="sort_by_options_6">Aleatorio</string>
+    <string name="users">Usuarios</string>
 </resources>
