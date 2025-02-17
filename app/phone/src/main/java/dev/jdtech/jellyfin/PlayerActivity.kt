@@ -41,6 +41,7 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -116,7 +117,7 @@ class PlayerActivity : BasePlayerActivity() {
         configureInsets(playerControls)
         configureInsets(lockedControls)
 
-        if (appPreferences.playerGestures) {
+        if (appPreferences.getValue(appPreferences.playerGestures)) {
             playerGestureHelper = PlayerGestureHelper(
                 appPreferences,
                 this,
@@ -183,7 +184,7 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             // Chapters
-                            if (appPreferences.showChapterMarkers && currentChapters != null) {
+                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters != null) {
                                 currentChapters?.let { chapters ->
                                     val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
                                     val numOfChapters = chapters.size
@@ -216,7 +217,7 @@ class PlayerActivity : BasePlayerActivity() {
                         when (event) {
                             is PlayerEvents.NavigateBack -> finishPlayback()
                             is PlayerEvents.IsPlayingChanged -> {
-                                if (appPreferences.playerPipGesture) {
+                                if (appPreferences.getValue(appPreferences.playerPipGesture)) {
                                     try {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
                                     } catch (_: IllegalArgumentException) { }
@@ -295,7 +296,7 @@ class PlayerActivity : BasePlayerActivity() {
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
         timeBar.setAdMarkerColor(Color.WHITE)
 
-        if (appPreferences.playerTrickplay) {
+        if (appPreferences.getValue(appPreferences.playerTrickplay)) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             previewScrubListener = PreviewScrubListener(
                 imagePreview,
@@ -329,7 +330,7 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
-            appPreferences.playerPipGesture &&
+            appPreferences.getValue(appPreferences.playerPipGesture) &&
             viewModel.player.isPlaying &&
             !isControlsLocked
         ) {
@@ -419,8 +420,8 @@ class PlayerActivity : BasePlayerActivity() {
 
                 // Override auto brightness
                 window.attributes = window.attributes.apply {
-                    screenBrightness = if (appPreferences.playerBrightnessRemember) {
-                        appPreferences.playerBrightness
+                    screenBrightness = if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+                        appPreferences.getValue(appPreferences.playerBrightness)
                     } else {
                         Settings.System.getInt(
                             contentResolver,

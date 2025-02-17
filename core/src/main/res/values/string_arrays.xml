@@ -13,17 +13,4 @@
         <item>@string/ascending</item>
         <item>@string/descending</item>
     </string-array>
-    <string-array name="mpv_hwdec">
-        <item>no</item>
-        <item>mediacodec</item>
-        <item>mediacodec-copy</item>
-    </string-array>
-    <string-array name="mpv_vos">
-        <item>gpu</item>
-        <item>gpu-next</item>
-    </string-array>
-    <string-array name="mpv_aos">
-        <item>audiotrack</item>
-        <item>opensles</item>
-    </string-array>
 </resources>

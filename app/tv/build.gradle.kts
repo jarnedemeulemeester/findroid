@@ -92,11 +92,11 @@ ktlint {
 dependencies {
     implementation(projects.core)
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.setup)
     implementation(projects.modes.film)
     implementation(projects.player.core)
     implementation(projects.player.video)
+    implementation(projects.settings)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)

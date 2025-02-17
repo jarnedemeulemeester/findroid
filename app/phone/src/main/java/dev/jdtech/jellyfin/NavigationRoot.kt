@@ -22,9 +22,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
+import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -56,6 +58,11 @@ data object HomeRoute
 
 @Serializable
 data object MediaRoute
+
+@Serializable
+data class SettingsRoute(
+    val indexes: IntArray,
+)
 
 data class TabBarItem(
     val title: String,
@@ -173,7 +180,12 @@ fun NavigationRoot(
             }
             composable<UsersRoute> { backStackEntry ->
                 UsersScreen(
-                    navigateToHome = {},
+                    navigateToHome = {
+                        navController.safeNavigate(FilmGraphRoute) {
+                            popUpTo(0)
+                            launchSingleTop = true
+                        }
+                    },
                     onChangeServerClick = {
                         navController.safeNavigate(ServersRoute) {
                             popUpTo(ServersRoute) {
@@ -216,11 +228,37 @@ fun NavigationRoot(
                 startDestination = HomeRoute,
             ) {
                 composable<HomeRoute> {
-                    HomeScreen()
+                    HomeScreen(
+                        onSettingsClick = {
+                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
+                        },
+                    )
                 }
                 composable<MediaRoute> {
-                    MediaScreen()
+                    MediaScreen(
+                        onSettingsClick = {
+                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
+                        },
+                    )
                 }
+            }
+            composable<SettingsRoute> { backStackEntry ->
+                val route: SettingsRoute = backStackEntry.toRoute()
+                SettingsScreen(
+                    indexes = route.indexes,
+                    navigateToSettings = { indexes ->
+                        navController.safeNavigate(SettingsRoute(indexes = indexes))
+                    },
+                    navigateToServers = {
+                        navController.safeNavigate(ServersRoute)
+                    },
+                    navigateToUsers = {
+                        navController.safeNavigate(UsersRoute)
+                    },
+                    navigateBack = {
+                        navController.safePopBackStack()
+                    },
+                )
             }
         }
     }

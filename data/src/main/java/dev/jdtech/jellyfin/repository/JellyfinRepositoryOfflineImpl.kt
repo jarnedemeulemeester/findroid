@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.repository
 
 import android.content.Context
 import androidx.paging.PagingData
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
@@ -20,6 +19,7 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -111,17 +111,17 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
-            val movies = database.searchMovies(appPreferences.currentServer!!, searchQuery).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-            val shows = database.searchShows(appPreferences.currentServer!!, searchQuery).map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-            val episodes = database.searchEpisodes(appPreferences.currentServer!!, searchQuery).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            val movies = database.searchMovies(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+            val shows = database.searchShows(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidShow(database, jellyfinApi.userId!!) }
+            val episodes = database.searchEpisodes(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
             movies + shows + episodes
         }
     }
 
     override suspend fun getResumeItems(): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
-            val movies = database.getMoviesByServerId(appPreferences.currentServer!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
-            val episodes = database.getEpisodesByServerId(appPreferences.currentServer!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+            val movies = database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+            val episodes = database.getEpisodesByServerId(appPreferences.getValue(appPreferences.currentServer)!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
             movies + episodes
         }
     }
@@ -138,7 +138,7 @@ class JellyfinRepositoryOfflineImpl(
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> {
         return withContext(Dispatchers.IO) {
             val result = mutableListOf<FindroidEpisode>()
-            val shows = database.getShowsByServerId(appPreferences.currentServer!!).filter {
+            val shows = database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!).filter {
                 if (seriesId != null) it.id == seriesId else true
             }
             for (show in shows) {
@@ -272,11 +272,11 @@ class JellyfinRepositoryOfflineImpl(
         withContext(Dispatchers.IO) {
             val items = mutableListOf<FindroidItem>()
             items.addAll(
-                database.getMoviesByServerId(appPreferences.currentServer!!)
+                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
                     .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.currentServer!!)
+                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
                     .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
             )
             items

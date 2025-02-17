@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.ViewItemPagingAdapter
 import dev.jdtech.jellyfin.databinding.FragmentLibraryBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
@@ -30,6 +29,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
@@ -154,9 +154,9 @@ class LibraryFragment : Fragment() {
                 if (viewModel.itemsloaded) return@repeatOnLifecycle
 
                 // Sorting options
-                val sortBy = SortBy.fromString(preferences.sortBy)
+                val sortBy = SortBy.fromString(preferences.getValue(preferences.sortBy))
                 val sortOrder = try {
-                    SortOrder.valueOf(preferences.sortOrder)
+                    SortOrder.valueOf(preferences.getValue(preferences.sortOrder))
                 } catch (e: IllegalArgumentException) {
                     SortOrder.ASCENDING
                 }

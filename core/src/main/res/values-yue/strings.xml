@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="jellyfin_banner">Jellyfin横幅</string>
     <string name="app_description">第三方原生Jellyfin应用程式</string>

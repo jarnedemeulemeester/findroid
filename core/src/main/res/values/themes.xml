@@ -53,18 +53,5 @@
         <item name="elevationOverlayEnabled">false</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
-        <item name="preferenceTheme">@style/ThemeOverlay.Findroid.Preference</item>
     </style>
-
-    <string-array name="themes">
-        <item>@string/theme_system</item>
-        <item>@string/theme_light</item>
-        <item>@string/theme_dark</item>
-    </string-array>
-
-    <string-array name="themes_value">
-        <item>system</item>
-        <item>light</item>
-        <item>dark</item>
-    </string-array>
 </resources>

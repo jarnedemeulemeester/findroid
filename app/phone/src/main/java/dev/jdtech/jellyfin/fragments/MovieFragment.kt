@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.adapters.PersonListAdapter
 import dev.jdtech.jellyfin.bindItemBackdropImage
@@ -36,6 +35,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
@@ -372,7 +372,7 @@ class MovieFragment : Fragment() {
 
             binding.subsChip.isVisible = subtitleString.isNotEmpty()
 
-            if (appPreferences.displayExtraInfo) {
+            if (appPreferences.getValue(appPreferences.displayExtraInfo)) {
                 binding.info.video.text = videoString
                 binding.info.videoGroup.isVisible = videoString.isNotEmpty()
                 binding.info.audio.text = audioString

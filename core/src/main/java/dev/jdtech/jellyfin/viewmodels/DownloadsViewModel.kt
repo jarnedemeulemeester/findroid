@@ -3,14 +3,14 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.Constants
+import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +45,7 @@ constructor(
     private fun testServerConnection() {
         viewModelScope.launch {
             try {
-                if (appPreferences.offlineMode) return@launch
+                if (appPreferences.getValue(appPreferences.offlineMode)) return@launch
                 repository.getPublicSystemInfo()
                 // Give the UI a chance to load
                 delay(100)

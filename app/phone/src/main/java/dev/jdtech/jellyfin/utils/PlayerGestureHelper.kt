@@ -22,13 +22,13 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
-import dev.jdtech.jellyfin.AppPreferences
-import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.isControlsLocked
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import kotlin.math.abs
@@ -93,7 +93,7 @@ class PlayerGestureHelper(
 
                 // This is a temporary solution for chapter skipping.
                 // TODO: Remove this after implementing #636
-                if (appPreferences.playerGesturesChapterSkip) {
+                if (appPreferences.getValue(appPreferences.playerGesturesChapterSkip)) {
                     handleChapterSkip(e)
                 } else {
                     enableSpeedIncrease()
@@ -182,14 +182,14 @@ class PlayerGestureHelper(
 
     private fun fastForward() {
         val currentPosition = playerView.player?.currentPosition ?: 0
-        val fastForwardPosition = currentPosition + appPreferences.playerSeekForwardIncrement
+        val fastForwardPosition = currentPosition + appPreferences.getValue(appPreferences.playerSeekForwardInc)
         seekTo(fastForwardPosition)
         animateRipple(activity.binding.imageFfwdAnimationRipple)
     }
 
     private fun rewind() {
         val currentPosition = playerView.player?.currentPosition ?: 0
-        val rewindPosition = currentPosition - appPreferences.playerSeekBackIncrement
+        val rewindPosition = currentPosition - appPreferences.getValue(appPreferences.playerSeekBackInc)
         seekTo(rewindPosition.coerceAtLeast(0))
         animateRipple(activity.binding.imageRewindAnimationRipple)
     }
@@ -275,7 +275,7 @@ class PlayerGestureHelper(
                         activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
 
-                        if (appPreferences.playerGesturesSeekTrickplay) {
+                        if (appPreferences.getValue(appPreferences.playerGesturesSeekTrickplay)) {
                             if (currentTrickplay != null) {
                                 activity.binding.progressScrubberTrickplay.visibility = View.VISIBLE
                                 updateTrickplayImage(newPos)
@@ -382,8 +382,8 @@ class PlayerGestureHelper(
 
     private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
-        if (appPreferences.playerBrightnessRemember) {
-            appPreferences.playerBrightness = activity.window.attributes.screenBrightness
+        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+            appPreferences.setValue(appPreferences.playerBrightness, activity.window.attributes.screenBrightness)
         }
     }
 
@@ -509,11 +509,11 @@ class PlayerGestureHelper(
     }
 
     init {
-        if (appPreferences.playerBrightnessRemember) {
-            activity.window.attributes.screenBrightness = appPreferences.playerBrightness
+        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+            activity.window.attributes.screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
         }
 
-        updateZoomMode(appPreferences.playerStartMaximized)
+        updateZoomMode(appPreferences.getValue(appPreferences.playerGesturesStartMaximized))
 
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
@@ -522,11 +522,11 @@ class PlayerGestureHelper(
                 when (event.pointerCount) {
                     1 -> {
                         tapGestureDetector.onTouchEvent(event)
-                        if (appPreferences.playerGesturesVB) vbGestureDetector.onTouchEvent(event)
-                        if (appPreferences.playerGesturesSeek) seekGestureDetector.onTouchEvent(event)
+                        if (appPreferences.getValue(appPreferences.playerGesturesVB)) vbGestureDetector.onTouchEvent(event)
+                        if (appPreferences.getValue(appPreferences.playerGesturesSeek)) seekGestureDetector.onTouchEvent(event)
                     }
                     2 -> {
-                        if (appPreferences.playerGesturesZoom) zoomGestureDetector.onTouchEvent(event)
+                        if (appPreferences.getValue(appPreferences.playerGesturesZoom)) zoomGestureDetector.onTouchEvent(event)
                     }
                 }
             }

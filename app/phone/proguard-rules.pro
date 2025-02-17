@@ -25,15 +25,6 @@
 # Keep class names of all classes for easy debugging (and fix navigation route checking)
 -keepnames class dev.jdtech.jellyfin.** { *; }
 
-# ProGuard thinks all SettingsFragments are unused
--keep class dev.jdtech.jellyfin.fragments.SettingsLanguageFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsAppearanceFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsDownloadsFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsPlayerFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsDeviceFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsCacheFragment
--keep class dev.jdtech.jellyfin.fragments.SettingsNetworkFragment
-
 # These classes are from okhttp and are not used in Android
 -dontwarn org.bouncycastle.jsse.BCSSLSocket
 -dontwarn org.bouncycastle.jsse.BCSSLParameters

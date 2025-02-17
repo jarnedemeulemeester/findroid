@@ -107,11 +107,12 @@ aboutLibraries {
 dependencies {
     implementation(projects.core)
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.player.core)
     implementation(projects.player.video)
     implementation(projects.setup)
     implementation(projects.modes.film)
+    implementation(projects.settings)
+
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries)
     implementation(libs.androidx.activity)
@@ -137,7 +138,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.paging)
-    implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)

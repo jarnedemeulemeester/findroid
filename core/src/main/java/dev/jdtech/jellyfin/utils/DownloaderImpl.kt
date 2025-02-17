@@ -7,7 +7,6 @@ import android.os.Environment
 import android.os.StatFs
 import android.text.format.Formatter
 import androidx.core.net.toUri
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -26,6 +25,7 @@ import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
@@ -72,7 +72,7 @@ class DownloaderImpl(
             }
             when (item) {
                 is FindroidMovie -> {
-                    database.insertMovie(item.toFindroidMovieDto(appPreferences.currentServer!!))
+                    database.insertMovie(item.toFindroidMovieDto(appPreferences.getValue(appPreferences.currentServer)))
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
@@ -84,8 +84,8 @@ class DownloaderImpl(
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.downloadOverMobileData)
-                        .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                        .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
+                        .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                         .setDestinationUri(path)
                     val downloadId = downloadManager.enqueue(request)
@@ -96,12 +96,12 @@ class DownloaderImpl(
                 is FindroidEpisode -> {
                     database.insertShow(
                         jellyfinRepository.getShow(item.seriesId)
-                            .toFindroidShowDto(appPreferences.currentServer!!),
+                            .toFindroidShowDto(appPreferences.getValue(appPreferences.currentServer)),
                     )
                     database.insertSeason(
                         jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto(),
                     )
-                    database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.currentServer!!))
+                    database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.getValue(appPreferences.currentServer)))
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
@@ -113,8 +113,8 @@ class DownloaderImpl(
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.downloadOverMobileData)
-                        .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                        .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
+                        .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                         .setDestinationUri(path)
                     val downloadId = downloadManager.enqueue(request)
@@ -219,8 +219,8 @@ class DownloaderImpl(
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
             val request = DownloadManager.Request(Uri.parse(mediaStream.path))
                 .setTitle(mediaStream.title)
-                .setAllowedOverMetered(appPreferences.downloadOverMobileData)
-                .setAllowedOverRoaming(appPreferences.downloadWhenRoaming)
+                .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
+                .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                 .setDestinationUri(streamPath)
             val downloadId = downloadManager.enqueue(request)

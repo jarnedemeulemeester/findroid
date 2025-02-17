@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.EpisodeBottomSheetBinding
@@ -33,6 +32,7 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.utils.setIconTintColorAttribute
 import dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetEvent
@@ -296,7 +296,7 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             }
             binding.missingIcon.isVisible = false
 
-            if (appPreferences.displayExtraInfo) {
+            if (appPreferences.getValue(appPreferences.displayExtraInfo)) {
                 size?.let { binding.size.text = it }
                 binding.size.isVisible = size != null
             }

@@ -50,8 +50,8 @@ ktlint {
 
 dependencies {
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.player.core)
+    implementation(projects.settings)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
@@ -59,7 +59,6 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.paging)
-    implementation(libs.androidx.preference)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.work)
     implementation(libs.hilt.android)
