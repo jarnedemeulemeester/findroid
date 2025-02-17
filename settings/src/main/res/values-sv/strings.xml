@@ -54,4 +54,21 @@
     <string name="pref_player_mpv_hwdec">Hårdvaruavkodning</string>
     <string name="pref_player_intro_skipper">Introskippare</string>
     <string name="pref_player_intro_skipper_summary">Kräver jumoog Intro Skipper-plugin installerat på servern</string>
+    <string name="offline_mode">Offlineläge</string>
+    <string name="pref_player_trickplay_summary">Visa förhandsgranskningsbilder medan du skrubbar</string>
+    <string name="users">Användare</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="picture_in_picture_gesture">Bild-i-bild hem gest</string>
+    <string name="picture_in_picture_gesture_summary">Använd hemknappen eller gesten för att ange bild-i-bild medan videon spelas upp</string>
+    <string name="picture_in_picture">Bild-i-bild</string>
+    <string name="app_language">Appens språk</string>
+    <string name="pref_player_chapter_markers">Kapitelmarkörer</string>
+    <string name="pref_player_chapter_markers_summary">Visa kapitelmarkörer på tidsfältet</string>
+    <string name="pref_player_gestures_seek_trickplay">Trickplay på sökgest</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Visa förhandsgranskningsbilder vid sökgest</string>
+    <string name="trickplay">Trickplay</string>
+    <string name="player_start_maximized">Börja maximerad</string>
+    <string name="player_gestures_chapter_skip">Kapitel gest</string>
+    <string name="player_gestures_chapter_skip_summary">Tryck länge på vänster/höger sida för att hoppa över kapitel (åsidosätter 2x hastighetsgest)</string>
+    <string name="player_start_maximized_summary">Öppna video i maximerat läge som standard</string>
 </resources>
