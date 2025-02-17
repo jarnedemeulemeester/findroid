@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,17 +25,24 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.C.DEFAULT_SEEK_BACK_INCREMENT_MS
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.Constants
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceCategoryLabel
+import dev.jdtech.jellyfin.models.PreferenceLong
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.SettingsCategoryCard
-import dev.jdtech.jellyfin.ui.components.SettingsDetailsCard
+import dev.jdtech.jellyfin.ui.components.SettingsCategoryLabel
+import dev.jdtech.jellyfin.ui.components.SettingsDetailsLongCard
+import dev.jdtech.jellyfin.ui.components.SettingsDetailsSelectCard
+import dev.jdtech.jellyfin.ui.components.SettingsLongCard
 import dev.jdtech.jellyfin.ui.components.SettingsSelectCard
 import dev.jdtech.jellyfin.ui.components.SettingsSwitchCard
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
@@ -73,6 +80,9 @@ fun SettingsSubScreen(
             }
             is PreferenceSelect -> {
                 settingsViewModel.setString(preference.backendName, preference.value)
+            }
+            is PreferenceLong -> {
+                settingsViewModel.setString(preference.backendName, preference.value.toString())
             }
         }
         settingsViewModel.loadPreferences(indexes)
@@ -128,8 +138,11 @@ private fun SettingsSubScreenLayout(
                             .weight(1f)
                             .focusRequester(focusRequester),
                     ) {
-                        items(uiState.preferences) { preference ->
+                        itemsIndexed(uiState.preferences) { index, preference ->
                             when (preference) {
+                                is PreferenceCategoryLabel -> SettingsCategoryLabel(
+                                    preference = preference,
+                                )
                                 is PreferenceCategory -> SettingsCategoryCard(
                                     preference = preference,
                                     modifier = Modifier.onFocusChanged {
@@ -173,25 +186,50 @@ private fun SettingsSubScreenLayout(
                                         }
                                     }
                                 }
+                                is PreferenceLong -> {
+                                    SettingsLongCard(
+                                        preference = preference,
+                                        modifier = Modifier.onFocusChanged {
+                                            if (it.isFocused) {
+                                                focusedPreference = preference
+                                            }
+                                        },
+                                    ) {
+                                        onUpdate(preference.copy(value = preference.value))
+                                    }
+                                }
                             }
                         }
                     }
                     Box(
                         modifier = Modifier.weight(2f),
                     ) {
-                        (focusedPreference as? PreferenceSelect)?.let {
-                            SettingsDetailsCard(
-                                preference = it,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(bottom = MaterialTheme.spacings.large),
-                                onOptionSelected = { value ->
-                                    println(value)
-                                    val newPreference = it.copy(value = value)
-                                    onUpdate(newPreference)
-                                    focusedPreference = newPreference
-                                },
-                            )
+                        focusedPreference.let {
+                            when (it) {
+                                is PreferenceSelect -> SettingsDetailsSelectCard(
+                                    preference = it,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(bottom = MaterialTheme.spacings.large),
+                                    onOptionSelected = { value ->
+                                        println(value)
+                                        val newPreference = it.copy(value = value)
+                                        onUpdate(newPreference)
+                                        focusedPreference = newPreference
+                                    },
+                                )
+                                is PreferenceLong -> SettingsDetailsLongCard(
+                                    preference = it,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(bottom = MaterialTheme.spacings.large),
+                                    onValueUpdate = { value ->
+                                        val newPreference = it.copy(value = value)
+                                        onUpdate(newPreference)
+                                        focusedPreference = newPreference
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -213,12 +251,20 @@ private fun SettingsSubScreenLayoutPreview() {
         SettingsSubScreenLayout(
             uiState = SettingsViewModel.UiState.Normal(
                 listOf(
+                    PreferenceCategoryLabel(nameStringResource = R.string.mpv_player),
                     PreferenceSelect(
                         nameStringResource = CoreR.string.pref_player_mpv_hwdec,
                         backendName = Constants.PREF_PLAYER_MPV_HWDEC,
                         backendDefaultValue = "mediacodec",
                         options = CoreR.array.mpv_hwdec,
                         optionValues = CoreR.array.mpv_hwdec,
+                    ),
+                    PreferenceCategoryLabel(nameStringResource = R.string.seeking),
+                    PreferenceLong(
+                        nameStringResource = R.string.seek_back_increment,
+                        backendName = Constants.PREF_PLAYER_SEEK_BACK_INC,
+                        backendDefaultValue = DEFAULT_SEEK_BACK_INCREMENT_MS,
+                        value = DEFAULT_SEEK_BACK_INCREMENT_MS,
                     ),
                 ),
             ),

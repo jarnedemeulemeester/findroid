@@ -2,12 +2,16 @@ package dev.jdtech.jellyfin.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C.DEFAULT_SEEK_BACK_INCREMENT_MS
+import androidx.media3.common.C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.Preference
 import dev.jdtech.jellyfin.models.PreferenceCategory
+import dev.jdtech.jellyfin.models.PreferenceCategoryLabel
+import dev.jdtech.jellyfin.models.PreferenceLong
 import dev.jdtech.jellyfin.models.PreferenceSelect
 import dev.jdtech.jellyfin.models.PreferenceSwitch
 import kotlinx.coroutines.channels.Channel
@@ -79,6 +83,7 @@ constructor(
                 }
             },
             nestedPreferences = listOf(
+                PreferenceCategoryLabel(nameStringResource = R.string.mpv_player),
                 PreferenceSwitch(
                     nameStringResource = R.string.mpv_player,
                     descriptionStringRes = R.string.mpv_player_summary,
@@ -108,6 +113,17 @@ constructor(
                     backendDefaultValue = "audiotrack",
                     options = R.array.mpv_aos,
                     optionValues = R.array.mpv_aos,
+                ),
+                PreferenceCategoryLabel(nameStringResource = R.string.seeking),
+                PreferenceLong(
+                    nameStringResource = R.string.seek_back_increment,
+                    backendName = Constants.PREF_PLAYER_SEEK_BACK_INC,
+                    backendDefaultValue = DEFAULT_SEEK_BACK_INCREMENT_MS,
+                ),
+                PreferenceLong(
+                    nameStringResource = R.string.seek_forward_increment,
+                    backendName = Constants.PREF_PLAYER_SEEK_FORWARD_INC,
+                    backendDefaultValue = DEFAULT_SEEK_FORWARD_INCREMENT_MS,
                 ),
             ),
         ),
@@ -188,6 +204,15 @@ constructor(
                         preference.copy(
                             enabled = preference.dependencies.all { getBoolean(it, false) },
                             value = getString(preference.backendName, preference.backendDefaultValue),
+                        )
+                    }
+                    is PreferenceLong -> {
+                        preference.copy(
+                            enabled = preference.dependencies.all { getBoolean(it, false) },
+                            value = getString(
+                                preference.backendName,
+                                preference.backendDefaultValue.toString(),
+                            )!!.toLongOrNull() ?: preference.backendDefaultValue,
                         )
                     }
                     else -> preference

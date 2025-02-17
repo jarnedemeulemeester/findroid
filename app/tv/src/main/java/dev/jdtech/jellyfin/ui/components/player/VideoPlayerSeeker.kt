@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.media3.common.C
 import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
 import androidx.tv.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -33,6 +35,8 @@ fun VideoPlayerSeeker(
     onSeek: (Float) -> Unit,
     contentProgress: Duration,
     contentDuration: Duration,
+    seekBackIncrement: Duration,
+    seekForwardIncrement: Duration,
 ) {
     val contentProgressString =
         contentProgress.toComponents { h, m, s, _ ->
@@ -91,7 +95,10 @@ fun VideoPlayerSeeker(
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             VideoPlayerSeekBar(
-                progress = (contentProgress / contentDuration).toFloat(),
+                contentProgress = contentProgress,
+                contentDuration = contentDuration,
+                seekBackIncrement = seekBackIncrement,
+                seekForwardIncrement = seekForwardIncrement,
                 onSeek = onSeek,
                 state = state,
             )
@@ -111,6 +118,8 @@ private fun VideoPlayerSeekerPreview() {
             onSeek = {},
             contentProgress = Duration.parse("7m 51s"),
             contentDuration = Duration.parse("23m 40s"),
+            seekBackIncrement = C.DEFAULT_SEEK_BACK_INCREMENT_MS.milliseconds,
+            seekForwardIncrement = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS.milliseconds,
         )
     }
 }
