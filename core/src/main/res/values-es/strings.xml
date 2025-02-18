@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_description">Aplicación nativa de terceros para Jellyfin</string>
     <string name="jellyfin_banner">Emblema Jellyfin</string>
@@ -99,4 +99,8 @@
     <string name="sort_by_options_6">Aleatorio</string>
     <string name="show_stacktrace">Mostrar pila de llamadas</string>
     <string name="users">Usuarios</string>
+    <string name="offline_mode">Modo fuera de línea</string>
+    <string name="not_set">No establecido</string>
+    <string name="title_download">Descargas</string>
+    <string name="title_settings">Preferencias</string>
 </resources>
