@@ -48,6 +48,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import org.jellyfin.sdk.model.api.SortOrder
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -64,24 +65,30 @@ fun LibraryScreen(
     var sortBy by rememberSaveable {
         mutableStateOf(SortBy.NAME)
     }
+    var sortOrder by rememberSaveable {
+        mutableStateOf(SortOrder.ASCENDING)
+    }
 
-    LaunchedEffect(sortBy) {
+    LaunchedEffect(sortBy, sortOrder) {
         viewModel.loadItems(
             parentId = libraryId,
             libraryType = libraryType,
             sortBy = sortBy,
+            sortOrder = sortOrder,
         )
     }
 
     LibraryScreenLayout(
         libraryName = libraryName,
         sortBy = sortBy,
+        sortOrder = sortOrder,
         state = state,
         onAction = { action ->
             when (action) {
                 is LibraryAction.OnBackClick -> navigateBack()
                 is LibraryAction.ChangeSorting -> {
                     sortBy = action.sortBy
+                    sortOrder = action.sortOrder
                 }
                 else -> Unit
             }
@@ -94,6 +101,7 @@ fun LibraryScreen(
 private fun LibraryScreenLayout(
     libraryName: String,
     sortBy: SortBy,
+    sortOrder: SortOrder,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
@@ -189,9 +197,9 @@ private fun LibraryScreenLayout(
     if (showSortByDialog) {
         SortByDialog(
             currentSortBy = sortBy,
-            onUpdate = { sortBy ->
-                showSortByDialog = false
-                onAction(LibraryAction.ChangeSorting(sortBy))
+            currentSortOrder = sortOrder,
+            onUpdate = { sortBy, sortOrder ->
+                onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
             onDismissRequest = {
                 showSortByDialog = false
@@ -207,6 +215,7 @@ private fun LibraryScreenLayoutPreview() {
         LibraryScreenLayout(
             libraryName = "Movies",
             sortBy = SortBy.NAME,
+            sortOrder = SortOrder.ASCENDING,
             state = LibraryState(),
             onAction = {},
         )
