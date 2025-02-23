@@ -42,6 +42,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
+import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
@@ -54,6 +56,7 @@ import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeScreen(
+    onLibraryClick: (library: FindroidCollection) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -67,6 +70,7 @@ fun HomeScreen(
         state = state,
         onAction = { action ->
             when (action) {
+                is HomeAction.OnLibraryClick -> onLibraryClick(action.library)
                 is HomeAction.OnSettingsClick -> onSettingsClick()
                 else -> Unit
             }
@@ -180,7 +184,18 @@ private fun HomeScreenLayout(
                             style = MaterialTheme.typography.titleMedium,
                         )
                         TextButton(
-                            onClick = {},
+                            onClick = {
+                                onAction(
+                                    HomeAction.OnLibraryClick(
+                                        FindroidCollection(
+                                            id = view.view.id,
+                                            name = view.view.name,
+                                            images = FindroidImages(),
+                                            type = view.view.type,
+                                        ),
+                                    ),
+                                )
+                            },
                             modifier = Modifier.align(Alignment.CenterEnd),
                         ) {
                             Text(stringResource(CoreR.string.view_all))

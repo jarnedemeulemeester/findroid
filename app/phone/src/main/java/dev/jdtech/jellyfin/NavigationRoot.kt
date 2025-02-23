@@ -239,6 +239,9 @@ fun NavigationRoot(
             ) {
                 composable<HomeRoute> {
                     HomeScreen(
+                        onLibraryClick = {
+                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                        },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
