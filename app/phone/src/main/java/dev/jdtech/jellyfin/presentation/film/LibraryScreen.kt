@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,7 +23,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
@@ -77,17 +75,10 @@ private fun LibraryScreenLayout(
     val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
     val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
 
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> 320.dp
-        WindowWidthSizeClass.MEDIUM -> 240.dp
-        else -> 160.dp
-    }
-
     val items = state.items.collectAsLazyPagingItems()
 
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = minColumnSize),
+        columns = GridCells.Adaptive(minSize = 160.dp),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = paddingStart,
