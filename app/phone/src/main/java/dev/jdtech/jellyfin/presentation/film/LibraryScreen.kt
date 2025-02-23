@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,8 +42,10 @@ import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
+import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import java.util.UUID
@@ -58,26 +61,28 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var isFirstLoad by rememberSaveable {
-        mutableStateOf(true)
+    var sortBy by rememberSaveable {
+        mutableStateOf(SortBy.NAME)
     }
 
-    LaunchedEffect(true) {
-        if (isFirstLoad) {
-            isFirstLoad = false
-            viewModel.loadItems(
-                parentId = libraryId,
-                libraryType = libraryType,
-            )
-        }
+    LaunchedEffect(sortBy) {
+        viewModel.loadItems(
+            parentId = libraryId,
+            libraryType = libraryType,
+            sortBy = sortBy,
+        )
     }
 
     LibraryScreenLayout(
         libraryName = libraryName,
+        sortBy = sortBy,
         state = state,
         onAction = { action ->
             when (action) {
                 is LibraryAction.OnBackClick -> navigateBack()
+                is LibraryAction.ChangeSorting -> {
+                    sortBy = action.sortBy
+                }
                 else -> Unit
             }
         },
@@ -88,6 +93,7 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
+    sortBy: SortBy,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
@@ -107,6 +113,10 @@ private fun LibraryScreenLayout(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    var showSortByDialog by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -124,6 +134,18 @@ private fun LibraryScreenLayout(
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
+                            contentDescription = null,
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            showSortByDialog = true
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_arrow_down_up),
                             contentDescription = null,
                         )
                     }
@@ -163,6 +185,19 @@ private fun LibraryScreenLayout(
             }
         }
     }
+
+    if (showSortByDialog) {
+        SortByDialog(
+            currentSortBy = sortBy,
+            onUpdate = { sortBy ->
+                showSortByDialog = false
+                onAction(LibraryAction.ChangeSorting(sortBy))
+            },
+            onDismissRequest = {
+                showSortByDialog = false
+            },
+        )
+    }
 }
 
 @PreviewScreenSizes
@@ -171,6 +206,7 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
+            sortBy = SortBy.NAME,
             state = LibraryState(),
             onAction = {},
         )
