@@ -3,23 +3,34 @@ package dev.jdtech.jellyfin.presentation.film
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,12 +46,14 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun LibraryScreen(
     libraryId: UUID,
     libraryName: String,
     libraryType: CollectionType,
+    navigateBack: () -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,10 +75,16 @@ fun LibraryScreen(
     LibraryScreenLayout(
         libraryName = libraryName,
         state = state,
-        onAction = {},
+        onAction = { action ->
+            when (action) {
+                is LibraryAction.OnBackClick -> navigateBack()
+                else -> Unit
+            }
+        },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
@@ -76,50 +95,71 @@ private fun LibraryScreenLayout(
     val layoutDirection = LocalLayoutDirection.current
 
     val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
     val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
-    val paddingTop = safePaddingTop + MaterialTheme.spacings.default
+    val paddingTop = MaterialTheme.spacings.default
     val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
     val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
 
     val items = state.items.collectAsLazyPagingItems()
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = paddingStart,
-            top = paddingTop,
-            end = paddingEnd,
-            bottom = paddingBottom,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Text(
-                text = libraryName,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.displayLarge,
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(libraryName)
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            onAction(LibraryAction.OnBackClick)
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_arrow_left),
+                            contentDescription = null,
+                        )
+                    }
+                },
+                windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
+                scrollBehavior = scrollBehavior,
             )
-        }
-        items(
-            count = items.itemCount,
-            key = items.itemKey { it.id },
+        },
+    ) { innerPadding ->
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
+                top = paddingTop + innerPadding.calculateTopPadding(),
+                end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
+                bottom = paddingBottom + innerPadding.calculateBottomPadding(),
+            ),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         ) {
-            val item = items[it]
-            item?.let { item ->
-                ItemCard(
-                    item = item,
-                    direction = Direction.VERTICAL,
-                    onClick = {
-                        onAction(LibraryAction.OnItemClick(item))
-                    },
-                    modifier = Modifier.animateItem(),
-                )
+            items(
+                count = items.itemCount,
+                key = items.itemKey { it.id },
+            ) {
+                val item = items[it]
+                item?.let { item ->
+                    ItemCard(
+                        item = item,
+                        direction = Direction.VERTICAL,
+                        onClick = {
+                            onAction(LibraryAction.OnItemClick(item))
+                        },
+                        modifier = Modifier.animateItem(),
+                    )
+                }
             }
         }
     }

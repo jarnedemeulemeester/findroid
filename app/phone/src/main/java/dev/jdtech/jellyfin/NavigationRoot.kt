@@ -263,6 +263,9 @@ fun NavigationRoot(
                         libraryId = UUID.fromString(route.libraryId),
                         libraryName = route.libraryName,
                         libraryType = route.libraryType,
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
                     )
                 }
             }

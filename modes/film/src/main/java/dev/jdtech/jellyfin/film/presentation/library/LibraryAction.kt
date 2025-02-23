@@ -4,4 +4,5 @@ import dev.jdtech.jellyfin.models.FindroidItem
 
 sealed interface LibraryAction {
     data class OnItemClick(val item: FindroidItem) : LibraryAction
+    data object OnBackClick : LibraryAction
 }
