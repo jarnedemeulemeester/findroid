@@ -14,6 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,11 +45,18 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    var isFirstLoad by rememberSaveable {
+        mutableStateOf(true)
+    }
+
     LaunchedEffect(true) {
-        viewModel.loadItems(
-            parentId = libraryId,
-            libraryType = libraryType,
-        )
+        if (isFirstLoad) {
+            isFirstLoad = false
+            viewModel.loadItems(
+                parentId = libraryId,
+                libraryType = libraryType,
+            )
+        }
     }
 
     LibraryScreenLayout(
