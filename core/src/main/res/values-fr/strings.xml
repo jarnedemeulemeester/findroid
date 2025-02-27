@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="remove">Supprimer</string>
     <string name="cancel">Annuler</string>
@@ -97,4 +97,8 @@
     <string name="mark_as_played">Marquer comme joué</string>
     <string name="remove_from_favorites">Retirer des favoris</string>
     <string name="sort_by_options_6">Aléatoire</string>
+    <string name="title_settings">Paramètres</string>
+    <string name="title_download">Téléchargements</string>
+    <string name="not_set">Non définie</string>
+    <string name="offline_mode">Mode hors ligne</string>
 </resources>
