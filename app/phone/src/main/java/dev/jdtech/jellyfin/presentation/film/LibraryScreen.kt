@@ -69,13 +69,26 @@ fun LibraryScreen(
         mutableStateOf(SortOrder.ASCENDING)
     }
 
+    var lastSortBy by rememberSaveable {
+        mutableStateOf<SortBy?>(null)
+    }
+
+    var lastSortOrder by rememberSaveable {
+        mutableStateOf<SortOrder?>(null)
+    }
+
     LaunchedEffect(sortBy, sortOrder) {
-        viewModel.loadItems(
-            parentId = libraryId,
-            libraryType = libraryType,
-            sortBy = sortBy,
-            sortOrder = sortOrder,
-        )
+        // Prevent data reset on configuration change (screen rotation)
+        if (sortBy != lastSortBy || sortOrder != lastSortOrder) {
+            viewModel.loadItems(
+                parentId = libraryId,
+                libraryType = libraryType,
+                sortBy = sortBy,
+                sortOrder = sortOrder,
+            )
+            lastSortBy = sortBy
+            lastSortOrder = sortOrder
+        }
     }
 
     LibraryScreenLayout(
