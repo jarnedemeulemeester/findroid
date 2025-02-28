@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.models
 
 enum class SortBy(val sortString: String) {
     NAME("SortName"),
-    Random("Random"),
     IMDB_RATING("CommunityRating"),
     PARENTAL_RATING("CriticRating"),
     DATE_ADDED("DateCreated"),
@@ -17,7 +16,7 @@ enum class SortBy(val sortString: String) {
         fun fromString(string: String): SortBy {
             return try {
                 valueOf(string)
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 defaultValue
             }
         }

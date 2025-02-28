@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
@@ -44,6 +45,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun MediaScreen(
+    onItemClick: (FindroidCollection) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
 ) {
@@ -57,6 +59,7 @@ fun MediaScreen(
         state = state,
         onAction = { action ->
             when (action) {
+                is MediaAction.OnItemClick -> onItemClick(action.item)
                 is MediaAction.OnSettingsClick -> onSettingsClick()
                 else -> Unit
             }

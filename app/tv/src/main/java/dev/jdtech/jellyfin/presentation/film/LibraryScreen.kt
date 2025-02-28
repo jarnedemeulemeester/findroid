@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +21,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
+import dev.jdtech.jellyfin.film.presentation.library.LibraryState
+import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -30,7 +32,6 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
-import dev.jdtech.jellyfin.viewmodels.LibraryViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
@@ -49,11 +50,11 @@ fun LibraryScreen(
         libraryViewModel.loadItems(libraryId, libraryType)
     }
 
-    val delegatedUiState by libraryViewModel.uiState.collectAsState()
+    val state by libraryViewModel.state.collectAsState()
 
     LibraryScreenLayout(
         libraryName = libraryName,
-        uiState = delegatedUiState,
+        state = state,
         onClick = { item ->
             when (item) {
                 is FindroidMovie -> navigateToMovie(item.id)
@@ -67,50 +68,44 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
-    uiState: LibraryViewModel.UiState,
+    state: LibraryState,
     onClick: (FindroidItem) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-
-    when (uiState) {
-        is LibraryViewModel.UiState.Loading -> Text(text = "LOADING")
-        is LibraryViewModel.UiState.Normal -> {
-            val items = uiState.items.collectAsLazyPagingItems()
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(5),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .focusRequester(focusRequester),
-            ) {
-                item(span = { GridItemSpan(this.maxLineSpan) }) {
-                    Text(
-                        text = libraryName,
-                        style = MaterialTheme.typography.displayMedium,
-                    )
-                }
-                items(items.itemCount) { i ->
-                    val item = items[i]
-                    item?.let {
-                        ItemCard(
-                            item = item,
-                            direction = Direction.VERTICAL,
-                            onClick = {
-                                onClick(item)
-                            },
-                        )
-                    }
-                }
-            }
-            LaunchedEffect(items.itemCount > 0) {
-                if (items.itemCount > 0) {
-                    focusRequester.requestFocus()
-                }
+    val items = state.items.collectAsLazyPagingItems()
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(5),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
+        modifier = Modifier
+            .fillMaxSize()
+            .focusRequester(focusRequester),
+    ) {
+        item(span = { GridItemSpan(this.maxLineSpan) }) {
+            Text(
+                text = libraryName,
+                style = MaterialTheme.typography.displayMedium,
+            )
+        }
+        items(items.itemCount) { i ->
+            val item = items[i]
+            item?.let {
+                ItemCard(
+                    item = item,
+                    direction = Direction.VERTICAL,
+                    onClick = {
+                        onClick(item)
+                    },
+                )
             }
         }
-        is LibraryViewModel.UiState.Error -> Text(text = uiState.error.toString())
+    }
+
+    LaunchedEffect(items.itemCount > 0) {
+        if (items.itemCount > 0) {
+            focusRequester.requestFocus()
+        }
     }
 }
 
@@ -121,7 +116,7 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
-            uiState = LibraryViewModel.UiState.Normal(data),
+            state = LibraryState(),
             onClick = {},
         )
     }
