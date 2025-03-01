@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -55,6 +54,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
 import org.jellyfin.sdk.model.api.SortOrder
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -200,7 +200,7 @@ private fun LibraryScreenLayout(
                     ),
             )
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 160.dp),
+                columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
