@@ -1,12 +1,15 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
@@ -36,6 +39,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
@@ -43,7 +48,9 @@ import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
+import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -176,32 +183,49 @@ private fun LibraryScreenLayout(
             )
         },
     ) { innerPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 160.dp),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
-                top = paddingTop + innerPadding.calculateTopPadding(),
-                end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
-                bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-            ),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+        Column(
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
         ) {
-            items(
-                count = items.itemCount,
-                key = items.itemKey { it.id },
+            ErrorGroup(
+                loadStates = items.loadState,
+                onRefresh = {
+                    items.refresh()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = paddingStart,
+                        top = paddingTop,
+                        end = paddingEnd,
+                    ),
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 160.dp),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
+                    top = paddingTop,
+                    end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
+                    bottom = paddingBottom + innerPadding.calculateBottomPadding(),
+                ),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
-                val item = items[it]
-                item?.let { item ->
-                    ItemCard(
-                        item = item,
-                        direction = Direction.VERTICAL,
-                        onClick = {
-                            onAction(LibraryAction.OnItemClick(item))
-                        },
-                        modifier = Modifier.animateItem(),
-                    )
+                items(
+                    count = items.itemCount,
+                    key = items.itemKey { it.id },
+                ) {
+                    val item = items[it]
+                    item?.let { item ->
+                        ItemCard(
+                            item = item,
+                            direction = Direction.VERTICAL,
+                            onClick = {
+                                onAction(LibraryAction.OnItemClick(item))
+                            },
+                            modifier = Modifier.animateItem(),
+                        )
+                    }
                 }
             }
         }
@@ -218,6 +242,40 @@ private fun LibraryScreenLayout(
                 showSortByDialog = false
             },
         )
+    }
+}
+
+@Composable
+private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+
+    val loadStateError = when {
+        loadStates.refresh is LoadState.Error -> {
+            loadStates.refresh as LoadState.Error
+        }
+        loadStates.prepend is LoadState.Error -> {
+            loadStates.prepend as LoadState.Error
+        }
+        loadStates.append is LoadState.Error -> {
+            loadStates.append as LoadState.Error
+        }
+        else -> null
+    }
+
+    loadStateError?.let {
+        ErrorCard(
+            onShowStacktrace = {
+                showErrorDialog = true
+            },
+            onRetryClick = onRefresh,
+            modifier = modifier,
+        )
+        if (showErrorDialog) {
+            ErrorDialog(
+                exception = it.error,
+                onDismissRequest = { showErrorDialog = false },
+            )
+        }
     }
 }
 

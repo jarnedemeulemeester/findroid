@@ -32,7 +32,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ErrorDialog(
-    exception: Exception,
+    exception: Throwable,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
