@@ -92,8 +92,10 @@ constructor(
     fun onAction(action: LibraryAction) {
         when (action) {
             is LibraryAction.ChangeSorting -> {
-                setSorting(sortBy = action.sortBy, sortOrder = action.sortOrder)
-                loadItems()
+                if (action.sortBy != this.sortBy || action.sortOrder != this.sortOrder) {
+                    setSorting(sortBy = action.sortBy, sortOrder = action.sortOrder)
+                    loadItems()
+                }
             }
             else -> Unit
         }
