@@ -15,16 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -39,6 +33,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.RadioButton
+import androidx.tv.material3.Surface
+import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -78,11 +77,11 @@ fun SortByDialog(
     Dialog(
         onDismissRequest = { onDismissRequest() },
     ) {
-        Card(
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 540.dp),
-            shape = RoundedCornerShape(28.dp),
+            shape = MaterialTheme.shapes.large,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -91,7 +90,7 @@ fun SortByDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = MaterialTheme.spacings.default),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 SingleChoiceSegmentedButtonRow(
@@ -176,6 +175,7 @@ private fun SortByDialogItem(
             onClick = {
                 onSelect(option.first)
             },
+            modifier = Modifier.padding(MaterialTheme.spacings.default / 2),
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
         Text(

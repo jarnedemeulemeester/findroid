@@ -40,12 +40,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
@@ -55,6 +58,8 @@ import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.jellyfin.sdk.model.api.SortOrder
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -282,12 +287,13 @@ private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, mo
 @PreviewScreenSizes
 @Composable
 private fun LibraryScreenLayoutPreview() {
+    val items: Flow<PagingData<FindroidItem>> = flowOf(PagingData.from(dummyMovies))
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
             sortBy = SortBy.NAME,
             sortOrder = SortOrder.ASCENDING,
-            state = LibraryState(),
+            state = LibraryState(items = items),
             onAction = {},
         )
     }
