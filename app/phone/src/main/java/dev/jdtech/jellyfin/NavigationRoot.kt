@@ -24,7 +24,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
+import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
+import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -33,6 +35,7 @@ import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
+import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Serializable
@@ -58,6 +61,13 @@ data object HomeRoute
 
 @Serializable
 data object MediaRoute
+
+@Serializable
+data class LibraryRoute(
+    val libraryId: String,
+    val libraryName: String,
+    val libraryType: CollectionType,
+)
 
 @Serializable
 data class SettingsRoute(
@@ -229,6 +239,9 @@ fun NavigationRoot(
             ) {
                 composable<HomeRoute> {
                     HomeScreen(
+                        onLibraryClick = {
+                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                        },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
@@ -236,8 +249,22 @@ fun NavigationRoot(
                 }
                 composable<MediaRoute> {
                     MediaScreen(
+                        onItemClick = {
+                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                        },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
+                        },
+                    )
+                }
+                composable<LibraryRoute> { backStackEntry ->
+                    val route: LibraryRoute = backStackEntry.toRoute()
+                    LibraryScreen(
+                        libraryId = UUID.fromString(route.libraryId),
+                        libraryName = route.libraryName,
+                        libraryType = route.libraryType,
+                        navigateBack = {
+                            navController.safePopBackStack()
                         },
                     )
                 }

@@ -3,47 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/libraryFragment">
+    app:startDestination="@+id/showFragment">
 
-    <fragment
-        android:id="@+id/libraryFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
-        android:label="{libraryName}"
-        tools:layout="@layout/fragment_library">
-        <argument
-            android:name="libraryId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="libraryName"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_libraryFragment_to_showFragment"
-            app:destination="@id/showFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_libraryFragment_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_libraryFragment_to_collectionFragment"
-            app:destination="@id/collectionFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <argument
-            android:name="libraryType"
-            app:argType="dev.jdtech.jellyfin.models.CollectionType" />
-        <action
-            android:id="@+id/action_libraryFragment_self"
-            app:destination="@id/libraryFragment" />
-    </fragment>
     <fragment
         android:id="@+id/showFragment"
         android:name="dev.jdtech.jellyfin.fragments.ShowFragment"

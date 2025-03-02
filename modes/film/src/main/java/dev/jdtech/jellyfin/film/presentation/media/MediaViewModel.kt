@@ -13,7 +13,7 @@ import javax.inject.Inject
 class MediaViewModel
 @Inject
 constructor(
-    val repository: JellyfinRepository,
+    private val repository: JellyfinRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MediaState())
     val state = _state.asStateFlow()
