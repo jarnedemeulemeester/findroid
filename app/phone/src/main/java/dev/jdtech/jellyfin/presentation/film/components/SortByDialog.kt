@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -82,7 +82,10 @@ fun SortByDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 540.dp),
-            shape = RoundedCornerShape(28.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ),
         ) {
             Column {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -101,15 +104,18 @@ fun SortByDialog(
                 ) {
                     orderOptions.forEachIndexed { index, order ->
                         SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = orderOptions.size,
-                            ),
+                            selected = order.first == selectedOrder,
                             onClick = {
                                 selectedOrder = order.first
                                 onUpdate(selectedOption, selectedOrder)
                             },
-                            selected = order.first == selectedOrder,
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = orderOptions.size,
+                            ),
+                            colors = SegmentedButtonDefaults.colors(
+                                inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            ),
                             icon = {
                                 AnimatedVisibility(
                                     visible = order.first == selectedOrder,
