@@ -41,7 +41,6 @@ import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -49,7 +48,6 @@ import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.jellyfin.sdk.model.api.SortOrder
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -65,39 +63,23 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    var sortBy by rememberSaveable {
-        mutableStateOf(SortBy.NAME)
-    }
-    var sortOrder by rememberSaveable {
-        mutableStateOf(SortOrder.ASCENDING)
+    var initialLoad by rememberSaveable {
+        mutableStateOf(true)
     }
 
-    var lastSortBy by rememberSaveable {
-        mutableStateOf<SortBy?>(null)
-    }
-
-    var lastSortOrder by rememberSaveable {
-        mutableStateOf<SortOrder?>(null)
-    }
-
-    LaunchedEffect(sortBy, sortOrder) {
-        // Prevent data reset on configuration change (screen rotation)
-        if (sortBy != lastSortBy || sortOrder != lastSortOrder) {
-            viewModel.loadItems(
-                parentId = libraryId,
-                libraryType = libraryType,
-                sortBy = sortBy,
-                sortOrder = sortOrder,
-            )
-            lastSortBy = sortBy
-            lastSortOrder = sortOrder
+    LaunchedEffect(true) {
+        viewModel.setup(
+            parentId = libraryId,
+            libraryType = libraryType,
+        )
+        if (initialLoad) {
+            viewModel.loadItems()
+            initialLoad = false
         }
     }
 
     LibraryScreenLayout(
         libraryName = libraryName,
-        sortBy = sortBy,
-        sortOrder = sortOrder,
         state = state,
         onAction = { action ->
             when (action) {
@@ -108,12 +90,9 @@ fun LibraryScreen(
                         is FindroidFolder -> navigateToLibrary(action.item.id, action.item.name, libraryType)
                     }
                 }
-                is LibraryAction.ChangeSorting -> {
-                    sortBy = action.sortBy
-                    sortOrder = action.sortOrder
-                }
                 else -> Unit
             }
+            viewModel.onAction(action)
         },
     )
 }
@@ -121,8 +100,6 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
-    sortBy: SortBy,
-    sortOrder: SortOrder,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
@@ -186,8 +163,8 @@ private fun LibraryScreenLayout(
 
     if (showSortByDialog) {
         SortByDialog(
-            currentSortBy = sortBy,
-            currentSortOrder = sortOrder,
+            currentSortBy = state.sortBy,
+            currentSortOrder = state.sortOrder,
             onUpdate = { sortBy, sortOrder ->
                 onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
@@ -211,8 +188,6 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
-            sortBy = SortBy.NAME,
-            sortOrder = SortOrder.ASCENDING,
             state = LibraryState(items = items),
             onAction = {},
         )

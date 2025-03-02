@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,16 +21,26 @@ class LibraryViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
+    private val appPreferences: AppPreferences,
 ) : ViewModel() {
     private val _state = MutableStateFlow(LibraryState())
     val state = _state.asStateFlow()
 
-    fun loadItems(
+    lateinit var parentId: UUID
+    lateinit var libraryType: CollectionType
+
+    lateinit var sortBy: SortBy
+    lateinit var sortOrder: SortOrder
+
+    fun setup(
         parentId: UUID,
         libraryType: CollectionType,
-        sortBy: SortBy = SortBy.defaultValue,
-        sortOrder: SortOrder = SortOrder.ASCENDING,
     ) {
+        this.parentId = parentId
+        this.libraryType = libraryType
+    }
+
+    fun loadItems() {
         val itemType = when (libraryType) {
             CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
             CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
@@ -42,6 +53,9 @@ constructor(
 
         viewModelScope.launch {
             _state.emit(_state.value.copy(isLoading = true, error = null))
+
+            initSorting()
+
             try {
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
@@ -54,6 +68,34 @@ constructor(
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }
+        }
+    }
+
+    private suspend fun initSorting() {
+        if (!::sortBy.isInitialized || !::sortOrder.isInitialized) {
+            sortBy = SortBy.fromString(appPreferences.getValue(appPreferences.sortBy))
+            sortOrder = SortOrder.fromName(appPreferences.getValue(appPreferences.sortOrder))
+            _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
+        }
+    }
+
+    private fun setSorting(sortBy: SortBy, sortOrder: SortOrder) {
+        this.sortBy = sortBy
+        this.sortOrder = sortOrder
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
+            appPreferences.setValue(appPreferences.sortBy, sortBy.toString())
+            appPreferences.setValue(appPreferences.sortOrder, sortOrder.toString())
+        }
+    }
+
+    fun onAction(action: LibraryAction) {
+        when (action) {
+            is LibraryAction.ChangeSorting -> {
+                setSorting(sortBy = action.sortBy, sortOrder = action.sortOrder)
+                loadItems()
+            }
+            else -> Unit
         }
     }
 }
