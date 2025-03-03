@@ -51,7 +51,9 @@ data object AddServerRoute
 data object UsersRoute
 
 @Serializable
-data object LoginRoute
+data class LoginRoute(
+    val username: String? = null,
+)
 
 @Serializable
 data object FilmGraphRoute
@@ -164,7 +166,7 @@ fun NavigationRoot(
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(
                     navigateToLogin = {
-                        navController.safeNavigate(LoginRoute)
+                        navController.safeNavigate(LoginRoute())
                     },
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
@@ -181,7 +183,7 @@ fun NavigationRoot(
             composable<AddServerRoute> {
                 AddServerScreen(
                     onSuccess = {
-                        navController.safeNavigate(LoginRoute)
+                        navController.safeNavigate(UsersRoute)
                     },
                     onBackClick = {
                         navController.safePopBackStack()
@@ -205,15 +207,19 @@ fun NavigationRoot(
                         }
                     },
                     onAddClick = {
-                        navController.safeNavigate(LoginRoute)
+                        navController.safeNavigate(LoginRoute())
                     },
                     onBackClick = {
                         navController.safePopBackStack()
                     },
+                    onPublicUserClick = { username ->
+                        navController.safeNavigate(LoginRoute(username = username))
+                    },
                     showBack = navController.previousBackStackEntry != null,
                 )
             }
-            composable<LoginRoute> {
+            composable<LoginRoute> { backStackEntry ->
+                val route: LoginRoute = backStackEntry.toRoute()
                 LoginScreen(
                     onSuccess = {
                         navController.safeNavigate(FilmGraphRoute) {
@@ -232,6 +238,7 @@ fun NavigationRoot(
                     onBackClick = {
                         navController.safePopBackStack()
                     },
+                    prefilledUsername = route.username,
                 )
             }
             navigation<FilmGraphRoute>(

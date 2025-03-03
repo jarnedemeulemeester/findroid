@@ -58,7 +58,9 @@ data object AddServerRoute
 data object UsersRoute
 
 @Serializable
-data object LoginRoute
+data class LoginRoute(
+    val username: String? = null,
+)
 
 @Serializable
 data object MainRoute
@@ -129,7 +131,7 @@ fun NavigationRoot(
         composable<ServersRoute> {
             ServersScreen(
                 navigateToLogin = {
-                    navController.navigate(LoginRoute)
+                    navController.navigate(LoginRoute())
                 },
                 navigateToUsers = {
                     navController.navigate(UsersRoute)
@@ -142,7 +144,7 @@ fun NavigationRoot(
         composable<AddServerRoute> {
             AddServerScreen(
                 onSuccess = {
-                    navController.navigate(LoginRoute)
+                    navController.navigate(UsersRoute)
                 },
             )
         }
@@ -164,11 +166,15 @@ fun NavigationRoot(
                     }
                 },
                 onAddClick = {
-                    navController.navigate(LoginRoute)
+                    navController.navigate(LoginRoute())
+                },
+                onPublicUserClick = { username ->
+                    navController.navigate(LoginRoute(username = username))
                 },
             )
         }
-        composable<LoginRoute> {
+        composable<LoginRoute> { backStackEntry ->
+            val route: LoginRoute = backStackEntry.toRoute()
             LoginScreen(
                 onSuccess = {
                     navController.navigate(MainRoute) {
@@ -185,6 +191,7 @@ fun NavigationRoot(
                         launchSingleTop = true
                     }
                 },
+                prefilledUsername = route.username,
             )
         }
         composable<MainRoute> {

@@ -58,6 +58,7 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 fun LoginScreen(
     onSuccess: () -> Unit,
     onChangeServerClick: () -> Unit,
+    prefilledUsername: String? = null,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -83,6 +84,7 @@ fun LoginScreen(
             }
             viewModel.onAction(action)
         },
+        prefilledUsername = prefilledUsername,
     )
 }
 
@@ -90,9 +92,10 @@ fun LoginScreen(
 private fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
+    prefilledUsername: String? = null,
 ) {
     var username by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(prefilledUsername ?: "")
     }
     var password by rememberSaveable {
         mutableStateOf("")

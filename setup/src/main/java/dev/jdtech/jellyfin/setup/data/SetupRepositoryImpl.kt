@@ -236,6 +236,16 @@ class SetupRepositoryImpl(
         return database.getUsers(serverId)
     }
 
+    override suspend fun getPublicUsers(serverId: String): List<User> {
+        return jellyfinApi.userApi.getPublicUsers().content.mapNotNull {
+            User(
+                id = it.id,
+                name = it.name ?: return@mapNotNull null,
+                serverId = serverId,
+            )
+        }
+    }
+
     override suspend fun getCurrentUser(): User? {
         val currentServer = getCurrentServer() ?: return null
         return database.getServerCurrentUser(currentServer.id)

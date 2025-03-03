@@ -63,6 +63,7 @@ fun LoginScreen(
     onSuccess: () -> Unit,
     onChangeServerClick: () -> Unit,
     onBackClick: () -> Unit,
+    prefilledUsername: String? = null,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -89,6 +90,7 @@ fun LoginScreen(
             }
             viewModel.onAction(action)
         },
+        prefilledUsername = prefilledUsername,
     )
 }
 
@@ -96,10 +98,11 @@ fun LoginScreen(
 private fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
+    prefilledUsername: String? = null,
 ) {
     val scrollState = rememberScrollState()
     var username by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(prefilledUsername ?: "")
     }
     var password by rememberSaveable {
         mutableStateOf("")

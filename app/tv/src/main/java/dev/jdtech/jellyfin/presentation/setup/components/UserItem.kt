@@ -36,6 +36,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun UserItem(
     user: User,
+    modifier: Modifier = Modifier,
     onClick: (User) -> Unit = {},
     baseUrl: String = "",
 ) {
@@ -43,7 +44,7 @@ fun UserItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .width(120.dp),
     ) {
         Surface(

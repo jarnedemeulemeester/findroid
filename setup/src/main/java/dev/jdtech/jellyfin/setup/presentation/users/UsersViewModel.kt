@@ -28,8 +28,14 @@ constructor(
         viewModelScope.launch {
             val server = repository.getCurrentServer() ?: return@launch
             val users = repository.getUsers(server.id)
+            val userIds = users.map { it.id }
 
             _state.emit(UsersState(users = users, serverName = server.name))
+
+            try {
+                val publicUsers = repository.getPublicUsers(server.id)
+                _state.emit(_state.value.copy(publicUsers = publicUsers.filterNot { userIds.contains(it.id) }))
+            } catch (_: Exception) {}
         }
     }
 

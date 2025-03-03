@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -64,11 +65,12 @@ fun UserItem(name: String, modifier: Modifier = Modifier, onClick: () -> Unit = 
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 private fun UserItemPreview() {
     FindroidTheme {
         UserItem(
             name = "Bob",
+            modifier = Modifier.width(240.dp),
         )
     }
 }
