@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 import android.app.Application
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
@@ -12,6 +13,7 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
+import dev.jdtech.jellyfin.core.services.ConnectivityService
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,6 +51,8 @@ class BaseApplication : Application(), Configuration.Provider, ImageLoaderFactor
         if (appPreferences.getValue(appPreferences.dynamicColors)) {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
+
+        startService(Intent(applicationContext, ConnectivityService::class.java))
     }
 
     override fun newImageLoader(): ImageLoader {
