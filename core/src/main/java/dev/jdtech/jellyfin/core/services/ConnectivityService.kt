@@ -30,8 +30,10 @@ class ConnectivityService : Service() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
     @Inject
     lateinit var jellyfinApi: JellyfinApi
+
     @Inject
     lateinit var serverDatabase: ServerDatabaseDao
 
@@ -109,7 +111,7 @@ class ConnectivityService : Service() {
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
-        startId: Int
+        startId: Int,
     ): Int {
         Timber.d("Starting service...")
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
