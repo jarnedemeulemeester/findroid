@@ -83,13 +83,18 @@ private fun AddServerScreenLayout(
     state: AddServerState,
     onAction: (AddServerAction) -> Unit,
 ) {
+    val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+
     var serverAddress by rememberSaveable {
         mutableStateOf("")
     }
-    val context = LocalContext.current
 
-    val focusRequester = remember { FocusRequester() }
     val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
+    }
 
     Box(
         modifier = Modifier
@@ -191,10 +196,6 @@ private fun AddServerScreenLayout(
                 }
             }
         }
-    }
-
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
     }
 }
 
