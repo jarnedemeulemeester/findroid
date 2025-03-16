@@ -31,9 +31,11 @@ fun ServerItem(
     name: String,
     address: String,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     Surface(
         onClick = onClick,
+        onLongClick = onLongClick,
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color(0xFF132026),
             focusedContainerColor = Color(0xFF132026),
