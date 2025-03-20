@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin横幅</string>
     <string name="writers">作者</string>
@@ -98,4 +98,8 @@
     <string name="watch_trailer">观看预告</string>
     <string name="collection_no_media">该集合不包含任何媒体</string>
     <string name="show_stacktrace">显示堆栈跟踪</string>
+    <string name="title_settings">设置</string>
+    <string name="title_download">下载</string>
+    <string name="not_set">未设置</string>
+    <string name="offline_mode">离线模式</string>
 </resources>
