@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -161,6 +164,26 @@ fun SettingsNumberInputDialog(
                     ),
                     singleLine = true,
                 )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = onDismissRequest,
+                    ) {
+                        Text(
+                            text = stringResource(SettingsR.string.cancel),
+                        )
+                    }
+                    TextButton(
+                        onClick = { onUpdate(textFieldValue.text) },
+                    ) {
+                        Text(
+                            text = stringResource(SettingsR.string.save),
+                        )
+                    }
+                }
             }
         }
     }

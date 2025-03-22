@@ -74,4 +74,6 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="amoled_theme">AMOLED dark theme</string>
     <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>
