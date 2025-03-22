@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -177,15 +176,9 @@ private fun EpisodeBottomSheetLayout(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        FilledIconButton(
-                            onClick = {},
-                            modifier = Modifier.width(72.dp).padding(end = 4.dp),
-                        ) {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_play),
-                                contentDescription = null,
-                            )
-                        }
+                        PlayButton(
+                            item = episode,
+                        )
                         FilledTonalIconButton(
                             onClick = {},
                         ) {
@@ -199,6 +192,15 @@ private fun EpisodeBottomSheetLayout(
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_heart),
+                                contentDescription = null,
+                            )
+                        }
+                        FilledTonalIconButton(
+                            onClick = {},
+                            enabled = false,
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_download),
                                 contentDescription = null,
                             )
                         }
