@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,9 +44,11 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
+import dev.jdtech.jellyfin.presentation.film.components.EpisodeBottomSheet
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
@@ -109,6 +112,7 @@ private fun HomeScreenLayout(
     )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var selectedEpisode: FindroidEpisode? by remember { mutableStateOf(null) }
 
     Box(
         modifier = Modifier
@@ -162,7 +166,13 @@ private fun HomeScreenLayout(
                             ItemCard(
                                 item = item,
                                 direction = Direction.HORIZONTAL,
-                                onClick = {},
+                                onClick = {
+                                    when (item) {
+                                        is FindroidEpisode -> {
+                                            selectedEpisode = item
+                                        }
+                                    }
+                                },
                             )
                         }
                     }
@@ -240,6 +250,15 @@ private fun HomeScreenLayout(
                 )
             }
         }
+    }
+
+    if (selectedEpisode != null) {
+        EpisodeBottomSheet(
+            selectedEpisode!!.id,
+            onDismissRequest = {
+                selectedEpisode = null
+            },
+        )
     }
 }
 
