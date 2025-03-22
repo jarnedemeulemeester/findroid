@@ -26,13 +26,16 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun PlayButton(
     item: FindroidItem,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     val runtimeMinutes by remember(item.playbackPositionTicks) {
         mutableLongStateOf(item.playbackPositionTicks.div(600000000))
     }
     if (runtimeMinutes > 0) {
         Button(
-            onClick = {},
+            onClick = onClick,
+            enabled = enabled,
         ) {
             Icon(
                 painter = painterResource(CoreR.drawable.ic_play),
@@ -45,8 +48,9 @@ fun PlayButton(
         }
     } else {
         FilledIconButton(
-            onClick = {},
+            onClick = onClick,
             modifier = Modifier.width(72.dp).padding(end = 4.dp),
+            enabled = enabled,
         ) {
             Icon(
                 painter = painterResource(CoreR.drawable.ic_play),
@@ -62,6 +66,7 @@ private fun PlayButtonPreview() {
     FindroidTheme {
         PlayButton(
             item = dummyMovie,
+            onClick = {},
         )
     }
 }

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,12 +41,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -55,15 +61,37 @@ fun EpisodeBottomSheet(
     episodeId: UUID,
     onDismissRequest: () -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
         viewModel.loadEpisode(episodeId = episodeId)
     }
 
+    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is PlayerItemsEvent.PlayerItemsReady -> {
+                val intent = Intent(context, PlayerActivity::class.java)
+                intent.putExtra("items", ArrayList(event.items))
+                context.startActivity(intent)
+            }
+            is PlayerItemsEvent.PlayerItemsError -> Unit
+        }
+    }
+
     EpisodeBottomSheetLayout(
         state = state,
+        onAction = { action ->
+            when (action) {
+                is EpisodeAction.OnPlayClick -> {
+                    state.episode?.let { episode ->
+                        playerViewModel.loadPlayerItems(episode)
+                    }
+                }
+            }
+        },
         onDismissRequest = onDismissRequest,
     )
 }
@@ -72,6 +100,7 @@ fun EpisodeBottomSheet(
 @Composable
 private fun EpisodeBottomSheetLayout(
     state: EpisodeState,
+    onAction: (EpisodeAction) -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
 ) {
@@ -178,6 +207,9 @@ private fun EpisodeBottomSheetLayout(
                     ) {
                         PlayButton(
                             item = episode,
+                            onClick = {
+                                onAction(EpisodeAction.OnPlayClick)
+                            },
                         )
                         FilledTonalIconButton(
                             onClick = {},
@@ -225,6 +257,7 @@ private fun EpisodeBottomSheetLayoutPreview() {
             state = EpisodeState(
                 episode = dummyEpisode,
             ),
+            onAction = {},
             onDismissRequest = {},
             sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),
         )
