@@ -36,11 +36,12 @@ class PlayerViewModel @Inject internal constructor(
     fun loadPlayerItems(
         item: FindroidItem,
         mediaSourceIndex: Int? = null,
+        startFromBeginning: Boolean = false,
     ) {
         Timber.d("Loading player items for item ${item.id}")
 
         viewModelScope.launch {
-            val playbackPosition = item.playbackPositionTicks.div(10000)
+            val playbackPosition = if (!startFromBeginning) item.playbackPositionTicks.div(10000) else 0
 
             try {
                 val items = prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)

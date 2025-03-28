@@ -93,10 +93,10 @@ fun EpisodeBottomSheet(
         isLoadingPlayer = isLoadingPlayer,
         onAction = { action ->
             when (action) {
-                is EpisodeAction.OnPlayClick -> {
+                is EpisodeAction.Play -> {
                     isLoadingPlayer = true
                     state.episode?.let { episode ->
-                        playerViewModel.loadPlayerItems(episode)
+                        playerViewModel.loadPlayerItems(episode, startFromBeginning = action.startFromBeginning)
                     }
                 }
                 else -> Unit
@@ -220,13 +220,15 @@ private fun EpisodeBottomSheetLayout(
                         PlayButton(
                             item = episode,
                             onClick = {
-                                onAction(EpisodeAction.OnPlayClick)
+                                onAction(EpisodeAction.Play())
                             },
                             isLoading = isLoadingPlayer,
                         )
                         if (episode.playbackPositionTicks.div(600000000) > 0) {
                             FilledTonalIconButton(
-                                onClick = {},
+                                onClick = {
+                                    onAction(EpisodeAction.Play(startFromBeginning = true))
+                                },
                             ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_rotate_ccw),
