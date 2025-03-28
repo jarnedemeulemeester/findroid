@@ -2,10 +2,13 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +31,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun PlayButton(
     item: FindroidItem,
     onClick: () -> Unit,
-    enabled: Boolean = true,
+    isLoading: Boolean = false,
 ) {
     val runtimeMinutes by remember(item.playbackPositionTicks) {
         mutableLongStateOf(item.playbackPositionTicks.div(600000000))
@@ -37,12 +40,22 @@ fun PlayButton(
         Button(
             onClick = onClick,
             modifier = Modifier.padding(end = 4.dp),
-            enabled = enabled,
+            enabled = !isLoading,
         ) {
-            Icon(
-                painter = painterResource(CoreR.drawable.ic_play),
-                contentDescription = null,
-            )
+            when (isLoading) {
+                true -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = LocalContentColor.current,
+                    )
+                }
+                false -> {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_play),
+                        contentDescription = null,
+                    )
+                }
+            }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
             Text(
                 text = stringResource(CoreR.string.runtime_minutes, runtimeMinutes),
@@ -52,12 +65,22 @@ fun PlayButton(
         FilledIconButton(
             onClick = onClick,
             modifier = Modifier.width(72.dp).padding(end = 4.dp),
-            enabled = enabled,
+            enabled = !isLoading,
         ) {
-            Icon(
-                painter = painterResource(CoreR.drawable.ic_play),
-                contentDescription = null,
-            )
+            when (isLoading) {
+                true -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = LocalContentColor.current,
+                    )
+                }
+                false -> {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_play),
+                        contentDescription = null,
+                    )
+                }
+            }
         }
     }
 }
