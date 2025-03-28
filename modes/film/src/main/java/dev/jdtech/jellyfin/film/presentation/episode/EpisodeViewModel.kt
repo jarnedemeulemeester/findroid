@@ -19,7 +19,10 @@ constructor(
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.asStateFlow()
 
+    lateinit var episodeId: UUID
+
     fun loadEpisode(episodeId: UUID) {
+        this.episodeId = episodeId
         viewModelScope.launch {
             try {
                 val episode = repository.getEpisode(episodeId)
@@ -27,6 +30,36 @@ constructor(
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }
+        }
+    }
+
+    fun onAction(action: EpisodeAction) {
+        when (action) {
+            is EpisodeAction.MarkAsPlayed -> {
+                viewModelScope.launch {
+                    repository.markAsPlayed(episodeId)
+                    loadEpisode(episodeId)
+                }
+            }
+            is EpisodeAction.UnmarkAsPlayed -> {
+                viewModelScope.launch {
+                    repository.markAsUnplayed(episodeId)
+                    loadEpisode(episodeId)
+                }
+            }
+            is EpisodeAction.MarkAsFavorite -> {
+                viewModelScope.launch {
+                    repository.markAsFavorite(episodeId)
+                    loadEpisode(episodeId)
+                }
+            }
+            is EpisodeAction.UnmarkAsFavorite -> {
+                viewModelScope.launch {
+                    repository.unmarkAsFavorite(episodeId)
+                    loadEpisode(episodeId)
+                }
+            }
+            else -> Unit
         }
     }
 }

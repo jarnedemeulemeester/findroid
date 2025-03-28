@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -35,6 +36,7 @@ fun PlayButton(
     if (runtimeMinutes > 0) {
         Button(
             onClick = onClick,
+            modifier = Modifier.padding(end = 4.dp),
             enabled = enabled,
         ) {
             Icon(
@@ -62,10 +64,21 @@ fun PlayButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun PlayButtonPreview() {
+private fun PlayButtonMoviePreview() {
     FindroidTheme {
         PlayButton(
             item = dummyMovie,
+            onClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlayButtonEpisodePreview() {
+    FindroidTheme {
+        PlayButton(
+            item = dummyEpisode,
             onClick = {},
         )
     }

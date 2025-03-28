@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -90,7 +91,9 @@ fun EpisodeBottomSheet(
                         playerViewModel.loadPlayerItems(episode)
                     }
                 }
+                else -> Unit
             }
+            viewModel.onAction(action)
         },
         onDismissRequest = onDismissRequest,
     )
@@ -211,30 +214,63 @@ private fun EpisodeBottomSheetLayout(
                                 onAction(EpisodeAction.OnPlayClick)
                             },
                         )
+                        if (episode.playbackPositionTicks.div(600000000) > 0) {
+                            FilledTonalIconButton(
+                                onClick = {},
+                            ) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                    contentDescription = null,
+                                )
+                            }
+                        }
                         FilledTonalIconButton(
-                            onClick = {},
+                            onClick = {
+                                when (episode.played) {
+                                    true -> onAction(EpisodeAction.UnmarkAsPlayed)
+                                    false -> onAction(EpisodeAction.MarkAsPlayed)
+                                }
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_check),
                                 contentDescription = null,
+                                tint = if (episode.played) Color.Red else LocalContentColor.current,
                             )
                         }
                         FilledTonalIconButton(
-                            onClick = {},
+                            onClick = {
+                                when (episode.favorite) {
+                                    true -> onAction(EpisodeAction.UnmarkAsFavorite)
+                                    false -> onAction(EpisodeAction.MarkAsFavorite)
+                                }
+                            },
                         ) {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_heart),
-                                contentDescription = null,
-                            )
+                            when (episode.favorite) {
+                                true -> {
+                                    Icon(
+                                        painter = painterResource(CoreR.drawable.ic_heart_filled),
+                                        contentDescription = null,
+                                        tint = Color.Red,
+                                    )
+                                }
+                                false -> {
+                                    Icon(
+                                        painter = painterResource(CoreR.drawable.ic_heart),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
-                        FilledTonalIconButton(
-                            onClick = {},
-                            enabled = false,
-                        ) {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_download),
-                                contentDescription = null,
-                            )
+                        if (episode.canDownload) {
+                            FilledTonalIconButton(
+                                onClick = {},
+                            ) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_download),
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     }
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
