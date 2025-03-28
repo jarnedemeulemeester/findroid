@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -71,6 +73,7 @@ fun EpisodeBottomSheet(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var isLoadingPlayer by remember { mutableStateOf(false) }
+    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         viewModel.loadEpisode(episodeId = episodeId)
@@ -80,6 +83,7 @@ fun EpisodeBottomSheet(
         when (event) {
             is PlayerItemsEvent.PlayerItemsReady -> {
                 isLoadingPlayer = false
+                isLoadingRestartPlayer = false
                 val intent = Intent(context, PlayerActivity::class.java)
                 intent.putExtra("items", ArrayList(event.items))
                 context.startActivity(intent)
@@ -91,10 +95,14 @@ fun EpisodeBottomSheet(
     EpisodeBottomSheetLayout(
         state = state,
         isLoadingPlayer = isLoadingPlayer,
+        isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    isLoadingPlayer = true
+                    when (action.startFromBeginning) {
+                        true -> isLoadingRestartPlayer = true
+                        false -> isLoadingPlayer = true
+                    }
                     state.episode?.let { episode ->
                         playerViewModel.loadPlayerItems(episode, startFromBeginning = action.startFromBeginning)
                     }
@@ -112,6 +120,7 @@ fun EpisodeBottomSheet(
 private fun EpisodeBottomSheetLayout(
     state: EpisodeState,
     isLoadingPlayer: Boolean,
+    isLoadingRestartPlayer: Boolean,
     onAction: (EpisodeAction) -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
@@ -222,6 +231,7 @@ private fun EpisodeBottomSheetLayout(
                             onClick = {
                                 onAction(EpisodeAction.Play())
                             },
+                            enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
                             isLoading = isLoadingPlayer,
                         )
                         if (episode.playbackPositionTicks.div(600000000) > 0) {
@@ -229,11 +239,22 @@ private fun EpisodeBottomSheetLayout(
                                 onClick = {
                                     onAction(EpisodeAction.Play(startFromBeginning = true))
                                 },
+                                enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
                             ) {
-                                Icon(
-                                    painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                                    contentDescription = null,
-                                )
+                                when (isLoadingRestartPlayer) {
+                                    true -> {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(24.dp),
+                                            color = LocalContentColor.current,
+                                        )
+                                    }
+                                    false -> {
+                                        Icon(
+                                            painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                            contentDescription = null,
+                                        )
+                                    }
+                                }
                             }
                         }
                         FilledTonalIconButton(
@@ -306,6 +327,7 @@ private fun EpisodeBottomSheetLayoutPreview() {
                 episode = dummyEpisode,
             ),
             isLoadingPlayer = false,
+            isLoadingRestartPlayer = false,
             onAction = {},
             onDismissRequest = {},
             sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),

@@ -31,6 +31,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun PlayButton(
     item: FindroidItem,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     isLoading: Boolean = false,
 ) {
     val runtimeMinutes by remember(item.playbackPositionTicks) {
@@ -40,7 +41,7 @@ fun PlayButton(
         Button(
             onClick = onClick,
             modifier = Modifier.padding(end = 4.dp),
-            enabled = !isLoading,
+            enabled = enabled,
         ) {
             when (isLoading) {
                 true -> {
@@ -65,7 +66,7 @@ fun PlayButton(
         FilledIconButton(
             onClick = onClick,
             modifier = Modifier.width(72.dp).padding(end = 4.dp),
-            enabled = !isLoading,
+            enabled = enabled,
         ) {
             when (isLoading) {
                 true -> {
