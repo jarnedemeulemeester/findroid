@@ -6,4 +6,5 @@ sealed interface EpisodeAction {
     data object UnmarkAsPlayed : EpisodeAction
     data object MarkAsFavorite : EpisodeAction
     data object UnmarkAsFavorite : EpisodeAction
+    data object OnBackClick : EpisodeAction
 }

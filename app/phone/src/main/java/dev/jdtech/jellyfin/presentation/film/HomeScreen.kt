@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,11 +43,10 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidImages
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
-import dev.jdtech.jellyfin.presentation.film.components.EpisodeBottomSheet
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
@@ -61,6 +59,7 @@ import dev.jdtech.jellyfin.film.R as FilmR
 fun HomeScreen(
     onLibraryClick: (library: FindroidCollection) -> Unit,
     onSettingsClick: () -> Unit,
+    onItemClick: (item: FindroidItem) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -73,6 +72,7 @@ fun HomeScreen(
         state = state,
         onAction = { action ->
             when (action) {
+                is HomeAction.OnItemClick -> onItemClick(action.item)
                 is HomeAction.OnLibraryClick -> onLibraryClick(action.library)
                 is HomeAction.OnSettingsClick -> onSettingsClick()
                 else -> Unit
@@ -112,7 +112,6 @@ private fun HomeScreenLayout(
     )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
-    var selectedEpisode: FindroidEpisode? by remember { mutableStateOf(null) }
 
     Box(
         modifier = Modifier
@@ -167,11 +166,7 @@ private fun HomeScreenLayout(
                                 item = item,
                                 direction = Direction.HORIZONTAL,
                                 onClick = {
-                                    when (item) {
-                                        is FindroidEpisode -> {
-                                            selectedEpisode = item
-                                        }
-                                    }
+                                    onAction(HomeAction.OnItemClick(item))
                                 },
                             )
                         }
@@ -250,15 +245,6 @@ private fun HomeScreenLayout(
                 )
             }
         }
-    }
-
-    if (selectedEpisode != null) {
-        EpisodeBottomSheet(
-            selectedEpisode!!.id,
-            onDismissRequest = {
-                selectedEpisode = null
-            },
-        )
     }
 }
 
