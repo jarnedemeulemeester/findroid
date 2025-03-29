@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -55,6 +56,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
@@ -145,7 +147,8 @@ private fun EpisodeScreenLayout(
         ) {
             Box(
                 modifier = Modifier
-                    .height(240.dp),
+                    .height(240.dp)
+                    .clipToBounds(),
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -154,7 +157,11 @@ private fun EpisodeScreenLayout(
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .parallaxLayoutModifier(
+                            scrollState = scrollState,
+                            2,
+                        ),
                     placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                     contentScale = ContentScale.Crop,
                 )
@@ -197,6 +204,7 @@ private fun EpisodeScreenLayout(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(MaterialTheme.spacings.default)
+                        .height(120.dp)
                         .fillMaxWidth(),
                     contentScale = ContentScale.Fit,
                 )
