@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Ảnh bìa của Jellyfin</string>
     <string name="remove">Xoá</string>
@@ -88,4 +88,18 @@
     <string name="stop_download">Dừng tải về</string>
     <string name="select_storage_location">Chọn vị trí để lưu trữ</string>
     <string name="storage_unavailable">Vị trí để lưu trữ hiện không có sẵn</string>
+    <string name="title_settings">Cài đặt</string>
+    <string name="title_download">Tải xuống</string>
+    <string name="offline_mode">Chế độ ngoại tuyến</string>
+    <string name="show_stacktrace">Hiển thị nhật ký lỗi chi tiết</string>
+    <string name="not_set">Chưa thiết lập</string>
+    <string name="play">Phát</string>
+    <string name="watch_trailer">Xem giới thiệu</string>
+    <string name="mark_as_played">Đánh dấu là đã phát</string>
+    <string name="unmark_as_played">Bỏ đánh dấu là đã phát</string>
+    <string name="live_tv">Truyền hình trực tiếp</string>
+    <string name="add_to_favorites">Thêm vào mục yêu thích</string>
+    <string name="remove_from_favorites">Xóa khỏi mục yêu thích</string>
+    <string name="collection_no_media">Bộ sưu tập này không có nội dung nào</string>
+    <string name="sort_by_options_6">Ngẫu nhiên</string>
 </resources>
