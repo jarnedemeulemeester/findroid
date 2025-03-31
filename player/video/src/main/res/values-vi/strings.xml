@@ -16,4 +16,6 @@
     <string name="player_controls_skip_forward">Tiến tới</string>
     <string name="player_trickplay">Tua mượt mà</string>
     <string name="player_controls_progress">Thanh tiến trình</string>
+    <string name="none">Trống</string>
+    <string name="player_controls_skip_credits">Bỏ qua danh đề</string>
 </resources>
