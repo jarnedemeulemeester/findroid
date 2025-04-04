@@ -5,5 +5,15 @@
     "config:base",
     "schedule:weekly",
     ":semanticCommits"
+  ],
+  "packageRules": [
+    {
+      "groupName": "Kotlin and KSP",
+      "matchPackageNames": [
+        "org.jetbrains.kotlin.*",
+        "com.google.devtools.ksp"
+      ],
+      "groupSlug": "kotlin-ksp"
+    }
   ]
 }
