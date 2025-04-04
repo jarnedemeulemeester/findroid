@@ -1,8 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "labels": ["dependencies"],
+  "labels": [
+    "dependencies"
+  ],
   "extends": [
-    "config:base",
+    "config:recommended",
     "schedule:weekly",
     ":semanticCommits"
   ],
