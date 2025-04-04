@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -90,7 +91,11 @@ fun EpisodeScreen(
                 intent.putExtra("items", ArrayList(event.items))
                 context.startActivity(intent)
             }
-            is PlayerItemsEvent.PlayerItemsError -> Unit
+            is PlayerItemsEvent.PlayerItemsError -> {
+                isLoadingPlayer = false
+                isLoadingRestartPlayer = false
+                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
