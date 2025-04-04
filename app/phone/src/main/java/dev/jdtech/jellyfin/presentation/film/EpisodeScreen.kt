@@ -170,6 +170,9 @@ private fun EpisodeScreenLayout(
                         .fillMaxSize(),
                 ) {
                     drawRect(
+                        Color.Black.copy(alpha = 0.2f),
+                    )
+                    drawRect(
                         brush = Brush.verticalGradient(
                             colors = listOf(Color.Transparent, backgroundColor),
                             startY = size.height / 2,
@@ -204,7 +207,7 @@ private fun EpisodeScreenLayout(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(MaterialTheme.spacings.default)
-                        .height(120.dp)
+                        .height(100.dp)
                         .fillMaxWidth(),
                     contentScale = ContentScale.Fit,
                 )
@@ -212,7 +215,6 @@ private fun EpisodeScreenLayout(
             Column(
                 modifier = Modifier.padding(
                     start = paddingStart,
-                    top = MaterialTheme.spacings.default,
                     end = paddingEnd,
                     bottom = paddingBottom,
                 ),
@@ -236,7 +238,7 @@ private fun EpisodeScreenLayout(
                             ),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 3,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.headlineMedium,
                         )
                     }
                 }
