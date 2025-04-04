@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -107,13 +108,24 @@ fun PlayerScreen(
         mutableLongStateOf(0L)
     }
     var isPlaying by remember {
-        mutableStateOf(viewModel.player.isPlaying)
+        mutableStateOf(true)
+    }
+    val onPause = {
+        viewModel.player.pause()
+        isPlaying = false
+    }
+    val onPlayPauseToggle = {
+        if (isPlaying) {
+            onPause()
+        } else {
+            viewModel.player.play()
+            isPlaying = true
+        }
     }
     LaunchedEffect(Unit) {
         while (true) {
             delay(300)
             currentPosition = viewModel.player.currentPosition
-            isPlaying = viewModel.player.isPlaying
         }
     }
 
@@ -146,10 +158,16 @@ fun PlayerScreen(
     }
      */
 
+    var isFocused by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
+            .onFocusChanged {
+                isFocused = it.isFocused
+            }
             .dPadEvents(
+                isFocused = isFocused,
                 exoPlayer = viewModel.player,
+                onPause = onPause,
                 videoPlayerState = videoPlayerState,
             )
             .focusable(),
@@ -172,7 +190,6 @@ fun PlayerScreen(
                 when (lifecycle) {
                     Lifecycle.Event.ON_PAUSE -> {
                         it.onPause()
-                        it.player?.pause()
                     }
 
                     Lifecycle.Event.ON_RESUME -> {
@@ -198,6 +215,7 @@ fun PlayerScreen(
                     contentCurrentPosition = currentPosition,
                     player = viewModel.player,
                     state = videoPlayerState,
+                    onPlayPauseToggle = onPlayPauseToggle,
                     focusRequester = focusRequester,
                     // navigator = navigator,
                 )
@@ -214,17 +232,10 @@ fun VideoPlayerControls(
     contentCurrentPosition: Long,
     player: Player,
     state: VideoPlayerState,
+    onPlayPauseToggle: () -> Unit,
     focusRequester: FocusRequester,
     // navigator: DestinationsNavigator,
 ) {
-    val onPlayPauseToggle = { shouldPlay: Boolean ->
-        if (shouldPlay) {
-            player.play()
-        } else {
-            player.pause()
-        }
-    }
-
     VideoPlayerControlsLayout(
         mediaTitle = {
             VideoPlayerMediaTitle(
@@ -249,8 +260,6 @@ fun VideoPlayerControls(
             ) {
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_speaker),
-                    state = state,
-                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
@@ -258,8 +267,6 @@ fun VideoPlayerControls(
                 )
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_closed_caption),
-                    state = state,
-                    isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
@@ -271,18 +278,35 @@ fun VideoPlayerControls(
 }
 
 private fun Modifier.dPadEvents(
+    isFocused: Boolean,
     exoPlayer: Player,
+    onPause: () -> Unit,
     videoPlayerState: VideoPlayerState,
-): Modifier = this.handleDPadKeyEvents(
-    onLeft = {},
-    onRight = {},
-    onUp = {},
-    onDown = {},
-    onEnter = {
-        exoPlayer.pause()
-        videoPlayerState.showControls()
-    },
-)
+): Modifier =
+    this.handleDPadKeyEvents(
+        onLeft = {
+            if (isFocused) {
+                exoPlayer.seekBack()
+            }
+        },
+        onRight = {
+            if (isFocused) {
+                exoPlayer.seekForward()
+            }
+        },
+        onUp = {
+            if (isFocused) {
+                videoPlayerState.showControls()
+            }
+        },
+        onDown = {},
+        onEnter = {
+            if (isFocused) {
+                onPause()
+                videoPlayerState.showControls()
+            }
+        },
+    )
 
 @androidx.annotation.OptIn(UnstableApi::class)
 private fun getTracks(player: Player, type: Int): Array<Track> {
