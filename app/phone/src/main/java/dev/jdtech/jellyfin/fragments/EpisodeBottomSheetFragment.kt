@@ -149,6 +149,10 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             navigateToSeries(viewModel.item.seriesId, viewModel.item.seriesName)
         }
 
+        binding.episodeName.setOnClickListener {
+            navigateToSeason(viewModel.item.seriesId, viewModel.item.seasonId, viewModel.item.seriesName, viewModel.item.seasonName)
+        }
+
         binding.itemActions.checkButton.setOnClickListener {
             viewModel.togglePlayed()
         }
@@ -418,6 +422,17 @@ class EpisodeBottomSheetFragment : BottomSheetDialogFragment() {
             EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToShowFragment(
                 itemId = id,
                 itemName = name,
+            ),
+        )
+    }
+
+    private fun navigateToSeason(seriesId: UUID, seasonId: UUID, seriesName: String, seasonName: String?) {
+        findNavController().navigate(
+            EpisodeBottomSheetFragmentDirections.actionEpisodeBottomSheetFragmentToSeasonFragment(
+                seriesId,
+                seasonId,
+                seriesName,
+                seasonName,
             ),
         )
     }
