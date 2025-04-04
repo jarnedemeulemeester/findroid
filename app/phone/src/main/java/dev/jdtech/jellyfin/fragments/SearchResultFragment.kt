@@ -16,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSearchResultBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -116,13 +115,6 @@ class SearchResultFragment : Fragment() {
                     SearchResultFragmentDirections.actionSearchResultFragmentToShowFragment(
                         item.id,
                         item.name,
-                    ),
-                )
-            }
-            is FindroidEpisode -> {
-                findNavController().safeNavigate(
-                    SearchResultFragmentDirections.actionSearchResultFragmentToEpisodeBottomSheetFragment(
-                        item.id,
                     ),
                 )
             }
