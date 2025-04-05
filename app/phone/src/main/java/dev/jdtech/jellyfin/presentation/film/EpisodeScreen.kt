@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.PersonItem
+import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
@@ -284,6 +285,10 @@ private fun EpisodeScreenLayout(
                     }
                 }
                 Spacer(Modifier.height(MaterialTheme.spacings.small))
+                state.videoMetadata?.let { videoMetadata ->
+                    VideoMetadataBar(videoMetadata)
+                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                }
                 ItemButtonsBar(
                     item = episode,
                     onPlayClick = { startFromBeginning ->
@@ -320,7 +325,7 @@ private fun EpisodeScreenLayout(
                         .padding(
                             start = paddingStart,
                             end = paddingEnd,
-                        )
+                        ),
                 ) {
                     Text(
                         text = stringResource(CoreR.string.cast_amp_crew),

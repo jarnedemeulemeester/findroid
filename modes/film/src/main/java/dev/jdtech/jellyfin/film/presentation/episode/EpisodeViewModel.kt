@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.film.presentation.episode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.film.domain.VideoMetadataParser
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +16,7 @@ class EpisodeViewModel
 @Inject
 constructor(
     private val repository: JellyfinRepository,
+    private val videoMetadataParser: VideoMetadataParser,
 ) : ViewModel() {
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.asStateFlow()
@@ -26,7 +28,8 @@ constructor(
         viewModelScope.launch {
             try {
                 val episode = repository.getEpisode(episodeId)
-                _state.emit(_state.value.copy(episode = episode))
+                val videoMetadata = videoMetadataParser.parse(episode.sources.first())
+                _state.emit(_state.value.copy(episode = episode, videoMetadata = videoMetadata))
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }
