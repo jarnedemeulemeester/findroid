@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -55,6 +58,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
+import dev.jdtech.jellyfin.presentation.film.components.PersonItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
@@ -221,7 +225,6 @@ private fun EpisodeScreenLayout(
                 modifier = Modifier.padding(
                     start = paddingStart,
                     end = paddingEnd,
-                    bottom = paddingBottom,
                 ),
             ) {
                 Row(
@@ -309,7 +312,32 @@ private fun EpisodeScreenLayout(
                     text = episode.overview,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                Text(
+                    text = stringResource(CoreR.string.cast_amp_crew),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(Modifier.height(MaterialTheme.spacings.small))
             }
+            LazyRow(
+                contentPadding = PaddingValues(
+                    start = paddingStart,
+                    end = paddingEnd,
+                ),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+            ) {
+                items(
+                    items = episode.people,
+                    key = { person ->
+                        person.id
+                    },
+                ) { person ->
+                    PersonItem(
+                        person = person,
+                    )
+                }
+            }
+            Spacer(Modifier.height(paddingBottom))
         }
     }
 }
