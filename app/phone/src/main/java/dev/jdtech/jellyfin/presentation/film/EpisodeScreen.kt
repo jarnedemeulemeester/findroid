@@ -313,28 +313,38 @@ private fun EpisodeScreenLayout(
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(Modifier.height(MaterialTheme.spacings.medium))
-                Text(
-                    text = stringResource(CoreR.string.cast_amp_crew),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
             }
-            LazyRow(
-                contentPadding = PaddingValues(
-                    start = paddingStart,
-                    end = paddingEnd,
-                ),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-            ) {
-                items(
-                    items = episode.people,
-                    key = { person ->
-                        person.id
-                    },
-                ) { person ->
-                    PersonItem(
-                        person = person,
+            if (episode.people.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            start = paddingStart,
+                            end = paddingEnd,
+                        )
+                ) {
+                    Text(
+                        text = stringResource(CoreR.string.cast_amp_crew),
+                        style = MaterialTheme.typography.titleMedium,
                     )
+                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                }
+                LazyRow(
+                    contentPadding = PaddingValues(
+                        start = paddingStart,
+                        end = paddingEnd,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                ) {
+                    items(
+                        items = episode.people,
+                        key = { person ->
+                            person.id
+                        },
+                    ) { person ->
+                        PersonItem(
+                            person = person,
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(paddingBottom))
