@@ -41,6 +41,7 @@ import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
@@ -94,7 +95,7 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args: PlayerActivityArgs by navArgs()
+        val items = intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -315,7 +316,7 @@ class PlayerActivity : BasePlayerActivity() {
             },
         )
 
-        viewModel.initializePlayer(args.items)
+        viewModel.initializePlayer(items)
         hideSystemUI()
     }
 

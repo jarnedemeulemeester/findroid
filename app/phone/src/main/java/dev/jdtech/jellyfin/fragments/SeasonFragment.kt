@@ -16,9 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSeasonBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.SeasonEvent
 import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import kotlinx.coroutines.launch
@@ -78,7 +76,6 @@ class SeasonFragment : Fragment() {
 
         binding.episodesRecyclerView.adapter =
             EpisodeListAdapter { episode ->
-                navigateToEpisodeBottomSheetFragment(episode)
             }
     }
 
@@ -109,13 +106,5 @@ class SeasonFragment : Fragment() {
         binding.episodesRecyclerView.isVisible = false
         binding.errorLayout.errorPanel.isVisible = true
         checkIfLoginRequired(uiState.error.message)
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: FindroidEpisode) {
-        findNavController().safeNavigate(
-            SeasonFragmentDirections.actionSeasonFragmentToEpisodeBottomSheetFragment(
-                episode.id,
-            ),
-        )
     }
 }

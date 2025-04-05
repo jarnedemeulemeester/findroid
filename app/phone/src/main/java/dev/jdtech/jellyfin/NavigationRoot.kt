@@ -25,6 +25,8 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -69,6 +71,11 @@ data class LibraryRoute(
     val libraryId: String,
     val libraryName: String,
     val libraryType: CollectionType,
+)
+
+@Serializable
+data class EpisodeRoute(
+    val episodeId: String,
 )
 
 @Serializable
@@ -252,6 +259,12 @@ fun NavigationRoot(
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
+                        onItemClick = {
+                            when (it) {
+                                is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = it.id.toString()))
+                                else -> Unit
+                            }
+                        },
                     )
                 }
                 composable<MediaRoute> {
@@ -270,6 +283,15 @@ fun NavigationRoot(
                         libraryId = UUID.fromString(route.libraryId),
                         libraryName = route.libraryName,
                         libraryType = route.libraryType,
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<EpisodeRoute> { backStackEntry ->
+                    val route: EpisodeRoute = backStackEntry.toRoute()
+                    EpisodeScreen(
+                        episodeId = UUID.fromString(route.episodeId),
                         navigateBack = {
                             navController.safePopBackStack()
                         },

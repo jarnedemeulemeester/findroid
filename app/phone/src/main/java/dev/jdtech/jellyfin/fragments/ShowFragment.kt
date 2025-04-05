@@ -24,7 +24,6 @@ import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.bindItemBackdropImage
 import dev.jdtech.jellyfin.databinding.FragmentShowBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -115,10 +114,6 @@ class ShowFragment : Fragment() {
                     Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        binding.nextUp.setOnClickListener {
-            navigateToEpisodeBottomSheetFragment(viewModel.nextUp!!)
         }
 
         binding.seasonsRecyclerView.adapter =
@@ -310,14 +305,6 @@ class ShowFragment : Fragment() {
         binding.itemActions.playButton.isEnabled = true
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
-    }
-
-    private fun navigateToEpisodeBottomSheetFragment(episode: FindroidItem) {
-        findNavController().safeNavigate(
-            ShowFragmentDirections.actionShowFragmentToEpisodeBottomSheetFragment(
-                episode.id,
-            ),
-        )
     }
 
     private fun navigateToSeasonFragment(season: FindroidSeason) {

@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,31 +62,13 @@ fun ItemCard(
                         .padding(MaterialTheme.spacings.small),
                 )
                 if (direction == Direction.HORIZONTAL) {
-                    Column(
+                    ProgressBar(
+                        item = item,
+                        width = width,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(MaterialTheme.spacings.small),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .height(4.dp)
-                                .width(
-                                    item.playbackPositionTicks
-                                        .div(
-                                            item.runtimeTicks.toFloat(),
-                                        )
-                                        .times(
-                                            width - 16,
-                                        ).dp,
-                                )
-                                .clip(
-                                    MaterialTheme.shapes.extraSmall,
-                                )
-                                .background(
-                                    MaterialTheme.colorScheme.primary,
-                                ),
-                        )
-                    }
+                    )
                 }
             }
         }
@@ -115,7 +96,7 @@ fun ItemCard(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewMovie() {
     FindroidTheme {
@@ -127,7 +108,7 @@ private fun ItemCardPreviewMovie() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewMovieVertical() {
     FindroidTheme {
@@ -139,7 +120,7 @@ private fun ItemCardPreviewMovieVertical() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewEpisode() {
     FindroidTheme {
