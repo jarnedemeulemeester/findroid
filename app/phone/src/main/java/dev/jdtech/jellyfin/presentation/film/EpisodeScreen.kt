@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.presentation.film
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
@@ -150,6 +152,8 @@ private fun EpisodeScreenLayout(
     val backgroundColor = MaterialTheme.colorScheme.background
 
     val scrollState = rememberScrollState()
+
+    var expandedOverview by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -300,6 +304,12 @@ private fun EpisodeScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Text(
                         text = episode.overview,
+                        modifier = Modifier
+                            .clickable {
+                                expandedOverview = !expandedOverview
+                            },
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
@@ -377,6 +387,7 @@ private fun EpisodeScreenLayoutPreview() {
         EpisodeScreenLayout(
             state = EpisodeState(
                 episode = dummyEpisode,
+                videoMetadata = dummyVideoMetadata,
             ),
             isLoadingPlayer = false,
             isLoadingRestartPlayer = false,
