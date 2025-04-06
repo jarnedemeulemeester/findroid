@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -149,210 +151,221 @@ private fun EpisodeScreenLayout(
 
     val scrollState = rememberScrollState()
 
-    state.episode?.let { episode ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState),
-        ) {
-            Box(
-                modifier = Modifier
-                    .height(240.dp)
-                    .clipToBounds(),
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(episode.images.primary)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .parallaxLayoutModifier(
-                            scrollState = scrollState,
-                            2,
-                        ),
-                    placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
-                    contentScale = ContentScale.Crop,
-                )
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                ) {
-                    drawRect(
-                        Color.Black.copy(alpha = 0.2f),
-                    )
-                    drawRect(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, backgroundColor),
-                            startY = size.height / 2,
-                        ),
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .safeDrawingPadding()
-                        .padding(start = 8.dp, end = 8.dp),
-                ) {
-                    IconButton(
-                        onClick = { onAction(EpisodeAction.OnBackClick) },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.Black.copy(alpha = 0.4f),
-                            contentColor = Color.White.copy(alpha = 0.8f),
-                        ),
-                    ) {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
-                        )
-                    }
-                }
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(episode.images.showLogo)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(MaterialTheme.spacings.default)
-                        .height(100.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Fit,
-                )
-            }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        state.episode?.let { episode ->
             Column(
-                modifier = Modifier.padding(
-                    start = paddingStart,
-                    end = paddingEnd,
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column {
-                        Text(
-                            text = episode.seriesName,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Text(
-                            text = stringResource(
-                                id = CoreR.string.episode_name_extended,
-                                episode.parentIndexNumber,
-                                episode.indexNumber,
-                                episode.name,
-                            ),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 3,
-                            style = MaterialTheme.typography.headlineMedium,
-                        )
-                    }
-                }
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    episode.premiereDate?.let { premiereDate ->
-                        Text(
-                            text = premiereDate.format(),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                    Text(
-                        text = stringResource(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000)),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    episode.communityRating?.let { communityRating ->
-                        Row(
-                            verticalAlignment = Alignment.Bottom,
-                        ) {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_star),
-                                contentDescription = null,
-                                tint = Color("#F2C94C".toColorInt()),
-                            )
-                            Spacer(Modifier.width(MaterialTheme.spacings.extraSmall))
-                            Text(
-                                text = "%.1f".format(communityRating),
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    }
-                }
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
-                state.videoMetadata?.let { videoMetadata ->
-                    VideoMetadataBar(videoMetadata)
-                    Spacer(Modifier.height(MaterialTheme.spacings.small))
-                }
-                ItemButtonsBar(
-                    item = episode,
-                    onPlayClick = { startFromBeginning ->
-                        onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
-                    },
-                    onMarkAsPlayedClick = {
-                        when (episode.played) {
-                            true -> onAction(EpisodeAction.UnmarkAsPlayed)
-                            false -> onAction(EpisodeAction.MarkAsPlayed)
-                        }
-                    },
-                    onMarkAsFavoriteClick = {
-                        when (episode.favorite) {
-                            true -> onAction(EpisodeAction.UnmarkAsFavorite)
-                            false -> onAction(EpisodeAction.MarkAsFavorite)
-                        }
-                    },
-                    onTrailerClick = {},
-                    onDownloadClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    isLoadingPlayer = isLoadingPlayer,
-                    isLoadingRestartPlayer = isLoadingRestartPlayer,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
-                Text(
-                    text = episode.overview,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacings.medium))
-            }
-            if (episode.people.isNotEmpty()) {
-                Column(
+                Box(
                     modifier = Modifier
-                        .padding(
-                            start = paddingStart,
-                            end = paddingEnd,
-                        ),
+                        .height(240.dp)
+                        .clipToBounds(),
                 ) {
-                    Text(
-                        text = stringResource(CoreR.string.cast_amp_crew),
-                        style = MaterialTheme.typography.titleMedium,
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(episode.images.primary)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .parallaxLayoutModifier(
+                                scrollState = scrollState,
+                                2,
+                            ),
+                        placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
+                        contentScale = ContentScale.Crop,
                     )
-                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                    ) {
+                        drawRect(
+                            Color.Black.copy(alpha = 0.1f),
+                        )
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, backgroundColor),
+                                startY = size.height / 2,
+                            ),
+                        )
+                    }
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(episode.images.showLogo)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(MaterialTheme.spacings.default)
+                            .height(100.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Fit,
+                    )
                 }
-                LazyRow(
-                    contentPadding = PaddingValues(
+                Column(
+                    modifier = Modifier.padding(
                         start = paddingStart,
                         end = paddingEnd,
                     ),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                 ) {
-                    items(
-                        items = episode.people,
-                        key = { person ->
-                            person.id
-                        },
-                    ) { person ->
-                        PersonItem(
-                            person = person,
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(
+                                    id = CoreR.string.season_episode,
+                                    episode.parentIndexNumber,
+                                    episode.indexNumber,
+                                ),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            Text(
+                                text = episode.name,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 3,
+                                style = MaterialTheme.typography.headlineMedium,
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        episode.premiereDate?.let { premiereDate ->
+                            Text(
+                                text = premiereDate.format(),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Text(
+                            text = stringResource(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000)),
+                            style = MaterialTheme.typography.bodyMedium,
                         )
+                        episode.communityRating?.let { communityRating ->
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                            ) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_star),
+                                    contentDescription = null,
+                                    tint = Color("#F2C94C".toColorInt()),
+                                )
+                                Spacer(Modifier.width(MaterialTheme.spacings.extraSmall))
+                                Text(
+                                    text = "%.1f".format(communityRating),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    state.videoMetadata?.let { videoMetadata ->
+                        VideoMetadataBar(videoMetadata)
+                        Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    }
+                    ItemButtonsBar(
+                        item = episode,
+                        onPlayClick = { startFromBeginning ->
+                            onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
+                        },
+                        onMarkAsPlayedClick = {
+                            when (episode.played) {
+                                true -> onAction(EpisodeAction.UnmarkAsPlayed)
+                                false -> onAction(EpisodeAction.MarkAsPlayed)
+                            }
+                        },
+                        onMarkAsFavoriteClick = {
+                            when (episode.favorite) {
+                                true -> onAction(EpisodeAction.UnmarkAsFavorite)
+                                false -> onAction(EpisodeAction.MarkAsFavorite)
+                            }
+                        },
+                        onTrailerClick = {},
+                        onDownloadClick = {},
+                        modifier = Modifier.fillMaxWidth(),
+                        isLoadingPlayer = isLoadingPlayer,
+                        isLoadingRestartPlayer = isLoadingRestartPlayer,
+                    )
+                    Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    Text(
+                        text = episode.overview,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                }
+                if (episode.people.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .padding(
+                                start = paddingStart,
+                                end = paddingEnd,
+                            ),
+                    ) {
+                        Text(
+                            text = stringResource(CoreR.string.cast_amp_crew),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    }
+                    LazyRow(
+                        contentPadding = PaddingValues(
+                            start = paddingStart,
+                            end = paddingEnd,
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                    ) {
+                        items(
+                            items = episode.people,
+                            key = { person ->
+                                person.id
+                            },
+                        ) { person ->
+                            PersonItem(
+                                person = person,
+                            )
+                        }
                     }
                 }
+                Spacer(Modifier.height(paddingBottom))
             }
-            Spacer(Modifier.height(paddingBottom))
+        } ?: run {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center),
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .safeDrawingPadding()
+                .padding(horizontal = MaterialTheme.spacings.small),
+        ) {
+            IconButton(
+                onClick = { onAction(EpisodeAction.OnBackClick) },
+                modifier = Modifier
+                    .alpha(0.7f),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                ),
+            ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_left),
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
