@@ -91,7 +91,7 @@ fun VideoMetadataBarItem(
         }
         Text(
             text = text,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelMedium,
         )
     }
 }
