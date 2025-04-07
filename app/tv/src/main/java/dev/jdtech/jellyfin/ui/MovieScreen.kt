@@ -46,13 +46,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
-import dev.jdtech.jellyfin.models.AudioChannel
-import dev.jdtech.jellyfin.models.AudioCodec
-import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.Resolution
-import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
@@ -345,13 +341,7 @@ private fun MovieScreenLayoutPreview() {
                     type = PersonKind.DIRECTOR,
                 ),
                 writers = emptyList(),
-                videoMetadata = VideoMetadata(
-                    resolution = listOf(Resolution.UHD),
-                    displayProfiles = listOf(DisplayProfile.HDR10),
-                    audioChannels = listOf(AudioChannel.CH_5_1),
-                    audioCodecs = listOf(AudioCodec.EAC3),
-                    isAtmos = listOf(false),
-                ),
+                videoMetadata = dummyVideoMetadata,
                 writersString = "James Cameron, Laeta Kalogridis, Yukito Kishiro",
                 genresString = "Action, Science Fiction, Adventure",
                 videoString = "",

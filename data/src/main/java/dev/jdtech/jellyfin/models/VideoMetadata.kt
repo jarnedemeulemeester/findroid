@@ -4,9 +4,10 @@ package dev.jdtech.jellyfin.models
 
 data class VideoMetadata(
     val resolution: List<Resolution>,
+    val videoCodecs: List<VideoCodec?>,
     val displayProfiles: List<DisplayProfile>,
     val audioChannels: List<AudioChannel>,
-    val audioCodecs: List<AudioCodec>,
+    val audioCodecs: List<AudioCodec?>,
     val isAtmos: List<Boolean>,
 )
 
@@ -14,6 +15,16 @@ enum class Resolution(val raw: String) {
     SD("SD"),
     HD("HD"),
     UHD("4K"),
+}
+
+enum class VideoCodec(val raw: String) {
+    H264("H.264"),
+    HEVC("HEVC"),
+    VVC("VVC"),
+    AV1("AV1"),
+    ;
+
+    override fun toString() = super.toString().lowercase()
 }
 
 enum class DisplayProfile(val raw: String) {

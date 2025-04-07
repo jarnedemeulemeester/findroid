@@ -251,6 +251,7 @@ constructor(
 
         return VideoMetadata(
             resolution,
+            emptyList(),
             displayProfile.toSet().toList(),
             audioChannels.toSet().toList(),
             audioCodecs.toSet().toList(),
