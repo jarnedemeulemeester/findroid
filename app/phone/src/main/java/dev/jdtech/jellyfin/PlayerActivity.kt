@@ -95,7 +95,12 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val items = intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
+        val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.extras!!.getParcelableArrayList("items", PlayerItem::class.java)!!.toTypedArray()
+        } else {
+            @Suppress("DEPRECATION")
+            intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
+        }
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
