@@ -230,7 +230,7 @@ private fun EpisodeScreenLayout(
                                 ),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.labelLarge,
                             )
                             Text(
                                 text = episode.name,
