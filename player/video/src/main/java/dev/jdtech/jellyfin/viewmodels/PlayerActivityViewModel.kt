@@ -91,7 +91,7 @@ constructor(
 
     init {
         if (appPreferences.getValue(appPreferences.playerMpv)) {
-            val trackSelectionParameters = TrackSelectionParameters.Builder(application)
+            val trackSelectionParameters = TrackSelectionParameters.Builder()
                 .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
                 .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage))
                 .build()

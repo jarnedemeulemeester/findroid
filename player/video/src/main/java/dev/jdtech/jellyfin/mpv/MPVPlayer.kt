@@ -47,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 class MPVPlayer(
     context: Context,
     private val requestAudioFocus: Boolean,
-    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder().build(),
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
     videoOutput: String = "gpu-next",

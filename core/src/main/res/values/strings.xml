@@ -30,7 +30,7 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="season_episode">Season %1$d - Episode %1$d</string>
+    <string name="season_episode">Season %1$d - Episode %2$d</string>
     <string name="next_up">Next Up</string>
     <string name="libraries">Libraries</string>
     <string name="series_poster">Series poster</string>
