@@ -3,8 +3,6 @@ package dev.jdtech.jellyfin
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import coil.load
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -79,14 +77,6 @@ private fun ImageView.loadImage(
     url: String,
     @DrawableRes placeholderId: Int = CoreR.color.neutral_800,
 ): View {
-    val api = JellyfinApi.getInstance(context.applicationContext)
-
-    this.load("${api.api.baseUrl}$url") {
-        crossfade(true)
-        placeholder(placeholderId)
-        error(placeholderId)
-    }
-
     return this
 }
 

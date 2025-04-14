@@ -53,8 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
@@ -170,10 +169,7 @@ private fun EpisodeScreenLayout(
                         .clipToBounds(),
                 ) {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(episode.images.primary)
-                            .crossfade(true)
-                            .build(),
+                        model = episode.images.primary,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -199,10 +195,7 @@ private fun EpisodeScreenLayout(
                         )
                     }
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(episode.images.showLogo)
-                            .crossfade(true)
-                            .build(),
+                        model = episode.images.showLogo,
                         contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)

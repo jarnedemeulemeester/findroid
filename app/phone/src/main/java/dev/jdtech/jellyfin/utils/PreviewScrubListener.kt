@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.media3.common.Player
 import androidx.media3.ui.TimeBar
-import coil.load
-import coil.transform.RoundedCornersTransformation
+import coil3.load
+import coil3.request.crossfade
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.models.Trickplay
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
@@ -58,7 +60,8 @@ class PreviewScrubListener(
 
             if (currentBitMap != image) {
                 scrubbingPreview.load(image) {
-                    dispatcher(Dispatchers.Main.immediate)
+                    coroutineContext(Dispatchers.Main.immediate)
+                    crossfade(false)
                     transformations(roundedCorners)
                 }
                 currentBitMap = image

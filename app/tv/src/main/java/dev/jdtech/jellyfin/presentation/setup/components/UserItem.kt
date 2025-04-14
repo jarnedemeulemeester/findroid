@@ -24,8 +24,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -77,10 +76,7 @@ fun UserItem(
                     .align(Alignment.Center),
             )
             AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data("$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}")
-                    .crossfade(true)
-                    .build(),
+                model = "$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

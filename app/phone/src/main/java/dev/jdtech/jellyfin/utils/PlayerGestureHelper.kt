@@ -20,8 +20,10 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import coil.load
-import coil.transform.RoundedCornersTransformation
+import coil3.load
+import coil3.request.crossfade
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.isControlsLocked
@@ -497,7 +499,8 @@ class PlayerGestureHelper(
 
             if (currentTrickplayBitmap != bitmap) {
                 activity.binding.progressScrubberTrickplay.load(bitmap) {
-                    dispatcher(Dispatchers.Main.immediate)
+                    coroutineContext(Dispatchers.Main.immediate)
+                    crossfade(false)
                     transformations(trickplayRoundedCorners)
                 }
                 currentTrickplayBitmap = bitmap

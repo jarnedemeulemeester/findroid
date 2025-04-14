@@ -19,8 +19,7 @@ import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Surface
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
@@ -67,10 +66,7 @@ fun ProfileButton(
         )
         user?.let {
             AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data("$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}")
-                    .crossfade(true)
-                    .build(),
+                model = "$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
