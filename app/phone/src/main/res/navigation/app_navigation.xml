@@ -157,8 +157,6 @@
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
     </activity>
 
-    <include app:graph="@navigation/aboutlibs_navigation" />
-
     <fragment
         android:id="@+id/serverAddressesFragment"
         android:name="dev.jdtech.jellyfin.fragments.ServerAddressesFragment"

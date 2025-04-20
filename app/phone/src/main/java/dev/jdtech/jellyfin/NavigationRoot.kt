@@ -30,6 +30,7 @@ import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
+import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
@@ -82,6 +83,9 @@ data class EpisodeRoute(
 data class SettingsRoute(
     val indexes: IntArray,
 )
+
+@Serializable
+data object AboutRoute
 
 data class TabBarItem(
     val title: String,
@@ -311,6 +315,16 @@ fun NavigationRoot(
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
                     },
+                    navigateToAbout = {
+                        navController.safeNavigate(AboutRoute)
+                    },
+                    navigateBack = {
+                        navController.safePopBackStack()
+                    },
+                )
+            }
+            composable<AboutRoute> {
+                AboutScreen(
                     navigateBack = {
                         navController.safePopBackStack()
                     },

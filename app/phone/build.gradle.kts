@@ -110,7 +110,7 @@ dependencies {
     implementation(projects.settings)
 
     implementation(libs.aboutlibraries.core)
-    implementation(libs.aboutlibraries)
+    implementation(libs.aboutlibraries.compose.m3)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)

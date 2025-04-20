@@ -435,7 +435,11 @@ constructor(
                 PreferenceCategory(
                     nameStringResource = R.string.about,
                     iconDrawableId = R.drawable.ic_info,
-                    enabled = false,
+                    onClick = {
+                        viewModelScope.launch {
+                            eventsChannel.send(SettingsEvent.NavigateToAbout)
+                        }
+                    },
                 ),
             ),
         ),
