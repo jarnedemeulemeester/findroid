@@ -136,7 +136,6 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
