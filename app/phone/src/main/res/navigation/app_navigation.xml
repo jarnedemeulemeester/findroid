@@ -32,27 +32,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/movieFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MovieFragment"
-        android:label="{itemName}"
-        tools:layout="@layout/fragment_movie">
-        <argument
-            android:name="itemId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="itemName"
-            android:defaultValue="Media Info"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_movieFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-        <action
-            android:id="@+id/action_movieFragment_to_personDetailFragment"
-            app:destination="@id/personDetailFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/seasonFragment"
         android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
         android:label="{seasonName}"
@@ -89,9 +68,6 @@
         <action
             android:id="@+id/action_favoriteFragment_to_showFragment"
             app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionFragment"
@@ -109,9 +85,6 @@
         <action
             android:id="@+id/action_collectionFragment_to_showFragment"
             app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_collectionFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
@@ -121,9 +94,6 @@
         <action
             android:id="@+id/action_searchResultFragment_to_showFragment"
             app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_searchResultFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
         <argument
             android:name="query"
             app:argType="string" />
@@ -142,9 +112,6 @@
         <action
             android:id="@+id/action_personDetailFragment_to_showFragment"
             app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_personDetailFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
 
     <activity
@@ -172,13 +139,6 @@
         android:name="dev.jdtech.jellyfin.fragments.DownloadsFragment"
         android:label="@string/title_download"
         tools:layout="@layout/fragment_favorite">
-        <action
-            android:id="@+id/action_downloadsFragment_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_downloadsFragment_to_showFragment"
             app:destination="@id/showFragment"

@@ -4,6 +4,7 @@ import android.net.Uri
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
+import org.jellyfin.sdk.model.api.PersonKind
 import java.util.UUID
 
 data class FindroidPersonImage(
@@ -29,6 +30,7 @@ fun BaseItemPerson.toFindroidImage(
 data class FindroidPerson(
     val id: UUID,
     val name: String,
+    val type: PersonKind,
     val role: String,
     val image: FindroidPersonImage,
 )
@@ -39,6 +41,7 @@ fun BaseItemPerson.toFindroidPerson(
     return FindroidPerson(
         id = id,
         name = name.orEmpty(),
+        type = type,
         role = role.orEmpty(),
         image = toFindroidImage(repository),
     )

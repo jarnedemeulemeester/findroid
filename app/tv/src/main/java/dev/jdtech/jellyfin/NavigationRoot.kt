@@ -234,7 +234,7 @@ fun NavigationRoot(
         composable<MovieRoute> { backStackEntry ->
             val route: MovieRoute = backStackEntry.toRoute()
             MovieScreen(
-                itemId = UUID.fromString(route.itemId),
+                movieId = UUID.fromString(route.itemId),
                 navigateToPlayer = { items ->
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))

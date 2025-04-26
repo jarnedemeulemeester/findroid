@@ -26,10 +26,12 @@ import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
+import dev.jdtech.jellyfin.presentation.film.MovieScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -72,6 +74,11 @@ data class LibraryRoute(
     val libraryId: String,
     val libraryName: String,
     val libraryType: CollectionType,
+)
+
+@Serializable
+data class MovieRoute(
+    val movieId: String,
 )
 
 @Serializable
@@ -265,6 +272,7 @@ fun NavigationRoot(
                         },
                         onItemClick = {
                             when (it) {
+                                is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = it.id.toString()))
                                 is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = it.id.toString()))
                                 else -> Unit
                             }
@@ -287,6 +295,21 @@ fun NavigationRoot(
                         libraryId = UUID.fromString(route.libraryId),
                         libraryName = route.libraryName,
                         libraryType = route.libraryType,
+                        onItemClick = {
+                            when (it) {
+                                is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = it.id.toString()))
+                                else -> Unit
+                            }
+                        },
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<MovieRoute> { backStackEntry ->
+                    val route: MovieRoute = backStackEntry.toRoute()
+                    MovieScreen(
+                        movieId = UUID.fromString(route.movieId),
                         navigateBack = {
                             navController.safePopBackStack()
                         },

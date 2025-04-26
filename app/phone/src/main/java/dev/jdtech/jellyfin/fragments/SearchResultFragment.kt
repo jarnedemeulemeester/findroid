@@ -17,7 +17,6 @@ import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentSearchResultBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.safeNavigate
@@ -102,14 +101,6 @@ class SearchResultFragment : Fragment() {
 
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    SearchResultFragmentDirections.actionSearchResultFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
             is FindroidShow -> {
                 findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToShowFragment(

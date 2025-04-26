@@ -67,6 +67,7 @@ fun LibraryScreen(
     libraryId: UUID,
     libraryName: String,
     libraryType: CollectionType,
+    onItemClick: (item: FindroidItem) -> Unit,
     navigateBack: () -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
@@ -92,6 +93,7 @@ fun LibraryScreen(
         state = state,
         onAction = { action ->
             when (action) {
+                is LibraryAction.OnItemClick -> onItemClick(action.item)
                 is LibraryAction.OnBackClick -> navigateBack()
                 else -> Unit
             }

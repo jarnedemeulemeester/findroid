@@ -13,9 +13,13 @@ import com.google.android.material.button.MaterialButton
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.View
+import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.io.Serializable
 import java.nio.charset.StandardCharsets
+import java.text.DateFormat
+import java.time.ZoneOffset
+import java.util.Date
 
 fun BaseItemDto.toView(items: List<FindroidItem>): View {
     return View(
@@ -59,4 +63,10 @@ fun String.base64ToByteArray(): ByteArray {
 
 fun ByteArray.toBase64Str(): String {
     return Base64.encodeToString(this, Base64.URL_SAFE or Base64.NO_WRAP)
+}
+
+fun DateTime.format(): String {
+    val instant = this.toInstant(ZoneOffset.UTC)
+    val date = Date.from(instant)
+    return DateFormat.getDateInstance(DateFormat.SHORT).format(date)
 }

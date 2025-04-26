@@ -215,7 +215,9 @@ private fun HomeScreenLayout(
                             ItemCard(
                                 item = item,
                                 direction = Direction.VERTICAL,
-                                onClick = {},
+                                onClick = {
+                                    onAction(HomeAction.OnItemClick(item))
+                                },
                             )
                         }
                     }

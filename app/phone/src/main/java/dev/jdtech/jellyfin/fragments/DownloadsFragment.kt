@@ -16,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.restart
@@ -102,14 +101,6 @@ class DownloadsFragment : Fragment() {
 
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    DownloadsFragmentDirections.actionDownloadsFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
             is FindroidShow -> {
                 findNavController().safeNavigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(

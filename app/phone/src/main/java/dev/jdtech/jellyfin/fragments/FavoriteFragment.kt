@@ -16,7 +16,6 @@ import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.safeNavigate
@@ -94,14 +93,6 @@ class FavoriteFragment : Fragment() {
 
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
             is FindroidShow -> {
                 findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(

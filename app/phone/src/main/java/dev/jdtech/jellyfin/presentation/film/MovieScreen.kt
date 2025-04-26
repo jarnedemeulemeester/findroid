@@ -55,11 +55,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
-import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
-import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
-import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
+import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
+import dev.jdtech.jellyfin.film.presentation.movie.MovieState
+import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.PersonItem
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
@@ -74,10 +74,10 @@ import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun EpisodeScreen(
-    episodeId: UUID,
+fun MovieScreen(
+    movieId: UUID,
     navigateBack: () -> Unit,
-    viewModel: EpisodeViewModel = hiltViewModel(),
+    viewModel: MovieViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -87,7 +87,7 @@ fun EpisodeScreen(
     var isLoadingRestartPlayer by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
-        viewModel.loadEpisode(episodeId = episodeId)
+        viewModel.loadMovie(movieId = movieId)
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
@@ -107,22 +107,22 @@ fun EpisodeScreen(
         }
     }
 
-    EpisodeScreenLayout(
+    MovieScreenLayout(
         state = state,
         isLoadingPlayer = isLoadingPlayer,
         isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
-                is EpisodeAction.Play -> {
+                is MovieAction.Play -> {
                     when (action.startFromBeginning) {
                         true -> isLoadingRestartPlayer = true
                         false -> isLoadingPlayer = true
                     }
-                    state.episode?.let { episode ->
-                        playerViewModel.loadPlayerItems(episode, startFromBeginning = action.startFromBeginning)
+                    state.movie?.let { movie ->
+                        playerViewModel.loadPlayerItems(movie, startFromBeginning = action.startFromBeginning)
                     }
                 }
-                is EpisodeAction.OnBackClick -> navigateBack()
+                is MovieAction.OnBackClick -> navigateBack()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -131,11 +131,11 @@ fun EpisodeScreen(
 }
 
 @Composable
-private fun EpisodeScreenLayout(
-    state: EpisodeState,
+private fun MovieScreenLayout(
+    state: MovieState,
     isLoadingPlayer: Boolean,
     isLoadingRestartPlayer: Boolean,
-    onAction: (EpisodeAction) -> Unit,
+    onAction: (MovieAction) -> Unit,
 ) {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
@@ -157,7 +157,7 @@ private fun EpisodeScreenLayout(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        state.episode?.let { episode ->
+        state.movie?.let { movie ->
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -169,7 +169,7 @@ private fun EpisodeScreenLayout(
                         .clipToBounds(),
                 ) {
                     AsyncImage(
-                        model = episode.images.primary,
+                        model = movie.images.backdrop,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -195,7 +195,7 @@ private fun EpisodeScreenLayout(
                         )
                     }
                     AsyncImage(
-                        model = episode.images.showLogo,
+                        model = movie.images.showLogo,
                         contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -212,17 +212,7 @@ private fun EpisodeScreenLayout(
                     ),
                 ) {
                     Text(
-                        text = stringResource(
-                            id = CoreR.string.season_episode,
-                            episode.parentIndexNumber,
-                            episode.indexNumber,
-                        ),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                    Text(
-                        text = episode.name,
+                        text = movie.name,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 3,
                         style = MaterialTheme.typography.headlineMedium,
@@ -233,17 +223,17 @@ private fun EpisodeScreenLayout(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                         verticalAlignment = Alignment.Bottom,
                     ) {
-                        episode.premiereDate?.let { premiereDate ->
+                        movie.premiereDate?.let { premiereDate ->
                             Text(
                                 text = premiereDate.format(),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
                         Text(
-                            text = stringResource(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000)),
+                            text = stringResource(CoreR.string.runtime_minutes, movie.runtimeTicks.div(600000000)),
                             style = MaterialTheme.typography.bodyMedium,
                         )
-                        episode.communityRating?.let { communityRating ->
+                        movie.communityRating?.let { communityRating ->
                             Row(
                                 verticalAlignment = Alignment.Bottom,
                             ) {
@@ -266,20 +256,20 @@ private fun EpisodeScreenLayout(
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
                     ItemButtonsBar(
-                        item = episode,
+                        item = movie,
                         onPlayClick = { startFromBeginning ->
-                            onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
+                            onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
                         },
                         onMarkAsPlayedClick = {
-                            when (episode.played) {
-                                true -> onAction(EpisodeAction.UnmarkAsPlayed)
-                                false -> onAction(EpisodeAction.MarkAsPlayed)
+                            when (movie.played) {
+                                true -> onAction(MovieAction.UnmarkAsPlayed)
+                                false -> onAction(MovieAction.MarkAsPlayed)
                             }
                         },
                         onMarkAsFavoriteClick = {
-                            when (episode.favorite) {
-                                true -> onAction(EpisodeAction.UnmarkAsFavorite)
-                                false -> onAction(EpisodeAction.MarkAsFavorite)
+                            when (movie.favorite) {
+                                true -> onAction(MovieAction.UnmarkAsFavorite)
+                                false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
                         onTrailerClick = {},
@@ -290,7 +280,7 @@ private fun EpisodeScreenLayout(
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Text(
-                        text = episode.overview,
+                        text = movie.overview,
                         modifier = Modifier
                             .clickable {
                                 expandedOverview = !expandedOverview
@@ -299,6 +289,27 @@ private fun EpisodeScreenLayout(
                         maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                    Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                    ) {
+                        Text(
+                            text = "${stringResource(CoreR.string.genres)}: ${movie.genres.joinToString()}",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        state.director?.let { director ->
+                            Text(
+                                text = "${stringResource(CoreR.string.director)}: ${director.name}",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        if (state.writers.isNotEmpty()) {
+                            Text(
+                                text = "${stringResource(CoreR.string.writers)}: ${state.writers.joinToString { it.name }}",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }
                 if (state.actors.isNotEmpty()) {
@@ -350,7 +361,7 @@ private fun EpisodeScreenLayout(
                 .padding(horizontal = MaterialTheme.spacings.small),
         ) {
             IconButton(
-                onClick = { onAction(EpisodeAction.OnBackClick) },
+                onClick = { onAction(MovieAction.OnBackClick) },
                 modifier = Modifier
                     .alpha(0.7f),
                 colors = IconButtonDefaults.iconButtonColors(
@@ -371,9 +382,9 @@ private fun EpisodeScreenLayout(
 @Composable
 private fun EpisodeScreenLayoutPreview() {
     FindroidTheme {
-        EpisodeScreenLayout(
-            state = EpisodeState(
-                episode = dummyEpisode,
+        MovieScreenLayout(
+            state = MovieState(
+                movie = dummyMovie,
                 videoMetadata = dummyVideoMetadata,
             ),
             isLoadingPlayer = false,

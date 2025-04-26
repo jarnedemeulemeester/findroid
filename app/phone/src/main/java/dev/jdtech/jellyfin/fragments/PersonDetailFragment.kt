@@ -20,7 +20,6 @@ import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.FragmentPersonDetailBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import dev.jdtech.jellyfin.utils.safeNavigate
@@ -142,14 +141,6 @@ internal class PersonDetailFragment : Fragment() {
 
     private fun navigateToMediaItem(item: FindroidItem) {
         when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
-                        itemId = item.id,
-                        itemName = item.name,
-                    ),
-                )
-            }
             is FindroidShow -> {
                 findNavController().safeNavigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
