@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_home">Acasă</string>
     <string name="remove_server_address">Eliminați adresa serverului</string>
@@ -7,7 +7,7 @@
     <string name="view_all">Afișează tot</string>
     <string name="retry">Încearcă din nou</string>
     <string name="director">Regizor</string>
-    <string name="writers">Scenarist</string>
+    <string name="writers">Scriitori</string>
     <string name="cast_amp_crew"><![CDATA[Distribuție & Echipă tehnică]]></string>
     <string name="seasons">Sezoane</string>
     <string name="trailer_button_description">Vizionează trailerul</string>
@@ -83,7 +83,7 @@
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="no_favorites">Nu ați marcat conținut ca favorit</string>
-    <string name="view_details_underlined"><u>Vedeți detaii</u></string>
+    <string name="view_details_underlined"><u>Vedeți detalii</u></string>
     <string name="view_details">Vedeți detalii</string>
     <string name="image_description_backdrop">Fundal %1$s</string>
     <string name="image_description_poster">Poster %1$s</string>
@@ -124,4 +124,8 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="seeking">Se derulează</string>
     <string name="seek_back_increment">Derulează înapoi cu increment (ms)</string>
+    <string name="title_settings">Setări</string>
+    <string name="not_set">Nu se aplica</string>
+    <string name="title_download">Descărcări</string>
+    <string name="offline_mode">Modul Offline</string>
 </resources>
