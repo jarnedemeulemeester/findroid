@@ -201,6 +201,19 @@ class JellyfinRepositoryImpl(
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
+    override suspend fun getSuggestions(): List<FindroidItem> {
+        val items = withContext(Dispatchers.IO) {
+            jellyfinApi.suggestionsApi.getSuggestions(
+                jellyfinApi.userId!!,
+                limit = 12,
+                type = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+            ).content.items
+        }
+        return items.mapNotNull {
+            it.toFindroidItem(this, database)
+        }
+    }
+
     override suspend fun getResumeItems(): List<FindroidItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getResumeItems(

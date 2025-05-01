@@ -62,6 +62,8 @@ interface JellyfinRepository {
 
     suspend fun getSearchItems(searchQuery: String): List<FindroidItem>
 
+    suspend fun getSuggestions(): List<FindroidItem>
+
     suspend fun getResumeItems(): List<FindroidItem>
 
     suspend fun getLatestMedia(parentId: UUID): List<FindroidItem>
