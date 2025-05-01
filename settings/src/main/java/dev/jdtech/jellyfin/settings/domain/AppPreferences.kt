@@ -17,9 +17,13 @@ constructor(
     val preferredAudioLanguage = Preference<String?>("pref_audio_language", null)
     val preferredSubtitleLanguage = Preference<String?>("pref_subtitle_language", null)
 
-    // Appearance
+    // Interface
     val theme = Preference("pref_theme", "system")
     val dynamicColors = Preference("pref_dynamic_colors", true)
+    val homeSuggestions = Preference<Boolean>("home_suggestions", true)
+    val homeContinueWatching = Preference<Boolean>("home_continue_watching", true)
+    val homeNextUp = Preference<Boolean>("home_next_up", true)
+    val homeLatest = Preference<Boolean>("home_latest", true)
     val displayExtraInfo = Preference("pref_display_extra_info", false)
 
     // Player

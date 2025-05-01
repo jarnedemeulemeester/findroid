@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 import dev.jdtech.jellyfin.film.R as FilmR
@@ -35,13 +36,14 @@ constructor(
     private val uiTextNextUp = UiText.StringResource(FilmR.string.next_up)
 
     fun loadData() {
+        Timber.i("Loading data")
         viewModelScope.launch(Dispatchers.Default) {
             _state.emit(_state.value.copy(isLoading = true, error = null))
             try {
                 if (appPreferences.getValue(appPreferences.offlineMode)) _state.emit(_state.value.copy(isOffline = true))
 
-                // Load sequentially instead of in parallel because if the views load faster then the dynamic items, the dynamic items will appear above it but the scroll position will remain the same creating a weird look.
-                loadDynamicItems()
+                loadResumeItems()
+                loadNextUpItems()
                 loadViews()
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
@@ -50,44 +52,66 @@ constructor(
         }
     }
 
-    private suspend fun loadDynamicItems() {
-        val resumeItems = repository.getResumeItems()
-        val nextUpItems = repository.getNextUp()
-
-        val items = mutableListOf<HomeSection>()
-        if (resumeItems.isNotEmpty()) {
-            items.add(
+    private suspend fun loadResumeItems() {
+        Timber.i("Loading resume items")
+        val section = if (appPreferences.getValue(appPreferences.homeContinueWatching)) {
+            val resumeItems = repository.getResumeItems()
+            if (resumeItems.isEmpty()) {
+                null
+            }
+            HomeItem.Section(
                 HomeSection(
                     uuidContinueWatching,
                     uiTextContinueWatching,
                     resumeItems,
                 ),
             )
+        } else {
+            null
         }
 
-        if (nextUpItems.isNotEmpty()) {
-            items.add(
+        _state.emit(
+            _state.value.copy(resumeSection = section),
+        )
+    }
+
+    private suspend fun loadNextUpItems() {
+        Timber.i("Loading next up items")
+        val section = if (appPreferences.getValue(appPreferences.homeNextUp)) {
+            val nextUpItems = repository.getNextUp()
+            if (nextUpItems.isEmpty()) {
+                null
+            }
+            HomeItem.Section(
                 HomeSection(
                     uuidNextUp,
                     uiTextNextUp,
                     nextUpItems,
                 ),
             )
+        } else {
+            null
         }
 
         _state.emit(
-            _state.value.copy(sections = items.map { HomeItem.Section(it) }),
+            _state.value.copy(nextUpSection = section),
         )
     }
 
     private suspend fun loadViews() {
-        val items = repository
-            .getUserViews()
-            .filter { view -> CollectionType.fromString(view.collectionType?.serialName) in CollectionType.supported }
-            .map { view -> view to repository.getLatestMedia(view.id) }
-            .filter { (_, latest) -> latest.isNotEmpty() }
-            .map { (view, latest) -> view.toView(latest) }
-            .map { HomeItem.ViewItem(it) }
+        Timber.i("Loading views")
+        val items = if (appPreferences.getValue(appPreferences.homeLatest)) {
+            repository
+                .getUserViews()
+                .filter { view -> CollectionType.fromString(view.collectionType?.serialName) in CollectionType.supported }
+                .map { view -> view to repository.getLatestMedia(view.id) }
+                .filter { (_, latest) -> latest.isNotEmpty() }
+                .map { (view, latest) -> view.toView(latest) }
+                .map { HomeItem.ViewItem(it) }
+        } else {
+            emptyList()
+        }
+
         _state.emit(
             _state.value.copy(views = items),
         )

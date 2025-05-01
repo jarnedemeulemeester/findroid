@@ -4,7 +4,8 @@ import dev.jdtech.jellyfin.models.HomeItem
 
 data class HomeState(
     val isOffline: Boolean = false,
-    val sections: List<HomeItem.Section> = emptyList(),
+    val resumeSection: HomeItem.Section? = null,
+    val nextUpSection: HomeItem.Section? = null,
     val views: List<HomeItem.ViewItem> = emptyList(),
     val isLoading: Boolean = false,
     val error: Exception? = null,

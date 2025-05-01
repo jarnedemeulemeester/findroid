@@ -7,6 +7,7 @@
     <string name="settings_category_player">Player</string>
     <string name="settings_category_download">Downloads</string>
     <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_interface">Interface</string>
     <string name="settings_category_device">Device</string>
     <string name="settings_category_cache">Cache</string>
     <string name="settings_use_cache_title">Cache images</string>
@@ -52,6 +53,11 @@
     <string name="users">Users</string>
     <string name="title_download">Downloads</string>
     <string name="about">About</string>
+    <string name="home">Home</string>
+    <string name="home_suggestions">Display suggestions</string>
+    <string name="home_continue_watching">Display continue watching</string>
+    <string name="home_next_up">Display next up</string>
+    <string name="home_latest">Display latest items</string>
     <string name="title_settings">Settings</string>
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-picture home gesture</string>

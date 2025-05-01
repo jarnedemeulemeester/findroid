@@ -1,28 +1,18 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
@@ -32,15 +22,14 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.presentation.film.components.HomeSection
+import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.ui.components.Direction
-import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
-import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeScreen(
@@ -93,70 +82,43 @@ private fun HomeScreenLayout(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
 ) {
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(state.sections) {
-        focusRequester.requestFocus()
-    }
+    val itemsPadding = PaddingValues(
+        horizontal = MaterialTheme.spacings.large,
+    )
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .focusRequester(focusRequester),
+            .fillMaxSize(),
         contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
     ) {
-        items(state.sections, key = { it.id }) { section ->
-            Column(
-                modifier = Modifier.animateItem(),
-            ) {
-                Text(
-                    text = section.homeSection.name.asString(),
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(start = MaterialTheme.spacings.large),
+        state.resumeSection?.let { section ->
+            item(key = section.id) {
+                HomeSection(
+                    section = section,
+                    itemsPadding = itemsPadding,
+                    onAction = onAction,
+                    modifier = Modifier.animateItem(),
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                ) {
-                    items(section.homeSection.items, key = { it.id }) { item ->
-                        ItemCard(
-                            item = item,
-                            direction = Direction.HORIZONTAL,
-                            onClick = {
-                                onAction(HomeAction.OnItemClick(it))
-                            },
-                        )
-                    }
-                }
+            }
+        }
+        state.nextUpSection?.let { section ->
+            item(key = section.id) {
+                HomeSection(
+                    section = section,
+                    itemsPadding = itemsPadding,
+                    onAction = onAction,
+                    modifier = Modifier.animateItem(),
+                )
             }
         }
         items(state.views, key = { it.id }) { view ->
-            Column(
+            HomeView(
+                view = view,
+                itemsPadding = itemsPadding,
+                onAction = onAction,
                 modifier = Modifier.animateItem(),
-            ) {
-                Text(
-                    text = stringResource(id = FilmR.string.latest_library, view.view.name),
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(start = MaterialTheme.spacings.large),
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                ) {
-                    items(view.view.items, key = { it.id }) { item ->
-                        ItemCard(
-                            item = item,
-                            direction = Direction.VERTICAL,
-                            onClick = {
-                                onAction(HomeAction.OnItemClick(it))
-                            },
-                        )
-                    }
-                }
-            }
+            )
         }
     }
 }
@@ -167,7 +129,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
-                sections = listOf(dummyHomeSection),
+                resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
             ),
             onAction = {},

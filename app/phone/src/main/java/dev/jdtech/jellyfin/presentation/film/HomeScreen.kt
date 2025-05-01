@@ -3,33 +3,25 @@ package dev.jdtech.jellyfin.presentation.film
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
@@ -43,17 +35,14 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
-import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
-import dev.jdtech.jellyfin.presentation.film.components.ItemCard
+import dev.jdtech.jellyfin.presentation.film.components.HomeSection
+import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeScreen(
@@ -140,88 +129,33 @@ private fun HomeScreenLayout(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
-            items(state.sections, key = { it.id }) { section ->
-                Column(
-                    modifier = Modifier.animateItem(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(42.dp)
-                            .padding(itemsPadding),
-                    ) {
-                        Text(
-                            text = section.homeSection.name.asString(),
-                            modifier = Modifier.align(Alignment.CenterStart),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                    LazyRow(
-                        contentPadding = itemsPadding,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
-                        items(section.homeSection.items, key = { it.id }) { item ->
-                            ItemCard(
-                                item = item,
-                                direction = Direction.HORIZONTAL,
-                                onClick = {
-                                    onAction(HomeAction.OnItemClick(item))
-                                },
-                            )
-                        }
-                    }
+            state.resumeSection?.let { section ->
+                item(key = section.id) {
+                    HomeSection(
+                        section = section,
+                        itemsPadding = itemsPadding,
+                        onAction = onAction,
+                        modifier = Modifier.animateItem(),
+                    )
+                }
+            }
+            state.nextUpSection?.let { section ->
+                item(key = section.id) {
+                    HomeSection(
+                        section = section,
+                        itemsPadding = itemsPadding,
+                        onAction = onAction,
+                        modifier = Modifier.animateItem(),
+                    )
                 }
             }
             items(state.views, key = { it.id }) { view ->
-                Column(
+                HomeView(
+                    view = view,
+                    itemsPadding = itemsPadding,
+                    onAction = onAction,
                     modifier = Modifier.animateItem(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(42.dp)
-                            .padding(itemsPadding),
-                    ) {
-                        Text(
-                            text = stringResource(FilmR.string.latest_library, view.view.name),
-                            modifier = Modifier.align(Alignment.CenterStart),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                        TextButton(
-                            onClick = {
-                                onAction(
-                                    HomeAction.OnLibraryClick(
-                                        FindroidCollection(
-                                            id = view.view.id,
-                                            name = view.view.name,
-                                            images = FindroidImages(),
-                                            type = view.view.type,
-                                        ),
-                                    ),
-                                )
-                            },
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                        ) {
-                            Text(stringResource(CoreR.string.view_all))
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                    LazyRow(
-                        contentPadding = itemsPadding,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
-                        items(view.view.items, key = { it.id }) { item ->
-                            ItemCard(
-                                item = item,
-                                direction = Direction.VERTICAL,
-                                onClick = {
-                                    onAction(HomeAction.OnItemClick(item))
-                                },
-                            )
-                        }
-                    }
-                }
+                )
             }
         }
         if (state.error != null) {
@@ -256,7 +190,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
-                sections = listOf(dummyHomeSection),
+                resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
                 error = Exception("Failed to load data"),
             ),

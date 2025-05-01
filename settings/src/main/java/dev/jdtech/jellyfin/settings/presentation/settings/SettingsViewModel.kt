@@ -94,8 +94,8 @@ constructor(
         PreferenceGroup(
             preferences = listOf(
                 PreferenceCategory(
-                    nameStringResource = R.string.settings_category_appearance,
-                    iconDrawableId = R.drawable.ic_palette,
+                    nameStringResource = R.string.settings_category_interface,
+                    iconDrawableId = R.drawable.ic_layout_dashboard,
                     onClick = {
                         viewModelScope.launch {
                             eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
@@ -103,6 +103,7 @@ constructor(
                     },
                     nestedPreferenceGroups = listOf(
                         PreferenceGroup(
+                            nameStringResource = R.string.settings_category_appearance,
                             preferences = listOf(
                                 PreferenceSelect(
                                     nameStringResource = R.string.theme,
@@ -122,6 +123,28 @@ constructor(
                                     enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                                     backendPreference = appPreferences.dynamicColors,
+                                ),
+                            ),
+                        ),
+                        PreferenceGroup(
+                            nameStringResource = R.string.home,
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.home_suggestions,
+                                    backendPreference = appPreferences.homeSuggestions,
+                                    enabled = false,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.home_continue_watching,
+                                    backendPreference = appPreferences.homeContinueWatching,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.home_next_up,
+                                    backendPreference = appPreferences.homeNextUp,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.home_latest,
+                                    backendPreference = appPreferences.homeLatest,
                                 ),
                             ),
                         ),
