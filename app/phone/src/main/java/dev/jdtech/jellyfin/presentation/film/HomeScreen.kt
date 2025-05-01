@@ -39,6 +39,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
+import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -129,6 +130,15 @@ private fun HomeScreenLayout(
             ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
+            state.suggestionsSection?.let { section ->
+                item(key = section.id) {
+                    HomeCarousel(
+                        items = section.items,
+                        itemsPadding = itemsPadding,
+                        onAction = onAction,
+                    )
+                }
+            }
             state.resumeSection?.let { section ->
                 item(key = section.id) {
                     HomeSection(
