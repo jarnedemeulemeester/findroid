@@ -19,7 +19,6 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.Constants.PlayerMediaSegmentsAutoSkip
 import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
@@ -29,6 +28,7 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.Constants
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -243,7 +243,8 @@ constructor(
                 handler.postDelayed(this, 1000L)
             }
         }
-        if (appPreferences.playerMediaSegmentsSkipButton || appPreferences.playerMediaSegmentsAutoSkip != PlayerMediaSegmentsAutoSkip.NEVER) {
+        if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) ||
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) != Constants.PlayerMediaSegmentsAutoSkip.NEVER) {
             handler.post(segmentCheckRunnable)
         }
         handler.post(playbackProgressRunnable)
@@ -409,11 +410,11 @@ constructor(
     }
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration
-    fun skipToNextEpisode(segment: PlayerSegment): Boolean {
-        return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem() == true) {
+    private fun skipToNextEpisode(segment: PlayerSegment): Boolean {
+        return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem()) {
             val segmentEndTimeMillis = segment.endTicks
             val playerDurationMillis = player.duration
-            val thresholdMillis = playerDurationMillis - appPreferences.playerMediaSegmentsNextEpisodeThreshold
+            val thresholdMillis = playerDurationMillis - appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
 
             segmentEndTimeMillis > thresholdMillis
         } else {

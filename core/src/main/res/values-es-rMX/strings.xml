@@ -58,13 +58,11 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="libraries">Bibliotecas</string>
     <string name="episodes_label">Episodios</string>
-    <string name="quick_connect">Conexión rápida</string>
     <string name="settings_category_network">Red</string>
     <string name="settings_connect_timeout">Espera de conexión (ms)</string>
     <string name="settings_socket_timeout">Espera del conector (ms)</string>
     <string name="settings_request_timeout">Espera de respuestas (ms)</string>
     <string name="users">Usuarios</string>
-    <string name="add_user">Agregar usuario</string>
     <string name="pref_player_mpv_hwdec">Decodificación por hardware</string>
     <string name="pref_player_mpv_vo">Salida de video</string>
     <string name="pref_player_mpv_ao">Salida de audio</string>
@@ -107,7 +105,6 @@
     <string name="mark_as_played">Marcar como reproducido</string>
     <string name="unmark_as_played">Desmarca como reproducido</string>
     <string name="sort_by_options_6">Aleatorio</string>
-    <string name="users">Usuarios</string>
     <string name="show_stacktrace">Mostrar pila de llamadas</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="not_set">No establecido</string>

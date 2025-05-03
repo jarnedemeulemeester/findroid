@@ -50,6 +50,4 @@
     <string name="settings_request_timeout">Časový limit požadavku</string>
     <string name="title_download">Stažené</string>
     <string name="picture_in_picture">Obraz v obraze</string>
-    <string name="pref_player_intro_skipper">Přeskočení úvodu</string>
-    <string name="pref_player_intro_skipper_summary">Vyžaduje, aby byl na serveru nainstalován plugin Intro Skipper od jumoog</string>
 </resources>

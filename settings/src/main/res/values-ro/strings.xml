@@ -35,7 +35,6 @@
     <string name="pref_player_mpv_hwdec">Decodare hardware</string>
     <string name="pref_player_mpv_vo">Ieșire video</string>
     <string name="pref_player_mpv_ao">Ieșire audio</string>
-    <string name="pref_player_intro_skipper_summary">Necesită ca pluginul <b>IntroSkipper</b> de <i>jumoog</i> să fie instalat pe server</string>
     <string name="extra_info">Afișați informații suplimentare</string>
     <string name="extra_info_summary">Afișați informații detaliate despre Audio, Video și Subtitrări</string>
     <string name="offline_mode">Mod offline</string>

@@ -46,8 +46,6 @@
     <string name="settings_socket_timeout">Timeout socket</string>
     <string name="pref_player_mpv_hwdec">Decodifica hardware</string>
     <string name="pref_player_mpv_vo">Output video</string>
-    <string name="pref_player_intro_skipper">Salta intro (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>jumoog</i> installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
     <string name="player_gestures_seek">Gesto posizionamento</string>
     <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
