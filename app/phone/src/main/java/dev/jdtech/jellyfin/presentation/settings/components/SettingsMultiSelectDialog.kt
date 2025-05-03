@@ -90,7 +90,7 @@ fun SettingsMultiSelectDialog(
                                 } else {
                                     selectedOptions + listOfNotNull(key)
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -129,7 +129,7 @@ private fun SettingsMultiSelectDialogItem(
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = { _ -> onCheckedChange(option.first) }
+            onCheckedChange = { _ -> onCheckedChange(option.first) },
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
         Text(text = option.second)
@@ -150,7 +150,7 @@ private fun SettingsMultiSelectDialogPreview() {
             options = listOf(
                 "a" to "Option A",
                 "b" to "Option B",
-                "c" to "Option C"
+                "c" to "Option C",
             ),
             onUpdate = {},
             onDismissRequest = {},

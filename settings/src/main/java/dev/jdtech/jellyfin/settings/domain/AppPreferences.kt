@@ -86,6 +86,7 @@ constructor(
 
     inline fun <reified T> getValue(preference: Preference<T>): T {
         return try {
+            @Suppress("UNCHECKED_CAST")
             when (preference.defaultValue) {
                 is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
                 is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
@@ -104,13 +105,14 @@ constructor(
 
     inline fun <reified T> setValue(preference: Preference<T>, value: T) {
         val editor = sharedPreferences.edit()
+        @Suppress("UNCHECKED_CAST")
         when (preference.defaultValue) {
             is Boolean -> editor.putBoolean(preference.backendName, value as Boolean)
             is Int -> editor.putInt(preference.backendName, value as Int)
             is Long -> editor.putLong(preference.backendName, value as Long)
             is Float -> editor.putFloat(preference.backendName, value as Float)
             is String? -> editor.putString(preference.backendName, value as String?)
-            is Set<*> -> editor.putStringSet(preference.backendName, value as Set<String>?)
+            is Set<*> -> editor.putStringSet(preference.backendName, value as Set<String>)
             else -> throw Exception()
         }
         editor.apply()

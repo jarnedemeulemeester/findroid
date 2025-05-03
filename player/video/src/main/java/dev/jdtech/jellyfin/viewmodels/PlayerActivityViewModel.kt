@@ -244,7 +244,8 @@ constructor(
             }
         }
         if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) ||
-            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) != Constants.PlayerMediaSegmentsAutoSkip.NEVER) {
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) != Constants.PlayerMediaSegmentsAutoSkip.NEVER
+        ) {
             handler.post(segmentCheckRunnable)
         }
         handler.post(playbackProgressRunnable)
@@ -405,7 +406,7 @@ constructor(
         if (skipToNextEpisode(segment)) {
             player.seekToNextMediaItem()
         } else {
-            player.seekTo((segment.endTicks).toLong())
+            player.seekTo((segment.endTicks))
         }
     }
 

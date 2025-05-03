@@ -332,7 +332,7 @@ constructor(
                                     nameStringResource = R.string.pref_player_media_segments_next_episode_threshold,
                                     backendPreference = appPreferences.playerMediaSegmentsNextEpisodeThreshold,
                                     suffixRes = R.string.ms,
-                                )
+                                ),
                             ),
                         ),
                         PreferenceGroup(
