@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_description">Neoficiální nativní Jellyfin aplikace</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
@@ -79,4 +79,26 @@
     <string name="shows_label">Seriály</string>
     <string name="downloaded_indicator">Indikátor stahování</string>
     <string name="sort_order">Pořadí řazení</string>
-    </resources>
+    <string name="season_episode">Sezóna %1$d - Epizoda %2$d</string>
+    <string name="offline_mode">Offline režim</string>
+    <string name="live_tv">Živá televize</string>
+    <string name="play">Přehrát</string>
+    <string name="internal">Vnitřní</string>
+    <string name="add_to_favorites">Přidat do oblíbených</string>
+    <string name="remove_from_favorites">Odebrat z oblíbených</string>
+    <string name="select_storage_location">Vyber lokaci ůložiště</string>
+    <string name="storage_unavailable">Lokace ůložiště je nepřístupné</string>
+    <string name="storage_name">%1$s (zbývá %2$d MB)</string>
+    <string name="preparing_download">Připravuji stahování</string>
+    <string name="privacy_policy_notice">Používáním Findroidu souhlasíš s našima <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Podmínkama použití</a>, které říkají, že nesbíráme žádná data</string>
+    <string name="watch_trailer">Přehrát trailer</string>
+    <string name="mark_as_played">Označit jako přehrané</string>
+    <string name="unmark_as_played">Označit jako nepřehrané</string>
+    <string name="not_set">Nenastaveno</string>
+    <string name="title_download">Stažené soubory</string>
+    <string name="collection_no_media">Tato kolekce neobsahuje žádné médium</string>
+    <string name="subtitle_chip_text">Tit.</string>
+    <string name="temp">temp</string>
+    <string name="sort_by_options_6">Náhodně</string>
+    <string name="offline_mode_go_online">Jdi online</string>
+</resources>
