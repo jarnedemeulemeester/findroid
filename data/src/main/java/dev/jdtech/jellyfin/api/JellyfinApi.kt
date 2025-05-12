@@ -8,6 +8,7 @@ import org.jellyfin.sdk.api.client.extensions.brandingApi
 import org.jellyfin.sdk.api.client.extensions.devicesApi
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
+import org.jellyfin.sdk.api.client.extensions.mediaSegmentsApi
 import org.jellyfin.sdk.api.client.extensions.playStateApi
 import org.jellyfin.sdk.api.client.extensions.quickConnectApi
 import org.jellyfin.sdk.api.client.extensions.sessionApi
@@ -55,6 +56,7 @@ class JellyfinApi(
     val devicesApi = api.devicesApi
     val itemsApi = api.itemsApi
     val mediaInfoApi = api.mediaInfoApi
+    val mediaSegmentsApi = api.mediaSegmentsApi
     val playStateApi = api.playStateApi
     val quickConnectApi = api.quickConnectApi
     val sessionApi = api.sessionApi
