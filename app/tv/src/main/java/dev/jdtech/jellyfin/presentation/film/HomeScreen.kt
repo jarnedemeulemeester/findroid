@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -89,13 +90,22 @@ private fun HomeScreenLayout(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
-        contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
+        contentPadding = PaddingValues(top = MaterialTheme.spacings.extraSmall, bottom = MaterialTheme.spacings.large),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
     ) {
+        state.suggestionsSection?.let { section ->
+            item(key = section.id) {
+                HomeCarousel(
+                    items = section.items,
+                    itemsPadding = itemsPadding,
+                    onAction = onAction,
+                )
+            }
+        }
         state.resumeSection?.let { section ->
             item(key = section.id) {
                 HomeSection(
-                    section = section,
+                    section = section.homeSection,
                     itemsPadding = itemsPadding,
                     onAction = onAction,
                     modifier = Modifier.animateItem(),
@@ -105,7 +115,7 @@ private fun HomeScreenLayout(
         state.nextUpSection?.let { section ->
             item(key = section.id) {
                 HomeSection(
-                    section = section,
+                    section = section.homeSection,
                     itemsPadding = itemsPadding,
                     onAction = onAction,
                     modifier = Modifier.animateItem(),

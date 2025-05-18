@@ -142,7 +142,7 @@ private fun HomeScreenLayout(
             state.resumeSection?.let { section ->
                 item(key = section.id) {
                     HomeSection(
-                        section = section,
+                        section = section.homeSection,
                         itemsPadding = itemsPadding,
                         onAction = onAction,
                         modifier = Modifier.animateItem(),
@@ -152,7 +152,7 @@ private fun HomeScreenLayout(
             state.nextUpSection?.let { section ->
                 item(key = section.id) {
                     HomeSection(
-                        section = section,
+                        section = section.homeSection,
                         itemsPadding = itemsPadding,
                         onAction = onAction,
                         modifier = Modifier.animateItem(),

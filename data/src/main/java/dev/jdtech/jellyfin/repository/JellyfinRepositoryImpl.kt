@@ -205,7 +205,7 @@ class JellyfinRepositoryImpl(
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.suggestionsApi.getSuggestions(
                 jellyfinApi.userId!!,
-                limit = 12,
+                limit = 6,
                 type = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
             ).content.items
         }
