@@ -56,17 +56,22 @@ constructor(
 
     private suspend fun loadSuggestions() {
         Timber.i("Loading suggestions")
-        val section = if (appPreferences.getValue(appPreferences.homeSuggestions)) {
-            val items = repository.getSuggestions()
-            if (items.isEmpty()) {
-                null
-            }
+        if (!appPreferences.getValue(appPreferences.homeSuggestions)) {
+            _state.emit(
+                _state.value.copy(suggestionsSection = null),
+            )
+            return
+        }
+
+        val items = repository.getSuggestions()
+
+        val section = if (items.isEmpty()) {
+            null
+        } else {
             HomeItem.Suggestions(
                 id = uuidSuggestions,
                 items = items,
             )
-        } else {
-            null
         }
 
         _state.emit(
@@ -76,11 +81,18 @@ constructor(
 
     private suspend fun loadResumeItems() {
         Timber.i("Loading resume items")
-        val section = if (appPreferences.getValue(appPreferences.homeContinueWatching)) {
-            val resumeItems = repository.getResumeItems()
-            if (resumeItems.isEmpty()) {
-                null
-            }
+        if (!appPreferences.getValue(appPreferences.homeContinueWatching)) {
+            _state.emit(
+                _state.value.copy(resumeSection = null),
+            )
+            return
+        }
+
+        val resumeItems = repository.getResumeItems()
+
+        val section = if (resumeItems.isEmpty()) {
+            null
+        } else {
             HomeItem.Section(
                 HomeSection(
                     uuidContinueWatching,
@@ -88,8 +100,6 @@ constructor(
                     resumeItems,
                 ),
             )
-        } else {
-            null
         }
 
         _state.emit(
@@ -99,11 +109,18 @@ constructor(
 
     private suspend fun loadNextUpItems() {
         Timber.i("Loading next up items")
-        val section = if (appPreferences.getValue(appPreferences.homeNextUp)) {
-            val nextUpItems = repository.getNextUp()
-            if (nextUpItems.isEmpty()) {
-                null
-            }
+        if (!appPreferences.getValue(appPreferences.homeNextUp)) {
+            _state.emit(
+                _state.value.copy(nextUpSection = null),
+            )
+            return
+        }
+
+        val nextUpItems = repository.getNextUp()
+
+        val section = if (nextUpItems.isEmpty()) {
+            null
+        } else {
             HomeItem.Section(
                 HomeSection(
                     uuidNextUp,
@@ -111,8 +128,6 @@ constructor(
                     nextUpItems,
                 ),
             )
-        } else {
-            null
         }
 
         _state.emit(
