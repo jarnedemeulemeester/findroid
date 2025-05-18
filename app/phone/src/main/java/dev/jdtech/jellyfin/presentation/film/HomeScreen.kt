@@ -94,9 +94,9 @@ private fun HomeScreenLayout(
 
     val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 144.dp }
         } else {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp }
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 88.dp }
         },
         label = "content_padding",
     )
@@ -128,7 +128,7 @@ private fun HomeScreenLayout(
                 top = contentPaddingTop,
                 bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
             ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             state.suggestionsSection?.let { section ->
                 item(key = section.id) {

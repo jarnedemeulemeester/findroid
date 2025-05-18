@@ -1,107 +1,51 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
-@OptIn(ExperimentalMaterial3Api::class)
+private val dynamicPageSize = object : PageSize {
+    override fun Density.calculateMainAxisPageSize(
+        availableSpace: Int,
+        pageSpacing: Int,
+    ): Int {
+        val nPages = when {
+            availableSpace.toDp() >= 840.dp -> 3
+            availableSpace.toDp() >= 600.dp -> 2
+            else -> 1
+        }
+
+        return (availableSpace - (nPages - 1) * pageSpacing) / nPages
+    }
+}
+
 @Composable
 fun HomeCarousel(
     items: List<FindroidItem>,
     itemsPadding: PaddingValues,
     onAction: (HomeAction) -> Unit,
 ) {
-    val itemWidth = 320.dp
-    val carouselState = rememberCarouselState {
-        items.size
-    }
-    HorizontalMultiBrowseCarousel(
-        state = carouselState,
-        preferredItemWidth = itemWidth,
-        itemSpacing = MaterialTheme.spacings.medium,
+    val pagerState = rememberPagerState(pageCount = { items.size })
+
+    HorizontalPager(
+        state = pagerState,
         contentPadding = itemsPadding,
-    ) { index ->
-        val item = items[index]
-
-        var imageUri = item.images.backdrop
-
-        val density = LocalDensity.current
-
-        val opacity = remember(carouselItemInfo.size) {
-            val minWidthPx = with(density) { 100.dp.toPx() }
-            val maxWidthPx = with(density) { itemWidth.toPx() }
-            val currentWidthPx = carouselItemInfo.size
-
-            val clampedWidth = currentWidthPx.coerceIn(minWidthPx, maxWidthPx)
-
-            (clampedWidth - minWidthPx) / (maxWidthPx - minWidthPx)
-        }
-
-        Box(
-            modifier = Modifier
-                .aspectRatio(1.77f)
-                .maskClip(MaterialTheme.shapes.small)
-                .clickable {
-                    onAction(HomeAction.OnItemClick(item))
-                },
-        ) {
-            AsyncImage(
-                model = imageUri,
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize(),
-            ) {
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.4f)),
-                        startY = size.height / 2,
-                    ),
-                )
-            }
-            Text(
-                text = item.name,
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacings.medium, vertical = MaterialTheme.spacings.small)
-                    .align(Alignment.BottomStart)
-                    .alpha(opacity),
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
+        pageSize = dynamicPageSize,
+        pageSpacing = MaterialTheme.spacings.medium,
+    ) { page ->
+        val item = items[page]
+        HomeCarouselItem(item = item, onAction = onAction)
     }
 }
 
