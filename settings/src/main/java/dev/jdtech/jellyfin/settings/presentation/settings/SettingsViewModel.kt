@@ -132,7 +132,6 @@ constructor(
                                 PreferenceSwitch(
                                     nameStringResource = R.string.home_suggestions,
                                     backendPreference = appPreferences.homeSuggestions,
-                                    enabled = false,
                                 ),
                                 PreferenceSwitch(
                                     nameStringResource = R.string.home_continue_watching,
