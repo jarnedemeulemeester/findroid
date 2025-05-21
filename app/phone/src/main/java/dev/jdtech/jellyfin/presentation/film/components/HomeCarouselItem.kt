@@ -56,7 +56,7 @@ fun HomeCarouselItem(
         ) {
             drawRect(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
+                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f), Color.Black.copy(alpha = 0.6f)),
                 ),
             )
         }
