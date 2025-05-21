@@ -2,12 +2,11 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -30,6 +29,8 @@ import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -68,11 +69,11 @@ fun HomeCarouselItem(
                 drawRect(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
-
                     ),
                 )
             }
             Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                 modifier = Modifier
                     .padding(
                         horizontal = MaterialTheme.spacings.default,
@@ -80,13 +81,28 @@ fun HomeCarouselItem(
                     )
                     .align(Alignment.BottomStart),
             ) {
+                when (item) {
+                    is FindroidMovie -> {
+                        Text(
+                            text = item.genres.joinToString(),
+                            color = Color.LightGray,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                    is FindroidShow -> {
+                        Text(
+                            text = item.genres.joinToString(),
+                            color = Color.LightGray,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                }
                 Text(
                     text = item.name,
                     modifier = Modifier,
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 Text(
                     text = item.overview,
                     modifier = Modifier

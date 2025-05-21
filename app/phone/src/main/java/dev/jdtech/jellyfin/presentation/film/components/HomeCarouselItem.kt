@@ -2,7 +2,9 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,8 @@ import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -53,21 +57,41 @@ fun HomeCarouselItem(
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
-                    startY = size.height / 2,
                 ),
             )
         }
-        Text(
-            text = item.name,
+        Column(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             modifier = Modifier
                 .padding(
                     horizontal = MaterialTheme.spacings.default,
                     vertical = MaterialTheme.spacings.medium,
                 )
                 .align(Alignment.BottomStart),
-            color = Color.White,
-            style = MaterialTheme.typography.titleLarge,
-        )
+        ) {
+            when (item) {
+                is FindroidMovie -> {
+                    Text(
+                        text = item.genres.joinToString(),
+                        color = Color.LightGray,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+                is FindroidShow -> {
+                    Text(
+                        text = item.genres.joinToString(),
+                        color = Color.LightGray,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            }
+            Text(
+                text = item.name,
+                modifier = Modifier,
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
     }
 }
 
