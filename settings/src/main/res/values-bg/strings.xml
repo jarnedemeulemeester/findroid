@@ -36,7 +36,6 @@
     <string name="player_gestures_vb_summary">Плъзнете нагоре и надолу на дяснатата страна на екрана, за да промените звука, и на лявата страна, за да промените яркостта</string>
     <string name="seek_back_increment">Инкремент за връщане назад</string>
     <string name="pref_player_mpv_vo">Изхода на видеото</string>
-    <string name="pref_player_intro_skipper_summary">Изисква Confused Polar Bears Intro Skipper да бъде инсталиран на сървъра</string>
     <string name="extra_info_summary">Показва детайлна информация за Аудио, Видео и Субтитри</string>
     <string name="theme_light">Светла</string>
     <string name="amoled_theme_summary">Използвайте AMOLED тема с чисто черен фон</string>
@@ -52,7 +51,6 @@
     <string name="pref_player_mpv_hwdec">Хардуерно декодиране</string>
     <string name="extra_info">Покажи Допълнителна информация</string>
     <string name="theme_dark">Тъмна</string>
-    <string name="pref_player_intro_skipper">Пропускане на интрота</string>
     <string name="player_gestures_zoom">Жест за приближаване (zoom)</string>
     <string name="settings_connect_timeout">Лимит на свързването</string>
     <string name="picture_in_picture">Режим Картина-в-картина</string>

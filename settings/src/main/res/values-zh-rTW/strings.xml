@@ -43,8 +43,6 @@
     <string name="player_gestures_vb_summary">在螢幕右側上下滑動可以控制音量，在螢幕左側可以控制亮度</string>
     <string name="seek_forward_increment">尋回向前增量</string>
     <string name="dynamic_colors_summary">使用 Material You 動態配色（僅適用於 Android 12+）</string>
-    <string name="pref_player_intro_skipper">片頭跳過器</string>
-    <string name="pref_player_intro_skipper_summary">需要在服務器上安裝jumoog的Intro Skipper挿件</string>
     <string name="pref_player_mpv_hwdec">硬體解碼</string>
     <string name="pref_player_mpv_vo">視訊輸出</string>
     <string name="pref_player_mpv_ao">音訊輸出</string>

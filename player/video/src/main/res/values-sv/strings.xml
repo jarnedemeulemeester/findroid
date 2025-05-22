@@ -17,5 +17,4 @@
     <string name="player_controls_skip_forward">Hoppa framåt</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Förloppsindikator</string>
-    <string name="player_controls_skip_credits">Hoppa över krediter</string>
 </resources>

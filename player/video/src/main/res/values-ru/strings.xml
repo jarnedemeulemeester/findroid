@@ -17,5 +17,5 @@
     <string name="player_controls_progress">Прогресс-бар</string>
     <string name="none">Отключить</string>
     <string name="player_controls_picture_in_picture">Картинка в картинке</string>
-    <string name="player_controls_skip_credits">Пропустить титры</string>
+    <string name="player_controls_skip_outro">Пропустить титры</string>
 </resources>
