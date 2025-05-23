@@ -8,7 +8,7 @@
     <string name="error_loading_data">Erreur lors du chargement des données</string>
     <string name="retry">Réessayer</string>
     <string name="director">Directeur</string>
-    <string name="cast_amp_crew">Casting &amp; Production</string>
+    <string name="cast_amp_crew"><![CDATA[Casting & Production]]></string>
     <string name="seasons">Saisons</string>
     <string name="play_button_description">Lancer le média</string>
     <string name="trailer_button_description">Regarder la bande-annonce</string>
@@ -101,4 +101,6 @@
     <string name="title_download">Téléchargements</string>
     <string name="not_set">Non définie</string>
     <string name="offline_mode">Mode hors ligne</string>
+    <string name="season_episode">Saison %1$d - Episode %2$d</string>
+    <string name="show_stacktrace">Afficher la trace de la pile</string>
 </resources>
