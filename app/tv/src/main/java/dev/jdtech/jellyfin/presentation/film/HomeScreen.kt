@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.presentation.film
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSuggestions
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
@@ -97,8 +99,10 @@ private fun HomeScreenLayout(
             item(key = section.id) {
                 HomeCarousel(
                     items = section.items,
-                    itemsPadding = itemsPadding,
                     onAction = onAction,
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(itemsPadding),
                 )
             }
         }
@@ -139,6 +143,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
+                suggestionsSection = dummyHomeSuggestions,
                 resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
             ),

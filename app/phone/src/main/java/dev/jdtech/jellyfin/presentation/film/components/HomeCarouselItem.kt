@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
@@ -34,6 +36,12 @@ fun HomeCarouselItem(
     item: FindroidItem,
     onAction: (HomeAction) -> Unit,
 ) {
+    val colorStops = arrayOf(
+        0.0f to Color.Black.copy(alpha = 0.1f),
+        0.5f to Color.Black.copy(alpha = 0.5f),
+        1f to Color.Black.copy(alpha = 0.6f),
+    )
+
     Box(
         modifier = Modifier
             .aspectRatio(1.77f)
@@ -56,7 +64,7 @@ fun HomeCarouselItem(
         ) {
             drawRect(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f), Color.Black.copy(alpha = 0.6f)),
+                    colorStops = colorStops,
                 ),
             )
         }
@@ -67,13 +75,18 @@ fun HomeCarouselItem(
                     horizontal = MaterialTheme.spacings.default,
                     vertical = MaterialTheme.spacings.medium,
                 )
-                .align(Alignment.BottomStart),
+                .align(Alignment.BottomStart)
+                .onGloballyPositioned { coordinates ->
+                    coordinates.size
+                },
         ) {
             when (item) {
                 is FindroidMovie -> {
                     Text(
                         text = item.genres.joinToString(),
                         color = Color.LightGray,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }
@@ -81,6 +94,8 @@ fun HomeCarouselItem(
                     Text(
                         text = item.genres.joinToString(),
                         color = Color.LightGray,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }
@@ -89,6 +104,8 @@ fun HomeCarouselItem(
                 text = item.name,
                 modifier = Modifier,
                 color = Color.White,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
                 style = MaterialTheme.typography.titleLarge,
             )
         }

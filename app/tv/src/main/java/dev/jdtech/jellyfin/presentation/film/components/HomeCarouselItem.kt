@@ -39,6 +39,12 @@ fun HomeCarouselItem(
     item: FindroidItem,
     onAction: (HomeAction) -> Unit,
 ) {
+    val colorStops = arrayOf(
+        0.0f to Color.Black.copy(alpha = 0.1f),
+        0.5f to Color.Black.copy(alpha = 0.5f),
+        1f to Color.Black.copy(alpha = 0.6f),
+    )
+
     Surface(
         onClick = { onAction(HomeAction.OnItemClick(item)) },
         shape = ClickableSurfaceDefaults.shape(shape = MaterialTheme.shapes.large),
@@ -68,7 +74,7 @@ fun HomeCarouselItem(
             ) {
                 drawRect(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f), Color.Black.copy(alpha = 0.6f)),
+                        colorStops = colorStops,
                     ),
                 )
             }
@@ -86,6 +92,8 @@ fun HomeCarouselItem(
                         Text(
                             text = item.genres.joinToString(),
                             color = Color.LightGray,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
                             style = MaterialTheme.typography.labelMedium,
                         )
                     }
@@ -93,6 +101,8 @@ fun HomeCarouselItem(
                         Text(
                             text = item.genres.joinToString(),
                             color = Color.LightGray,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
                             style = MaterialTheme.typography.labelMedium,
                         )
                     }
@@ -101,6 +111,8 @@ fun HomeCarouselItem(
                     text = item.name,
                     modifier = Modifier,
                     color = Color.White,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(

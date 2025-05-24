@@ -4,10 +4,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,14 +21,13 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 @Composable
 fun HomeCarousel(
     items: List<FindroidItem>,
-    itemsPadding: PaddingValues,
     onAction: (HomeAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Carousel(
         itemCount = items.size,
-        modifier = Modifier
+        modifier = modifier
             .height(300.dp)
-            .padding(itemsPadding)
             .fillMaxWidth(),
         contentTransformEndToStart = fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000))),
         contentTransformStartToEnd = fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000))),
@@ -46,7 +43,6 @@ private fun HomeCarouselPreview() {
     FindroidTheme {
         HomeCarousel(
             items = dummyMovies,
-            itemsPadding = PaddingValues(horizontal = 0.dp),
             onAction = {},
         )
     }
