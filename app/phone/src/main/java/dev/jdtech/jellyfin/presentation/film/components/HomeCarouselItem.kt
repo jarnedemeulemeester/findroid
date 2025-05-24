@@ -80,26 +80,18 @@ fun HomeCarouselItem(
                     coordinates.size
                 },
         ) {
-            when (item) {
-                is FindroidMovie -> {
-                    Text(
-                        text = item.genres.joinToString(),
-                        color = Color.LightGray,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
-                is FindroidShow -> {
-                    Text(
-                        text = item.genres.joinToString(),
-                        color = Color.LightGray,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
+            val genres = when (item) {
+                is FindroidMovie -> item.genres
+                is FindroidShow -> item.genres
+                else -> emptyList()
             }
+            Text(
+                text = genres.joinToString(),
+                color = Color.LightGray,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = MaterialTheme.typography.labelMedium,
+            )
             Text(
                 text = item.name,
                 modifier = Modifier,
