@@ -43,11 +43,19 @@ fun HomeCarousel(
     val pagerState = rememberPagerState(pageCount = { items.size })
     val pagerIsDragged by pagerState.interactionSource.collectIsDraggedAsState()
 
+    val autoScrollDelay = 5000L
+
     if (!pagerIsDragged) {
         LaunchedEffect(pagerState) {
             while (true) {
-                delay(5000)
-                val nextPage = (pagerState.currentPage + 1) % items.size
+                delay(autoScrollDelay)
+                val nextPage = if (pagerState.canScrollForward) {
+                    pagerState.currentPage + 1
+                } else {
+                    val extraDelay = autoScrollDelay * ((items.size - pagerState.currentPage) - 1)
+                    delay(extraDelay)
+                    0
+                }
                 pagerState.animateScrollToPage(nextPage)
             }
         }
