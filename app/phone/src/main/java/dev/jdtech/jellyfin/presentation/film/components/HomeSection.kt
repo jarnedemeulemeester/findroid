@@ -17,12 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
-import dev.jdtech.jellyfin.models.HomeItem
+import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun HomeSection(
-    section: HomeItem.Section,
+    section: HomeSection,
     itemsPadding: PaddingValues,
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -37,7 +37,7 @@ fun HomeSection(
                 .padding(itemsPadding),
         ) {
             Text(
-                text = section.homeSection.name.asString(),
+                text = section.name.asString(),
                 modifier = Modifier.align(Alignment.CenterStart),
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -47,7 +47,7 @@ fun HomeSection(
             contentPadding = itemsPadding,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         ) {
-            items(section.homeSection.items, key = { it.id }) { item ->
+            items(section.items, key = { it.id }) { item ->
                 ItemCard(
                     item = item,
                     direction = Direction.HORIZONTAL,

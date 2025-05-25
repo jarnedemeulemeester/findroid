@@ -118,6 +118,10 @@ class JellyfinRepositoryOfflineImpl(
         }
     }
 
+    override suspend fun getSuggestions(): List<FindroidItem> {
+        return emptyList()
+    }
+
     override suspend fun getResumeItems(): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
             val movies = database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }

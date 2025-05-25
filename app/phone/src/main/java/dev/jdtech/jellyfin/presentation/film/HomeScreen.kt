@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSuggestions
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
@@ -39,6 +40,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
+import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -93,9 +95,9 @@ private fun HomeScreenLayout(
 
     val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 144.dp }
         } else {
-            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp }
+            with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 88.dp }
         },
         label = "content_padding",
     )
@@ -127,12 +129,21 @@ private fun HomeScreenLayout(
                 top = contentPaddingTop,
                 bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
             ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
+            state.suggestionsSection?.let { section ->
+                item(key = section.id) {
+                    HomeCarousel(
+                        items = section.items,
+                        itemsPadding = itemsPadding,
+                        onAction = onAction,
+                    )
+                }
+            }
             state.resumeSection?.let { section ->
                 item(key = section.id) {
                     HomeSection(
-                        section = section,
+                        section = section.homeSection,
                         itemsPadding = itemsPadding,
                         onAction = onAction,
                         modifier = Modifier.animateItem(),
@@ -142,7 +153,7 @@ private fun HomeScreenLayout(
             state.nextUpSection?.let { section ->
                 item(key = section.id) {
                     HomeSection(
-                        section = section,
+                        section = section.homeSection,
                         itemsPadding = itemsPadding,
                         onAction = onAction,
                         modifier = Modifier.animateItem(),
@@ -190,6 +201,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
+                suggestionsSection = dummyHomeSuggestions,
                 resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
                 error = Exception("Failed to load data"),
