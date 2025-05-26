@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="view_all">Hepsini göster</string>
     <string name="title_media">Medyam</string>
@@ -44,7 +44,7 @@
     <string name="remove_server_address">Sunucu adresini kaldır</string>
     <string name="remove_server_address_dialog_text">%1$s sunucu adresini kaldırmak istediğinizden emin misiniz</string>
     <string name="error_loading_data">Veriler yüklenirken hata oluştu</string>
-    <string name="cast_amp_crew">Oyuncular ve Ekip</string>
+    <string name="cast_amp_crew"><![CDATA[Oyuncular ve Ekip]]></string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:B%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:B%2$d-%3$d - %4$s</string>
@@ -66,4 +66,41 @@
     <string name="offline_mode_go_online">Çevrimiçi ol</string>
     <string name="search_hint">Filmleri, dizileri, bölümleri arayın…</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
+    <string name="season_episode">Sezon%1$d - Bölüm%2$d</string>
+    <string name="show_stacktrace">Hata izini görüntüle</string>
+    <string name="not_set">Ayarlanmadı</string>
+    <string name="title_download">İndirilenler</string>
+    <string name="check_button_description">izlendi veya izlenmedi olarak işaretle</string>
+    <string name="favorite_button_description">Favori</string>
+    <string name="episode_watched_indicator">İzlenmiş bölüm göstericisi</string>
+    <string name="downloaded_indicator">İndirilen göstergesi</string>
+    <string name="no_downloads">İndirilmiş hiçbir şeyiniz yok</string>
+    <string name="error_preparing_player_items">Oyuncu öğeleri hazırlanırken hata oluştu</string>
+    <string name="image_description_poster">%1$sposter</string>
+    <string name="image_description_backdrop">%1$sarka plan</string>
+    <string name="size">Boyut</string>
+    <string name="video">Video</string>
+    <string name="offline_mode">Çevrimdışı Modu</string>
+    <string name="offline_mode_icon">Çevrindışı Modu ikonu</string>
+    <string name="not_enough_storage">Bu öğe, %1$s boş depolama alanı gerektiriyor ancak yalnızca %2$s mevcut</string>
+    <string name="no_server_connection">Jellyfin sunucusuyla bağlantı kurulamadı, çevrimdışı izlemek için Çevrimdışı Modu\'nu açın</string>
+    <string name="select_storage_location">Depolama alanını seçin</string>
+    <string name="storage_unavailable">Depolama alanı mevcut değil</string>
+    <string name="storage_name">%1$s (%2$d MB Boş)</string>
+    <string name="preparing_download">İndirme hazırlanıyor</string>
+    <string name="cancel_download_message">İndirmeyi iptal etmek istediğine emin misin?</string>
+    <string name="unmark_as_played">Oynatıldı işaretini kaldır</string>
+    <string name="title_settings">Ayarlar</string>
+    <string name="sort_by_options_6">Rastgele</string>
+    <string name="subtitle_chip_text">CC</string>
+    <string name="temp">Geçici</string>
+    <string name="downloading_error">İndirirken hata oluştu</string>
+    <string name="internal">Dahili</string>
+    <string name="external">Harici</string>
+    <string name="live_tv">Canlı Televizyon</string>
+    <string name="privacy_policy_notice">Findroid\'i kullanmakla gizlilik sözleşmesini<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY"> kabul etmiş oluyorsunuz, Gizlilik Sözleşmesinde</a> hiçbir veriyi toplamadığımız biliriliyor</string>
+    <string name="play">Oynat</string>
+    <string name="watch_trailer">Fragmanı izle</string>
+    <string name="mark_as_played">İzlendi olarak işaretle</string>
+    <string name="collection_no_media">Bu kolleksiyon hiçbir medya içermiyor</string>
 </resources>
