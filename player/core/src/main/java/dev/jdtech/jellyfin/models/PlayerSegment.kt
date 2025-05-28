@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class PlayerSegment(
+data class PlayerSegment(
     val type: FindroidSegmentType,
     val startTicks: Long,
     val endTicks: Long,
