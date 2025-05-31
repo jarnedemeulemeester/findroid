@@ -286,7 +286,8 @@ private fun MovieScreenLayout(
                             }
                         },
                         onTrailerClick = { uri ->
-                            onAction(MovieAction.PlayTrailer(uri))},
+                            onAction(MovieAction.PlayTrailer(uri))
+                        },
                         onDownloadClick = {},
                         modifier = Modifier.fillMaxWidth(),
                         isLoadingPlayer = isLoadingPlayer,

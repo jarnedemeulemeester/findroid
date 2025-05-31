@@ -35,17 +35,14 @@ import java.util.UUID
 
 @Composable
 fun SeasonScreen(
-    seriesId: UUID,
     seasonId: UUID,
-    seriesName: String,
-    seasonName: String,
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     seasonViewModel: SeasonViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
         seasonViewModel.loadEpisodes(
-            seriesId = seriesId,
+            seriesId = seasonId, // TODO: load season and get seriesId from season
             seasonId = seasonId,
             offline = false,
         )
@@ -61,8 +58,8 @@ fun SeasonScreen(
     val delegatedUiState by seasonViewModel.uiState.collectAsState()
 
     SeasonScreenLayout(
-        seriesName = seriesName,
-        seasonName = seasonName,
+        seriesName = "seriesName", // TODO: load seriesName from viewmodel state
+        seasonName = "seasonName", // TODO: load seasonName from viewmodel state
         uiState = delegatedUiState,
         onClick = { episode ->
             playerViewModel.loadPlayerItems(item = episode)

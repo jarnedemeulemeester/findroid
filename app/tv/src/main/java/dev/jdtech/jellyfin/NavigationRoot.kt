@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
+import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsSubScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -21,7 +23,6 @@ import dev.jdtech.jellyfin.ui.MainScreen
 import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
 import dev.jdtech.jellyfin.ui.SeasonScreen
-import dev.jdtech.jellyfin.ui.ShowScreen
 import dev.jdtech.jellyfin.utils.base64ToByteArray
 import dev.jdtech.jellyfin.utils.toBase64Str
 import kotlinx.parcelize.parcelableCreator
@@ -85,9 +86,6 @@ data class ShowRoute(
 @Serializable
 data class SeasonRoute(
     val seasonId: String,
-    val seriesId: String,
-    val seasonName: String,
-    val seriesName: String,
 )
 
 @Serializable
@@ -244,9 +242,13 @@ fun NavigationRoot(
         composable<ShowRoute> { backStackEntry ->
             val route: ShowRoute = backStackEntry.toRoute()
             ShowScreen(
-                itemId = UUID.fromString(route.itemId),
-                navigateToSeason = { seriesId, seasonId, seriesName, seasonName ->
-                    navController.navigate(SeasonRoute(seasonId = seasonId.toString(), seriesId = seriesId.toString(), seasonName = seasonName, seriesName = seriesName))
+                showId = UUID.fromString(route.itemId),
+                navigateToItem = { item ->
+                    when (item) {
+                        is FindroidSeason -> {
+                            navController.navigate(SeasonRoute(seasonId = item.id.toString()))
+                        }
+                    }
                 },
                 navigateToPlayer = { items ->
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
@@ -258,9 +260,6 @@ fun NavigationRoot(
             val route: SeasonRoute = backStackEntry.toRoute()
             SeasonScreen(
                 seasonId = UUID.fromString(route.seasonId),
-                seriesId = UUID.fromString(route.seriesId),
-                seasonName = route.seasonName,
-                seriesName = route.seriesName,
                 navigateToPlayer = { items ->
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))
