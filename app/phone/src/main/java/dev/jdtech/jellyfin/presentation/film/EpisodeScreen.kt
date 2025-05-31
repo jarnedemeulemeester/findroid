@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,8 +58,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
+import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
-import dev.jdtech.jellyfin.presentation.film.components.PersonItem
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -302,37 +300,13 @@ private fun EpisodeScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }
                 if (state.actors.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .padding(
-                                start = paddingStart,
-                                end = paddingEnd,
-                            ),
-                    ) {
-                        Text(
-                            text = stringResource(CoreR.string.cast_amp_crew),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                        Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    }
-                    LazyRow(
+                    ActorsRow(
+                        actors = state.actors,
                         contentPadding = PaddingValues(
                             start = paddingStart,
                             end = paddingEnd,
                         ),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    ) {
-                        items(
-                            items = state.actors,
-                            key = { person ->
-                                person.id
-                            },
-                        ) { person ->
-                            PersonItem(
-                                person = person,
-                            )
-                        }
-                    }
+                    )
                 }
                 Spacer(Modifier.height(paddingBottom))
             }

@@ -285,7 +285,8 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
-                        onTrailerClick = {},
+                        onTrailerClick = { uri ->
+                            onAction(MovieAction.PlayTrailer(uri))},
                         onDownloadClick = {},
                         modifier = Modifier.fillMaxWidth(),
                         isLoadingPlayer = isLoadingPlayer,
