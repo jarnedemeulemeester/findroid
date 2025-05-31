@@ -4,7 +4,6 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.PlayAccess
 import java.util.UUID
 
@@ -22,7 +21,7 @@ data class FindroidShow(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     val genres: List<String>,
-    val people: List<BaseItemPerson>,
+    val people: List<FindroidPerson>,
     override val runtimeTicks: Long,
     val communityRating: Float?,
     val officialRating: String?,
@@ -50,7 +49,7 @@ fun BaseItemDto.toFindroidShow(
         sources = emptyList(),
         seasons = emptyList(),
         genres = genres ?: emptyList(),
-        people = people ?: emptyList(),
+        people = people?.map { it.toFindroidPerson(jellyfinRepository) } ?: emptyList(),
         runtimeTicks = runTimeTicks ?: 0,
         communityRating = communityRating,
         officialRating = officialRating,

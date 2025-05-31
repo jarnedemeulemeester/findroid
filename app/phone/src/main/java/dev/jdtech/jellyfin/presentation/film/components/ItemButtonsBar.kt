@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -24,11 +26,21 @@ fun ItemButtonsBar(
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
     onDownloadClick: () -> Unit,
-    onTrailerClick: () -> Unit,
+    onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
     isLoadingPlayer: Boolean = false,
     isLoadingRestartPlayer: Boolean = false,
 ) {
+    val trailerUri = when (item) {
+        is FindroidMovie -> {
+            item.trailer
+        }
+        is FindroidShow -> {
+            item.trailer
+        }
+        else -> null
+    }
+
     Row(
         modifier = modifier,
     ) {
@@ -61,6 +73,18 @@ fun ItemButtonsBar(
                         )
                     }
                 }
+            }
+        }
+        trailerUri?.let { uri ->
+            FilledTonalIconButton(
+                onClick = {
+                    onTrailerClick(uri)
+                },
+            ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_film),
+                    contentDescription = null,
+                )
             }
         }
         FilledTonalIconButton(

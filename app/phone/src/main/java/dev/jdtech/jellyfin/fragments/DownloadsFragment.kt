@@ -10,16 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.restart
-import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import kotlinx.coroutines.launch
@@ -99,17 +96,5 @@ class DownloadsFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidShow -> {
-                findNavController().safeNavigate(
-                    DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(
-                        item.id,
-                        item.name,
-                        true,
-                    ),
-                )
-            }
-        }
-    }
+    private fun navigateToMediaItem(item: FindroidItem) {}
 }
