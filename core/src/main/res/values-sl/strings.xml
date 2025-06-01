@@ -1,17 +1,17 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_description">Third-party native Jellyfin app</string>
-    <string name="jellyfin_banner">Jellyfin banner</string>
+    <string name="app_description">Neuradna izvorna Jellyfin aplikacija</string>
+    <string name="jellyfin_banner">Jellyfin pasica</string>
     <string name="remove">Odstrani</string>
     <string name="cancel">Prekliči</string>
-    <string name="title_home">Dom</string>
+    <string name="title_home">Domača stran</string>
     <string name="title_media">Moja medija</string>
     <string name="title_favorite">Priljubljeno</string>
     <string name="view_all">Poglej vse</string>
     <string name="genres">Žanre</string>
     <string name="director">Direktor</string>
     <string name="writers">Pisatelji</string>
-    <string name="cast_amp_crew">Igralska zasedba &amp; Filmska ekipa</string>
+    <string name="cast_amp_crew"><![CDATA[Igralska zasedba & Filmska ekipa]]></string>
     <string name="seasons">Sezona</string>
     <string name="play_button_description">Predvajaj medijo</string>
     <string name="trailer_button_description">Poglej napovednik</string>
@@ -39,7 +39,7 @@
     <string name="image_description_backdrop">%1$s ozadje</string>
     <string name="sort_by_options_0">Naslov</string>
     <string name="sort_by_options_1">Ocena IMDB</string>
-    <string name="sort_by_options_2">Parental Rating</string>
+    <string name="sort_by_options_2">Starostna omejitev</string>
     <string name="sort_by_options_4">Datum predvajanja</string>
     <string name="sort_by_options_5">Datum izdaje</string>
     <string name="ascending">Naraščajoče</string>
@@ -51,7 +51,7 @@
     <string name="add">Dodaj</string>
     <string name="error_loading_data">Napaka pri nalaganju podatkov</string>
     <string name="retry">Poskusite znova</string>
-    <string name="check_button_description">Označi kot gledano ali ne-ogledano</string>
+    <string name="check_button_description">Označi kot gledano ali neogledano</string>
     <string name="favorite_button_description">Priljubljeno</string>
     <string name="episode_watched_indicator">Indikator gledanih epizod</string>
     <string name="episode_name">%1$d. %2$s</string>
@@ -64,7 +64,7 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="cancel_download_message">Ali ste prepričani, da želite preklicati prenos\?</string>
     <string name="size">Velikost</string>
-    <string name="offline_mode_go_online">izhod iz načina brez povezave</string>
+    <string name="offline_mode_go_online">Izhod iz načina brez povezave</string>
     <string name="downloading_error">Napaka med prenosom</string>
     <string name="internal">Notranjo</string>
     <string name="external">Zunanjo</string>
@@ -84,4 +84,23 @@
     <string name="privacy_policy_notice">Z uporabo Findroid-a se strinjate s <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">pravilnikom o zasebnosti</a>, ki določa, da ne zbiramo nobenih podatkov</string>
     <string name="stop_download">Ustavi prenos</string>
     <string name="preparing_download">Priprava prenosa</string>
-    </resources>
+    <string name="season_episode">Sezona %1$d - Epizoda %2$d</string>
+    <string name="offline_mode_icon">Ikona načina brez povezave</string>
+    <string name="offline_mode">Način brez povezave</string>
+    <string name="title_settings">Nastavitve</string>
+    <string name="title_download">Prenosi</string>
+    <string name="show_stacktrace">Pokaži sled sklada</string>
+    <string name="mark_as_played">Označi kot pogledano</string>
+    <string name="collection_no_media">Ta zbirka ne vsebuje medije</string>
+    <string name="not_set">Ni nastavljeno</string>
+    <string name="live_tv">TV v živo</string>
+    <string name="play">Predvajaj</string>
+    <string name="unmark_as_played">Odznači kot pogledano</string>
+    <string name="add_to_favorites">Dodaj v priljubljene</string>
+    <string name="remove_from_favorites">Odstrani iz prijubljenih</string>
+    <string name="downloaded_indicator">Indikator prenosa</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="watch_trailer">Poglej napovednik</string>
+    <string name="sort_by_options_6">Naključno</string>
+</resources>
