@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,11 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -47,11 +42,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
@@ -60,10 +53,10 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
+import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
@@ -146,8 +139,6 @@ private fun EpisodeScreenLayout(
     val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
     val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
 
-    val backgroundColor = MaterialTheme.colorScheme.background
-
     val scrollState = rememberScrollState()
 
     var expandedOverview by remember { mutableStateOf(false) }
@@ -161,70 +152,43 @@ private fun EpisodeScreenLayout(
                     .fillMaxWidth()
                     .verticalScroll(scrollState),
             ) {
-                Box(
-                    modifier = Modifier
-                        .height(240.dp)
-                        .clipToBounds(),
-                ) {
-                    AsyncImage(
-                        model = episode.images.primary,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .parallaxLayoutModifier(
-                                scrollState = scrollState,
-                                2,
-                            ),
-                        placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
-                        contentScale = ContentScale.Crop,
-                    )
-                    Canvas(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                    ) {
-                        drawRect(
-                            Color.Black.copy(alpha = 0.1f),
-                        )
-                        drawRect(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, backgroundColor),
-                                startY = size.height / 2,
-                            ),
-                        )
-                    }
-                    AsyncImage(
-                        model = episode.images.showLogo,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(MaterialTheme.spacings.default)
-                            .height(100.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Fit,
-                    )
-                }
+                ItemHeader(
+                    item = episode,
+                    scrollState = scrollState,
+                    content = {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(
+                                    start = paddingStart,
+                                    end = paddingEnd,
+                                ),
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    id = CoreR.string.season_episode,
+                                    episode.parentIndexNumber,
+                                    episode.indexNumber,
+                                ),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                            Text(
+                                text = episode.name,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 3,
+                                style = MaterialTheme.typography.headlineMedium,
+                            )
+                        }
+                    },
+                )
                 Column(
                     modifier = Modifier.padding(
                         start = paddingStart,
                         end = paddingEnd,
                     ),
                 ) {
-                    Text(
-                        text = stringResource(
-                            id = CoreR.string.season_episode,
-                            episode.parentIndexNumber,
-                            episode.indexNumber,
-                        ),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                    Text(
-                        text = episode.name,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 3,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
