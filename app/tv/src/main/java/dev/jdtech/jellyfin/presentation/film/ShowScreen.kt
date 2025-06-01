@@ -1,7 +1,5 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.film
 
-import android.content.Intent
-import android.net.Uri
 import android.view.KeyEvent
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -20,14 +18,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -42,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,38 +49,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
-import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.film.presentation.show.ShowAction
+import dev.jdtech.jellyfin.film.presentation.show.ShowState
+import dev.jdtech.jellyfin.film.presentation.show.ShowViewModel
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.utils.getShowDateString
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
-import dev.jdtech.jellyfin.viewmodels.ShowViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ShowScreen(
-    itemId: UUID,
-    navigateToSeason: (seriesId: UUID, seasonId: UUID, seriesName: String, seasonName: String) -> Unit,
+    showId: UUID,
+    navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
-    showViewModel: ShowViewModel = hiltViewModel(),
+    viewModel: ShowViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(true) {
-        showViewModel.loadData(itemId, false)
+        viewModel.loadShow(showId)
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
@@ -90,45 +99,34 @@ fun ShowScreen(
         }
     }
 
-    val delegatedUiState by showViewModel.uiState.collectAsState()
-
     ShowScreenLayout(
-        uiState = delegatedUiState,
-        onPlayClick = {
-            playerViewModel.loadPlayerItems(showViewModel.item)
-        },
-        onTrailerClick = { trailerUri ->
-            try {
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(trailerUri),
-                ).also {
-                    context.startActivity(it)
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is ShowAction.Play -> {
+                    state.show?.let { show ->
+                        playerViewModel.loadPlayerItems(show, startFromBeginning = action.startFromBeginning)
+                    }
                 }
-            } catch (e: Exception) {
-                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                is ShowAction.PlayTrailer -> {
+                    try {
+                        uriHandler.openUri(action.trailer)
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is ShowAction.NavigateToItem -> navigateToItem(action.item)
+                else -> Unit
             }
-        },
-        onPlayedClick = {
-            showViewModel.togglePlayed()
-        },
-        onFavoriteClick = {
-            showViewModel.toggleFavorite()
-        },
-        onSeasonClick = { season ->
-            navigateToSeason(season.seriesId, season.id, season.seriesName, season.name)
+            viewModel.onAction(action)
         },
     )
 }
 
 @Composable
 private fun ShowScreenLayout(
-    uiState: ShowViewModel.UiState,
-    onPlayClick: () -> Unit,
-    onTrailerClick: (String) -> Unit,
-    onPlayedClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    onSeasonClick: (FindroidSeason) -> Unit,
+    state: ShowState,
+    onAction: (ShowAction) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val configuration = LocalConfiguration.current
@@ -141,12 +139,10 @@ private fun ShowScreenLayout(
     LaunchedEffect(currentIndex) {
         listState.animateScrollToItem(currentIndex)
     }
-
-    when (uiState) {
-        is ShowViewModel.UiState.Loading -> Text(text = "LOADING")
-        is ShowViewModel.UiState.Normal -> {
-            val item = uiState.item
-            val seasons = uiState.seasons
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        state.show?.let { show ->
             var size by remember {
                 mutableStateOf(Size.Zero)
             }
@@ -158,7 +154,7 @@ private fun ShowScreenLayout(
                     },
             ) {
                 AsyncImage(
-                    model = item.images.backdrop,
+                    model = show.images.backdrop,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -179,7 +175,10 @@ private fun ShowScreenLayout(
                 }
                 LazyColumn(
                     state = listState,
-                    contentPadding = PaddingValues(top = 112.dp, bottom = MaterialTheme.spacings.large),
+                    contentPadding = PaddingValues(
+                        top = 112.dp,
+                        bottom = MaterialTheme.spacings.large,
+                    ),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     userScrollEnabled = false,
                     modifier = Modifier.onPreviewKeyEvent { keyEvent ->
@@ -187,6 +186,7 @@ private fun ShowScreenLayout(
                             KeyEvent.KEYCODE_DPAD_DOWN -> {
                                 currentIndex = (++currentIndex).coerceIn(0, listSize.intValue - 1)
                             }
+
                             KeyEvent.KEYCODE_DPAD_UP -> {
                                 currentIndex = (--currentIndex).coerceIn(0, listSize.intValue - 1)
                             }
@@ -203,11 +203,11 @@ private fun ShowScreenLayout(
                                 ),
                         ) {
                             Text(
-                                text = item.name,
+                                text = show.name,
                                 style = MaterialTheme.typography.displayMedium,
                             )
-                            if (item.originalTitle != item.name) {
-                                item.originalTitle?.let { originalTitle ->
+                            if (show.originalTitle != show.name) {
+                                show.originalTitle?.let { originalTitle ->
                                     Text(
                                         text = originalTitle,
                                         style = MaterialTheme.typography.bodyMedium,
@@ -219,20 +219,20 @@ private fun ShowScreenLayout(
                                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                             ) {
                                 Text(
-                                    text = uiState.dateString,
+                                    text = getShowDateString(show),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                                 Text(
-                                    text = uiState.runTime,
+                                    text = stringResource(CoreR.string.runtime_minutes, show.runtimeTicks.div(600000000)),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
-                                item.officialRating?.let {
+                                show.officialRating?.let {
                                     Text(
                                         text = it,
                                         style = MaterialTheme.typography.labelMedium,
                                     )
                                 }
-                                item.communityRating?.let {
+                                show.communityRating?.let {
                                     Row {
                                         Icon(
                                             painter = painterResource(id = CoreR.drawable.ic_star),
@@ -250,7 +250,7 @@ private fun ShowScreenLayout(
                             }
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                             Text(
-                                text = item.overview,
+                                text = show.overview,
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 4,
                                 overflow = TextOverflow.Ellipsis,
@@ -262,7 +262,7 @@ private fun ShowScreenLayout(
                             ) {
                                 Button(
                                     onClick = {
-                                        onPlayClick()
+                                        onAction(ShowAction.Play())
                                     },
                                     modifier = Modifier.focusRequester(focusRequester),
                                 ) {
@@ -273,10 +273,10 @@ private fun ShowScreenLayout(
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(text = stringResource(id = CoreR.string.play))
                                 }
-                                item.trailer?.let { trailerUri ->
+                                show.trailer?.let { trailerUri ->
                                     Button(
                                         onClick = {
-                                            onTrailerClick(trailerUri)
+                                            onAction(ShowAction.PlayTrailer(trailerUri))
                                         },
                                     ) {
                                         Icon(
@@ -289,29 +289,35 @@ private fun ShowScreenLayout(
                                 }
                                 Button(
                                     onClick = {
-                                        onPlayedClick()
+                                        when (show.played) {
+                                            true -> onAction(ShowAction.UnmarkAsPlayed)
+                                            false -> onAction(ShowAction.MarkAsPlayed)
+                                        }
                                     },
                                 ) {
                                     Icon(
                                         painter = painterResource(id = CoreR.drawable.ic_check),
                                         contentDescription = null,
-                                        tint = if (item.played) Color.Red else LocalContentColor.current,
+                                        tint = if (show.played) Color.Red else LocalContentColor.current,
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(text = stringResource(id = if (item.played) CoreR.string.unmark_as_played else CoreR.string.mark_as_played))
+                                    Text(text = stringResource(id = if (show.played) CoreR.string.unmark_as_played else CoreR.string.mark_as_played))
                                 }
                                 Button(
                                     onClick = {
-                                        onFavoriteClick()
+                                        when (show.favorite) {
+                                            true -> onAction(ShowAction.UnmarkAsFavorite)
+                                            false -> onAction(ShowAction.MarkAsFavorite)
+                                        }
                                     },
                                 ) {
                                     Icon(
-                                        painter = painterResource(id = if (item.favorite) CoreR.drawable.ic_heart_filled else CoreR.drawable.ic_heart),
+                                        painter = painterResource(id = if (show.favorite) CoreR.drawable.ic_heart_filled else CoreR.drawable.ic_heart),
                                         contentDescription = null,
-                                        tint = if (item.favorite) Color.Red else LocalContentColor.current,
+                                        tint = if (show.favorite) Color.Red else LocalContentColor.current,
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(text = stringResource(id = if (item.favorite) CoreR.string.remove_from_favorites else CoreR.string.add_to_favorites))
+                                    Text(text = stringResource(id = if (show.favorite) CoreR.string.remove_from_favorites else CoreR.string.add_to_favorites))
                                 }
                             }
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -325,11 +331,11 @@ private fun ShowScreenLayout(
                                         color = Color.White.copy(alpha = .5f),
                                     )
                                     Text(
-                                        text = uiState.genresString,
+                                        text = show.genres.joinToString(),
                                         style = MaterialTheme.typography.bodyMedium,
                                     )
                                 }
-                                uiState.director?.let { director ->
+                                state.director?.let { director ->
                                     Column {
                                         Text(
                                             text = stringResource(id = CoreR.string.director),
@@ -337,7 +343,7 @@ private fun ShowScreenLayout(
                                             color = Color.White.copy(alpha = .5f),
                                         )
                                         Text(
-                                            text = director.name ?: "Unknown",
+                                            text = director.name,
                                             style = MaterialTheme.typography.bodyMedium,
                                         )
                                     }
@@ -349,7 +355,7 @@ private fun ShowScreenLayout(
                                         color = Color.White.copy(alpha = .5f),
                                     )
                                     Text(
-                                        text = uiState.writersString,
+                                        text = state.writers.joinToString { it.name },
                                         style = MaterialTheme.typography.bodyMedium,
                                     )
                                 }
@@ -366,12 +372,12 @@ private fun ShowScreenLayout(
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2),
                         ) {
-                            items(seasons) { season ->
+                            items(state.seasons) { season ->
                                 ItemCard(
                                     item = season,
                                     direction = Direction.VERTICAL,
                                     onClick = {
-                                        onSeasonClick(season)
+                                        onAction(ShowAction.NavigateToItem(season))
                                     },
                                 )
                             }
@@ -383,9 +389,12 @@ private fun ShowScreenLayout(
             LaunchedEffect(true) {
                 focusRequester.requestFocus()
             }
+        } ?: run {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center),
+            )
         }
-
-        is ShowViewModel.UiState.Error -> Text(text = uiState.error.toString())
     }
 }
 
@@ -394,23 +403,11 @@ private fun ShowScreenLayout(
 private fun ShowScreenLayoutPreview() {
     FindroidTheme {
         ShowScreenLayout(
-            uiState = ShowViewModel.UiState.Normal(
-                item = dummyShow,
-                actors = emptyList(),
-                director = null,
-                writers = emptyList(),
-                writersString = "Hiroshi Seko, Hajime Isayama",
-                genresString = "Action, Science Fiction, Adventure",
-                runTime = "0 min",
-                dateString = "2013 - 2023",
-                nextUp = null,
-                seasons = emptyList(),
+            state = ShowState(
+                show = dummyShow,
+                nextUp = dummyEpisode,
             ),
-            onPlayClick = {},
-            onTrailerClick = {},
-            onPlayedClick = {},
-            onFavoriteClick = {},
-            onSeasonClick = {},
+            onAction = {},
         )
     }
 }
