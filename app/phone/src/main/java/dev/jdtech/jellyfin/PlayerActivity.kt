@@ -39,10 +39,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
-import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.Constants
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -50,7 +50,6 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import dev.jdtech.jellyfin.player.video.R as VideoR
 
 var isControlsLocked: Boolean = false
 
@@ -65,7 +64,8 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
-    private var segment: FindroidSegment? = null
+    private var currentMediaSegment: PlayerSegment? = null
+    private var skipButtonTimeoutExpired: Boolean = true
 
     private lateinit var skipSegmentButton: Button
 
@@ -80,7 +80,6 @@ class PlayerActivity : BasePlayerActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             appOps?.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
         } else {
-            @Suppress("DEPRECATION")
             appOps?.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
         }
     }
@@ -89,6 +88,7 @@ class PlayerActivity : BasePlayerActivity() {
     private val skipButtonTimeout = Runnable {
         if (!binding.playerView.isControllerFullyVisible) {
             skipSegmentButton.isVisible = false
+            skipButtonTimeoutExpired = true
         }
     }
 
@@ -155,26 +155,34 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip segment button
-                            segment = currentSegment
+                            // Skip segment
+                            currentMediaSegment = currentSegment
+                            Timber.d("Preferences: %s", appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType))
                             currentSegment?.let { segment ->
-                                // Button text
-                                skipSegmentButton.text = when (segment.type) {
-                                    FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
-                                    FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
-                                    else -> ""
-                                }
-                                // Buttons visibility
-                                skipSegmentButton.isVisible = segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
-                                if (skipSegmentButton.isVisible) {
-                                    handler.removeCallbacks(skipButtonTimeout)
-                                    handler.postDelayed(skipButtonTimeout, 5000)
-                                }
-
-                                // onClick
-                                skipSegmentButton.setOnClickListener {
-                                    binding.playerView.player?.seekTo((segment.endTime * 1000).toLong())
-                                    skipSegmentButton.isVisible = false
+                                if ((
+                                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                                            (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
+                                        ) &&
+                                    appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(segment.type.toString())
+                                ) {
+                                    // Auto skip
+                                    viewModel.skipSegment(segment)
+                                } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(segment.type.toString())) {
+                                    // Skip Button - text
+                                    skipSegmentButton.text = getString(viewModel.getSkipButtonTextStringId(segment))
+                                    // Skip Button - visibility
+                                    skipSegmentButton.isVisible = !isInPictureInPictureMode
+                                    if (skipSegmentButton.isVisible) {
+                                        skipButtonTimeoutExpired = false
+                                        handler.removeCallbacks(skipButtonTimeout)
+                                        handler.postDelayed(skipButtonTimeout, appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000)
+                                    }
+                                    // Skip Button - onClick
+                                    skipSegmentButton.setOnClickListener {
+                                        viewModel.skipSegment(segment)
+                                        currentMediaSegment = null
+                                        skipSegmentButton.isVisible = false
+                                    }
                                 }
                             } ?: run {
                                 skipSegmentButton.isVisible = false
@@ -315,7 +323,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (segment != null) {
+                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(currentMediaSegment?.type.toString()) && skipButtonTimeoutExpired) {
                     skipSegmentButton.visibility = visibility
                 }
             },
@@ -350,6 +358,7 @@ class PlayerActivity : BasePlayerActivity() {
         } catch (e: Exception) {
             Timber.e(e)
         }
+        handler.removeCallbacks(skipButtonTimeout)
         finish()
     }
 
