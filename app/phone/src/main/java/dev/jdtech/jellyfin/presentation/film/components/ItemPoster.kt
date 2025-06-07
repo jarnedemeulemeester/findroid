@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,7 +39,6 @@ fun ItemPoster(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
-            .fillMaxWidth()
             .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
             .background(
                 MaterialTheme.colorScheme.surfaceContainer,
