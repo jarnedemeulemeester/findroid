@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
+import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsSubScreen
@@ -22,7 +23,6 @@ import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import dev.jdtech.jellyfin.ui.MainScreen
 import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
-import dev.jdtech.jellyfin.ui.SeasonScreen
 import dev.jdtech.jellyfin.utils.base64ToByteArray
 import dev.jdtech.jellyfin.utils.toBase64Str
 import kotlinx.parcelize.parcelableCreator
