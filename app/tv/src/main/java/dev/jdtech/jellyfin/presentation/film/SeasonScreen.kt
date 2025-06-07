@@ -56,7 +56,6 @@ fun SeasonScreen(
         }
     }
 
-
     SeasonScreenLayout(
         state = state,
         onAction = { action ->
@@ -64,7 +63,7 @@ fun SeasonScreen(
                 is SeasonAction.NavigateToItem -> playerViewModel.loadPlayerItems(action.item)
                 else -> Unit
             }
-        }
+        },
     )
 }
 
@@ -74,7 +73,7 @@ private fun SeasonScreenLayout(
     onAction: (SeasonAction) -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         state.season?.let { season ->
             Row(
@@ -113,7 +112,7 @@ private fun SeasonScreenLayout(
                             episode = episode,
                             onClick = {
                                 onAction(SeasonAction.NavigateToItem(episode))
-                            }
+                            },
                         )
                     }
                 }
@@ -125,7 +124,6 @@ private fun SeasonScreenLayout(
             )
         }
     }
-
 }
 
 @Preview(device = "id:tv_1080p")
