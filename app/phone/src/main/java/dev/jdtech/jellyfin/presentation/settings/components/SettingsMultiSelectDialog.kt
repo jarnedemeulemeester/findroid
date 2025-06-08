@@ -46,6 +46,7 @@ fun SettingsMultiSelectDialog(
     onDismissRequest: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
+
     val isAtTop by remember {
         derivedStateOf {
             lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0

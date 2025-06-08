@@ -28,7 +28,6 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import dev.jdtech.jellyfin.settings.domain.Constants
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -244,7 +243,7 @@ constructor(
             }
         }
         if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) ||
-            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) != Constants.PlayerMediaSegmentsAutoSkip.NEVER
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
         ) {
             handler.post(segmentCheckRunnable)
         }

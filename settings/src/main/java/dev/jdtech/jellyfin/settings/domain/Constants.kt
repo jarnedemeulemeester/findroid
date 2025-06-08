@@ -7,7 +7,6 @@ object Constants {
     object PlayerMediaSegmentsAutoSkip {
         const val ALWAYS = "always"
         const val PIP = "pip"
-        const val NEVER = "never"
     }
 
     // Network

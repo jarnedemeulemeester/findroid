@@ -44,6 +44,7 @@ constructor(
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
                     enabled = false,
+                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                     backendPreference = appPreferences.offlineMode,
                 ),
             ),
@@ -315,14 +316,22 @@ constructor(
                                     backendPreference = appPreferences.playerMediaSegmentsSkipButtonDuration,
                                     suffixRes = R.string.seconds,
                                 ),
-                                PreferenceSelect(
+                                PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_media_segments_auto_skip,
+                                    descriptionStringRes = R.string.pref_player_media_segments_auto_skip_summary,
                                     backendPreference = appPreferences.playerMediaSegmentsAutoSkip,
+                                ),
+                                PreferenceSelect(
+                                    nameStringResource = R.string.pref_player_media_segments_auto_skip_when,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsAutoSkip),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkipWhen,
                                     options = R.array.media_segments_auto_skip,
                                     optionValues = R.array.media_segments_auto_skip_values,
                                 ),
                                 PreferenceMultiSelect(
                                     nameStringResource = R.string.pref_player_media_segments_auto_skip_type,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsAutoSkip),
                                     backendPreference = appPreferences.playerMediaSegmentsAutoSkipType,
                                     options = R.array.media_segments_type,
                                     optionValues = R.array.media_segments_type_values,

@@ -26,13 +26,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsDetailsCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsDetailsMultiSelectCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsDetailsSelectCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
@@ -98,6 +100,7 @@ private fun SettingsSubScreenLayout(
     var focusedPreference by remember(state.preferenceGroups.isNotEmpty()) {
         mutableStateOf(state.preferenceGroups.firstOrNull()?.preferences?.firstOrNull())
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -142,20 +145,39 @@ private fun SettingsSubScreenLayout(
             Box(
                 modifier = Modifier.weight(2f),
             ) {
-                (focusedPreference as? PreferenceSelect)?.let { preference ->
-                    SettingsDetailsCard(
-                        preference = preference,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = MaterialTheme.spacings.large),
-                        onUpdate = { value ->
-                            onAction(
-                                SettingsAction.OnUpdate(
-                                    preference.copy(value = value),
-                                ),
+                focusedPreference?.let { preference ->
+                    when (preference) {
+                        is PreferenceSelect -> {
+                            SettingsDetailsSelectCard(
+                                preference = preference,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = MaterialTheme.spacings.large),
+                                onUpdate = { value ->
+                                    onAction(
+                                        SettingsAction.OnUpdate(
+                                            preference.copy(value = value),
+                                        ),
+                                    )
+                                },
                             )
-                        },
-                    )
+                        }
+                        is PreferenceMultiSelect -> {
+                            SettingsDetailsMultiSelectCard(
+                                preference = preference,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = MaterialTheme.spacings.large),
+                                onUpdate = { value ->
+                                    onAction(
+                                        SettingsAction.OnUpdate(
+                                            preference.copy(value = value),
+                                        ),
+                                    )
+                                },
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -78,9 +78,17 @@ class PlayerActivity : BasePlayerActivity() {
         // Check if PiP is enabled for the app
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            appOps?.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+            appOps?.unsafeCheckOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                Process.myUid(),
+                packageName,
+            ) == AppOpsManager.MODE_ALLOWED
         } else {
-            appOps?.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+            appOps?.checkOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                Process.myUid(),
+                packageName,
+            ) == AppOpsManager.MODE_ALLOWED
         }
     }
 
@@ -157,25 +165,38 @@ class PlayerActivity : BasePlayerActivity() {
 
                             // Skip segment
                             currentMediaSegment = currentSegment
-                            Timber.d("Preferences: %s", appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType))
+                            Timber.d(
+                                "Preferences: %s",
+                                appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType),
+                            )
                             currentSegment?.let { segment ->
-                                if ((
-                                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                                            (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
-                                        ) &&
-                                    appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(segment.type.toString())
+                                if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
+                                    appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(segment.type.toString()) &&
+                                    (
+                                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                                            (
+                                                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
+                                                    isInPictureInPictureMode
+                                                )
+                                        )
                                 ) {
                                     // Auto skip
                                     viewModel.skipSegment(segment)
-                                } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(segment.type.toString())) {
+                                } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
+                                        .contains(segment.type.toString())
+                                ) {
                                     // Skip Button - text
-                                    skipSegmentButton.text = getString(viewModel.getSkipButtonTextStringId(segment))
+                                    skipSegmentButton.text =
+                                        getString(viewModel.getSkipButtonTextStringId(segment))
                                     // Skip Button - visibility
                                     skipSegmentButton.isVisible = !isInPictureInPictureMode
                                     if (skipSegmentButton.isVisible) {
                                         skipButtonTimeoutExpired = false
                                         handler.removeCallbacks(skipButtonTimeout)
-                                        handler.postDelayed(skipButtonTimeout, appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000)
+                                        handler.postDelayed(
+                                            skipButtonTimeout,
+                                            appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000,
+                                        )
                                     }
                                     // Skip Button - onClick
                                     skipSegmentButton.setOnClickListener {
@@ -200,7 +221,8 @@ class PlayerActivity : BasePlayerActivity() {
                             // Chapters
                             if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters != null) {
                                 currentChapters?.let { chapters ->
-                                    val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
+                                    val playerControlView =
+                                        findViewById<PlayerControlView>(R.id.exo_controller)
                                     val numOfChapters = chapters.size
                                     playerControlView.setExtraAdGroupMarkers(
                                         LongArray(numOfChapters) { index -> chapters[index].startPosition },
@@ -234,7 +256,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 if (appPreferences.getValue(appPreferences.playerPipGesture)) {
                                     try {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
-                                    } catch (_: IllegalArgumentException) { }
+                                    } catch (_: IllegalArgumentException) {
+                                    }
                                 }
                             }
                         }
@@ -323,7 +346,9 @@ class PlayerActivity : BasePlayerActivity() {
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(currentMediaSegment?.type.toString()) && skipButtonTimeoutExpired) {
+                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
+                        .contains(currentMediaSegment?.type.toString()) && skipButtonTimeoutExpired
+                ) {
                     skipSegmentButton.visibility = visibility
                 }
             },
@@ -373,7 +398,8 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         val sourceRectHint = if (displayAspectRatio < aspectRatio!!) {
-            val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+            val space =
+                ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 0,
                 space,
@@ -381,7 +407,8 @@ class PlayerActivity : BasePlayerActivity() {
                 (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
             )
         } else {
-            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
+            val space =
+                ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 space,
                 0,
@@ -408,7 +435,8 @@ class PlayerActivity : BasePlayerActivity() {
 
         try {
             enterPictureInPictureMode(pipParams())
-        } catch (_: IllegalArgumentException) { }
+        } catch (_: IllegalArgumentException) {
+        }
     }
 
     override fun onPictureInPictureModeChanged(
@@ -429,20 +457,22 @@ class PlayerActivity : BasePlayerActivity() {
                     screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
                 }
             }
+
             false -> {
                 binding.playerView.useController = true
                 playerGestureHelper?.updateZoomMode(wasZoom)
 
                 // Override auto brightness
                 window.attributes = window.attributes.apply {
-                    screenBrightness = if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-                        appPreferences.getValue(appPreferences.playerBrightness)
-                    } else {
-                        Settings.System.getInt(
-                            contentResolver,
-                            Settings.System.SCREEN_BRIGHTNESS,
-                        ).toFloat() / 255
-                    }
+                    screenBrightness =
+                        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+                            appPreferences.getValue(appPreferences.playerBrightness)
+                        } else {
+                            Settings.System.getInt(
+                                contentResolver,
+                                Settings.System.SCREEN_BRIGHTNESS,
+                            ).toFloat() / 255
+                        }
                 }
             }
         }

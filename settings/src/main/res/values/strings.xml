@@ -87,9 +87,10 @@
     <string name="pref_player_media_segments_skip_button_type">Segment type to display the skip button</string>
     <string name="pref_player_media_segments_skip_button_duration">Display skip button for</string>
     <string name="pref_player_media_segments_auto_skip">Auto skip</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Enable automatic skipping for chosen segment types</string>
+    <string name="pref_player_media_segments_auto_skip_when">When to auto skip</string>
     <string name="pref_player_media_segments_auto_skip_type">Segment type to auto skip</string>
     <string name="pref_player_media_segments_next_episode_threshold">Skip to next episode threshold</string>
-    <string name="media_segments_auto_skip_never">never</string>
     <string name="media_segments_auto_skip_pip">only in pip mode</string>
     <string name="media_segments_auto_skip_always">always</string>
     <string name="media_segments_type_unknown">Others</string>
