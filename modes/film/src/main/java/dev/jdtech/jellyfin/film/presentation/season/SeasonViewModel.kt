@@ -40,4 +40,34 @@ constructor(
             }
         }
     }
+
+    fun onAction(action: SeasonAction) {
+        when (action) {
+            is SeasonAction.MarkAsPlayed -> {
+                viewModelScope.launch {
+                    repository.markAsPlayed(seasonId)
+                    loadSeason(seasonId)
+                }
+            }
+            is SeasonAction.UnmarkAsPlayed -> {
+                viewModelScope.launch {
+                    repository.markAsUnplayed(seasonId)
+                    loadSeason(seasonId)
+                }
+            }
+            is SeasonAction.MarkAsFavorite -> {
+                viewModelScope.launch {
+                    repository.markAsFavorite(seasonId)
+                    loadSeason(seasonId)
+                }
+            }
+            is SeasonAction.UnmarkAsFavorite -> {
+                viewModelScope.launch {
+                    repository.unmarkAsFavorite(seasonId)
+                    loadSeason(seasonId)
+                }
+            }
+            else -> Unit
+        }
+    }
 }
