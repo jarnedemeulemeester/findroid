@@ -4,11 +4,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,8 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +38,7 @@ import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
 fun MediaScreen(
@@ -73,23 +70,17 @@ private fun MediaScreenLayout(
     state: MediaState,
     onAction: (MediaAction) -> Unit,
 ) {
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
+    val safePadding = rememberSafePadding()
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
-    val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
-
-    val paddingStart = safePaddingStart + MaterialTheme.spacings.default
-    val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
-    val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
+    val paddingStart = safePadding.start + MaterialTheme.spacings.default
+    val paddingEnd = safePadding.end + MaterialTheme.spacings.default
+    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
     val contentPaddingTop by animateDpAsState(
         targetValue = if (state.error != null) {
-            safePaddingTop + 142.dp
+            safePadding.top + 144.dp
         } else {
-            safePaddingTop + 88.dp
+            safePadding.top + 88.dp
         },
         label = "content_padding",
     )
@@ -114,8 +105,8 @@ private fun MediaScreenLayout(
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
-            inputPaddingStart = safePaddingStart,
-            inputPaddingEnd = safePaddingEnd,
+            inputPaddingStart = safePadding.start,
+            inputPaddingEnd = safePadding.end,
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),
@@ -160,7 +151,7 @@ private fun MediaScreenLayout(
                     .fillMaxWidth()
                     .padding(
                         start = paddingStart,
-                        top = safePaddingTop + 80.dp,
+                        top = safePadding.top + 80.dp,
                         end = paddingEnd,
                     ),
             )

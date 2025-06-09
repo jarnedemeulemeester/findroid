@@ -26,12 +26,15 @@ import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.film.MovieScreen
+import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -79,6 +82,11 @@ data class LibraryRoute(
 @Serializable
 data class MovieRoute(
     val movieId: String,
+)
+
+@Serializable
+data class ShowRoute(
+    val showId: String,
 )
 
 @Serializable
@@ -270,12 +278,8 @@ fun NavigationRoot(
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
-                        onItemClick = {
-                            when (it) {
-                                is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = it.id.toString()))
-                                is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = it.id.toString()))
-                                else -> Unit
-                            }
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                     )
                 }
@@ -295,11 +299,8 @@ fun NavigationRoot(
                         libraryId = UUID.fromString(route.libraryId),
                         libraryName = route.libraryName,
                         libraryType = route.libraryType,
-                        onItemClick = {
-                            when (it) {
-                                is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = it.id.toString()))
-                                else -> Unit
-                            }
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                         navigateBack = {
                             navController.safePopBackStack()
@@ -312,6 +313,18 @@ fun NavigationRoot(
                         movieId = UUID.fromString(route.movieId),
                         navigateBack = {
                             navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<ShowRoute> { backStackEntry ->
+                    val route: ShowRoute = backStackEntry.toRoute()
+                    ShowScreen(
+                        showId = UUID.fromString(route.showId),
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                        navigateToItem = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                     )
                 }
@@ -354,6 +367,15 @@ fun NavigationRoot(
                 )
             }
         }
+    }
+}
+
+private fun navigateToItem(navController: NavHostController, item: FindroidItem) {
+    when (item) {
+        is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))
+        is FindroidShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
+        is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
+        else -> Unit
     }
 }
 
