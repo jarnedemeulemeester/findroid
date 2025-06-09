@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -70,15 +71,17 @@ fun EpisodeCard(
                         episode.indexNumber,
                         episode.name,
                     ),
-                    style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
                     text = episode.overview,
-                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .alpha(0.7f),
                     maxLines = 5,
                     overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
             Canvas(
