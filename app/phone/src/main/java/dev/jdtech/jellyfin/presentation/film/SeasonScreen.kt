@@ -25,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,10 +48,12 @@ import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
+import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -58,8 +63,12 @@ fun SeasonScreen(
     navigateBack: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    var isLoadingPlayer by remember { mutableStateOf(false) }
+    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         viewModel.loadSeason(seasonId = seasonId)
@@ -67,12 +76,24 @@ fun SeasonScreen(
 
     SeasonScreenLayout(
         state = state,
+        isLoadingPlayer = isLoadingPlayer,
+        isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
+                is SeasonAction.Play -> {
+                    when (action.startFromBeginning) {
+                        true -> isLoadingRestartPlayer = true
+                        false -> isLoadingPlayer = true
+                    }
+                    state.season?.let { show ->
+                        playerViewModel.loadPlayerItems(show, startFromBeginning = action.startFromBeginning)
+                    }
+                }
                 is SeasonAction.OnBackClick -> navigateBack()
                 is SeasonAction.NavigateToItem -> navigateToItem(action.item)
                 else -> Unit
             }
+            viewModel.onAction(action)
         },
     )
 }
@@ -80,6 +101,8 @@ fun SeasonScreen(
 @Composable
 private fun SeasonScreenLayout(
     state: SeasonState,
+    isLoadingPlayer: Boolean,
+    isLoadingRestartPlayer: Boolean,
     onAction: (SeasonAction) -> Unit,
 ) {
     val density = LocalDensity.current
@@ -148,6 +171,36 @@ private fun SeasonScreenLayout(
                         },
                     )
                 }
+                item {
+                    ItemButtonsBar(
+                        item = season,
+                        onPlayClick = { startFromBeginning ->
+                            onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
+                        },
+                        onMarkAsPlayedClick = {
+                            when (season.played) {
+                                true -> onAction(SeasonAction.UnmarkAsPlayed)
+                                false -> onAction(SeasonAction.MarkAsPlayed)
+                            }
+                        },
+                        onMarkAsFavoriteClick = {
+                            when (season.favorite) {
+                                true -> onAction(SeasonAction.UnmarkAsFavorite)
+                                false -> onAction(SeasonAction.MarkAsFavorite)
+                            }
+                        },
+                        onTrailerClick = {},
+                        onDownloadClick = {},
+                        modifier = Modifier
+                            .padding(
+                                start = paddingStart,
+                                end = paddingEnd,
+                            )
+                            .fillMaxWidth(),
+                        isLoadingPlayer = isLoadingPlayer,
+                        isLoadingRestartPlayer = isLoadingRestartPlayer,
+                    )
+                }
                 items(
                     items = state.episodes,
                     key = { episode -> episode.id },
@@ -204,6 +257,8 @@ private fun SeasonScreenLayoutPreview() {
             state = SeasonState(
                 season = dummySeason,
             ),
+            isLoadingPlayer = false,
+            isLoadingRestartPlayer = false,
             onAction = {},
         )
     }
