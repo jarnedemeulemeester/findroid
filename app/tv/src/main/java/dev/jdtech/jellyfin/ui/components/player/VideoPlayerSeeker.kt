@@ -29,7 +29,7 @@ fun VideoPlayerSeeker(
     focusRequester: FocusRequester,
     state: VideoPlayerState,
     isPlaying: Boolean,
-    onPlayPauseToggle: (Boolean) -> Unit,
+    onPlayPauseToggle: () -> Unit,
     onSeek: (Float) -> Unit,
     contentProgress: Duration,
     contentDuration: Duration,
@@ -51,12 +51,15 @@ fun VideoPlayerSeeker(
             }
         }
 
+    val onPause =
+        { if (isPlaying) onPlayPauseToggle() }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
             onClick = {
-                onPlayPauseToggle(!isPlaying)
+                onPlayPauseToggle()
             },
             modifier = Modifier.focusRequester(focusRequester),
         ) {
@@ -92,6 +95,7 @@ fun VideoPlayerSeeker(
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             VideoPlayerSeekBar(
                 progress = (contentProgress / contentDuration).toFloat(),
+                onPause = onPause,
                 onSeek = onSeek,
                 state = state,
             )
