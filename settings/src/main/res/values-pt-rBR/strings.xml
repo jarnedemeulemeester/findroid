@@ -46,8 +46,6 @@
     <string name="settings_socket_timeout">Tempo limite do soquete</string>
     <string name="settings_request_timeout">Tempo limite da requisição</string>
     <string name="settings_connect_timeout">Tempo limite da conexão</string>
-    <string name="pref_player_intro_skipper_summary">Requer que o plug-in Intro Skipper do jumoog seja instalado no servidor</string>
-    <string name="pref_player_intro_skipper">Pular introdução</string>
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="extra_info">Exibir informações extras</string>
     <string name="amoled_theme">Tema escuro AMOLED</string>

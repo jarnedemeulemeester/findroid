@@ -48,8 +48,16 @@ constructor(
     // Player - seeking
     val playerSeekBackInc = Preference("pref_player_seek_back_inc", 5_000L)
     val playerSeekForwardInc = Preference("pref_player_seek_forward_inc", 15_000L)
-    val playerIntroSkipper = Preference("pref_player_intro_skipper", true)
     val playerChapterMarkers = Preference("pref_player_chapter_markers", true)
+
+    // Player - Media Segments
+    val playerMediaSegmentsSkipButton get() = Preference("pref_player_media_segments_skip_button", true)
+    val playerMediaSegmentsSkipButtonType get() = Preference("pref_player_media_segments_skip_button_type", setOf("INTRO", "OUTRO"))
+    val playerMediaSegmentsSkipButtonDuration get() = Preference("pref_player_media_segments_skip_button_duration", Constants.PLAYER_MEDIA_SEGMENTS_DEFAULT_SKIP_BUTTON_DURATION)
+    val playerMediaSegmentsAutoSkipWhen get() = Preference("pref_player_media_segments_auto_skip_mobile", Constants.PlayerMediaSegmentsAutoSkip.ALWAYS)
+    val playerMediaSegmentsAutoSkip get() = Preference("pref_player_media_segments_auto_skip_tv", false)
+    val playerMediaSegmentsAutoSkipType get() = Preference("pref_player_media_segments_auto_skip_type", setOf("INTRO", "OUTRO"))
+    val playerMediaSegmentsNextEpisodeThreshold get() = Preference("pref_player_media_segments_next_episode_threshold", Constants.PLAYER_MEDIA_SEGMENTS_DEFAULT_NEXT_EPISODE_THRESHOLD)
 
     // Player - trickplay
     val playerTrickplay = Preference("pref_player_trickplay", true)
@@ -79,12 +87,14 @@ constructor(
 
     inline fun <reified T> getValue(preference: Preference<T>): T {
         return try {
+            @Suppress("UNCHECKED_CAST")
             when (preference.defaultValue) {
                 is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
                 is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
                 is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
                 is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
                 is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
+                is Set<*> -> sharedPreferences.getStringSet(preference.backendName, preference.defaultValue as Set<String>) as T
                 else -> preference.defaultValue
             }
         } catch (_: Exception) {
@@ -96,12 +106,14 @@ constructor(
 
     inline fun <reified T> setValue(preference: Preference<T>, value: T) {
         val editor = sharedPreferences.edit()
+        @Suppress("UNCHECKED_CAST")
         when (preference.defaultValue) {
             is Boolean -> editor.putBoolean(preference.backendName, value as Boolean)
             is Int -> editor.putInt(preference.backendName, value as Int)
             is Long -> editor.putLong(preference.backendName, value as Long)
             is Float -> editor.putFloat(preference.backendName, value as Float)
             is String? -> editor.putString(preference.backendName, value as String?)
+            is Set<*> -> editor.putStringSet(preference.backendName, value as Set<String>)
             else -> throw Exception()
         }
         editor.apply()

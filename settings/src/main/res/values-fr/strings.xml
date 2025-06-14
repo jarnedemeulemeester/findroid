@@ -40,8 +40,6 @@
     <string name="dynamic_colors">Couleurs dynamiques</string>
     <string name="dynamic_colors_summary">Utiliser les couleurs dynamiques Material You (disponible uniquement sur Android 12+)</string>
     <string name="pref_player_mpv_hwdec">Décodage matériel</string>
-    <string name="pref_player_intro_skipper">Passer l\'introduction</string>
-    <string name="pref_player_intro_skipper_summary">Le plugin Intro Skipper de jumoog doit être installé sur le serveur</string>
     <string name="theme_system">Suivre le thème du système</string>
     <string name="extra_info_summary">Afficher les informations détaillées sur l\'Audio, la Vidéo et les Sous-titres</string>
     <string name="pref_player_mpv_vo">Sortie vidéo</string>
