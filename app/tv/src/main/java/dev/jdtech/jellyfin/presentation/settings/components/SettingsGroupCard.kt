@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsAction
@@ -80,6 +81,15 @@ fun SettingsGroupCard(
                                 },
                         )
                         is PreferenceSelect -> SettingsSelectCard(
+                            preference = preference,
+                            onClick = { },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onFocusChanged {
+                                    onFocusChange(it, preference)
+                                },
+                        )
+                        is PreferenceMultiSelect -> SettingsMultiSelectCard(
                             preference = preference,
                             onClick = { },
                             modifier = Modifier

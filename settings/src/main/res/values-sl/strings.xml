@@ -37,8 +37,6 @@
     <string name="pref_player_mpv_hwdec">Strojno dekodiranje</string>
     <string name="pref_player_mpv_vo">Video izhod</string>
     <string name="pref_player_mpv_ao">Avdio izhod</string>
-    <string name="pref_player_intro_skipper">Preskoči uvode</string>
-    <string name="pref_player_intro_skipper_summary">Zahteven je vtičnik jumoog Intro Skipper</string>
     <string name="settings_preferred_subtitle_language">Želen jezik podnapisov</string>
     <string name="settings_category_device">Naprava</string>
     <string name="settings_category_cache">Predpomnilnik</string>

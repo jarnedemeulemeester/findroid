@@ -22,8 +22,6 @@
     <string name="pref_player_mpv_ao">Salida de audio</string>
     <string name="mpv_player">Reproductor MPV</string>
     <string name="mpv_player_summary">Usar el reproductor experimental MPV para reproducir contenidos. MPV soporta más códecs de vídeo, audio y subtítulos.</string>
-    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_gestures_seek_trickplay">Previsualizaciones al navegar en la barra de progreso</string>
