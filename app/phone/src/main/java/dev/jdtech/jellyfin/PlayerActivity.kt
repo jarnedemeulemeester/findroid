@@ -163,15 +163,9 @@ class PlayerActivity : BasePlayerActivity() {
                             videoNameTextView.text = currentItemTitle
 
                             // Media segment
-                            currentMediaSegment = currentSegment
-                            Timber.d(
-                                "Preferences: %s",
-                                appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType),
-                            )
                             currentSegment?.let { segment ->
                                 // Skip Button - text
-                                skipSegmentButton.text =
-                                    getString(viewModel.getSkipButtonTextStringId(segment))
+                                skipSegmentButton.text = getString(viewModel.getSkipButtonTextStringId(segment))
                                 // Skip Button - visibility
                                 skipSegmentButton.isVisible = !isInPictureInPictureMode
                                 if (skipSegmentButton.isVisible) {
@@ -185,12 +179,19 @@ class PlayerActivity : BasePlayerActivity() {
                                 // Skip Button - onClick
                                 skipSegmentButton.setOnClickListener {
                                     viewModel.skipSegment(segment)
-                                    currentMediaSegment = null
                                     skipSegmentButton.isVisible = false
                                 }
                             } ?: run {
                                 skipSegmentButton.isVisible = false
                             }
+
+                            binding.playerView.setControllerVisibilityListener(
+                                PlayerView.ControllerVisibilityListener { visibility ->
+                                    if (skipButtonTimeoutExpired && currentSegment != null) {
+                                        skipSegmentButton.visibility = visibility
+                                    }
+                                },
+                            )
 
                             // Trickplay
                             previewScrubListener?.let {
@@ -326,16 +327,6 @@ class PlayerActivity : BasePlayerActivity() {
 
             timeBar.addListener(previewScrubListener!!)
         }
-
-        binding.playerView.setControllerVisibilityListener(
-            PlayerView.ControllerVisibilityListener { visibility ->
-                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
-                        .contains(currentMediaSegment?.type.toString()) && skipButtonTimeoutExpired
-                ) {
-                    skipSegmentButton.visibility = visibility
-                }
-            },
-        )
 
         viewModel.initializePlayer(items)
         hideSystemUI()

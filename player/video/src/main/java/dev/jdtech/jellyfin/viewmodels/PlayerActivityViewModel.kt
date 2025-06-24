@@ -400,9 +400,10 @@ constructor(
         if (currentMediaItemSegments.isNullOrEmpty()) {
             return
         }
+
         val milliSeconds = player.currentPosition
 
-        val currentSegment = currentMediaItemSegments?.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
+        val currentSegment = currentMediaItemSegments?.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
         if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
@@ -420,6 +421,8 @@ constructor(
         } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(currentSegment?.type.toString())) {
             // Skip Button segment
             _uiState.update { it.copy(currentSegment = currentSegment) }
+        } else {
+            _uiState.update { it.copy(currentSegment = null) }
         }
     }
 
@@ -427,9 +430,8 @@ constructor(
         if (skipToNextEpisode(segment)) {
             player.seekToNextMediaItem()
         } else {
-            player.seekTo((segment.endTicks))
+            player.seekTo(segment.endTicks)
         }
-
         _uiState.update { it.copy(currentSegment = null) }
     }
 
