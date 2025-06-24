@@ -48,7 +48,6 @@ import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.models.Track
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaTitle
@@ -65,7 +64,6 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun PlayerScreen(
     items: Array<PlayerItem>,
-    appPreferences: AppPreferences,
     // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
 ) {
     val viewModel = hiltViewModel<PlayerActivityViewModel>()
@@ -163,27 +161,18 @@ fun PlayerScreen(
 
     // Media Segments
     val segment = uiState.currentSegment
-    if (segment != null) {
-        if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
-            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(segment.type.toString()))
-        {
-            // Auto skip
-            viewModel.skipSegment(segment)
-        }
-        else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(segment.type.toString()) &&
-                !videoPlayerState.controlsVisible) {
-            // Skip Button
-            val skipButtonFocusRequester = remember { FocusRequester() }
-            SkipButton(
-                skipButtonFocusRequester = skipButtonFocusRequester,
-                viewModel = viewModel,
-                segment = segment,
-            )
+    if (segment != null && !videoPlayerState.controlsVisible) {
+        val skipButtonFocusRequester = remember { FocusRequester() }
 
-            LaunchedEffect(videoPlayerState.controlsVisible) {
-                if (!videoPlayerState.controlsVisible) {
-                    skipButtonFocusRequester.requestFocus()
-                }
+        SkipButton(
+            skipButtonFocusRequester = skipButtonFocusRequester,
+            viewModel = viewModel,
+            segment = segment,
+        )
+
+        LaunchedEffect(videoPlayerState.controlsVisible) {
+            if (!videoPlayerState.controlsVisible) {
+                skipButtonFocusRequester.requestFocus()
             }
         }
     }

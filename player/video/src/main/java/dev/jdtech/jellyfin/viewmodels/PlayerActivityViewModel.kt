@@ -28,6 +28,7 @@ import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.Constants
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -89,6 +90,11 @@ constructor(
     var playbackSpeed: Float = 1f
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private var isInPictureInPictureMode: Boolean = false
+    fun setPictureInPictureMode(isInPipMode: Boolean) {
+        isInPictureInPictureMode = isInPipMode
+    }
 
     init {
         if (appPreferences.getValue(appPreferences.playerMpv)) {
@@ -398,7 +404,23 @@ constructor(
 
         val currentSegment = currentMediaItemSegments?.find { segment -> milliSeconds in segment.startTicks..<segment.endTicks }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
-        _uiState.update { it.copy(currentSegment = currentSegment) }
+
+        if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(currentSegment?.type.toString()) &&
+            (
+                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                    (
+                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
+                            isInPictureInPictureMode
+                        )
+                )
+        ) {
+            // Auto Skip segment
+            skipSegment(currentSegment!!)
+        } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(currentSegment?.type.toString())) {
+            // Skip Button segment
+            _uiState.update { it.copy(currentSegment = currentSegment) }
+        }
     }
 
     fun skipSegment(segment: PlayerSegment) {
@@ -407,6 +429,8 @@ constructor(
         } else {
             player.seekTo((segment.endTicks))
         }
+
+        _uiState.update { it.copy(currentSegment = null) }
     }
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration

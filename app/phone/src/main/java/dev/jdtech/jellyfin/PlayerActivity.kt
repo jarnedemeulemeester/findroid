@@ -42,7 +42,6 @@ import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import dev.jdtech.jellyfin.settings.domain.Constants
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
@@ -163,47 +162,31 @@ class PlayerActivity : BasePlayerActivity() {
                             // Title
                             videoNameTextView.text = currentItemTitle
 
-                            // Skip segment
+                            // Media segment
                             currentMediaSegment = currentSegment
                             Timber.d(
                                 "Preferences: %s",
                                 appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType),
                             )
                             currentSegment?.let { segment ->
-                                if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
-                                    appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(segment.type.toString()) &&
-                                    (
-                                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                                            (
-                                                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
-                                                    isInPictureInPictureMode
-                                                )
-                                        )
-                                ) {
-                                    // Auto skip
+                                // Skip Button - text
+                                skipSegmentButton.text =
+                                    getString(viewModel.getSkipButtonTextStringId(segment))
+                                // Skip Button - visibility
+                                skipSegmentButton.isVisible = !isInPictureInPictureMode
+                                if (skipSegmentButton.isVisible) {
+                                    skipButtonTimeoutExpired = false
+                                    handler.removeCallbacks(skipButtonTimeout)
+                                    handler.postDelayed(
+                                        skipButtonTimeout,
+                                        appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000,
+                                    )
+                                }
+                                // Skip Button - onClick
+                                skipSegmentButton.setOnClickListener {
                                     viewModel.skipSegment(segment)
-                                } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
-                                        .contains(segment.type.toString())
-                                ) {
-                                    // Skip Button - text
-                                    skipSegmentButton.text =
-                                        getString(viewModel.getSkipButtonTextStringId(segment))
-                                    // Skip Button - visibility
-                                    skipSegmentButton.isVisible = !isInPictureInPictureMode
-                                    if (skipSegmentButton.isVisible) {
-                                        skipButtonTimeoutExpired = false
-                                        handler.removeCallbacks(skipButtonTimeout)
-                                        handler.postDelayed(
-                                            skipButtonTimeout,
-                                            appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000,
-                                        )
-                                    }
-                                    // Skip Button - onClick
-                                    skipSegmentButton.setOnClickListener {
-                                        viewModel.skipSegment(segment)
-                                        currentMediaSegment = null
-                                        skipSegmentButton.isVisible = false
-                                    }
+                                    currentMediaSegment = null
+                                    skipSegmentButton.isVisible = false
                                 }
                             } ?: run {
                                 skipSegmentButton.isVisible = false
@@ -444,6 +427,7 @@ class PlayerActivity : BasePlayerActivity() {
         newConfig: Configuration,
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        viewModel.setPictureInPictureMode(isInPictureInPictureMode)
         when (isInPictureInPictureMode) {
             true -> {
                 binding.playerView.useController = false
