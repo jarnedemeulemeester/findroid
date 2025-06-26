@@ -36,11 +36,9 @@
     <string name="theme_dark">Тёмная</string>
     <string name="pref_player_mpv_hwdec">Аппаратное декодирование</string>
     <string name="pref_player_mpv_vo">Вывод видео</string>
-    <string name="pref_player_intro_skipper">Intro Skipper (Пропуск заставок)</string>
     <string name="seek_back_increment">Шаг перемотки назад (мс)</string>
     <string name="settings_category_network">Сеть</string>
     <string name="pref_player_mpv_ao">Вывод звука</string>
-    <string name="pref_player_intro_skipper_summary">Требуется, чтобы на сервере был установлен плагин Intro Skipper от jumoog</string>
     <string name="seeking">Перемотка</string>
     <string name="player_gestures_zoom_summary">Ущипните, чтобы растянуть видео на весь экран</string>
     <string name="dynamic_colors">Динамические цвета</string>
