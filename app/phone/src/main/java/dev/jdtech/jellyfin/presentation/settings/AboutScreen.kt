@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -42,8 +43,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import dev.jdtech.jellyfin.BuildConfig
+import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -66,6 +69,8 @@ fun AboutScreen(
     val paddingEnd = safePaddingEnd
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    val libraries by rememberLibraries(R.raw.aboutlibraries)
 
     Scaffold(
         modifier = Modifier
@@ -92,6 +97,7 @@ fun AboutScreen(
         },
     ) { innerPadding ->
         LibrariesContainer(
+            libraries = libraries,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),

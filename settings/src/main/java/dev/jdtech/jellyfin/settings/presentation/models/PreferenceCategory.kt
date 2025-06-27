@@ -6,9 +6,9 @@ import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 data class PreferenceCategory(
-    @StringRes override val nameStringResource: Int,
-    @StringRes override val descriptionStringRes: Int? = null,
-    @DrawableRes override val iconDrawableId: Int? = null,
+    @param:StringRes override val nameStringResource: Int,
+    @param:StringRes override val descriptionStringRes: Int? = null,
+    @param:DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
     override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),

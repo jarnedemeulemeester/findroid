@@ -104,7 +104,7 @@ data object AboutRoute
 
 data class TabBarItem(
     val title: String,
-    @DrawableRes val icon: Int,
+    @param:DrawableRes val icon: Int,
     val route: Any,
 )
 
