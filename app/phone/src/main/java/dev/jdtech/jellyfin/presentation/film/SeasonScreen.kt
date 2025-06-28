@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -42,6 +45,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
@@ -54,6 +58,8 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -66,6 +72,7 @@ fun SeasonScreen(
     viewModel: SeasonViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var isLoadingPlayer by remember { mutableStateOf(false) }
@@ -73,6 +80,23 @@ fun SeasonScreen(
 
     LaunchedEffect(true) {
         viewModel.loadSeason(seasonId = seasonId)
+    }
+
+    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
+        when (event) {
+            is PlayerItemsEvent.PlayerItemsReady -> {
+                isLoadingPlayer = false
+                isLoadingRestartPlayer = false
+                val intent = Intent(context, PlayerActivity::class.java)
+                intent.putExtra("items", ArrayList(event.items))
+                context.startActivity(intent)
+            }
+            is PlayerItemsEvent.PlayerItemsError -> {
+                isLoadingPlayer = false
+                isLoadingRestartPlayer = false
+                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     SeasonScreenLayout(
