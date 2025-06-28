@@ -40,7 +40,7 @@ fun EpisodeCard(
 
     Row(
         modifier = modifier
-            .height(100.dp)
+            .height(84.dp)
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = onClick),

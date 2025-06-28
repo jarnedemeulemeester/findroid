@@ -195,7 +195,7 @@ private fun SeasonScreenLayout(
                             }
                         },
                     )
-                    Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                    Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
                     ItemButtonsBar(
                         item = season,
                         onPlayClick = { startFromBeginning ->
