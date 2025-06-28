@@ -35,6 +35,7 @@ import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.film.MovieScreen
+import dev.jdtech.jellyfin.presentation.film.PersonScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
@@ -99,6 +100,11 @@ data class EpisodeRoute(
 @Serializable
 data class SeasonRoute(
     val seasonId: String,
+)
+
+@Serializable
+data class PersonRoute(
+    val personId: String,
 )
 
 @Serializable
@@ -321,6 +327,9 @@ fun NavigationRoot(
                         navigateBack = {
                             navController.safePopBackStack()
                         },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
+                        },
                     )
                 }
                 composable<ShowRoute> { backStackEntry ->
@@ -332,6 +341,9 @@ fun NavigationRoot(
                         },
                         navigateToItem = { item ->
                             navigateToItem(navController = navController, item = item)
+                        },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
                         },
                     )
                 }
@@ -353,6 +365,21 @@ fun NavigationRoot(
                         episodeId = UUID.fromString(route.episodeId),
                         navigateBack = {
                             navController.safePopBackStack()
+                        },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
+                        },
+                    )
+                }
+                composable<PersonRoute> { backStackEntry ->
+                    val route: PersonRoute = backStackEntry.toRoute()
+                    PersonScreen(
+                        personId = UUID.fromString(route.personId),
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                        navigateToItem = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                     )
                 }

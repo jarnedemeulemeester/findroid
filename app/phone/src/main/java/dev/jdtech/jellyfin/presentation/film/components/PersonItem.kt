@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,11 +25,14 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 @Composable
 fun PersonItem(
     person: FindroidPerson,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
-            .width(110.dp),
+            .width(110.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick),
     ) {
         AsyncImage(
             model = person.image.uri,
@@ -64,6 +68,7 @@ private fun PersonItemPreview() {
     FindroidTheme {
         PersonItem(
             person = dummyPerson,
+            onClick = {},
         )
     }
 }

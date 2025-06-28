@@ -78,6 +78,7 @@ fun ShowScreen(
     showId: UUID,
     navigateBack: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
+    navigateToPerson: (personId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -134,6 +135,7 @@ fun ShowScreen(
                 }
                 is ShowAction.OnBackClick -> navigateBack()
                 is ShowAction.NavigateToItem -> navigateToItem(action.item)
+                is ShowAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -369,6 +371,9 @@ private fun ShowScreenLayout(
                 if (state.actors.isNotEmpty()) {
                     ActorsRow(
                         actors = state.actors,
+                        onActorClick = { personId ->
+                            onAction(ShowAction.NavigateToPerson(personId))
+                        },
                         contentPadding = PaddingValues(
                             start = paddingStart,
                             end = paddingEnd,

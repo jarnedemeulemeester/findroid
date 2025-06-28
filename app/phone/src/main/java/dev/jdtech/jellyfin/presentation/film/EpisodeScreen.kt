@@ -68,6 +68,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun EpisodeScreen(
     episodeId: UUID,
     navigateBack: () -> Unit,
+    navigateToPerson: (personId: UUID) -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -114,6 +115,7 @@ fun EpisodeScreen(
                     }
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
+                is EpisodeAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -266,6 +268,9 @@ private fun EpisodeScreenLayout(
                 if (state.actors.isNotEmpty()) {
                     ActorsRow(
                         actors = state.actors,
+                        onActorClick = { personId ->
+                            onAction(EpisodeAction.NavigateToPerson(personId))
+                        },
                         contentPadding = PaddingValues(
                             start = paddingStart,
                             end = paddingEnd,

@@ -69,6 +69,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun MovieScreen(
     movieId: UUID,
     navigateBack: () -> Unit,
+    navigateToPerson: (personId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
@@ -124,6 +125,7 @@ fun MovieScreen(
                     }
                 }
                 is MovieAction.OnBackClick -> navigateBack()
+                is MovieAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -290,6 +292,9 @@ private fun MovieScreenLayout(
                 if (state.actors.isNotEmpty()) {
                     ActorsRow(
                         actors = state.actors,
+                        onActorClick = { personId ->
+                            onAction(MovieAction.NavigateToPerson(personId))
+                        },
                         contentPadding = PaddingValues(
                             start = paddingStart,
                             end = paddingEnd,
