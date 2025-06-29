@@ -70,7 +70,9 @@ private fun MediaScreenLayout(
     state: MediaState,
     onAction: (MediaAction) -> Unit,
 ) {
-    val safePadding = rememberSafePadding()
+    val safePadding = rememberSafePadding(
+        handleStartInsets = false,
+    )
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default

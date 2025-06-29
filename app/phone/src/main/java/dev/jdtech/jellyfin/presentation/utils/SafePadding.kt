@@ -18,18 +18,25 @@ data class SafePadding(
 )
 
 @Composable
-fun rememberSafePadding(): SafePadding {
+fun rememberSafePadding(
+    handleStartInsets: Boolean = true,
+): SafePadding {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    // Navigation rail handles safe drawing inset in medium and expanded width
-    val safePaddingStart = when (windowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> 0.dp
-        WindowWidthSizeClass.MEDIUM -> 0.dp
-        else -> with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingStart = if (handleStartInsets) {
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    } else {
+        // Navigation rail handles safe drawing inset in medium and expanded width
+        when (windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.EXPANDED -> 0.dp
+            WindowWidthSizeClass.MEDIUM -> 0.dp
+            else -> with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+        }
     }
+
     val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
     val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
