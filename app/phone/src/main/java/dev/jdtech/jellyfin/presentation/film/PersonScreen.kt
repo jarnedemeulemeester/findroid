@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyRow
@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,12 +43,15 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
 import dev.jdtech.jellyfin.film.presentation.person.PersonAction
 import dev.jdtech.jellyfin.film.presentation.person.PersonState
 import dev.jdtech.jellyfin.film.presentation.person.PersonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidPersonDetail
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -86,6 +90,7 @@ private fun PersonScreenLayout(
     onAction: (PersonAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingTop = safePadding.top + MaterialTheme.spacings.default
@@ -97,9 +102,6 @@ private fun PersonScreenLayout(
         end = paddingEnd,
     )
 
-    var showChevron by remember { mutableStateOf(false) }
-    var isOverviewExpanded by remember { mutableStateOf(false) }
-
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -109,71 +111,52 @@ private fun PersonScreenLayout(
                     .verticalScroll(rememberScrollState()),
             ) {
                 Spacer(Modifier.height(paddingTop))
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(itemsPadding),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    AsyncImage(
-                        model = person.images.primary,
-                        contentDescription = null,
+                if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
+                    Column(
                         modifier = Modifier
-                            .heightIn(max = 320.dp)
-                            .clip(MaterialTheme.shapes.extraLarge)
-                            .background(
-                                MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                    )
-                    Text(
-                        text = person.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
-                    if (person.overview.isNotBlank()) {
+                            .fillMaxWidth()
+                            .padding(itemsPadding),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        PersonImage(person)
+                        Text(
+                            text = person.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                        )
+                        if (person.overview.isNotBlank()) {
+                            OverviewText(
+                                person = person,
+                                maxCollapsedLines = 4,
+                            )
+                        }
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(itemsPadding),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                    ) {
+                        PersonImage(person)
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                         ) {
                             Text(
-                                text = person.overview,
-                                modifier = Modifier
-                                    .animateContentSize(),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = if (isOverviewExpanded) Int.MAX_VALUE else 4,
-                                onTextLayout = { textLayoutResult ->
-                                    if (!isOverviewExpanded) {
-                                        showChevron = textLayoutResult.hasVisualOverflow
-                                    }
-                                },
-                                style = MaterialTheme.typography.bodyMedium,
+                                text = person.name,
+                                style = MaterialTheme.typography.headlineMedium,
                             )
-                            if (showChevron) {
-                                IconButton(
-                                    onClick = {
-                                        isOverviewExpanded = !isOverviewExpanded
-                                    },
-                                ) {
-                                    when (isOverviewExpanded) {
-                                        true -> {
-                                            Icon(
-                                                painter = painterResource(CoreR.drawable.ic_chevron_up),
-                                                contentDescription = null,
-                                            )
-                                        }
-                                        false -> {
-                                            Icon(
-                                                painter = painterResource(CoreR.drawable.ic_chevron_down),
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    }
-                                }
-                            } else {
-                                Spacer(Modifier.height(MaterialTheme.spacings.default))
+                            if (person.overview.isNotBlank()) {
+                                OverviewText(
+                                    person = person,
+                                    maxCollapsedLines = 12,
+                                )
                             }
                         }
                     }
                 }
+
+                Spacer(Modifier.height(MaterialTheme.spacings.default))
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
@@ -264,6 +247,73 @@ private fun PersonScreenLayout(
     }
 }
 
+@Composable
+private fun PersonImage(
+    person: FindroidPersonDetail,
+    modifier: Modifier = Modifier,
+) {
+    AsyncImage(
+        model = person.images.primary,
+        contentDescription = null,
+        modifier = modifier
+            .height(320.dp)
+            .aspectRatio(0.66f)
+            .clip(MaterialTheme.shapes.extraLarge)
+            .background(
+                MaterialTheme.colorScheme.surfaceContainer,
+            ),
+    )
+}
+
+@Composable
+private fun OverviewText(
+    person: FindroidPersonDetail,
+    maxCollapsedLines: Int = Int.MAX_VALUE,
+) {
+    var showChevron by remember { mutableStateOf(false) }
+    var isOverviewExpanded by remember { mutableStateOf(false) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = person.overview,
+            modifier = Modifier
+                .animateContentSize(),
+            overflow = TextOverflow.Ellipsis,
+            maxLines = if (isOverviewExpanded) Int.MAX_VALUE else maxCollapsedLines,
+            onTextLayout = { textLayoutResult ->
+                if (!isOverviewExpanded) {
+                    showChevron = textLayoutResult.hasVisualOverflow
+                }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        if (showChevron) {
+            IconButton(
+                onClick = {
+                    isOverviewExpanded = !isOverviewExpanded
+                },
+            ) {
+                when (isOverviewExpanded) {
+                    true -> {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_chevron_up),
+                            contentDescription = null,
+                        )
+                    }
+                    false -> {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_chevron_down),
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @PreviewScreenSizes
 @Composable
 private fun PersonScreenLayoutPreview() {
@@ -271,6 +321,7 @@ private fun PersonScreenLayoutPreview() {
         PersonScreenLayout(
             state = PersonState(
                 person = dummyPersonDetail,
+                starredInMovies = dummyMovies,
             ),
             onAction = {},
         )
