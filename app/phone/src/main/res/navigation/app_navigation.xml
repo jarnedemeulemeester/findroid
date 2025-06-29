@@ -35,17 +35,6 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/personDetailFragment"
-        android:name="dev.jdtech.jellyfin.fragments.PersonDetailFragment"
-        android:label="@string/person_detail_title"
-        tools:layout="@layout/fragment_person_detail">
-
-        <argument
-            android:name="personId"
-            app:argType="java.util.UUID" />
-    </fragment>
-
     <activity
         android:id="@+id/playerActivity"
         android:name="dev.jdtech.jellyfin.PlayerActivity"
