@@ -3,37 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/seasonFragment">
+    app:startDestination="@+id/favoriteFragment">
 
-    <fragment
-        android:id="@+id/seasonFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
-        android:label="{seasonName}"
-        tools:layout="@layout/fragment_season">
-        <argument
-            android:name="seriesId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="seasonId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="seriesName"
-            android:defaultValue="Series"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="seasonName"
-            android:defaultValue="Season"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="offline"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/action_seasonFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-    </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"
@@ -62,17 +33,6 @@
         <argument
             android:name="query"
             app:argType="string" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/personDetailFragment"
-        android:name="dev.jdtech.jellyfin.fragments.PersonDetailFragment"
-        android:label="@string/person_detail_title"
-        tools:layout="@layout/fragment_person_detail">
-
-        <argument
-            android:name="personId"
-            app:argType="java.util.UUID" />
     </fragment>
 
     <activity

@@ -125,7 +125,7 @@ class MPVPlayer(
         MPVLib.addObserver(this)
 
         // Observe properties
-        data class Property(val name: String, @MPVLib.Format val format: Int)
+        data class Property(val name: String, @param:MPVLib.Format val format: Int)
         arrayOf(
             Property("track-list", MPVLib.MPV_FORMAT_STRING),
             Property("paused-for-cache", MPVLib.MPV_FORMAT_FLAG),

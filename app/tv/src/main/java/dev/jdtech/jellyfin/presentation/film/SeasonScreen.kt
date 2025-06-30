@@ -1,6 +1,7 @@
-package dev.jdtech.jellyfin.ui
+package dev.jdtech.jellyfin.presentation.film
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,21 +9,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisodeItems
-import dev.jdtech.jellyfin.models.EpisodeItem
-import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisodes
+import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
+import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
+import dev.jdtech.jellyfin.film.presentation.season.SeasonState
+import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -30,21 +32,20 @@ import dev.jdtech.jellyfin.ui.components.EpisodeCard
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
 import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
-import dev.jdtech.jellyfin.viewmodels.SeasonViewModel
 import java.util.UUID
 
 @Composable
 fun SeasonScreen(
     seasonId: UUID,
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
-    seasonViewModel: SeasonViewModel = hiltViewModel(),
+    viewModel: SeasonViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.state.collectAsState()
+
     LaunchedEffect(true) {
-        seasonViewModel.loadEpisodes(
-            seriesId = seasonId, // TODO: load season and get seriesId from season
+        viewModel.loadSeason(
             seasonId = seasonId,
-            offline = false,
         )
     }
 
@@ -55,31 +56,26 @@ fun SeasonScreen(
         }
     }
 
-    val delegatedUiState by seasonViewModel.uiState.collectAsState()
-
     SeasonScreenLayout(
-        seriesName = "seriesName", // TODO: load seriesName from viewmodel state
-        seasonName = "seasonName", // TODO: load seasonName from viewmodel state
-        uiState = delegatedUiState,
-        onClick = { episode ->
-            playerViewModel.loadPlayerItems(item = episode)
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is SeasonAction.NavigateToItem -> playerViewModel.loadPlayerItems(action.item)
+                else -> Unit
+            }
         },
     )
 }
 
 @Composable
 private fun SeasonScreenLayout(
-    seriesName: String,
-    seasonName: String,
-    uiState: SeasonViewModel.UiState,
-    onClick: (FindroidEpisode) -> Unit,
+    state: SeasonState,
+    onAction: (SeasonAction) -> Unit,
 ) {
-    val focusRequester = remember { FocusRequester() }
-
-    when (uiState) {
-        is SeasonViewModel.UiState.Loading -> Text(text = "LOADING")
-        is SeasonViewModel.UiState.Normal -> {
-            val episodes = uiState.episodes
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        state.season?.let { season ->
             Row(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -93,11 +89,11 @@ private fun SeasonScreenLayout(
                         ),
                 ) {
                     Text(
-                        text = seasonName,
+                        text = season.name,
                         style = MaterialTheme.typography.displayMedium,
                     )
                     Text(
-                        text = seriesName,
+                        text = season.seriesName,
                         style = MaterialTheme.typography.headlineMedium,
                     )
                 }
@@ -109,26 +105,24 @@ private fun SeasonScreenLayout(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     modifier = Modifier
                         .weight(2f)
-                        .padding(end = MaterialTheme.spacings.extraLarge)
-                        .focusRequester(focusRequester),
+                        .padding(end = MaterialTheme.spacings.extraLarge),
                 ) {
-                    items(episodes) { episodeItem ->
-                        when (episodeItem) {
-                            is EpisodeItem.Episode -> {
-                                EpisodeCard(episode = episodeItem.episode, onClick = { onClick(episodeItem.episode) })
-                            }
-
-                            else -> Unit
-                        }
+                    items(state.episodes) { episode ->
+                        EpisodeCard(
+                            episode = episode,
+                            onClick = {
+                                onAction(SeasonAction.NavigateToItem(episode))
+                            },
+                        )
                     }
                 }
-
-                LaunchedEffect(true) {
-                    focusRequester.requestFocus()
-                }
             }
+        } ?: run {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center),
+            )
         }
-        is SeasonViewModel.UiState.Error -> Text(text = uiState.error.toString())
     }
 }
 
@@ -137,10 +131,11 @@ private fun SeasonScreenLayout(
 private fun SeasonScreenLayoutPreview() {
     FindroidTheme {
         SeasonScreenLayout(
-            seriesName = "86 EIGHTY-SIX",
-            seasonName = "Season 1",
-            uiState = SeasonViewModel.UiState.Normal(dummyEpisodeItems),
-            onClick = {},
+            state = SeasonState(
+                season = dummySeason,
+                episodes = dummyEpisodes,
+            ),
+            onAction = {},
         )
     }
 }

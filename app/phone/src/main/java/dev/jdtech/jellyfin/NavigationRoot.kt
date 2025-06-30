@@ -28,12 +28,15 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.film.MovieScreen
+import dev.jdtech.jellyfin.presentation.film.PersonScreen
+import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
@@ -95,6 +98,16 @@ data class EpisodeRoute(
 )
 
 @Serializable
+data class SeasonRoute(
+    val seasonId: String,
+)
+
+@Serializable
+data class PersonRoute(
+    val personId: String,
+)
+
+@Serializable
 data class SettingsRoute(
     val indexes: IntArray,
 )
@@ -104,7 +117,7 @@ data object AboutRoute
 
 data class TabBarItem(
     val title: String,
-    @DrawableRes val icon: Int,
+    @param:DrawableRes val icon: Int,
     val route: Any,
 )
 
@@ -314,12 +327,30 @@ fun NavigationRoot(
                         navigateBack = {
                             navController.safePopBackStack()
                         },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
+                        },
                     )
                 }
                 composable<ShowRoute> { backStackEntry ->
                     val route: ShowRoute = backStackEntry.toRoute()
                     ShowScreen(
                         showId = UUID.fromString(route.showId),
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                        navigateToItem = { item ->
+                            navigateToItem(navController = navController, item = item)
+                        },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
+                        },
+                    )
+                }
+                composable<SeasonRoute> { backStackEntry ->
+                    val route: SeasonRoute = backStackEntry.toRoute()
+                    SeasonScreen(
+                        seasonId = UUID.fromString(route.seasonId),
                         navigateBack = {
                             navController.safePopBackStack()
                         },
@@ -334,6 +365,21 @@ fun NavigationRoot(
                         episodeId = UUID.fromString(route.episodeId),
                         navigateBack = {
                             navController.safePopBackStack()
+                        },
+                        navigateToPerson = { personId ->
+                            navController.safeNavigate(PersonRoute(personId.toString()))
+                        },
+                    )
+                }
+                composable<PersonRoute> { backStackEntry ->
+                    val route: PersonRoute = backStackEntry.toRoute()
+                    PersonScreen(
+                        personId = UUID.fromString(route.personId),
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                        navigateToItem = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                     )
                 }
@@ -374,6 +420,7 @@ private fun navigateToItem(navController: NavHostController, item: FindroidItem)
     when (item) {
         is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))
         is FindroidShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
+        is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
         is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
         else -> Unit
     }
