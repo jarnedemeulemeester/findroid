@@ -322,10 +322,10 @@ constructor(
                                     backendPreference = appPreferences.playerMediaSegmentsAutoSkip,
                                 ),
                                 PreferenceSelect(
-                                    nameStringResource = R.string.pref_player_media_segments_auto_skip_when,
+                                    nameStringResource = R.string.pref_player_media_segments_auto_skip_mode,
                                     dependencies = listOf(appPreferences.playerMediaSegmentsAutoSkip),
                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
-                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkipWhen,
+                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkipMode,
                                     options = R.array.media_segments_auto_skip,
                                     optionValues = R.array.media_segments_auto_skip_values,
                                 ),

@@ -403,15 +403,16 @@ constructor(
 
         val milliSeconds = player.currentPosition
 
+        // Get current segment, - 1 second to avoid showing button after segment ends
         val currentSegment = currentMediaItemSegments?.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
         if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
             appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(currentSegment?.type.toString()) &&
             (
-                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
                     (
-                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipWhen) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
+                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
                             isInPictureInPictureMode
                         )
                 )

@@ -14,6 +14,7 @@ private fun MediaSegmentType.toFindroidSegmentType(): FindroidSegmentType = when
     MediaSegmentType.RECAP -> FindroidSegmentType.RECAP
     MediaSegmentType.PREVIEW -> FindroidSegmentType.PREVIEW
     MediaSegmentType.COMMERCIAL -> FindroidSegmentType.COMMERCIAL
+    else -> FindroidSegmentType.UNKNOWN
 }
 
 data class FindroidSegment(
