@@ -6,13 +6,13 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -27,9 +27,9 @@ class SyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         val jellyfinApi = JellyfinApi(
             androidContext = context.applicationContext,
-            requestTimeout = appPreferences.requestTimeout,
-            connectTimeout = appPreferences.connectTimeout,
-            socketTimeout = appPreferences.socketTimeout,
+            requestTimeout = appPreferences.getValue(appPreferences.requestTimeout),
+            connectTimeout = appPreferences.getValue(appPreferences.connectTimeout),
+            socketTimeout = appPreferences.getValue(appPreferences.socketTimeout),
         )
 
         return withContext(Dispatchers.IO) {

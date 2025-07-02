@@ -10,18 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.CollectionViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -103,31 +98,5 @@ class CollectionFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    CollectionFragmentDirections.actionCollectionFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
-            is FindroidShow -> {
-                findNavController().safeNavigate(
-                    CollectionFragmentDirections.actionCollectionFragmentToShowFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
-            is FindroidEpisode -> {
-                findNavController().safeNavigate(
-                    CollectionFragmentDirections.actionCollectionFragmentToEpisodeBottomSheetFragment(
-                        item.id,
-                    ),
-                )
-            }
-        }
-    }
+    private fun navigateToMediaItem(item: FindroidItem) {}
 }

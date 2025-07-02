@@ -49,20 +49,16 @@ ktlint {
 }
 
 dependencies {
-    // val composeBom = platform(libs.androidx.compose.bom)
-
     implementation(projects.data)
-    implementation(projects.preferences)
     implementation(projects.player.core)
+    implementation(projects.settings)
     implementation(libs.androidx.appcompat)
-    // implementation(composeBom)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.paging)
-    implementation(libs.androidx.preference)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.work)
     implementation(libs.hilt.android)

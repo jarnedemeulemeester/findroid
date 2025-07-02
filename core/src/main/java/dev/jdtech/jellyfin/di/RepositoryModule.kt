@@ -5,12 +5,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
 @Module
@@ -48,7 +48,7 @@ object RepositoryModule {
         appPreferences: AppPreferences,
     ): JellyfinRepository {
         println("Creating new JellyfinRepository")
-        return when (appPreferences.offlineMode) {
+        return when (appPreferences.getValue(appPreferences.offlineMode)) {
             true -> jellyfinRepositoryOfflineImpl
             false -> jellyfinRepositoryImpl
         }

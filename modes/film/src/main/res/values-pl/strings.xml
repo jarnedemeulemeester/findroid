@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">Kontynuuj odtwarzanie</string>
+    <string name="next_up">Do obejrzenia</string>
+    <string name="latest_library">Najnowsze %1$s</string>
+</resources>

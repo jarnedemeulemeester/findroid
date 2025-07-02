@@ -6,9 +6,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
 @Module
@@ -23,12 +23,12 @@ object ApiModule {
     ): JellyfinApi {
         val jellyfinApi = JellyfinApi.getInstance(
             context = application,
-            requestTimeout = appPreferences.requestTimeout,
-            connectTimeout = appPreferences.connectTimeout,
-            socketTimeout = appPreferences.socketTimeout,
+            requestTimeout = appPreferences.getValue(appPreferences.requestTimeout),
+            connectTimeout = appPreferences.getValue(appPreferences.connectTimeout),
+            socketTimeout = appPreferences.getValue(appPreferences.socketTimeout),
         )
 
-        val serverId = appPreferences.currentServer ?: return jellyfinApi
+        val serverId = appPreferences.getValue(appPreferences.currentServer) ?: return jellyfinApi
 
         val serverWithAddressAndUser = database.getServerWithAddressAndUser(serverId) ?: return jellyfinApi
         val serverAddress = serverWithAddressAndUser.address ?: return jellyfinApi

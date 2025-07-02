@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="title_settings">सेटिंग्स</string>
+    <string name="title_download">डाउनलोड्स</string>
+    <string name="settings_category_language">भाषा</string>
+    <string name="settings_preferred_audio_language">ऑडियो की पसंदीदा भाषा</string>
+    <string name="settings_preferred_subtitle_language">उपशीर्षक की पसंदीदा भाषा</string>
+    <string name="app_language">ऐप की भाषा</string>
+    <string name="settings_category_player">प्लेयर</string>
+    <string name="settings_category_download">डाउनलोड्स</string>
+    <string name="settings_category_appearance">दिखावट</string>
+    <string name="settings_category_device">उपकरण</string>
+    <string name="settings_category_cache">कैश (cache)</string>
+    <string name="settings_cache_size">कैश (cache) का साइज़</string>
+    <string name="about">ऐप के बारे में</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="mpv_player">एमपीवी (mpv) प्लेयर</string>
+    <string name="download_roaming">रोमिंग के दौरान डाउनलोड करें</string>
+    <string name="gestures">इशारे</string>
+    <string name="player_gestures">प्लेयर के इशारे</string>
+    <string name="player_gestures_zoom">ज़ूम के इशारे</string>
+    <string name="player_gestures_zoom_summary">वीडियो को स्क्रीन में भरने के लिए पिंच करें</string>
+    <string name="player_gestures_seek">खोजने (सीक) का इशारा</string>
+    <string name="player_brightness_remember">चमक के स्तर को याद रखें</string>
+    <string name="settings_category_network">नेटवर्क</string>
+    <string name="settings_category_servers">सर्वर्स</string>
+    <string name="settings_use_cache_summary">डिस्क पर इमेजेस कैश (cache) करें ताकि लोडिंग टाइम तेज हो। यह ऐप रीस्टार्ट के बाद प्रभावी होगा।</string>
+    <string name="download_mobile_data">मोबाइल डेटा का उपयोग करके डाउनलोड करें</string>
+    <string name="player_gestures_chapter_skip_summary">अध्यायों को छोड़ने के लिए बाएँ / दाएँ हिस्से पर लंबे समय तक दबाएँ (2x गति इशारे को ओवरराइड करता है)</string>
+    <string name="theme">थीम</string>
+    <string name="settings_use_cache_title">कैश (cache) इमेजेस</string>
+    <string name="settings_cache_size_message">जेलीफिन सर्वर से छवियों को संग्रहीत करने के लिए ऐप आपके डिस्क की इस एमबी का उपयोग करेगी। धीमे नेटवर्क पर बड़े मान फायदेमंद हो सकता हैं।</string>
+    <string name="player_gestures_vb_summary">स्क्रीन के दाएं हिस्से पर ऊपर और नीचे स्वाइप करके वॉल्यूम बदलें और बाएं हिस्से पर स्वाइप करके चमक बदलें</string>
+    <string name="subtitles">उपशीर्षक</string>
+    <string name="mpv_player_summary">वीडियो चलाने के लिए प्रयोगात्मक एमपीवी (mpv) प्लेयर का उपयोग करें। एमपीवी में अधिक वीडियो, ऑडियो और सबटाइटल कोडेक्स के लिए समर्थन है।</string>
+    <string name="player_gestures_seek_summary">आगे या पीछे खोजने (सीक) के लिए क्षैतिज रूप से स्वाइप करें</string>
+</resources>

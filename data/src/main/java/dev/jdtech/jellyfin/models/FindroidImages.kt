@@ -10,6 +10,8 @@ data class FindroidImages(
     val backdrop: Uri? = null,
     val logo: Uri? = null,
     val showPrimary: Uri? = null,
+    val showBackdrop: Uri? = null,
+    val showLogo: Uri? = null,
 )
 
 fun BaseItemDto.toFindroidImages(
@@ -40,11 +42,25 @@ fun BaseItemDto.toFindroidImages(
             .appendQueryParameter("tag", tag)
             .build()
     }
+    val showBackdrop = seriesPrimaryImageTag?.let { tag ->
+        baseUrl.buildUpon()
+            .appendEncodedPath("items/$seriesId/Images/${ImageType.BACKDROP}/0")
+            .appendQueryParameter("tag", tag)
+            .build()
+    }
+    val showLogo = seriesPrimaryImageTag?.let { tag ->
+        baseUrl.buildUpon()
+            .appendEncodedPath("items/$seriesId/Images/${ImageType.LOGO}")
+            .appendQueryParameter("tag", tag)
+            .build()
+    }
 
     return FindroidImages(
         primary = primary,
         backdrop = backdrop,
         logo = logo,
         showPrimary = showPrimary,
+        showBackdrop = showBackdrop,
+        showLogo = showLogo,
     )
 }

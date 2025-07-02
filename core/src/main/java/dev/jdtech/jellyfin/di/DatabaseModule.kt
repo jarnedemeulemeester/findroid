@@ -22,7 +22,7 @@ object DatabaseModule {
             ServerDatabase::class.java,
             "servers",
         )
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .allowMainThreadQueries()
             .build()
             .getServerDatabaseDao()

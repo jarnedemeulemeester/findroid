@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Додати сервер</string>
+    <string name="add_server_error_version">Непідтримувана версія сервера: %1$s. Будь ласка, оновіть ваш сервер</string>
+    <string name="add_server_error_not_found">Сервер не знайдено</string>
+    <string name="login">Логін</string>
+    <string name="login_error_wrong_username_password">Невірне ім\'я користувача або пароль</string>
+    <string name="edit_text_server_address_hint">Адреса сервера</string>
+    <string name="edit_text_username_hint">Ім\'я користувача</string>
+    <string name="edit_text_password_hint">Пароль</string>
+    <string name="login_btn_login">Вхід</string>
+    <string name="login_btn_quick_connect">Quick Connect</string>
+    <string name="add_server_error_not_jellyfin">Це не сервер Jellyfin: %1$s</string>
+    <string name="add_server_error_slow">Сервер занадто повільно відповідає: %1$s</string>
+    <string name="add_server_error_empty_address">Пуста адреса сервера</string>
+    <string name="add_server_error_no_id">Сервер не має ID, схоже, з сервером щось не так</string>
+    <string name="add_server_error_outdated">Версія сервера застаріла: %1$s. Будь ласка, оновіть ваш сервер</string>
+    <string name="add_server_btn_connect">Підключитися</string>
+    <string name="remove_user_dialog">Видалити користувача</string>
+    <string name="remove_user_dialog_text">Ви впевнені, що хочете видалити користувача %1$s</string>
+    <string name="users">Користувачі</string>
+    <string name="users_btn_add_user">Додати користувача</string>
+    <string name="remove_server_dialog">Видалити сервер</string>
+    <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
+</resources>

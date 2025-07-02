@@ -28,13 +28,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.jdtech.jellyfin.models.Track
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.parcelize.Parcelize
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.video.R as PlayerVideoR
@@ -45,12 +41,11 @@ data class VideoPlayerTrackSelectorDialogResult(
     val index: Int,
 ) : Parcelable
 
-@Destination<RootGraph>(style = BaseDialogStyle::class)
 @Composable
 fun VideoPlayerTrackSelectorDialog(
     trackType: @C.TrackType Int,
     tracks: Array<Track>,
-    resultNavigator: ResultBackNavigator<VideoPlayerTrackSelectorDialogResult>,
+    // resultNavigator: ResultBackNavigator<VideoPlayerTrackSelectorDialogResult>,
 ) {
     val dialogTitle = when (trackType) {
         C.TRACK_TYPE_AUDIO -> PlayerVideoR.string.select_audio_track
@@ -73,7 +68,7 @@ fun VideoPlayerTrackSelectorDialog(
                 items(tracks) { track ->
                     Surface(
                         onClick = {
-                            resultNavigator.navigateBack(result = VideoPlayerTrackSelectorDialogResult(trackType, track.id))
+                            // resultNavigator.navigateBack(result = VideoPlayerTrackSelectorDialogResult(trackType, track.id))
                         },
                         enabled = track.supported,
                         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
@@ -150,7 +145,6 @@ private fun VideoPlayerTrackSelectorDialogPreview() {
                     supported = false,
                 ),
             ),
-            resultNavigator = EmptyResultBackNavigator(),
         )
     }
 }

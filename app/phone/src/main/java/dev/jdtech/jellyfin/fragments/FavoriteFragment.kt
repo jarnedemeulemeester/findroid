@@ -10,17 +10,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
-import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
-import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.FavoriteViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -93,31 +88,5 @@ class FavoriteFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
-            is FindroidShow -> {
-                findNavController().safeNavigate(
-                    FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
-            is FindroidEpisode -> {
-                findNavController().safeNavigate(
-                    FavoriteFragmentDirections.actionFavoriteFragmentToEpisodeBottomSheetFragment(
-                        item.id,
-                    ),
-                )
-            }
-        }
-    }
+    private fun navigateToMediaItem(item: FindroidItem) {}
 }

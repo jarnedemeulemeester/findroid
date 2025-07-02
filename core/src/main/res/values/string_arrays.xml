@@ -2,7 +2,6 @@
 <resources>
     <string-array name="sort_by_options">
         <item>@string/sort_by_options_0</item>
-        <item>@string/sort_by_options_6</item>
         <item>@string/sort_by_options_1</item>
         <item>@string/sort_by_options_2</item>
         <item>@string/sort_by_options_3</item>
@@ -12,18 +11,5 @@
     <string-array name="sort_order_options">
         <item>@string/ascending</item>
         <item>@string/descending</item>
-    </string-array>
-    <string-array name="mpv_hwdec">
-        <item>no</item>
-        <item>mediacodec</item>
-        <item>mediacodec-copy</item>
-    </string-array>
-    <string-array name="mpv_vos">
-        <item>gpu</item>
-        <item>gpu-next</item>
-    </string-array>
-    <string-array name="mpv_aos">
-        <item>audiotrack</item>
-        <item>opensles</item>
     </string-array>
 </resources>

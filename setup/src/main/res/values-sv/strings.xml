@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_slow">Servern tar för lång tid att svara: %1$s</string>
+    <string name="add_server_error_empty_address">Tom serveradress</string>
+    <string name="add_server_error_no_id">Servern har inget id, något är fel med servern</string>
+    <string name="login">Logga in</string>
+    <string name="login_error_wrong_username_password">Fel användarnamn eller lösenord</string>
+    <string name="edit_text_server_address_hint">Serveradress</string>
+    <string name="edit_text_username_hint">Användarnamn</string>
+    <string name="edit_text_password_hint">Lösenord</string>
+    <string name="add_server_btn_connect">Anslut</string>
+    <string name="login_btn_quick_connect">Snabbanslutning</string>
+    <string name="add_server_error_not_found">Servern kunde inte hittas</string>
+    <string name="add_server">Lägg till server</string>
+    <string name="add_server_error_not_jellyfin">Inte en Jellyfin server: %1$s</string>
+    <string name="login_btn_login">Logga in</string>
+    <string name="add_server_error_outdated">Serverversionen är ej aktuell: %1$s. Vänligen uppdatera din server</string>
+    <string name="add_server_error_version">Serverversion stöds ej: %1$s Vänligen uppdatera din server</string>
+    <string name="remove_user_dialog">Ta bort användare</string>
+    <string name="remove_user_dialog_text">Är du säker på att du vill ta bort användaren %1$s</string>
+    <string name="users">Användare</string>
+    <string name="users_btn_add_user">Lägg till användare</string>
+    <string name="remove_server_dialog">Ta bort server</string>
+    <string name="remove_server_dialog_text">Är du säker på att du vill ta bort servern %1$s</string>
+</resources>

@@ -10,17 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.AppPreferences
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.restart
-import dev.jdtech.jellyfin.utils.safeNavigate
 import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
 import kotlinx.coroutines.launch
@@ -56,7 +52,7 @@ class DownloadsFragment : Fragment() {
                                 Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
                                     .setTextMaxLines(2)
                                     .setAction(CoreR.string.offline_mode) {
-                                        appPreferences.offlineMode = true
+                                        appPreferences.setValue(appPreferences.offlineMode, true)
                                         activity?.restart()
                                     }
                                     .show()
@@ -100,25 +96,5 @@ class DownloadsFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
-                findNavController().safeNavigate(
-                    DownloadsFragmentDirections.actionDownloadsFragmentToMovieFragment(
-                        item.id,
-                        item.name,
-                    ),
-                )
-            }
-            is FindroidShow -> {
-                findNavController().safeNavigate(
-                    DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(
-                        item.id,
-                        item.name,
-                        true,
-                    ),
-                )
-            }
-        }
-    }
+    private fun navigateToMediaItem(item: FindroidItem) {}
 }

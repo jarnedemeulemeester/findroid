@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,33 +37,44 @@ import androidx.tv.material3.TabDefaults
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
 import androidx.tv.material3.Text
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
+import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.User
+import dev.jdtech.jellyfin.presentation.film.HomeScreen
+import dev.jdtech.jellyfin.presentation.film.MediaScreen
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
-import dev.jdtech.jellyfin.ui.dummy.dummyServer
-import dev.jdtech.jellyfin.ui.dummy.dummyUser
-import dev.jdtech.jellyfin.ui.theme.FindroidTheme
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
+import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-@Destination<RootGraph>(start = true)
 @Composable
 fun MainScreen(
+    navigateToSettings: () -> Unit,
+    navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
+    navigateToMovie: (itemId: UUID) -> Unit,
+    navigateToShow: (itemId: UUID) -> Unit,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
 ) {
     val delegatedUiState by mainViewModel.uiState.collectAsState()
 
+    LaunchedEffect(true) {
+        mainViewModel.loadServerAndUser()
+    }
+
     MainScreenLayout(
         uiState = delegatedUiState,
-        navigator = navigator,
+        navigateToSettings = navigateToSettings,
+        navigateToLibrary = navigateToLibrary,
+        navigateToMovie = navigateToMovie,
+        navigateToShow = navigateToShow,
+        navigateToPlayer = navigateToPlayer,
     )
 }
 
@@ -79,7 +91,11 @@ enum class TabDestination(
 @Composable
 private fun MainScreenLayout(
     uiState: MainViewModel.UiState,
-    navigator: DestinationsNavigator,
+    navigateToSettings: () -> Unit,
+    navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
+    navigateToMovie: (itemId: UUID) -> Unit,
+    navigateToShow: (itemId: UUID) -> Unit,
+    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
 ) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
@@ -172,17 +188,25 @@ private fun MainScreenLayout(
                 ProfileButton(
                     user = user,
                     onClick = {
-                        navigator.navigate(SettingsScreenDestination())
+                        navigateToSettings()
                     },
                 )
             }
         }
         when (activeTabIndex) {
             1 -> {
-                HomeScreen(navigator = navigator, isLoading = { isLoading = it })
+                HomeScreen(
+                    navigateToMovie = navigateToMovie,
+                    navigateToShow = navigateToShow,
+                    navigateToPlayer = navigateToPlayer,
+                    isLoading = { isLoading = it },
+                )
             }
             2 -> {
-                LibrariesScreen(navigator = navigator, isLoading = { isLoading = it })
+                MediaScreen(
+                    navigateToLibrary = navigateToLibrary,
+                    isLoading = { isLoading = it },
+                )
             }
         }
     }
@@ -194,7 +218,11 @@ private fun MainScreenLayoutPreview() {
     FindroidTheme {
         MainScreenLayout(
             uiState = MainViewModel.UiState.Normal(server = dummyServer, user = dummyUser),
-            navigator = EmptyDestinationsNavigator,
+            navigateToSettings = {},
+            navigateToLibrary = { _, _, _ -> },
+            navigateToMovie = {},
+            navigateToShow = {},
+            navigateToPlayer = {},
         )
     }
 }

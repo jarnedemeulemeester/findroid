@@ -47,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 class MPVPlayer(
     context: Context,
     private val requestAudioFocus: Boolean,
-    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder(context).build(),
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder().build(),
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
     videoOutput: String = "gpu-next",
@@ -125,7 +125,7 @@ class MPVPlayer(
         MPVLib.addObserver(this)
 
         // Observe properties
-        data class Property(val name: String, @MPVLib.Format val format: Int)
+        data class Property(val name: String, @param:MPVLib.Format val format: Int)
         arrayOf(
             Property("track-list", MPVLib.MPV_FORMAT_STRING),
             Property("paused-for-cache", MPVLib.MPV_FORMAT_FLAG),

@@ -3,241 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@+id/homeFragment">
+    app:startDestination="@+id/favoriteFragment">
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_navigation_home_to_libraryFragment"
-            app:destination="@id/libraryFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_showFragment"
-            app:destination="@id/showFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_home_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/twoPaneSettingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_homeFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_homeFragment_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/mediaFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
-        android:label="@string/title_media"
-        tools:layout="@layout/fragment_media">
-        <action
-            android:id="@+id/action_navigation_media_to_libraryFragment"
-            app:destination="@id/libraryFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_navigation_media_to_searchResultFragment"
-            app:destination="@id/searchResultFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/twoPaneSettingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.TwoPaneSettingsFragment"
-        android:label="@string/title_settings">
-        <action
-            android:id="@+id/action_navigation_settings_to_serverSelectFragment"
-            app:destination="@id/serverSelectFragment" />
-        <action
-            android:id="@+id/action_navigation_settings_to_usersFragment"
-            app:destination="@id/usersFragment" />
-        <action
-            android:id="@+id/action_navigation_settings_to_serverAddressesFragment"
-            app:destination="@id/serverAddressesFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_about_libraries"
-            app:destination="@id/about_libraries" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment" />
-    <fragment
-        android:id="@+id/libraryFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
-        android:label="{libraryName}"
-        tools:layout="@layout/fragment_library">
-        <argument
-            android:name="libraryId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="libraryName"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_libraryFragment_to_showFragment"
-            app:destination="@id/showFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_libraryFragment_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_libraryFragment_to_collectionFragment"
-            app:destination="@id/collectionFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <argument
-            android:name="libraryType"
-            app:argType="dev.jdtech.jellyfin.models.CollectionType" />
-        <action
-            android:id="@+id/action_libraryFragment_self"
-            app:destination="@id/libraryFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/showFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ShowFragment"
-        android:label="{itemName}"
-        tools:layout="@layout/fragment_show">
-        <argument
-            android:name="itemId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="itemName"
-            app:argType="string" />
-        <argument
-            android:name="offline"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/action_showFragment_to_seasonFragment"
-            app:destination="@id/seasonFragment" />
-        <action
-            android:id="@+id/action_showFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_showFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-        <action
-            android:id="@+id/action_showFragment_to_personDetailFragment"
-            app:destination="@id/personDetailFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/movieFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MovieFragment"
-        android:label="{itemName}"
-        tools:layout="@layout/fragment_movie">
-        <argument
-            android:name="itemId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="itemName"
-            android:defaultValue="Media Info"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_movieFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-        <action
-            android:id="@+id/action_movieFragment_to_personDetailFragment"
-            app:destination="@id/personDetailFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/seasonFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
-        android:label="{seasonName}"
-        tools:layout="@layout/fragment_season">
-        <argument
-            android:name="seriesId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="seasonId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="seriesName"
-            android:defaultValue="Series"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="seasonName"
-            android:defaultValue="Season"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="offline"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/action_seasonFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_seasonFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-    </fragment>
-    <dialog
-        android:id="@+id/episodeBottomSheetFragment"
-        android:name="dev.jdtech.jellyfin.fragments.EpisodeBottomSheetFragment"
-        android:label="EpisodeBottomSheetFragment"
-        tools:layout="@layout/episode_bottom_sheet">
-        <argument
-            android:name="episodeId"
-            app:argType="java.util.UUID" />
-        <action
-            android:id="@+id/action_episodeBottomSheetFragment_to_playerActivity"
-            app:destination="@id/playerActivity" />
-        <action
-            android:id="@+id/action_episodeBottomSheetFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-    </dialog>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite">
-        <action
-            android:id="@+id/action_favoriteFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionFragment"
@@ -252,92 +24,15 @@
             android:defaultValue="Collection"
             app:argType="string"
             app:nullable="true" />
-        <action
-            android:id="@+id/action_collectionFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_collectionFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_collectionFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
         android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
         android:label="{query}"
         tools:layout="@layout/fragment_search_result">
-        <action
-            android:id="@+id/action_searchResultFragment_to_episodeBottomSheetFragment"
-            app:destination="@id/episodeBottomSheetFragment" />
-        <action
-            android:id="@+id/action_searchResultFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_searchResultFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
         <argument
             android:name="query"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/addServerFragment"
-        android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
-        android:label="@string/add_server"
-        tools:layout="@layout/fragment_add_server">
-        <action
-            android:id="@+id/action_addServerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/serverSelectFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
-        android:label="@string/select_server"
-        tools:layout="@layout/fragment_server_select">
-        <action
-            android:id="@+id/action_serverSelectFragment_to_addServerFragment"
-            app:destination="@id/addServerFragment" />
-        <action
-            android:id="@+id/action_serverSelectFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_serverSelectFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="reLogin"
-            android:defaultValue="false"
-            app:argType="boolean" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/personDetailFragment"
-        android:name="dev.jdtech.jellyfin.fragments.PersonDetailFragment"
-        android:label="@string/person_detail_title"
-        tools:layout="@layout/fragment_person_detail">
-
-        <argument
-            android:name="personId"
-            app:argType="java.util.UUID" />
-
-        <action
-            android:id="@+id/action_personDetailFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-        <action
-            android:id="@+id/action_personDetailFragment_to_movieFragment"
-            app:destination="@id/movieFragment" />
     </fragment>
 
     <activity
@@ -350,39 +45,11 @@
             app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
     </activity>
 
-    <include app:graph="@navigation/aboutlibs_navigation" />
-    <action
-        android:id="@+id/action_global_loginFragment"
-        app:destination="@id/loginFragment" />
-
-    <fragment
-        android:id="@+id/usersFragment"
-        android:name="dev.jdtech.jellyfin.fragments.UsersFragment"
-        android:label="@string/users"
-        tools:layout="@layout/fragment_users">
-        <action
-            android:id="@+id/action_usersFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="serverId"
-            app:argType="string" />
-    </fragment>
-
     <fragment
         android:id="@+id/serverAddressesFragment"
         android:name="dev.jdtech.jellyfin.fragments.ServerAddressesFragment"
         android:label="@string/addresses"
         tools:layout="@layout/fragment_server_addresses">
-        <action
-            android:id="@+id/action_usersFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="serverId"
             app:argType="string" />
@@ -393,20 +60,6 @@
         android:name="dev.jdtech.jellyfin.fragments.DownloadsFragment"
         android:label="@string/title_download"
         tools:layout="@layout/fragment_favorite">
-        <action
-            android:id="@+id/action_downloadsFragment_to_movieFragment"
-            app:destination="@id/movieFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_downloadsFragment_to_showFragment"
-            app:destination="@id/showFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
 </navigation>

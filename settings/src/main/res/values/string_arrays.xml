@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="theme">
+        <item>@string/theme_system</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+    <string-array name="mpv_hwdec">
+        <item>no</item>
+        <item>mediacodec</item>
+        <item>mediacodec-copy</item>
+    </string-array>
+    <string-array name="mpv_vos">
+        <item>gpu</item>
+        <item>gpu-next</item>
+    </string-array>
+    <string-array name="mpv_aos">
+        <item>audiotrack</item>
+        <item>opensles</item>
+    </string-array>
+</resources>

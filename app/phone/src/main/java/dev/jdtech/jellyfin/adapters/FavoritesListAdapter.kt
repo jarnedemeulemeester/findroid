@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.jdtech.jellyfin.Constants
+import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.databinding.FavoriteSectionBinding
 import dev.jdtech.jellyfin.models.FavoriteSection
 import dev.jdtech.jellyfin.models.FindroidItem

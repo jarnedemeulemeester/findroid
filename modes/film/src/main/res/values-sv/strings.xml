@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">Fortsätt titta</string>
+    <string name="next_up">Nästa</string>
+    <string name="latest_library">Senaste %1$s</string>
+</resources>

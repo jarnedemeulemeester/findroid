@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,20 +27,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.C
 import androidx.media3.common.Player
-import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.ui.PlayerView
 import androidx.tv.material3.MaterialTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.VideoPlayerTrackSelectorDialogDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.NavResult
-import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Track
+import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaTitle
@@ -47,26 +42,31 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerOverlay
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
-import dev.jdtech.jellyfin.ui.dialogs.VideoPlayerTrackSelectorDialogResult
-import dev.jdtech.jellyfin.ui.theme.spacings
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
-@Destination<RootGraph>
 @Composable
 fun PlayerScreen(
-    navigator: DestinationsNavigator,
-    items: ArrayList<PlayerItem>,
-    resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
+    items: Array<PlayerItem>,
+    // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
 ) {
     val viewModel = hiltViewModel<PlayerActivityViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
+    val currentView = LocalView.current
+
+    // Keep the screen on while player is show
+    DisposableEffect(Unit) {
+        currentView.keepScreenOn = true
+        onDispose {
+            currentView.keepScreenOn = false
+        }
+    }
 
     var lifecycle by remember {
         mutableStateOf(Lifecycle.Event.ON_CREATE)
@@ -117,6 +117,8 @@ fun PlayerScreen(
         }
     }
 
+    // TODO: implement the track selection dialogs
+    /*
     resultRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> Unit
@@ -142,6 +144,7 @@ fun PlayerScreen(
             }
         }
     }
+     */
 
     Box(
         modifier = Modifier
@@ -156,7 +159,7 @@ fun PlayerScreen(
                 PlayerView(context).also { playerView ->
                     playerView.player = viewModel.player
                     playerView.useController = false
-                    viewModel.initializePlayer(items.toTypedArray())
+                    viewModel.initializePlayer(items)
                     playerView.setBackgroundColor(
                         context.resources.getColor(
                             android.R.color.black,
@@ -196,7 +199,7 @@ fun PlayerScreen(
                     player = viewModel.player,
                     state = videoPlayerState,
                     focusRequester = focusRequester,
-                    navigator = navigator,
+                    // navigator = navigator,
                 )
             },
         )
@@ -212,7 +215,7 @@ fun VideoPlayerControls(
     player: Player,
     state: VideoPlayerState,
     focusRequester: FocusRequester,
-    navigator: DestinationsNavigator,
+    // navigator: DestinationsNavigator,
 ) {
     val onPlayPauseToggle = { shouldPlay: Boolean ->
         if (shouldPlay) {
@@ -250,7 +253,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
-                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
+                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
                     },
                 )
                 VideoPlayerMediaButton(
@@ -259,7 +262,7 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
-                        navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
+                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
                     },
                 )
             }

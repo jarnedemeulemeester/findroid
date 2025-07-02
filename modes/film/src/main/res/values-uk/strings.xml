@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">Продовжити перегляд</string>
+    <string name="next_up">Наступний</string>
+    <string name="latest_library">Останні %1$s</string>
+</resources>

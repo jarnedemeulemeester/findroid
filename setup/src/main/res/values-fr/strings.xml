@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Ajouter un serveur</string>
+   <string name="add_server_btn_connect">Connexion</string>
+   <string name="add_server_error_empty_address">L\&apos;adresse du serveur est vide</string>
+   <string name="add_server_error_no_id">Le serveur n\&apos;a pas d\&apos;ID, quelque chose semble ne pas fonctionner correctement sur le serveur</string>
+   <string name="add_server_error_not_found">Serveur introuvable</string>
+   <string name="add_server_error_not_jellyfin">Ceci n\&apos;est pas un serveur Jellyfin : %1$s</string>
+   <string name="add_server_error_outdated">Version du serveur obsolète : %1$s. Veuillez mettre à jour le serveur</string>
+   <string name="add_server_error_slow">Le serveur est trop lent à répondre : %1$s</string>
+   <string name="add_server_error_version">Version du serveur non supportée : %1$s. Veuillez mettre à jour le serveur</string>
+   <string name="edit_text_password_hint">Mot de passe</string>
+   <string name="edit_text_server_address_hint">Adresse du serveur</string>
+   <string name="edit_text_username_hint">Nom d\&apos;utilisateur</string>
+   <string name="login">Se connecter</string>
+   <string name="login_btn_login">Authentification</string>
+   <string name="login_btn_quick_connect">Connexion rapide</string>
+   <string name="login_error_wrong_username_password">Utilisateur ou mot de passe incorrect</string>
+   <string name="servers_no_servers">Aucun serveur trouvé</string>
+   <string name="users_btn_add_user">Ajouter un utilisateur</string>
+   <string name="remove_user_dialog">Supprimer l\'utilisateur</string>
+   <string name="remove_user_dialog_text">Voulez-vous vraiment supprimer l\'utilisateur %1$s</string>
+   <string name="users">Utilisateurs</string>
+   <string name="users_no_users">Aucun utilisateur trouvé</string>
+   <string name="remove_server_dialog">Supprimer le serveur</string>
+   <string name="remove_server_dialog_text">Êtes-vous certain de vouloir supprimer le serveur %1$s</string>
+</resources>

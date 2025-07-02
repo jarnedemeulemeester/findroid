@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">जारी रखें देखना</string>
+    <string name="next_up">अगला</string>
+    <string name="latest_library">नवीनतम %1$s</string>
+</resources>
