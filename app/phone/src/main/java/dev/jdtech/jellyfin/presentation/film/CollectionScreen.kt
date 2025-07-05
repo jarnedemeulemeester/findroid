@@ -38,6 +38,7 @@ import dev.jdtech.jellyfin.film.presentation.collection.CollectionAction
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionViewModel
 import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.film.components.Direction
@@ -155,7 +156,7 @@ private fun CollectionScreenLayout(
                     ) { item ->
                         ItemCard(
                             item = item,
-                            direction = Direction.VERTICAL,
+                            direction = if (item is FindroidEpisode) Direction.HORIZONTAL else Direction.VERTICAL,
                             onClick = {
                                 onAction(CollectionAction.OnItemClick(item))
                             },
