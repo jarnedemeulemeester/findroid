@@ -65,10 +65,10 @@ class FavoriteFragment : Fragment() {
 
     private fun bindUiStateNormal(uiState: FavoriteViewModel.UiState.Normal) {
         uiState.apply {
-            binding.noFavoritesText.isVisible = favoriteSections.isEmpty()
+            binding.noFavoritesText.isVisible = collectionSections.isEmpty()
 
             val adapter = binding.favoritesRecyclerView.adapter as FavoritesListAdapter
-            adapter.submitList(favoriteSections)
+            adapter.submitList(collectionSections)
         }
         binding.loadingIndicator.isVisible = false
         binding.favoritesRecyclerView.isVisible = true

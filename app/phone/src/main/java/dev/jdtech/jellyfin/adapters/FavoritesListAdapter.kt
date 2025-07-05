@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.databinding.FavoriteSectionBinding
-import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidItem
 
 class FavoritesListAdapter(
     private val onItemClickListener: (item: FindroidItem) -> Unit,
-) : ListAdapter<FavoriteSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
+) : ListAdapter<CollectionSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
     class SectionViewHolder(private var binding: FavoriteSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            section: FavoriteSection,
+            section: CollectionSection,
             onItemClickListener: (item: FindroidItem) -> Unit,
         ) {
             if (section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) {
@@ -32,14 +32,14 @@ class FavoritesListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<FavoriteSection>() {
-        override fun areItemsTheSame(oldItem: FavoriteSection, newItem: FavoriteSection): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<CollectionSection>() {
+        override fun areItemsTheSame(oldItem: CollectionSection, newItem: CollectionSection): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: FavoriteSection,
-            newItem: FavoriteSection,
+            oldItem: CollectionSection,
+            newItem: CollectionSection,
         ): Boolean {
             return oldItem == newItem
         }

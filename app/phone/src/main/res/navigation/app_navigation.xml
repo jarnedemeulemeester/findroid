@@ -12,20 +12,6 @@
         tools:layout="@layout/fragment_favorite">
     </fragment>
     <fragment
-        android:id="@+id/collectionFragment"
-        android:name="dev.jdtech.jellyfin.fragments.CollectionFragment"
-        android:label="{collectionName}"
-        tools:layout="@layout/fragment_favorite">
-        <argument
-            android:name="collectionId"
-            app:argType="java.util.UUID" />
-        <argument
-            android:name="collectionName"
-            android:defaultValue="Collection"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
-    <fragment
         android:id="@+id/searchResultFragment"
         android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
         android:label="{query}"
