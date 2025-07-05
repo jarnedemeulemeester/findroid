@@ -80,7 +80,7 @@ fun CollectionScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CollectionScreenLayout(
+fun CollectionScreenLayout(
     collectionName: String,
     state: CollectionState,
     onAction: (CollectionAction) -> Unit,

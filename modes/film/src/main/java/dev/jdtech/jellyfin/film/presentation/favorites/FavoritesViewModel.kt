@@ -1,10 +1,10 @@
-package dev.jdtech.jellyfin.viewmodels
+package dev.jdtech.jellyfin.film.presentation.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.core.Constants
-import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
 import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -17,73 +17,65 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @HiltViewModel
-class FavoriteViewModel
+class FavoritesViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository,
+    private val repository: JellyfinRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(CollectionState())
+    val state = _state.asStateFlow()
 
-    sealed class UiState {
-        data class Normal(val collectionSections: List<CollectionSection>) : UiState()
-        data object Loading : UiState()
-        data class Error(val error: Exception) : UiState()
-    }
-
-    init {
-        loadData()
-    }
-
-    fun loadData() {
+    fun loadItems() {
         viewModelScope.launch {
-            _uiState.emit(UiState.Loading)
-            try {
-                val items = jellyfinRepository.getFavoriteItems()
+            _state.emit(_state.value.copy(isLoading = true, error = null))
 
-                val collectionSections = mutableListOf<CollectionSection>()
+            try {
+                val items = repository.getFavoriteItems()
+
+                val sections = mutableListOf<CollectionSection>()
 
                 withContext(Dispatchers.Default) {
                     CollectionSection(
                         Constants.FAVORITE_TYPE_MOVIES,
-                        UiText.StringResource(R.string.movies_label),
+                        UiText.StringResource(CoreR.string.movies_label),
                         items.filterIsInstance<FindroidMovie>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            collectionSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
                     CollectionSection(
                         Constants.FAVORITE_TYPE_SHOWS,
-                        UiText.StringResource(R.string.shows_label),
+                        UiText.StringResource(CoreR.string.shows_label),
                         items.filterIsInstance<FindroidShow>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            collectionSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
                     CollectionSection(
                         Constants.FAVORITE_TYPE_EPISODES,
-                        UiText.StringResource(R.string.episodes_label),
+                        UiText.StringResource(CoreR.string.episodes_label),
                         items.filterIsInstance<FindroidEpisode>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            collectionSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
                 }
 
-                _uiState.emit(UiState.Normal(collectionSections))
+                _state.emit(_state.value.copy(isLoading = false, sections = sections))
             } catch (e: Exception) {
-                _uiState.emit(UiState.Error(e))
+                _state.emit(_state.value.copy(isLoading = false, error = e))
             }
         }
     }
