@@ -37,4 +37,5 @@ ktlint {
 
 dependencies {
     implementation(libs.timber)
+    implementation(projects.data)
 }

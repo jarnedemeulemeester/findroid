@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import kotlinx.coroutines.channels.Channel
@@ -43,6 +44,7 @@ constructor(
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
                     enabled = false,
+                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                     backendPreference = appPreferences.offlineMode,
                 ),
             ),
@@ -287,14 +289,57 @@ constructor(
                                     suffixRes = R.string.ms,
                                 ),
                                 PreferenceSwitch(
-                                    nameStringResource = R.string.pref_player_intro_skipper,
-                                    descriptionStringRes = R.string.pref_player_intro_skipper_summary,
-                                    backendPreference = appPreferences.playerIntroSkipper,
-                                ),
-                                PreferenceSwitch(
                                     nameStringResource = R.string.pref_player_chapter_markers,
                                     descriptionStringRes = R.string.pref_player_chapter_markers_summary,
                                     backendPreference = appPreferences.playerChapterMarkers,
+                                ),
+                            ),
+                        ),
+                        PreferenceGroup(
+                            nameStringResource = R.string.media_segments,
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.pref_player_media_segments_skip_button,
+                                    descriptionStringRes = R.string.pref_player_media_segments_skip_button_summary,
+                                    backendPreference = appPreferences.playerMediaSegmentsSkipButton,
+                                ),
+                                PreferenceMultiSelect(
+                                    nameStringResource = R.string.pref_player_media_segments_skip_button_type,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsSkipButton),
+                                    backendPreference = appPreferences.playerMediaSegmentsSkipButtonType,
+                                    options = R.array.media_segments_type,
+                                    optionValues = R.array.media_segments_type_values,
+                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = R.string.pref_player_media_segments_skip_button_duration,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsSkipButton),
+                                    backendPreference = appPreferences.playerMediaSegmentsSkipButtonDuration,
+                                    suffixRes = R.string.seconds,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.pref_player_media_segments_auto_skip,
+                                    descriptionStringRes = R.string.pref_player_media_segments_auto_skip_summary,
+                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkip,
+                                ),
+                                PreferenceSelect(
+                                    nameStringResource = R.string.pref_player_media_segments_auto_skip_mode,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsAutoSkip),
+                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkipMode,
+                                    options = R.array.media_segments_auto_skip,
+                                    optionValues = R.array.media_segments_auto_skip_values,
+                                ),
+                                PreferenceMultiSelect(
+                                    nameStringResource = R.string.pref_player_media_segments_auto_skip_type,
+                                    dependencies = listOf(appPreferences.playerMediaSegmentsAutoSkip),
+                                    backendPreference = appPreferences.playerMediaSegmentsAutoSkipType,
+                                    options = R.array.media_segments_type,
+                                    optionValues = R.array.media_segments_type_values,
+                                ),
+                                PreferenceLongInput(
+                                    nameStringResource = R.string.pref_player_media_segments_next_episode_threshold,
+                                    backendPreference = appPreferences.playerMediaSegmentsNextEpisodeThreshold,
+                                    suffixRes = R.string.ms,
                                 ),
                             ),
                         ),
@@ -500,6 +545,12 @@ constructor(
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
+                            is PreferenceMultiSelect -> {
+                                preference.copy(
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
+                                    value = appPreferences.getValue(preference.backendPreference),
+                                )
+                            }
                             is PreferenceIntInput -> {
                                 preference.copy(
                                     enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
@@ -528,6 +579,7 @@ constructor(
                 when (action.preference) {
                     is PreferenceSwitch -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceMultiSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceIntInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceLongInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                 }
