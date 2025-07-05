@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
+import dev.jdtech.jellyfin.presentation.film.FavoritesScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -89,6 +90,9 @@ data class CollectionRoute(
     val collectionId: String,
     val collectionName: String,
 )
+
+@Serializable
+data object FavoritesRoute
 
 @Serializable
 data class MovieRoute(
@@ -309,6 +313,9 @@ fun NavigationRoot(
                         onItemClick = {
                             navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
                         },
+                        onFavoritesClick = {
+                            navController.safeNavigate(FavoritesRoute)
+                        },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
@@ -333,6 +340,16 @@ fun NavigationRoot(
                     CollectionScreen(
                         collectionId = UUID.fromString(route.collectionId),
                         collectionName = route.collectionName,
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
+                        },
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<FavoritesRoute> {
+                    FavoritesScreen(
                         onItemClick = { item ->
                             navigateToItem(navController = navController, item = item)
                         },

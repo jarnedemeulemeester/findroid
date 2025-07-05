@@ -43,6 +43,7 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 @Composable
 fun MediaScreen(
     onItemClick: (FindroidCollection) -> Unit,
+    onFavoritesClick: () -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
 ) {
@@ -57,6 +58,7 @@ fun MediaScreen(
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
+                is MediaAction.OnFavoritesClick -> onFavoritesClick()
                 is MediaAction.OnSettingsClick -> onSettingsClick()
                 else -> Unit
             }
@@ -126,7 +128,9 @@ private fun MediaScreenLayout(
                 span = { GridItemSpan(maxLineSpan) },
             ) {
                 FavoritesCard(
-                    onClick = {},
+                    onClick = {
+                        onAction(MediaAction.OnFavoritesClick)
+                    },
                 )
             }
             items(state.libraries, key = { it.id }) { library ->
