@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -28,7 +28,7 @@ constructor(
     val uiState = _uiState.asStateFlow()
 
     sealed class UiState {
-        data class Normal(val favoriteSections: List<FavoriteSection>) : UiState()
+        data class Normal(val collectionSections: List<CollectionSection>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
@@ -43,45 +43,45 @@ constructor(
             try {
                 val items = jellyfinRepository.getFavoriteItems()
 
-                val favoriteSections = mutableListOf<FavoriteSection>()
+                val collectionSections = mutableListOf<CollectionSection>()
 
                 withContext(Dispatchers.Default) {
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(R.string.movies_label),
                         items.filterIsInstance<FindroidMovie>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            collectionSections.add(
                                 it,
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(R.string.shows_label),
                         items.filterIsInstance<FindroidShow>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            collectionSections.add(
                                 it,
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(R.string.episodes_label),
                         items.filterIsInstance<FindroidEpisode>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            collectionSections.add(
                                 it,
                             )
                         }
                     }
                 }
 
-                _uiState.emit(UiState.Normal(favoriteSections))
+                _uiState.emit(UiState.Normal(collectionSections))
             } catch (e: Exception) {
                 _uiState.emit(UiState.Error(e))
             }

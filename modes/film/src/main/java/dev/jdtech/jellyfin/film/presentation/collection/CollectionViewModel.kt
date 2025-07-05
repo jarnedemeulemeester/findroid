@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.core.Constants
-import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -39,10 +39,10 @@ constructor(
                     sortBy = SortBy.RELEASE_DATE,
                 )
 
-                val sections = mutableListOf<FavoriteSection>()
+                val sections = mutableListOf<CollectionSection>()
 
                 withContext(Dispatchers.Default) {
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(CoreR.string.movies_label),
                         items.filterIsInstance<FindroidMovie>(),
@@ -53,7 +53,7 @@ constructor(
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(CoreR.string.shows_label),
                         items.filterIsInstance<FindroidShow>(),
@@ -64,7 +64,7 @@ constructor(
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(CoreR.string.episodes_label),
                         items.filterIsInstance<FindroidEpisode>(),

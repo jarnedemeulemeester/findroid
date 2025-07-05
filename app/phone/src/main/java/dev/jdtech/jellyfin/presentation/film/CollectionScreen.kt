@@ -37,7 +37,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionAction
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionViewModel
-import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.UiText
@@ -175,7 +175,7 @@ private fun CollectionScreenLayoutPreview() {
     FindroidTheme {
         CollectionScreenLayout(
             collectionName = "Marvel",
-            state = CollectionState(sections = listOf(FavoriteSection(id = 0, name = UiText.StringResource(CoreR.string.movies_label), items = dummyMovies))),
+            state = CollectionState(sections = listOf(CollectionSection(id = 0, name = UiText.StringResource(CoreR.string.movies_label), items = dummyMovies))),
             onAction = {},
         )
     }
