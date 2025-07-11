@@ -22,5 +22,6 @@
     <string-array name="mpv_aos">
         <item>audiotrack</item>
         <item>opensles</item>
+        <item>aaudio</item>
     </string-array>
 </resources>
