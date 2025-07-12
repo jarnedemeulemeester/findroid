@@ -99,7 +99,7 @@ private fun ServersScreenLayout(
     val sheetState = rememberModalBottomSheetState()
     var openDeleteDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedServer by remember { mutableStateOf<Server?>(null) }
+    var selectedServer by remember { mutableStateOf<ServerWithAddresses?>(null) }
 
     RootLayout {
         Column(
@@ -144,7 +144,7 @@ private fun ServersScreenLayout(
                                 )
                             },
                             onLongClick = {
-                                selectedServer = server.server
+                                selectedServer = server
                                 showBottomSheet = true
                             },
                         )
@@ -176,7 +176,7 @@ private fun ServersScreenLayout(
                 Text(text = stringResource(SetupR.string.remove_server_dialog))
             },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.name))
+                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.server.name))
             },
             onDismissRequest = {
                 openDeleteDialog = false
@@ -190,7 +190,7 @@ private fun ServersScreenLayout(
                                 showBottomSheet = false
                             }
                         }
-                        onAction(ServersAction.DeleteServer(selectedServer!!.id))
+                        onAction(ServersAction.DeleteServer(selectedServer!!.server.id))
                     },
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
@@ -208,8 +208,10 @@ private fun ServersScreenLayout(
         )
     }
 
-    if (showBottomSheet) {
+    if (showBottomSheet && selectedServer != null) {
         ServerBottomSheet(
+            name = selectedServer!!.server.name,
+            address = selectedServer!!.addresses.first().address,
             onAddresses = {},
             onRemoveServer = {
                 openDeleteDialog = true
