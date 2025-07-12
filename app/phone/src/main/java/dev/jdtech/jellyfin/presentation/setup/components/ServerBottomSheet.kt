@@ -19,7 +19,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,21 +43,20 @@ fun ServerBottomSheet(
         sheetState = sheetState,
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             ServerItem(
                 name = name,
                 address = address,
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.spacings.medium)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
             Column {
                 ServerBottomSheetItem(
                     icon = painterResource(CoreR.drawable.ic_globe),
                     text = stringResource(CoreR.string.addresses),
                     onClick = onAddresses,
-                    modifier = Modifier.alpha(0.7f),
                 )
                 ServerBottomSheetItem(
                     icon = painterResource(CoreR.drawable.ic_trash),
