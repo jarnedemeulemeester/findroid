@@ -3,8 +3,6 @@
     <string name="next_up">अगला</string>
     <string name="no_favorites">आपके पास कोई पसंदीदा नहीं है</string>
     <string name="jellyfin_banner">जेलीफिन बैनर</string>
-    <string name="remove_server_address">सर्वर का पता हटाएं</string>
-    <string name="remove_server_address_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर का पता %1$s हटाना चाहते हैं</string>
     <string name="remove">हटाएं</string>
     <string name="cancel">रद्द करें</string>
     <string name="title_home">मुख्य पृष्ठ</string>

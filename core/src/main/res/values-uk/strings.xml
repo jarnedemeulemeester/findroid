@@ -48,9 +48,6 @@
     <string name="descending">За спаданням</string>
     <string name="runtime_minutes">%1$d хв</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Адреси</string>
-    <string name="add_address">Додати адресу</string>
-    <string name="add_server_address">Додати адресу сервера</string>
     <string name="size">Розмір</string>
     <string name="video">Відео</string>
     <string name="subtitle_chip_text">Приховані субтитри</string>

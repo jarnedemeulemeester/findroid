@@ -59,9 +59,6 @@
     <string name="title_home">首页</string>
     <string name="libraries">库</string>
     <string name="episodes_label">季</string>
-    <string name="addresses">地址</string>
-    <string name="add_address">添加地址</string>
-    <string name="add_server_address">添加服务器地址</string>
     <string name="add">添加</string>
     <string name="video">视频</string>
     <string name="audio">音频</string>
@@ -87,8 +84,6 @@
     <string name="downloaded_indicator">下载指示器</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="remove_server_address">移除服务器地址</string>
-    <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
     <string name="live_tv">电视直播</string>
     <string name="unmark_as_played">取消标记已播放</string>
     <string name="add_to_favorites">加入收藏</string>

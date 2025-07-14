@@ -24,4 +24,9 @@
    <string name="remove_user_dialog_text">Сигурни ли сте, че искате да премахнете потребител %1$s</string>
    <string name="remove_server_dialog">Премахване на сървъра</string>
    <string name="remove_server_dialog_text">Сигурни ли сте, че искате да премахнете сървъра %1$s</string>
+   <string name="add_address">Добави адрес</string>
+   <string name="remove_server_address">Премахване на адрес на сървър</string>
+   <string name="remove_server_address_dialog_text">Сигурни ли сте, че искате да премахнете адреса на сървъра %1$s</string>
+   <string name="addresses">Адреси</string>
+   <string name="add_server_address">Добави адрес на сървър</string>
 </resources>

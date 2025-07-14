@@ -23,4 +23,9 @@
    <string name="users_btn_add_user">Tilføj bruger</string>
    <string name="remove_server_dialog">Fjern server</string>
    <string name="remove_server_dialog_text">Er du sikker på, at du vil fjerne serveren %1$s</string>
+   <string name="addresses">Adresser</string>
+   <string name="add_address">Tilføj adresse</string>
+   <string name="add_server_address">Tilføj server-adresse</string>
+   <string name="remove_server_address">Fjern server-adresse</string>
+   <string name="remove_server_address_dialog_text">Er du sikker på, at du vil fjerne server-adressen %1$s</string>
 </resources>

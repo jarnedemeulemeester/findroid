@@ -43,6 +43,7 @@ import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
+import dev.jdtech.jellyfin.presentation.setup.addresses.ServerAddressesScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -60,6 +61,11 @@ data object ServersRoute
 
 @Serializable
 data object AddServerRoute
+
+@Serializable
+data class ServerAddressesRoute(
+    val serverId: String,
+)
 
 @Serializable
 data object UsersRoute
@@ -222,6 +228,9 @@ fun NavigationRoot(
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
                     },
+                    navigateToAddresses = { serverId ->
+                        navController.safeNavigate(ServerAddressesRoute(serverId))
+                    },
                     onAddClick = {
                         navController.safeNavigate(AddServerRoute)
                     },
@@ -237,6 +246,15 @@ fun NavigationRoot(
                         navController.safeNavigate(UsersRoute)
                     },
                     onBackClick = {
+                        navController.safePopBackStack()
+                    },
+                )
+            }
+            composable<ServerAddressesRoute> { backStackEntry ->
+                val route: ServerAddressesRoute = backStackEntry.toRoute()
+                ServerAddressesScreen(
+                    serverId = route.serverId,
+                    navigateBack = {
                         navController.safePopBackStack()
                     },
                 )

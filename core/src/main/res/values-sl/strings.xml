@@ -45,9 +45,6 @@
     <string name="ascending">Naraščajoče</string>
     <string name="descending">Padajoče</string>
     <string name="select_video_version_title">Izberi verzijo</string>
-    <string name="addresses">Naslovi</string>
-    <string name="add_address">Dodaj naslov</string>
-    <string name="add_server_address">Dodajte naslov strežnika</string>
     <string name="add">Dodaj</string>
     <string name="error_loading_data">Napaka pri nalaganju podatkov</string>
     <string name="retry">Poskusite znova</string>
@@ -79,8 +76,6 @@
     <string name="select_storage_location">Izberite lokacijo shranjevanja</string>
     <string name="storage_unavailable">Lokacija shranjevanja ni na voljo</string>
     <string name="cancel_download">Prekliči prenos</string>
-    <string name="remove_server_address">Odstrani naslov strežnika</string>
-    <string name="remove_server_address_dialog_text">Ali ste prepričani, da želite odstraniti naslov strežnika %1$s</string>
     <string name="privacy_policy_notice">Z uporabo Findroid-a se strinjate s <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">pravilnikom o zasebnosti</a>, ki določa, da ne zbiramo nobenih podatkov</string>
     <string name="stop_download">Ustavi prenos</string>
     <string name="preparing_download">Priprava prenosa</string>

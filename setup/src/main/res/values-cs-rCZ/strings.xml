@@ -22,4 +22,9 @@
    <string name="users_btn_add_user">Přidat uživatele</string>
    <string name="remove_server_dialog">Odstranit server</string>
    <string name="remove_server_dialog_text">Určitě si přejete odstranit server %1$s</string>
+   <string name="remove_server_address_dialog_text">Opravdu chcete odstranit adresu serveru %1$s</string>
+   <string name="addresses">Adresy</string>
+   <string name="add_server_address">Přidat adresu serveru</string>
+   <string name="add_address">Přidat adresu</string>
+   <string name="remove_server_address">Odebrat adresu serveru</string>
 </resources>

@@ -24,4 +24,7 @@
     <string name="users_no_users">Geen gebruikers gevonden</string>
     <string name="remove_server_dialog">Server verwijderen</string>
     <string name="remove_server_dialog_text">Weet je zeker dat je de server %1$s wilt verwijderen?</string>
+    <string name="addresses">Adressen</string>
+    <string name="add_server_address">Server adres toevoegen</string>
+    <string name="add_address">Adres toevoegen</string>
 </resources>

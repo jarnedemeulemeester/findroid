@@ -54,9 +54,6 @@
     <string name="sort_by_options_1">Рейтингу IMDB</string>
     <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>
-    <string name="addresses">Адреса</string>
-    <string name="add_address">Добавить адрес</string>
-    <string name="add_server_address">Добавить адрес сервера</string>
     <string name="add">Добавить</string>
     <string name="jellyfin_banner">Баннер Jellyfin</string>
     <string name="episodes_label">Эпизоды</string>
@@ -86,8 +83,6 @@
     <string name="downloaded_indicator">Индикатор скачивания</string>
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
-    <string name="remove_server_address">Удалить адрес сервера</string>
-    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
     <string name="show_stacktrace">Показать трассировку стека</string>
     <string name="offline_mode">Оффлайн режим</string>
     <string name="not_set">Не установлено</string>

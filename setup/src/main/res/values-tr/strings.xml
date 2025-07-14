@@ -21,4 +21,9 @@
     <string name="users_no_users">Kullanıcı bulunamadı</string>
     <string name="remove_server_dialog">Sunucuyu kaldır</string>
     <string name="remove_server_dialog_text">%1$s sunucusunu kaldırmak istediğinizden emin misiniz</string>
+    <string name="add_address">Adres ekle</string>
+    <string name="add_server_address">Sunucu adresi ekle</string>
+    <string name="addresses">Adresler</string>
+    <string name="remove_server_address">Sunucu adresini kaldır</string>
+    <string name="remove_server_address_dialog_text">%1$s sunucu adresini kaldırmak istediğinizden emin misiniz</string>
 </resources>

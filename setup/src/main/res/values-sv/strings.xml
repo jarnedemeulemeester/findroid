@@ -22,4 +22,9 @@
     <string name="users_btn_add_user">Lägg till användare</string>
     <string name="remove_server_dialog">Ta bort server</string>
     <string name="remove_server_dialog_text">Är du säker på att du vill ta bort servern %1$s</string>
+    <string name="addresses">Adresser</string>
+    <string name="add_address">Lägg till adress</string>
+    <string name="add_server_address">Lägg till serveradress</string>
+    <string name="remove_server_address_dialog_text">Är du säker på att du vill ta bort serveradressen %1$s</string>
+    <string name="remove_server_address">Fjärrserveradress</string>
 </resources>

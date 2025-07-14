@@ -22,4 +22,9 @@
     <string name="users_btn_add_user">Thêm người dùng</string>
     <string name="remove_server_dialog">Xoá máy chủ</string>
     <string name="remove_server_dialog_text">Bạn có chắc chắn muốn xoá máy chủ này không %1$s</string>
+    <string name="addresses">Địa chỉ</string>
+    <string name="add_address">Thêm địa chỉ</string>
+    <string name="add_server_address">Thêm địa chỉ máy chủ</string>
+    <string name="remove_server_address">Xoá địa chỉ máy chủ</string>
+    <string name="remove_server_address_dialog_text">Bạn có chắc chắn muốn xoá địa chỉ máy chủ %1$s không</string>
 </resources>
