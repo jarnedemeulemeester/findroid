@@ -69,4 +69,13 @@ constructor(
             }
         }
     }
+
+    fun onAction(action: ServerAddressesAction) {
+        when (action) {
+            is ServerAddressesAction.DeleteAddress -> {
+                deleteAddress(action.addressId)
+            }
+            else -> Unit
+        }
+    }
 }

@@ -9,4 +9,9 @@
     <string name="users_btn_add_user">Adaugă un utilizator</string>
     <string name="remove_server_dialog">Eliminați serverul</string>
     <string name="remove_server_dialog_text">Sunteți sigur că doriți să eliminați serverul %1$s</string>
+    <string name="addresses">Adrese</string>
+    <string name="add_address">Adaugă o adresă</string>
+    <string name="add_server_address">Adaugă o adresă de server</string>
+    <string name="remove_server_address">Eliminați adresa serverului</string>
+    <string name="remove_server_address_dialog_text">Sunteți sigur că doriți să eliminați adresa serverului %1$s</string>
 </resources>

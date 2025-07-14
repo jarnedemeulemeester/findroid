@@ -58,9 +58,6 @@
     <string name="ascending">Crescente</string>
     <string name="descending">Decrescente</string>
     <string name="sort_by_options_1">Avaliação IMDb</string>
-    <string name="addresses">Endereços</string>
-    <string name="add_address">Adicionar endereço</string>
-    <string name="add_server_address">Adicionar endereço do servidor</string>
     <string name="add">Adicionar</string>
     <string name="video">Vídeo</string>
     <string name="audio">Áudio</string>
@@ -86,8 +83,6 @@
     <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
     <string name="size">Tamanho</string>
     <string name="privacy_policy_notice">Ao usar o Findroid, você concorda com a <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos nenhum dado</string>
-    <string name="remove_server_address">Excluir endereço do servidor</string>
-    <string name="remove_server_address_dialog_text">Tem certeza de que deseja excluir o endereço do servidor %1$s</string>
     <string name="mark_as_played">Marcar como reproduzido</string>
     <string name="unmark_as_played">Desmarcar como reproduzido</string>
     <string name="add_to_favorites">Adicionar aos favoritos</string>

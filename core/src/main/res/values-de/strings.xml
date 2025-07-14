@@ -59,9 +59,6 @@
     <string name="episodes_label">Episoden</string>
     <string name="libraries">Bibliotheken</string>
     <string name="add">Hinzufügen</string>
-    <string name="add_server_address">Serveradresse ergänzen</string>
-    <string name="add_address">Adresse ergänzen</string>
-    <string name="addresses">Adressen</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="video">Video</string>
     <string name="temp">temporär</string>
@@ -88,8 +85,6 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="watch_trailer">Trailer anschauen</string>
     <string name="remove_from_favorites">Aus Favoriten entfernen</string>
-    <string name="remove_server_address_dialog_text">Bist du sicher, dass du die Server Adresse \"%1$s\" entfernen möchtest?</string>
-    <string name="remove_server_address">Serveradresse entfernen</string>
     <string name="collection_no_media">Diese Sammlung enthält keine Medien</string>
     <string name="mark_as_played">Als angesehen markieren</string>
     <string name="add_to_favorites">Zu Favoriten hinzufügen</string>

@@ -56,9 +56,6 @@
     <string name="search_hint">Filmek, sorozatok, epizódok keresése…</string>
     <string name="image_description_poster">%1$s poszter</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Címek</string>
-    <string name="add_address">Cím hozzáadása</string>
-    <string name="add_server_address">Szerver címének hozzáadása</string>
     <string name="add">Hozzáadás</string>
     <string name="episodes_label">Epizódok</string>
     <string name="libraries">Könyvtárak</string>
@@ -86,8 +83,6 @@
     <string name="size">Méret</string>
     <string name="privacy_policy_notice">A Findroid használatával elfogadod az <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
     <string name="subtitle_chip_text">Felirat</string>
-    <string name="remove_server_address">Szerver címének eltávolítása</string>
-    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
     <string name="unmark_as_played">Megjelölés nem megtekintettként</string>
     <string name="add_to_favorites">Hozzáadás kedvencekhez</string>
     <string name="remove_from_favorites">Eltávolítás kedvencekből</string>

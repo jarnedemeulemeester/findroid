@@ -24,4 +24,9 @@
    <string name="users_no_users">No se encontraron usuarios</string>
    <string name="remove_server_dialog">Quitar servidor</string>
    <string name="remove_server_dialog_text">¿Está seguro de quitar el servidor %1$s</string>
+   <string name="addresses">Direcciones</string>
+   <string name="add_address">Añadir dirección</string>
+   <string name="add_server_address">Agregar dirección de servidor</string>
+   <string name="remove_server_address">Eliminar dirección del servidor</string>
+   <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor con dirección %1$s</string>
 </resources>

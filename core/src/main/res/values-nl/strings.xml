@@ -59,9 +59,6 @@
     <string name="search_hint">Zoek films, series, afleveringen…</string>
     <string name="download_button_description">Download</string>
     <string name="movies_label">Films</string>
-    <string name="addresses">Adressen</string>
-    <string name="add_server_address">Server adres toevoegen</string>
-    <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="subtitle">Ondertiteling</string>
     <string name="size">Grootte</string>

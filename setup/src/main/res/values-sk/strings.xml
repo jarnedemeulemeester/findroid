@@ -24,4 +24,9 @@
     <string name="users_no_users">Nenašli sa žiadni užívatelia</string>
     <string name="remove_server_dialog">Odstrániť server</string>
     <string name="remove_server_dialog_text">Ste si istí, že chcete odstrániť server %1$s</string>
+    <string name="addresses">Adresy</string>
+    <string name="add_address">Pridať adresu</string>
+    <string name="add_server_address">Pridať adresu servera</string>
+    <string name="remove_server_address">Odstrániť adresu serveru</string>
+    <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
 </resources>

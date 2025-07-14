@@ -24,4 +24,9 @@
     <string name="users_no_users">사용자가 발견되지 않았습니다</string>
     <string name="remove_server_dialog">서버 제거</string>
     <string name="remove_server_dialog_text">%1$s 서버를 제거하시겠습니까\?</string>
+    <string name="add_server_address">서버 주소 추가</string>
+    <string name="addresses">주소</string>
+    <string name="add_address">주소 추가</string>
+    <string name="remove_server_address">서버 주소 제</string>
+    <string name="remove_server_address_dialog_text">서버 주소 %1$s를 제거하는것이 확실합니까\?</string>
 </resources>

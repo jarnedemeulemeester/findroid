@@ -58,9 +58,6 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="libraries">Bibliotecas</string>
     <string name="episodes_label">Episodios</string>
-    <string name="addresses">Direcciones</string>
-    <string name="add_address">Añadir dirección</string>
-    <string name="add_server_address">Agregar dirección de servidor</string>
     <string name="add">Agregar</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
@@ -86,8 +83,6 @@
     <string name="storage_name">%1$s (%2$d MB libres)</string>
     <string name="size">Tamaño</string>
     <string name="privacy_policy_notice">Al usar Findroid, aceptas la <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">política de privacidad</a>, que recoge que no recopilamos ningún dato</string>
-    <string name="remove_server_address">Eliminar dirección del servidor</string>
-    <string name="remove_server_address_dialog_text">¿Está seguro de querer eliminar el servidor con dirección %1$s</string>
     <string name="collection_no_media">Esta colección no contiene ningún medio</string>
     <string name="live_tv">TV en vivo</string>
     <string name="play">Reproducir</string>

@@ -58,9 +58,6 @@
     <string name="sort_order">정렬 기준</string>
     <string name="libraries">라이브러리</string>
     <string name="episodes_label">에피소드</string>
-    <string name="add_server_address">서버 주소 추가</string>
-    <string name="addresses">주소</string>
-    <string name="add_address">주소 추가</string>
     <string name="add">추가</string>
     <string name="internal">내부</string>
     <string name="storage_name">%1$s (%2$d MB 사용 가능)</string>
@@ -83,9 +80,7 @@
     <string name="storage_unavailable">저장 위치를 사용할수 없습니다</string>
     <string name="stop_download">다운로드 중지</string>
     <string name="privacy_policy_notice">Findroid를 사용하면, 데이터를 수집하지 않는다는 <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">개인 정보 보호 정책</a>에 동의합니다</string>
-    <string name="remove_server_address_dialog_text">서버 주소 %1$s를 제거하는것이 확실합니까\?</string>
     <string name="downloaded_indicator">다운로드 표시기</string>
-    <string name="remove_server_address">서버 주소 제</string>
     <string name="temp">임시</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="play">재생</string>

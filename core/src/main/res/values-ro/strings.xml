@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_home">Acasă</string>
-    <string name="remove_server_address">Eliminați adresa serverului</string>
     <string name="remove">Eliminare</string>
     <string name="title_favorite">Favorite</string>
     <string name="view_all">Afișează tot</string>
@@ -37,9 +36,6 @@
     <string name="ascending">Ascendent</string>
     <string name="descending">Descendent</string>
     <string name="select_video_version_title">Selectează versiunea</string>
-    <string name="addresses">Adrese</string>
-    <string name="add_address">Adaugă o adresă</string>
-    <string name="add_server_address">Adaugă o adresă de server</string>
     <string name="size">Mărime</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
@@ -60,7 +56,6 @@
     <string name="privacy_policy_notice">Prin utilizarea Findroid sunteți de acord cu <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Politica de Confidențialitate</a> care spune că nu colectăm date despre dumneavoastră</string>
     <string name="cancel">Anulează</string>
     <string name="title_media">Media mea</string>
-    <string name="remove_server_address_dialog_text">Sunteți sigur că doriți să eliminați adresa serverului %1$s</string>
     <string name="error_loading_data">Eroare la încărcarea datelor</string>
     <string name="favorite_button_description">Favorit</string>
     <string name="device_name">Numele dispozitivului</string>

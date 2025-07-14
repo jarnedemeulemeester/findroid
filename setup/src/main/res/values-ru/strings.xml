@@ -22,4 +22,9 @@
     <string name="remove_user_dialog_text">Вы уверены, что хотите удалить пользователя %1$s</string>
     <string name="remove_server_dialog">Удалить сервер</string>
     <string name="remove_server_dialog_text">Вы уверены, что хотите удалить сервер %1$s</string>
+    <string name="addresses">Адреса</string>
+    <string name="add_address">Добавить адрес</string>
+    <string name="add_server_address">Добавить адрес сервера</string>
+    <string name="remove_server_address">Удалить адрес сервера</string>
+    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
 </resources>
