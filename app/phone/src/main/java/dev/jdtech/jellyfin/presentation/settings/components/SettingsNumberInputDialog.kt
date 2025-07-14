@@ -128,6 +128,7 @@ fun SettingsNumberInputDialog(
             ) {
                 Text(
                     text = stringResource(preference.nameStringResource),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))

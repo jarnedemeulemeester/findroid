@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -71,6 +70,7 @@ fun AddServerAddressDialog(
             ) {
                 Text(
                     text = stringResource(SetupR.string.add_server_address),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
@@ -89,11 +89,6 @@ fun AddServerAddressDialog(
                         keyboardType = KeyboardType.Uri,
                         imeAction = ImeAction.Done,
                     ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onAdd(textFieldValue.text)
-                        },
-                    ),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
@@ -110,6 +105,7 @@ fun AddServerAddressDialog(
                     }
                     TextButton(
                         onClick = { onAdd(textFieldValue.text) },
+                        enabled = textFieldValue.text.isNotBlank(),
                     ) {
                         Text(
                             text = stringResource(CoreR.string.add),

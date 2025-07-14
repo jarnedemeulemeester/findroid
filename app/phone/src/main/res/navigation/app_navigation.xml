@@ -26,16 +26,6 @@
     </activity>
 
     <fragment
-        android:id="@+id/serverAddressesFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ServerAddressesFragment"
-        android:label="@string/addresses"
-        tools:layout="@layout/fragment_server_addresses">
-        <argument
-            android:name="serverId"
-            app:argType="string" />
-    </fragment>
-
-    <fragment
         android:id="@+id/downloadsFragment"
         android:name="dev.jdtech.jellyfin.fragments.DownloadsFragment"
         android:label="@string/title_download">
