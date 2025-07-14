@@ -94,4 +94,6 @@
     <string name="show_stacktrace">Mostra stacktrace</string>
     <string name="title_settings">Impostazioni</string>
     <string name="title_download">Download</string>
+    <string name="season_episode">Stagione %1$d - Episodio %2$d</string>
+    <string name="sort_by_options_6">Casuale</string>
 </resources>
