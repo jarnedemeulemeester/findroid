@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.setup.presentation.addresses
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +19,7 @@ import javax.inject.Inject
 class ServerAddressesViewModel
 @Inject
 constructor(
+    val application: Application,
     private val database: ServerDatabaseDao,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ServerAddressesState())
@@ -50,10 +51,10 @@ constructor(
         }
     }
 
-    fun addAddress(context: Context, address: String) {
+    fun addAddress(address: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val jellyfinApi = JellyfinApi(context)
+                val jellyfinApi = JellyfinApi(application.applicationContext)
                 jellyfinApi.api.update(
                     baseUrl = address,
                 )
@@ -72,6 +73,9 @@ constructor(
 
     fun onAction(action: ServerAddressesAction) {
         when (action) {
+            is ServerAddressesAction.AddAddress -> {
+                addAddress(action.address)
+            }
             is ServerAddressesAction.DeleteAddress -> {
                 deleteAddress(action.addressId)
             }

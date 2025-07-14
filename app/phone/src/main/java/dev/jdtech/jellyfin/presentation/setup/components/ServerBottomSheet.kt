@@ -55,7 +55,7 @@ fun ServerBottomSheet(
             Column {
                 ServerBottomSheetItem(
                     icon = painterResource(CoreR.drawable.ic_globe),
-                    text = stringResource(CoreR.string.addresses),
+                    text = stringResource(SetupR.string.addresses),
                     onClick = onAddresses,
                 )
                 ServerBottomSheetItem(
@@ -111,7 +111,7 @@ private fun ServerBottomSheetItemPreview() {
     FindroidTheme {
         ServerBottomSheetItem(
             icon = painterResource(CoreR.drawable.ic_globe),
-            text = stringResource(CoreR.string.addresses),
+            text = stringResource(SetupR.string.addresses),
             onClick = {},
         )
     }

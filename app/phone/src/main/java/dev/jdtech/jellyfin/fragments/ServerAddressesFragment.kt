@@ -13,8 +13,6 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.ServerAddressAdapter
 import dev.jdtech.jellyfin.databinding.FragmentServerAddressesBinding
-import dev.jdtech.jellyfin.dialogs.AddServerAddressDialog
-import dev.jdtech.jellyfin.dialogs.DeleteServerAddressDialog
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesEvent
 import dev.jdtech.jellyfin.viewmodels.ServerAddressesViewModel
 import kotlinx.coroutines.launch
@@ -40,20 +38,9 @@ class ServerAddressesFragment : Fragment() {
                     viewModel.switchToAddress(address)
                 },
                 { address ->
-                    DeleteServerAddressDialog(viewModel, address).show(
-                        parentFragmentManager,
-                        "deleteServerAddress",
-                    )
                     true
                 },
             )
-
-        binding.buttonAddAddress.setOnClickListener {
-            AddServerAddressDialog(viewModel).show(
-                parentFragmentManager,
-                "addServerAddress",
-            )
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

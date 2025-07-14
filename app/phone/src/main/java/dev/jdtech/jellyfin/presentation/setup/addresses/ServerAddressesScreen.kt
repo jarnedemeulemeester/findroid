@@ -94,6 +94,7 @@ fun ServerAddressesLayout(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var selectedAddress by remember { mutableStateOf<ServerAddress?>(null) }
+    var openAddDialog by remember { mutableStateOf(false) }
     var openDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -133,8 +134,8 @@ fun ServerAddressesLayout(
                     )
                 },
                 onClick = {
-                    onAction(ServerAddressesAction.OnAddClick)
-                }
+                    openAddDialog = true
+                },
             )
         },
     ) { innerPadding ->
@@ -164,17 +165,29 @@ fun ServerAddressesLayout(
                                 onLongClick = {
                                     selectedAddress = address
                                     openDeleteDialog = true
-                                }
+                                },
                             )
                             .padding(
-                                MaterialTheme.spacings.small
-                            )
+                                MaterialTheme.spacings.small,
+                            ),
                     ) {
                         Text(address.address)
                     }
                 }
             }
         }
+    }
+
+    if (openAddDialog) {
+        AddServerAddressDialog(
+            onAdd = { address ->
+                onAction(ServerAddressesAction.AddAddress(address))
+                openAddDialog = false
+            },
+            onDismiss = {
+                openAddDialog = false
+            },
+        )
     }
 
     if (openDeleteDialog && selectedAddress != null) {
@@ -186,7 +199,7 @@ fun ServerAddressesLayout(
             },
             onDismiss = {
                 openDeleteDialog = false
-            }
+            },
         )
     }
 }
