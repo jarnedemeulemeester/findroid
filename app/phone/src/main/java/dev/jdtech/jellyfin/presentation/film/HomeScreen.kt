@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,8 +34,8 @@ import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
-import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
+import dev.jdtech.jellyfin.presentation.film.components.HomeHeader
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -70,7 +69,6 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenLayout(
     state: HomeState,
@@ -81,6 +79,7 @@ private fun HomeScreenLayout(
     )
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
+    val paddingTop = safePadding.top + MaterialTheme.spacings.medium
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
@@ -105,18 +104,6 @@ private fun HomeScreenLayout(
             .fillMaxSize()
             .semantics { isTraversalGroup = true },
     ) {
-        FilmSearchBar(
-            onSettingsClick = {
-                onAction(HomeAction.OnSettingsClick)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { traversalIndex = 0f },
-            paddingStart = paddingStart,
-            paddingEnd = paddingEnd,
-            inputPaddingStart = safePadding.start,
-            inputPaddingEnd = safePadding.end,
-        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -189,6 +176,21 @@ private fun HomeScreenLayout(
             }
         }
     }
+
+    HomeHeader(
+        serverName = state.serverName,
+        onServerClick = {
+        },
+        onUserClick = {
+            onAction(HomeAction.OnSettingsClick)
+        },
+        modifier = Modifier
+            .padding(
+                start = paddingStart,
+                top = paddingTop,
+                end = paddingEnd,
+            ),
+    )
 }
 
 @PreviewScreenSizes
@@ -197,6 +199,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
+                serverName = "Jellyfin",
                 suggestionsSection = dummyHomeSuggestions,
                 resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
