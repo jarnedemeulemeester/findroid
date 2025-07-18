@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,9 +42,11 @@ import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeHeader
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
+import dev.jdtech.jellyfin.presentation.film.components.ServerSelectionBottomSheet
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -69,11 +75,13 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenLayout(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     val safePadding = rememberSafePadding(
         handleStartInsets = false,
     )
@@ -98,6 +106,8 @@ private fun HomeScreenLayout(
     )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    val showServerSelectionSheetState = rememberModalBottomSheetState()
+    var showServerSelectionBottomSheet by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -180,6 +190,7 @@ private fun HomeScreenLayout(
     HomeHeader(
         serverName = state.serverName,
         onServerClick = {
+            showServerSelectionBottomSheet = true
         },
         onUserClick = {
             onAction(HomeAction.OnSettingsClick)
@@ -191,6 +202,23 @@ private fun HomeScreenLayout(
                 end = paddingEnd,
             ),
     )
+
+    if (showServerSelectionBottomSheet) {
+        ServerSelectionBottomSheet(
+            onUpdate = {
+                onAction(HomeAction.OnRetryClick)
+                scope.launch { showServerSelectionSheetState.hide() }.invokeOnCompletion {
+                    if (!showServerSelectionSheetState.isVisible) {
+                        showServerSelectionBottomSheet = false
+                    }
+                }
+            },
+            onDismissRequest = {
+                showServerSelectionBottomSheet = false
+            },
+            sheetState = showServerSelectionSheetState,
+        )
+    }
 }
 
 @PreviewScreenSizes
