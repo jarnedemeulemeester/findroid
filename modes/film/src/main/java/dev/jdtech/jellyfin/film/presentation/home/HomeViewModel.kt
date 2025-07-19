@@ -62,7 +62,7 @@ constructor(
     private suspend fun loadServerName(serverId: String) {
         val server = database.get(serverId)
         if (server != null) {
-            _state.emit(_state.value.copy(serverName = server.name))
+            _state.emit(_state.value.copy(server = server))
         }
     }
 

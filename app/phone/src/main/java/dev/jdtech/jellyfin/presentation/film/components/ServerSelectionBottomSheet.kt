@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
-import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
@@ -35,6 +34,7 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerSelectionBottomSheet(
+    currentServerId: String,
     onUpdate: () -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
@@ -54,6 +54,7 @@ fun ServerSelectionBottomSheet(
     }
 
     ServerSelectionBottomSheetLayout(
+        currentServerId = currentServerId,
         state = state,
         onAction = { action ->
             viewModel.onAction(action)
@@ -66,6 +67,7 @@ fun ServerSelectionBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ServerSelectionBottomSheetLayout(
+    currentServerId: String,
     state: ServersState,
     onAction: (action: ServersAction) -> Unit,
     onDismissRequest: () -> Unit,
@@ -85,15 +87,15 @@ private fun ServerSelectionBottomSheetLayout(
                     it.server.id
                 },
             ) { server ->
-                ServerItem(
-                    name = server.server.name,
-                    address = server.addresses.first().address,
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacings.medium)
-                        .fillMaxWidth(),
+                ServerSelectionItem(
+                    server = server,
+                    selected = server.server.id == currentServerId,
                     onClick = {
                         onAction(ServersAction.OnServerClick(server.server.id))
                     },
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacings.medium)
+                        .fillMaxWidth(),
                 )
             }
         }
@@ -106,6 +108,7 @@ private fun ServerSelectionBottomSheetLayout(
 private fun ServerSelectionBottomSheetPreview() {
     FindroidTheme {
         ServerSelectionBottomSheetLayout(
+            currentServerId = "",
             state = ServersState(
                 servers = listOf(
                     ServerWithAddresses(

@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSuggestions
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
@@ -188,7 +189,7 @@ private fun HomeScreenLayout(
     }
 
     HomeHeader(
-        serverName = state.serverName,
+        serverName = state.server?.name ?: "",
         onServerClick = {
             showServerSelectionBottomSheet = true
         },
@@ -205,6 +206,7 @@ private fun HomeScreenLayout(
 
     if (showServerSelectionBottomSheet) {
         ServerSelectionBottomSheet(
+            currentServerId = state.server?.id ?: "",
             onUpdate = {
                 onAction(HomeAction.OnRetryClick)
                 scope.launch { showServerSelectionSheetState.hide() }.invokeOnCompletion {
@@ -227,7 +229,7 @@ private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
-                serverName = "Jellyfin",
+                server = dummyServer,
                 suggestionsSection = dummyHomeSuggestions,
                 resumeSection = dummyHomeSection,
                 views = listOf(dummyHomeView),
