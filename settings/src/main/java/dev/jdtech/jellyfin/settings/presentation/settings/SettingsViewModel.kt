@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import kotlinx.coroutines.channels.Channel
@@ -500,6 +501,12 @@ constructor(
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
+                            is PreferenceMultiSelect -> {
+                                preference.copy(
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
+                                    value = appPreferences.getValue(preference.backendPreference),
+                                )
+                            }
                             is PreferenceIntInput -> {
                                 preference.copy(
                                     enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
@@ -528,6 +535,7 @@ constructor(
                 when (action.preference) {
                     is PreferenceSwitch -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceMultiSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceIntInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceLongInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                 }
