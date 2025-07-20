@@ -88,7 +88,7 @@ private fun HomeScreenLayout(
     )
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
-    val paddingTop = safePadding.top + MaterialTheme.spacings.medium
+    val paddingTop = safePadding.top + MaterialTheme.spacings.small
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 

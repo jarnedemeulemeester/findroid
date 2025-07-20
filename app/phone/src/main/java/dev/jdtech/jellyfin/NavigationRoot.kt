@@ -331,9 +331,6 @@ fun NavigationRoot(
                         onFavoritesClick = {
                             navController.safeNavigate(FavoritesRoute)
                         },
-                        onSettingsClick = {
-                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
-                        },
                     )
                 }
                 composable<LibraryRoute> { backStackEntry ->
