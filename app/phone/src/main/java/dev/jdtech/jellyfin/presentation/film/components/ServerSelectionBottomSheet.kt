@@ -93,6 +93,7 @@ private fun ServerSelectionBottomSheetLayout(
                     onClick = {
                         onAction(ServersAction.OnServerClick(server.server.id))
                     },
+                    onClickAddress = {},
                     modifier = Modifier
                         .padding(horizontal = MaterialTheme.spacings.medium)
                         .fillMaxWidth(),
