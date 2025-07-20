@@ -49,7 +49,7 @@ fun ServerSelectionBottomSheet(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToUsers -> onUpdate()
+            is ServersEvent.ServerChanged -> onUpdate()
             is ServersEvent.AddressChanged -> onUpdate()
         }
     }

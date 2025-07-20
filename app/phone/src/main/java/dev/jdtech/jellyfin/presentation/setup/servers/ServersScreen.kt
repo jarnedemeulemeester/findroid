@@ -68,7 +68,7 @@ fun ServersScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToUsers -> navigateToUsers()
+            is ServersEvent.ServerChanged -> navigateToUsers()
             else -> Unit
         }
     }

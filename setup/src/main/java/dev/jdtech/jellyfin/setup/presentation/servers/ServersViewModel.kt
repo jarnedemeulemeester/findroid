@@ -41,7 +41,7 @@ constructor(
 
             appPreferences.setValue(appPreferences.currentServer, serverId)
 
-            eventsChannel.send(ServersEvent.NavigateToUsers)
+            eventsChannel.send(ServersEvent.ServerChanged)
         }
     }
 
