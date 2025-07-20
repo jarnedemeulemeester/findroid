@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,19 +35,21 @@ constructor(
         }
     }
 
-    private fun connectToServer(serverId: String) {
+    private fun setCurrentServer(serverId: String) {
         viewModelScope.launch {
             repository.setCurrentServer(serverId)
 
             appPreferences.setValue(appPreferences.currentServer, serverId)
 
-            val users = repository.getUsers(serverId)
+            eventsChannel.send(ServersEvent.NavigateToUsers)
+        }
+    }
 
-            if (users.isEmpty()) {
-                eventsChannel.send(ServersEvent.NavigateToLogin)
-            } else {
-                eventsChannel.send(ServersEvent.NavigateToUsers)
-            }
+    private fun setCurrentAddress(addressId: UUID) {
+        viewModelScope.launch {
+            repository.setCurrentAddress(addressId)
+
+            eventsChannel.send(ServersEvent.AddressChanged)
         }
     }
 
@@ -60,7 +63,10 @@ constructor(
     fun onAction(action: ServersAction) {
         when (action) {
             is ServersAction.OnServerClick -> {
-                connectToServer(action.serverId)
+                setCurrentServer(action.serverId)
+            }
+            is ServersAction.OnAddressClick -> {
+                setCurrentAddress(action.addressId)
             }
             is ServersAction.DeleteServer -> {
                 deleteServer(action.serverId)

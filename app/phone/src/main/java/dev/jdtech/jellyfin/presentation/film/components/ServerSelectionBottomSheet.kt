@@ -3,14 +3,15 @@ package dev.jdtech.jellyfin.presentation.film.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -48,8 +49,8 @@ fun ServerSelectionBottomSheet(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToLogin -> onUpdate()
             is ServersEvent.NavigateToUsers -> onUpdate()
+            is ServersEvent.AddressChanged -> onUpdate()
         }
     }
 
@@ -78,7 +79,11 @@ private fun ServerSelectionBottomSheetLayout(
         sheetState = sheetState,
     ) {
         LazyColumn(
-            contentPadding = PaddingValues(bottom = MaterialTheme.spacings.default),
+            contentPadding = PaddingValues(
+                start = MaterialTheme.spacings.medium,
+                end = MaterialTheme.spacings.medium,
+                bottom = MaterialTheme.spacings.default,
+            ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             items(
@@ -93,11 +98,25 @@ private fun ServerSelectionBottomSheetLayout(
                     onClick = {
                         onAction(ServersAction.OnServerClick(server.server.id))
                     },
-                    onClickAddress = {},
+                    onClickAddress = { addressId ->
+                        onAction(ServersAction.OnAddressClick(addressId = addressId))
+                    },
                     modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacings.medium)
                         .fillMaxWidth(),
                 )
+            }
+            item(
+                key = "manage",
+            ) {
+                OutlinedButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "Manage servers",
+                    )
+                }
             }
         }
     }

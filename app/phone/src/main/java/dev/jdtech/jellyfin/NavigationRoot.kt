@@ -222,9 +222,6 @@ fun NavigationRoot(
             }
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(
-                    navigateToLogin = {
-                        navController.safeNavigate(LoginRoute())
-                    },
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
                     },

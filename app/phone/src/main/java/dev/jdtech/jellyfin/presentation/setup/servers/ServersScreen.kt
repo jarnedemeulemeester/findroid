@@ -53,7 +53,6 @@ import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun ServersScreen(
-    navigateToLogin: () -> Unit,
     navigateToUsers: () -> Unit,
     navigateToAddresses: (serverId: String) -> Unit,
     onAddClick: () -> Unit,
@@ -69,8 +68,8 @@ fun ServersScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToLogin -> navigateToLogin()
             is ServersEvent.NavigateToUsers -> navigateToUsers()
+            else -> Unit
         }
     }
 

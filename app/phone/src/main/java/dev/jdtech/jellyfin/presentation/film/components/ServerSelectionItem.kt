@@ -48,6 +48,7 @@ fun ServerSelectionItem(
     OutlinedCard(
         onClick = onClick,
         modifier = modifier,
+        enabled = server.server.currentUserId != null,
     ) {
         Column(
             modifier = Modifier
