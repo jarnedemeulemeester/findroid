@@ -87,8 +87,6 @@
     <string name="watch_trailer">Bekijk trailer</string>
     <string name="mark_as_played">Markeer als afgespeeld</string>
     <string name="unmark_as_played">Markering als afgespeeld ongedaan maken</string>
-    <string name="remove_server_address">Verwijder server adres</string>
-    <string name="remove_server_address_dialog_text">Weet u zeker dat u het server adres %1$s wilt verwijderen</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Afspelen</string>
     <string name="add_to_favorites">Aan favorieten toevoegen</string>

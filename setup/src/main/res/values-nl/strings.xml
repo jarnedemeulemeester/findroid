@@ -27,4 +27,6 @@
     <string name="addresses">Adressen</string>
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adres toevoegen</string>
+    <string name="remove_server_address">Verwijder server adres</string>
+    <string name="remove_server_address_dialog_text">Weet u zeker dat u het server adres %1$s wilt verwijderen</string>
 </resources>
