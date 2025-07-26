@@ -26,7 +26,6 @@ import dev.jdtech.jellyfin.film.R as FilmR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilmSearchBar(
-    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     paddingStart: Dp = 0.dp,
     paddingEnd: Dp = 0.dp,
@@ -98,30 +97,16 @@ fun FilmSearchBar(
                     }
                 },
                 trailingIcon = {
-                    AnimatedContent(
-                        targetState = expanded,
-                        label = "search_to_back",
-                    ) { targetExpanded ->
-                        if (targetExpanded) {
-                            IconButton(
-                                onClick = {
-                                    searchQuery = ""
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(CoreR.drawable.ic_x),
-                                    contentDescription = null,
-                                )
-                            }
-                        } else {
-                            IconButton(
-                                onClick = onSettingsClick,
-                            ) {
-                                Icon(
-                                    painter = painterResource(CoreR.drawable.ic_user),
-                                    contentDescription = null,
-                                )
-                            }
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                searchQuery = ""
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_x),
+                                contentDescription = null,
+                            )
                         }
                     }
                 },

@@ -42,4 +42,6 @@ interface SetupRepository {
     suspend fun deleteUser(userId: UUID)
 
     suspend fun setCurrentUser(userId: UUID)
+
+    suspend fun setCurrentAddress(addressId: UUID)
 }

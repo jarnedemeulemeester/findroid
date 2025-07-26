@@ -128,9 +128,6 @@ fun NavigationRoot(
         }
         composable<ServersRoute> {
             ServersScreen(
-                navigateToLogin = {
-                    navController.navigate(LoginRoute())
-                },
                 navigateToUsers = {
                     navController.navigate(UsersRoute)
                 },

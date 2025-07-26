@@ -63,13 +63,14 @@ class SetupRepositoryImpl(
     override suspend fun setCurrentServer(serverId: String) {
         val serverWithAddressAndUser = database.getServerWithAddressAndUser(serverId) ?: return
         val serverAddress = serverWithAddressAndUser.address ?: return
+        val user = serverWithAddressAndUser.user
 
         jellyfinApi.apply {
             api.update(
                 baseUrl = serverAddress.address,
-                accessToken = null,
+                accessToken = user?.accessToken,
             )
-            userId = null
+            userId = user?.id
         }
     }
 
@@ -272,6 +273,19 @@ class SetupRepositoryImpl(
                 accessToken = user.accessToken,
             )
             this.userId = user.id
+        }
+    }
+
+    override suspend fun setCurrentAddress(addressId: UUID) {
+        val server = getCurrentServer() ?: return
+        val address = database.getAddress(id = addressId)
+        if (address.serverId != server.id) {
+            return
+        }
+        server.currentServerAddressId = address.id
+        database.update(server)
+        jellyfinApi.apply {
+            api.update(baseUrl = address.address)
         }
     }
 }

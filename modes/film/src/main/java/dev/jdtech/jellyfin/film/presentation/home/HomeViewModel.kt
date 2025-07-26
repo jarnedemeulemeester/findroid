@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.film.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
@@ -25,6 +26,7 @@ class HomeViewModel
 constructor(
     val repository: JellyfinRepository,
     val appPreferences: AppPreferences,
+    val database: ServerDatabaseDao,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
@@ -41,6 +43,9 @@ constructor(
         viewModelScope.launch(Dispatchers.Default) {
             _state.emit(_state.value.copy(isLoading = true, error = null))
             try {
+                appPreferences.getValue(appPreferences.currentServer)?.let { serverId ->
+                    loadServerName(serverId)
+                }
                 if (appPreferences.getValue(appPreferences.offlineMode)) _state.emit(_state.value.copy(isOffline = true))
 
                 loadSuggestions()
@@ -51,6 +56,13 @@ constructor(
                 _state.emit(_state.value.copy(error = e))
             }
             _state.emit(_state.value.copy(isLoading = false))
+        }
+    }
+
+    private suspend fun loadServerName(serverId: String) {
+        val server = database.get(serverId)
+        if (server != null) {
+            _state.emit(_state.value.copy(server = server))
         }
     }
 
