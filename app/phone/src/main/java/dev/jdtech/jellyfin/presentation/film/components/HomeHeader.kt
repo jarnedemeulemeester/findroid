@@ -1,6 +1,10 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,6 +35,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun HomeHeader(
     serverName: String,
+    isLoading: Boolean,
     onServerClick: () -> Unit,
     onUserClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -72,24 +78,52 @@ fun HomeHeader(
 
         Spacer(Modifier.width(MaterialTheme.spacings.medium))
 
-        Surface(
-            onClick = onUserClick,
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+            AnimatedVisibility(
+                visible = isLoading,
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_user),
-                    contentDescription = null,
-                )
+                Surface(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ) {
+                    Box {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.Center),
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            Surface(
+                onClick = onUserClick,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_user),
+                        contentDescription = null,
+                    )
+                }
             }
         }
     }
@@ -101,6 +135,7 @@ private fun HomeHeaderPreview() {
     FindroidTheme {
         HomeHeader(
             serverName = "Jellyfin",
+            isLoading = true,
             onServerClick = {},
             onUserClick = {},
         )

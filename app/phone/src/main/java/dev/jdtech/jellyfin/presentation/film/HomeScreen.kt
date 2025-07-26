@@ -192,6 +192,7 @@ private fun HomeScreenLayout(
 
     HomeHeader(
         serverName = state.server?.name ?: "",
+        isLoading = state.isLoading,
         onServerClick = {
             showServerSelectionBottomSheet = true
         },
