@@ -37,6 +37,7 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 fun ServerSelectionBottomSheet(
     currentServerId: String,
     onUpdate: () -> Unit,
+    onManage: () -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
     viewModel: ServersViewModel = hiltViewModel(),
@@ -57,6 +58,7 @@ fun ServerSelectionBottomSheet(
     ServerSelectionBottomSheetLayout(
         currentServerId = currentServerId,
         state = state,
+        onManage = onManage,
         onAction = { action ->
             viewModel.onAction(action)
         },
@@ -70,6 +72,7 @@ fun ServerSelectionBottomSheet(
 private fun ServerSelectionBottomSheetLayout(
     currentServerId: String,
     state: ServersState,
+    onManage: () -> Unit,
     onAction: (action: ServersAction) -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
@@ -109,7 +112,7 @@ private fun ServerSelectionBottomSheetLayout(
                 key = "manage",
             ) {
                 OutlinedButton(
-                    onClick = {},
+                    onClick = onManage,
                     modifier = Modifier
                         .fillMaxWidth(),
                 ) {
@@ -140,6 +143,7 @@ private fun ServerSelectionBottomSheetPreview() {
                     ),
                 ),
             ),
+            onManage = {},
             onAction = {},
             onDismissRequest = {},
             sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),

@@ -53,6 +53,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onLibraryClick: (library: FindroidCollection) -> Unit,
     onSettingsClick: () -> Unit,
+    onManageServers: () -> Unit,
     onItemClick: (item: FindroidItem) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -69,6 +70,7 @@ fun HomeScreen(
                 is HomeAction.OnItemClick -> onItemClick(action.item)
                 is HomeAction.OnLibraryClick -> onLibraryClick(action.library)
                 is HomeAction.OnSettingsClick -> onSettingsClick()
+                is HomeAction.OnManageServers -> onManageServers()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -214,6 +216,10 @@ private fun HomeScreenLayout(
                         showServerSelectionBottomSheet = false
                     }
                 }
+            },
+            onManage = {
+                onAction(HomeAction.OnManageServers)
+                scope.launch { showServerSelectionSheetState.hide() }
             },
             onDismissRequest = {
                 showServerSelectionBottomSheet = false

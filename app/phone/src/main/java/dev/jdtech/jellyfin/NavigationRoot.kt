@@ -318,6 +318,9 @@ fun NavigationRoot(
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
+                        onManageServers = {
+                            navController.safeNavigate(ServersRoute)
+                        },
                         onItemClick = { item ->
                             navigateToItem(navController = navController, item = item)
                         },
