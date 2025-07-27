@@ -1,11 +1,9 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,7 +36,6 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
-import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeHeader
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
@@ -99,14 +96,7 @@ private fun HomeScreenLayout(
         end = paddingEnd,
     )
 
-    val contentPaddingTop by animateDpAsState(
-        targetValue = if (state.error != null) {
-            safePadding.top + 144.dp
-        } else {
-            safePadding.top + 88.dp
-        },
-        label = "content_padding",
-    )
+    val contentPaddingTop = safePadding.top + 88.dp
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
     val showServerSelectionSheetState = rememberModalBottomSheetState()
@@ -165,36 +155,27 @@ private fun HomeScreenLayout(
                 )
             }
         }
-        if (state.error != null) {
-            ErrorCard(
-                onShowStacktrace = {
-                    showErrorDialog = true
-                },
-                onRetryClick = {
-                    onAction(HomeAction.OnRetryClick)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = paddingStart,
-                        top = safePadding.top + 80.dp,
-                        end = paddingEnd,
-                    ),
+
+        if (state.error != null && showErrorDialog) {
+            ErrorDialog(
+                exception = state.error!!,
+                onDismissRequest = { showErrorDialog = false },
             )
-            if (showErrorDialog) {
-                ErrorDialog(
-                    exception = state.error!!,
-                    onDismissRequest = { showErrorDialog = false },
-                )
-            }
         }
     }
 
     HomeHeader(
         serverName = state.server?.name ?: "",
         isLoading = state.isLoading,
+        isError = state.error != null,
         onServerClick = {
             showServerSelectionBottomSheet = true
+        },
+        onErrorClick = {
+            showErrorDialog = true
+        },
+        onRetryClick = {
+            onAction(HomeAction.OnRetryClick)
         },
         onUserClick = {
             onAction(HomeAction.OnSettingsClick)

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,10 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun HomeHeader(
     serverName: String,
     isLoading: Boolean,
+    isError: Boolean,
     onServerClick: () -> Unit,
+    onErrorClick: () -> Unit,
+    onRetryClick: () -> Unit,
     onUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -72,6 +76,8 @@ fun HomeHeader(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .animateContentSize(),
                 )
             }
         }
@@ -82,24 +88,63 @@ fun HomeHeader(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             AnimatedVisibility(
-                visible = isLoading,
+                visible = isError,
                 enter = fadeIn(),
                 exit = fadeOut(),
             ) {
                 Surface(
+                    onClick = onErrorClick,
                     modifier = Modifier
                         .fillMaxHeight()
                         .aspectRatio(1f),
                     shape = CircleShape,
+                    color = MaterialTheme.colorScheme.errorContainer,
+                ) {
+                    Box {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_alert_circle),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                        )
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = isLoading || isError,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                Surface(
+                    onClick = onRetryClick,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                    enabled = !isLoading,
+                    shape = CircleShape,
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ) {
                     Box {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .align(Alignment.Center),
-                        ) {
-                            CircularProgressIndicator()
+                        when {
+                            isError -> {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .align(Alignment.Center),
+                                )
+                            }
+                            isLoading -> {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .align(Alignment.Center),
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                         }
                     }
                 }
@@ -131,12 +176,31 @@ fun HomeHeader(
 
 @Composable
 @Preview(showBackground = true)
-private fun HomeHeaderPreview() {
+private fun HomeHeaderLoadingPreview() {
     FindroidTheme {
         HomeHeader(
             serverName = "Jellyfin",
             isLoading = true,
+            isError = false,
             onServerClick = {},
+            onErrorClick = {},
+            onRetryClick = {},
+            onUserClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun HomeHeaderErrorPreview() {
+    FindroidTheme {
+        HomeHeader(
+            serverName = "Jellyfin",
+            isLoading = false,
+            isError = true,
+            onServerClick = {},
+            onErrorClick = {},
+            onRetryClick = {},
             onUserClick = {},
         )
     }
