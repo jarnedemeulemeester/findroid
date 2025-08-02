@@ -15,13 +15,14 @@ import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import okio.Path.Companion.toOkioPath
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 
 @HiltAndroidApp
 class BaseApplication : Application(), SingletonImageLoader.Factory {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    @OptIn(ExperimentalCoilApi::class)
+    @OptIn(ExperimentalCoilApi::class, ExperimentalTime::class)
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(this)
             .components {
