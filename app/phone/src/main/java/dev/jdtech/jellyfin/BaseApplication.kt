@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import okio.Path.Companion.toOkioPath
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory {
@@ -57,7 +58,7 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
         }
     }
 
-    @OptIn(ExperimentalCoilApi::class)
+    @OptIn(ExperimentalCoilApi::class, ExperimentalTime::class)
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
