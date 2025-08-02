@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +32,7 @@ import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +119,7 @@ private fun ServerSelectionBottomSheetLayout(
                         .fillMaxWidth(),
                 ) {
                     Text(
-                        text = "Manage servers",
+                        text = stringResource(CoreR.string.manage_servers),
                     )
                 }
             }
