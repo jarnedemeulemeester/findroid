@@ -93,6 +93,7 @@ private fun SettingsSelectDialogItem(
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
         Text(
             text = option.second,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }

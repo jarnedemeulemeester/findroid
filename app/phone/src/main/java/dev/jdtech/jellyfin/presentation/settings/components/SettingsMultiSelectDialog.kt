@@ -115,7 +115,10 @@ private fun SettingsMultiSelectDialogItem(
             onCheckedChange = { _ -> onCheckedChange(option.first) },
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
-        Text(text = option.second)
+        Text(
+            text = option.second,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
 
