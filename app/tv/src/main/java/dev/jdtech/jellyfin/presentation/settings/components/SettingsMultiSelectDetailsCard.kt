@@ -144,10 +144,10 @@ private fun SettingsSelectDetailsCardPreview() {
     FindroidTheme {
         SettingsMultiSelectDetailsCard(
             preference = PreferenceMultiSelect(
-                nameStringResource = SettingsR.string.settings_preferred_audio_language,
+                nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
                 backendPreference = Preference("", emptySet()),
-                options = SettingsR.array.media_segments_type,
-                optionValues = SettingsR.array.media_segments_type_values,
+                options = SettingsR.array.mpv_hwdec,
+                optionValues = SettingsR.array.mpv_hwdec,
             ),
             onUpdate = {},
         )
