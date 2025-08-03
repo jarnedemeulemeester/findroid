@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,11 +38,6 @@ fun SettingsMultiSelectDialog(
     onDismissRequest: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    val isAtTop by remember {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0
-        }
-    }
 
     var selectedOptions by remember {
         mutableStateOf(preference.value?.toSet() ?: emptySet())
@@ -71,11 +65,13 @@ fun SettingsMultiSelectDialog(
             }
         },
     ) {
-        if (!isAtTop) {
+        if (lazyListState.canScrollBackward) {
             HorizontalDivider()
         }
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill=false),
             state = lazyListState,
         ) {
             items(options) { option ->
@@ -91,6 +87,9 @@ fun SettingsMultiSelectDialog(
                     },
                 )
             }
+        }
+        if (lazyListState.canScrollForward) {
+            HorizontalDivider()
         }
     }
 }

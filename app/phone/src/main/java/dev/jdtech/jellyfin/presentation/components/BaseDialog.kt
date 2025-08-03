@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -29,7 +31,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 fun BaseDialog(
     title: String,
     onDismiss: () -> Unit,
-    content: @Composable (contentPadding: PaddingValues) -> Unit,
+    content: @Composable ColumnScope.(contentPadding: PaddingValues) -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -65,7 +67,7 @@ fun BaseDialog(
     onDismiss: () -> Unit,
     negativeButton: @Composable () -> Unit,
     positiveButton: @Composable () -> Unit,
-    content: @Composable (contentPadding: PaddingValues) -> Unit,
+    content: @Composable ColumnScope.(contentPadding: PaddingValues) -> Unit,
 ) {
     BaseDialog(
         title = title,
@@ -95,8 +97,7 @@ private fun BaseDialogPreview() {
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
+                    .fillMaxSize()
                     .background(Color.Red),
             )
         }
@@ -131,8 +132,8 @@ private fun BaseDialogButtonsPreview() {
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
+                    .fillMaxSize()
+                    .weight(1f, fill = false)
                     .background(Color.Red),
             )
         }
