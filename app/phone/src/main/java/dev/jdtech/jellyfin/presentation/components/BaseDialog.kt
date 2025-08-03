@@ -44,7 +44,7 @@ fun BaseDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(vertical = MaterialTheme.spacings.default),
+                    .padding(top = MaterialTheme.spacings.default),
             ) {
                 Text(
                     text = title,
@@ -72,8 +72,8 @@ fun BaseDialog(
     BaseDialog(
         title = title,
         onDismiss = onDismiss,
-    ) {
-        content(PaddingValues(horizontal = MaterialTheme.spacings.default))
+    ) { contentPadding ->
+        content(contentPadding)
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
         Row(
             modifier = Modifier
@@ -84,6 +84,7 @@ fun BaseDialog(
             negativeButton()
             positiveButton()
         }
+        Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
     }
 }
 
