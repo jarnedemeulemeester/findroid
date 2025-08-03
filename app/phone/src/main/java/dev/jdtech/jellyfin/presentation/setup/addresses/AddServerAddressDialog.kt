@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.setup.addresses
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -65,13 +66,14 @@ fun AddServerAddressDialog(
                 )
             }
         },
-    ) {
+    ) { contentPadding ->
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = {
                 textFieldValue = it
             },
             modifier = Modifier
+                .padding(contentPadding)
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             placeholder = {

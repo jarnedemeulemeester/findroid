@@ -1,7 +1,10 @@
 package dev.jdtech.jellyfin.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -25,9 +29,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 fun BaseDialog(
     title: String,
     onDismiss: () -> Unit,
-    negativeButton: @Composable () -> Unit,
-    positiveButton: @Composable () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable (contentPadding: PaddingValues) -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -40,24 +42,45 @@ fun BaseDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(MaterialTheme.spacings.default),
+                    .padding(vertical = MaterialTheme.spacings.default),
             ) {
                 Text(
                     text = title,
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacings.default)
+                        .fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                content()
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    negativeButton()
-                    positiveButton()
-                }
+                content(PaddingValues(horizontal = MaterialTheme.spacings.default))
             }
+        }
+    }
+}
+
+@Composable
+fun BaseDialog(
+    title: String,
+    onDismiss: () -> Unit,
+    negativeButton: @Composable () -> Unit,
+    positiveButton: @Composable () -> Unit,
+    content: @Composable (contentPadding: PaddingValues) -> Unit,
+) {
+    BaseDialog(
+        title = title,
+        onDismiss = onDismiss,
+    ) {
+        content(PaddingValues(horizontal = MaterialTheme.spacings.default))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
+        Row(
+            modifier = Modifier
+                .padding(horizontal = MaterialTheme.spacings.default)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            negativeButton()
+            positiveButton()
         }
     }
 }
@@ -65,6 +88,24 @@ fun BaseDialog(
 @Preview
 @Composable
 private fun BaseDialogPreview() {
+    FindroidTheme {
+        BaseDialog(
+            title = "Dialog Title",
+            onDismiss = {},
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(Color.Red),
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun BaseDialogButtonsPreview() {
     FindroidTheme {
         BaseDialog(
             title = "Dialog Title",
@@ -87,6 +128,13 @@ private fun BaseDialogPreview() {
                 }
             },
             onDismiss = {},
-        ) {}
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(Color.Red),
+            )
+        }
     }
 }

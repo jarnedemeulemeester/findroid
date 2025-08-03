@@ -86,7 +86,7 @@ constructor(
                 is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
                 is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
                 is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
-                is Set<*> -> sharedPreferences.getStringSet(preference.backendName, preference.defaultValue as Set<String> ) as T
+                is Set<*> -> sharedPreferences.getStringSet(preference.backendName, preference.defaultValue as Set<String>) as T
                 else -> preference.defaultValue
             }
         } catch (_: Exception) {

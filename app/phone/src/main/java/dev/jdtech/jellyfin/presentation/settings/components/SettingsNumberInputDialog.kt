@@ -1,8 +1,10 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -126,41 +128,45 @@ fun SettingsNumberInputDialog(
                 )
             }
         },
-    ) {
-        preference.descriptionStringRes?.let {
-            Text(
-                text = stringResource(it),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-        }
-        OutlinedTextField(
-            value = textFieldValue,
-            onValueChange = {
-                if (it.text.isEmpty() || it.text.matches(pattern)) {
-                    textFieldValue = it
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            suffix = {
-                suffix?.let {
-                    Text(text = it)
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onUpdate(textFieldValue.text)
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier.padding(contentPadding),
+        ) {
+            preference.descriptionStringRes?.let {
+                Text(
+                    text = stringResource(it),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+            }
+            OutlinedTextField(
+                value = textFieldValue,
+                onValueChange = {
+                    if (it.text.isEmpty() || it.text.matches(pattern)) {
+                        textFieldValue = it
+                    }
                 },
-            ),
-            singleLine = true,
-        )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                suffix = {
+                    suffix?.let {
+                        Text(text = it)
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onUpdate(textFieldValue.text)
+                    },
+                ),
+                singleLine = true,
+            )
+        }
     }
 }
 
