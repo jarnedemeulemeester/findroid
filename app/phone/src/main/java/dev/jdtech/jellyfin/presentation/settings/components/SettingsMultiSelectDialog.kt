@@ -71,7 +71,7 @@ fun SettingsMultiSelectDialog(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f, fill=false),
+                .weight(1f, fill = false),
             state = lazyListState,
         ) {
             items(options) { option ->
