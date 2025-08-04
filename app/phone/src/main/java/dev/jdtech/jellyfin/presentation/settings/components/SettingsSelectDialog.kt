@@ -50,7 +50,10 @@ fun SettingsSelectDialog(
             state = lazyListState,
             contentPadding = PaddingValues(bottom = MaterialTheme.spacings.default),
         ) {
-            items(options) { option ->
+            items(
+                items = options,
+                key = { it.first ?: "null" },
+            ) { option ->
                 SettingsSelectDialogItem(
                     option = option,
                     isSelected = option.first == preference.value,

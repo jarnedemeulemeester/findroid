@@ -33,14 +33,14 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 @Composable
 fun SettingsMultiSelectDialog(
     preference: PreferenceMultiSelect,
-    options: List<Pair<String?, String>>,
-    onUpdate: (value: Set<String>?) -> Unit,
+    options: List<Pair<String, String>>,
+    onUpdate: (value: Set<String>) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 
     var selectedOptions by remember {
-        mutableStateOf(preference.value?.toSet() ?: emptySet())
+        mutableStateOf(preference.value)
     }
 
     BaseDialog(
@@ -57,7 +57,7 @@ fun SettingsMultiSelectDialog(
         },
         positiveButton = {
             TextButton(
-                onClick = { onUpdate(selectedOptions.ifEmpty { emptySet() }) },
+                onClick = { onUpdate(selectedOptions) },
             ) {
                 Text(
                     text = stringResource(SettingsR.string.save),
@@ -74,7 +74,10 @@ fun SettingsMultiSelectDialog(
                 .weight(1f, fill = false),
             state = lazyListState,
         ) {
-            items(options) { option ->
+            items(
+                items = options,
+                key = { it.first },
+            ) { option ->
                 SettingsMultiSelectDialogItem(
                     option = option,
                     checked = selectedOptions.contains(option.first),

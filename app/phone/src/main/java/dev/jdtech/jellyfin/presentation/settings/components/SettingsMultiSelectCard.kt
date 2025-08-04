@@ -30,7 +30,7 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 @Composable
 fun SettingsMultiSelectCard(
     preference: PreferenceMultiSelect,
-    onUpdate: (value: Set<String>?) -> Unit,
+    onUpdate: (value: Set<String>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val optionValues = stringArrayResource(preference.optionValues)
@@ -38,11 +38,7 @@ fun SettingsMultiSelectCard(
     val noneString = stringResource(CoreR.string.none)
 
     val options = remember(preference.nameStringResource) {
-        val options = mutableListOf<Pair<String?, String>>()
-
-        options.addAll(optionValues.zip(optionNames))
-
-        options
+        optionValues.zip(optionNames)
     }
 
     val optionsMap = remember(options) {
@@ -81,7 +77,7 @@ fun SettingsMultiSelectCard(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = preference.value
-                        .orEmpty().joinToString(", ") { key -> optionsMap[key].toString() }
+                        .joinToString(", ") { key -> optionsMap[key].toString() }
                         .ifEmpty { noneString },
                     style = MaterialTheme.typography.bodyMedium,
                 )

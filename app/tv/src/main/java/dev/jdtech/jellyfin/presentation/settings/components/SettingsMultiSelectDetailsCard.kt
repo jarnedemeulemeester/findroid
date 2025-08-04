@@ -40,22 +40,18 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 @Composable
 fun SettingsMultiSelectDetailsCard(
     preference: PreferenceMultiSelect,
-    onUpdate: (value: Set<String>?) -> Unit,
+    onUpdate: (value: Set<String>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val optionValues = stringArrayResource(preference.optionValues)
     val optionNames = stringArrayResource(preference.options)
 
     val options = remember(preference.nameStringResource) {
-        val options = mutableListOf<Pair<String?, String>>()
-
-        options.addAll(optionValues.zip(optionNames))
-
-        options
+        optionValues.zip(optionNames)
     }
 
     var selectedOptions by remember {
-        mutableStateOf(preference.value?.toSet() ?: emptySet())
+        mutableStateOf(preference.value)
     }
 
     Surface(
@@ -77,7 +73,10 @@ fun SettingsMultiSelectDetailsCard(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
-                items(options) { option ->
+                items(
+                    items = options,
+                    key = { it.first },
+                ) { option ->
                     SettingsMultiSelectDetailsCardItem(
                         option = option,
                         checked = selectedOptions.contains(option.first),
@@ -88,7 +87,7 @@ fun SettingsMultiSelectDetailsCard(
                                 selectedOptions + listOfNotNull(key)
                             }
 
-                            onUpdate(selectedOptions.ifEmpty { emptySet() })
+                            onUpdate(selectedOptions)
                         },
                         isEnabled = preference.enabled,
                     )

@@ -75,7 +75,10 @@ fun SettingsSelectDetailsCard(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
-                items(options) { option ->
+                items(
+                    items = options,
+                    key = { it.first ?: "null" },
+                ) { option ->
                     SettingsSelectDetailsCardItem(
                         option = option,
                         isSelected = option.first == preference.value,

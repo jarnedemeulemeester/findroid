@@ -100,9 +100,7 @@ fun SettingsMultiSelectCard(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = preference.value
-                        .orEmpty()
-                        .map { key -> optionsMap[key] }
-                        .joinToString(", ")
+                        .joinToString(", ") { key -> optionsMap[key].toString() }
                         .ifEmpty { noneString },
                     style = MaterialTheme.typography.labelMedium,
                 )
