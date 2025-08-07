@@ -36,7 +36,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
-fun SettingsDetailsCard(
+fun SettingsSelectDetailsCard(
     preference: PreferenceSelect,
     onUpdate: (value: String?) -> Unit,
     modifier: Modifier = Modifier,
@@ -75,8 +75,11 @@ fun SettingsDetailsCard(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
-                items(options) { option ->
-                    SettingsSelectDialogItem(
+                items(
+                    items = options,
+                    key = { it.first ?: "null" },
+                ) { option ->
+                    SettingsSelectDetailsCardItem(
                         option = option,
                         isSelected = option.first == preference.value,
                         onSelect = onUpdate,
@@ -89,7 +92,7 @@ fun SettingsDetailsCard(
 }
 
 @Composable
-private fun SettingsSelectDialogItem(
+private fun SettingsSelectDetailsCardItem(
     option: Pair<String?, String>,
     isSelected: Boolean,
     onSelect: (String?) -> Unit,
@@ -130,9 +133,9 @@ private fun SettingsSelectDialogItem(
 
 @Preview
 @Composable
-private fun SettingsDetailCardPreview() {
+private fun SettingsSelectDetailsCardPreview() {
     FindroidTheme {
-        SettingsDetailsCard(
+        SettingsSelectDetailsCard(
             preference = PreferenceSelect(
                 nameStringResource = SettingsR.string.settings_preferred_audio_language,
                 backendPreference = Preference("", ""),
