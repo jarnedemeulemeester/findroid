@@ -60,6 +60,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
+import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
@@ -154,8 +155,6 @@ private fun ShowScreenLayout(
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
     val scrollState = rememberScrollState()
-
-    var expandedOverview by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -268,15 +267,9 @@ private fun ShowScreenLayout(
                         isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    Text(
+                    OverviewText(
                         text = show.overview,
-                        modifier = Modifier
-                            .clickable {
-                                expandedOverview = !expandedOverview
-                            },
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
-                        style = MaterialTheme.typography.bodyMedium,
+                        maxCollapsedLines = 3,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                     InfoText(
