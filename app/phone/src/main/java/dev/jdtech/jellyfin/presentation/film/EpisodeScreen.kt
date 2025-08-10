@@ -245,7 +245,6 @@ private fun EpisodeScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(
                         text = episode.overview,
-                        maxCollapsedLines = 3,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }
