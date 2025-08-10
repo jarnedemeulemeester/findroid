@@ -52,8 +52,6 @@ fun HomeCarousel(
                 val nextPage = if (pagerState.canScrollForward) {
                     pagerState.currentPage + 1
                 } else {
-                    val extraDelay = autoScrollDelay * ((items.size - pagerState.currentPage) - 1)
-                    delay(extraDelay)
                     0
                 }
                 pagerState.animateScrollToPage(nextPage)
