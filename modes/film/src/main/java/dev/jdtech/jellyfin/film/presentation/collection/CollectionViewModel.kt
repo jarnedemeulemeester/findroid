@@ -1,11 +1,10 @@
-package dev.jdtech.jellyfin.viewmodels
+package dev.jdtech.jellyfin.film.presentation.collection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.core.Constants
-import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -19,78 +18,68 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @HiltViewModel
 class CollectionViewModel
 @Inject
 constructor(
-    private val jellyfinRepository: JellyfinRepository,
+    private val repository: JellyfinRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
-
-    sealed class UiState {
-        data class Normal(val collectionSections: List<FavoriteSection>) : UiState()
-        data object Loading : UiState()
-        data class Error(val error: Exception) : UiState()
-    }
+    private val _state = MutableStateFlow(CollectionState())
+    val state = _state.asStateFlow()
 
     fun loadItems(parentId: UUID) {
         viewModelScope.launch {
-            _uiState.emit(UiState.Loading)
+            _state.emit(_state.value.copy(isLoading = true, error = null))
 
             try {
-                val items = jellyfinRepository.getItems(
+                val items = repository.getItems(
                     parentId = parentId,
                     sortBy = SortBy.RELEASE_DATE,
                 )
 
-                if (items.isEmpty()) {
-                    _uiState.emit(UiState.Normal(emptyList()))
-                    return@launch
-                }
-
-                val favoriteSections = mutableListOf<FavoriteSection>()
+                val sections = mutableListOf<CollectionSection>()
 
                 withContext(Dispatchers.Default) {
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_MOVIES,
-                        UiText.StringResource(R.string.movies_label),
+                        UiText.StringResource(CoreR.string.movies_label),
                         items.filterIsInstance<FindroidMovie>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_SHOWS,
-                        UiText.StringResource(R.string.shows_label),
+                        UiText.StringResource(CoreR.string.shows_label),
                         items.filterIsInstance<FindroidShow>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
-                    FavoriteSection(
+                    CollectionSection(
                         Constants.FAVORITE_TYPE_EPISODES,
-                        UiText.StringResource(R.string.episodes_label),
+                        UiText.StringResource(CoreR.string.episodes_label),
                         items.filterIsInstance<FindroidEpisode>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
-                            favoriteSections.add(
+                            sections.add(
                                 it,
                             )
                         }
                     }
                 }
 
-                _uiState.emit(UiState.Normal(favoriteSections))
+                _state.emit(_state.value.copy(isLoading = false, sections = sections))
             } catch (e: Exception) {
-                _uiState.emit(UiState.Error(e))
+                _state.emit(_state.value.copy(isLoading = false, error = e))
             }
         }
     }

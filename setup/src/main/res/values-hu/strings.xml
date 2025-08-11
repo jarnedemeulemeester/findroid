@@ -24,4 +24,9 @@
     <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
     <string name="remove_server_dialog">Szerver törlése</string>
     <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
+    <string name="addresses">Címek</string>
+    <string name="add_address">Cím hozzáadása</string>
+    <string name="add_server_address">Szerver címének hozzáadása</string>
+    <string name="remove_server_address">Szerver címének eltávolítása</string>
+    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
 </resources>

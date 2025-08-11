@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -31,58 +30,41 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun PlayButton(
     item: FindroidItem,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
 ) {
     val runtimeMinutes by remember(item.playbackPositionTicks) {
         mutableLongStateOf(item.playbackPositionTicks.div(600000000))
     }
-    if (runtimeMinutes > 0) {
-        Button(
-            onClick = onClick,
-            modifier = Modifier.padding(end = 4.dp),
-            enabled = enabled,
-        ) {
-            when (isLoading) {
-                true -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = LocalContentColor.current,
-                    )
-                }
-                false -> {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_play),
-                        contentDescription = null,
-                    )
-                }
+
+    Button(
+        onClick = onClick,
+        modifier = modifier.padding(end = 4.dp),
+        enabled = enabled,
+    ) {
+        when (isLoading) {
+            true -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = LocalContentColor.current,
+                )
             }
-            Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
-            Text(
-                text = stringResource(CoreR.string.runtime_minutes, runtimeMinutes),
-            )
-        }
-    } else {
-        FilledIconButton(
-            onClick = onClick,
-            modifier = Modifier.width(72.dp).padding(end = 4.dp),
-            enabled = enabled,
-        ) {
-            when (isLoading) {
-                true -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = LocalContentColor.current,
-                    )
-                }
-                false -> {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_play),
-                        contentDescription = null,
-                    )
-                }
+            false -> {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_play),
+                    contentDescription = null,
+                )
             }
         }
+        Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
+        Text(
+            text = if (runtimeMinutes > 0) {
+                stringResource(CoreR.string.runtime_minutes, runtimeMinutes)
+            } else {
+                stringResource(CoreR.string.play)
+            },
+        )
     }
 }
 

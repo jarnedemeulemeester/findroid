@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,17 +27,14 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +50,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidPersonDetail
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
+import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
@@ -126,7 +123,7 @@ private fun PersonScreenLayout(
                         )
                         if (person.overview.isNotBlank()) {
                             OverviewText(
-                                person = person,
+                                text = person.overview,
                                 maxCollapsedLines = 4,
                             )
                         }
@@ -148,7 +145,7 @@ private fun PersonScreenLayout(
                             )
                             if (person.overview.isNotBlank()) {
                                 OverviewText(
-                                    person = person,
+                                    text = person.overview,
                                     maxCollapsedLines = 12,
                                 )
                             }
@@ -255,6 +252,7 @@ private fun PersonImage(
     AsyncImage(
         model = person.images.primary,
         contentDescription = null,
+        contentScale = ContentScale.Crop,
         modifier = modifier
             .height(320.dp)
             .aspectRatio(0.66f)
@@ -263,55 +261,6 @@ private fun PersonImage(
                 MaterialTheme.colorScheme.surfaceContainer,
             ),
     )
-}
-
-@Composable
-private fun OverviewText(
-    person: FindroidPersonDetail,
-    maxCollapsedLines: Int = Int.MAX_VALUE,
-) {
-    var showChevron by remember { mutableStateOf(false) }
-    var isOverviewExpanded by remember { mutableStateOf(false) }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = person.overview,
-            modifier = Modifier
-                .animateContentSize(),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = if (isOverviewExpanded) Int.MAX_VALUE else maxCollapsedLines,
-            onTextLayout = { textLayoutResult ->
-                if (!isOverviewExpanded) {
-                    showChevron = textLayoutResult.hasVisualOverflow
-                }
-            },
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        if (showChevron) {
-            IconButton(
-                onClick = {
-                    isOverviewExpanded = !isOverviewExpanded
-                },
-            ) {
-                when (isOverviewExpanded) {
-                    true -> {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_chevron_up),
-                            contentDescription = null,
-                        )
-                    }
-                    false -> {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_chevron_down),
-                            contentDescription = null,
-                        )
-                    }
-                }
-            }
-        }
-    }
 }
 
 @PreviewScreenSizes

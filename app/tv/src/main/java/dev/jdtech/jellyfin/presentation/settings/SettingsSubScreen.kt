@@ -26,9 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsDetailsMultiSelectCard
-import dev.jdtech.jellyfin.presentation.settings.components.SettingsDetailsSelectCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsMultiSelectDetailsCard
+import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
@@ -148,7 +148,7 @@ private fun SettingsSubScreenLayout(
                 focusedPreference?.let { preference ->
                     when (preference) {
                         is PreferenceSelect -> {
-                            SettingsDetailsSelectCard(
+                            SettingsSelectDetailsCard(
                                 preference = preference,
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -163,7 +163,7 @@ private fun SettingsSubScreenLayout(
                             )
                         }
                         is PreferenceMultiSelect -> {
-                            SettingsDetailsMultiSelectCard(
+                            SettingsMultiSelectDetailsCard(
                                 preference = preference,
                                 modifier = Modifier
                                     .fillMaxSize()

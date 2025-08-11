@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
@@ -47,7 +49,7 @@ fun HomeView(
                 modifier = Modifier.align(Alignment.CenterStart),
                 style = MaterialTheme.typography.titleMedium,
             )
-            TextButton(
+            IconButton(
                 onClick = {
                     onAction(
                         HomeAction.OnLibraryClick(
@@ -62,7 +64,10 @@ fun HomeView(
                 },
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
-                Text(stringResource(CoreR.string.view_all))
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_right),
+                    contentDescription = null,
+                )
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))

@@ -93,6 +93,7 @@ fun ItemCard(
                 overflow = TextOverflow.Ellipsis,
             )
         }
+        Spacer(Modifier.height(2.dp))
     }
 }
 

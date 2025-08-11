@@ -59,9 +59,6 @@
     <string name="search_hint">Zoek films, series, afleveringen…</string>
     <string name="download_button_description">Download</string>
     <string name="movies_label">Films</string>
-    <string name="addresses">Adressen</string>
-    <string name="add_server_address">Server adres toevoegen</string>
-    <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="subtitle">Ondertiteling</string>
     <string name="size">Grootte</string>
@@ -90,8 +87,6 @@
     <string name="watch_trailer">Bekijk trailer</string>
     <string name="mark_as_played">Markeer als afgespeeld</string>
     <string name="unmark_as_played">Markering als afgespeeld ongedaan maken</string>
-    <string name="remove_server_address">Verwijder server adres</string>
-    <string name="remove_server_address_dialog_text">Weet u zeker dat u het server adres %1$s wilt verwijderen</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Afspelen</string>
     <string name="add_to_favorites">Aan favorieten toevoegen</string>

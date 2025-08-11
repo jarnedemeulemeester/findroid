@@ -22,4 +22,9 @@
     <string name="users_btn_add_user">הוסף משתמש</string>
     <string name="remove_server_dialog">שרת מרוחק</string>
     <string name="remove_server_dialog_text">האם אתה בטוח שברצונך להסיר את השרת %1$s</string>
+    <string name="addresses">כתובות</string>
+    <string name="add_address">הוסף כתובת</string>
+    <string name="add_server_address">הוסף כתובת שרת</string>
+    <string name="remove_server_address">הסר כתובת שרת</string>
+    <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך להסיר את כתובת השרת %1$s</string>
 </resources>

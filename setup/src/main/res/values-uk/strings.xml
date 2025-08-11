@@ -22,4 +22,7 @@
     <string name="users_btn_add_user">Додати користувача</string>
     <string name="remove_server_dialog">Видалити сервер</string>
     <string name="remove_server_dialog_text">Ви впевнені, що хочете видалити сервер %1$s</string>
+    <string name="addresses">Адреси</string>
+    <string name="add_address">Додати адресу</string>
+    <string name="add_server_address">Додати адресу сервера</string>
 </resources>

@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +49,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
+import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -134,8 +134,6 @@ private fun EpisodeScreenLayout(
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
     val scrollState = rememberScrollState()
-
-    var expandedOverview by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -245,15 +243,8 @@ private fun EpisodeScreenLayout(
                         isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    Text(
+                    OverviewText(
                         text = episode.overview,
-                        modifier = Modifier
-                            .clickable {
-                                expandedOverview = !expandedOverview
-                            },
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
-                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }

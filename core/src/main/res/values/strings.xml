@@ -2,8 +2,6 @@
     <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="remove_server_address">Remove server address</string>
-    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Home</string>
@@ -69,9 +67,6 @@
     <string name="runtime_minutes">%1$d mins</string>
     <string name="select_video_version_title">Select version</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Addresses</string>
-    <string name="add_address">Add address</string>
-    <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="size">Size</string>
     <string name="video">Video</string>
@@ -104,4 +99,5 @@
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="not_set">Not set</string>
     <string name="none">None</string>
+    <string name="manage_servers">Manage servers</string>
 </resources>

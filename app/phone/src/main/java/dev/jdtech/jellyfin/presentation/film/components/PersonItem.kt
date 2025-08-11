@@ -31,7 +31,7 @@ fun PersonItem(
     Column(
         modifier = modifier
             .width(110.dp)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.small)
             .clickable(onClick = onClick),
     ) {
         AsyncImage(
@@ -55,10 +55,12 @@ fun PersonItem(
         )
         Text(
             text = person.role,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.bodySmall,
         )
+        Spacer(Modifier.height(2.dp))
     }
 }
 

@@ -24,4 +24,9 @@
     <string name="users_no_users">找不到用户</string>
     <string name="remove_server_dialog">删除服务器</string>
     <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
+    <string name="addresses">地址</string>
+    <string name="add_address">添加地址</string>
+    <string name="add_server_address">添加服务器地址</string>
+    <string name="remove_server_address">移除服务器地址</string>
+    <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
 </resources>

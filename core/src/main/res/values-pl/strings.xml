@@ -58,9 +58,6 @@
     <string name="check_button_description">Oznacz jako obejrzane lub nieobejrzane</string>
     <string name="libraries">Biblioteki</string>
     <string name="episodes_label">Odcinki</string>
-    <string name="addresses">Adresy</string>
-    <string name="add_address">Dodaj adres</string>
-    <string name="add_server_address">Dodaj adres serwera</string>
     <string name="add">Dodaj</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Napisy</string>
@@ -86,8 +83,6 @@
     <string name="stop_download">Zatrzymaj pobieranie</string>
     <string name="size">Rozmiar</string>
     <string name="privacy_policy_notice">Korzystając z Findroid zgadzasz się z <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Polityką Prywatności</a>, zgodnie z którą nie zbieramy żadnych danych</string>
-    <string name="remove_server_address">Usuń adres serwera</string>
-    <string name="remove_server_address_dialog_text">Czy na pewno chcesz usunąć adres serwera %1$s</string>
     <string name="collection_no_media">Ta kolekcja nie zawiera żadnych elementów</string>
     <string name="live_tv">Telewizja na żywo</string>
     <string name="play">Odtwórz</string>

@@ -25,12 +25,15 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
+import dev.jdtech.jellyfin.presentation.film.FavoritesScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -40,6 +43,7 @@ import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
+import dev.jdtech.jellyfin.presentation.setup.addresses.ServerAddressesScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
@@ -57,6 +61,11 @@ data object ServersRoute
 
 @Serializable
 data object AddServerRoute
+
+@Serializable
+data class ServerAddressesRoute(
+    val serverId: String,
+)
 
 @Serializable
 data object UsersRoute
@@ -81,6 +90,15 @@ data class LibraryRoute(
     val libraryName: String,
     val libraryType: CollectionType,
 )
+
+@Serializable
+data class CollectionRoute(
+    val collectionId: String,
+    val collectionName: String,
+)
+
+@Serializable
+data object FavoritesRoute
 
 @Serializable
 data class MovieRoute(
@@ -204,11 +222,11 @@ fun NavigationRoot(
             }
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(
-                    navigateToLogin = {
-                        navController.safeNavigate(LoginRoute())
-                    },
                     navigateToUsers = {
                         navController.safeNavigate(UsersRoute)
+                    },
+                    navigateToAddresses = { serverId ->
+                        navController.safeNavigate(ServerAddressesRoute(serverId))
                     },
                     onAddClick = {
                         navController.safeNavigate(AddServerRoute)
@@ -225,6 +243,15 @@ fun NavigationRoot(
                         navController.safeNavigate(UsersRoute)
                     },
                     onBackClick = {
+                        navController.safePopBackStack()
+                    },
+                )
+            }
+            composable<ServerAddressesRoute> { backStackEntry ->
+                val route: ServerAddressesRoute = backStackEntry.toRoute()
+                ServerAddressesScreen(
+                    serverId = route.serverId,
+                    navigateBack = {
                         navController.safePopBackStack()
                     },
                 )
@@ -291,6 +318,9 @@ fun NavigationRoot(
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
+                        onManageServers = {
+                            navController.safeNavigate(ServersRoute)
+                        },
                         onItemClick = { item ->
                             navigateToItem(navController = navController, item = item)
                         },
@@ -301,8 +331,8 @@ fun NavigationRoot(
                         onItemClick = {
                             navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
                         },
-                        onSettingsClick = {
-                            navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
+                        onFavoritesClick = {
+                            navController.safeNavigate(FavoritesRoute)
                         },
                     )
                 }
@@ -312,6 +342,29 @@ fun NavigationRoot(
                         libraryId = UUID.fromString(route.libraryId),
                         libraryName = route.libraryName,
                         libraryType = route.libraryType,
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
+                        },
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<CollectionRoute> { backStackEntry ->
+                    val route: CollectionRoute = backStackEntry.toRoute()
+                    CollectionScreen(
+                        collectionId = UUID.fromString(route.collectionId),
+                        collectionName = route.collectionName,
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
+                        },
+                        navigateBack = {
+                            navController.safePopBackStack()
+                        },
+                    )
+                }
+                composable<FavoritesRoute> {
+                    FavoritesScreen(
                         onItemClick = { item ->
                             navigateToItem(navController = navController, item = item)
                         },
@@ -418,6 +471,7 @@ fun NavigationRoot(
 
 private fun navigateToItem(navController: NavHostController, item: FindroidItem) {
     when (item) {
+        is FindroidBoxSet -> navController.safeNavigate(CollectionRoute(collectionId = item.id.toString(), collectionName = item.name))
         is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))
         is FindroidShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
         is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))

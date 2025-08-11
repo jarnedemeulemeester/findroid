@@ -67,7 +67,6 @@
     <string name="sort_by_options_0">Заглавие</string>
     <string name="sort_by_options_2">Оценка за родителски контрол</string>
     <string name="sort_by_options_4">Дата пускан</string>
-    <string name="add_address">Добави адрес</string>
     <string name="audio">Аудио</string>
     <string name="video">Видео</string>
     <string name="external">Външно</string>
@@ -78,12 +77,8 @@
     <string name="stop_download">Спри свалянето</string>
     <string name="storage_unavailable">Локацията на диска е недостъпна</string>
     <string name="internal">Вътрежно</string>
-    <string name="remove_server_address">Премахване на адрес на сървър</string>
-    <string name="remove_server_address_dialog_text">Сигурни ли сте, че искате да премахнете адреса на сървъра %1$s</string>
     <string name="sort_by_options_5">Дата на издаване</string>
     <string name="select_video_version_title">Изберете версия</string>
-    <string name="addresses">Адреси</string>
-    <string name="add_server_address">Добави адрес на сървър</string>
     <string name="add">Добави</string>
     <string name="subtitle">Субтитри</string>
     <string name="downloading_error">Грешка при сваляне</string>

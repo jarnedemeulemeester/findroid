@@ -35,8 +35,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.jdtech.jellyfin.models.Server
-import dev.jdtech.jellyfin.models.ServerAddress
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.ServerBottomSheet
@@ -48,14 +48,13 @@ import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import kotlinx.coroutines.launch
-import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun ServersScreen(
-    navigateToLogin: () -> Unit,
     navigateToUsers: () -> Unit,
+    navigateToAddresses: (serverId: String) -> Unit,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
     showBack: Boolean = true,
@@ -69,8 +68,8 @@ fun ServersScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToLogin -> navigateToLogin()
-            is ServersEvent.NavigateToUsers -> navigateToUsers()
+            is ServersEvent.ServerChanged -> navigateToUsers()
+            else -> Unit
         }
     }
 
@@ -81,6 +80,7 @@ fun ServersScreen(
             when (action) {
                 is ServersAction.OnAddClick -> onAddClick()
                 is ServersAction.OnBackClick -> onBackClick()
+                is ServersAction.NavigateToAddresses -> navigateToAddresses(action.serverId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -99,7 +99,7 @@ private fun ServersScreenLayout(
     val sheetState = rememberModalBottomSheetState()
     var openDeleteDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedServer by remember { mutableStateOf<Server?>(null) }
+    var selectedServer by remember { mutableStateOf<ServerWithAddresses?>(null) }
 
     RootLayout {
         Column(
@@ -144,7 +144,7 @@ private fun ServersScreenLayout(
                                 )
                             },
                             onLongClick = {
-                                selectedServer = server.server
+                                selectedServer = server
                                 showBottomSheet = true
                             },
                         )
@@ -176,7 +176,7 @@ private fun ServersScreenLayout(
                 Text(text = stringResource(SetupR.string.remove_server_dialog))
             },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.name))
+                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.server.name))
             },
             onDismissRequest = {
                 openDeleteDialog = false
@@ -190,7 +190,7 @@ private fun ServersScreenLayout(
                                 showBottomSheet = false
                             }
                         }
-                        onAction(ServersAction.DeleteServer(selectedServer!!.id))
+                        onAction(ServersAction.DeleteServer(selectedServer!!.server.id))
                     },
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
@@ -208,9 +208,14 @@ private fun ServersScreenLayout(
         )
     }
 
-    if (showBottomSheet) {
+    if (showBottomSheet && selectedServer != null) {
         ServerBottomSheet(
-            onAddresses = {},
+            name = selectedServer!!.server.name,
+            address = selectedServer!!.addresses.first().address,
+            onAddresses = {
+                showBottomSheet = false
+                onAction(ServersAction.NavigateToAddresses(selectedServer!!.server.id))
+            },
             onRemoveServer = {
                 openDeleteDialog = true
             },
@@ -230,18 +235,9 @@ private fun ServersScreenLayoutPreview() {
             state = ServersState(
                 servers = listOf(
                     ServerWithAddresses(
-                        server = Server(
-                            id = "",
-                            name = "Jellyfin Server",
-                            currentServerAddressId = null,
-                            currentUserId = null,
-                        ),
+                        server = dummyServer,
                         addresses = listOf(
-                            ServerAddress(
-                                id = UUID.randomUUID(),
-                                address = "http://192.168.0.10:8096",
-                                serverId = "",
-                            ),
+                            dummyServerAddress,
                         ),
                         user = null,
                     ),
