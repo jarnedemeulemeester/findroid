@@ -48,8 +48,16 @@ constructor(
     // Player - seeking
     val playerSeekBackInc = Preference("pref_player_seek_back_inc", 5_000L)
     val playerSeekForwardInc = Preference("pref_player_seek_forward_inc", 15_000L)
-    val playerIntroSkipper = Preference("pref_player_intro_skipper", true)
     val playerChapterMarkers = Preference("pref_player_chapter_markers", true)
+
+    // Player - Media Segments
+    val playerMediaSegmentsSkipButton get() = Preference("pref_player_media_segments_skip_button", true)
+    val playerMediaSegmentsSkipButtonType get() = Preference("pref_player_media_segments_skip_button_type", setOf("INTRO", "OUTRO"))
+    val playerMediaSegmentsSkipButtonDuration get() = Preference("pref_player_media_segments_skip_button_duration", Constants.PLAYER_MEDIA_SEGMENTS_DEFAULT_SKIP_BUTTON_DURATION)
+    val playerMediaSegmentsAutoSkip get() = Preference("pref_player_media_segments_auto_skip", false)
+    val playerMediaSegmentsAutoSkipMode get() = Preference("pref_player_media_segments_auto_skip_mode", Constants.PlayerMediaSegmentsAutoSkip.ALWAYS)
+    val playerMediaSegmentsAutoSkipType get() = Preference("pref_player_media_segments_auto_skip_type", setOf("INTRO", "OUTRO"))
+    val playerMediaSegmentsNextEpisodeThreshold get() = Preference("pref_player_media_segments_next_episode_threshold", Constants.PLAYER_MEDIA_SEGMENTS_DEFAULT_NEXT_EPISODE_THRESHOLD)
 
     // Player - trickplay
     val playerTrickplay = Preference("pref_player_trickplay", true)

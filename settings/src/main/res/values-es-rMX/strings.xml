@@ -39,8 +39,6 @@
     <string name="theme_system">Seguir al sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
-    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="settings_category_network">Red</string>
     <string name="settings_connect_timeout">Espera de conexión</string>
     <string name="settings_socket_timeout">Espera del conector</string>
