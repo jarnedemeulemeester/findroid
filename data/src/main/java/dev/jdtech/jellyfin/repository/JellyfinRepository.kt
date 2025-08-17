@@ -60,7 +60,7 @@ interface JellyfinRepository {
 
     suspend fun getFavoriteItems(): List<FindroidItem>
 
-    suspend fun getSearchItems(searchQuery: String): List<FindroidItem>
+    suspend fun getSearchItems(query: String): List<FindroidItem>
 
     suspend fun getSuggestions(): List<FindroidItem>
 

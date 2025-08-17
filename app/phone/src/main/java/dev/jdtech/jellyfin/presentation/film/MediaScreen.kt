@@ -29,7 +29,10 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
-import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.film.presentation.search.SearchAction
+import dev.jdtech.jellyfin.film.presentation.search.SearchState
+import dev.jdtech.jellyfin.film.presentation.search.SearchViewModel
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
@@ -42,11 +45,13 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
 fun MediaScreen(
-    onItemClick: (FindroidCollection) -> Unit,
+    onItemClick: (FindroidItem) -> Unit,
     onFavoritesClick: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchState by searchViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
         viewModel.loadData()
@@ -54,6 +59,7 @@ fun MediaScreen(
 
     MediaScreenLayout(
         state = state,
+        searchState = searchState,
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
@@ -62,13 +68,22 @@ fun MediaScreen(
             }
             viewModel.onAction(action)
         },
+        onSearchAction = { action ->
+            when (action) {
+                is SearchAction.OnItemClick -> onItemClick(action.item)
+                else -> Unit
+            }
+            searchViewModel.onAction(action)
+        },
     )
 }
 
 @Composable
 private fun MediaScreenLayout(
     state: MediaState,
+    searchState: SearchState,
     onAction: (MediaAction) -> Unit,
+    onSearchAction: (SearchAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding(
         handleStartInsets = false,
@@ -101,6 +116,8 @@ private fun MediaScreenLayout(
             .fillMaxSize(),
     ) {
         FilmSearchBar(
+            state = searchState,
+            onAction = onSearchAction,
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
@@ -175,7 +192,9 @@ private fun MediaScreenLayoutPreview() {
                 libraries = dummyCollections,
                 error = Exception("Failed to load data"),
             ),
+            searchState = SearchState(),
             onAction = {},
+            onSearchAction = {},
         )
     }
 }

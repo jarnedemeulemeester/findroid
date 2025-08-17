@@ -5,16 +5,6 @@
     android:id="@+id/app_navigation"
     app:startDestination="@+id/playerActivity">
 
-    <fragment
-        android:id="@+id/searchResultFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
-        android:label="{query}"
-        tools:layout="@layout/fragment_search_result">
-        <argument
-            android:name="query"
-            app:argType="string" />
-    </fragment>
-
     <activity
         android:id="@+id/playerActivity"
         android:name="dev.jdtech.jellyfin.PlayerActivity"

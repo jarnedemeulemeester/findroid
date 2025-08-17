@@ -26,6 +26,7 @@ import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
+import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -328,8 +329,8 @@ fun NavigationRoot(
                 }
                 composable<MediaRoute> {
                     MediaScreen(
-                        onItemClick = {
-                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                        onItemClick = { item ->
+                            navigateToItem(navController = navController, item = item)
                         },
                         onFavoritesClick = {
                             navController.safeNavigate(FavoritesRoute)
@@ -476,6 +477,7 @@ private fun navigateToItem(navController: NavHostController, item: FindroidItem)
         is FindroidShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
         is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
         is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
+        is FindroidCollection -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = item.type))
         else -> Unit
     }
 }

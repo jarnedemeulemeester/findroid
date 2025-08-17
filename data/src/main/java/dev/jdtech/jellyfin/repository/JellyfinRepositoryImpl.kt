@@ -186,15 +186,14 @@ class JellyfinRepositoryImpl(
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
-    override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> =
+    override suspend fun getSearchItems(query: String): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
-                searchTerm = searchQuery,
+                searchTerm = query,
                 includeItemTypes = listOf(
                     BaseItemKind.MOVIE,
                     BaseItemKind.SERIES,
-                    BaseItemKind.EPISODE,
                 ),
                 recursive = true,
             ).content.items
