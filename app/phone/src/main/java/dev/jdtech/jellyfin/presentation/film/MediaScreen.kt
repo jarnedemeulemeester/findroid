@@ -47,6 +47,8 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 fun MediaScreen(
     onItemClick: (FindroidItem) -> Unit,
     onFavoritesClick: () -> Unit,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -60,6 +62,8 @@ fun MediaScreen(
     MediaScreenLayout(
         state = state,
         searchState = searchState,
+        searchExpanded = searchExpanded,
+        onSearchExpand = onSearchExpand,
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
@@ -82,6 +86,8 @@ fun MediaScreen(
 private fun MediaScreenLayout(
     state: MediaState,
     searchState: SearchState,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     onAction: (MediaAction) -> Unit,
     onSearchAction: (SearchAction) -> Unit,
 ) {
@@ -117,6 +123,8 @@ private fun MediaScreenLayout(
     ) {
         FilmSearchBar(
             state = searchState,
+            expanded = searchExpanded,
+            onExpand = onSearchExpand,
             onAction = onSearchAction,
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
@@ -193,6 +201,8 @@ private fun MediaScreenLayoutPreview() {
                 error = Exception("Failed to load data"),
             ),
             searchState = SearchState(),
+            searchExpanded = false,
+            onSearchExpand = {},
             onAction = {},
             onSearchAction = {},
         )

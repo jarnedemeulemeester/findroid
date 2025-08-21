@@ -22,9 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +45,8 @@ import dev.jdtech.jellyfin.film.R as FilmR
 @OptIn(ExperimentalMaterial3Api::class)
 fun FilmSearchBar(
     state: SearchState,
+    expanded: Boolean,
+    onExpand: (Boolean) -> Unit,
     onAction: (SearchAction) -> Unit,
     modifier: Modifier = Modifier,
     paddingStart: Dp = 0.dp,
@@ -49,8 +54,9 @@ fun FilmSearchBar(
     inputPaddingStart: Dp = 0.dp,
     inputPaddingEnd: Dp = 0.dp,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     var query by rememberSaveable { mutableStateOf("") }
-    var expanded by rememberSaveable { mutableStateOf(false) }
 
     val searchBarPaddingStart by animateDpAsState(
         targetValue = if (expanded) 0.dp else paddingStart,
@@ -72,6 +78,12 @@ fun FilmSearchBar(
         label = "search_bar_padding_end",
     )
 
+    LaunchedEffect(expanded) {
+        if (expanded) {
+            focusRequester.requestFocus()
+        }
+    }
+
     LaunchedEffect(query) {
         if (query.isNotBlank()) {
             // Debounce scales with input length. Max debounce of 300ms.
@@ -87,11 +99,12 @@ fun FilmSearchBar(
                 onQueryChange = {
                     query = it
                 },
-                onSearch = { expanded = true },
+                onSearch = { onExpand(true) },
                 expanded = expanded,
-                onExpandedChange = { expanded = it },
+                onExpandedChange = { onExpand(it) },
                 modifier = Modifier
-                    .padding(start = searchBarInputPaddingStart, end = searchBarInputPaddingEnd),
+                    .padding(start = searchBarInputPaddingStart, end = searchBarInputPaddingEnd)
+                    .focusRequester(focusRequester),
                 placeholder = {
                     Text(
                         text = stringResource(FilmR.string.search_placeholder),
@@ -107,7 +120,7 @@ fun FilmSearchBar(
                         if (targetExpanded) {
                             IconButton(
                                 onClick = {
-                                    expanded = false
+                                    onExpand(false)
                                 },
                             ) {
                                 Icon(
@@ -147,7 +160,7 @@ fun FilmSearchBar(
             )
         },
         expanded = expanded,
-        onExpandedChange = { expanded = it },
+        onExpandedChange = { onExpand(it) },
         modifier = modifier
             .padding(
                 start = searchBarPaddingStart,
