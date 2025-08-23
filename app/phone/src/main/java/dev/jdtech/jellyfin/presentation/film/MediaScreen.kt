@@ -129,8 +129,6 @@ private fun MediaScreenLayout(
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
-            inputPaddingStart = safePadding.start,
-            inputPaddingEnd = safePadding.end,
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),

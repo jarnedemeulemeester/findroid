@@ -37,6 +37,7 @@ import dev.jdtech.jellyfin.film.presentation.search.SearchAction
 import dev.jdtech.jellyfin.film.presentation.search.SearchState
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
+import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import kotlinx.coroutines.delay
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.film.R as FilmR
@@ -51,10 +52,9 @@ fun FilmSearchBar(
     modifier: Modifier = Modifier,
     paddingStart: Dp = 0.dp,
     paddingEnd: Dp = 0.dp,
-    inputPaddingStart: Dp = 0.dp,
-    inputPaddingEnd: Dp = 0.dp,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val safePadding = rememberSafePadding()
 
     var query by rememberSaveable { mutableStateOf("") }
 
@@ -69,12 +69,12 @@ fun FilmSearchBar(
     )
 
     val searchBarInputPaddingStart by animateDpAsState(
-        targetValue = if (expanded) inputPaddingStart else 0.dp,
+        targetValue = if (expanded) safePadding.start else 0.dp,
         label = "search_bar_padding_start",
     )
 
     val searchBarInputPaddingEnd by animateDpAsState(
-        targetValue = if (expanded) inputPaddingEnd else 0.dp,
+        targetValue = if (expanded) safePadding.end else 0.dp,
         label = "search_bar_padding_end",
     )
 
@@ -171,10 +171,10 @@ fun FilmSearchBar(
             columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                start = paddingStart,
+                start = safePadding.start + MaterialTheme.spacings.default,
                 top = MaterialTheme.spacings.default,
-                end = paddingEnd,
-                bottom = MaterialTheme.spacings.default,
+                end = safePadding.end + MaterialTheme.spacings.default,
+                bottom = safePadding.bottom + MaterialTheme.spacings.default,
             ),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
