@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.recalculateWindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
@@ -55,6 +53,7 @@ import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
+import dev.jdtech.jellyfin.presentation.utils.plus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
@@ -107,12 +106,9 @@ private fun LibraryScreenLayout(
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
-    val layoutDirection = LocalLayoutDirection.current
-
-    val paddingStart = MaterialTheme.spacings.default
-    val paddingTop = MaterialTheme.spacings.default
-    val paddingEnd = MaterialTheme.spacings.default
-    val paddingBottom = MaterialTheme.spacings.default
+    val contentPadding = PaddingValues(
+        all = MaterialTheme.spacings.default,
+    )
 
     val items = state.items.collectAsLazyPagingItems()
 
@@ -125,6 +121,7 @@ private fun LibraryScreenLayout(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .recalculateWindowInsets()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
@@ -160,9 +157,7 @@ private fun LibraryScreenLayout(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
-        ) {
+        Column {
             ErrorGroup(
                 loadStates = items.loadState,
                 onRefresh = {
@@ -170,21 +165,12 @@ private fun LibraryScreenLayout(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        start = paddingStart,
-                        top = paddingTop,
-                        end = paddingEnd,
-                    ),
+                    .padding(contentPadding + innerPadding),
             )
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
-                    top = paddingTop,
-                    end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
-                    bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-                ),
+                contentPadding = contentPadding + innerPadding,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
