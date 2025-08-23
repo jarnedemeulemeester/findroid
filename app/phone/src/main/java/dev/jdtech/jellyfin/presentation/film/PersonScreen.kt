@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
@@ -108,37 +108,40 @@ private fun PersonScreenLayout(
                     .verticalScroll(rememberScrollState()),
             ) {
                 Spacer(Modifier.height(paddingTop))
-                if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(itemsPadding),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        PersonImage(person)
-                        Text(
-                            text = person.name,
-                            style = MaterialTheme.typography.headlineMedium,
-                        )
-                        if (person.overview.isNotBlank()) {
-                            OverviewText(
-                                text = person.overview,
-                                maxCollapsedLines = 4,
-                            )
+                when {
+                    windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(itemsPadding),
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                        ) {
+                            PersonImage(person)
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                            ) {
+                                Text(
+                                    text = person.name,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                )
+                                if (person.overview.isNotBlank()) {
+                                    OverviewText(
+                                        text = person.overview,
+                                        maxCollapsedLines = 12,
+                                    )
+                                }
+                            }
                         }
                     }
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(itemsPadding),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
-                        PersonImage(person)
+                    else -> {
                         Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(itemsPadding),
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
+                            PersonImage(person)
                             Text(
                                 text = person.name,
                                 style = MaterialTheme.typography.headlineMedium,
@@ -146,7 +149,7 @@ private fun PersonScreenLayout(
                             if (person.overview.isNotBlank()) {
                                 OverviewText(
                                     text = person.overview,
-                                    maxCollapsedLines = 12,
+                                    maxCollapsedLines = 4,
                                 )
                             }
                         }
