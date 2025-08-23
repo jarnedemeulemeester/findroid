@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 
 data class SafePadding(
     val start: Dp,
@@ -30,9 +30,9 @@ fun rememberSafePadding(
         with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
     } else {
         // Navigation rail handles safe drawing inset in medium and expanded width
-        when (windowSizeClass.windowWidthSizeClass) {
-            WindowWidthSizeClass.EXPANDED -> 0.dp
-            WindowWidthSizeClass.MEDIUM -> 0.dp
+        when {
+            windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 0.dp
+            windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> 0.dp
             else -> with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
         }
     }

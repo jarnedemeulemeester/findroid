@@ -11,7 +11,9 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidCollection
@@ -146,7 +148,8 @@ val homeTab = TabBarItem(title = CoreR.string.title_home, icon = CoreR.drawable.
 val mediaTab = TabBarItem(title = CoreR.string.title_media, icon = CoreR.drawable.ic_library, route = MediaRoute)
 val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = Unit, enabled = false)
 
-val tabBarItems = listOf(homeTab, mediaTab, downloadsTab)
+val navigationItems = listOf(homeTab, mediaTab, downloadsTab)
+val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
 
 @Composable
 fun NavigationRoot(
@@ -162,27 +165,35 @@ fun NavigationRoot(
         else -> WelcomeRoute
     }
 
-    var searchExpanded by remember { mutableStateOf(false) }
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
-    val showBottomBar = currentRoute in tabBarItems.map { it.route::class.qualifiedName } && !searchExpanded
+    var searchExpanded by remember { mutableStateOf(false) }
 
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val customNavSuiteType = with(adaptiveInfo) {
-        if (!showBottomBar) {
-            NavigationSuiteType.None
-        } else if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showBottomBar = currentRoute in navigationItemClassNames && !searchExpanded
+
+    val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
+
+    LaunchedEffect(showBottomBar) {
+        if (showBottomBar) {
+            navigationSuiteScaffoldState.show()
+        } else {
+            navigationSuiteScaffoldState.hide()
+        }
+    }
+
+    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
+    val customNavSuiteType = with(windowAdaptiveInfo) {
+        if (windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
             NavigationSuiteType.NavigationRail
         } else {
-            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
         }
     }
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            tabBarItems.forEach { item ->
+            navigationItems.forEach { item ->
                 item(
                     selected = currentRoute == item.route::class.qualifiedName,
                     onClick = {
@@ -212,6 +223,7 @@ fun NavigationRoot(
             }
         },
         layoutType = customNavSuiteType,
+        state = navigationSuiteScaffoldState,
     ) {
         NavHost(
             navController = navController,

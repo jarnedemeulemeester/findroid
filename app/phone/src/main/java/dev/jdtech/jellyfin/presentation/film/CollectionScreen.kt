@@ -46,7 +46,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
-import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -86,12 +85,11 @@ fun CollectionScreenLayout(
     onAction: (CollectionAction) -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
-    val safePadding = rememberSafePadding()
 
-    val paddingStart = safePadding.start + MaterialTheme.spacings.default
+    val paddingStart = MaterialTheme.spacings.default
     val paddingTop = MaterialTheme.spacings.default
-    val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val paddingEnd = MaterialTheme.spacings.default
+    val paddingBottom = MaterialTheme.spacings.default
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 

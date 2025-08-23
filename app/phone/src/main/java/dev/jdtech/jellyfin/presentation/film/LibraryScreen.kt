@@ -55,7 +55,6 @@ import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
-import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
@@ -109,12 +108,11 @@ private fun LibraryScreenLayout(
     onAction: (LibraryAction) -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
-    val safePadding = rememberSafePadding()
 
-    val paddingStart = safePadding.start + MaterialTheme.spacings.default
+    val paddingStart = MaterialTheme.spacings.default
     val paddingTop = MaterialTheme.spacings.default
-    val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val paddingEnd = MaterialTheme.spacings.default
+    val paddingBottom = MaterialTheme.spacings.default
 
     val items = state.items.collectAsLazyPagingItems()
 
