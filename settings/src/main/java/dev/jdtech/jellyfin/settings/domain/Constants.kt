@@ -2,7 +2,7 @@ package dev.jdtech.jellyfin.settings.domain
 
 object Constants {
     // Player - Media Segments
-    const val PLAYER_MEDIA_SEGMENTS_DEFAULT_SKIP_BUTTON_DURATION = 10L
+    const val PLAYER_MEDIA_SEGMENTS_DEFAULT_SKIP_BUTTON_DURATION = 5L
     const val PLAYER_MEDIA_SEGMENTS_DEFAULT_NEXT_EPISODE_THRESHOLD = 5_000L
     object PlayerMediaSegmentsAutoSkip {
         const val ALWAYS = "always"
