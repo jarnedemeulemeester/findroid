@@ -62,7 +62,7 @@ constructor(
             currentItemTitle = "",
             currentSegment = null,
             currentTrickplay = null,
-            currentChapters = null,
+            currentChapters = emptyList(),
             fileLoaded = false,
         ),
     )
@@ -75,7 +75,7 @@ constructor(
         val currentItemTitle: String,
         val currentSegment: PlayerSegment?,
         val currentTrickplay: Trickplay?,
-        val currentChapters: List<PlayerChapter>?,
+        val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
     )
 
@@ -85,7 +85,7 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
-    private var currentMediaItemSegments: List<PlayerSegment>? = null
+    private var currentMediaItemSegments: List<PlayerSegment> = emptyList()
 
     var playbackSpeed: Float = 1f
 
@@ -397,14 +397,14 @@ constructor(
     }
 
     private fun updateCurrentSegment() {
-        if (currentMediaItemSegments.isNullOrEmpty()) {
+        if (currentMediaItemSegments.isEmpty()) {
             return
         }
 
         val milliSeconds = player.currentPosition
 
         // Get current segment, - 1 second to avoid showing button after segment ends
-        val currentSegment = currentMediaItemSegments?.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
+        val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
         if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&

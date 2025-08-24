@@ -188,17 +188,17 @@ class PlayerViewModel @Inject internal constructor(
         )
     }
 
-    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter>? {
+    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter> {
         return this?.map { chapter ->
             PlayerChapter(
                 startPosition = chapter.startPosition,
                 name = chapter.name,
             )
-        }
+        } ?: emptyList()
     }
 
-    private fun List<FindroidSegment>?.toPlayerSegments(): List<PlayerSegment>? {
-        return this?.map { segment ->
+    private fun List<FindroidSegment>.toPlayerSegments(): List<PlayerSegment> {
+        return this.map { segment ->
             PlayerSegment(
                 type = segment.type,
                 startTicks = segment.startTicks,

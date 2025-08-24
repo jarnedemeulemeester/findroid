@@ -16,7 +16,7 @@
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Progress bar</string>
     <string name="player_controls_skip_intro">Skip intro</string>
-    <string name="player_controls_skip_outro">Skip credits</string>
+    <string name="player_controls_skip_outro">Skip outro</string>
     <string name="player_controls_next_episode">Next episode</string>
     <string name="player_controls_skip_recap">Skip recap</string>
     <string name="player_controls_skip_preview">Skip preview</string>

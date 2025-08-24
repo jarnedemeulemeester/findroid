@@ -17,5 +17,4 @@
     <string name="player_controls_progress">진행 표시줄</string>
     <string name="player_controls_picture_in_picture">picture-in-picture 전환</string>
     <string name="none">없음</string>
-    <string name="player_controls_skip_outro">엔딩 스킵</string>
 </resources>

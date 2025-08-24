@@ -97,7 +97,7 @@
     <string name="media_segments_type_commercial">Commercial</string>
     <string name="media_segments_type_preview">Preview</string>
     <string name="media_segments_type_recap">Recap</string>
-    <string name="media_segments_type_outro">Credits</string>
+    <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">None</string>
 </resources>

@@ -40,7 +40,6 @@ import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
@@ -63,7 +62,6 @@ class PlayerActivity : BasePlayerActivity() {
     override val viewModel: PlayerActivityViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
-    private var currentMediaSegment: PlayerSegment? = null
     private var skipButtonTimeoutExpired: Boolean = true
 
     private lateinit var skipSegmentButton: Button
@@ -203,16 +201,14 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             // Chapters
-                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters != null) {
-                                currentChapters?.let { chapters ->
-                                    val playerControlView =
-                                        findViewById<PlayerControlView>(R.id.exo_controller)
-                                    val numOfChapters = chapters.size
-                                    playerControlView.setExtraAdGroupMarkers(
-                                        LongArray(numOfChapters) { index -> chapters[index].startPosition },
-                                        BooleanArray(numOfChapters) { false },
-                                    )
-                                }
+                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters.isNotEmpty()) {
+                                val playerControlView =
+                                    findViewById<PlayerControlView>(R.id.exo_controller)
+                                val numOfChapters = currentChapters.size
+                                playerControlView.setExtraAdGroupMarkers(
+                                    LongArray(numOfChapters) { index -> currentChapters[index].startPosition },
+                                    BooleanArray(numOfChapters) { false },
+                                )
                             }
 
                             // File Loaded
