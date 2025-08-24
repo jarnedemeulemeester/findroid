@@ -24,12 +24,15 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
-import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.film.presentation.search.SearchAction
+import dev.jdtech.jellyfin.film.presentation.search.SearchState
+import dev.jdtech.jellyfin.film.presentation.search.SearchViewModel
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
@@ -42,11 +45,15 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
 fun MediaScreen(
-    onItemClick: (FindroidCollection) -> Unit,
+    onItemClick: (FindroidItem) -> Unit,
     onFavoritesClick: () -> Unit,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchState by searchViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
         viewModel.loadData()
@@ -54,6 +61,9 @@ fun MediaScreen(
 
     MediaScreenLayout(
         state = state,
+        searchState = searchState,
+        searchExpanded = searchExpanded,
+        onSearchExpand = onSearchExpand,
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
@@ -62,13 +72,24 @@ fun MediaScreen(
             }
             viewModel.onAction(action)
         },
+        onSearchAction = { action ->
+            when (action) {
+                is SearchAction.OnItemClick -> onItemClick(action.item)
+                else -> Unit
+            }
+            searchViewModel.onAction(action)
+        },
     )
 }
 
 @Composable
 private fun MediaScreenLayout(
     state: MediaState,
+    searchState: SearchState,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     onAction: (MediaAction) -> Unit,
+    onSearchAction: (SearchAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding(
         handleStartInsets = false,
@@ -90,9 +111,9 @@ private fun MediaScreenLayout(
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> 320.dp
-        WindowWidthSizeClass.MEDIUM -> 240.dp
+    val minColumnSize = when {
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 320.dp
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> 240.dp
         else -> 160.dp
     }
 
@@ -101,11 +122,13 @@ private fun MediaScreenLayout(
             .fillMaxSize(),
     ) {
         FilmSearchBar(
+            state = searchState,
+            expanded = searchExpanded,
+            onExpand = onSearchExpand,
+            onAction = onSearchAction,
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
-            inputPaddingStart = safePadding.start,
-            inputPaddingEnd = safePadding.end,
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),
@@ -175,7 +198,11 @@ private fun MediaScreenLayoutPreview() {
                 libraries = dummyCollections,
                 error = Exception("Failed to load data"),
             ),
+            searchState = SearchState(),
+            searchExpanded = false,
+            onSearchExpand = {},
             onAction = {},
+            onSearchAction = {},
         )
     }
 }

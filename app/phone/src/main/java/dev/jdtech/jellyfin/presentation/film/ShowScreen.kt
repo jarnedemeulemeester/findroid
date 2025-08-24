@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
@@ -377,8 +376,11 @@ private fun ShowScreenLayout(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .safeDrawingPadding()
-                .padding(horizontal = MaterialTheme.spacings.small),
+                .padding(
+                    start = safePadding.start + MaterialTheme.spacings.small,
+                    top = safePadding.top + MaterialTheme.spacings.small,
+                    end = safePadding.end + MaterialTheme.spacings.small,
+                ),
         ) {
             IconButton(
                 onClick = { onAction(ShowAction.OnBackClick) },

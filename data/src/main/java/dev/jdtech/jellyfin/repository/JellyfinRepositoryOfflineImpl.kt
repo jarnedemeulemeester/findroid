@@ -109,11 +109,11 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> {
+    override suspend fun getSearchItems(query: String): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
-            val movies = database.searchMovies(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-            val shows = database.searchShows(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-            val episodes = database.searchEpisodes(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            val movies = database.searchMovies(appPreferences.getValue(appPreferences.currentServer)!!, query).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+            val shows = database.searchShows(appPreferences.getValue(appPreferences.currentServer)!!, query).map { it.toFindroidShow(database, jellyfinApi.userId!!) }
+            val episodes = database.searchEpisodes(appPreferences.getValue(appPreferences.currentServer)!!, query).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
             movies + shows + episodes
         }
     }
