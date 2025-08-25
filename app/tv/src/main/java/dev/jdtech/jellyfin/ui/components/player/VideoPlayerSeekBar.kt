@@ -33,6 +33,7 @@ import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
 @Composable
 fun VideoPlayerSeekBar(
     progress: Float,
+    onPause: () -> Unit,
     onSeek: (seekProgress: Float) -> Unit,
     state: VideoPlayerState,
 ) {
@@ -69,6 +70,7 @@ fun VideoPlayerSeekBar(
                         onSeek(seekProgress)
                         focusManager.moveFocus(FocusDirection.Exit)
                     } else {
+                        onPause()
                         seekProgress = progress
                     }
                     isSelected = !isSelected
@@ -125,6 +127,7 @@ fun VideoPlayerSeekBarPreview() {
     FindroidTheme {
         VideoPlayerSeekBar(
             progress = 0.4f,
+            onPause = {},
             onSeek = {},
             state = rememberVideoPlayerState(),
         )
