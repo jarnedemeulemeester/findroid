@@ -432,7 +432,7 @@ constructor(
             (
                 segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
                     (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
-            )
+                )
         ) {
             // Auto Skip segment
             skipSegment(currentSegment)

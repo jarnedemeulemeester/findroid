@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
@@ -24,7 +25,6 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
