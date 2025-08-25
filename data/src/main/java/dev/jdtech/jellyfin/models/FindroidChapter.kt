@@ -15,11 +15,11 @@ data class FindroidChapter(
     val name: String? = null,
 )
 
-fun BaseItemDto.toFindroidChapters(): List<FindroidChapter>? {
+fun BaseItemDto.toFindroidChapters(): List<FindroidChapter> {
     return chapters?.map { chapter ->
         FindroidChapter(
             startPosition = chapter.startPositionTicks / 10000,
             name = chapter.name,
         )
-    }
+    } ?: emptyList()
 }

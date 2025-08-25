@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.viewmodels
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MimeTypes
@@ -27,6 +26,7 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
@@ -147,7 +147,7 @@ class PlayerViewModel @Inject internal constructor(
                 ExternalSubtitle(
                     mediaStream.title,
                     mediaStream.language,
-                    Uri.parse(mediaStream.path!!),
+                    mediaStream.path!!.toUri(),
                     when (mediaStream.codec) {
                         "subrip" -> MimeTypes.APPLICATION_SUBRIP
                         "webvtt" -> MimeTypes.APPLICATION_SUBRIP
@@ -188,13 +188,13 @@ class PlayerViewModel @Inject internal constructor(
         )
     }
 
-    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter> {
-        return this?.map { chapter ->
+    private fun List<FindroidChapter>.toPlayerChapters(): List<PlayerChapter> {
+        return this.map { chapter ->
             PlayerChapter(
                 startPosition = chapter.startPosition,
                 name = chapter.name,
             )
-        } ?: emptyList()
+        }
     }
 
     private fun List<FindroidSegment>.toPlayerSegments(): List<PlayerSegment> {
