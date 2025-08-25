@@ -74,19 +74,11 @@ class PlayerActivity : BasePlayerActivity() {
 
         // Check if PiP is enabled for the app
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            appOps?.unsafeCheckOpNoThrow(
-                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
-                Process.myUid(),
-                packageName,
-            ) == AppOpsManager.MODE_ALLOWED
-        } else {
-            appOps?.checkOpNoThrow(
-                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
-                Process.myUid(),
-                packageName,
-            ) == AppOpsManager.MODE_ALLOWED
-        }
+        appOps?.checkOpNoThrow(
+            AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+            Process.myUid(),
+            packageName,
+        ) == AppOpsManager.MODE_ALLOWED
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -171,7 +163,7 @@ class PlayerActivity : BasePlayerActivity() {
                                     handler.removeCallbacks(skipButtonTimeout)
                                     handler.postDelayed(
                                         skipButtonTimeout,
-                                        appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration) * 1000,
+                                        viewModel.segmentsSkipButtonDuration * 1000,
                                     )
                                 }
                                 // Skip Button - onClick
@@ -201,7 +193,7 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             // Chapters
-                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters.isNotEmpty()) {
+                            if (currentChapters.isNotEmpty()) {
                                 val playerControlView =
                                     findViewById<PlayerControlView>(R.id.exo_controller)
                                 val numOfChapters = currentChapters.size
@@ -236,8 +228,7 @@ class PlayerActivity : BasePlayerActivity() {
                                 if (appPreferences.getValue(appPreferences.playerPipGesture)) {
                                     try {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
-                                    } catch (_: IllegalArgumentException) {
-                                    }
+                                    } catch (_: IllegalArgumentException) { }
                                 }
                             }
                         }
@@ -414,7 +405,7 @@ class PlayerActivity : BasePlayerActivity() {
         newConfig: Configuration,
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        viewModel.setPictureInPictureMode(isInPictureInPictureMode)
+        viewModel.isInPictureInPictureMode = isInPictureInPictureMode
         when (isInPictureInPictureMode) {
             true -> {
                 binding.playerView.useController = false

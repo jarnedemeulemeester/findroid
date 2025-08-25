@@ -90,6 +90,7 @@ constructor(
     // Segments preferences
     private var segmentsSkipButton: Boolean = false
     private var segmentsSkipButtonTypes: Set<String> = emptySet()
+    var segmentsSkipButtonDuration: Long = 0L
     private var segmentsAutoSkip: Boolean = false
     private var segmentsAutoSkipTypes: Set<String> = emptySet()
     private var segmentsAutoSkipMode: String = "always"
@@ -98,14 +99,12 @@ constructor(
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var isInPictureInPictureMode: Boolean = false
-    fun setPictureInPictureMode(isInPipMode: Boolean) {
-        isInPictureInPictureMode = isInPipMode
-    }
+    var isInPictureInPictureMode: Boolean = false
 
     init {
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
+        segmentsSkipButtonDuration = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration)
         segmentsAutoSkip = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
         segmentsAutoSkipTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
         segmentsAutoSkipMode = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
@@ -446,7 +445,7 @@ constructor(
     }
 
     fun skipSegment(segment: FindroidSegment) {
-        if (skipToNextEpisode(segment)) {
+        if (shouldSkipToNextEpisode(segment)) {
             player.seekToNextMediaItem()
         } else {
             player.seekTo(segment.endTicks)
@@ -455,7 +454,7 @@ constructor(
     }
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration
-    private fun skipToNextEpisode(segment: FindroidSegment): Boolean {
+    private fun shouldSkipToNextEpisode(segment: FindroidSegment): Boolean {
         return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem()) {
             val segmentEndTimeMillis = segment.endTicks
             val playerDurationMillis = player.duration
@@ -468,7 +467,7 @@ constructor(
     }
 
     fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
-        return when (skipToNextEpisode(segment)) {
+        return when (shouldSkipToNextEpisode(segment)) {
             true -> R.string.player_controls_next_episode
             false -> when (segment.type) {
                 FindroidSegmentType.INTRO -> R.string.player_controls_skip_intro
@@ -485,7 +484,7 @@ constructor(
      * Get chapters of current item
      * @return list of [PlayerChapter]
      */
-    private fun getChapters(): List<PlayerChapter>? {
+    private fun getChapters(): List<PlayerChapter> {
         return uiState.value.currentChapters
     }
 
@@ -494,7 +493,7 @@ constructor(
      * @return the index of the current chapter
      */
     private fun getCurrentChapterIndex(): Int? {
-        val chapters = getChapters() ?: return null
+        val chapters = getChapters()
 
         for (i in chapters.indices.reversed()) {
             if (chapters[i].startPosition < player.currentPosition) {
@@ -510,7 +509,7 @@ constructor(
      * @return the index of the next chapter
      */
     private fun getNextChapterIndex(): Int? {
-        val chapters = getChapters() ?: return null
+        val chapters = getChapters()
         val currentChapterIndex = getCurrentChapterIndex() ?: return null
 
         return minOf(chapters.size - 1, currentChapterIndex + 1)
@@ -522,7 +521,7 @@ constructor(
      * @return the index of the previous chapter
      */
     private fun getPreviousChapterIndex(): Int? {
-        val chapters = getChapters() ?: return null
+        val chapters = getChapters()
         val currentChapterIndex = getCurrentChapterIndex() ?: return null
 
         // Return current chapter when more than 5 seconds past chapter start
@@ -533,7 +532,7 @@ constructor(
         return maxOf(0, currentChapterIndex - 1)
     }
 
-    fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
+    fun isLastChapter(): Boolean? = getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
     /**
      * Seek to chapter
@@ -541,7 +540,7 @@ constructor(
      * @return the [PlayerChapter] which has been sought to
      */
     private fun seekToChapter(chapterIndex: Int): PlayerChapter? {
-        return getChapters()?.getOrNull(chapterIndex)?.also { chapter ->
+        return getChapters().getOrNull(chapterIndex)?.also { chapter ->
             player.seekTo(chapter.startPosition)
         }
     }

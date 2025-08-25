@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
@@ -33,7 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
@@ -283,7 +283,7 @@ fun VideoPlayerControls(
                     state = state,
                     isPlaying = isPlaying,
                     onClick = {
-                        val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
+                        // val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
                     },
                 )
@@ -292,7 +292,7 @@ fun VideoPlayerControls(
                     state = state,
                     isPlaying = isPlaying,
                     onClick = {
-                        val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
+                        // val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
                     },
                 )
@@ -332,7 +332,7 @@ private fun SkipButton(
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
-                text = LocalContext.current.getString(viewModel.getSkipButtonTextStringId(segment)),
+                text = stringResource(viewModel.getSkipButtonTextStringId(segment)),
                 color = Color.Black,
             )
         }
