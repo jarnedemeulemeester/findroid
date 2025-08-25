@@ -19,10 +19,10 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.models.PlayerChapter
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.models.Trickplay
 import dev.jdtech.jellyfin.mpv.MPVPlayer
 import dev.jdtech.jellyfin.player.video.R
@@ -73,7 +73,7 @@ constructor(
 
     data class UiState(
         val currentItemTitle: String,
-        val currentSegment: PlayerSegment?,
+        val currentSegment: FindroidSegment?,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
@@ -85,7 +85,14 @@ constructor(
     var playWhenReady = true
     private var currentMediaItemIndex = savedStateHandle["mediaItemIndex"] ?: 0
     private var playbackPosition: Long = savedStateHandle["position"] ?: 0
-    private var currentMediaItemSegments: List<PlayerSegment> = emptyList()
+    private var currentMediaItemSegments: List<FindroidSegment> = emptyList()
+
+    // Segments preferences
+    private var segmentsSkipButton: Boolean = false
+    private var segmentsSkipButtonTypes: Set<String> = emptySet()
+    private var segmentsAutoSkip: Boolean = false
+    private var segmentsAutoSkipTypes: Set<String> = emptySet()
+    private var segmentsAutoSkipMode: String = "always"
 
     var playbackSpeed: Float = 1f
 
@@ -97,6 +104,12 @@ constructor(
     }
 
     init {
+        segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
+        segmentsSkipButtonTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
+        segmentsAutoSkip = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
+        segmentsAutoSkipTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
+        segmentsAutoSkipMode = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
+
         if (appPreferences.getValue(appPreferences.playerMpv)) {
             val trackSelectionParameters = TrackSelectionParameters.Builder()
                 .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
@@ -248,9 +261,7 @@ constructor(
                 handler.postDelayed(this, 1000L)
             }
         }
-        if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) ||
-            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
-        ) {
+        if (segmentsSkipButton || segmentsAutoSkip) {
             handler.post(segmentCheckRunnable)
         }
         handler.post(playbackProgressRunnable)
@@ -281,9 +292,11 @@ constructor(
                             )
                         }
 
-                        currentMediaItemSegments = item.segments
-
                         jellyfinRepository.postPlaybackStart(item.itemId)
+
+                        if (segmentsSkipButton || segmentsAutoSkip) {
+                            getSegments(item.itemId)
+                        }
 
                         if (appPreferences.getValue(appPreferences.playerTrickplay)) {
                             getTrickplay(item)
@@ -369,6 +382,10 @@ constructor(
         playbackSpeed = speed
     }
 
+    private suspend fun getSegments(itemId: UUID) {
+        currentMediaItemSegments = jellyfinRepository.getSegments(itemId)
+    }
+
     private suspend fun getTrickplay(item: PlayerItem) {
         val trickplayInfo = item.trickplayInfo ?: return
         Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
@@ -405,21 +422,22 @@ constructor(
 
         // Get current segment, - 1 second to avoid showing button after segment ends
         val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
+
+        if (currentSegment == null) {
+            return
+        }
+
         Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
-        if (appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip) &&
-            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType).contains(currentSegment?.type.toString()) &&
+        if (segmentsAutoSkip && segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
             (
-                appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode) == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                    (
-                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode) == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
-                            isInPictureInPictureMode
-                        )
-                )
+                segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                    (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
+            )
         ) {
             // Auto Skip segment
-            skipSegment(currentSegment!!)
-        } else if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType).contains(currentSegment?.type.toString())) {
+            skipSegment(currentSegment)
+        } else if (segmentsSkipButtonTypes.contains(currentSegment.type.toString())) {
             // Skip Button segment
             _uiState.update { it.copy(currentSegment = currentSegment) }
         } else {
@@ -427,7 +445,7 @@ constructor(
         }
     }
 
-    fun skipSegment(segment: PlayerSegment) {
+    fun skipSegment(segment: FindroidSegment) {
         if (skipToNextEpisode(segment)) {
             player.seekToNextMediaItem()
         } else {
@@ -437,7 +455,7 @@ constructor(
     }
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration
-    private fun skipToNextEpisode(segment: PlayerSegment): Boolean {
+    private fun skipToNextEpisode(segment: FindroidSegment): Boolean {
         return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem()) {
             val segmentEndTimeMillis = segment.endTicks
             val playerDurationMillis = player.duration
@@ -449,7 +467,7 @@ constructor(
         }
     }
 
-    fun getSkipButtonTextStringId(segment: PlayerSegment): Int {
+    fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
         return when (skipToNextEpisode(segment)) {
             true -> R.string.player_controls_next_episode
             false -> when (segment.type) {
@@ -515,7 +533,6 @@ constructor(
         return maxOf(0, currentChapterIndex - 1)
     }
 
-    fun isFirstChapter(): Boolean? = getChapters()?.let { getCurrentChapterIndex() == 0 }
     fun isLastChapter(): Boolean? = getChapters()?.let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
     /**

@@ -217,7 +217,7 @@ class DownloaderImpl(
             val id = UUID.randomUUID()
             val streamPath = Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.$id.download"))
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
-            val request = DownloadManager.Request(Uri.parse(mediaStream.path))
+            val request = DownloadManager.Request(mediaStream.path!!.toUri())
                 .setTitle(mediaStream.title)
                 .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
                 .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))

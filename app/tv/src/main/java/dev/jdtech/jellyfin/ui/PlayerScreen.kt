@@ -44,8 +44,8 @@ import androidx.tv.material3.Glow
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.PlayerSegment
 import dev.jdtech.jellyfin.models.Track
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
@@ -305,7 +305,7 @@ fun VideoPlayerControls(
 private fun SkipButton(
     skipButtonFocusRequester: FocusRequester,
     viewModel: PlayerActivityViewModel,
-    segment: PlayerSegment,
+    segment: FindroidSegment,
 ) {
     Box(
         modifier = Modifier

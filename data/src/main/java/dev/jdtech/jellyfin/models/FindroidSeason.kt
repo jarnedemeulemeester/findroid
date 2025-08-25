@@ -24,7 +24,7 @@ data class FindroidSeason(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>? = null,
+    override val chapters: List<FindroidChapter> = emptyList(),
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidSeason(

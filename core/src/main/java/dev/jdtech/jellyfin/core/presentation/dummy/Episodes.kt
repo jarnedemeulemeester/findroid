@@ -55,7 +55,7 @@ val dummyEpisode = FindroidEpisode(
     communityRating = 9.2f,
     people = emptyList(),
     images = FindroidImages(),
-    chapters = null,
+    chapters = emptyList(),
     trickplayInfo = null,
 )
 
