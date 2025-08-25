@@ -21,8 +21,6 @@
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>
-    <string name="pref_player_intro_skipper">Intro Skipper</string>
-    <string name="pref_player_intro_skipper_summary">Requires <i>jumoog\'s</i> <b>Intro Skipper</b> plugin to be installed on the server</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Display preview images while scrubbing</string>
     <string name="pref_player_chapter_markers">Chapter markers</string>
@@ -74,6 +72,7 @@
     <string name="extra_info_summary">Displays detailed information about Audio, Video and Subtitles</string>
     <string name="mb">MB</string>
     <string name="ms">ms</string>
+    <string name="seconds">s</string>
     <string name="app_language">App language</string>
     <string name="subtitles">Subtitles</string>
     <string name="subtitles_summary">Customize subtitles appearance</string>
@@ -82,4 +81,23 @@
     <string name="amoled_theme_summary">Use AMOLED theme with a pure black background</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="media_segments">Media Segments</string>
+    <string name="pref_player_media_segments_skip_button">Show skip button</string>
+    <string name="pref_player_media_segments_skip_button_summary">Provide a button to easily skip parts</string>
+    <string name="pref_player_media_segments_skip_button_type">Segment type to display the skip button</string>
+    <string name="pref_player_media_segments_skip_button_duration">Display skip button for</string>
+    <string name="pref_player_media_segments_auto_skip">Auto skip</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Enable automatic skipping for chosen segment types</string>
+    <string name="pref_player_media_segments_auto_skip_mode">When to auto skip</string>
+    <string name="pref_player_media_segments_auto_skip_type">Segment type to auto skip</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Skip to next episode threshold</string>
+    <string name="media_segments_auto_skip_pip">only in pip mode</string>
+    <string name="media_segments_auto_skip_always">always</string>
+    <string name="media_segments_type_unknown">Others</string>
+    <string name="media_segments_type_commercial">Commercial</string>
+    <string name="media_segments_type_preview">Preview</string>
+    <string name="media_segments_type_recap">Recap</string>
+    <string name="media_segments_type_outro">Outro</string>
+    <string name="media_segments_type_intro">Intro</string>
+    <string name="none">None</string>
 </resources>

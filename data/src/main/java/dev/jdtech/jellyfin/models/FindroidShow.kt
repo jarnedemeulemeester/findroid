@@ -30,7 +30,7 @@ data class FindroidShow(
     val endDate: DateTime?,
     val trailer: String?,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>? = null,
+    override val chapters: List<FindroidChapter> = emptyList(),
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidShow(

@@ -16,6 +16,5 @@
     <string name="player_controls_progress">Fortschrittsanzeige</string>
     <string name="none">Keine</string>
     <string name="player_controls_picture_in_picture">Bild-in-Bild öffnen</string>
-    <string name="player_controls_skip_credits">Abspann überspringen</string>
     <string name="player_trickplay">Pseudovideo</string>
 </resources>

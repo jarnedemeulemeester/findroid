@@ -130,10 +130,10 @@ private fun SettingsMultiSelectDialogPreview() {
     FindroidTheme {
         SettingsMultiSelectDialog(
             preference = PreferenceMultiSelect(
-                nameStringResource = SettingsR.string.app_language,
+                nameStringResource = SettingsR.string.pref_player_media_segments_skip_button_type,
                 backendPreference = Preference("", emptySet()),
-                options = SettingsR.array.languages,
-                optionValues = SettingsR.array.languages_values,
+                options = SettingsR.array.media_segments_type,
+                optionValues = SettingsR.array.media_segments_type_values,
             ),
             options = listOf(
                 "a" to "Option A",

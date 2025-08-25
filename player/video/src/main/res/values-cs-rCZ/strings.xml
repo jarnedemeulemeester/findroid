@@ -16,6 +16,5 @@
     <string name="player_controls_picture_in_picture">Vstoupit do režimu obraz v obraze</string>
     <string name="player_controls_progress">Ukazatel průběhu</string>
     <string name="none">Žádné</string>
-    <string name="player_controls_skip_credits">Přeskočit titulky</string>
     <string name="player_trickplay">Trickplay</string>
 </resources>

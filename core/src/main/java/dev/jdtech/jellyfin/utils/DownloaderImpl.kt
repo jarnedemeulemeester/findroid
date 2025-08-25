@@ -76,11 +76,11 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
                     segments.forEach {
                         database.insertSegment(it.toFindroidSegmentsDto(item.id))
+                    }
+                    if (trickplayInfo != null) {
+                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -105,11 +105,11 @@ class DownloaderImpl(
                     database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
                     database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
                     downloadExternalMediaStreams(item, source, storageIndex)
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
                     segments.forEach {
                         database.insertSegment(it.toFindroidSegmentsDto(item.id))
+                    }
+                    if (trickplayInfo != null) {
+                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
                     }
                     val request = DownloadManager.Request(source.path.toUri())
                         .setTitle(item.name)
@@ -217,7 +217,7 @@ class DownloaderImpl(
             val id = UUID.randomUUID()
             val streamPath = Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.$id.download"))
             database.insertMediaStream(mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()))
-            val request = DownloadManager.Request(Uri.parse(mediaStream.path))
+            val request = DownloadManager.Request(mediaStream.path!!.toUri())
                 .setTitle(mediaStream.title)
                 .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
                 .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
