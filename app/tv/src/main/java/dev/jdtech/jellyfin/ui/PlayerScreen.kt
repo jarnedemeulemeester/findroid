@@ -44,7 +44,6 @@ import androidx.tv.material3.Glow
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.Track
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -165,9 +164,11 @@ fun PlayerScreen(
         val skipButtonFocusRequester = remember { FocusRequester() }
 
         SkipButton(
+            stringRes = uiState.currentSkipButtonStringRes,
+            onClick = {
+                viewModel.skipSegment(segment)
+            },
             skipButtonFocusRequester = skipButtonFocusRequester,
-            viewModel = viewModel,
-            segment = segment,
         )
 
         LaunchedEffect(videoPlayerState.controlsVisible) {
@@ -303,9 +304,9 @@ fun VideoPlayerControls(
 
 @Composable
 private fun SkipButton(
+    stringRes: Int,
+    onClick: () -> Unit,
     skipButtonFocusRequester: FocusRequester,
-    viewModel: PlayerActivityViewModel,
-    segment: FindroidSegment,
 ) {
     Box(
         modifier = Modifier
@@ -315,9 +316,7 @@ private fun SkipButton(
         contentAlignment = Alignment.BottomEnd,
     ) {
         Button(
-            onClick = {
-                viewModel.skipSegment(segment)
-            },
+            onClick = onClick,
             modifier = Modifier.focusRequester(skipButtonFocusRequester),
             glow = ButtonDefaults.glow(
                 focusedGlow = Glow(
@@ -332,7 +331,7 @@ private fun SkipButton(
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
-                text = stringResource(viewModel.getSkipButtonTextStringId(segment)),
+                text = stringResource(stringRes),
                 color = Color.Black,
             )
         }

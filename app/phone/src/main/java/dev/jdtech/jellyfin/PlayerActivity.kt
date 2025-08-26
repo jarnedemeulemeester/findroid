@@ -155,7 +155,7 @@ class PlayerActivity : BasePlayerActivity() {
                             // Media segment
                             currentSegment?.let { segment ->
                                 // Skip Button - text
-                                skipSegmentButton.text = getString(viewModel.getSkipButtonTextStringId(segment))
+                                skipSegmentButton.text = getString(currentSkipButtonStringRes)
                                 // Skip Button - visibility
                                 skipSegmentButton.isVisible = !isInPictureInPictureMode
                                 if (skipSegmentButton.isVisible) {

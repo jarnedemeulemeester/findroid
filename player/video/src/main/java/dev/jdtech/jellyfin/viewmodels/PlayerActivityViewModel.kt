@@ -61,6 +61,7 @@ constructor(
         UiState(
             currentItemTitle = "",
             currentSegment = null,
+            currentSkipButtonStringRes = R.string.player_controls_skip_intro,
             currentTrickplay = null,
             currentChapters = emptyList(),
             fileLoaded = false,
@@ -74,6 +75,7 @@ constructor(
     data class UiState(
         val currentItemTitle: String,
         val currentSegment: FindroidSegment?,
+        val currentSkipButtonStringRes: Int,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
@@ -438,7 +440,7 @@ constructor(
             skipSegment(currentSegment)
         } else if (segmentsSkipButtonTypes.contains(currentSegment.type.toString())) {
             // Skip Button segment
-            _uiState.update { it.copy(currentSegment = currentSegment) }
+            _uiState.update { it.copy(currentSegment = currentSegment, currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment)) }
         } else {
             _uiState.update { it.copy(currentSegment = null) }
         }
@@ -466,7 +468,7 @@ constructor(
         }
     }
 
-    fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
+    private fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
         return when (shouldSkipToNextEpisode(segment)) {
             true -> R.string.player_controls_next_episode
             false -> when (segment.type) {
