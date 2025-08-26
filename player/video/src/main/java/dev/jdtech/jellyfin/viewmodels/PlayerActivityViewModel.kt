@@ -421,10 +421,14 @@ constructor(
 
         val milliSeconds = player.currentPosition
 
-        // Get current segment, - 1 second to avoid showing button after segment ends
-        val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 1000L) }
+        // Get current segment, - 100 milliseconds to avoid showing button after segment ends
+        val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 100L) }
 
         if (currentSegment == null) {
+            // Remove button if not pressed and there is no current segment
+            if (_uiState.value.currentSegment != null) {
+                _uiState.update { it.copy(currentSegment = null) }
+            }
             return
         }
 
