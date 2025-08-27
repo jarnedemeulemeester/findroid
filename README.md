@@ -58,7 +58,7 @@ I am developing this application in my spare time.
 - Chromecast support
 
 ## Translating
-[JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
+[JDTech Weblate](https://weblate.jdtech.dev) is a self hosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
 [![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\

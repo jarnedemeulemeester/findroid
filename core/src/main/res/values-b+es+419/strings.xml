@@ -64,7 +64,7 @@
     <string name="offline_mode_icon">Icono de modo desconectado</string>
     <string name="downloading_error">Ocurrió un error al descargar</string>
     <string name="no_server_connection">Sin conexión al servidor Jellyfin, para ver desconectado habilite el Modo desconectado</string>
-    <string name="offline_mode_go_online">Cambiar a en linea</string>
+    <string name="offline_mode_go_online">Cambiar a en línea</string>
     <string name="select_storage_location">Elija la ubicación de almacenamiento</string>
     <string name="storage_unavailable">La ubicación de almacenamiento no está disponible</string>
     <string name="internal">Interno</string>

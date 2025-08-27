@@ -1,6 +1,6 @@
 <resources>
     <string name="select_audio_track">Select audio track</string>
-    <string name="select_subtile_track">Select subtitle track</string>
+    <string name="select_subtitle_track">Select subtitle track</string>
     <string name="select_playback_speed">Select playback speed</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
