@@ -384,7 +384,12 @@ constructor(
     }
 
     private suspend fun getSegments(itemId: UUID) {
-        currentMediaItemSegments = jellyfinRepository.getSegments(itemId)
+        try {
+            currentMediaItemSegments = jellyfinRepository.getSegments(itemId)
+        } catch (e: Exception) {
+            currentMediaItemSegments = emptyList()
+            Timber.e(e)
+        }
     }
 
     private suspend fun getTrickplay(item: PlayerItem) {
