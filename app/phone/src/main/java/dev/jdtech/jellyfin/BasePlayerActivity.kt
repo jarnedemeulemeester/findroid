@@ -46,8 +46,9 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         if (isInPictureInPictureMode) {
             wasPip = true
         } else {
-            viewModel.playWhenReady = viewModel.player.playWhenReady == true
+            viewModel.playWhenReady = viewModel.player.playWhenReady
             viewModel.player.playWhenReady = false
+            viewModel.updatePlaybackProgress()
         }
     }
 
