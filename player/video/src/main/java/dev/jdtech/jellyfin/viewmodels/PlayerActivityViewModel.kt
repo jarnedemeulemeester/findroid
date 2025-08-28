@@ -3,8 +3,6 @@ package dev.jdtech.jellyfin.viewmodels
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +30,6 @@ import dev.jdtech.jellyfin.settings.domain.Constants
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,16 +87,14 @@ constructor(
     private var currentMediaItemSegments: List<FindroidSegment> = emptyList()
 
     // Segments preferences
-    private var segmentsSkipButton: Boolean = false
+    var segmentsSkipButton: Boolean = false
     private var segmentsSkipButtonTypes: Set<String> = emptySet()
     var segmentsSkipButtonDuration: Long = 0L
-    private var segmentsAutoSkip: Boolean = false
+    var segmentsAutoSkip: Boolean = false
     private var segmentsAutoSkipTypes: Set<String> = emptySet()
     private var segmentsAutoSkipMode: String = "always"
 
     var playbackSpeed: Float = 1f
-
-    private val handler = Handler(Looper.getMainLooper())
 
     var isInPictureInPictureMode: Boolean = false
 
@@ -205,7 +200,6 @@ constructor(
             )
             player.prepare()
             player.play()
-            pollPosition(player)
         }
     }
 
@@ -235,37 +229,62 @@ constructor(
         player.release()
     }
 
-    private fun pollPosition(player: Player) {
-        val playbackProgressRunnable = object : Runnable {
-            override fun run() {
-                savedStateHandle["position"] = player.currentPosition
-                viewModelScope.launch {
-                    if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
-                        val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                        try {
-                            jellyfinRepository.postPlaybackProgress(
-                                itemId,
-                                player.currentPosition.times(10000),
-                                !player.isPlaying,
-                            )
-                        } catch (e: Exception) {
-                            Timber.e(e)
-                        }
-                    }
+    fun updatePlaybackProgress() {
+        Timber.d("Updating playback progress")
+        viewModelScope.launch(Dispatchers.IO) {
+            savedStateHandle["position"] = player.currentPosition
+            if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
+                try {
+                    jellyfinRepository.postPlaybackProgress(
+                        itemId,
+                        player.currentPosition.times(10000),
+                        !player.isPlaying,
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
-                handler.postDelayed(this, 5000L)
             }
         }
-        val segmentCheckRunnable = object : Runnable {
-            override fun run() {
-                updateCurrentSegment()
-                handler.postDelayed(this, 1000L)
+    }
+
+    fun updateCurrentSegment() {
+        Timber.d("Updating current segment")
+        viewModelScope.launch(Dispatchers.Default) {
+            if (currentMediaItemSegments.isEmpty()) {
+                return@launch
+            }
+
+            val milliSeconds = player.currentPosition
+
+            // Get current segment, - 100 milliseconds to avoid showing button after segment ends
+            val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 100L) }
+
+            if (currentSegment == null) {
+                // Remove button if not pressed and there is no current segment
+                if (_uiState.value.currentSegment != null) {
+                    _uiState.update { it.copy(currentSegment = null) }
+                }
+                return@launch
+            }
+
+            Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
+
+            if (segmentsAutoSkip && segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
+                (
+                        segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                                (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
+                        )
+            ) {
+                // Auto Skip segment
+                skipSegment(currentSegment)
+            } else if (segmentsSkipButtonTypes.contains(currentSegment.type.toString())) {
+                // Skip Button segment
+                _uiState.update { it.copy(currentSegment = currentSegment, currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment)) }
+            } else {
+                _uiState.update { it.copy(currentSegment = null) }
             }
         }
-        if (segmentsSkipButton || segmentsAutoSkip) {
-            handler.post(segmentCheckRunnable)
-        }
-        handler.post(playbackProgressRunnable)
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -355,7 +374,6 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         Timber.d("Clearing Player ViewModel")
-        handler.removeCallbacksAndMessages(null)
         releasePlayer()
     }
 
@@ -416,42 +434,6 @@ constructor(
                 }
             }
             _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
-        }
-    }
-
-    private fun updateCurrentSegment() {
-        if (currentMediaItemSegments.isEmpty()) {
-            return
-        }
-
-        val milliSeconds = player.currentPosition
-
-        // Get current segment, - 100 milliseconds to avoid showing button after segment ends
-        val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 100L) }
-
-        if (currentSegment == null) {
-            // Remove button if not pressed and there is no current segment
-            if (_uiState.value.currentSegment != null) {
-                _uiState.update { it.copy(currentSegment = null) }
-            }
-            return
-        }
-
-        Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
-
-        if (segmentsAutoSkip && segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
-            (
-                segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                    (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
-                )
-        ) {
-            // Auto Skip segment
-            skipSegment(currentSegment)
-        } else if (segmentsSkipButtonTypes.contains(currentSegment.type.toString())) {
-            // Skip Button segment
-            _uiState.update { it.copy(currentSegment = currentSegment, currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment)) }
-        } else {
-            _uiState.update { it.copy(currentSegment = null) }
         }
     }
 
