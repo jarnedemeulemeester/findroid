@@ -46,8 +46,6 @@
     <string name="player_gestures_vb_summary">Vuốt lên và xuống ở phía bên phải màn hình để điều chỉnh âm lượng, và ở bên trái đề điều chỉnh độ sáng màn hình</string>
     <string name="dynamic_colors_summary">Dùng hệ thống đổi màu động của ngôn ngữ thiết kế Material You (chỉ khả dụng cho Android 12+)</string>
     <string name="settings_connect_timeout">Thời gian kết nối hết hạn</string>
-    <string name="pref_player_intro_skipper">Bỏ qua đoạn mở đầu</string>
-    <string name="pref_player_intro_skipper_summary">Yêu cầu phần mở rộng \"Intro Skipper\" của jumoog đã được cài đặt trên máy chủ</string>
     <string name="player_gestures_seek_summary">Vuốt ngang để tua tới hoặc tua lui</string>
     <string name="player_gestures_seek">Cử chỉ tua</string>
     <string name="offline_mode">Chế độ Ngoại tuyến</string>

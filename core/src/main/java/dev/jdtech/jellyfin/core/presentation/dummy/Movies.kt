@@ -55,7 +55,7 @@ val dummyMovie = FindroidMovie(
     endDate = null,
     trailer = "https://www.youtube.com/watch?v=puKWa8hrvA8",
     images = FindroidImages(),
-    chapters = null,
+    chapters = emptyList(),
     trickplayInfo = null,
 )
 

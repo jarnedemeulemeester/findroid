@@ -45,8 +45,6 @@
     <string name="settings_use_cache_summary">Cache de imagens em memória para acelerar o tempo de carregamento. Terá efeito após o reinício da aplicação.</string>
     <string name="pref_player_mpv_vo">Saida de video</string>
     <string name="pref_player_mpv_ao">Saída de áudio</string>
-    <string name="pref_player_intro_skipper">Capitão de introdução</string>
-    <string name="pref_player_intro_skipper_summary">Requer que o plugin Confused Polar Bears Intro Skipper esteja instalado no servidor</string>
     <string name="player_gestures_seek">Procure gesto</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para avançar ou retroceder</string>
     <string name="amoled_theme">Tema escuro AMOLED</string>

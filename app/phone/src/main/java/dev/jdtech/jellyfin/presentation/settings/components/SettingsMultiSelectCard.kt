@@ -106,11 +106,11 @@ private fun SettingsSelectCardPreview() {
     FindroidTheme {
         SettingsMultiSelectCard(
             preference = PreferenceMultiSelect(
-                nameStringResource = SettingsR.string.app_language,
+                nameStringResource = SettingsR.string.pref_player_media_segments_skip_button_type,
                 iconDrawableId = CoreR.drawable.ic_speaker,
                 backendPreference = Preference("", setOf("INTRO", "OUTRO")),
-                options = SettingsR.array.languages,
-                optionValues = SettingsR.array.languages_values,
+                options = SettingsR.array.media_segments_type,
+                optionValues = SettingsR.array.media_segments_type_values,
             ),
             onUpdate = {},
         )

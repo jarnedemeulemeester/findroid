@@ -24,4 +24,28 @@
         <item>opensles</item>
         <item>aaudio</item>
     </string-array>
+    <string-array name="media_segments_auto_skip">
+        <item>@string/media_segments_auto_skip_pip</item>
+        <item>@string/media_segments_auto_skip_always</item>
+    </string-array>
+    <string-array name="media_segments_auto_skip_values">
+        <item>pip</item>
+        <item>always</item>
+    </string-array>
+    <string-array name="media_segments_type">
+        <item>@string/media_segments_type_intro</item>
+        <item>@string/media_segments_type_outro</item>
+        <item>@string/media_segments_type_recap</item>
+        <item>@string/media_segments_type_preview</item>
+        <item>@string/media_segments_type_commercial</item>
+        <item>@string/media_segments_type_unknown</item>
+    </string-array>
+    <string-array name="media_segments_type_values">
+        <item>INTRO</item>
+        <item>OUTRO</item>
+        <item>RECAP</item>
+        <item>PREVIEW</item>
+        <item>COMMERCIAL</item>
+        <item>UNKNOWN</item>
+    </string-array>
 </resources>

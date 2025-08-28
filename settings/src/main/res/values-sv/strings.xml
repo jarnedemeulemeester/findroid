@@ -52,8 +52,6 @@
     <string name="settings_category_network">Nätverk</string>
     <string name="settings_socket_timeout">Timeout för socket</string>
     <string name="pref_player_mpv_hwdec">Hårdvaruavkodning</string>
-    <string name="pref_player_intro_skipper">Introskippare</string>
-    <string name="pref_player_intro_skipper_summary">Kräver jumoog Intro Skipper-plugin installerat på servern</string>
     <string name="offline_mode">Offlineläge</string>
     <string name="pref_player_trickplay_summary">Visa förhandsgranskningsbilder medan du skrubbar</string>
     <string name="users">Användare</string>

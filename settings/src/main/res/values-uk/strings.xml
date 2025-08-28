@@ -35,8 +35,6 @@
     <string name="pref_player_mpv_hwdec">Апаратне декодування</string>
     <string name="pref_player_mpv_vo">Виведення відео</string>
     <string name="pref_player_mpv_ao">Виведення аудіо</string>
-    <string name="pref_player_intro_skipper">Intro Skipper (Пропуск інтро)</string>
-    <string name="pref_player_intro_skipper_summary">Потребує встановлення на сервері плагіна Intro Skipper від jumoog</string>
     <string name="extra_info">Відображати додаткову інформацію</string>
     <string name="offline_mode">Автономний режим</string>
     <string name="title_settings">Налаштування</string>

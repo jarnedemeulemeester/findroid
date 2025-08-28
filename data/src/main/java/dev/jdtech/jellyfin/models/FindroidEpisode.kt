@@ -32,7 +32,7 @@ data class FindroidEpisode(
     override val unplayedItemCount: Int? = null,
     val missing: Boolean = false,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>?,
+    override val chapters: List<FindroidChapter>,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
 ) : FindroidItem, FindroidSources
 
@@ -108,7 +108,7 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         communityRating = communityRating,
         people = emptyList(),
         images = FindroidImages(),
-        chapters = chapters,
+        chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )
 }
