@@ -17,4 +17,5 @@
     <string name="none">Ingen</string>
     <string name="player_controls_progress">Process indikator</string>
     <string name="player_controls_rewind">Spol tilbage</string>
+    <string name="player_controls_skip_credits">Spring over credits</string>
 </resources>
