@@ -98,4 +98,6 @@
     <string name="title_download">Descargas</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="season_episode">Temporada %1$d - Episodio %2$d</string>
+    <string name="none">Ninguno</string>
+    <string name="manage_servers">Administrar servidores</string>
 </resources>
