@@ -48,6 +48,7 @@ class PlayerActivityViewModel
 @Inject
 constructor(
     private val application: Application,
+    private val playlistManager: PlaylistManager,
     private val jellyfinRepository: JellyfinRepository,
     private val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
@@ -78,7 +79,7 @@ constructor(
         val fileLoaded: Boolean,
     )
 
-    private var items: Array<PlayerItem> = arrayOf()
+    private var items: MutableList<PlayerItem> = mutableListOf()
 
     private val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
@@ -151,37 +152,20 @@ constructor(
     }
 
     fun initializePlayer(
-        items: Array<PlayerItem>,
+        itemId: UUID,
     ) {
-        this.items = items
         player.addListener(this)
 
         viewModelScope.launch {
+            val startItem = playlistManager.getInitialItem(itemId = itemId, 0, false)
+
+            items = listOfNotNull(startItem).toMutableList()
+            currentMediaItemIndex = items.indexOf(startItem)
+
             val mediaItems = mutableListOf<MediaItem>()
             try {
                 for (item in items) {
-                    val streamUrl = item.mediaSourceUri
-                    val mediaSubtitles = item.externalSubtitles.map { externalSubtitle ->
-                        MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
-                            .setLabel(externalSubtitle.title.ifBlank { application.getString(R.string.external) })
-                            .setMimeType(externalSubtitle.mimeType)
-                            .setLanguage(externalSubtitle.language)
-                            .build()
-                    }
-
-                    Timber.d("Stream url: $streamUrl")
-                    val mediaItem =
-                        MediaItem.Builder()
-                            .setMediaId(item.itemId.toString())
-                            .setUri(streamUrl)
-                            .setMediaMetadata(
-                                MediaMetadata.Builder()
-                                    .setTitle(item.name)
-                                    .build(),
-                            )
-                            .setSubtitleConfigurations(mediaSubtitles)
-                            .build()
-                    mediaItems.add(mediaItem)
+                    mediaItems.add(item.toMediaItem())
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -195,12 +179,38 @@ constructor(
 
             player.setMediaItems(
                 mediaItems,
-                currentMediaItemIndex,
+                0,
                 startPosition,
             )
             player.prepare()
             player.play()
         }
+    }
+
+    private fun PlayerItem.toMediaItem(): MediaItem {
+        val streamUrl = mediaSourceUri
+        val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
+            MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                .setLabel(externalSubtitle.title.ifBlank { application.getString(R.string.external) })
+                .setMimeType(externalSubtitle.mimeType)
+                .setLanguage(externalSubtitle.language)
+                .build()
+        }
+
+        Timber.d("Stream url: $streamUrl")
+        val mediaItem =
+            MediaItem.Builder()
+                .setMediaId(itemId.toString())
+                .setUri(streamUrl)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(name)
+                        .build(),
+                )
+                .setSubtitleConfigurations(mediaSubtitles)
+                .build()
+
+        return mediaItem
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -209,7 +219,7 @@ constructor(
         val position = player.currentPosition
         val duration = player.duration
         GlobalScope.launch {
-            delay(1000L)
+            delay(200L)
             try {
                 jellyfinRepository.postPlaybackStop(
                     UUID.fromString(mediaId),
@@ -231,7 +241,7 @@ constructor(
 
     fun updatePlaybackProgress() {
         Timber.d("Updating playback progress")
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             savedStateHandle["position"] = player.currentPosition
             if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                 val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
@@ -250,7 +260,7 @@ constructor(
 
     fun updateCurrentSegment() {
         Timber.d("Updating current segment")
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Main) {
             if (currentMediaItemSegments.isEmpty()) {
                 return@launch
             }
@@ -272,9 +282,9 @@ constructor(
 
             if (segmentsAutoSkip && segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
                 (
-                        segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                                (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
-                        )
+                    segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                        (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
+                    )
             ) {
                 // Auto Skip segment
                 skipSegment(currentSegment)
@@ -321,6 +331,22 @@ constructor(
                         if (appPreferences.getValue(appPreferences.playerTrickplay)) {
                             getTrickplay(item)
                         }
+
+                        playlistManager.setCurrentMediaItemIndex(item.itemId)
+
+                        val previousItem = playlistManager.getPreviousPlayerItem()
+                        if (previousItem != null) {
+                            items.add(player.currentMediaItemIndex, previousItem)
+                            player.addMediaItem(player.currentMediaItemIndex, previousItem.toMediaItem())
+                        }
+
+                        val nextItem = playlistManager.getNextPlayerItem()
+                        if (nextItem != null) {
+                            items.add(player.currentMediaItemIndex + 1, nextItem)
+                            player.addMediaItem(player.currentMediaItemIndex + 1, nextItem.toMediaItem())
+                        }
+
+                        Timber.tag("PlayerItems").d(items.map { it.indexNumber }.toString())
                     }
             } catch (e: Exception) {
                 Timber.e(e)

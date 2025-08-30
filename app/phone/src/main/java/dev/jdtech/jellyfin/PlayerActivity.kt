@@ -39,7 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
@@ -48,6 +47,7 @@ import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 var isControlsLocked: Boolean = false
@@ -93,12 +93,7 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras!!.getParcelableArrayList("items", PlayerItem::class.java)!!.toTypedArray()
-        } else {
-            @Suppress("DEPRECATION")
-            intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
-        }
+        val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -332,7 +327,7 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
-        viewModel.initializePlayer(items)
+        viewModel.initializePlayer(itemId)
         hideSystemUI()
     }
 
@@ -341,7 +336,7 @@ class PlayerActivity : BasePlayerActivity() {
         setIntent(intent)
 
         val args: PlayerActivityArgs by navArgs()
-        viewModel.initializePlayer(args.items)
+        viewModel.initializePlayer(UUID.fromString(args.itemId))
     }
 
     override fun onUserLeaveHint() {

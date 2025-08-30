@@ -63,10 +63,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
-import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.getShowDateString
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -77,7 +74,6 @@ fun ShowScreen(
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -91,23 +87,6 @@ fun ShowScreen(
         viewModel.loadShow(showId = showId)
     }
 
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("items", ArrayList(event.items))
-                context.startActivity(intent)
-            }
-            is PlayerItemsEvent.PlayerItemsError -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     ShowScreenLayout(
         state = state,
         isLoadingPlayer = isLoadingPlayer,
@@ -115,13 +94,9 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    when (action.startFromBeginning) {
-                        true -> isLoadingRestartPlayer = true
-                        false -> isLoadingPlayer = true
-                    }
-                    state.show?.let { show ->
-                        playerViewModel.loadPlayerItems(show, startFromBeginning = action.startFromBeginning)
-                    }
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", showId.toString())
+                    context.startActivity(intent)
                 }
                 is ShowAction.PlayTrailer -> {
                     try {

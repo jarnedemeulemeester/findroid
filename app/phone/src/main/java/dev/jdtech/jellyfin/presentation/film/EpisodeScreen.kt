@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,10 +52,7 @@ import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
-import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -66,7 +62,6 @@ fun EpisodeScreen(
     navigateBack: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -78,23 +73,6 @@ fun EpisodeScreen(
         viewModel.loadEpisode(episodeId = episodeId)
     }
 
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("items", ArrayList(event.items))
-                context.startActivity(intent)
-            }
-            is PlayerItemsEvent.PlayerItemsError -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     EpisodeScreenLayout(
         state = state,
         isLoadingPlayer = isLoadingPlayer,
@@ -102,13 +80,9 @@ fun EpisodeScreen(
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    when (action.startFromBeginning) {
-                        true -> isLoadingRestartPlayer = true
-                        false -> isLoadingPlayer = true
-                    }
-                    state.episode?.let { episode ->
-                        playerViewModel.loadPlayerItems(episode, startFromBeginning = action.startFromBeginning)
-                    }
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", episodeId.toString())
+                    context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.NavigateToPerson -> navigateToPerson(action.personId)
