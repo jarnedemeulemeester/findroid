@@ -11,8 +11,8 @@
         android:label="activity_player"
         tools:layout="@layout/activity_player">
         <argument
-            android:name="items"
-            app:argType="dev.jdtech.jellyfin.models.PlayerItem[]" />
+            android:name="itemId"
+            app:argType="string" />
     </activity>
 
     <fragment

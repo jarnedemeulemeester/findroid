@@ -58,7 +58,6 @@ class MPVPlayer(
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
-    private var currentIndex = 0
     private lateinit var audioFocusRequest: AudioFocusRequest
     private val handler = Handler(context.mainLooper)
 
@@ -275,8 +274,7 @@ class MPVPlayer(
                 }
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
                 "playlist-current-pos" -> {
-                    currentIndex = value.toInt()
-                    if (currentIndex < 0) {
+                    if (value.toInt() < 0) {
                         return@post
                     }
                     listeners.sendEvent(EVENT_MEDIA_ITEM_TRANSITION) { listener ->
@@ -622,13 +620,14 @@ class MPVPlayer(
      * @param mediaItems The [MediaItems][MediaItem] to add.
      */
     override fun addMediaItems(index: Int, mediaItems: MutableList<MediaItem>) {
-        internalMediaItems.addAll(mediaItems)
+        internalMediaItems.addAll(index, mediaItems)
         mediaItems.forEach { mediaItem ->
             MPVLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
-                    "append",
+                    "insert-at",
+                    index.toString(),
                 ),
             )
         }
@@ -1057,7 +1056,7 @@ class MPVPlayer(
     }
 
     override fun getCurrentMediaItemIndex(): Int {
-        return currentIndex
+        return MPVLib.getPropertyInt("playlist-current-pos")
     }
 
     /**
