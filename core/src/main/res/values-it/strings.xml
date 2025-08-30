@@ -10,7 +10,7 @@
     <string name="retry">Riprova</string>
     <string name="genres">Generi</string>
     <string name="director">Regista</string>
-    <string name="cast_amp_crew">Cast</string>
+    <string name="cast_amp_crew"><![CDATA[Cast e troupe]]></string>
     <string name="seasons">Stagioni</string>
     <string name="play_button_description">Riproduci i contenuti multimediali</string>
     <string name="check_button_description">Segna come visto o non visto</string>
@@ -96,4 +96,8 @@
     <string name="title_download">Download</string>
     <string name="season_episode">Stagione %1$d - Episodio %2$d</string>
     <string name="sort_by_options_6">Casuale</string>
+    <string name="offline_mode">Modalità Offline</string>
+    <string name="not_set">Non impostato</string>
+    <string name="none">Nessuno</string>
+    <string name="manage_servers">Gestisci server</string>
 </resources>
