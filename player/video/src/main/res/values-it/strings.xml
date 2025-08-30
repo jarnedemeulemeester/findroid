@@ -17,4 +17,10 @@
     <string name="player_controls_skip_intro">Salta intro</string>
     <string name="player_controls_picture_in_picture">Attiva picture in picture</string>
     <string name="none">Nessuno</string>
+    <string name="player_controls_skip_outro">Salta outro</string>
+    <string name="player_controls_next_episode">Prossimo episodio</string>
+    <string name="player_controls_skip_recap">Salta riepilogo</string>
+    <string name="player_controls_skip_preview">Salta anteprima</string>
+    <string name="player_controls_skip_commercial">Salta pubblicità</string>
+    <string name="player_controls_skip_unknown">Salta</string>
 </resources>
