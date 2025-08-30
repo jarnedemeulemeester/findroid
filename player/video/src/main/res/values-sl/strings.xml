@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="select_audio_track">Izberite zvočno sled</string>
-    <string name="select_subtile_track">Izberite podnapise</string>
+    <string name="select_subtitle_track">Izberite podnapise</string>
     <string name="select_playback_speed">Izberite hitrost predvajanja</string>
     <string name="select_a_version">Izberite različico</string>
     <string name="external">Zunanjo</string>

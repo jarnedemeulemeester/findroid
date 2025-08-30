@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/transparent_circle_background"
-                android:contentDescription="@string/select_subtile_track"
+                android:contentDescription="@string/select_subtitle_track"
                 android:padding="16dp"
                 android:src="@drawable/ic_closed_caption"
                 app:tint="@android:color/white" />

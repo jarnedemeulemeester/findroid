@@ -2,7 +2,7 @@
 <resources>
     <string name="select_a_version">버전 선택</string>
     <string name="select_audio_track">오디오 트랙 선택</string>
-    <string name="select_subtile_track">자막 트랙 선택</string>
+    <string name="select_subtitle_track">자막 트랙 선택</string>
     <string name="select_playback_speed">재생 속도 선택</string>
     <string name="external">외부</string>
     <string name="player_controls_rewind">되감기</string>

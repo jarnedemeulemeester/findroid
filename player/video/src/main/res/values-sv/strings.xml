@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_subtile_track">Välj textningsspår</string>
+    <string name="select_subtitle_track">Välj textningsspår</string>
     <string name="select_playback_speed">Välj uppspelningshastighet</string>
     <string name="select_a_version">Välj en version</string>
     <string name="external">Extern</string>

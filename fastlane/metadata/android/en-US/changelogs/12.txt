@@ -5,7 +5,7 @@ Fixes:
 - Fix play icon color in settings
 - Fix mpv subfont.ttf not loading
   - This fixes mpv not displaying SubRip Text (SRT) subtitles
-- Fix external subtiles not working in mpv
+- Fix external subtitles not working in mpv
 - Fix crash when using swiping gesture if video is not loaded yet
 - Fix player crashing when no PlayerItems are passed
 - Fix only showing 1 discovered server

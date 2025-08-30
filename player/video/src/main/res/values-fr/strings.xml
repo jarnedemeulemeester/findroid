@@ -2,7 +2,7 @@
 <resources>
     <string name="select_a_version">Choisissez une version</string>
     <string name="select_audio_track">Choix de la piste audio</string>
-    <string name="select_subtile_track">Choix de la piste des sous-titres</string>
+    <string name="select_subtitle_track">Choix de la piste des sous-titres</string>
     <string name="select_playback_speed">Choisir la vitesse de lecture</string>
     <string name="external">Externe</string>
     <string name="player_controls_exit">Quitter le lecteur</string>
