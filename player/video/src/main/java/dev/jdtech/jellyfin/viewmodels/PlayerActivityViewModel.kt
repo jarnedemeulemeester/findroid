@@ -12,7 +12,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -107,43 +106,37 @@ constructor(
         segmentsAutoSkipTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
         segmentsAutoSkipMode = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
 
-        if (appPreferences.getValue(appPreferences.playerMpv)) {
-            val trackSelectionParameters = TrackSelectionParameters.Builder()
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
+
+        trackSelector.setParameters(
+            trackSelector.buildUponParameters()
+                .setTunnelingEnabled(true)
                 .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
-                .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage))
+                .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage)),
+        )
+
+        if (appPreferences.getValue(appPreferences.playerMpv)) {
+            player = MPVPlayer.Builder(application)
+                .setAudioAttributes(audioAttributes, true)
+                .setTrackSelectionParameters(trackSelector.parameters)
+                .setSeekBackIncrementMs(appPreferences.getValue(appPreferences.playerSeekBackInc))
+                .setSeekForwardIncrementMs(appPreferences.getValue(appPreferences.playerSeekForwardInc))
+                .setPauseAtEndOfMediaItems(true)
+                .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
+                .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
+                .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
                 .build()
-            player = MPVPlayer(
-                context = application,
-                requestAudioFocus = true,
-                trackSelectionParameters = trackSelectionParameters,
-                seekBackIncrement = appPreferences.getValue(appPreferences.playerSeekBackInc),
-                seekForwardIncrement = appPreferences.getValue(appPreferences.playerSeekForwardInc),
-                videoOutput = appPreferences.getValue(appPreferences.playerMpvVo),
-                audioOutput = appPreferences.getValue(appPreferences.playerMpvAo),
-                hwDec = appPreferences.getValue(appPreferences.playerMpvHwdec),
-                pauseAtEndOfMediaItems = true,
-            )
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application).setExtensionRendererMode(
                     DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON,
                 )
-            trackSelector.setParameters(
-                trackSelector.buildUponParameters()
-                    .setTunnelingEnabled(true)
-                    .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
-                    .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage)),
-            )
             player = ExoPlayer.Builder(application, renderersFactory)
+                .setAudioAttributes(audioAttributes, true)
                 .setTrackSelector(trackSelector)
-                .setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                        .setUsage(C.USAGE_MEDIA)
-                        .build(),
-                    /* handleAudioFocus = */
-                    true,
-                )
                 .setSeekBackIncrementMs(appPreferences.getValue(appPreferences.playerSeekBackInc))
                 .setSeekForwardIncrementMs(appPreferences.getValue(appPreferences.playerSeekForwardInc))
                 .setPauseAtEndOfMediaItems(true)
