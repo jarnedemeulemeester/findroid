@@ -24,9 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -70,17 +67,12 @@ fun MovieScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var isLoadingPlayer by remember { mutableStateOf(false) }
-    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
-
     LaunchedEffect(true) {
         viewModel.loadMovie(movieId = movieId)
     }
 
     MovieScreenLayout(
         state = state,
-        isLoadingPlayer = isLoadingPlayer,
-        isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
@@ -107,8 +99,6 @@ fun MovieScreen(
 @Composable
 private fun MovieScreenLayout(
     state: MovieState,
-    isLoadingPlayer: Boolean,
-    isLoadingRestartPlayer: Boolean,
     onAction: (MovieAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
@@ -231,8 +221,6 @@ private fun MovieScreenLayout(
                         },
                         onDownloadClick = {},
                         modifier = Modifier.fillMaxWidth(),
-                        isLoadingPlayer = isLoadingPlayer,
-                        isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(
@@ -304,8 +292,6 @@ private fun EpisodeScreenLayoutPreview() {
                 movie = dummyMovie,
                 videoMetadata = dummyVideoMetadata,
             ),
-            isLoadingPlayer = false,
-            isLoadingRestartPlayer = false,
             onAction = {},
         )
     }

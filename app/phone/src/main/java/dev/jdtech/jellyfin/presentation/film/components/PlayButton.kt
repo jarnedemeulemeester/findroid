@@ -2,12 +2,9 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +29,6 @@ fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isLoading: Boolean = false,
 ) {
     val runtimeMinutes by remember(item.playbackPositionTicks) {
         mutableLongStateOf(item.playbackPositionTicks.div(600000000))
@@ -43,20 +39,10 @@ fun PlayButton(
         modifier = modifier.padding(end = 4.dp),
         enabled = enabled,
     ) {
-        when (isLoading) {
-            true -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = LocalContentColor.current,
-                )
-            }
-            false -> {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_play),
-                    contentDescription = null,
-                )
-            }
-        }
+        Icon(
+            painter = painterResource(CoreR.drawable.ic_play),
+            contentDescription = null,
+        )
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
         Text(
             text = if (runtimeMinutes > 0) {
