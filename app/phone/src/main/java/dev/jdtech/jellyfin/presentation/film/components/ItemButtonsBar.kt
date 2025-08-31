@@ -3,8 +3,6 @@ package dev.jdtech.jellyfin.presentation.film.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -36,8 +34,6 @@ fun ItemButtonsBar(
     onDownloadClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
-    isLoadingPlayer: Boolean = false,
-    isLoadingRestartPlayer: Boolean = false,
 ) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
@@ -65,30 +61,17 @@ fun ItemButtonsBar(
                     weight = 1f,
                     fill = !windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND),
                 ),
-                enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
-                isLoading = isLoadingPlayer,
             )
             if (item.playbackPositionTicks.div(600000000) > 0) {
                 FilledTonalIconButton(
                     onClick = {
                         onPlayClick(true)
                     },
-                    enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
                 ) {
-                    when (isLoadingRestartPlayer) {
-                        true -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = LocalContentColor.current,
-                            )
-                        }
-                        false -> {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                                contentDescription = null,
-                            )
-                        }
-                    }
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                        contentDescription = null,
+                    )
                 }
             }
         }

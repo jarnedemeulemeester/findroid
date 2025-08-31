@@ -23,9 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -66,17 +63,12 @@ fun EpisodeScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var isLoadingPlayer by remember { mutableStateOf(false) }
-    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
-
     LaunchedEffect(true) {
         viewModel.loadEpisode(episodeId = episodeId)
     }
 
     EpisodeScreenLayout(
         state = state,
-        isLoadingPlayer = isLoadingPlayer,
-        isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
@@ -96,8 +88,6 @@ fun EpisodeScreen(
 @Composable
 private fun EpisodeScreenLayout(
     state: EpisodeState,
-    isLoadingPlayer: Boolean,
-    isLoadingRestartPlayer: Boolean,
     onAction: (EpisodeAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
@@ -212,8 +202,6 @@ private fun EpisodeScreenLayout(
                         onTrailerClick = {},
                         onDownloadClick = {},
                         modifier = Modifier.fillMaxWidth(),
-                        isLoadingPlayer = isLoadingPlayer,
-                        isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(
@@ -278,8 +266,6 @@ private fun EpisodeScreenLayoutPreview() {
                 episode = dummyEpisode,
                 videoMetadata = dummyVideoMetadata,
             ),
-            isLoadingPlayer = false,
-            isLoadingRestartPlayer = false,
             onAction = {},
         )
     }

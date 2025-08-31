@@ -24,9 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -66,17 +63,12 @@ fun SeasonScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var isLoadingPlayer by remember { mutableStateOf(false) }
-    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
-
     LaunchedEffect(true) {
         viewModel.loadSeason(seasonId = seasonId)
     }
 
     SeasonScreenLayout(
         state = state,
-        isLoadingPlayer = isLoadingPlayer,
-        isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
             when (action) {
                 is SeasonAction.Play -> {
@@ -96,8 +88,6 @@ fun SeasonScreen(
 @Composable
 private fun SeasonScreenLayout(
     state: SeasonState,
-    isLoadingPlayer: Boolean,
-    isLoadingRestartPlayer: Boolean,
     onAction: (SeasonAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
@@ -186,8 +176,6 @@ private fun SeasonScreenLayout(
                                 end = paddingEnd,
                             )
                             .fillMaxWidth(),
-                        isLoadingPlayer = isLoadingPlayer,
-                        isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                 }
                 items(
@@ -249,8 +237,6 @@ private fun SeasonScreenLayoutPreview() {
             state = SeasonState(
                 season = dummySeason,
             ),
-            isLoadingPlayer = false,
-            isLoadingRestartPlayer = false,
             onAction = {},
         )
     }
