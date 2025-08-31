@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.mpv
 import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
@@ -29,6 +28,8 @@ import androidx.media3.common.TrackGroup
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
+import androidx.media3.common.audio.AudioFocusRequestCompat
+import androidx.media3.common.audio.AudioManagerCompat
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.Clock
 import androidx.media3.common.util.ListenerSet
@@ -46,20 +47,79 @@ import java.util.concurrent.CopyOnWriteArraySet
 @Suppress("SpellCheckingInspection")
 class MPVPlayer(
     context: Context,
-    private val requestAudioFocus: Boolean,
-    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.Builder().build(),
+    private val audioAttributes: AudioAttributes = AudioAttributes.DEFAULT,
+    private val handleAudioFocus: Boolean = true,
+    private var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.DEFAULT,
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
-    videoOutput: String = "gpu-next",
+    private val pauseAtEndOfMediaItems: Boolean = false,
+    videoOutput: String = "gpu",
     audioOutput: String = "audiotrack",
     hwDec: String = "mediacodec",
-    private val pauseAtEndOfMediaItems: Boolean = false,
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
-    private lateinit var audioFocusRequest: AudioFocusRequest
+    private lateinit var audioFocusRequest: AudioFocusRequestCompat
     private val handler = Handler(context.mainLooper)
+
+    private constructor(builder: Builder) : this(
+        context = builder.context,
+        audioAttributes = builder.audioAttributes,
+        handleAudioFocus = builder.handleAudioFocus,
+        trackSelectionParameters = builder.trackSelectionParameters,
+        seekBackIncrement = builder.seekBackIncrementMs,
+        seekForwardIncrement = builder.seekForwardIncrementMs,
+        pauseAtEndOfMediaItems = builder.pauseAtEndOfMediaItems,
+        videoOutput = builder.videoOutput,
+        audioOutput = builder.audioOutput,
+        hwDec = builder.hwDec,
+    )
+
+    class Builder(
+        val context: Context,
+    ) {
+        var audioAttributes: AudioAttributes = AudioAttributes.DEFAULT
+            private set
+
+        var handleAudioFocus: Boolean = true
+            private set
+
+        var trackSelectionParameters: TrackSelectionParameters = TrackSelectionParameters.DEFAULT
+            private set
+
+        var seekBackIncrementMs: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS
+            private set
+
+        var seekForwardIncrementMs: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS
+            private set
+
+        var pauseAtEndOfMediaItems: Boolean = false
+            private set
+
+        var videoOutput: String = "gpu"
+            private set
+
+        var audioOutput: String = "audiotrack"
+            private set
+
+        var hwDec: String = "mediacodec"
+            private set
+
+        fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) = apply {
+            this.audioAttributes = audioAttributes
+            this.handleAudioFocus = handleAudioFocus
+        }
+        fun setTrackSelectionParameters(trackSelectionParameters: TrackSelectionParameters) = apply { this.trackSelectionParameters = trackSelectionParameters }
+        fun setSeekBackIncrementMs(seekBackIncrementMs: Long) = apply { this.seekBackIncrementMs = seekBackIncrementMs }
+        fun setSeekForwardIncrementMs(seekForwardIncrementMs: Long) = apply { this.seekForwardIncrementMs = seekForwardIncrementMs }
+        fun setPauseAtEndOfMediaItems(pauseAtEndOfMediaItems: Boolean) = apply { this.pauseAtEndOfMediaItems = pauseAtEndOfMediaItems }
+        fun setVideoOutput(videoOutput: String) = apply { this.videoOutput = videoOutput }
+        fun setAudioOutput(audioOutput: String) = apply { this.audioOutput = audioOutput }
+        fun setHwDec(hwDec: String) = apply { this.hwDec = hwDec }
+
+        fun build() = MPVPlayer(this)
+    }
 
     init {
         require(context is Application)
@@ -139,16 +199,12 @@ class MPVPlayer(
             MPVLib.observeProperty(name, format)
         }
 
-        if (requestAudioFocus) {
-            val audioAttributes = android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
-                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MOVIE)
-                .build()
-            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+        if (handleAudioFocus) {
+            audioFocusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
                 .setAudioAttributes(audioAttributes)
                 .setOnAudioFocusChangeListener(this)
                 .build()
-            val res = audioManager.requestAudioFocus(audioFocusRequest)
+            val res = AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest)
             if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 MPVLib.setPropertyBoolean("pause", true)
             }
@@ -788,8 +844,8 @@ class MPVPlayer(
             )
             if (isPlayerReady) {
                 // Request audio focus when starting playback
-                if (requestAudioFocus && playWhenReady) {
-                    val res = audioManager.requestAudioFocus(audioFocusRequest)
+                if (handleAudioFocus && playWhenReady) {
+                    val res = AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest)
                     if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                         MPVLib.setPropertyBoolean("pause", true)
                     } else {
@@ -981,8 +1037,8 @@ class MPVPlayer(
      * player must not be used after calling this method.
      */
     override fun release() {
-        if (requestAudioFocus) {
-            audioManager.abandonAudioFocusRequest(audioFocusRequest)
+        if (handleAudioFocus) {
+            AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
         }
         resetInternalState()
         MPVLib.removeObserver(this)
