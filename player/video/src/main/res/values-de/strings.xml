@@ -10,11 +10,17 @@
     <string name="player_controls_fast_forward">Vorspulen</string>
     <string name="player_controls_skip_intro">Intro überspringen</string>
     <string name="player_controls_lock">Player sperren</string>
-    <string name="player_controls_skip_back">Zurückspulen</string>
+    <string name="player_controls_skip_back">Zurück springen</string>
     <string name="player_controls_play_pause">Starten/Anhalten</string>
     <string name="player_controls_skip_forward">Vor springen</string>
-    <string name="player_controls_progress">Fortschrittsanzeige</string>
+    <string name="player_controls_progress">Fortschrittsbalken</string>
     <string name="none">Keine</string>
     <string name="player_controls_picture_in_picture">Bild-in-Bild öffnen</string>
     <string name="player_trickplay">Pseudovideo</string>
+    <string name="player_controls_skip_outro">Outro überspringen</string>
+    <string name="player_controls_next_episode">Nächste Episode</string>
+    <string name="player_controls_skip_recap">Zusammenfassung überspringen</string>
+    <string name="player_controls_skip_preview">Vorschau überspringen</string>
+    <string name="player_controls_skip_commercial">Werbung überspringen</string>
+    <string name="player_controls_skip_unknown">Überspringen</string>
 </resources>
