@@ -236,12 +236,14 @@ class MPVPlayer(
     // MPV Custom
     private var isPlayerReady: Boolean = false
     private var isSeekable: Boolean = false
+    private var currentMediaItemIndex: Int = 0
     private var currentPositionMs: Long? = null
     private var currentDurationMs: Long? = null
     private var currentCacheDurationMs: Long? = null
     private var initialCommands = mutableListOf<Array<String>>()
     private var initialIndex: Int = 0
     private var initialSeekTo: Long = 0L
+    private var oldMediaItem: MediaItem? = null
 
     // mpv events
     override fun eventProperty(property: String) {
@@ -318,8 +320,9 @@ class MPVPlayer(
             when (property) {
                 "time-pos" -> currentPositionMs = value * C.MILLIS_PER_SECOND
                 "duration" -> {
-                    if (currentDurationMs != value * C.MILLIS_PER_SECOND) {
-                        currentDurationMs = value * C.MILLIS_PER_SECOND
+                    val newDuration = value * C.MILLIS_PER_SECOND
+                    if (currentDurationMs != newDuration) {
+                        currentDurationMs = newDuration
                         listeners.sendEvent(EVENT_TIMELINE_CHANGED) { listener ->
                             listener.onTimelineChanged(
                                 timeline,
@@ -330,14 +333,19 @@ class MPVPlayer(
                 }
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
                 "playlist-current-pos" -> {
-                    if (value.toInt() < 0) {
+                    if (value < 0) {
                         return@post
                     }
-                    listeners.sendEvent(EVENT_MEDIA_ITEM_TRANSITION) { listener ->
-                        listener.onMediaItemTransition(
-                            currentMediaItem,
-                            MEDIA_ITEM_TRANSITION_REASON_AUTO,
-                        )
+                    currentMediaItemIndex = value.toInt()
+                    val newMediaItem = currentMediaItem
+                    if (oldMediaItem?.mediaId != newMediaItem?.mediaId) {
+                        oldMediaItem = newMediaItem
+                        listeners.sendEvent(EVENT_MEDIA_ITEM_TRANSITION) { listener ->
+                            listener.onMediaItemTransition(
+                                newMediaItem,
+                                MEDIA_ITEM_TRANSITION_REASON_AUTO,
+                            )
+                        }
                     }
                 }
             }
@@ -1112,7 +1120,7 @@ class MPVPlayer(
     }
 
     override fun getCurrentMediaItemIndex(): Int {
-        return MPVLib.getPropertyInt("playlist-current-pos")
+        return currentMediaItemIndex
     }
 
     /**
