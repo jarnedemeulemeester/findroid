@@ -30,9 +30,9 @@ internal constructor(
     private val repository: JellyfinRepository,
     private val database: ServerDatabaseDao,
 ) {
-    lateinit var startItem: FindroidItem
-    lateinit var items: List<FindroidItem>
-    lateinit var playerItems: MutableList<PlayerItem?>
+    private var startItem: FindroidItem? = null
+    private var items: List<FindroidItem> = emptyList()
+    private val playerItems: MutableList<PlayerItem> = mutableListOf()
     var currentItemIndex: Int = 0
 
     suspend fun getInitialItem(
@@ -44,14 +44,12 @@ internal constructor(
 
         val item = repository.getItem(itemId)
 
-        val playerItem = when (item.type) {
+        val initialItem = when (item.type) {
             BaseItemKind.MOVIE -> {
                 val movie = item.toFindroidMovie(repository, database)
-                val playbackPosition = if (!startFromBeginning) movie.playbackPositionTicks.div(10000) else 0
 
-                startItem = movie
                 items = listOf(movie)
-                movie.toPlayerItem(mediaSourceIndex, playbackPosition)
+                movie
             }
             BaseItemKind.SERIES -> {
                 val season = repository.getSeasons(item.id).first()
@@ -62,20 +60,12 @@ internal constructor(
                         ItemFields.CHAPTERS,
                         ItemFields.TRICKPLAY,
                     ),
-                )
+                ).filter { !it.missing }
 
-                var episode = repository.getNextUp(item.id).firstOrNull()
+                val episode = repository.getNextUp(item.id).firstOrNull() ?: episodes.first()
 
-                if (episode == null) {
-                    episode = episodes.first()
-                }
-
-                val playbackPosition = if (!startFromBeginning) episode.playbackPositionTicks.div(10000) else 0
-
-                startItem = episode
                 items = episodes
-                currentItemIndex = items.indexOfFirst { it.id == episode.id }
-                episode.toPlayerItem(mediaSourceIndex, playbackPosition)
+                episode
             }
             BaseItemKind.SEASON -> {
                 val season = item.toFindroidSeason(repository)
@@ -86,16 +76,10 @@ internal constructor(
                         ItemFields.CHAPTERS,
                         ItemFields.TRICKPLAY,
                     ),
-                )
+                ).filter { !it.missing }
 
-                val episode = episodes.first()
-
-                val playbackPosition = if (!startFromBeginning) episode.playbackPositionTicks.div(10000) else 0
-
-                startItem = episode
                 items = episodes
-                currentItemIndex = items.indexOfFirst { it.id == episode.id }
-                episode.toPlayerItem(mediaSourceIndex, playbackPosition)
+                episodes.first()
             }
             BaseItemKind.EPISODE -> {
                 val episode = item.toFindroidEpisode(repository, database) ?: return null
@@ -107,23 +91,25 @@ internal constructor(
                         ItemFields.CHAPTERS,
                         ItemFields.TRICKPLAY,
                     ),
-                )
+                ).filter { !it.missing }
 
-                val playbackPosition = if (!startFromBeginning) episode.playbackPositionTicks.div(10000) else 0
-
-                startItem = episode
                 items = episodes
-                currentItemIndex = items.indexOfFirst { it.id == episode.id }
-                episode.toPlayerItem(mediaSourceIndex, playbackPosition)
+                episode
             }
             else -> null
         }
 
-        playerItems = items.map { null }.toMutableList()
-
-        if (playerItem != null) {
-            playerItems[currentItemIndex] = playerItem
+        if (initialItem == null) {
+            return null
         }
+
+        startItem = initialItem
+
+        currentItemIndex = items.indexOfFirst { it.id == initialItem.id }
+
+        val playbackPosition = if (!startFromBeginning) initialItem.playbackPositionTicks.div(10000) else 0
+        val playerItem = initialItem.toPlayerItem(mediaSourceIndex, playbackPosition)
+        playerItems.add(playerItem)
 
         return playerItem
     }
@@ -139,7 +125,7 @@ internal constructor(
                     null
                 } else {
                     val item = items[itemIndex]
-                    if (playerItems.firstOrNull { it?.itemId == item.id } == null) {
+                    if (playerItems.firstOrNull { it.itemId == item.id } == null) {
                         item.toPlayerItem(0, 0L)
                     } else {
                         null
@@ -166,7 +152,7 @@ internal constructor(
                     null
                 } else {
                     val item = items[itemIndex]
-                    if (playerItems.firstOrNull { it?.itemId == item.id } == null) {
+                    if (playerItems.firstOrNull { it.itemId == item.id } == null) {
                         item.toPlayerItem(0, 0L)
                     } else {
                         null
@@ -177,7 +163,7 @@ internal constructor(
         }
 
         if (playerItem != null) {
-            playerItems.add(itemIndex, playerItem)
+            playerItems.add(playerItem)
         }
 
         return playerItem
@@ -191,6 +177,8 @@ internal constructor(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
+        Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
+
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource = if (mediaSourceIndex == null) {
             mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
