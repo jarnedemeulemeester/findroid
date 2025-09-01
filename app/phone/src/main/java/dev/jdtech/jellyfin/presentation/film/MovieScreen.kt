@@ -78,6 +78,7 @@ fun MovieScreen(
                 is MovieAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", movieId.toString())
+                    intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }
                 is MovieAction.PlayTrailer -> {

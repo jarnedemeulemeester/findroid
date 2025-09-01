@@ -146,11 +146,12 @@ constructor(
 
     fun initializePlayer(
         itemId: UUID,
+        startFromBeginning: Boolean,
     ) {
         player.addListener(this)
 
         viewModelScope.launch {
-            val startItem = playlistManager.getInitialItem(itemId = itemId, 0, false)
+            val startItem = playlistManager.getInitialItem(itemId = itemId, mediaSourceIndex = 0, startFromBeginning = startFromBeginning)
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
