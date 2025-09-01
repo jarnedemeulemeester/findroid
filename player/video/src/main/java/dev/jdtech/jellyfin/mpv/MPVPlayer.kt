@@ -194,6 +194,7 @@ class MPVPlayer(
             Property("duration", MPVLib.MPV_FORMAT_INT64),
             Property("demuxer-cache-time", MPVLib.MPV_FORMAT_INT64),
             Property("speed", MPVLib.MPV_FORMAT_DOUBLE),
+            Property("playlist-count", MPVLib.MPV_FORMAT_INT64),
             Property("playlist-current-pos", MPVLib.MPV_FORMAT_INT64),
         ).forEach { (name, format) ->
             MPVLib.observeProperty(name, format)
@@ -332,6 +333,14 @@ class MPVPlayer(
                     }
                 }
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
+                "playlist-count" -> {
+                    listeners.sendEvent(EVENT_TIMELINE_CHANGED) { listener ->
+                        listener.onTimelineChanged(
+                            timeline,
+                            TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED,
+                        )
+                    }
+                }
                 "playlist-current-pos" -> {
                     if (value < 0) {
                         return@post
@@ -991,9 +1000,6 @@ class MPVPlayer(
             // This is a problem on initial load when the first item is still loading causing duplicate external subtitle entries.
             if (currentMediaItemIndex != index) {
                 MPVLib.command(arrayOf("playlist-play-index", "$index"))
-            }
-            listeners.sendEvent(EVENT_TIMELINE_CHANGED) { listener ->
-                listener.onTimelineChanged(timeline, TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED)
             }
             setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
         }
