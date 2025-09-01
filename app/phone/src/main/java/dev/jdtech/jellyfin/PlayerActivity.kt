@@ -34,7 +34,6 @@ import androidx.media3.common.C
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
-import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
@@ -94,6 +93,7 @@ class PlayerActivity : BasePlayerActivity() {
         super.onCreate(savedInstanceState)
 
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -327,7 +327,7 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
-        viewModel.initializePlayer(itemId)
+        viewModel.initializePlayer(itemId, startFromBeginning)
         hideSystemUI()
     }
 
@@ -335,8 +335,13 @@ class PlayerActivity : BasePlayerActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
 
-        val args: PlayerActivityArgs by navArgs()
-        viewModel.initializePlayer(UUID.fromString(args.itemId))
+        val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
+
+        viewModel.initializePlayer(
+            itemId = itemId,
+            startFromBeginning = startFromBeginning,
+        )
     }
 
     override fun onUserLeaveHint() {

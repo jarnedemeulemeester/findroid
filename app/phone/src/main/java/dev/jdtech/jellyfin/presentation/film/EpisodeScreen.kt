@@ -74,6 +74,7 @@ fun EpisodeScreen(
                 is EpisodeAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", episodeId.toString())
+                    intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
