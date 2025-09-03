@@ -8,13 +8,19 @@
     <string name="player_controls_exit">Quitter le lecteur</string>
     <string name="player_controls_rewind">Rembobiner</string>
     <string name="player_controls_fast_forward">Avance rapide</string>
-    <string name="player_controls_skip_intro">Passer l\'introduction</string>
+    <string name="player_controls_skip_intro">Passer l\'intro</string>
     <string name="player_controls_lock">Verrouille le lecteur</string>
     <string name="player_controls_play_pause">Lecture / Pause</string>
     <string name="player_controls_skip_back">Retour en arrière</string>
-    <string name="player_trickplay">Trucage</string>
+    <string name="player_trickplay">Vignettes de prévisualisation</string>
     <string name="player_controls_skip_forward">Avancer</string>
     <string name="player_controls_progress">Barre de progression</string>
     <string name="player_controls_picture_in_picture">Détacher la fenêtre flottante</string>
     <string name="none">Aucun</string>
+    <string name="player_controls_skip_outro">Passer les crédits</string>
+    <string name="player_controls_next_episode">Épisode suivant</string>
+    <string name="player_controls_skip_recap">Passer le récap</string>
+    <string name="player_controls_skip_preview">Passer l\'aperçu</string>
+    <string name="player_controls_skip_commercial">Passer la pub</string>
+    <string name="player_controls_skip_unknown">Passer</string>
 </resources>
