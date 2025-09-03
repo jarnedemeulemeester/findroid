@@ -17,4 +17,10 @@
     <string name="player_controls_play_pause">Speel pauze</string>
     <string name="player_controls_skip_forward">Vooruit springen</string>
     <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_skip_outro">Outro overslaan</string>
+    <string name="player_controls_next_episode">Volgende aflevering</string>
+    <string name="player_controls_skip_recap">Samenvatting overslaan</string>
+    <string name="player_controls_skip_preview">Preview overslaan</string>
+    <string name="player_controls_skip_commercial">Reclame overslaan</string>
+    <string name="player_controls_skip_unknown">Overslaan</string>
 </resources>
