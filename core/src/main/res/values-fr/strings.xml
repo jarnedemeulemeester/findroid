@@ -48,7 +48,7 @@
     <string name="favorite_button_description">Favori</string>
     <string name="no_downloads">Vous n\'avez aucun téléchargement</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
-    <string name="app_description">Client natif officieux pour Jellyfin</string>
+    <string name="app_description">Client alternatif pour Jellyfin</string>
     <string name="image_description_poster">Affiche %1$s</string>
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="select_video_version_title">Sélectionner une version</string>
@@ -98,4 +98,6 @@
     <string name="offline_mode">Mode hors ligne</string>
     <string name="season_episode">Saison %1$d - Episode %2$d</string>
     <string name="show_stacktrace">Afficher la trace de la pile</string>
+    <string name="none">Aucun</string>
+    <string name="manage_servers">Gérer les serveurs</string>
 </resources>
