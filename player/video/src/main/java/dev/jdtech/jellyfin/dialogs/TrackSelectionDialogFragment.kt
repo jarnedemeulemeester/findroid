@@ -10,12 +10,12 @@ import androidx.media3.common.C
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.jdtech.jellyfin.getTrackNames
 import dev.jdtech.jellyfin.player.video.R
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.lang.IllegalStateException
 
 class TrackSelectionDialogFragment(
     private val type: @C.TrackType Int,
-    private val viewModel: PlayerActivityViewModel,
+    private val viewModel: PlayerViewModel,
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val titleResource = when (type) {
