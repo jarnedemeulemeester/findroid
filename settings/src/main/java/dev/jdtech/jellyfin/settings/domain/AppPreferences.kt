@@ -82,7 +82,7 @@ constructor(
     val sortBy = Preference("pref_sort_by", "SortName")
     val sortOrder = Preference("pref_sort_order", "Ascending")
 
-    // Ofline mode
+    // Offline mode
     val offlineMode = Preference("pref_offline_mode", false)
 
     inline fun <reified T> getValue(preference: Preference<T>): T {

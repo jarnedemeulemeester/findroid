@@ -2,7 +2,7 @@
 <resources>
     <string name="select_a_version">选择版本</string>
     <string name="select_audio_track">选择音轨</string>
-    <string name="select_subtile_track">选择字幕轨</string>
+    <string name="select_subtitle_track">选择字幕轨</string>
     <string name="select_playback_speed">选择播放速度</string>
     <string name="external">加载</string>
     <string name="player_controls_exit">退出播放器</string>
