@@ -43,12 +43,12 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 @HiltViewModel
-class PlayerActivityViewModel
+class PlayerViewModel
 @Inject
 constructor(
     private val application: Application,
     private val playlistManager: PlaylistManager,
-    private val jellyfinRepository: JellyfinRepository,
+    private val repository: JellyfinRepository,
     private val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
@@ -215,7 +215,7 @@ constructor(
         GlobalScope.launch {
             delay(200L)
             try {
-                jellyfinRepository.postPlaybackStop(
+                repository.postPlaybackStop(
                     UUID.fromString(mediaId),
                     position.times(10000),
                     position.div(duration.toFloat()).times(100).toInt(),
@@ -240,7 +240,7 @@ constructor(
             if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                 val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                 try {
-                    jellyfinRepository.postPlaybackProgress(
+                    repository.postPlaybackProgress(
                         itemId,
                         player.currentPosition.times(10000),
                         !player.isPlaying,
@@ -316,7 +316,7 @@ constructor(
                             )
                         }
 
-                        jellyfinRepository.postPlaybackStart(item.itemId)
+                        repository.postPlaybackStart(item.itemId)
 
                         if (segmentsSkipButton || segmentsAutoSkip) {
                             getSegments(item.itemId)
@@ -356,7 +356,7 @@ constructor(
                 val position = player.currentPosition
                 val duration = player.duration
                 try {
-                    jellyfinRepository.postPlaybackStop(
+                    repository.postPlaybackStop(
                         UUID.fromString(mediaId),
                         position.times(10000),
                         position.div(duration.toFloat()).times(100).toInt(),
@@ -423,7 +423,7 @@ constructor(
 
     private suspend fun getSegments(itemId: UUID) {
         try {
-            currentMediaItemSegments = jellyfinRepository.getSegments(itemId)
+            currentMediaItemSegments = repository.getSegments(itemId)
         } catch (e: Exception) {
             currentMediaItemSegments = emptyList()
             Timber.e(e)
@@ -439,7 +439,7 @@ constructor(
             val bitmaps = mutableListOf<Bitmap>()
 
             for (i in 0..maxIndex) {
-                jellyfinRepository.getTrickplayData(
+                repository.getTrickplayData(
                     item.itemId,
                     trickplayInfo.width,
                     i,

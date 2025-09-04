@@ -54,7 +54,7 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
 import java.util.UUID
@@ -63,9 +63,10 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun PlayerScreen(
     itemId: UUID,
+    startFromBeginning: Boolean,
     // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
 ) {
-    val viewModel = hiltViewModel<PlayerActivityViewModel>()
+    val viewModel = hiltViewModel<PlayerViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -191,7 +192,7 @@ fun PlayerScreen(
                 PlayerView(context).also { playerView ->
                     playerView.player = viewModel.player
                     playerView.useController = false
-                    viewModel.initializePlayer(itemId)
+                    viewModel.initializePlayer(itemId, startFromBeginning)
                     playerView.setBackgroundColor(
                         context.resources.getColor(
                             android.R.color.black,

@@ -262,6 +262,7 @@ fun NavigationRoot(
             val route: PlayerRoute = backStackEntry.toRoute()
             PlayerScreen(
                 itemId = UUID.fromString(route.itemId),
+                startFromBeginning = false,
             )
         }
         composable<SettingsRoute> {
