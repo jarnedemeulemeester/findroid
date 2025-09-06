@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin
+package dev.jdtech.jellyfin.player.local.domain
 
 import android.os.Build
 import androidx.media3.common.Tracks

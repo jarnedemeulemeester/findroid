@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.jdtech.jellyfin.player.video"
+    namespace = "dev.jdtech.jellyfin.player.local"
     compileSdk = Versions.compileSdk
     buildToolsVersion = Versions.buildTools
 
@@ -49,6 +49,5 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.libmpv)
-    implementation(libs.material)
     implementation(libs.timber)
 }

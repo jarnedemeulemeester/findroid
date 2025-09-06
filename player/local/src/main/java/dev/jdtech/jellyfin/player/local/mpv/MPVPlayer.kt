@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.mpv
+package dev.jdtech.jellyfin.player.local.mpv
 
 import android.app.Application
 import android.content.Context
@@ -44,7 +44,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
 
-@Suppress("SpellCheckingInspection")
 class MPVPlayer(
     context: Context,
     private val audioAttributes: AudioAttributes = AudioAttributes.DEFAULT,
@@ -445,14 +444,14 @@ class MPVPlayer(
     }
 
     /**
-     * Select a Track or disable a [TrackType] in the current player.
+     * Select a Track or disable a [MPVTrackType] in the current player.
      *
-     * @param trackType The [TrackType]
-     * @param id Id to select or [C.INDEX_UNSET] to disable [TrackType]
+     * @param trackType The [MPVTrackType]
+     * @param id Id to select or [C.INDEX_UNSET] to disable [MPVTrackType]
      * @return true if the track is or was already selected
      */
     private fun selectTrack(
-        trackType: TrackType,
+        trackType: MPVTrackType,
         id: String,
     ) {
         MPVLib.setPropertyString(trackType.type, id)
@@ -468,13 +467,13 @@ class MPVPlayer(
         }
 
         /**
-         * Populates a [androidx.media3.common.Timeline.Window] with data for the window at the specified index.
+         * Populates a [Timeline.Window] with data for the window at the specified index.
          *
          * @param windowIndex The index of the window.
-         * @param window The [androidx.media3.common.Timeline.Window] to populate. Must not be null.
+         * @param window The [Timeline.Window] to populate. Must not be null.
          * @param defaultPositionProjectionUs A duration into the future that the populated window's
          * default start position should be projected.
-         * @return The populated [androidx.media3.common.Timeline.Window], for convenience.
+         * @return The populated [Timeline.Window], for convenience.
          */
         override fun getWindow(
             windowIndex: Int,
@@ -523,14 +522,14 @@ class MPVPlayer(
         }
 
         /**
-         * Populates a [androidx.media3.common.Timeline.Period] with data for the period at the specified index.
+         * Populates a [Timeline.Period] with data for the period at the specified index.
          *
          * @param periodIndex The index of the period.
-         * @param period The [androidx.media3.common.Timeline.Period] to populate. Must not be null.
-         * @param setIds Whether [androidx.media3.common.Timeline.Period.id] and [androidx.media3.common.Timeline.Period.uid] should be populated. If false,
+         * @param period The [Timeline.Period] to populate. Must not be null.
+         * @param setIds Whether [Timeline.Period.id] and [Timeline.Period.uid] should be populated. If false,
          * the fields will be set to null. The caller should pass false for efficiency reasons unless
          * the fields are required.
-         * @return The populated [androidx.media3.common.Timeline.Period], for convenience.
+         * @return The populated [Timeline.Period], for convenience.
          */
         override fun getPeriod(periodIndex: Int, period: Period, setIds: Boolean): Period {
             return period.set(
@@ -738,7 +737,7 @@ class MPVPlayer(
      * Returns the player's currently available [Commands].
      *
      *
-     * The returned [Commands] are not updated when available commands change. Use [ ][androidx.media3.common.Player.Listener.onAvailableCommandsChanged] to get an update when the available commands
+     * The returned [Commands] are not updated when available commands change. Use [ ][Player.Listener.onAvailableCommandsChanged] to get an update when the available commands
      * change.
      *
      *
@@ -750,7 +749,7 @@ class MPVPlayer(
      * are unavailable if there is no such [MediaItem].
      *
      * @return The currently available [Commands].
-     * @see androidx.media3.common.Player.Listener.onAvailableCommandsChanged
+     * @see Player.Listener.onAvailableCommandsChanged
      */
     override fun getAvailableCommands(): Commands {
         return Commands.Builder()
@@ -805,10 +804,10 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the current [playback state][androidx.media3.common.Player.State] of the player.
+     * Returns the current [playback state][Player.State] of the player.
      *
-     * @return The current [playback state][androidx.media3.common.Player.State].
-     * @see androidx.media3.common.Player.Listener.onPlaybackStateChanged
+     * @return The current [playback state][Player.State].
+     * @see Player.Listener.onPlaybackStateChanged
      */
     override fun getPlaybackState(): Int {
         return playbackState
@@ -817,8 +816,8 @@ class MPVPlayer(
     /**
      * Returns the reason why playback is suppressed even though [.getPlayWhenReady] is `true`, or [.PLAYBACK_SUPPRESSION_REASON_NONE] if playback is not suppressed.
      *
-     * @return The current [playback suppression reason][androidx.media3.common.Player.PlaybackSuppressionReason].
-     * @see androidx.media3.common.Player.Listener.onPlaybackSuppressionReasonChanged
+     * @return The current [playback suppression reason][Player.PlaybackSuppressionReason].
+     * @see Player.Listener.onPlaybackSuppressionReasonChanged
      */
     override fun getPlaybackSuppressionReason(): Int {
         return PLAYBACK_SUPPRESSION_REASON_NONE
@@ -826,7 +825,7 @@ class MPVPlayer(
 
     /**
      * Returns the error that caused playback to fail. This is the same error that will have been
-     * reported via [androidx.media3.common.Player.Listener.onPlayerError] at the time of failure. It
+     * reported via [Player.Listener.onPlayerError] at the time of failure. It
      * can be queried using this method until the player is re-prepared.
      *
      *
@@ -834,7 +833,7 @@ class MPVPlayer(
      * [.STATE_IDLE].
      *
      * @return The error, or `null`.
-     * @see androidx.media3.common.Player.Listener.onPlayerError
+     * @see Player.Listener.onPlayerError
      */
     override fun getPlayerError(): PlaybackException? {
         return null
@@ -874,14 +873,14 @@ class MPVPlayer(
      * Whether playback will proceed when [.getPlaybackState] == [.STATE_READY].
      *
      * @return Whether playback will proceed when ready.
-     * @see androidx.media3.common.Player.Listener.onPlayWhenReadyChanged
+     * @see Player.Listener.onPlayWhenReadyChanged
      */
     override fun getPlayWhenReady(): Boolean {
         return currentPlayWhenReady
     }
 
     /**
-     * Sets the [androidx.media3.common.Player.RepeatMode] to be used for playback.
+     * Sets the [Player.RepeatMode] to be used for playback.
      *
      * @param repeatMode The repeat mode.
      */
@@ -903,10 +902,10 @@ class MPVPlayer(
     }
 
     /**
-     * Returns the current [androidx.media3.common.Player.RepeatMode] used for playback.
+     * Returns the current [Player.RepeatMode] used for playback.
      *
      * @return The current repeat mode.
-     * @see androidx.media3.common.Player.Listener.onRepeatModeChanged
+     * @see Player.Listener.onRepeatModeChanged
      */
     override fun getRepeatMode(): Int {
         return repeatMode
@@ -924,7 +923,7 @@ class MPVPlayer(
     /**
      * Returns whether shuffling of windows is enabled.
      *
-     * @see androidx.media3.common.Player.Listener.onShuffleModeEnabledChanged
+     * @see Player.Listener.onShuffleModeEnabledChanged
      */
     override fun getShuffleModeEnabled(): Boolean {
         return false
@@ -934,7 +933,7 @@ class MPVPlayer(
      * Whether the player is currently loading the source.
      *
      * @return Whether the player is currently loading the source.
-     * @see androidx.media3.common.Player.Listener.onIsLoadingChanged
+     * @see Player.Listener.onIsLoadingChanged
      */
     override fun isLoading(): Boolean {
         return false
@@ -1016,7 +1015,7 @@ class MPVPlayer(
      * player to the default, which means there is no speed or pitch adjustment.
      *
      *
-     * Playback parameters changes may cause the player to buffer. [ ][androidx.media3.common.Player.Listener.onPlaybackParametersChanged] will be called whenever the currently
+     * Playback parameters changes may cause the player to buffer. [ ][Player.Listener.onPlaybackParametersChanged] will be called whenever the currently
      * active playback parameters change.
      *
      * @param playbackParameters The playback parameters.
@@ -1030,7 +1029,7 @@ class MPVPlayer(
     /**
      * Returns the currently active playback parameters.
      *
-     * @see androidx.media3.common.Player.Listener.onPlaybackParametersChanged
+     * @see Player.Listener.onPlaybackParametersChanged
      */
     override fun getPlaybackParameters(): PlaybackParameters {
         return playbackParameters
@@ -1065,12 +1064,12 @@ class MPVPlayer(
         trackSelectionParameters = parameters
 
         // Disabled track types
-        val disabledTrackTypes = parameters.disabledTrackTypes.map { TrackType.fromMedia3TrackType(it) }
+        val disabledTrackTypes = parameters.disabledTrackTypes.map { MPVTrackType.fromMedia3TrackType(it) }
 
         // Overrides
-        val notOverriddenTypes = mutableSetOf(TrackType.VIDEO, TrackType.AUDIO, TrackType.SUBTITLE)
+        val notOverriddenTypes = mutableSetOf(MPVTrackType.VIDEO, MPVTrackType.AUDIO, MPVTrackType.SUBTITLE)
         for (override in parameters.overrides) {
-            val trackType = TrackType.fromMedia3TrackType(override.key.type)
+            val trackType = MPVTrackType.fromMedia3TrackType(override.key.type)
             notOverriddenTypes.remove(trackType)
             val id = override.key.getFormat(0).id ?: continue
 
@@ -1091,7 +1090,7 @@ class MPVPlayer(
      *
      *
      * This [MediaMetadata] is a combination of the [MediaItem.mediaMetadata] and the
-     * static and dynamic metadata sourced from [androidx.media3.common.Player.Listener.onMediaMetadataChanged].
+     * static and dynamic metadata sourced from [Player.Listener.onMediaMetadataChanged].
      */
     override fun getMediaMetadata(): MediaMetadata {
         return MediaMetadata.EMPTY
@@ -1108,7 +1107,7 @@ class MPVPlayer(
     /**
      * Returns the current [Timeline]. Never null, but may be empty.
      *
-     * @see androidx.media3.common.Player.Listener.onTimelineChanged
+     * @see Player.Listener.onTimelineChanged
      */
     override fun getCurrentTimeline(): Timeline {
         return timeline
@@ -1317,7 +1316,7 @@ class MPVPlayer(
      * The video's width and height are `0` if there is no video or its size has not been
      * determined yet.
      *
-     * @see androidx.media3.common.Player.Listener.onVideoSizeChanged
+     * @see Player.Listener.onVideoSizeChanged
      */
     override fun getVideoSize(): VideoSize {
         val width = MPVLib.getPropertyInt("width")
@@ -1520,7 +1519,7 @@ class MPVPlayer(
         }
 
         private fun createTracksGroupfromMpvJson(json: JSONObject): Tracks.Group {
-            val trackType = TrackType.entries.first { it.type == json.optString("type") }
+            val trackType = MPVTrackType.entries.first { it.type == json.optString("type") }
 
             // Base format shared between video, audio and subtitles
             val baseFormat = Format.Builder()
@@ -1533,7 +1532,7 @@ class MPVPlayer(
 
             // Video, audio and subtitle specific values
             val format = when (trackType) {
-                TrackType.VIDEO -> {
+                MPVTrackType.VIDEO -> {
                     baseFormat.buildUpon()
                         .setSampleMimeType("video/${baseFormat.codecs}")
                         .setWidth(json.optInt("demux-w", Format.NO_VALUE))
@@ -1544,7 +1543,7 @@ class MPVPlayer(
                         .build()
                 }
 
-                TrackType.AUDIO -> {
+                MPVTrackType.AUDIO -> {
                     baseFormat.buildUpon()
                         .setSampleMimeType("audio/${baseFormat.codecs}")
                         .setChannelCount(json.optInt("demux-channel-count", Format.NO_VALUE))
@@ -1552,7 +1551,7 @@ class MPVPlayer(
                         .build()
                 }
 
-                TrackType.SUBTITLE -> {
+                MPVTrackType.SUBTITLE -> {
                     baseFormat.buildUpon()
                         .setSampleMimeType("text/${baseFormat.codecs}")
                         .build()

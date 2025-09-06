@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.media3.session.MediaSession
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 
 abstract class BasePlayerActivity : AppCompatActivity() {
 

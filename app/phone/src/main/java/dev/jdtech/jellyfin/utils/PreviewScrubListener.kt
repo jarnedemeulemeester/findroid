@@ -10,7 +10,7 @@ import coil3.load
 import coil3.request.crossfade
 import coil3.request.transformations
 import coil3.transform.RoundedCornersTransformation
-import dev.jdtech.jellyfin.models.Trickplay
+import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 

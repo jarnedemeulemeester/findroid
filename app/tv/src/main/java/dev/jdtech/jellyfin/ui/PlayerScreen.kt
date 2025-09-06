@@ -44,7 +44,8 @@ import androidx.tv.material3.Glow
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.models.Track
+import dev.jdtech.jellyfin.player.core.domain.models.Track
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
@@ -54,7 +55,6 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
 import java.util.UUID
