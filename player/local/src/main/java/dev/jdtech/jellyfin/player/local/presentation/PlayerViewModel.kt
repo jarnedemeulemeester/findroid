@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.viewmodels
+package dev.jdtech.jellyfin.player.local.presentation
 
 import android.app.Application
 import android.graphics.Bitmap
@@ -18,11 +18,12 @@ import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
-import dev.jdtech.jellyfin.models.PlayerChapter
-import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.Trickplay
-import dev.jdtech.jellyfin.mpv.MPVPlayer
-import dev.jdtech.jellyfin.player.video.R
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
+import dev.jdtech.jellyfin.player.local.R
+import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
+import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants

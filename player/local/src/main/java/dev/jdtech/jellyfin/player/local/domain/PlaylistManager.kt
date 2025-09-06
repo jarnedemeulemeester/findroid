@@ -1,21 +1,21 @@
-package dev.jdtech.jellyfin.viewmodels
+package dev.jdtech.jellyfin.player.local.domain
 
 import androidx.core.net.toUri
 import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.ExternalSubtitle
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
-import dev.jdtech.jellyfin.models.PlayerChapter
-import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.TrickplayInfo
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
+import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
@@ -40,7 +40,7 @@ internal constructor(
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
     ): PlayerItem? {
-        Timber.d("Retrieving initial player item")
+        Timber.Forest.d("Retrieving initial player item")
 
         val item = repository.getItem(itemId)
 
@@ -115,7 +115,7 @@ internal constructor(
     }
 
     suspend fun getPreviousPlayerItem(): PlayerItem? {
-        Timber.d("Retrieving previous player item")
+        Timber.Forest.d("Retrieving previous player item")
 
         val itemIndex = currentItemIndex - 1
         val playerItem = when (startItem) {
@@ -142,7 +142,7 @@ internal constructor(
     }
 
     suspend fun getNextPlayerItem(): PlayerItem? {
-        Timber.d("Retrieving next player item")
+        Timber.Forest.d("Retrieving next player item")
 
         val itemIndex = currentItemIndex + 1
         val playerItem = when (startItem) {
@@ -177,7 +177,7 @@ internal constructor(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
-        Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
+        Timber.Forest.d("Converting FindroidItem ${this.id} to PlayerItem")
 
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource = if (mediaSourceIndex == null) {

@@ -36,13 +36,13 @@ import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
-import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
-import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
+import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
+import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
+import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
-import dev.jdtech.jellyfin.viewmodels.PlayerEvents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber

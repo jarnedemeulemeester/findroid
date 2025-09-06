@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.models
+package dev.jdtech.jellyfin.player.core.domain.models
 
 import android.net.Uri
 import android.os.Parcelable
