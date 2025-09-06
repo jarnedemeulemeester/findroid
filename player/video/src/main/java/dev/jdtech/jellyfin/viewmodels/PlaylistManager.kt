@@ -136,7 +136,7 @@ internal constructor(
         }
 
         if (playerItem != null) {
-            playerItems.add(itemIndex, playerItem)
+            playerItems.add(playerItem)
         }
         return playerItem
     }
