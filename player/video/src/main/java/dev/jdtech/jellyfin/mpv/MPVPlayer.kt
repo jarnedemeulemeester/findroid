@@ -231,7 +231,7 @@ class MPVPlayer(
 
     @Player.RepeatMode
     private val repeatMode: Int = REPEAT_MODE_OFF
-    private var tracks: Tracks = Tracks.EMPTY
+    private var currentTracks: Tracks = Tracks.EMPTY
     private var playbackParameters: PlaybackParameters = PlaybackParameters.DEFAULT
 
     // MPV Custom
@@ -256,11 +256,10 @@ class MPVPlayer(
             when (property) {
                 "track-list" -> {
                     val newTracks = getTracks(value)
-                    tracks = newTracks
-                    // We may need this, or not?
-//                    listeners.sendEvent(Player.EVENT_TRACKS_CHANGED) { listener ->
-//                        listener.onTracksChanged(currentTracks)
-//                    }
+                    currentTracks = newTracks
+                    listeners.sendEvent(EVENT_TRACKS_CHANGED) { listener ->
+                        listener.onTracksChanged(currentTracks)
+                    }
                 }
             }
         }
@@ -394,9 +393,6 @@ class MPVPlayer(
                 MPVLib.MPV_EVENT_PLAYBACK_RESTART -> {
                     if (!isPlayerReady) {
                         isPlayerReady = true
-                        listeners.sendEvent(EVENT_TRACKS_CHANGED) { listener ->
-                            listener.onTracksChanged(currentTracks)
-                        }
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
                             Timber.d("Starting playback...")
@@ -789,10 +785,9 @@ class MPVPlayer(
         currentPositionMs = null
         currentDurationMs = null
         currentCacheDurationMs = null
-        tracks = Tracks.EMPTY
+        currentTracks = Tracks.EMPTY
         playbackParameters = PlaybackParameters.DEFAULT
         initialCommands.clear()
-        // initialSeekTo = 0L
     }
 
     /** Prepares the player.  */
@@ -1001,7 +996,6 @@ class MPVPlayer(
             if (currentMediaItemIndex != index) {
                 MPVLib.command(arrayOf("playlist-play-index", "$index"))
             }
-            setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
         }
     }
 
@@ -1060,7 +1054,7 @@ class MPVPlayer(
     }
 
     override fun getCurrentTracks(): Tracks {
-        return tracks
+        return currentTracks
     }
 
     override fun getTrackSelectionParameters(): TrackSelectionParameters {
