@@ -18,6 +18,7 @@ import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil3.load
@@ -34,7 +35,6 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import kotlin.math.abs
-import androidx.core.view.isVisible
 
 class PlayerGestureHelper(
     private val appPreferences: AppPreferences,

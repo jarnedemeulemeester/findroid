@@ -995,6 +995,7 @@ class MPVPlayer(
             if (currentMediaItemIndex != index) {
                 MPVLib.command(arrayOf("playlist-play-index", "$index"))
             }
+            setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
         }
     }
 

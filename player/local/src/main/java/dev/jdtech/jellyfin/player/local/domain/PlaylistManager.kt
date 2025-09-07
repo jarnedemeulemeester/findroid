@@ -126,7 +126,12 @@ internal constructor(
                 } else {
                     val item = items[itemIndex]
                     if (playerItems.firstOrNull { it.itemId == item.id } == null) {
-                        item.toPlayerItem(0, 0L)
+                        try {
+                            item.toPlayerItem(0, 0L)
+                        } catch (e: Exception) {
+                            Timber.e("Failed to retrieve previous player item: $e")
+                            null
+                        }
                     } else {
                         null
                     }
@@ -138,6 +143,7 @@ internal constructor(
         if (playerItem != null) {
             playerItems.add(playerItem)
         }
+
         return playerItem
     }
 
@@ -153,7 +159,12 @@ internal constructor(
                 } else {
                     val item = items[itemIndex]
                     if (playerItems.firstOrNull { it.itemId == item.id } == null) {
-                        item.toPlayerItem(0, 0L)
+                        try {
+                            item.toPlayerItem(0, 0L)
+                        } catch (e: Exception) {
+                            Timber.e("Failed to retrieve next player item: $e")
+                            null
+                        }
                     } else {
                         null
                     }
@@ -177,7 +188,7 @@ internal constructor(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
-        Timber.Forest.d("Converting FindroidItem ${this.id} to PlayerItem")
+        Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
 
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource = if (mediaSourceIndex == null) {
