@@ -78,8 +78,10 @@ internal constructor(
                     ),
                 ).filter { !it.missing }
 
+                val episode = repository.getNextUp(season.seriesId).firstOrNull() ?: episodes.first()
+
                 items = episodes
-                episodes.first()
+                episode
             }
             BaseItemKind.EPISODE -> {
                 val episode = item.toFindroidEpisode(repository, database) ?: return null
