@@ -23,24 +23,19 @@ import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 
 @Composable
 fun HomeScreen(
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
     isLoading: (Boolean) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -53,13 +48,6 @@ fun HomeScreen(
         isLoading(state.isLoading)
     }
 
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
-            is PlayerItemsEvent.PlayerItemsError -> Unit
-        }
-    }
-
     HomeScreenLayout(
         state = state,
         onAction = { action ->
@@ -69,7 +57,7 @@ fun HomeScreen(
                         is FindroidMovie -> navigateToMovie(action.item.id)
                         is FindroidShow -> navigateToShow(action.item.id)
                         is FindroidEpisode -> {
-                            playerViewModel.loadPlayerItems(item = action.item)
+                            navigateToPlayer(action.item.id)
                         }
                     }
                 }

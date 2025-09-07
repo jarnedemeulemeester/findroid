@@ -9,11 +9,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.media3.session.MediaSession
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 
 abstract class BasePlayerActivity : AppCompatActivity() {
 
-    abstract val viewModel: PlayerActivityViewModel
+    abstract val viewModel: PlayerViewModel
 
     private lateinit var mediaSession: MediaSession
     private var wasPip: Boolean = false
@@ -46,8 +46,9 @@ abstract class BasePlayerActivity : AppCompatActivity() {
         if (isInPictureInPictureMode) {
             wasPip = true
         } else {
-            viewModel.playWhenReady = viewModel.player.playWhenReady == true
+            viewModel.playWhenReady = viewModel.player.playWhenReady
             viewModel.player.playWhenReady = false
+            viewModel.updatePlaybackProgress()
         }
     }
 

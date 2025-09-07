@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
@@ -90,7 +89,7 @@ data class SeasonRoute(
 
 @Serializable
 data class PlayerRoute(
-    val items: Array<String>,
+    val itemId: String,
 )
 
 @Serializable
@@ -203,9 +202,8 @@ fun NavigationRoot(
                 navigateToShow = { itemId ->
                     navController.navigate(ShowRoute(itemId.toString()))
                 },
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(PlayerRoute(itemId.toString()))
                 },
             )
         }
@@ -230,9 +228,8 @@ fun NavigationRoot(
             val route: MovieRoute = backStackEntry.toRoute()
             MovieScreen(
                 movieId = UUID.fromString(route.itemId),
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(PlayerRoute(itemId.toString()))
                 },
             )
         }
@@ -247,9 +244,8 @@ fun NavigationRoot(
                         }
                     }
                 },
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(PlayerRoute(itemId.toString()))
                 },
             )
         }
@@ -257,17 +253,16 @@ fun NavigationRoot(
             val route: SeasonRoute = backStackEntry.toRoute()
             SeasonScreen(
                 seasonId = UUID.fromString(route.seasonId),
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(PlayerRoute(itemId.toString()))
                 },
             )
         }
         composable<PlayerRoute> { backStackEntry ->
             val route: PlayerRoute = backStackEntry.toRoute()
-            val items = route.items.map { it.base64ToParcelable<PlayerItem>() }.toTypedArray()
             PlayerScreen(
-                items = items,
+                itemId = UUID.fromString(route.itemId),
+                startFromBeginning = false,
             )
         }
         composable<SettingsRoute> {

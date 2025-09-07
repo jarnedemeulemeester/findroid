@@ -25,21 +25,16 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
-import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 
 @Composable
 fun SeasonScreen(
     seasonId: UUID,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -49,18 +44,11 @@ fun SeasonScreen(
         )
     }
 
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
-            is PlayerItemsEvent.PlayerItemsError -> Unit
-        }
-    }
-
     SeasonScreenLayout(
         state = state,
         onAction = { action ->
             when (action) {
-                is SeasonAction.NavigateToItem -> playerViewModel.loadPlayerItems(action.item)
+                is SeasonAction.NavigateToItem -> navigateToPlayer(action.item.id)
                 else -> Unit
             }
         },

@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -9,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.jdtech.jellyfin.core"
+    namespace = "dev.jdtech.jellyfin.player.local"
     compileSdk = Versions.compileSdk
     buildToolsVersion = Versions.buildTools
 
@@ -26,18 +25,9 @@ android {
         }
     }
 
-    flavorDimensions += "variant"
-    productFlavors {
-        register("libre")
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
-    }
-
-    buildFeatures {
-        compose = true
     }
 }
 
@@ -48,21 +38,16 @@ ktlint {
 }
 
 dependencies {
-    implementation(projects.data)
     implementation(projects.player.core)
+    implementation(projects.data)
     implementation(projects.settings)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.hilt.work)
-    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.paging)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.work)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
-    implementation(libs.material)
+    implementation(libs.libmpv)
     implementation(libs.timber)
 }

@@ -34,19 +34,19 @@ import androidx.media3.common.C
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
-import androidx.navigation.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
-import dev.jdtech.jellyfin.dialogs.SpeedSelectionDialogFragment
-import dev.jdtech.jellyfin.dialogs.TrackSelectionDialogFragment
-import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
+import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
+import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
-import dev.jdtech.jellyfin.viewmodels.PlayerEvents
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 var isControlsLocked: Boolean = false
@@ -59,7 +59,7 @@ class PlayerActivity : BasePlayerActivity() {
 
     lateinit var binding: ActivityPlayerBinding
     private var playerGestureHelper: PlayerGestureHelper? = null
-    override val viewModel: PlayerActivityViewModel by viewModels()
+    override val viewModel: PlayerViewModel by viewModels()
     private var previewScrubListener: PreviewScrubListener? = null
     private var wasZoom: Boolean = false
     private var skipButtonTimeoutExpired: Boolean = true
@@ -92,12 +92,8 @@ class PlayerActivity : BasePlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras!!.getParcelableArrayList("items", PlayerItem::class.java)!!.toTypedArray()
-        } else {
-            @Suppress("DEPRECATION")
-            intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
-        }
+        val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -234,6 +230,22 @@ class PlayerActivity : BasePlayerActivity() {
                         }
                     }
                 }
+
+                launch {
+                    while (true) {
+                        viewModel.updatePlaybackProgress()
+                        delay(5000L)
+                    }
+                }
+
+                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) || appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)) {
+                    launch {
+                        while (true) {
+                            viewModel.updateCurrentSegment()
+                            delay(1000L)
+                        }
+                    }
+                }
             }
         }
 
@@ -315,7 +327,7 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
-        viewModel.initializePlayer(items)
+        viewModel.initializePlayer(itemId, startFromBeginning)
         hideSystemUI()
     }
 
@@ -323,8 +335,13 @@ class PlayerActivity : BasePlayerActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
 
-        val args: PlayerActivityArgs by navArgs()
-        viewModel.initializePlayer(args.items)
+        val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
+
+        viewModel.initializePlayer(
+            itemId = itemId,
+            startFromBeginning = startFromBeginning,
+        )
     }
 
     override fun onUserLeaveHint() {

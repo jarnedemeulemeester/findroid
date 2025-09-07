@@ -44,8 +44,8 @@ import androidx.tv.material3.Glow
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.models.PlayerItem
-import dev.jdtech.jellyfin.models.Track
+import dev.jdtech.jellyfin.player.core.domain.models.Track
+import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerControlsLayout
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerMediaButton
@@ -55,17 +55,18 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
+import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun PlayerScreen(
-    items: Array<PlayerItem>,
+    itemId: UUID,
+    startFromBeginning: Boolean,
     // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
 ) {
-    val viewModel = hiltViewModel<PlayerActivityViewModel>()
+    val viewModel = hiltViewModel<PlayerViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -191,7 +192,7 @@ fun PlayerScreen(
                 PlayerView(context).also { playerView ->
                     playerView.player = viewModel.player
                     playerView.useController = false
-                    viewModel.initializePlayer(items)
+                    viewModel.initializePlayer(itemId, startFromBeginning)
                     playerView.setBackgroundColor(
                         context.resources.getColor(
                             android.R.color.black,

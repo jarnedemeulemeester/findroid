@@ -40,7 +40,6 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -59,7 +58,7 @@ fun MainScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by mainViewModel.uiState.collectAsState()
@@ -79,8 +78,8 @@ fun MainScreen(
 }
 
 enum class TabDestination(
-    @DrawableRes val icon: Int,
-    @StringRes val label: Int,
+    @param:DrawableRes val icon: Int,
+    @param:StringRes val label: Int,
 ) {
     Search(CoreR.drawable.ic_search, CoreR.string.search),
     Home(CoreR.drawable.ic_home, CoreR.string.title_home),
@@ -95,7 +94,7 @@ private fun MainScreenLayout(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID) -> Unit,
 ) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
