@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="view_details_underlined"><u>Zobacz szczegóły</u></string>
     <string name="app_description">Nieoficjalna natywna aplikacja Jellyfin</string>
@@ -22,7 +22,7 @@
     <string name="genres">Gatunki</string>
     <string name="director">Reżyser</string>
     <string name="writers">Scenariusz</string>
-    <string name="cast_amp_crew">Obsada i ekipa</string>
+    <string name="cast_amp_crew"><![CDATA[Obsada i ekipa]]></string>
     <string name="seasons">Sezony</string>
     <string name="play_button_description">Odtwórz media</string>
     <string name="trailer_button_description">Obejrzyj zwiastun</string>
@@ -91,4 +91,13 @@
     <string name="unmark_as_played">Zaznacz jako nieobejrzane</string>
     <string name="add_to_favorites">Dodaj do ulubionych</string>
     <string name="remove_from_favorites">Usuń z ulubionych</string>
-    </resources>
+    <string name="title_settings">Ustawienia</string>
+    <string name="title_download">Pobrane</string>
+    <string name="season_episode">Sezon %1$d - Odcinek %2$d</string>
+    <string name="sort_by_options_6">Losowo</string>
+    <string name="offline_mode">Tryb offline</string>
+    <string name="not_set">Nie ustawione</string>
+    <string name="none">Żadne</string>
+    <string name="manage_servers">Zarządzaj serwerami</string>
+    <string name="show_stacktrace">Wyświetl stos wywołań</string>
+</resources>
