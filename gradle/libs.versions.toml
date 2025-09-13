@@ -2,31 +2,31 @@
 aboutlibraries = "12.2.4"
 android-desugar-jdk-libs = "2.1.5"
 android-plugin = "8.13.0"
-androidx-activity = "1.10.1"
+androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
-androidx-compose = "1.9.0"
-androidx-compose-material3 = "1.4.0-beta03"
+androidx-compose = "1.9.1"
+androidx-compose-material3 = "1.4.0-rc01"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.17.0"
 androidx-fragment = "1.8.9"
-androidx-hilt = "1.2.0"
+androidx-hilt = "1.3.0"
 androidx-lifecycle = "2.9.3"
 androidx-media3 = "1.8.0"
-androidx-navigation = "2.9.3"
+androidx-navigation = "2.9.4"
 androidx-paging = "3.3.6"
 androidx-recyclerview = "1.4.0"
-androidx-room = "2.7.2"
+androidx-room = "2.8.0"
 androidx-tv-material3 = "1.1.0-alpha01"
-androidx-work = "2.10.3"
+androidx-work = "2.10.4"
 coil = "3.3.0"
 hilt = "2.57.1"
 jellyfin = "1.6.8"
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 kotlinx-serialization = "1.9.0"
-ksp = "2.2.10-2.0.2"
+ksp = "2.2.20-2.0.3"
 ktlint = "12.3.0"
 libmpv = "0.5.1"
-material = "1.12.0"
+material = "1.13.0"
 media3-ffmpeg-decoder = "1.8.0+1"
 timber = "5.0.1"
 
@@ -47,7 +47,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt" }
+androidx-hilt-lifecycle-viewmodel-compose = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "androidx-hilt" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "androidx-hilt" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidx-hilt" }
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
