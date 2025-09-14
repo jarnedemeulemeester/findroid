@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
@@ -155,6 +156,7 @@ private fun SeasonScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
                     ItemButtonsBar(
                         item = season,
+                        downloaderState = DownloaderState(),
                         onPlayClick = { startFromBeginning ->
                             onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -172,6 +174,7 @@ private fun SeasonScreenLayout(
                         },
                         onTrailerClick = {},
                         onDownloadClick = {},
+                        onDownloadCancelClick = {},
                         onDownloadDeleteClick = {},
                         modifier = Modifier
                             .padding(

@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovieDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
 import dev.jdtech.jellyfin.models.toFindroidSegmentsDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
+import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.models.toFindroidSourceDto
 import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
@@ -133,7 +134,8 @@ class DownloaderImpl(
         }
     }
 
-    override suspend fun cancelDownload(item: FindroidItem, source: FindroidSource) {
+    override suspend fun cancelDownload(item: FindroidItem, downloadId: Long) {
+        val source = database.getSourceByDownloadId(downloadId)?.toFindroidSource(database) ?: return
         if (source.downloadId != null) {
             downloadManager.remove(source.downloadId!!)
         }
