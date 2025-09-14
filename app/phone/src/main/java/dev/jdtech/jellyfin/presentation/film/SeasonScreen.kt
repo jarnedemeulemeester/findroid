@@ -170,6 +170,7 @@ private fun SeasonScreenLayout(
                         },
                         onTrailerClick = {},
                         onDownloadClick = {},
+                        onDownloadDeleteClick = {},
                         modifier = Modifier
                             .padding(
                                 start = paddingStart,

@@ -152,7 +152,7 @@ constructor(
         player.addListener(this)
 
         viewModelScope.launch {
-            val startItem = playlistManager.getInitialItem(itemId = itemId, mediaSourceIndex = 0, startFromBeginning = startFromBeginning)
+            val startItem = playlistManager.getInitialItem(itemId = itemId, mediaSourceIndex = null, startFromBeginning = startFromBeginning)
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
