@@ -47,7 +47,6 @@ import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
-import dev.jdtech.jellyfin.presentation.film.components.DownloaderCard
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
@@ -76,6 +75,12 @@ fun MovieScreen(
 
     LaunchedEffect(true) {
         viewModel.loadMovie(movieId = movieId)
+    }
+
+    LaunchedEffect(state.movie) {
+        state.movie?.let { movie ->
+            downloaderViewModel.update(movie)
+        }
     }
 
     MovieScreenLayout(
@@ -216,6 +221,7 @@ private fun MovieScreenLayout(
                     }
                     ItemButtonsBar(
                         item = movie,
+                        downloaderState = downloaderState,
                         onPlayClick = { startFromBeginning ->
                             onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -237,17 +243,15 @@ private fun MovieScreenLayout(
                         onDownloadClick = {
                             onDownloaderAction(DownloaderAction.Download(movie))
                         },
+                        onDownloadCancelClick = {
+                            onDownloaderAction(DownloaderAction.CancelDownload(movie))
+                        },
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(movie))
                         },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    if (downloaderState.progress != -1f) {
-                        Spacer(Modifier.height(MaterialTheme.spacings.small))
-                        DownloaderCard(state = downloaderState)
-                        Spacer(Modifier.height(MaterialTheme.spacings.medium))
-                    }
                     OverviewText(
                         text = movie.overview,
                         maxCollapsedLines = 3,
