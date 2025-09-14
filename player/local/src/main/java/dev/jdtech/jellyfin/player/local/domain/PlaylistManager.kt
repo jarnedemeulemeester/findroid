@@ -123,7 +123,7 @@ internal constructor(
                     val item = items[itemIndex]
                     if (playerItems.firstOrNull { it.itemId == item.id } == null) {
                         try {
-                            item.toPlayerItem(0, 0L)
+                            item.toPlayerItem(null, 0L)
                         } catch (e: Exception) {
                             Timber.e("Failed to retrieve previous player item: $e")
                             null
@@ -156,7 +156,7 @@ internal constructor(
                     val item = items[itemIndex]
                     if (playerItems.firstOrNull { it.itemId == item.id } == null) {
                         try {
-                            item.toPlayerItem(0, 0L)
+                            item.toPlayerItem(null, 0L)
                         } catch (e: Exception) {
                             Timber.e("Failed to retrieve next player item: $e")
                             null
