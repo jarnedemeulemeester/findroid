@@ -1,8 +1,11 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -17,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -30,10 +34,12 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun ItemButtonsBar(
     item: FindroidItem,
+    downloaderState: DownloaderState,
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onDownloadCancelClick: () -> Unit,
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -146,26 +152,38 @@ fun ItemButtonsBar(
                         }
                     }
                 }
-                if (item.isDownloaded()) {
-                    FilledTonalIconButton(
-                        onClick = onDownloadDeleteClick,
-                    ) {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_trash),
-                            contentDescription = null,
-                        )
-                    }
-                } else if (item.canDownload) {
-                    FilledTonalIconButton(
-                        onClick = onDownloadClick,
-                        enabled = !item.isDownloading(),
-                    ) {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_download),
-                            contentDescription = null,
-                        )
+                if (!downloaderState.isDownloading) {
+                    if (item.isDownloaded()) {
+                        FilledTonalIconButton(
+                            onClick = onDownloadDeleteClick,
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_trash),
+                                contentDescription = null,
+                            )
+                        }
+                    } else if (item.canDownload) {
+                        FilledTonalIconButton(
+                            onClick = onDownloadClick,
+                            enabled = !item.isDownloading(),
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_download),
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
+            }
+        }
+        AnimatedVisibility(downloaderState.isDownloading) {
+            Column {
+                Spacer(Modifier.height(MaterialTheme.spacings.small))
+                DownloaderCard(
+                    state = downloaderState,
+                    onCancelClick = onDownloadCancelClick,
+                )
+                Spacer(Modifier.height(MaterialTheme.spacings.small))
             }
         }
     }
@@ -177,10 +195,12 @@ private fun ItemButtonsBarPreview() {
     FindroidTheme {
         ItemButtonsBar(
             item = dummyEpisode,
+            downloaderState = DownloaderState(),
             onPlayClick = {},
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
+            onDownloadCancelClick = {},
             onDownloadDeleteClick = {},
             onTrailerClick = {},
         )

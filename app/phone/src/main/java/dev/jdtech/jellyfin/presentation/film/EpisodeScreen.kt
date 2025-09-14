@@ -47,7 +47,6 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
-import dev.jdtech.jellyfin.presentation.film.components.DownloaderCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
@@ -210,6 +209,7 @@ private fun EpisodeScreenLayout(
                     }
                     ItemButtonsBar(
                         item = episode,
+                        downloaderState = downloaderState,
                         onPlayClick = { startFromBeginning ->
                             onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -229,17 +229,15 @@ private fun EpisodeScreenLayout(
                         onDownloadClick = {
                             onDownloaderAction(DownloaderAction.Download(episode))
                         },
+                        onDownloadCancelClick = {
+                            onDownloaderAction(DownloaderAction.CancelDownload(episode))
+                        },
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(episode))
                         },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    if (downloaderState.progress != -1f) {
-                        Spacer(Modifier.height(MaterialTheme.spacings.small))
-                        DownloaderCard(state = downloaderState)
-                        Spacer(Modifier.height(MaterialTheme.spacings.medium))
-                    }
                     OverviewText(
                         text = episode.overview,
                     )

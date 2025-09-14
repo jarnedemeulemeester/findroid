@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.core.presentation.downloader
 
+import android.app.DownloadManager
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,8 @@ constructor(
     private val _state = MutableStateFlow(DownloaderState())
     val state = _state.asStateFlow()
 
+    var downloadId: Long? = null
+
     private val handler = Handler(Looper.getMainLooper())
 
     fun update(
@@ -32,6 +35,7 @@ constructor(
         viewModelScope.launch {
             if (item.isDownloading()) {
                 val source = item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: return@launch
+                this@DownloaderViewModel.downloadId = source.downloadId
                 pollDownloadProgress(source.downloadId)
             }
         }
@@ -42,13 +46,17 @@ constructor(
         storageIndex: Int = 0,
     ) {
         viewModelScope.launch {
+            _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
             val (downloadId, uiText) = downloader.downloadItem(
                 item = item,
                 sourceId = item.sources.first().id,
                 storageIndex = storageIndex,
             )
             if (downloadId != -1L) {
+                this@DownloaderViewModel.downloadId = downloadId
                 pollDownloadProgress(downloadId)
+            } else {
+                _state.emit(DownloaderState(status = DownloadManager.STATUS_FAILED))
             }
         }
     }
@@ -57,10 +65,12 @@ constructor(
         item: FindroidItem,
     ) {
         viewModelScope.launch {
-            downloader.cancelDownload(
-                item = item,
-                item.sources.first(),
-            )
+            downloadId?.let {
+                downloader.cancelDownload(
+                    item = item,
+                    downloadId = it,
+                )
+            }
         }
     }
 
@@ -82,10 +92,13 @@ constructor(
         val downloadProgressRunnable = object : Runnable {
             override fun run() {
                 viewModelScope.launch {
-                    val (downloadStatus, progress) = downloader.getProgress(downloadId)
-                    _state.emit(DownloaderState(progress = progress / 100f))
+                    val (status, progress) = downloader.getProgress(downloadId)
+                    _state.emit(DownloaderState(status = status, progress = progress.coerceAtLeast(0) / 100f))
                 }
-                handler.postDelayed(this, 1000L)
+
+                if (_state.value.isDownloading) {
+                    handler.postDelayed(this, 1000L)
+                }
             }
         }
         handler.post(downloadProgressRunnable)
