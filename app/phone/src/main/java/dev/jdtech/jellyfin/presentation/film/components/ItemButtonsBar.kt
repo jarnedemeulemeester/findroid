@@ -21,6 +21,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -32,6 +34,7 @@ fun ItemButtonsBar(
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -143,10 +146,19 @@ fun ItemButtonsBar(
                         }
                     }
                 }
-                if (item.canDownload) {
+                if (item.isDownloaded()) {
+                    FilledTonalIconButton(
+                        onClick = onDownloadDeleteClick,
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_trash),
+                            contentDescription = null,
+                        )
+                    }
+                } else if (item.canDownload) {
                     FilledTonalIconButton(
                         onClick = onDownloadClick,
-                        enabled = false,
+                        enabled = !item.isDownloading(),
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_download),
@@ -169,6 +181,7 @@ private fun ItemButtonsBarPreview() {
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
+            onDownloadDeleteClick = {},
             onTrailerClick = {},
         )
     }
