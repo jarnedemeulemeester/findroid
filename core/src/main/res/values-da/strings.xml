@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="external">Ekstern</string>
-    <string name="jellyfin_banner">Jellyfin banner</string>
+    <string name="jellyfin_banner">Jellyfin-banner</string>
     <string name="remove">Fjern</string>
     <string name="cancel">Annuller</string>
     <string name="title_home">Hjem</string>
@@ -90,10 +90,10 @@
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">midlertidig</string>
     <string name="offline_mode">Offline Mode</string>
-    <string name="offline_mode_icon">Offlinetilstandsikon</string>
+    <string name="offline_mode_icon">Ikon for offlinetilstand</string>
     <string name="not_enough_storage">Dette element kræver %1$s ledig lagerplads, men kun %2$s er tilgængeligt</string>
     <string name="privacy_policy_notice">Ved at bruge Findroid accepterer du <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privatlivspolitikken</a> som angiver, at vi ikke indsamler nogen data</string>
-    <string name="live_tv">Live TV</string>
+    <string name="live_tv">Live-TV</string>
     <string name="not_set">Ikke angivet</string>
     <string name="manage_servers">Håndter servere</string>
     <string name="show_stacktrace">Vis stacktrace</string>
