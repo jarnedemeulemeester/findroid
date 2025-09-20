@@ -66,6 +66,7 @@ fun SettingsGroupCard(
                                     preference.copy(value = !preference.value),
                                 ),
                             )
+                            preference.onClick(preference)
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
