@@ -43,6 +43,7 @@ constructor(
                 hasServers = checkHasServers(),
                 hasCurrentServer = checkHasCurrentServer(),
                 hasCurrentUser = checkHasCurrentUser(),
+                isOfflineMode = checkIsOfflineMode(),
             )
             _state.emit(mainState)
         }
@@ -81,6 +82,10 @@ constructor(
     private fun checkIsDynamicColors(): Boolean {
         return appPreferences.getValue(appPreferences.dynamicColors)
     }
+
+    private fun checkIsOfflineMode(): Boolean {
+        return appPreferences.getValue(appPreferences.offlineMode)
+    }
 }
 
 data class MainState(
@@ -89,4 +94,5 @@ data class MainState(
     val hasServers: Boolean = false,
     val hasCurrentServer: Boolean = false,
     val hasCurrentUser: Boolean = false,
+    val isOfflineMode: Boolean = false,
 )
