@@ -39,6 +39,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
+import dev.jdtech.jellyfin.presentation.film.DownloadsScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.FavoritesScreen
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
@@ -87,6 +88,9 @@ data object HomeRoute
 
 @Serializable
 data object MediaRoute
+
+@Serializable
+data object DownloadsRoute
 
 @Serializable
 data class LibraryRoute(
@@ -146,7 +150,7 @@ data class TabBarItem(
 
 val homeTab = TabBarItem(title = CoreR.string.title_home, icon = CoreR.drawable.ic_home, route = HomeRoute)
 val mediaTab = TabBarItem(title = CoreR.string.title_media, icon = CoreR.drawable.ic_library, route = MediaRoute)
-val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = Unit, enabled = false)
+val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = DownloadsRoute)
 
 @Composable
 fun NavigationRoot(
@@ -359,6 +363,13 @@ fun NavigationRoot(
                     },
                     searchExpanded = searchExpanded,
                     onSearchExpand = { searchExpanded = it },
+                )
+            }
+            composable<DownloadsRoute> {
+                DownloadsScreen(
+                    onItemClick = { item ->
+                        navigateToItem(navController = navController, item = item)
+                    },
                 )
             }
             composable<LibraryRoute> { backStackEntry ->
