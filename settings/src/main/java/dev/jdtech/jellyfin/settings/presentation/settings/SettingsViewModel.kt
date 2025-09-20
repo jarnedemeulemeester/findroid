@@ -36,15 +36,19 @@ constructor(
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
 
-    private val topLevelPreferences = listOf<PreferenceGroup>(
+    private val topLevelPreferences = listOf(
         PreferenceGroup(
             preferences = listOf(
                 PreferenceSwitch(
                     nameStringResource = R.string.offline_mode,
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
-                    enabled = false,
                     supportedDeviceTypes = listOf(DeviceType.PHONE),
+                    onClick = {
+                        viewModelScope.launch {
+                            eventsChannel.send(SettingsEvent.RestartActivity)
+                        }
+                    },
                     backendPreference = appPreferences.offlineMode,
                 ),
             ),
