@@ -44,7 +44,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
-import dev.jdtech.jellyfin.presentation.utils.plus
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -83,10 +82,6 @@ fun CollectionScreenLayout(
     state: CollectionState,
     onAction: (CollectionAction) -> Unit,
 ) {
-    val contentPadding = PaddingValues(
-        all = MaterialTheme.spacings.default,
-    )
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -115,12 +110,17 @@ fun CollectionScreenLayout(
                 scrollBehavior = scrollBehavior,
             )
         },
+        contentWindowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
     ) { innerPadding ->
         Column {
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = contentPadding + innerPadding,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    all = MaterialTheme.spacings.default,
+                ),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
@@ -134,6 +134,7 @@ fun CollectionScreenLayout(
                                         horizontal = MaterialTheme.spacings.medium,
                                         vertical = MaterialTheme.spacings.medium,
                                     ),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleMedium,
                             )
                         }
