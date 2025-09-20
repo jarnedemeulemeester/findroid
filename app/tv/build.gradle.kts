@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.timber)
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
