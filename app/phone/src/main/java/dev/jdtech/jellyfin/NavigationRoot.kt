@@ -148,15 +148,13 @@ val homeTab = TabBarItem(title = CoreR.string.title_home, icon = CoreR.drawable.
 val mediaTab = TabBarItem(title = CoreR.string.title_media, icon = CoreR.drawable.ic_library, route = MediaRoute)
 val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = Unit, enabled = false)
 
-val navigationItems = listOf(homeTab, mediaTab, downloadsTab)
-val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
-
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
+    isOfflineMode: Boolean,
 ) {
     val startDestination = when {
         hasServers && hasCurrentServer && hasCurrentUser -> HomeRoute
@@ -164,6 +162,12 @@ fun NavigationRoot(
         hasServers -> ServersRoute
         else -> WelcomeRoute
     }
+
+    val navigationItems = when (isOfflineMode) {
+        false -> listOf(homeTab, mediaTab, downloadsTab)
+        true -> listOf(homeTab, downloadsTab)
+    }
+    val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 

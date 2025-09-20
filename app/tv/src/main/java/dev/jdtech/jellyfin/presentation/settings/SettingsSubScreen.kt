@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings
 
+import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,8 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.utils.restart
+import timber.log.Timber
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
@@ -69,7 +72,16 @@ fun SettingsSubScreen(
             is SettingsEvent.LaunchIntent -> {
                 try {
                     context.startActivity(event.intent)
-                } catch (_: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+            is SettingsEvent.RestartActivity -> {
+                try {
+                    (context as Activity).restart()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
     }
