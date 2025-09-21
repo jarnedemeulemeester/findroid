@@ -2,16 +2,12 @@ package dev.jdtech.jellyfin.player.local.domain
 
 import androidx.core.net.toUri
 import androidx.media3.common.MimeTypes
-import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
-import dev.jdtech.jellyfin.models.toFindroidEpisode
-import dev.jdtech.jellyfin.models.toFindroidMovie
-import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
@@ -28,7 +24,6 @@ class PlaylistManager
 @Inject
 internal constructor(
     private val repository: JellyfinRepository,
-    private val database: ServerDatabaseDao,
 ) {
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
@@ -37,24 +32,23 @@ internal constructor(
 
     suspend fun getInitialItem(
         itemId: UUID,
+        itemKind: BaseItemKind,
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
     ): PlayerItem? {
         Timber.Forest.d("Retrieving initial player item")
 
-        val item = repository.getItem(itemId)
-
-        val initialItem = when (item.type) {
+        val initialItem = when (itemKind) {
             BaseItemKind.MOVIE -> {
-                val movie = item.toFindroidMovie(repository, database)
+                val movie = repository.getMovie(itemId)
 
                 items = listOf(movie)
                 movie
             }
             BaseItemKind.SERIES -> {
-                val season = repository.getSeasons(item.id).first()
+                val season = repository.getSeasons(itemId).first()
                 val episodes = repository.getEpisodes(
-                    seriesId = item.id,
+                    seriesId = itemId,
                     seasonId = season.id,
                     fields = listOf(
                         ItemFields.CHAPTERS,
@@ -62,13 +56,13 @@ internal constructor(
                     ),
                 ).filter { !it.missing }
 
-                val episode = repository.getNextUp(item.id).firstOrNull() ?: episodes.first()
+                val episode = repository.getNextUp(itemId).firstOrNull() ?: episodes.first()
 
                 items = episodes
                 episode
             }
             BaseItemKind.SEASON -> {
-                val season = item.toFindroidSeason(repository)
+                val season = repository.getSeason(itemId)
                 val episodes = repository.getEpisodes(
                     seriesId = season.seriesId,
                     seasonId = season.id,
@@ -84,7 +78,7 @@ internal constructor(
                 episode
             }
             BaseItemKind.EPISODE -> {
-                val episode = item.toFindroidEpisode(repository, database) ?: return null
+                val episode = repository.getEpisode(itemId)
 
                 val episodes = repository.getEpisodes(
                     seriesId = episode.seriesId,

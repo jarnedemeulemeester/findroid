@@ -52,6 +52,7 @@ import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -78,6 +79,7 @@ fun MovieScreen(
                 is MovieAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", movieId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }

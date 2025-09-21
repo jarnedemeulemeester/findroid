@@ -63,6 +63,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun PlayerScreen(
     itemId: UUID,
+    itemKind: String,
     startFromBeginning: Boolean,
     // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
 ) {
@@ -192,7 +193,11 @@ fun PlayerScreen(
                 PlayerView(context).also { playerView ->
                     playerView.player = viewModel.player
                     playerView.useController = false
-                    viewModel.initializePlayer(itemId, startFromBeginning)
+                    viewModel.initializePlayer(
+                        itemId = itemId,
+                        itemKind = itemKind,
+                        startFromBeginning = startFromBeginning,
+                    )
                     playerView.setBackgroundColor(
                         context.resources.getColor(
                             android.R.color.black,

@@ -50,6 +50,7 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.format
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -74,6 +75,7 @@ fun EpisodeScreen(
                 is EpisodeAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", episodeId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }

@@ -93,6 +93,7 @@ class PlayerActivity : BasePlayerActivity() {
         super.onCreate(savedInstanceState)
 
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val itemKind = intent.extras!!.getString("itemKind")
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -327,7 +328,11 @@ class PlayerActivity : BasePlayerActivity() {
             timeBar.addListener(previewScrubListener!!)
         }
 
-        viewModel.initializePlayer(itemId, startFromBeginning)
+        viewModel.initializePlayer(
+            itemId = itemId,
+            itemKind = itemKind ?: "",
+            startFromBeginning = startFromBeginning,
+        )
         hideSystemUI()
     }
 
@@ -336,10 +341,12 @@ class PlayerActivity : BasePlayerActivity() {
         setIntent(intent)
 
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
+        val itemKind = intent.extras!!.getString("itemKind")
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
 
         viewModel.initializePlayer(
             itemId = itemId,
+            itemKind = itemKind ?: "",
             startFromBeginning = startFromBeginning,
         )
     }

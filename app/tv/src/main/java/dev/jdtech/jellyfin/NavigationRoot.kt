@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.utils.base64ToByteArray
 import dev.jdtech.jellyfin.utils.toBase64Str
 import kotlinx.parcelize.parcelableCreator
 import kotlinx.serialization.Serializable
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 
 inline fun <reified T : Parcelable> T.toBase64(): String {
@@ -90,6 +91,7 @@ data class SeasonRoute(
 @Serializable
 data class PlayerRoute(
     val itemId: String,
+    val itemKind: String,
 )
 
 @Serializable
@@ -203,7 +205,7 @@ fun NavigationRoot(
                     navController.navigate(ShowRoute(itemId.toString()))
                 },
                 navigateToPlayer = { itemId ->
-                    navController.navigate(PlayerRoute(itemId.toString()))
+                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = itemKind))
                 },
             )
         }
@@ -229,7 +231,7 @@ fun NavigationRoot(
             MovieScreen(
                 movieId = UUID.fromString(route.itemId),
                 navigateToPlayer = { itemId ->
-                    navController.navigate(PlayerRoute(itemId.toString()))
+                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = BaseItemKind.MOVIE.serialName))
                 },
             )
         }
@@ -245,7 +247,7 @@ fun NavigationRoot(
                     }
                 },
                 navigateToPlayer = { itemId ->
-                    navController.navigate(PlayerRoute(itemId.toString()))
+                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = BaseItemKind.SERIES.serialName))
                 },
             )
         }
@@ -254,7 +256,7 @@ fun NavigationRoot(
             SeasonScreen(
                 seasonId = UUID.fromString(route.seasonId),
                 navigateToPlayer = { itemId ->
-                    navController.navigate(PlayerRoute(itemId.toString()))
+                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = BaseItemKind.SEASON.serialName))
                 },
             )
         }
@@ -262,6 +264,7 @@ fun NavigationRoot(
             val route: PlayerRoute = backStackEntry.toRoute()
             PlayerScreen(
                 itemId = UUID.fromString(route.itemId),
+                itemKind = route.itemKind,
                 startFromBeginning = false,
             )
         }

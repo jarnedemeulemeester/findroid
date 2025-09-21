@@ -49,6 +49,7 @@ import dev.jdtech.jellyfin.ui.components.LoadingIndicator
 import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -58,7 +59,7 @@ fun MainScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (itemId: UUID) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by mainViewModel.uiState.collectAsState()
@@ -94,7 +95,7 @@ private fun MainScreenLayout(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (itemId: UUID) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind) -> Unit,
 ) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
@@ -221,7 +222,7 @@ private fun MainScreenLayoutPreview() {
             navigateToLibrary = { _, _, _ -> },
             navigateToMovie = {},
             navigateToShow = {},
-            navigateToPlayer = {},
+            navigateToPlayer = { _, _ -> },
         )
     }
 }

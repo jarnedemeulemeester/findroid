@@ -61,6 +61,7 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.getShowDateString
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -88,6 +89,7 @@ fun ShowScreen(
                 is ShowAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", showId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
                     context.startActivity(intent)
                 }
                 is ShowAction.PlayTrailer -> {

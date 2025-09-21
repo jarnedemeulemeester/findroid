@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -147,12 +148,18 @@ constructor(
 
     fun initializePlayer(
         itemId: UUID,
+        itemKind: String,
         startFromBeginning: Boolean,
     ) {
         player.addListener(this)
 
         viewModelScope.launch {
-            val startItem = playlistManager.getInitialItem(itemId = itemId, mediaSourceIndex = 0, startFromBeginning = startFromBeginning)
+            val startItem = playlistManager.getInitialItem(
+                itemId = itemId,
+                itemKind = BaseItemKind.fromName(itemKind),
+                mediaSourceIndex = null,
+                startFromBeginning = startFromBeginning,
+            )
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)

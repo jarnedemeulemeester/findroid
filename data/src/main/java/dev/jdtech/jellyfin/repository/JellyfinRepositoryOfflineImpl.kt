@@ -48,10 +48,6 @@ class JellyfinRepositoryOfflineImpl(
         return emptyList()
     }
 
-    override suspend fun getItem(itemId: UUID): BaseItemDto {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
             database.getMovie(itemId).toFindroidMovie(database, jellyfinApi.userId!!)

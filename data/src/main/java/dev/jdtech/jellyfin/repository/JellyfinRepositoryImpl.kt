@@ -63,10 +63,6 @@ class JellyfinRepositoryImpl(
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items
     }
 
-    override suspend fun getItem(itemId: UUID): BaseItemDto = withContext(Dispatchers.IO) {
-        jellyfinApi.userLibraryApi.getItem(itemId, jellyfinApi.userId!!).content
-    }
-
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(

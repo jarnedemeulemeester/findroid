@@ -25,7 +25,6 @@ interface JellyfinRepository {
 
     suspend fun getUserViews(): List<BaseItemDto>
 
-    suspend fun getItem(itemId: UUID): BaseItemDto
     suspend fun getEpisode(itemId: UUID): FindroidEpisode
     suspend fun getMovie(itemId: UUID): FindroidMovie
 

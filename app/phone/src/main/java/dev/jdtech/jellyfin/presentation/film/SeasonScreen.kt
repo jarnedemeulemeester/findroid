@@ -50,6 +50,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -74,6 +75,7 @@ fun SeasonScreen(
                 is SeasonAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", seasonId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
                     context.startActivity(intent)
                 }
                 is SeasonAction.OnBackClick -> navigateBack()
