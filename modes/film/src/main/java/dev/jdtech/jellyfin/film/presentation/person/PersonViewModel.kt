@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.models.toFindroidPerson
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,8 +23,7 @@ class PersonViewModel @Inject internal constructor(
     fun loadPerson(personId: UUID) {
         viewModelScope.launch {
             try {
-                val personitem = repository.getItem(personId)
-                val person = personitem.toFindroidPerson(repository)
+                val person = repository.getPerson(personId)
 
                 val items = repository.getPersonItems(
                     personIds = listOf(personId),

@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidPerson
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -19,6 +20,7 @@ import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
 import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toFindroidPerson
 import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
@@ -152,6 +154,11 @@ class JellyfinRepositoryImpl(
             },
         ).flow
     }
+
+    override suspend fun getPerson(personId: UUID): FindroidPerson =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(personId, jellyfinApi.userId!!).content.toFindroidPerson(this@JellyfinRepositoryImpl)
+        }
 
     override suspend fun getPersonItems(
         personIds: List<UUID>,

@@ -20,7 +20,7 @@ data class FindroidMovie(
     override val runtimeTicks: Long,
     override val playbackPositionTicks: Long,
     val premiereDate: LocalDateTime?,
-    val people: List<FindroidPerson>,
+    val people: List<FindroidItemPerson>,
     val genres: List<String>,
     val communityRating: Float?,
     val officialRating: String?,

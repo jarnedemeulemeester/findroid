@@ -28,7 +28,7 @@ data class FindroidEpisode(
     val seriesId: UUID,
     val seasonId: UUID,
     val communityRating: Float?,
-    val people: List<FindroidPerson>,
+    val people: List<FindroidItemPerson>,
     override val unplayedItemCount: Int? = null,
     val missing: Boolean = false,
     override val images: FindroidImages,

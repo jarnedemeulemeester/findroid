@@ -47,7 +47,7 @@ import dev.jdtech.jellyfin.film.presentation.person.PersonAction
 import dev.jdtech.jellyfin.film.presentation.person.PersonState
 import dev.jdtech.jellyfin.film.presentation.person.PersonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidPersonDetail
+import dev.jdtech.jellyfin.models.FindroidPerson
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
@@ -249,7 +249,7 @@ private fun PersonScreenLayout(
 
 @Composable
 private fun PersonImage(
-    person: FindroidPersonDetail,
+    person: FindroidPerson,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
