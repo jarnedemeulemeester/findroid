@@ -204,8 +204,8 @@ fun NavigationRoot(
                 navigateToShow = { itemId ->
                     navController.navigate(ShowRoute(itemId.toString()))
                 },
-                navigateToPlayer = { itemId ->
-                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = itemKind))
+                navigateToPlayer = { itemId, itemKind ->
+                    navController.navigate(PlayerRoute(itemId = itemId.toString(), itemKind = itemKind.serialName))
                 },
             )
         }
