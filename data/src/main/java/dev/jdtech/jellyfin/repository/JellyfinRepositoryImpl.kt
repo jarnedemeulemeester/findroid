@@ -26,7 +26,6 @@ import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import io.ktor.util.toByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -368,7 +367,7 @@ class JellyfinRepositoryImpl(
                     }
                 } catch (_: Exception) { }
 
-                return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content.toByteArray()
+                return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content
             } catch (_: Exception) {
                 return@withContext null
             }
