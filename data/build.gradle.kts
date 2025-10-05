@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin.data"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        minSdk = Versions.minSdk
+        minSdk = Versions.MIN_SDK
 
-        buildConfigField("int", "VERSION_CODE", Versions.appCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"${Versions.appName}\"")
+        buildConfigField("int", "VERSION_CODE", Versions.APP_CODE.toString())
+        buildConfigField("String", "VERSION_NAME", "\"${Versions.APP_NAME}\"")
 
         consumerProguardFile("proguard-rules.pro")
 
@@ -35,8 +35,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 
     buildFeatures {
@@ -45,7 +45,7 @@ android {
 }
 
 ktlint {
-    version.set(Versions.ktlint)
+    version.set(Versions.KTLINT)
     android.set(true)
     ignoreFailures.set(false)
 }

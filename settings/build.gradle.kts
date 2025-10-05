@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin.settings"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        minSdk = Versions.minSdk
+        minSdk = Versions.MIN_SDK
     }
 
     buildTypes {
@@ -24,13 +24,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 }
 
 ktlint {
-    version.set(Versions.ktlint)
+    version.set(Versions.KTLINT)
     android.set(true)
     ignoreFailures.set(false)
 }

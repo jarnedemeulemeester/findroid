@@ -11,16 +11,16 @@ plugins {
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = Versions.minSdk
-        targetSdk = Versions.targetSdk
+        minSdk = Versions.MIN_SDK
+        targetSdk = Versions.TARGET_SDK
 
-        versionCode = Versions.appCode
-        versionName = Versions.appName
+        versionCode = Versions.APP_CODE
+        versionName = Versions.APP_NAME
     }
 
     buildTypes {
@@ -60,8 +60,8 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 
     buildFeatures {
@@ -84,7 +84,7 @@ android {
 }
 
 ktlint {
-    version.set(Versions.ktlint)
+    version.set(Versions.KTLINT)
     android.set(true)
     ignoreFailures.set(false)
 }
