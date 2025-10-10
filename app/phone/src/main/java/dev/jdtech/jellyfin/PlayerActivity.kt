@@ -450,15 +450,17 @@ class PlayerActivity : BasePlayerActivity() {
 
                 // Override auto brightness
                 window.attributes = window.attributes.apply {
-                    screenBrightness =
-                        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-                            appPreferences.getValue(appPreferences.playerBrightness)
-                        } else {
-                            Settings.System.getInt(
-                                contentResolver,
-                                Settings.System.SCREEN_BRIGHTNESS,
-                            ).toFloat() / 255
-                        }
+                    if (appPreferences.getValue(appPreferences.playerGesturesVB)) {
+                        screenBrightness =
+                            if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+                                appPreferences.getValue(appPreferences.playerBrightness)
+                            } else {
+                                Settings.System.getInt(
+                                    contentResolver,
+                                    Settings.System.SCREEN_BRIGHTNESS,
+                                ).toFloat() / 255
+                            }
+                    }
                 }
             }
         }
