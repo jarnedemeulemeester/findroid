@@ -1,10 +1,10 @@
 [versions]
-aboutlibraries = "12.2.4"
+aboutlibraries = "13.0.0"
 android-desugar-jdk-libs = "2.1.5"
 android-plugin = "8.13.0"
 androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
-androidx-compose = "1.9.2"
+androidx-compose = "1.9.3"
 androidx-compose-material3 = "1.4.0"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.17.0"
@@ -15,7 +15,7 @@ androidx-media3 = "1.8.0"
 androidx-navigation = "2.9.5"
 androidx-paging = "3.3.6"
 androidx-recyclerview = "1.4.0"
-androidx-room = "2.8.1"
+androidx-room = "2.8.2"
 androidx-tv-material3 = "1.1.0-alpha01"
 androidx-work = "2.10.5"
 coil = "3.3.0"
@@ -80,6 +80,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+aboutlibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutlibraries" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
