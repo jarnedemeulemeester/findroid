@@ -2,9 +2,9 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -52,12 +53,15 @@ fun EpisodeCard(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small),
             )
-            ProgressBadge(
-                item = episode,
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(PaddingValues(MaterialTheme.spacings.small)),
-            )
+                    .padding(MaterialTheme.spacings.small),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+            ) {
+                if (episode.isDownloaded()) DownloadedBadge()
+                if (episode.played) PlayedBadge()
+            }
         }
         Spacer(Modifier.width(MaterialTheme.spacings.default / 2))
         Box(
