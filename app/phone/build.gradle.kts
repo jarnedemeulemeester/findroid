@@ -100,13 +100,6 @@ ktlint {
     ignoreFailures.set(false)
 }
 
-aboutLibraries {
-    library {
-        duplicationMode = com.mikepenz.aboutlibraries.plugin.DuplicateMode.MERGE
-        duplicationRule = com.mikepenz.aboutlibraries.plugin.DuplicateRule.SIMPLE
-    }
-}
-
 dependencies {
     implementation(projects.core)
     implementation(projects.data)
