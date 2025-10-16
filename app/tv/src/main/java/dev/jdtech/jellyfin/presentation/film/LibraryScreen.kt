@@ -171,6 +171,11 @@ private fun LibraryScreenLayout(
             onDismissRequest = {
                 showSortByDialog = false
             },
+            genres = state.genres,
+            currentGenre = state.selectedGenre,
+            onGenreSelected = { genre ->
+                onAction(LibraryAction.SelectGenre(genre))
+            },
         )
     }
 

@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.TextField
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SegmentedButton
@@ -46,11 +51,15 @@ import org.jellyfin.sdk.model.api.SortOrder
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun SortByDialog(
     currentSortBy: SortBy,
     currentSortOrder: SortOrder,
     onUpdate: (sortBy: SortBy, sortOrder: SortOrder) -> Unit,
     onDismissRequest: () -> Unit,
+    genres: List<String> = emptyList(),
+    currentGenre: String? = null,
+    onGenreSelected: (String?) -> Unit = {},
 ) {
     val optionValues = SortBy.entries
     val optionNames = stringArrayResource(CoreR.array.sort_by_options)
@@ -149,6 +158,68 @@ fun SortByDialog(
                                 onUpdate(selectedOption, selectedOrder)
                             },
                         )
+                    }
+
+                    if (genres.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+                            Text(
+                                text = stringResource(CoreR.string.genre_label),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = MaterialTheme.spacings.default),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
+
+                            var expanded by remember { mutableStateOf(false) }
+                            val allGenresText = stringResource(CoreR.string.all_genres)
+                            val displayText = currentGenre ?: allGenresText
+
+                            ExposedDropdownMenuBox(
+                                expanded = expanded,
+                                onExpandedChange = { expanded = !expanded },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = MaterialTheme.spacings.default),
+                            ) {
+                                TextField(
+                                    value = displayText,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth(),
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                                    },
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                )
+                                androidx.compose.material3.ExposedDropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { androidx.compose.material3.Text(text = allGenresText) },
+                                        onClick = {
+                                            expanded = false
+                                            onGenreSelected(null)
+                                            onDismissRequest()
+                                        },
+                                    )
+                                    genres.forEach { genre ->
+                                        DropdownMenuItem(
+                                            text = { androidx.compose.material3.Text(text = genre) },
+                                            onClick = {
+                                                expanded = false
+                                                onGenreSelected(genre)
+                                                onDismissRequest()
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
