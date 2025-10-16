@@ -70,7 +70,7 @@ suspend fun BaseItemDto.toFindroidMovie(
     )
 }
 
-fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie {
+fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidMovie {
     val userData = database.getUserDataOrCreateNew(id, userId)
     val sources = database.getSources(id).map { it.toFindroidSource(database) }
     val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
@@ -79,6 +79,22 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
             trickplayInfos[source.id] = it
         }
     }
+    
+    // Build image URIs from baseUrl if available
+    val images = if (baseUrl != null) {
+        val uri = android.net.Uri.parse(baseUrl)
+        FindroidImages(
+            primary = uri.buildUpon()
+                .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
+                .build(),
+            backdrop = uri.buildUpon()
+                .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.BACKDROP}/0")
+                .build()
+        )
+    } else {
+        FindroidImages()
+    }
+    
     return FindroidMovie(
         id = id,
         name = name,
@@ -100,7 +116,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         canPlay = true,
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
-        images = FindroidImages(),
+        images = images,
         chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )

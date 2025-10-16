@@ -61,8 +61,24 @@ fun BaseItemDto.toFindroidShow(
     )
 }
 
-fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): FindroidShow {
+fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidShow {
     val userData = database.getUserDataOrCreateNew(id, userId)
+    
+    // Build image URIs from baseUrl if available
+    val images = if (baseUrl != null) {
+        val uri = android.net.Uri.parse(baseUrl)
+        FindroidImages(
+            primary = uri.buildUpon()
+                .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
+                .build(),
+            backdrop = uri.buildUpon()
+                .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.BACKDROP}/0")
+                .build()
+        )
+    } else {
+        FindroidImages()
+    }
+    
     return FindroidShow(
         id = id,
         name = name,
@@ -84,6 +100,6 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         productionYear = productionYear,
         endDate = endDate,
         trailer = null,
-        images = FindroidImages(),
+        images = images,
     )
 }

@@ -77,7 +77,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
     }
 }
 
-fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID): FindroidEpisode {
+fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidEpisode {
     val userData = database.getUserDataOrCreateNew(id, userId)
     val sources = database.getSources(id).map { it.toFindroidSource(database) }
     val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
@@ -86,6 +86,22 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
             trickplayInfos[source.id] = it
         }
     }
+    
+    // Build image URIs from baseUrl if available
+    val images = if (baseUrl != null) {
+        val uri = android.net.Uri.parse(baseUrl)
+        FindroidImages(
+            primary = uri.buildUpon()
+                .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
+                .build(),
+            showPrimary = uri.buildUpon()
+                .appendEncodedPath("items/$seriesId/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
+                .build()
+        )
+    } else {
+        FindroidImages()
+    }
+    
     return FindroidEpisode(
         id = id,
         name = name,
@@ -107,7 +123,7 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         seasonId = seasonId,
         communityRating = communityRating,
         people = emptyList(),
-        images = FindroidImages(),
+        images = images,
         chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )

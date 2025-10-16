@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import coil3.load
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -24,14 +25,14 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
 }
 
 fun bindItemImage(imageView: ImageView, item: FindroidItem) {
-    val itemId = when (item) {
-        is FindroidEpisode -> item.seriesId
-        else -> item.id
+    // Use the images from FindroidItem which already have full URIs
+    val imageUri = when (item) {
+        is FindroidEpisode -> item.images.showPrimary ?: item.images.primary
+        else -> item.images.primary
     }
 
-    imageView
-        .loadImage("/items/$itemId/Images/${ImageType.PRIMARY}")
-        .posterDescription(item.name)
+    imageView.load(imageUri)
+    imageView.contentDescription = imageView.context.resources.getString(CoreR.string.image_description_poster, item.name)
 }
 
 fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
@@ -53,14 +54,13 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
 }
 
 fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
-    val imageType = when (item) {
-        is FindroidMovie -> ImageType.BACKDROP
-        else -> ImageType.PRIMARY
+    val imageUri = when (item) {
+        is FindroidMovie -> item.images.backdrop ?: item.images.primary
+        else -> item.images.primary
     }
 
-    imageView
-        .loadImage("/items/${item.id}/Images/$imageType")
-        .posterDescription(item.name)
+    imageView.load(imageUri)
+    imageView.contentDescription = imageView.context.resources.getString(CoreR.string.image_description_poster, item.name)
 }
 
 fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {

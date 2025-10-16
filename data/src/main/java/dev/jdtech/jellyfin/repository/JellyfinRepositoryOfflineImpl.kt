@@ -358,22 +358,23 @@ class JellyfinRepositoryOfflineImpl(
         withContext(Dispatchers.IO) {
             val serverId = appPreferences.getValue(appPreferences.currentServer)
             val userId = jellyfinApi.userId ?: return@withContext emptyList()
+            val baseUrl = getBaseUrl()
             val items = mutableListOf<FindroidItem>()
-            timber.log.Timber.tag("Repo").d("getDownloads(offline) serverId=%s userId=%s", serverId, userId)
+            timber.log.Timber.tag("Repo").d("getDownloads(offline) serverId=%s userId=%s baseUrl=%s", serverId, userId, baseUrl)
             items.addAll(
                 database.getMovies()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { movieDto -> movieDto.toFindroidMovie(database, userId) },
+                    .map { movieDto -> movieDto.toFindroidMovie(database, userId, baseUrl) },
             )
             items.addAll(
                 database.getShows()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { showDto -> showDto.toFindroidShow(database, userId) },
+                    .map { showDto -> showDto.toFindroidShow(database, userId, baseUrl) },
             )
             items.addAll(
                 database.getEpisodes()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { episodeDto -> episodeDto.toFindroidEpisode(database, userId) },
+                    .map { episodeDto -> episodeDto.toFindroidEpisode(database, userId, baseUrl) },
             )
             timber.log.Timber.tag("Repo").d(
                 "getDownloads(offline) -> total=%d movies=%d shows=%d episodes=%d",
