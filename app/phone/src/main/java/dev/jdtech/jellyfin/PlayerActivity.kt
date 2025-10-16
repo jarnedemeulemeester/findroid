@@ -222,6 +222,12 @@ class PlayerActivity : BasePlayerActivity() {
                         when (event) {
                             is PlayerEvents.NavigateBack -> finishPlayback()
                             is PlayerEvents.IsPlayingChanged -> {
+                                if (event.isPlaying) {
+                                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                                } else {
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                                }
+
                                 if (appPreferences.getValue(appPreferences.playerPipGesture)) {
                                     try {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
