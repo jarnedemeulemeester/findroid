@@ -135,6 +135,7 @@ fun CollectionScreenLayout(
                     }
                 },
                 actions = {
+                    dev.jdtech.jellyfin.presentation.components.CastButton()
                     IconButton(onClick = { showSortByDialog = true }) {
                         Icon(
                             painter = painterResource(id = CoreR.drawable.ic_arrow_down_up),

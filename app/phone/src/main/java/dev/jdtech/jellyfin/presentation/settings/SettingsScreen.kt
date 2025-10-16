@@ -153,6 +153,9 @@ private fun SettingsScreenLayout(
                         )
                     }
                 },
+                actions = {
+                    dev.jdtech.jellyfin.presentation.components.CastButton()
+                },
                 scrollBehavior = scrollBehavior,
             )
         },

@@ -146,6 +146,7 @@ private fun LibraryScreenLayout(
                     }
                 },
                 actions = {
+                    dev.jdtech.jellyfin.presentation.components.CastButton()
                     IconButton(
                         onClick = {
                             showSortByDialog = true

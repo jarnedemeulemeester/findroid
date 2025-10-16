@@ -228,6 +228,7 @@ private fun PersonScreenLayout(
                 .fillMaxWidth()
                 .safeDrawingPadding()
                 .padding(horizontal = MaterialTheme.spacings.small),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             IconButton(
                 onClick = {
@@ -245,6 +246,8 @@ private fun PersonScreenLayout(
                     contentDescription = null,
                 )
             }
+            
+            dev.jdtech.jellyfin.presentation.components.CastButton()
         }
     }
 }

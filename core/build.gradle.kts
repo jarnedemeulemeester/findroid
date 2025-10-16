@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.mediarouter)
+    implementation(libs.google.cast.framework)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.paging)

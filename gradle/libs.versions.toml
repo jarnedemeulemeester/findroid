@@ -4,6 +4,7 @@ android-desugar-jdk-libs = "2.1.5"
 android-plugin = "8.13.0"
 androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
+androidx-mediarouter = "1.7.0"
 androidx-compose = "1.9.3"
 androidx-compose-material3 = "1.4.0"
 androidx-constraintlayout = "2.2.1"
@@ -19,6 +20,7 @@ androidx-room = "2.8.2"
 androidx-tv-material3 = "1.1.0-alpha01"
 androidx-work = "2.10.5"
 coil = "3.3.0"
+google-cast = "21.5.0"
 hilt = "2.57.2"
 jellyfin = "1.7.1"
 kotlin = "2.2.20"
@@ -50,6 +52,7 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", versio
 androidx-hilt-lifecycle-viewmodel-compose = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "androidx-hilt" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "androidx-hilt" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidx-hilt" }
+androidx-mediarouter = { group = "androidx.mediarouter", name = "mediarouter", version.ref = "androidx-mediarouter" }
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
@@ -69,6 +72,7 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 coil-network-cache-control = { group = "io.coil-kt.coil3", name = "coil-network-cache-control", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+google-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "google-cast" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.ref = "jellyfin" }

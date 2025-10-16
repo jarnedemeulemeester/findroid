@@ -91,6 +91,9 @@ fun AboutScreen(
                         )
                     }
                 },
+                actions = {
+                    dev.jdtech.jellyfin.presentation.components.CastButton()
+                },
                 windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
                 scrollBehavior = scrollBehavior,
             )
