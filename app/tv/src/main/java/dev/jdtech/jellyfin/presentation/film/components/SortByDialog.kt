@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
@@ -51,7 +50,6 @@ import org.jellyfin.sdk.model.api.SortOrder
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun SortByDialog(
     currentSortBy: SortBy,
     currentSortOrder: SortOrder,
@@ -176,9 +174,7 @@ fun SortByDialog(
                             val allGenresText = stringResource(CoreR.string.all_genres)
                             val displayText = currentGenre ?: allGenresText
 
-                            ExposedDropdownMenuBox(
-                                expanded = expanded,
-                                onExpandedChange = { expanded = !expanded },
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = MaterialTheme.spacings.default),
@@ -188,14 +184,10 @@ fun SortByDialog(
                                     onValueChange = {},
                                     readOnly = true,
                                     modifier = Modifier
-                                        .menuAnchor()
-                                        .fillMaxWidth(),
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                                    },
-                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                        .fillMaxWidth()
+                                        .clickable { expanded = !expanded },
                                 )
-                                androidx.compose.material3.ExposedDropdownMenu(
+                                DropdownMenu(
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false },
                                 ) {
