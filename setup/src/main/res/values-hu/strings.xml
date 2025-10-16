@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Szerver hozzáadása</string>
+    <string name="add_server_error_outdated">Elavult szerver verzió: %1$s. Kérlek frissítsd a szervert</string>
+    <string name="add_server_error_not_jellyfin">Nem egy Jellyfin szerver: %1$s</string>
+    <string name="add_server_error_version">Nem támogatott szerver verzió: %1$s. Kérlek frissítsd a szervert</string>
+    <string name="add_server_error_slow">A szerver túl lassan válaszol: %1$s</string>
+    <string name="add_server_error_empty_address">Üres szerver cím</string>
+    <string name="add_server_error_not_found">A szerver nem található</string>
+    <string name="add_server_error_no_id">A szervernek nincs id-je, úgy tűnik valami probléma van a szerverrel</string>
+    <string name="login">Bejelentkezés</string>
+    <string name="login_error_wrong_username_password">Hibás felhasználónév vagy jelszó</string>
+    <string name="edit_text_server_address_hint">Szerver címe</string>
+    <string name="edit_text_username_hint">Felhasználónév</string>
+    <string name="edit_text_password_hint">Jelszó</string>
+    <string name="add_server_btn_connect">Csatlakozás</string>
+    <string name="login_btn_login">Bejelentkezés</string>
+    <string name="login_btn_quick_connect">Gyors csatlakozás</string>
+    <string name="servers_no_servers">Nem található szerver</string>
+    <string name="users_btn_add_user">Felhasználó hozzádása</string>
+    <string name="users">Felhasználók</string>
+    <string name="users_no_users">Nincs felhasználó</string>
+    <string name="remove_user_dialog">Felhasználó eltávolítása</string>
+    <string name="remove_user_dialog_text">Biztosan el akarod távolítani a következő felhasználót: %1$s</string>
+    <string name="remove_server_dialog">Szerver törlése</string>
+    <string name="remove_server_dialog_text">Biztos vagy benne, hogy törölni szeretnéd ezt a szervert %1$s</string>
+    <string name="addresses">Címek</string>
+    <string name="add_address">Cím hozzáadása</string>
+    <string name="add_server_address">Szerver címének hozzáadása</string>
+    <string name="remove_server_address">Szerver címének eltávolítása</string>
+    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
+</resources>

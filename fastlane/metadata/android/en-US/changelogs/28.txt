@@ -1,0 +1,4 @@
+Fixes:
+- Fix a crash when failing to load the login disclaimer
+- Hide the system bars when closing a dialog on Android 10 and lower
+- Fix items rearranging when scrolling in a large library

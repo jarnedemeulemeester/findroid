@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Aggiungi server</string>
+    <string name="add_server_error_not_jellyfin">Non è un server Jellyfin: %1$s</string>
+    <string name="add_server_error_slow">Il server ha impiegato troppo tempo per rispondere: %1$s</string>
+    <string name="add_server_error_empty_address">Indirizzo server vuoto</string>
+    <string name="login">Accedi</string>
+    <string name="login_error_wrong_username_password">Nome utente o Password errati</string>
+    <string name="edit_text_server_address_hint">Indirizzo server</string>
+    <string name="edit_text_username_hint">Nome utente</string>
+    <string name="edit_text_password_hint">Password</string>
+    <string name="add_server_btn_connect">Connetti</string>
+    <string name="login_btn_login">Accedi</string>
+    <string name="add_server_error_outdated">Versione del server obsoleta: %1$s. Aggiorna il tuo server</string>
+    <string name="add_server_error_no_id">Il server non ha un ID, c\'è qualcosa di strano con questo server</string>
+    <string name="add_server_error_version">Versione del server non supportata: %1$s. Aggiorna il tuo server</string>
+    <string name="login_btn_quick_connect">Connessione Rapida</string>
+    <string name="add_server_error_not_found">Server non trovato</string>
+    <string name="servers_no_servers">Nessun server trovato</string>
+    <string name="remove_user_dialog">Rimuovi utente</string>
+    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %1$s</string>
+    <string name="users">Utenti</string>
+    <string name="users_btn_add_user">Aggiungi utente</string>
+    <string name="users_no_users">Nessun utente trovato</string>
+    <string name="remove_server_dialog">Rimuovi server</string>
+    <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
+    <string name="addresses">Indirizzi</string>
+    <string name="add_address">Aggiungi indirizzo</string>
+    <string name="add_server_address">Aggiungi indirizzo server</string>
+    <string name="remove_server_address">Rimuovi indirizzo server</string>
+    <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
+</resources>

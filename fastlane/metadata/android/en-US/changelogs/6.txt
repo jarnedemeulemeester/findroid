@@ -1,0 +1,16 @@
+New Features:
+- Playback speed controls
+- Sorting options in library
+- Person detail screen
+- Downloads and offline playback
+- Gestures in player to adjust volume and brightness
+- STRM support
+- Image caching with options in settings
+- Customizable device name
+- Basic Android TV layout
+
+Improvements:
+- Theme improvements
+- Pull to refresh on home screen
+- Server setup improvements
+- Czech and Spanish localization

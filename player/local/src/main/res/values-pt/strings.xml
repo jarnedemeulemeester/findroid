@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">Selecionar a versão</string>
+    <string name="select_audio_track">Selecione a faixa de áudio</string>
+    <string name="select_subtile_track">Selecione as legendas</string>
+    <string name="select_playback_speed">Selecionar velocidade de reprodução</string>
+    <string name="external">Externo</string>
+    <string name="player_controls_rewind">Voltar</string>
+    <string name="player_controls_exit">Sair do Reprodutor</string>
+    <string name="player_controls_fast_forward">Avançar rapidamente</string>
+    <string name="player_controls_lock">Bloqueia o reprodutor</string>
+    <string name="player_trickplay">Truques</string>
+    <string name="player_controls_play_pause">Pausa na reprodução</string>
+    <string name="player_controls_progress">Barra de progresso</string>
+    <string name="player_controls_skip_forward">Avançar</string>
+    <string name="player_controls_skip_back">Pular para trás</string>
+    <string name="player_controls_skip_intro">Pular introdução</string>
+    <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
+    <string name="none">Nenhum</string>
+</resources>

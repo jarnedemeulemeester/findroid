@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_not_jellyfin">不是Jellyfin服务器：%1$s</string>
+    <string name="add_server_error_empty_address">服务器地址为空</string>
+    <string name="add_server_error_not_found">未找到服务器</string>
+    <string name="login">登录</string>
+    <string name="add_server">添加服务器</string>
+    <string name="edit_text_username_hint">用户名</string>
+    <string name="edit_text_password_hint">密码</string>
+    <string name="add_server_btn_connect">连接</string>
+    <string name="add_server_error_no_id">服务器没有id，它可能出了问题</string>
+    <string name="login_error_wrong_username_password">用户名或密码错误</string>
+    <string name="add_server_error_outdated">服务器版本过旧：%1$s。请更新您的服务器</string>
+    <string name="edit_text_server_address_hint">服务器地址</string>
+    <string name="add_server_error_version">不支持的服务器版本：%1$s。请升级您的服务器</string>
+    <string name="login_btn_login">登录</string>
+    <string name="add_server_error_slow">服务器响应过慢：%1$s</string>
+    <string name="login_btn_quick_connect">快速连接</string>
+    <string name="servers_no_servers">没有找到服务器</string>
+    <string name="remove_user_dialog">移除用户</string>
+    <string name="remove_user_dialog_text">您确定要移除用户%1$s吗</string>
+    <string name="users">用户</string>
+    <string name="users_btn_add_user">添加用户</string>
+    <string name="users_no_users">找不到用户</string>
+    <string name="remove_server_dialog">删除服务器</string>
+    <string name="remove_server_dialog_text">您确定要删除服务器%1$s吗</string>
+    <string name="addresses">地址</string>
+    <string name="add_address">添加地址</string>
+    <string name="add_server_address">添加服务器地址</string>
+    <string name="remove_server_address">移除服务器地址</string>
+    <string name="remove_server_address_dialog_text">你确定你要移除此服务器地址 %1$s 吗</string>
+</resources>

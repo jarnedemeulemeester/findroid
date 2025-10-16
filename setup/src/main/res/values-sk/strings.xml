@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Pridať server</string>
+    <string name="add_server_error_not_jellyfin">Nie je to Jellyfin server: %1$s</string>
+    <string name="add_server_error_slow">Serveru trvalo príliš dlho odpovedať: %1$s</string>
+    <string name="add_server_error_empty_address">Prázdna adresa serveru</string>
+    <string name="add_server_error_not_found">Server nebol nájdený</string>
+    <string name="login">Prihlásenie</string>
+    <string name="edit_text_server_address_hint">Adresa servera</string>
+    <string name="edit_text_username_hint">Prihlasovacie meno</string>
+    <string name="add_server_btn_connect">Pripojiť</string>
+    <string name="login_btn_quick_connect">Rýchle pripojenie</string>
+    <string name="login_btn_login">Prihlásenie</string>
+    <string name="add_server_error_outdated">Zastaralá verzia serveru: %1$s. Prosím aktualizujte Váš server</string>
+    <string name="add_server_error_version">Nepodporovaná verzia serveru: %1$s. Prosím aktualizujte Váš server</string>
+    <string name="add_server_error_no_id">Server nemá id, niečo s ním nie je v poriadku</string>
+    <string name="login_error_wrong_username_password">Nesprávne meno alebo heslo</string>
+    <string name="edit_text_password_hint">Heslo</string>
+    <string name="servers_no_servers">Neboli nájdené žiadne servery</string>
+    <string name="remove_user_dialog">Odstrániť používateľa</string>
+    <string name="remove_user_dialog_text">Ste si istí, že chcete odstrániť používateľa %1$s</string>
+    <string name="users">Používatelia</string>
+    <string name="users_btn_add_user">Pridať používateľa</string>
+    <string name="users_no_users">Nenašli sa žiadni užívatelia</string>
+    <string name="remove_server_dialog">Odstrániť server</string>
+    <string name="remove_server_dialog_text">Ste si istí, že chcete odstrániť server %1$s</string>
+    <string name="addresses">Adresy</string>
+    <string name="add_address">Pridať adresu</string>
+    <string name="add_server_address">Pridať adresu servera</string>
+    <string name="remove_server_address">Odstrániť adresu serveru</string>
+    <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
+</resources>

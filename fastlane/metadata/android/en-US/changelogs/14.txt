@@ -1,0 +1,16 @@
+Highlights:
+- Add support for media sessions
+- Basic support for multiple server addresses
+- More mpv options
+
+Improvements:
+- Add search button to home screen
+
+Translations:
+- Chinese
+- French
+- Korean
+
+Fixes:
+- Fix tv player showing subtitle tracks instead of audio tracks
+- Remove server already added error

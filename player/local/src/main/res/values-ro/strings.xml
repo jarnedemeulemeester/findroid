@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="player_controls_rewind">Derulare înapoi</string>
+    <string name="player_controls_skip_forward">Săriți înainte</string>
+    <string name="select_audio_track">Selectați pista audio</string>
+    <string name="select_subtile_track">Selectați subtitrările</string>
+    <string name="select_playback_speed">Selectați viteza de redare</string>
+    <string name="select_a_version">Selectați o versiune</string>
+    <string name="external">Extern</string>
+    <string name="none">Niciunul</string>
+    <string name="player_controls_picture_in_picture">Porniți modul picture-in-picture</string>
+    <string name="player_controls_lock">Blocați playerul</string>
+    <string name="player_controls_play_pause">Redare pauză</string>
+    <string name="player_controls_skip_back">Săriți înapoi</string>
+    <string name="player_controls_exit">Ieșiți din player</string>
+    <string name="player_controls_skip_intro">Săriți introducerea</string>
+    <string name="player_controls_fast_forward">Derulare rapidă înainte</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_progress">Bară de progres</string>
+</resources>

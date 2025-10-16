@@ -1,0 +1,10 @@
+Improvements:
+- Change downloads to use internal database for metadata instead of files
+- Only show download button if user is allowed to download
+- Improve player gestures and add pinch to zoom
+- Reduce the size of the mpv library by disabling lot's of decoders and other components
+  - If you notice certain content doesn't play anymore please report
+
+Fixes:
+- Fix person placeholder drawable
+- Add error handling to played and favorite buttons

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_audio_track">Изберете аудиопът</string>
+    <string name="select_subtile_track">Изберете писта за субтитри</string>
+    <string name="select_playback_speed">Изберете скорост на възпроизвеждане</string>
+    <string name="select_a_version">Изберете версия</string>
+    <string name="external">Външно</string>
+    <string name="player_controls_skip_back">Пусни предишен</string>
+    <string name="player_controls_rewind">Върни назад</string>
+    <string name="player_controls_lock">Заключи контролите</string>
+    <string name="player_controls_progress">Индикарор за прогрес</string>
+    <string name="player_controls_fast_forward">Пропусни напред</string>
+    <string name="player_controls_skip_forward">Пусни следващ</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_play_pause">Начало пауза</string>
+    <string name="player_controls_exit">Излез от плейъра</string>
+    <string name="player_controls_skip_intro">Пропусни интро</string>
+    <string name="player_controls_picture_in_picture">Влез в режим картина-в-картина</string>
+    <string name="none">Нищо</string>
+</resources>

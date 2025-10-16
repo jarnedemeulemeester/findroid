@@ -1,0 +1,28 @@
+<resources>
+    <style name="Theme.Findroid" parent="Base.Theme.Findroid">
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/on_primary_dark</item>
+        <item name="colorPrimaryContainer">@color/primary_container_dark</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_dark</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/on_secondary_dark</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_dark</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_dark</item>
+
+        <!-- Surface -->
+        <item name="android:colorBackground">@color/neutral_1000</item>
+        <item name="colorSurface">@color/neutral_900</item>
+    </style>
+
+    <style name="ThemeOverlay.Findroid.Amoled" parent="">
+        <!-- Surface -->
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="colorSurface">@android:color/black</item>
+        <item name="colorSurfaceContainer">?attr/colorSurface</item>
+        <item name="colorSurfaceContainerLow">?attr/colorSurface</item>
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
+    </style>
+</resources>
