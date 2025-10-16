@@ -6,14 +6,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.recalculateWindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHost
@@ -130,17 +135,10 @@ fun CollectionScreenLayout(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onToggleOnePerGenre() }) {
-                        Icon(
-                            painter = painterResource(id = CoreR.drawable.ic_settings),
-                            contentDescription = "Uno por género",
-                            tint = if (onePerGenreState) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
                     IconButton(onClick = { showSortByDialog = true }) {
                         Icon(
-                            painter = painterResource(id = CoreR.drawable.ic_settings),
-                            contentDescription = "Filtrar por género",
+                            painter = painterResource(id = CoreR.drawable.ic_arrow_down_up),
+                            contentDescription = "Ordenar",
                         )
                     }
                 },
@@ -153,24 +151,51 @@ fun CollectionScreenLayout(
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = contentPadding + innerPadding,
+                contentPadding = if (state.genres.isNotEmpty()) {
+                    // When genres exist, remove top padding to make carousel stick to top
+                    PaddingValues(
+                        start = MaterialTheme.spacings.default,
+                        end = MaterialTheme.spacings.default,
+                        bottom = MaterialTheme.spacings.default,
+                    ) + innerPadding
+                } else {
+                    contentPadding + innerPadding
+                },
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
-                state.sections.forEach { section ->
-                    stickyHeader {
-                        Card {
-                            Text(
-                                text = section.name.asString(),
-                                modifier = Modifier
-                                    .padding(
-                                        horizontal = MaterialTheme.spacings.medium,
-                                        vertical = MaterialTheme.spacings.medium,
-                                    ),
-                                style = MaterialTheme.typography.titleMedium,
-                            )
+                // Genre carousel (shown once at the top, before all sections)
+                if (state.genres.isNotEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = MaterialTheme.spacings.small),
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.medium),
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                        ) {
+                            // "Todos" chip
+                            item {
+                                FilterChip(
+                                    selected = state.selectedGenre == null,
+                                    onClick = { onGenreSelected(null) },
+                                    label = { Text("Todos") },
+                                )
+                            }
+                            // Genre chips
+                            items(state.genres) { genre ->
+                                FilterChip(
+                                    selected = genre == state.selectedGenre,
+                                    onClick = { onGenreSelected(genre) },
+                                    label = { Text(genre) },
+                                )
+                            }
                         }
                     }
+                }
+                
+                // Show all items from all sections without headers
+                state.sections.forEach { section ->
                     items(
                         items = section.items,
                         key = { it.id },

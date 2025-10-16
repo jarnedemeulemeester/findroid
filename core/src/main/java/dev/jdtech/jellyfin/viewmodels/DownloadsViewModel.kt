@@ -36,7 +36,12 @@ constructor(
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
-        data class Normal(val sections: List<CollectionSection>, val items: List<FindroidItem>) : UiState()
+        data class Normal(
+            val sections: List<CollectionSection>,
+            val items: List<FindroidItem>,
+            val genres: List<String> = emptyList(),
+            val selectedGenre: String? = null
+        ) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
@@ -110,8 +115,78 @@ constructor(
                     )
                 }
             }
-            Timber.tag("DownloadsVM").d("Built %d sections with total %d items", sections.size, items.size)
-            _uiState.emit(UiState.Normal(sections, items))
+            
+            // Extract genres from all items
+            val genres = items.flatMap {
+                when (it) {
+                    is FindroidMovie -> it.genres
+                    is FindroidShow -> it.genres
+                    else -> emptyList()
+                }
+            }.distinct().sorted()
+            
+            Timber.tag("DownloadsVM").d("Built %d sections with total %d items, %d genres", sections.size, items.size, genres.size)
+            _uiState.emit(UiState.Normal(sections, items, genres, null))
+        }
+    }
+    
+    fun selectGenre(genre: String?) {
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            if (currentState is UiState.Normal) {
+                // If clicking the already selected genre, deselect it (toggle behavior)
+                val currentSelectedGenre = currentState.selectedGenre
+                val newSelectedGenre = if (genre == currentSelectedGenre) null else genre
+                
+                // Filter sections by selected genre
+                val filteredSections = if (newSelectedGenre == null) {
+                    // Show all items
+                    val sections = mutableListOf<CollectionSection>()
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_MOVIES,
+                        UiText.StringResource(R.string.movies_label),
+                        currentState.items.filterIsInstance<FindroidMovie>(),
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_SHOWS,
+                        UiText.StringResource(R.string.shows_label),
+                        currentState.items.filterIsInstance<FindroidShow>(),
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_EPISODES,
+                        UiText.StringResource(R.string.episodes_label),
+                        currentState.items.filterIsInstance<FindroidEpisode>(),
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    sections
+                } else {
+                    // Filter by genre
+                    val sections = mutableListOf<CollectionSection>()
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_MOVIES,
+                        UiText.StringResource(R.string.movies_label),
+                        currentState.items.filterIsInstance<FindroidMovie>()
+                            .filter { it.genres.contains(newSelectedGenre) },
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_SHOWS,
+                        UiText.StringResource(R.string.shows_label),
+                        currentState.items.filterIsInstance<FindroidShow>()
+                            .filter { it.genres.contains(newSelectedGenre) },
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    
+                    CollectionSection(
+                        Constants.FAVORITE_TYPE_EPISODES,
+                        UiText.StringResource(R.string.episodes_label),
+                        currentState.items.filterIsInstance<FindroidEpisode>(),
+                    ).let { if (it.items.isNotEmpty()) sections.add(it) }
+                    sections
+                }
+                
+                _uiState.emit(UiState.Normal(filteredSections, currentState.items, currentState.genres, newSelectedGenre))
+            }
         }
     }
 }

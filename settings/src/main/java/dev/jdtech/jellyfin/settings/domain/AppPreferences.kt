@@ -79,8 +79,8 @@ constructor(
     val imageCacheSize = Preference("pref_image_cache_size", 20)
 
     // Sorting
-    val sortBy = Preference("pref_sort_by", "SortName")
-    val sortOrder = Preference("pref_sort_order", "Ascending")
+    val sortBy = Preference("pref_sort_by", "PremiereDate")
+    val sortOrder = Preference("pref_sort_order", "Descending")
 
     // Ofline mode
     val offlineMode = Preference("pref_offline_mode", false)

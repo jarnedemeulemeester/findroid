@@ -12,10 +12,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textSize="18sp"
         tools:text="Movies" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/genres_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/genre_chip"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items_recycler_view"

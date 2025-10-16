@@ -123,7 +123,7 @@ constructor(
                     }
                 }
 
-                _state.emit(_state.value.copy(isLoading = false, sections = sections, genres = genres))
+                _state.emit(_state.value.copy(isLoading = false, sections = sections, allSections = sections, genres = genres))
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(isLoading = false, error = e))
             }
@@ -132,23 +132,27 @@ constructor(
 
     fun selectGenre(genre: String?) {
         viewModelScope.launch {
-            // Filter current sections client-side by genre
-            val allSections = _state.value.sections
-            val filteredSections = if (genre.isNullOrBlank()) {
+            // If clicking the already selected genre, deselect it (toggle behavior)
+            val currentSelectedGenre = _state.value.selectedGenre
+            val newSelectedGenre = if (genre == currentSelectedGenre) null else genre
+            
+            // Filter from original sections, not from current filtered sections
+            val allSections = _state.value.allSections
+            val filteredSections = if (newSelectedGenre.isNullOrBlank()) {
                 allSections
             } else {
                 allSections.map { section ->
                     section.copy(items = section.items.filter { item ->
                         when (item) {
-                            is FindroidMovie -> item.genres.contains(genre)
-                            is FindroidShow -> item.genres.contains(genre)
+                            is FindroidMovie -> item.genres.contains(newSelectedGenre)
+                            is FindroidShow -> item.genres.contains(newSelectedGenre)
                             else -> false
                         }
                     })
                 }.filter { it.items.isNotEmpty() }
             }
 
-            _state.update { it.copy(selectedGenre = genre, sections = filteredSections) }
+            _state.update { it.copy(selectedGenre = newSelectedGenre, sections = filteredSections) }
         }
     }
 }

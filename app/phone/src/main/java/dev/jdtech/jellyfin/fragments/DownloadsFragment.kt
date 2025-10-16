@@ -58,6 +58,7 @@ class DownloadsFragment : Fragment() {
         binding.downloadsRecyclerView.adapter = FavoritesListAdapter(
             onItemClickListener = { item -> navigateToMediaItem(item) },
             onItemLongClickListener = { item -> onItemLongClick(item) },
+            onGenreClickListener = { genre -> viewModel.selectGenre(genre) },
         )
         binding.downloadsRecyclerView.setHasFixedSize(false)
         
@@ -251,6 +252,10 @@ class DownloadsFragment : Fragment() {
         
         val adapter = binding.downloadsRecyclerView.adapter as FavoritesListAdapter
         android.util.Log.d("DownloadsUI", "Adapter before submitList: itemCount=${adapter.itemCount}")
+        
+        // Update genres in adapter
+        adapter.updateGenres(uiState.genres, uiState.selectedGenre)
+        android.util.Log.d("DownloadsUI", "Updated genres: ${uiState.genres.size} genres, selectedGenre=${uiState.selectedGenre}")
         
         // Submit sections list - adapter will handle nested adapters for each section
         adapter.submitList(uiState.sections) {

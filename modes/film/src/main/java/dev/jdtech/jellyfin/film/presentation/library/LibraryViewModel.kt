@@ -103,7 +103,11 @@ constructor(
 
     fun selectGenre(genre: String?) {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(selectedGenre = genre))
+            // If clicking the already selected genre, deselect it (toggle behavior)
+            val currentSelectedGenre = _state.value.selectedGenre
+            val newSelectedGenre = if (genre == currentSelectedGenre) null else genre
+            
+            _state.emit(_state.value.copy(selectedGenre = newSelectedGenre))
             loadItems()
         }
     }

@@ -11,8 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.recalculateWindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -168,14 +172,52 @@ private fun LibraryScreenLayout(
                     .fillMaxWidth()
                     .padding(contentPadding + innerPadding),
             )
-            // Genre filter moved into Sort By dialog
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = contentPadding + innerPadding,
+                contentPadding = if (state.genres.isNotEmpty()) {
+                    // When genres exist, remove top padding to make carousel stick to top
+                    PaddingValues(
+                        start = MaterialTheme.spacings.default,
+                        end = MaterialTheme.spacings.default,
+                        bottom = MaterialTheme.spacings.default,
+                    ) + innerPadding
+                } else {
+                    contentPadding + innerPadding
+                },
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
+                // Genre carousel at the top
+                if (state.genres.isNotEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = MaterialTheme.spacings.small),
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.medium),
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                        ) {
+                            // "Todos" chip
+                            item {
+                                FilterChip(
+                                    selected = state.selectedGenre == null,
+                                    onClick = { onAction(SelectGenre(null)) },
+                                    label = { Text("Todos") },
+                                )
+                            }
+                            // Genre chips
+                            items(state.genres) { genre ->
+                                FilterChip(
+                                    selected = genre == state.selectedGenre,
+                                    onClick = { onAction(SelectGenre(genre)) },
+                                    label = { Text(genre) },
+                                )
+                            }
+                        }
+                    }
+                }
+                
                 items(
                     count = items.itemCount,
                     key = items.itemKey { it.id },

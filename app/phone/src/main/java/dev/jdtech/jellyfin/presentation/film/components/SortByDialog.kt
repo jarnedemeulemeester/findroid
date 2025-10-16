@@ -168,69 +168,7 @@ fun SortByDialog(
                                     )
                                 }
 
-                                if (genres.isNotEmpty()) {
-                                    // Genre dropdown as a single list item
-                                    item {
-                                        Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                                        Text(
-                                            text = stringResource(CoreR.string.genre_label),
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = MaterialTheme.spacings.default),
-                                            style = MaterialTheme.typography.titleMedium,
-                                        )
-                                        Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
-
-                                        var expanded by remember { mutableStateOf(false) }
-                                        val allGenresText = stringResource(CoreR.string.all_genres)
-                                        val displayText = currentGenre ?: allGenresText
-
-                                        ExposedDropdownMenuBox(
-                                            expanded = expanded,
-                                            onExpandedChange = { expanded = !expanded },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = MaterialTheme.spacings.default),
-                                        ) {
-                                            TextField(
-                                                value = displayText,
-                                                onValueChange = {},
-                                                readOnly = true,
-                                                modifier = Modifier
-                                                    .menuAnchor()
-                                                    .fillMaxWidth(),
-                                                trailingIcon = {
-                                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                                                },
-                                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                            )
-                                            ExposedDropdownMenu(
-                                                expanded = expanded,
-                                                onDismissRequest = { expanded = false },
-                                            ) {
-                                                // "All" option
-                                                DropdownMenuItem(
-                                                    text = { Text(text = stringResource(CoreR.string.all_genres)) },
-                                                    onClick = {
-                                                        expanded = false
-                                                        onGenreSelected(null)
-                                                        onDismissRequest()
-                                                    },
-                                                )
-                                                genres.forEach { genre ->
-                                                    DropdownMenuItem(
-                                                        text = { Text(text = genre) },
-                                                        onClick = {
-                                                            expanded = false
-                                                            onGenreSelected(genre)
-                                                            onDismissRequest()
-                                                        },
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                // Genre selection removed - now handled by genre carousel in main screen
                             }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             }

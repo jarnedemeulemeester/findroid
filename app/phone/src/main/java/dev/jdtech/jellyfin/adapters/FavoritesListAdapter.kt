@@ -15,13 +15,27 @@ import timber.log.Timber
 class FavoritesListAdapter(
     private val onItemClickListener: (item: FindroidItem) -> Unit,
     private val onItemLongClickListener: ((item: FindroidItem) -> Unit)? = null,
+    private val onGenreClickListener: ((String?) -> Unit)? = null,
 ) : ListAdapter<CollectionSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
+    
+    private var genres: List<String> = emptyList()
+    private var selectedGenre: String? = null
+    
+    fun updateGenres(genres: List<String>, selectedGenre: String?) {
+        this.genres = genres
+        this.selectedGenre = selectedGenre
+        notifyDataSetChanged()
+    }
+    
     class SectionViewHolder(private var binding: FavoriteSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             section: CollectionSection,
             onItemClickListener: (item: FindroidItem) -> Unit,
             onItemLongClickListener: ((item: FindroidItem) -> Unit)?,
+            genres: List<String>,
+            selectedGenre: String?,
+            onGenreClickListener: ((String?) -> Unit)?,
         ) {
             Timber.tag("DownloadsUI").d("Bind section id=%d size=%d", section.id, section.items.size)
             // Ensure a horizontal layout manager and proper measuring
@@ -46,6 +60,21 @@ class FavoritesListAdapter(
                 binding.itemsRecyclerView.requestLayout()
             }
             binding.sectionName.text = section.name.asString(binding.root.resources)
+            
+            // Setup genres RecyclerView (only for Movies and Shows sections)
+            if ((section.id == Constants.FAVORITE_TYPE_MOVIES || section.id == Constants.FAVORITE_TYPE_SHOWS) && genres.isNotEmpty()) {
+                binding.genresRecyclerView.visibility = android.view.View.VISIBLE
+                binding.genresRecyclerView.layoutManager = LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+                
+                val genreItems = mutableListOf(GenreItem("Todos", selectedGenre == null))
+                genreItems.addAll(genres.map { GenreItem(it, it == selectedGenre) })
+                
+                val genresAdapter = GenresAdapter(onGenreClickListener ?: {})
+                binding.genresRecyclerView.adapter = genresAdapter
+                genresAdapter.submitList(genreItems)
+            } else {
+                binding.genresRecyclerView.visibility = android.view.View.GONE
+            }
         }
     }
 
@@ -85,6 +114,6 @@ class FavoritesListAdapter(
         val collection = getItem(position)
         android.util.Log.d("DownloadsUI", "========== onBindViewHolder section position=$position id=${collection.id} items=${collection.items.size} ==========")
         Timber.tag("DownloadsUI").d("onBind section position=%d id=%d items=%d", position, collection.id, collection.items.size)
-        holder.bind(collection, onItemClickListener, onItemLongClickListener)
+        holder.bind(collection, onItemClickListener, onItemLongClickListener, genres, selectedGenre, onGenreClickListener)
     }
 }
