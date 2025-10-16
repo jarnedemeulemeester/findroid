@@ -52,12 +52,15 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
 import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
+import dev.jdtech.jellyfin.presentation.components.CastButton
+import dev.jdtech.jellyfin.cast.CastHelper
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import dev.jdtech.jellyfin.utils.format
 import org.jellyfin.sdk.model.api.BaseItemKind
+import timber.log.Timber
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -80,11 +83,42 @@ fun EpisodeScreen(
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", episodeId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
-                    intent.putExtra("startFromBeginning", action.startFromBeginning)
-                    context.startActivity(intent)
+                    // Check if Cast session is available
+                    if (CastHelper.isCastSessionAvailable(context)) {
+                        // Send to Chromecast
+                        state.episode?.let { episode ->
+                            try {
+                                val streamUrl = episode.sources.firstOrNull()?.path ?: return@let
+                                val applicationContext = context.applicationContext
+                                // Convert ticks to milliseconds (1 tick = 100 nanoseconds = 0.0001 ms)
+                                val positionMs = if (action.startFromBeginning) {
+                                    0L
+                                } else {
+                                    episode.playbackPositionTicks / 10000
+                                }
+                                CastHelper.loadMedia(
+                                    context = applicationContext,
+                                    contentUrl = streamUrl,
+                                    contentType = "video/*",
+                                    title = episode.name,
+                                    subtitle = "S${episode.parentIndexNumber}E${episode.indexNumber} - ${episode.seriesName}",
+                                    imageUrl = episode.images.primary.toString(),
+                                    position = positionMs
+                                )
+                                Toast.makeText(context, "Enviando a Chromecast...", Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                Timber.e(e, "Error sending to Chromecast")
+                                Toast.makeText(context, "Error al enviar a Chromecast", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        // Play locally
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", episodeId.toString())
+                        intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
+                        intent.putExtra("startFromBeginning", action.startFromBeginning)
+                        context.startActivity(intent)
+                    }
                 }
                 is EpisodeAction.Download -> {
                     state.episode?.let { episode ->
@@ -284,6 +318,7 @@ private fun EpisodeScreenLayout(
                     top = safePadding.top + MaterialTheme.spacings.small,
                     end = safePadding.end + MaterialTheme.spacings.small,
                 ),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             IconButton(
                 onClick = { onAction(EpisodeAction.OnBackClick) },
@@ -299,6 +334,8 @@ private fun EpisodeScreenLayout(
                     contentDescription = null,
                 )
             }
+            
+            CastButton()
         }
     }
 }

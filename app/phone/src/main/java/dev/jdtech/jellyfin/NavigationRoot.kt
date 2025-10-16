@@ -8,6 +8,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
@@ -60,6 +62,7 @@ import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.presentation.components.CastMiniController
 import kotlinx.serialization.Serializable
 import java.util.UUID
 import timber.log.Timber
@@ -226,8 +229,9 @@ fun NavigationRoot(
         }
     }
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
+    Box(modifier = Modifier.fillMaxSize()) {
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
             navigationItems.forEach { item ->
                 item(
                     selected = currentRoute == item.route::class.qualifiedName,
@@ -530,6 +534,12 @@ fun NavigationRoot(
                 )
             }
         }
+    }
+        
+        // Cast mini controller at the bottom
+        CastMiniController(
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

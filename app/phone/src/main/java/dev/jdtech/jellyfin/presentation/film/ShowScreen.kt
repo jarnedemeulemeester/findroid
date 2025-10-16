@@ -346,6 +346,7 @@ private fun ShowScreenLayout(
                     top = safePadding.top + MaterialTheme.spacings.small,
                     end = safePadding.end + MaterialTheme.spacings.small,
                 ),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             IconButton(
                 onClick = { onAction(ShowAction.OnBackClick) },
@@ -361,6 +362,8 @@ private fun ShowScreenLayout(
                     contentDescription = null,
                 )
             }
+            
+            dev.jdtech.jellyfin.presentation.components.CastButton()
         }
     }
 }
