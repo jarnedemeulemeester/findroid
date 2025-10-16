@@ -43,7 +43,7 @@ constructor(
                     nameStringResource = R.string.offline_mode,
                     descriptionStringRes = R.string.offline_mode_summary,
                     iconDrawableId = R.drawable.ic_server_off,
-                    enabled = false,
+                    enabled = true,
                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                     backendPreference = appPreferences.offlineMode,
                 ),
@@ -577,7 +577,13 @@ constructor(
         when (action) {
             is SettingsAction.OnUpdate -> {
                 when (action.preference) {
-                    is PreferenceSwitch -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceSwitch -> {
+                        appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                        // Restart app to rebind repository when offline mode changes
+                        if (action.preference.backendPreference == appPreferences.offlineMode) {
+                            viewModelScope.launch { eventsChannel.send(SettingsEvent.RestartApp) }
+                        }
+                    }
                     is PreferenceSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceMultiSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceIntInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)

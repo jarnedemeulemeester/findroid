@@ -5,7 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -58,6 +62,7 @@ import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 import java.util.UUID
+import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Serializable
@@ -178,6 +183,32 @@ fun NavigationRoot(
 
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 
+    // Log current page whenever the route changes
+    LaunchedEffect(currentRoute) {
+        val pageName = when (currentRoute) {
+            WelcomeRoute::class.qualifiedName -> "Welcome"
+            ServersRoute::class.qualifiedName -> "Servers"
+            AddServerRoute::class.qualifiedName -> "AddServer"
+            UsersRoute::class.qualifiedName -> "Users"
+            LoginRoute::class.qualifiedName -> "Login"
+            HomeRoute::class.qualifiedName -> "Home"
+            MediaRoute::class.qualifiedName -> "Media"
+            DownloadsRoute::class.qualifiedName -> "Downloads"
+            LibraryRoute::class.qualifiedName -> "Library"
+            CollectionRoute::class.qualifiedName -> "Collection"
+            FavoritesRoute::class.qualifiedName -> "Favorites"
+            MovieRoute::class.qualifiedName -> "Movie"
+            ShowRoute::class.qualifiedName -> "Show"
+            EpisodeRoute::class.qualifiedName -> "Episode"
+            SeasonRoute::class.qualifiedName -> "Season"
+            PersonRoute::class.qualifiedName -> "Person"
+            SettingsRoute::class.qualifiedName -> "Settings"
+            AboutRoute::class.qualifiedName -> "About"
+            else -> currentRoute ?: "Unknown"
+        }
+        Timber.tag("Nav").d("Current page: %s", pageName)
+    }
+
     LaunchedEffect(showBottomBar) {
         if (showBottomBar) {
             navigationSuiteScaffoldState.show()
@@ -246,9 +277,14 @@ fun NavigationRoot(
                     },
                 )
             }
-            composable<DownloadsRoute> {
-                // Host the existing Fragment-based Downloads screen inside Compose
-                dev.jdtech.jellyfin.presentation.downloads.DownloadsScreenHost()
+            composable<DownloadsRoute> { backStackEntry ->
+                // Force recomposition when navigating back by using a key
+                androidx.compose.runtime.key(backStackEntry.id) {
+                    // Host the existing Fragment-based Downloads screen inside Compose
+                    dev.jdtech.jellyfin.presentation.downloads.DownloadsScreenHost(
+                        modifier = androidx.compose.ui.Modifier.fillMaxSize()
+                    )
+                }
             }
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(
@@ -497,7 +533,7 @@ fun NavigationRoot(
     }
 }
 
-private fun navigateToItem(navController: NavHostController, item: FindroidItem) {
+fun navigateToItem(navController: NavHostController, item: FindroidItem) {
     when (item) {
     is FindroidBoxSet -> navController.safeNavigate(CollectionRoute(collectionId = item.id.toString(), collectionName = item.name, onePerGenre = false))
         is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))

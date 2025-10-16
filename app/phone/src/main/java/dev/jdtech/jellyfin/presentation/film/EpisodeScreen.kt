@@ -102,7 +102,7 @@ fun EpisodeScreen(
                                         }
                                     } else {
                                         launch(Dispatchers.Main) {
-                                            Toast.makeText(context, result.second?.asString() ?: context.getString(CoreR.string.unknown_error), Toast.LENGTH_LONG).show()
+                                            Toast.makeText(context, result.second?.asString(context.resources) ?: context.getString(CoreR.string.unknown_error), Toast.LENGTH_LONG).show()
                                         }
                                     }
                                 }
@@ -126,6 +126,7 @@ private fun EpisodeScreenLayout(
     state: EpisodeState,
     onAction: (EpisodeAction) -> Unit,
 ) {
+    val appContext = LocalContext.current.applicationContext
     val safePadding = rememberSafePadding()
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
@@ -237,6 +238,15 @@ private fun EpisodeScreenLayout(
                         },
                         onTrailerClick = {},
                         onDownloadClick = { onAction(EpisodeAction.Download) },
+                        onDeleteClick = {
+                            val local = episode.sources.firstOrNull { it.type == dev.jdtech.jellyfin.models.FindroidSourceType.LOCAL }
+                            if (local != null) {
+                                val downloader = EntryPointAccessors.fromApplication(appContext, DownloaderEntryPoint::class.java).downloader()
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    downloader.deleteItem(episode, local)
+                                }
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))

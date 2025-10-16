@@ -24,6 +24,7 @@
     <string name="favorite_button_description">Favorite</string>
     <string name="episode_watched_indicator">Episode watched indicator</string>
     <string name="downloaded_indicator">Downloaded indicator</string>
+  <string name="more_options">More options</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
@@ -81,10 +82,12 @@
     <string name="offline_mode_icon">Offline Mode icon</string>
     <string name="offline_mode_go_online">Go online</string>
     <string name="downloading_error">Error while downloading</string>
+  <string name="download_started">Download started</string>
     <string name="not_enough_storage">This item requires %1$s of free storage but only %2$s is available</string>
     <string name="no_server_connection">No connection to the Jellyfin server, to watch offline enable Offline Mode</string>
     <string name="select_storage_location">Select storage location</string>
     <string name="storage_unavailable">Storage location is unavailable</string>
+  <string name="source_unavailable">No compatible source available to download</string>
     <string name="internal">Internal</string>
     <string name="external">External</string>
     <string name="storage_name">%1$s (%2$d MB free)</string>

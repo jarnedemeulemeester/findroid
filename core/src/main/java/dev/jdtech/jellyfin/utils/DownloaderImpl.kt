@@ -26,6 +26,7 @@ import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import timber.log.Timber
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
@@ -46,7 +47,9 @@ class DownloaderImpl(
         storageIndex: Int,
     ): Pair<Long, UiText?> {
         try {
-            val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
+            val sources = jellyfinRepository.getMediaSources(item.id, true)
+            val source = sources.firstOrNull { it.id == sourceId } ?: sources.firstOrNull()
+                ?: return Pair(-1, UiText.StringResource(CoreR.string.source_unavailable))
             val segments = jellyfinRepository.getSegments(item.id)
             val trickplayInfo = if (item is FindroidSources) {
                 item.trickplayInfo?.get(sourceId)
@@ -125,8 +128,11 @@ class DownloaderImpl(
             return Pair(-1, null)
         } catch (e: Exception) {
             try {
-                val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
-                deleteItem(item, source)
+                val cleanupSource = jellyfinRepository.getMediaSources(item.id).firstOrNull { it.id == sourceId }
+                    ?: jellyfinRepository.getMediaSources(item.id).firstOrNull()
+                if (cleanupSource != null) {
+                    deleteItem(item, cleanupSource)
+                }
             } catch (_: Exception) {}
 
             return Pair(-1, if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(CoreR.string.unknown_error))
@@ -137,29 +143,14 @@ class DownloaderImpl(
         if (source.downloadId != null) {
             downloadManager.remove(source.downloadId!!)
         }
+        // Clean up the partial download but keep item metadata
         deleteItem(item, source)
     }
 
     override suspend fun deleteItem(item: FindroidItem, source: FindroidSource) {
-        when (item) {
-            is FindroidMovie -> {
-                database.deleteMovie(item.id)
-            }
-            is FindroidEpisode -> {
-                database.deleteEpisode(item.id)
-                val remainingEpisodes = database.getEpisodesBySeasonId(item.seasonId)
-                if (remainingEpisodes.isEmpty()) {
-                    database.deleteSeason(item.seasonId)
-                    database.deleteUserData(item.seasonId)
-                    val remainingSeasons = database.getSeasonsByShowId(item.seriesId)
-                    if (remainingSeasons.isEmpty()) {
-                        database.deleteShow(item.seriesId)
-                        database.deleteUserData(item.seriesId)
-                    }
-                }
-            }
-        }
-
+        // Delete the downloaded source and files, but keep the item metadata in DB
+        // so it can be re-downloaded later and still appears in the library
+        Timber.tag("Downloader").d("deleteItem: removing source %s for item %s (type=%s)", source.id, item.id, item::class.simpleName)
         database.deleteSource(source.id)
         File(source.path).delete()
 
@@ -169,9 +160,8 @@ class DownloaderImpl(
         }
         database.deleteMediaStreamsBySourceId(source.id)
 
-        database.deleteUserData(item.id)
-
         File(context.filesDir, "trickplay/${item.id}").deleteRecursively()
+        Timber.tag("Downloader").d("deleteItem: completed for item %s (item metadata preserved in DB)", item.id)
     }
 
     override suspend fun getProgress(downloadId: Long?): Pair<Int, Int> {

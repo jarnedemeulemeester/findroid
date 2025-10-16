@@ -7,7 +7,9 @@ import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class DownloadsViewModel
@@ -33,13 +36,15 @@ constructor(
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
     sealed class UiState {
-        data class Normal(val sections: List<CollectionSection>) : UiState()
+        data class Normal(val sections: List<CollectionSection>, val items: List<FindroidItem>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
     init {
+        Timber.tag("DownloadsVM").d("ViewModel CREATED - instance hashCode=${this.hashCode()}")
         testServerConnection()
+        loadData() // Always load data when ViewModel is created
     }
 
     private fun testServerConnection() {
@@ -57,11 +62,20 @@ constructor(
 
     fun loadData() {
         viewModelScope.launch {
+            Timber.tag("DownloadsVM").d("loadData() called -> emit Loading")
             _uiState.emit(UiState.Loading)
 
             val sections = mutableListOf<CollectionSection>()
 
+            Timber.tag("DownloadsVM").d("Fetching downloads from repository…")
             val items = repository.getDownloads()
+            Timber.tag("DownloadsVM").d(
+                "Repository returned %d items (movies=%d, shows=%d, episodes=%d)",
+                items.size,
+                items.count { it is FindroidMovie },
+                items.count { it is FindroidShow },
+                items.count { it is FindroidEpisode },
+            )
 
             CollectionSection(
                 Constants.FAVORITE_TYPE_MOVIES,
@@ -85,7 +99,19 @@ constructor(
                     )
                 }
             }
-            _uiState.emit(UiState.Normal(sections))
+            CollectionSection(
+                Constants.FAVORITE_TYPE_EPISODES,
+                UiText.StringResource(R.string.episodes_label),
+                items.filterIsInstance<FindroidEpisode>(),
+            ).let {
+                if (it.items.isNotEmpty()) {
+                    sections.add(
+                        it,
+                    )
+                }
+            }
+            Timber.tag("DownloadsVM").d("Built %d sections with total %d items", sections.size, items.size)
+            _uiState.emit(UiState.Normal(sections, items))
         }
     }
 }

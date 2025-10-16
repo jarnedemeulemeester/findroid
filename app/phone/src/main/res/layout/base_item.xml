@@ -5,8 +5,7 @@
     android:id="@+id/item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="12dp"
-    android:layout_marginBottom="24dp"
+    android:layout_margin="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="@drawable/ripple_background"
@@ -16,22 +15,30 @@
         android:id="@+id/item_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#505050"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="H,2:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image"
+        app:strokeColor="#FF0000"
+        app:strokeWidth="2dp" />
 
     <TextView
         android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:background="#202020"
+        android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_image"
         tools:text="Movie title" />
 
@@ -55,6 +62,21 @@
             android:src="@drawable/ic_download"
             android:visibility="gone"
             app:tint="?attr/colorOnPrimary"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/download_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_rounded_rect_12dp"
+            android:gravity="center"
+            android:minWidth="36dp"
+            android:paddingHorizontal="8dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="?attr/colorOnPrimary"
+            android:visibility="gone"
+            tools:text="42%"
             tools:visibility="visible" />
 
         <TextView
@@ -84,6 +106,18 @@
             app:layout_constraintEnd_toEndOf="@id/item_image"
             app:layout_constraintTop_toTopOf="@id/item_image"
             app:tint="?attr/colorOnPrimary" />
+
+        <ImageView
+            android:id="@+id/item_overflow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_background"
+            android:contentDescription="@string/more_options"
+            android:padding="4dp"
+            android:src="@drawable/ic_trash"
+            app:tint="?attr/colorOnPrimary"
+            tools:visibility="visible" />
 
     </LinearLayout>
 

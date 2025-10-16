@@ -521,14 +521,33 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
+            val serverId = appPreferences.getValue(appPreferences.currentServer)
+            val userId = jellyfinApi.userId ?: return@withContext emptyList()
             val items = mutableListOf<FindroidItem>()
+            Timber.tag("Repo").d("getDownloads(online) serverId=%s userId=%s", serverId, userId)
+
+            // Include entries for current server and any entries where serverId is null (created before we set serverId)
             items.addAll(
-                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
+                database.getMovies()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { movieDto -> movieDto.toFindroidMovie(database, userId) },
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
+                database.getShows()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { showDto -> showDto.toFindroidShow(database, userId) },
+            )
+            items.addAll(
+                database.getEpisodes()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { episodeDto -> episodeDto.toFindroidEpisode(database, userId) },
+            )
+            Timber.tag("Repo").d(
+                "getDownloads(online) -> total=%d movies=%d shows=%d episodes=%d",
+                items.size,
+                items.count { it is FindroidMovie },
+                items.count { it is FindroidShow },
+                items.count { it is FindroidEpisode },
             )
             items
         }

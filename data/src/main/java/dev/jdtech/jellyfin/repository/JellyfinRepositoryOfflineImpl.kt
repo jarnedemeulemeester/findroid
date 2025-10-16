@@ -69,7 +69,8 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> {
-        TODO("Not yet implemented")
+        // Offline mode: no remote libraries. Return empty to avoid crashes.
+        return emptyList()
     }
 
     override suspend fun getItems(
@@ -81,7 +82,58 @@ class JellyfinRepositoryOfflineImpl(
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            val serverId = appPreferences.getValue(appPreferences.currentServer) ?: return@withContext emptyList()
+            val userId = jellyfinApi.userId ?: return@withContext emptyList()
+
+            val result = mutableListOf<FindroidItem>()
+
+            // Helper to apply sorting and paging
+            fun List<FindroidItem>.applySortAndPaging(): List<FindroidItem> {
+                val sorted = when (sortBy) {
+                    SortBy.NAME -> this.sortedBy { it.name.lowercase() }
+                    else -> this // Other sort modes not available offline; keep DB/default order
+                }.let { list ->
+                    if (sortOrder == SortOrder.DESCENDING) list.reversed() else list
+                }
+                val from = startIndex ?: 0
+                val toExclusive = if (limit != null) (from + limit).coerceAtMost(sorted.size) else sorted.size
+                return if (from in 0..sorted.size) sorted.subList(from, toExclusive) else emptyList()
+            }
+
+            if (includeTypes.isNullOrEmpty()) return@withContext emptyList()
+
+            includeTypes.forEach { kind ->
+                when (kind) {
+                    BaseItemKind.MOVIE -> {
+                        result += database.getMoviesByServerId(serverId).map { it.toFindroidMovie(database, userId) }
+                    }
+                    BaseItemKind.SERIES -> {
+                        result += database.getShowsByServerId(serverId).map { it.toFindroidShow(database, userId) }
+                    }
+                    BaseItemKind.SEASON -> {
+                        // parentId should be the seriesId
+                        if (parentId != null) {
+                            result += database.getSeasonsByShowId(parentId).map { it.toFindroidSeason(database, userId) }
+                        }
+                    }
+                    BaseItemKind.EPISODE -> {
+                        // If parentId provided, assume it's a seasonId; otherwise list all episodes for server
+                        val episodes = if (parentId != null) {
+                            database.getEpisodesBySeasonId(parentId)
+                        } else {
+                            database.getEpisodesByServerId(serverId)
+                        }
+                        result += episodes.map { it.toFindroidEpisode(database, userId) }
+                    }
+                    else -> {
+                        // Not supported offline
+                    }
+                }
+            }
+
+            result.applySortAndPaging()
+        }
     }
 
     override suspend fun getItemsPaging(
@@ -91,11 +143,30 @@ class JellyfinRepositoryOfflineImpl(
         sortBy: SortBy,
         sortOrder: SortOrder,
     ): Flow<PagingData<FindroidItem>> {
-        TODO("Not yet implemented")
+        return ItemsPagingSource(
+            this,
+            parentId,
+            includeTypes,
+            recursive,
+            sortBy,
+            sortOrder,
+        ).let { pagingSource ->
+            // Reuse the same paging approach as online by delegating to ItemsPagingSource through Pager
+            androidx.paging.Pager(
+                config = androidx.paging.PagingConfig(pageSize = 10, enablePlaceholders = false),
+                pagingSourceFactory = { pagingSource },
+            ).flow
+        }
     }
 
     override suspend fun getPerson(personId: UUID): FindroidPerson {
-        TODO("Not yet implemented")
+        // Offline doesn't hold people metadata; return a minimal placeholder
+        return FindroidPerson(
+            id = personId,
+            name = "",
+            overview = "",
+            images = dev.jdtech.jellyfin.models.FindroidImages(),
+        )
     }
 
     override suspend fun getPersonItems(
@@ -103,11 +174,20 @@ class JellyfinRepositoryOfflineImpl(
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean,
     ): List<FindroidItem> {
-        TODO("Not yet implemented")
+        // Not supported offline
+        return emptyList()
     }
 
     override suspend fun getFavoriteItems(): List<FindroidItem> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            val serverId = appPreferences.getValue(appPreferences.currentServer) ?: return@withContext emptyList()
+            val userId = jellyfinApi.userId ?: return@withContext emptyList()
+            val items = mutableListOf<FindroidItem>()
+            items += database.getMoviesByServerId(serverId).map { it.toFindroidMovie(database, userId) }
+            items += database.getShowsByServerId(serverId).map { it.toFindroidShow(database, userId) }
+            items += database.getEpisodesByServerId(serverId).map { it.toFindroidEpisode(database, userId) }
+            items.filter { it.favorite }
+        }
     }
 
     override suspend fun getSearchItems(query: String): List<FindroidItem> {
@@ -179,7 +259,8 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String {
-        TODO("Not yet implemented")
+        // Offline streaming url isn't applicable; return empty string
+        return ""
     }
 
     override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
@@ -266,7 +347,7 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun updateDeviceName(name: String) {
-        TODO("Not yet implemented")
+        // No-op in offline mode
     }
 
     override suspend fun getUserConfiguration(): UserConfiguration? {
@@ -275,14 +356,31 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
+            val serverId = appPreferences.getValue(appPreferences.currentServer)
+            val userId = jellyfinApi.userId ?: return@withContext emptyList()
             val items = mutableListOf<FindroidItem>()
+            timber.log.Timber.tag("Repo").d("getDownloads(offline) serverId=%s userId=%s", serverId, userId)
             items.addAll(
-                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
+                database.getMovies()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { movieDto -> movieDto.toFindroidMovie(database, userId) },
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
+                database.getShows()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { showDto -> showDto.toFindroidShow(database, userId) },
+            )
+            items.addAll(
+                database.getEpisodes()
+                    .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
+                    .map { episodeDto -> episodeDto.toFindroidEpisode(database, userId) },
+            )
+            timber.log.Timber.tag("Repo").d(
+                "getDownloads(offline) -> total=%d movies=%d shows=%d episodes=%d",
+                items.size,
+                items.count { it is dev.jdtech.jellyfin.models.FindroidMovie },
+                items.count { it is dev.jdtech.jellyfin.models.FindroidShow },
+                items.count { it is dev.jdtech.jellyfin.models.FindroidEpisode },
             )
             items
         }

@@ -46,6 +46,8 @@ android {
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Sign release with debug keystore for local installation (not for distribution)
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

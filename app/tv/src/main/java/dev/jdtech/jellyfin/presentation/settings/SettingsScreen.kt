@@ -56,6 +56,7 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> Unit
             is SettingsEvent.UpdateTheme -> Unit
+            is SettingsEvent.RestartApp -> Unit
             is SettingsEvent.LaunchIntent -> {
                 try {
                     context.startActivity(event.intent)

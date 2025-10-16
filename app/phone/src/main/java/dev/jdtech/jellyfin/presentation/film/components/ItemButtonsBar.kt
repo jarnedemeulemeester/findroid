@@ -21,6 +21,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -32,6 +34,7 @@ fun ItemButtonsBar(
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onDeleteClick: (() -> Unit)? = null,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -119,13 +122,25 @@ fun ItemButtonsBar(
                         }
                     }
                 }
+                // Download button only when allowed; delete button always when downloaded
                 if (item.canDownload) {
+                    val downloadEnabled = !item.isDownloaded() && !item.isDownloading()
                     FilledTonalIconButton(
                         onClick = onDownloadClick,
-                        enabled = false,
+                        enabled = downloadEnabled,
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_download),
+                            contentDescription = null,
+                        )
+                    }
+                }
+                if (item.isDownloaded() && onDeleteClick != null) {
+                    FilledTonalIconButton(
+                        onClick = onDeleteClick,
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_trash),
                             contentDescription = null,
                         )
                     }
@@ -145,6 +160,7 @@ private fun ItemButtonsBarPreview() {
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
+            onDeleteClick = {},
             onTrailerClick = {},
         )
     }

@@ -34,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,9 +53,8 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
-import dev.jdtech.jellyfin.utils.Downloader
+import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -115,7 +113,7 @@ fun MovieScreen(
                                         }
                                     } else {
                                         launch(Dispatchers.Main) {
-                                            Toast.makeText(context, result.second?.asString() ?: context.getString(CoreR.string.unknown_error), Toast.LENGTH_LONG).show()
+                                            Toast.makeText(context, result.second?.asString(context.resources) ?: context.getString(CoreR.string.unknown_error), Toast.LENGTH_LONG).show()
                                         }
                                     }
                                 }
@@ -139,6 +137,7 @@ private fun MovieScreenLayout(
     state: MovieState,
     onAction: (MovieAction) -> Unit,
 ) {
+    val appContext = LocalContext.current.applicationContext
     val safePadding = rememberSafePadding()
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
@@ -254,10 +253,17 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
-                        onTrailerClick = { uri ->
-                            onAction(MovieAction.PlayTrailer(uri))
-                        },
+                        onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
                         onDownloadClick = { onAction(MovieAction.Download) },
+                        onDeleteClick = {
+                            val local = movie.sources.firstOrNull { it.type == dev.jdtech.jellyfin.models.FindroidSourceType.LOCAL }
+                            if (local != null) {
+                                val downloader = EntryPointAccessors.fromApplication(appContext, DownloaderEntryPoint::class.java).downloader()
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    downloader.deleteItem(movie, local)
+                                }
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
@@ -323,7 +329,7 @@ private fun MovieScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun EpisodeScreenLayoutPreview() {
+private fun MovieScreenLayoutPreview() {
     FindroidTheme {
         MovieScreenLayout(
             state = MovieState(

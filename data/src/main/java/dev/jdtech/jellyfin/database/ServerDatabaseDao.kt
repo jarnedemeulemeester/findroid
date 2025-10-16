@@ -157,11 +157,11 @@ interface ServerDatabaseDao {
     @Query("UPDATE userdata SET favorite = :favorite WHERE userId = :userId AND itemId = :itemId")
     fun setFavorite(userId: UUID, itemId: UUID, favorite: Boolean)
 
-    @Query("SELECT * FROM movies ORDER BY name ASC")
-    fun getMovies(): List<FindroidMovieDto>
-
     @Query("SELECT * FROM movies WHERE serverId = :serverId ORDER BY name ASC")
     fun getMoviesByServerId(serverId: String): List<FindroidMovieDto>
+
+    @Query("SELECT * FROM movies ORDER BY name ASC")
+    fun getMovies(): List<FindroidMovieDto>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertShow(show: FindroidShowDto)
@@ -169,11 +169,11 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM shows WHERE id = :id")
     fun getShow(id: UUID): FindroidShowDto
 
-    @Query("SELECT * FROM shows ORDER BY name ASC")
-    fun getShows(): List<FindroidShowDto>
-
     @Query("SELECT * FROM shows WHERE serverId = :serverId ORDER BY name ASC")
     fun getShowsByServerId(serverId: String): List<FindroidShowDto>
+
+    @Query("SELECT * FROM shows ORDER BY name ASC")
+    fun getShows(): List<FindroidShowDto>
 
     @Query("DELETE FROM shows WHERE id = :id")
     fun deleteShow(id: UUID)
@@ -205,6 +205,9 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM episodes WHERE serverId = :serverId ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC")
     fun getEpisodesByServerId(serverId: String): List<FindroidEpisodeDto>
 
+    @Query("SELECT * FROM episodes ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC")
+    fun getEpisodes(): List<FindroidEpisodeDto>
+
     @Query("SELECT episodes.id, episodes.serverId, episodes.seasonId, episodes.seriesId, episodes.name, episodes.seriesName, episodes.overview, episodes.indexNumber, episodes.indexNumberEnd, episodes.parentIndexNumber, episodes.runtimeTicks, episodes.premiereDate, episodes.communityRating, episodes.chapters FROM episodes INNER JOIN userdata ON episodes.id = userdata.itemId WHERE serverId = :serverId AND playbackPositionTicks > 0 ORDER BY episodes.parentIndexNumber ASC, episodes.indexNumber ASC")
     fun getEpisodeResumeItems(serverId: String): List<FindroidEpisodeDto>
 
@@ -223,8 +226,7 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM seasons")
     fun getSeasons(): List<FindroidSeasonDto>
 
-    @Query("SELECT * FROM episodes")
-    fun getEpisodes(): List<FindroidEpisodeDto>
+    
 
     @Query("SELECT * FROM userdata WHERE itemId = :itemId AND userId = :userId")
     fun getUserData(itemId: UUID, userId: UUID): FindroidUserDataDto?
