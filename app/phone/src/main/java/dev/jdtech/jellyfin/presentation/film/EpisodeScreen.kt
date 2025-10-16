@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,6 +50,12 @@ import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
+import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import dev.jdtech.jellyfin.utils.format
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
@@ -78,6 +85,32 @@ fun EpisodeScreen(
                     intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
+                }
+                is EpisodeAction.Download -> {
+                    state.episode?.let { episode ->
+                        val dialog = getStorageSelectionDialog(
+                            context = context,
+                            onItemSelected = { which ->
+                                val appContext = context.applicationContext
+                                val downloader = EntryPointAccessors.fromApplication(appContext, DownloaderEntryPoint::class.java).downloader()
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val sourceId = episode.sources.firstOrNull()?.id ?: return@launch
+                                    val result = downloader.downloadItem(episode, sourceId, which)
+                                    if (result.first > 0) {
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(context, context.getString(CoreR.string.download_started), Toast.LENGTH_SHORT).show()
+                                        }
+                                    } else {
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(context, result.second?.asString() ?: context.getString(CoreR.string.unknown_error), Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                }
+                            },
+                            onCancel = { /* no-op */ },
+                        )
+                        dialog.show()
+                    }
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.NavigateToPerson -> navigateToPerson(action.personId)
@@ -203,7 +236,7 @@ private fun EpisodeScreenLayout(
                             }
                         },
                         onTrailerClick = {},
-                        onDownloadClick = {},
+                        onDownloadClick = { onAction(EpisodeAction.Download) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))

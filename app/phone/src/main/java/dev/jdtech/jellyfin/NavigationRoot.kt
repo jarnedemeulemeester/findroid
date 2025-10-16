@@ -89,6 +89,9 @@ data object HomeRoute
 data object MediaRoute
 
 @Serializable
+data object DownloadsRoute
+
+@Serializable
 data class LibraryRoute(
     val libraryId: String,
     val libraryName: String,
@@ -147,7 +150,7 @@ data class TabBarItem(
 
 val homeTab = TabBarItem(title = CoreR.string.title_home, icon = CoreR.drawable.ic_home, route = HomeRoute)
 val mediaTab = TabBarItem(title = CoreR.string.title_media, icon = CoreR.drawable.ic_library, route = MediaRoute)
-val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = Unit, enabled = false)
+val downloadsTab = TabBarItem(title = CoreR.string.title_download, icon = CoreR.drawable.ic_download, route = DownloadsRoute, enabled = true)
 
 val navigationItems = listOf(homeTab, mediaTab, downloadsTab)
 val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
@@ -242,6 +245,10 @@ fun NavigationRoot(
                         navController.safeNavigate(ServersRoute)
                     },
                 )
+            }
+            composable<DownloadsRoute> {
+                // Host the existing Fragment-based Downloads screen inside Compose
+                dev.jdtech.jellyfin.presentation.downloads.DownloadsScreenHost()
             }
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(

@@ -12,6 +12,8 @@ import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
@@ -198,20 +200,28 @@ class SetupRepositoryImpl(
     }
 
     override suspend fun login(username: String, password: String) {
-        val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
-            data = AuthenticateUserByName(
-                username = username,
-                pw = password,
-            ),
-        )
+        // Perform network I/O off the main thread to avoid NetworkOnMainThreadException
+        val authenticationResult = withContext(Dispatchers.IO) {
+            val result by jellyfinApi.userApi.authenticateUserByName(
+                data = AuthenticateUserByName(
+                    username = username,
+                    pw = password,
+                ),
+            )
+            result
+        }
 
         saveAuthenticationResult(authenticationResult)
     }
 
     override suspend fun loginWithSecret(secret: String) {
-        val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
-            data = QuickConnectDto(secret = secret),
-        )
+        // Perform network I/O off the main thread to avoid NetworkOnMainThreadException
+        val authenticationResult = withContext(Dispatchers.IO) {
+            val result by jellyfinApi.userApi.authenticateWithQuickConnect(
+                data = QuickConnectDto(secret = secret),
+            )
+            result
+        }
 
         saveAuthenticationResult(authenticationResult)
     }

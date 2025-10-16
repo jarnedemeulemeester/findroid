@@ -9,6 +9,7 @@ sealed interface MovieAction {
     data object UnmarkAsPlayed : MovieAction
     data object MarkAsFavorite : MovieAction
     data object UnmarkAsFavorite : MovieAction
+    data object Download : MovieAction
     data object OnBackClick : MovieAction
     data class NavigateToPerson(val personId: UUID) : MovieAction
 }

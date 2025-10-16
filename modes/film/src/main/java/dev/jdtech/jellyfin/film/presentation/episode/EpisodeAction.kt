@@ -8,6 +8,7 @@ sealed interface EpisodeAction {
     data object UnmarkAsPlayed : EpisodeAction
     data object MarkAsFavorite : EpisodeAction
     data object UnmarkAsFavorite : EpisodeAction
+    data object Download : EpisodeAction
     data object OnBackClick : EpisodeAction
     data class NavigateToPerson(val personId: UUID) : EpisodeAction
 }

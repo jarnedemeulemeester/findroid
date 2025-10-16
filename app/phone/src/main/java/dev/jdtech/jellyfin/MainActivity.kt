@@ -6,6 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import androidx.work.Constraints
@@ -21,6 +23,7 @@ import dev.jdtech.jellyfin.work.SyncWorker
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
+    private var navigateToItemCallback: ((dev.jdtech.jellyfin.models.FindroidItem) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,12 @@ class MainActivity : AppCompatActivity() {
                 dynamicColor = state.isDynamicColors,
             ) {
                 val navController = rememberNavController()
+                val navigateFn = remember {
+                    { item: dev.jdtech.jellyfin.models.FindroidItem ->
+                        dev.jdtech.jellyfin.navigateToItem(navController, item)
+                    }
+                }
+                navigateToItemCallback = navigateFn
                 if (!state.isLoading) {
                     NavigationRoot(
                         navController = navController,
@@ -63,5 +72,9 @@ class MainActivity : AppCompatActivity() {
 
         workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
             .enqueue()
+    }
+
+    fun navigateToItem(item: dev.jdtech.jellyfin.models.FindroidItem) {
+        navigateToItemCallback?.invoke(item)
     }
 }

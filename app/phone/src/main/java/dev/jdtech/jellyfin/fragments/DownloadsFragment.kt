@@ -96,5 +96,16 @@ class DownloadsFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {}
+    private fun navigateToMediaItem(item: FindroidItem) {
+        // Use existing NavigationRoot routing conventions by delegating to the Activity
+        try {
+            (activity as? dev.jdtech.jellyfin.MainActivity)?.let { mainActivity ->
+                mainActivity.navigateToItem(item)
+                return
+            }
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to cast MainActivity for navigation")
+        }
+        // Fallback: no-op
+    }
 }
