@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import dev.jdtech.jellyfin.adapters.DownloadsAdapter
+import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSourceType
@@ -48,19 +48,20 @@ class DownloadsFragment : Fragment() {
         android.util.Log.d("DownloadsUI", "======== onCreateView ========")
         binding = FragmentDownloadsBinding.inflate(inflater, container, false)
 
-        // Configure GridLayoutManager explicitly
-        binding.downloadsRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(
+        // Configure LinearLayoutManager for vertical sections
+        binding.downloadsRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
             requireContext(),
-            3 // 3 columns
+            androidx.recyclerview.widget.LinearLayoutManager.VERTICAL,
+            false
         )
         
-        binding.downloadsRecyclerView.adapter = DownloadsAdapter(
+        binding.downloadsRecyclerView.adapter = FavoritesListAdapter(
             onItemClickListener = { item -> navigateToMediaItem(item) },
             onItemLongClickListener = { item -> onItemLongClick(item) },
         )
-        binding.downloadsRecyclerView.setHasFixedSize(true)
+        binding.downloadsRecyclerView.setHasFixedSize(false)
         
-        android.util.Log.d("DownloadsUI", "RecyclerView configured with GridLayoutManager (3 columns)")
+        android.util.Log.d("DownloadsUI", "RecyclerView configured with FavoritesListAdapter (sections)")
         android.util.Log.d("DownloadsUI", "Fragment instance hashCode=${this.hashCode()}, ViewModel hashCode=${viewModel.hashCode()}")
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -223,13 +224,12 @@ class DownloadsFragment : Fragment() {
     }
 
     private fun bindUiStateNormal(uiState: DownloadsViewModel.UiState.Normal) {
-        Timber.d("Downloads: ${uiState.items.size} items")
-        android.util.Log.d("DownloadsUI", "bindUiStateNormal: ${uiState.items.size} items")
+        Timber.d("Downloads: ${uiState.sections.size} sections")
+        android.util.Log.d("DownloadsUI", "bindUiStateNormal: ${uiState.sections.size} sections")
         
-        // Log first item details for debugging
-        if (uiState.items.isNotEmpty()) {
-            val firstItem = uiState.items[0]
-            android.util.Log.d("DownloadsUI", "First item: name=${firstItem.name}, sources count=${firstItem.sources.size}")
+        // Log section details for debugging
+        uiState.sections.forEach { section ->
+            android.util.Log.d("DownloadsUI", "Section: name=${section.name}, items count=${section.items.size}")
         }
         
         // CRITICAL: Force hide all overlays
@@ -239,8 +239,8 @@ class DownloadsFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
         binding.errorLayout.errorPanel.visibility = android.view.View.GONE
         
-        binding.noDownloadsText.isVisible = false
-        binding.noDownloadsText.visibility = android.view.View.GONE
+        binding.noDownloadsText.isVisible = uiState.sections.isEmpty()
+        binding.noDownloadsText.visibility = if (uiState.sections.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         
         // CRITICAL: Force show RecyclerView
         binding.downloadsRecyclerView.isVisible = true
@@ -249,11 +249,11 @@ class DownloadsFragment : Fragment() {
         
         android.util.Log.d("DownloadsUI", "Visibility set: RecyclerView=${binding.downloadsRecyclerView.visibility}, Loading=${binding.loadingIndicator.visibility}, Error=${binding.errorLayout.errorPanel.visibility}")
         
-        val adapter = binding.downloadsRecyclerView.adapter as DownloadsAdapter
+        val adapter = binding.downloadsRecyclerView.adapter as FavoritesListAdapter
         android.util.Log.d("DownloadsUI", "Adapter before submitList: itemCount=${adapter.itemCount}")
         
-        // Submit list - adapter will handle the rest
-        adapter.submitList(uiState.items) {
+        // Submit sections list - adapter will handle nested adapters for each section
+        adapter.submitList(uiState.sections) {
             android.util.Log.d("DownloadsUI", "submitList completed: adapter.itemCount=${adapter.itemCount}, RecyclerView.childCount=${binding.downloadsRecyclerView.childCount}")
             
             // Force RecyclerView to layout and measure
