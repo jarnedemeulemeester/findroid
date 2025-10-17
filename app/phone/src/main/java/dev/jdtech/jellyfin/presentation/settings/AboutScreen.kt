@@ -135,6 +135,12 @@ fun AboutScreen(
                                 text = stringResource(CoreR.string.app_description),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
+                            Spacer(Modifier.height(MaterialTheme.spacings.small))
+                            Text(
+                                text = "Based on Findroid version 0.15.3",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
                             HorizontalDivider()
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
