@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -25,14 +26,27 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+fun isDlnaEnabled(context: Context): Boolean {
+    val prefsName = context.packageName + "_preferences"
+    val sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("pref_dlna_enabled", true)
+}
+
 /**
  * DLNA button that shows device selection dialog
+ * Only shows if DLNA is enabled in settings
  */
 @Composable
 fun DlnaButton(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    
+    // Only show button if DLNA is enabled in settings
+    if (!isDlnaEnabled(context)) {
+        return
+    }
+    
     var showDevicePicker by remember { mutableStateOf(false) }
     var isDlnaActive by remember { mutableStateOf(false) }
     

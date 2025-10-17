@@ -65,6 +65,10 @@ constructor(
     // Player - PiP
     val playerPipGesture = Preference("pref_player_picture_in_picture_gesture", false)
 
+    // Casting
+    val dlnaEnabled = Preference("pref_dlna_enabled", true)
+    val chromecastEnabled = Preference("pref_chromecast_enabled", true)
+
     // Downloads
     val downloadOverMobileData = Preference("pref_downloads_mobile_data", false)
     val downloadWhenRoaming = Preference("pref_downloads_roaming", false)

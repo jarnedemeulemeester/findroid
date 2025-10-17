@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.utils.restart
 import dev.jdtech.jellyfin.utils.Downloader
 import dev.jdtech.jellyfin.viewmodels.DownloadsEvent
 import dev.jdtech.jellyfin.viewmodels.DownloadsViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -109,6 +110,9 @@ class DownloadsFragment : Fragment() {
         android.util.Log.d("DownloadsUI", "======== onResume ======== Fragment is VISIBLE")
         android.util.Log.d("DownloadsUI", "Root view visibility: ${binding.root.visibility}, isShown: ${binding.root.isShown}")
         android.util.Log.d("DownloadsUI", "Fragment: isAdded=${isAdded}, isVisible=${isVisible}, isResumed=${isResumed}, isHidden=${isHidden}")
+        
+        // Reload data when fragment becomes visible to show new downloads
+        viewModel.loadData()
         
         // Log activity fragments
         activity?.supportFragmentManager?.fragments?.let { fragments ->
@@ -205,9 +209,13 @@ class DownloadsFragment : Fragment() {
                         } else {
                             downloader.deleteItem(item, localSource)
                         }
+                        // Short delay to ensure database transaction completes
+                        delay(200)
                     } catch (e: Exception) {
                         Timber.e(e, "Failed to ${if (isDownloading) "cancel" else "remove"} download")
                     } finally {
+                        // Force reload of downloads
+                        Timber.d("Reloading downloads after delete")
                         viewModel.loadData()
                     }
                 }

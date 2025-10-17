@@ -23,6 +23,49 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
+    <!-- Blur overlay for downloading items -->
+    <View
+        android:id="@+id/download_blur_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/item_image"
+        app:layout_constraintEnd_toEndOf="@id/item_image"
+        app:layout_constraintStart_toStartOf="@id/item_image"
+        app:layout_constraintTop_toTopOf="@id/item_image" />
+
+    <!-- Circular progress indicator in center of image -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/circular_progress"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:indeterminate="false"
+        android:visibility="gone"
+        app:indicatorColor="?attr/colorPrimary"
+        app:indicatorSize="64dp"
+        app:layout_constraintBottom_toBottomOf="@id/item_image"
+        app:layout_constraintEnd_toEndOf="@id/item_image"
+        app:layout_constraintStart_toStartOf="@id/item_image"
+        app:layout_constraintTop_toTopOf="@id/item_image"
+        app:trackColor="#40FFFFFF"
+        app:trackThickness="4dp" />
+
+    <!-- Progress percentage text in center -->
+    <TextView
+        android:id="@+id/circular_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/circular_progress"
+        app:layout_constraintEnd_toEndOf="@id/circular_progress"
+        app:layout_constraintStart_toStartOf="@id/circular_progress"
+        app:layout_constraintTop_toTopOf="@id/circular_progress"
+        tools:text="42%" />
+
     <TextView
         android:id="@+id/item_name"
         android:layout_width="0dp"
@@ -33,12 +76,29 @@
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        android:background="#202020"
+        android:background="@android:color/transparent"
         android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_image"
         tools:text="Movie title" />
+
+    <!-- Download progress text below title -->
+    <TextView
+        android:id="@+id/download_progress_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:padding="4dp"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_name"
+        tools:text="Descargando... 42%"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:layout_width="wrap_content"

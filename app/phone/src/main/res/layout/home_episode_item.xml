@@ -20,6 +20,49 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Findroid.Image" />
 
+    <!-- Blur overlay for downloading items -->
+    <View
+        android:id="@+id/download_blur_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/episode_image"
+        app:layout_constraintEnd_toEndOf="@id/episode_image"
+        app:layout_constraintStart_toStartOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image" />
+
+    <!-- Circular progress indicator in center of image -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/circular_progress"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:indeterminate="false"
+        android:visibility="gone"
+        app:indicatorColor="?attr/colorPrimary"
+        app:indicatorSize="64dp"
+        app:layout_constraintBottom_toBottomOf="@id/episode_image"
+        app:layout_constraintEnd_toEndOf="@id/episode_image"
+        app:layout_constraintStart_toStartOf="@id/episode_image"
+        app:layout_constraintTop_toTopOf="@id/episode_image"
+        app:trackColor="#40FFFFFF"
+        app:trackThickness="4dp" />
+
+    <!-- Progress percentage text in center -->
+    <TextView
+        android:id="@+id/circular_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/circular_progress"
+        app:layout_constraintEnd_toEndOf="@id/circular_progress"
+        app:layout_constraintStart_toStartOf="@id/circular_progress"
+        app:layout_constraintTop_toTopOf="@id/circular_progress"
+        tools:text="42%" />
+
     <TextView
         android:id="@+id/primary_name"
         android:layout_width="0dp"

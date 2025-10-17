@@ -209,6 +209,7 @@ private fun MovieScreenLayout(
     
     var showDlnaDevicePicker by remember { mutableStateOf(false) }
 
+    val paddingTop = safePadding.top
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
@@ -227,6 +228,7 @@ private fun MovieScreenLayout(
                 ItemHeader(
                     item = movie,
                     scrollState = scrollState,
+                    paddingTop = paddingTop,
                     content = {
                         Column(
                             modifier = Modifier

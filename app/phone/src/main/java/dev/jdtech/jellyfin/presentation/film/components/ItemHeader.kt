@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -31,6 +32,7 @@ fun ItemHeader(
     item: FindroidItem,
     scrollState: ScrollState,
     showLogo: Boolean = false,
+    paddingTop: Dp = 0.dp,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val backdropUri = when (item) {
@@ -41,6 +43,7 @@ fun ItemHeader(
     ItemHeaderBase(
         item = item,
         showLogo = showLogo,
+        paddingTop = paddingTop,
         backdropImage = {
             AsyncImage(
                 model = backdropUri,
@@ -64,6 +67,7 @@ fun ItemHeader(
     item: FindroidItem,
     lazyListState: LazyListState,
     showLogo: Boolean = false,
+    paddingTop: Dp = 0.dp,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val backdropUri = when (item) {
@@ -75,6 +79,7 @@ fun ItemHeader(
     ItemHeaderBase(
         item = item,
         showLogo = showLogo,
+        paddingTop = paddingTop,
         backdropImage = {
             AsyncImage(
                 model = backdropUri,
@@ -97,6 +102,7 @@ fun ItemHeader(
 private fun ItemHeaderBase(
     item: FindroidItem,
     showLogo: Boolean = false,
+    paddingTop: Dp = 0.dp,
     backdropImage: @Composable (() -> Unit),
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
@@ -109,8 +115,9 @@ private fun ItemHeaderBase(
 
     Box(
         modifier = Modifier
-            .height(240.dp)
-            .clipToBounds(),
+            .height(240.dp + paddingTop)
+            .clipToBounds()
+            .padding(top = paddingTop),
     ) {
         backdropImage()
         Canvas(

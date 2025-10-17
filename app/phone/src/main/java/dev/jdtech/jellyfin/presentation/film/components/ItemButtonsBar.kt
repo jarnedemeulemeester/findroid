@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,12 @@ import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
+
+fun isDlnaEnabled(context: Context): Boolean {
+    val prefsName = context.packageName + "_preferences"
+    val sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("pref_dlna_enabled", true)
+}
 
 @Composable
 fun ItemButtonsBar(
@@ -139,49 +146,52 @@ fun ItemButtonsBar(
                     }
                 }
                 
-                // DLNA button
+                // DLNA button - only show if enabled in settings
                 val context = LocalContext.current
-                var isDlnaActive by remember { mutableStateOf(false) }
                 
-                // Update DLNA active state periodically
-                DisposableEffect(Unit) {
-                    var updateJob: Job? = null
+                if (isDlnaEnabled(context)) {
+                    var isDlnaActive by remember { mutableStateOf(false) }
                     
-                    updateJob = CoroutineScope(Dispatchers.Main).launch {
-                        while (isActive) {
-                            isDlnaActive = DlnaHelper.isDlnaDeviceAvailable(context)
-                            delay(500) // Check every 500ms
+                    // Update DLNA active state periodically
+                    DisposableEffect(Unit) {
+                        var updateJob: Job? = null
+                        
+                        updateJob = CoroutineScope(Dispatchers.Main).launch {
+                            while (isActive) {
+                                isDlnaActive = DlnaHelper.isDlnaDeviceAvailable(context)
+                                delay(500) // Check every 500ms
+                            }
+                        }
+                        
+                        onDispose {
+                            updateJob?.cancel()
                         }
                     }
                     
-                    onDispose {
-                        updateJob?.cancel()
-                    }
-                }
-                
-                if (isDlnaActive) {
-                    // Filled button when DLNA is active
-                    FilledIconButton(
-                        onClick = onDlnaClick,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    ) {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_tv),
-                            contentDescription = "DLNA Active",
-                        )
-                    }
-                } else {
-                    // Tonal button when DLNA is inactive
-                    FilledTonalIconButton(
-                        onClick = onDlnaClick,
-                    ) {
-                        Icon(
-                            painter = painterResource(CoreR.drawable.ic_tv),
-                            contentDescription = "DLNA",
-                        )
+                    if (isDlnaActive) {
+                        // Filled button when DLNA is active
+                        FilledIconButton(
+                            onClick = onDlnaClick,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_tv),
+                                contentDescription = "DLNA Active",
+                            )
+                        }
+                    } else {
+                        // Tonal button when DLNA is inactive
+                        FilledTonalIconButton(
+                            onClick = onDlnaClick,
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_tv),
+                                contentDescription = "DLNA",
+                            )
+                        }
                     }
                 }
                 

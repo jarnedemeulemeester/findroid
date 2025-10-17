@@ -73,9 +73,14 @@ constructor(
             val sections = mutableListOf<CollectionSection>()
 
             Timber.tag("DownloadsVM").d("Fetching downloads from repository…")
-            val items = repository.getDownloads()
+            val allItems = repository.getDownloads()
+            // Filter only items that have at least one LOCAL source
+            val items = allItems.filter { item ->
+                item.sources.any { it.type == dev.jdtech.jellyfin.models.FindroidSourceType.LOCAL }
+            }
             Timber.tag("DownloadsVM").d(
-                "Repository returned %d items (movies=%d, shows=%d, episodes=%d)",
+                "Repository returned %d items, filtered to %d with LOCAL sources (movies=%d, shows=%d, episodes=%d)",
+                allItems.size,
                 items.size,
                 items.count { it is FindroidMovie },
                 items.count { it is FindroidShow },
@@ -93,10 +98,47 @@ constructor(
                     )
                 }
             }
+            
+            // Create virtual shows from downloaded episodes grouped by series
+            val episodesDownloaded = items.filterIsInstance<FindroidEpisode>()
+            val showsFromEpisodes = episodesDownloaded
+                .groupBy { it.seriesId }
+                .mapNotNull { (seriesId, episodes) ->
+                    // Get the first episode to extract series info
+                    val firstEpisode = episodes.firstOrNull() ?: return@mapNotNull null
+                    
+                    // Create a virtual FindroidShow with episode count
+                    FindroidShow(
+                        id = seriesId,
+                        name = firstEpisode.seriesName,
+                        originalTitle = firstEpisode.seriesName,
+                        overview = "${episodes.size} episodio${if (episodes.size != 1) "s" else ""} descargado${if (episodes.size != 1) "s" else ""}",
+                        sources = emptyList(),
+                        seasons = emptyList(),
+                        played = episodes.all { it.played },
+                        favorite = false,
+                        canPlay = true,
+                        canDownload = false,
+                        playbackPositionTicks = 0L,
+                        unplayedItemCount = episodes.count { !it.played },
+                        genres = emptyList(),
+                        people = emptyList(),
+                        runtimeTicks = episodes.sumOf { it.runtimeTicks },
+                        communityRating = firstEpisode.communityRating,
+                        officialRating = "",
+                        status = "",
+                        productionYear = null,
+                        endDate = null,
+                        trailer = null,
+                        images = firstEpisode.images,
+                        chapters = emptyList()
+                    )
+                }
+            
             CollectionSection(
                 Constants.FAVORITE_TYPE_SHOWS,
                 UiText.StringResource(R.string.shows_label),
-                items.filterIsInstance<FindroidShow>(),
+                (items.filterIsInstance<FindroidShow>() + showsFromEpisodes).distinctBy { it.id },
             ).let {
                 if (it.items.isNotEmpty()) {
                     sections.add(
@@ -104,10 +146,11 @@ constructor(
                     )
                 }
             }
+            
             CollectionSection(
                 Constants.FAVORITE_TYPE_EPISODES,
                 UiText.StringResource(R.string.episodes_label),
-                items.filterIsInstance<FindroidEpisode>(),
+                episodesDownloaded,
             ).let {
                 if (it.items.isNotEmpty()) {
                     sections.add(

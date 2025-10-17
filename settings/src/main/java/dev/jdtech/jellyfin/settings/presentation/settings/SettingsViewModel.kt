@@ -378,6 +378,35 @@ constructor(
         PreferenceGroup(
             preferences = listOf(
                 PreferenceCategory(
+                    nameStringResource = R.string.settings_category_casting,
+                    iconDrawableId = R.drawable.ic_network,
+                    onClick = {
+                        viewModelScope.launch {
+                            eventsChannel.send(SettingsEvent.NavigateToSettings(intArrayOf(it.nameStringResource)))
+                        }
+                    },
+                    nestedPreferenceGroups = listOf(
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.enable_dlna,
+                                    descriptionStringRes = R.string.enable_dlna_summary,
+                                    backendPreference = appPreferences.dlnaEnabled,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.enable_chromecast,
+                                    descriptionStringRes = R.string.enable_chromecast_summary,
+                                    backendPreference = appPreferences.chromecastEnabled,
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        PreferenceGroup(
+            preferences = listOf(
+                PreferenceCategory(
                     nameStringResource = R.string.users,
                     iconDrawableId = R.drawable.ic_user,
                     onClick = {

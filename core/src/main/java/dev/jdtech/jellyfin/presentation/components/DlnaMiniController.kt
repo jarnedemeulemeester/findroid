@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.components
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.slideInVertically
@@ -51,10 +52,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+private fun isDlnaEnabledInSettings(context: Context): Boolean {
+    val prefsName = context.packageName + "_preferences"
+    val sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("pref_dlna_enabled", true)
+}
+
 /**
  * Mini controller for DLNA playback
  * Shows at the bottom of the screen when DLNA is active
  * Can be expanded to show full controls
+ * Only visible if DLNA is enabled in settings
  */
 @Composable
 fun DlnaMiniController(
@@ -62,6 +70,12 @@ fun DlnaMiniController(
     isOnHomePage: Boolean = false,
 ) {
     val context = LocalContext.current
+    
+    // Don't show if DLNA is disabled in settings
+    if (!isDlnaEnabledInSettings(context)) {
+        return
+    }
+    
     var isVisible by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0f) }

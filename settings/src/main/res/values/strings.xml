@@ -100,4 +100,9 @@
     <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">None</string>
+    <string name="settings_category_casting">Casting</string>
+    <string name="enable_dlna">Enable DLNA</string>
+    <string name="enable_dlna_summary">Allow casting to DLNA/UPnP devices</string>
+    <string name="enable_chromecast">Enable Chromecast</string>
+    <string name="enable_chromecast_summary">Allow casting to Chromecast devices</string>
 </resources>

@@ -142,9 +142,17 @@ class PlayerActivity : BasePlayerActivity() {
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
         
-        // Initialize Cast button
+        // Initialize Cast button - only if Chromecast is enabled
         val castButton = binding.playerView.findViewById<MediaRouteButton>(R.id.cast_button)
-        CastButtonFactory.setUpMediaRouteButton(applicationContext, castButton)
+        val prefsName = packageName + "_preferences"
+        val sharedPreferences = getSharedPreferences(prefsName, MODE_PRIVATE)
+        val chromecastEnabled = sharedPreferences.getBoolean("pref_chromecast_enabled", true)
+        
+        if (chromecastEnabled) {
+            CastButtonFactory.setUpMediaRouteButton(applicationContext, castButton)
+        } else {
+            castButton.visibility = android.view.View.GONE
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
