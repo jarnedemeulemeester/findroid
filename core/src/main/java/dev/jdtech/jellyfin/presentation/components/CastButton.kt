@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.presentation.components
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.mediarouter.app.MediaRouteButton
@@ -12,7 +11,7 @@ import com.google.android.gms.cast.framework.CastContext
 import timber.log.Timber
 
 /**
- * Composable Cast Button that shows the Chromecast icon
+ * Composable Cast Button that shows the native Chromecast selector
  */
 @Composable
 fun CastButton() {

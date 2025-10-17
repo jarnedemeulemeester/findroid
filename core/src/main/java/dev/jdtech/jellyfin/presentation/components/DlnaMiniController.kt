@@ -6,13 +6,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +23,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,17 +35,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.cast.CastHelper
 import dev.jdtech.jellyfin.core.R
+import dev.jdtech.jellyfin.dlna.DlnaHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -57,12 +52,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
- * Mini controller for Cast playback
- * Shows at the bottom of the screen when Cast is active
+ * Mini controller for DLNA playback
+ * Shows at the bottom of the screen when DLNA is active
  * Can be expanded to show full controls
  */
 @Composable
-fun CastMiniController(
+fun DlnaMiniController(
     modifier: Modifier = Modifier,
     isOnHomePage: Boolean = false,
 ) {
@@ -87,13 +82,14 @@ fun CastMiniController(
         
         updateJob = CoroutineScope(Dispatchers.Main).launch {
             while (isActive) {
-                val isCasting = CastHelper.isCastSessionAvailable(context)
-                isVisible = isCasting
+                val isDlnaActive = DlnaHelper.isDlnaDeviceAvailable(context)
+                isVisible = isDlnaActive
                 
-                if (isCasting) {
-                    isPlaying = CastHelper.isPlaying(context)
-                    currentPosition = CastHelper.getCurrentPosition(context)
-                    totalDuration = CastHelper.getDuration(context)
+                if (isDlnaActive) {
+                    DlnaHelper.getCurrentPosition(context) { position ->
+                        currentPosition = position
+                    }
+                    totalDuration = DlnaHelper.getDuration(context)
                     
                     if (totalDuration > 0 && !isSeeking) {
                         progress = (currentPosition.toFloat() / totalDuration.toFloat()).coerceIn(0f, 1f)
@@ -101,11 +97,20 @@ fun CastMiniController(
                         duration = formatTime(totalDuration)
                     }
                     
+                    // Get playing state from DlnaHelper
+                    isPlaying = DlnaHelper.isPlaying()
+                    
                     // Get media info
-                    title = CastHelper.getMediaTitle(context)
-                    subtitle = CastHelper.getMediaSubtitle(context)
-                    imageUrl = CastHelper.getMediaImageUrl(context)
-                    volume = CastHelper.getVolume(context).toFloat()
+                    title = DlnaHelper.getMediaTitle(context)
+                    subtitle = DlnaHelper.getMediaSubtitle(context)
+                    imageUrl = DlnaHelper.getMediaImageUrl(context)
+                    
+                    DlnaHelper.getVolume(context) { vol ->
+                        volume = vol.toFloat()
+                    }
+                } else {
+                    // Reset playing state when DLNA is not active
+                    isPlaying = false
                 }
                 
                 delay(1000) // Update every second
@@ -143,40 +148,40 @@ fun CastMiniController(
         ) {
             if (isExpanded) {
                 // Expanded player
-                ExpandedCastPlayer(
+                ExpandedDlnaPlayer(
                     title = title,
                     subtitle = subtitle,
                     imageUrl = imageUrl,
-                    isPlaying = isPlaying,
                     progress = progress,
                     currentTime = currentTime,
                     duration = duration,
                     volume = volume,
                     currentPosition = currentPosition,
                     totalDuration = totalDuration,
+                    isPlaying = isPlaying,
                     onPlayPauseClick = {
                         if (isPlaying) {
-                            CastHelper.pause(context)
+                            DlnaHelper.pause(context)
                         } else {
-                            CastHelper.play(context)
+                            DlnaHelper.play(context)
                         }
                     },
                     onSeek = { position ->
                         isSeeking = false
-                        CastHelper.seek(context, position)
+                        DlnaHelper.seek(context, position)
                     },
                     onSeekStart = { isSeeking = true },
                     onVolumeChange = { newVolume ->
-                        CastHelper.setVolume(context, newVolume.toDouble())
+                        DlnaHelper.setVolume(context, newVolume.toDouble())
                     },
                     onRewind = {
-                        CastHelper.seek(context, (currentPosition - 10000).coerceAtLeast(0))
+                        DlnaHelper.seek(context, (currentPosition - 10000).coerceAtLeast(0))
                     },
                     onForward = {
-                        CastHelper.seek(context, (currentPosition + 10000).coerceAtMost(totalDuration))
+                        DlnaHelper.seek(context, (currentPosition + 10000).coerceAtMost(totalDuration))
                     },
                     onClose = {
-                        CastHelper.stopCasting(context)
+                        DlnaHelper.stopDlna(context)
                     },
                     onCollapse = {
                         isExpanded = false
@@ -184,7 +189,7 @@ fun CastMiniController(
                 )
             } else {
                 // Mini player
-                MiniCastPlayer(
+                MiniDlnaPlayer(
                     title = title,
                     currentTime = currentTime,
                     duration = duration,
@@ -192,19 +197,19 @@ fun CastMiniController(
                     isPlaying = isPlaying,
                     onPlayPauseClick = {
                         if (isPlaying) {
-                            CastHelper.pause(context)
+                            DlnaHelper.pause(context)
                         } else {
-                            CastHelper.play(context)
+                            DlnaHelper.play(context)
                         }
                     },
                     onRewind = {
-                        CastHelper.seek(context, (currentPosition - 10000).coerceAtLeast(0))
+                        DlnaHelper.seek(context, (currentPosition - 10000).coerceAtLeast(0))
                     },
                     onForward = {
-                        CastHelper.seek(context, (currentPosition + 10000).coerceAtMost(totalDuration))
+                        DlnaHelper.seek(context, (currentPosition + 10000).coerceAtMost(totalDuration))
                     },
                     onClose = {
-                        CastHelper.stopCasting(context)
+                        DlnaHelper.stopDlna(context)
                     },
                     onExpand = {
                         isExpanded = true
@@ -216,7 +221,7 @@ fun CastMiniController(
 }
 
 @Composable
-private fun MiniCastPlayer(
+private fun MiniDlnaPlayer(
     title: String,
     currentTime: String,
     duration: String,
@@ -279,7 +284,7 @@ private fun MiniCastPlayer(
                     )
                 }
                 
-                // Play/Pause
+                // Play/Pause toggle button
                 IconButton(
                     onClick = onPlayPauseClick,
                     modifier = Modifier.size(48.dp)
@@ -304,14 +309,14 @@ private fun MiniCastPlayer(
                     )
                 }
                 
-                // Stop casting
+                // Stop DLNA
                 IconButton(
                     onClick = onClose,
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_x),
-                        contentDescription = "Stop casting"
+                        contentDescription = "Stop DLNA"
                     )
                 }
             }
@@ -320,17 +325,17 @@ private fun MiniCastPlayer(
 }
 
 @Composable
-private fun ExpandedCastPlayer(
+private fun ExpandedDlnaPlayer(
     title: String,
     subtitle: String,
     imageUrl: String?,
-    isPlaying: Boolean,
     progress: Float,
     currentTime: String,
     duration: String,
     volume: Float,
     currentPosition: Long,
     totalDuration: Long,
+    isPlaying: Boolean,
     onPlayPauseClick: () -> Unit,
     onSeek: (Long) -> Unit,
     onSeekStart: () -> Unit,
@@ -360,7 +365,7 @@ private fun ExpandedCastPlayer(
             }
             
             Text(
-                text = "Reproduciendo en Chromecast",
+                text = "Reproduciendo en DLNA",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -368,7 +373,7 @@ private fun ExpandedCastPlayer(
             IconButton(onClick = onClose) {
                 Icon(
                     painter = painterResource(R.drawable.ic_x),
-                    contentDescription = "Stop casting"
+                    contentDescription = "Stop DLNA"
                 )
             }
         }
@@ -466,17 +471,19 @@ private fun ExpandedCastPlayer(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Rewind
             IconButton(
                 onClick = onRewind,
                 modifier = Modifier.size(56.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_rewind),
-                    contentDescription = "Rewind",
+                    contentDescription = "Rewind 10s",
                     modifier = Modifier.size(32.dp)
                 )
             }
             
+            // Play/Pause toggle button
             IconButton(
                 onClick = onPlayPauseClick,
                 modifier = Modifier.size(72.dp)
@@ -486,17 +493,18 @@ private fun ExpandedCastPlayer(
                         if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
                     ),
                     contentDescription = if (isPlaying) "Pause" else "Play",
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
             
+            // Forward
             IconButton(
                 onClick = onForward,
                 modifier = Modifier.size(56.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_fast_forward),
-                    contentDescription = "Fast forward",
+                    contentDescription = "Forward 10s",
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -506,39 +514,30 @@ private fun ExpandedCastPlayer(
         
         // Volume control
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_volume),
                 contentDescription = "Volume",
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                modifier = Modifier.size(24.dp)
             )
+            
+            Spacer(modifier = Modifier.width(16.dp))
             
             Slider(
                 value = volume,
                 onValueChange = onVolumeChange,
                 modifier = Modifier.weight(1f)
             )
-            
-            Text(
-                text = "${(volume * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.width(40.dp),
-                textAlign = TextAlign.End
-            )
         }
     }
 }
 
-/**
- * Format milliseconds to MM:SS or HH:MM:SS
- */
-private fun formatTime(ms: Long): String {
-    val totalSeconds = ms / 1000
+private fun formatTime(timeMs: Long): String {
+    val totalSeconds = timeMs / 1000
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
@@ -546,6 +545,6 @@ private fun formatTime(ms: Long): String {
     return if (hours > 0) {
         String.format("%d:%02d:%02d", hours, minutes, seconds)
     } else {
-        String.format("%02d:%02d", minutes, seconds)
+        String.format("%d:%02d", minutes, seconds)
     }
 }

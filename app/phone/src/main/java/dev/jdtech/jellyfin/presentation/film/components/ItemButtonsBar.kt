@@ -3,22 +3,37 @@ package dev.jdtech.jellyfin.presentation.film.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.dlna.DlnaHelper
 import dev.jdtech.jellyfin.models.FindroidItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
@@ -33,6 +48,7 @@ fun ItemButtonsBar(
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
+    onDlnaClick: () -> Unit = {},
     onDownloadClick: () -> Unit,
     onDeleteClick: (() -> Unit)? = null,
     onTrailerClick: (uri: String) -> Unit,
@@ -122,6 +138,53 @@ fun ItemButtonsBar(
                         }
                     }
                 }
+                
+                // DLNA button
+                val context = LocalContext.current
+                var isDlnaActive by remember { mutableStateOf(false) }
+                
+                // Update DLNA active state periodically
+                DisposableEffect(Unit) {
+                    var updateJob: Job? = null
+                    
+                    updateJob = CoroutineScope(Dispatchers.Main).launch {
+                        while (isActive) {
+                            isDlnaActive = DlnaHelper.isDlnaDeviceAvailable(context)
+                            delay(500) // Check every 500ms
+                        }
+                    }
+                    
+                    onDispose {
+                        updateJob?.cancel()
+                    }
+                }
+                
+                if (isDlnaActive) {
+                    // Filled button when DLNA is active
+                    FilledIconButton(
+                        onClick = onDlnaClick,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_tv),
+                            contentDescription = "DLNA Active",
+                        )
+                    }
+                } else {
+                    // Tonal button when DLNA is inactive
+                    FilledTonalIconButton(
+                        onClick = onDlnaClick,
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_tv),
+                            contentDescription = "DLNA",
+                        )
+                    }
+                }
+                
                 // Download button only when allowed; delete button always when downloaded
                 if (item.canDownload) {
                     val downloadEnabled = !item.isDownloaded() && !item.isDownloading()

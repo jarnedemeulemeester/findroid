@@ -9,6 +9,8 @@ androidx-compose = "1.9.3"
 androidx-compose-material3 = "1.4.0"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.17.0"
+jupnp = "3.0.2"
+jetty = "9.4.54.v20240208"
 androidx-fragment = "1.8.9"
 androidx-hilt = "1.3.0"
 androidx-lifecycle = "2.9.4"
@@ -72,6 +74,12 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 coil-network-cache-control = { group = "io.coil-kt.coil3", name = "coil-network-cache-control", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+jupnp-core = { group = "org.jupnp", name = "org.jupnp", version.ref = "jupnp" }
+jupnp-support = { group = "org.jupnp", name = "org.jupnp.support", version.ref = "jupnp" }
+jupnp-android = { group = "org.jupnp", name = "org.jupnp.android", version.ref = "jupnp" }
+jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
+jetty-servlet = { group = "org.eclipse.jetty", name = "jetty-servlet", version.ref = "jetty" }
+jetty-client = { group = "org.eclipse.jetty", name = "jetty-client", version.ref = "jetty" }
 google-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "google-cast" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

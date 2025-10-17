@@ -31,3 +31,25 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+# JUPnP library rules for DLNA support
+-keep class org.jupnp.** { *; }
+-keep interface org.jupnp.** { *; }
+-keepclassmembers class org.jupnp.** { *; }
+-dontwarn org.jupnp.**
+-dontwarn org.osgi.**
+-dontwarn javax.enterprise.**
+
+# Keep Android UPnP Service
+-keep class org.jupnp.android.** { *; }
+-keepclassmembers class org.jupnp.android.** { *; }
+
+# Keep our custom DLNA classes
+-keep class dev.jdtech.jellyfin.dlna.** { *; }
+-keepclassmembers class dev.jdtech.jellyfin.dlna.** { *; }
+
+# Jetty rules for DLNA HTTP server
+-keep class org.eclipse.jetty.** { *; }
+-keepclassmembers class org.eclipse.jetty.** { *; }
+-dontwarn org.eclipse.jetty.**
+-dontwarn javax.servlet.**

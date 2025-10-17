@@ -63,6 +63,7 @@ import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import dev.jdtech.jellyfin.presentation.components.CastMiniController
+import dev.jdtech.jellyfin.presentation.components.DlnaMiniController
 import kotlinx.serialization.Serializable
 import java.util.UUID
 import timber.log.Timber
@@ -536,9 +537,23 @@ fun NavigationRoot(
         }
     }
         
+        // Check if we're on a page with bottom navigation (Home, Media, Downloads)
+        val isOnBottomNavPage = currentRoute in listOf(
+            HomeRoute::class.qualifiedName,
+            MediaRoute::class.qualifiedName,
+            DownloadsRoute::class.qualifiedName
+        )
+        
+        // DLNA mini controller at the bottom
+        DlnaMiniController(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isOnHomePage = isOnBottomNavPage
+        )
+        
         // Cast mini controller at the bottom
         CastMiniController(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isOnHomePage = isOnBottomNavPage
         )
     }
 }

@@ -24,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,6 +52,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
+import dev.jdtech.jellyfin.presentation.components.DlnaDevicePicker
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
@@ -56,6 +60,7 @@ import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
 import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dev.jdtech.jellyfin.cast.CastHelper
+import dev.jdtech.jellyfin.dlna.DlnaHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -85,8 +90,37 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    // Check if Cast session is available
-                    if (CastHelper.isCastSessionAvailable(context)) {
+                    // Check if DLNA device is available first
+                    if (DlnaHelper.isDlnaDeviceAvailable(context)) {
+                        // Send to DLNA device
+                        state.movie?.let { movie ->
+                            try {
+                                val streamUrl = movie.sources.firstOrNull()?.path ?: return@let
+                                val applicationContext = context.applicationContext
+                                // Convert ticks to milliseconds (1 tick = 100 nanoseconds = 0.0001 ms)
+                                val positionMs = if (action.startFromBeginning) {
+                                    0L
+                                } else {
+                                    movie.playbackPositionTicks / 10000
+                                }
+                                val durationMs = movie.runtimeTicks / 10000
+                                DlnaHelper.loadMedia(
+                                    context = applicationContext,
+                                    contentUrl = streamUrl,
+                                    contentType = "video/*",
+                                    title = movie.name,
+                                    subtitle = movie.overview.orEmpty(),
+                                    imageUrl = movie.images.primary.toString(),
+                                    position = positionMs,
+                                    duration = durationMs
+                                )
+                                Toast.makeText(context, "Enviando a DLNA...", Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                Timber.e(e, "Error sending to DLNA")
+                                Toast.makeText(context, "Error al enviar a DLNA", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else if (CastHelper.isCastSessionAvailable(context)) {
                         // Send to Chromecast
                         state.movie?.let { movie ->
                             try {
@@ -172,6 +206,8 @@ private fun MovieScreenLayout(
 ) {
     val appContext = LocalContext.current.applicationContext
     val safePadding = rememberSafePadding()
+    
+    var showDlnaDevicePicker by remember { mutableStateOf(false) }
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
@@ -286,6 +322,15 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
+                        onDlnaClick = {
+                            if (DlnaHelper.isDlnaDeviceAvailable(appContext)) {
+                                // If already connected, stop DLNA
+                                DlnaHelper.stopDlna(appContext)
+                            } else {
+                                // Show device picker
+                                showDlnaDevicePicker = true
+                            }
+                        },
                         onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
                         onDownloadClick = { onAction(MovieAction.Download) },
                         onDeleteClick = {
@@ -359,6 +404,17 @@ private fun MovieScreenLayout(
             }
             
             dev.jdtech.jellyfin.presentation.components.CastButton()
+        }
+        
+        if (showDlnaDevicePicker) {
+            DlnaDevicePicker(
+                onDeviceSelected = {
+                    showDlnaDevicePicker = false
+                },
+                onDismiss = {
+                    showDlnaDevicePicker = false
+                }
+            )
         }
     }
 }

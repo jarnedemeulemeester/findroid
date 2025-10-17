@@ -16,6 +16,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.dlna.DlnaDeviceManager
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+        
+        // Initialize DLNA service
+        DlnaDeviceManager.initialize(this)
 
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
