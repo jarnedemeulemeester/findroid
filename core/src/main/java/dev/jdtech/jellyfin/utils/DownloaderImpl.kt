@@ -71,29 +71,18 @@ class DownloaderImpl(
                     ),
                 )
             }
+            val request = DownloadManager.Request(source.path.toUri())
+                .setTitle(item.name)
+                .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
+                .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationUri(path)
+            val downloadId = downloadManager.enqueue(request)
+
             when (item) {
                 is FindroidMovie -> {
                     database.insertMovie(item.toFindroidMovieDto(appPreferences.getValue(appPreferences.currentServer)))
-                    database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
-                    database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
-                    downloadExternalMediaStreams(item, source, storageIndex)
-                    segments.forEach {
-                        database.insertSegment(it.toFindroidSegmentsDto(item.id))
-                    }
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
-                    val request = DownloadManager.Request(source.path.toUri())
-                        .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
-                        .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationUri(path)
-                    val downloadId = downloadManager.enqueue(request)
-                    database.setSourceDownloadId(source.id, downloadId)
-                    return Pair(downloadId, null)
                 }
-
                 is FindroidEpisode -> {
                     database.insertShow(
                         jellyfinRepository.getShow(item.seriesId)
@@ -103,27 +92,25 @@ class DownloaderImpl(
                         jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto(),
                     )
                     database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.getValue(appPreferences.currentServer)))
-                    database.insertSource(source.toFindroidSourceDto(item.id, path.path.orEmpty()))
-                    database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
-                    downloadExternalMediaStreams(item, source, storageIndex)
-                    segments.forEach {
-                        database.insertSegment(it.toFindroidSegmentsDto(item.id))
-                    }
-                    if (trickplayInfo != null) {
-                        downloadTrickplayData(item.id, sourceId, trickplayInfo)
-                    }
-                    val request = DownloadManager.Request(source.path.toUri())
-                        .setTitle(item.name)
-                        .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
-                        .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationUri(path)
-                    val downloadId = downloadManager.enqueue(request)
-                    database.setSourceDownloadId(source.id, downloadId)
-                    return Pair(downloadId, null)
                 }
             }
-            return Pair(-1, null)
+
+            val sourceDto = source.toFindroidSourceDto(item.id, path.path.orEmpty())
+
+            database.insertSource(sourceDto.copy(downloadId=downloadId))
+            database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
+
+            downloadExternalMediaStreams(item, source, storageIndex)
+
+            segments.forEach {
+                database.insertSegment(it.toFindroidSegmentsDto(item.id))
+            }
+
+            if (trickplayInfo != null) {
+                downloadTrickplayData(item.id, sourceId, trickplayInfo)
+            }
+
+            return Pair(downloadId, null)
         } catch (e: Exception) {
             try {
                 val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
