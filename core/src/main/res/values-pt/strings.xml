@@ -69,7 +69,7 @@
     <string name="subtitle_chip_text">CC</string>
     <string name="cancel_download">Cancelar transferência</string>
     <string name="temp">temperatura</string>
-    <string name="privacy_policy_notice">Ao usar o Findroid, esta a concordar com a <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos quaisquer dados</string>
+    <string name="privacy_policy_notice">Ao usar o JellyCast, esta a concordar com a <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos quaisquer dados</string>
     <string name="video">Video</string>
     <string name="offline_mode_icon">Ícone do modo off-line</string>
     <string name="no_server_connection">Sem conexão com o servidor Jellyfin, para assistir off-line, ative o modo off-line</string>

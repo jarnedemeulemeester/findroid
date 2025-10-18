@@ -50,7 +50,7 @@
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="image_description_backdrop">Фон на %1$s</string>
     <string name="no_server_connection">Няма връзка към Jellyfin сървъра, за да гледате офлайн пуснете Режим без Интернет</string>
-    <string name="privacy_policy_notice">При ползването на Findroid, вие се съгласявате с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Политиката за поверителност</a> , която гласи, че не събираме никаква информация</string>
+    <string name="privacy_policy_notice">При ползването на JellyCast, вие се съгласявате с <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Политиката за поверителност</a> , която гласи, че не събираме никаква информация</string>
     <string name="app_description">Неофициално приложение за Jellyfin с \"native\" елементи</string>
     <string name="person_detail_title">Детайли</string>
     <string name="sort_by_options_1">IMDB оценка</string>

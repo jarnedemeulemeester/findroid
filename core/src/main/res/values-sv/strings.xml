@@ -70,7 +70,7 @@
     <string name="no_server_connection">Ingen anslutning till Jellyfin-servern, för att titta offline aktivera offlineläge</string>
     <string name="internal">Intern</string>
     <string name="select_storage_location">Välj lagringsplats</string>
-    <string name="privacy_policy_notice">Genom att använda Findroid godkänner du <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">sekretesspolicyn</a> som säger att vi inte samlar in någon data</string>
+    <string name="privacy_policy_notice">Genom att använda JellyCast godkänner du <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">sekretesspolicyn</a> som säger att vi inte samlar in någon data</string>
     <string name="live_tv">Live-TV</string>
     <string name="play">Spela</string>
     <string name="watch_trailer">Se trailer</string>

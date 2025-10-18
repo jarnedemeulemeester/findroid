@@ -76,7 +76,7 @@
     <string name="select_storage_location">Izberite lokacijo shranjevanja</string>
     <string name="storage_unavailable">Lokacija shranjevanja ni na voljo</string>
     <string name="cancel_download">Prekliči prenos</string>
-    <string name="privacy_policy_notice">Z uporabo Findroid-a se strinjate s <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">pravilnikom o zasebnosti</a>, ki določa, da ne zbiramo nobenih podatkov</string>
+    <string name="privacy_policy_notice">Z uporabo JellyCast-a se strinjate s <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">pravilnikom o zasebnosti</a>, ki določa, da ne zbiramo nobenih podatkov</string>
     <string name="stop_download">Ustavi prenos</string>
     <string name="preparing_download">Priprava prenosa</string>
     <string name="season_episode">Sezona %1$d - Epizoda %2$d</string>

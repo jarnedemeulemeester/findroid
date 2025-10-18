@@ -66,7 +66,7 @@
     <string name="no_server_connection">Không có kết nối tới máy chủ Jellyfin, để xem ngoại tuyến xin hãy bật Chế độ Ngoại tuyến</string>
     <string name="internal">Nội</string>
     <string name="not_enough_storage">Nội dùng này yêu cầu %1$s bộ nhớ trống nhưng chỉ có %2$s là có sẵn</string>
-    <string name="privacy_policy_notice">Bằng việc sử dụng Findroid, bạn đồng ý với <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Chính sách Bảo mật</a> rằng chúng tôi không thu thập bất cứ dữ liệu nào</string>
+    <string name="privacy_policy_notice">Bằng việc sử dụng JellyCast, bạn đồng ý với <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Chính sách Bảo mật</a> rằng chúng tôi không thu thập bất cứ dữ liệu nào</string>
     <string name="external">Ngoại</string>
     <string name="preparing_download">Đang chuẩn bị tải về</string>
     <string name="cancel_download">Hủy tải về</string>

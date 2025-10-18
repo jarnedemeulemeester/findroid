@@ -67,7 +67,7 @@
     <string name="size">Größe</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="cancel_download">Download abbrechen</string>
-    <string name="privacy_policy_notice">Durch die Nutzung von Findroid stimmen Sie den <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Datenschutzrichtlinien</a> zu, welche besagen, dass wir keine Daten sammeln</string>
+    <string name="privacy_policy_notice">Durch die Nutzung von JellyCast stimmen Sie den <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Datenschutzrichtlinien</a> zu, welche besagen, dass wir keine Daten sammeln</string>
     <string name="offline_mode_go_online">Online gehen</string>
     <string name="cancel_download_message">Sind Sie sicher, dass Sie den Download abbrechen möchten\?</string>
     <string name="downloading_error">Fehler beim Herunterladen</string>

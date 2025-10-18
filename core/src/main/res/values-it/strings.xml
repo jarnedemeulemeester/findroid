@@ -65,7 +65,7 @@
     <string name="temp">temporaneo</string>
     <string name="video">Video</string>
     <string name="size">Dimensione</string>
-    <string name="privacy_policy_notice">Utilizzando Findroid accetti l\'<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">informativa sulla privacy</a> che afferma che non raccogliamo alcun dato</string>
+    <string name="privacy_policy_notice">Utilizzando JellyCast accetti l\'<a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">informativa sulla privacy</a> che afferma che non raccogliamo alcun dato</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="offline_mode_icon">Icona modalità Offline</string>

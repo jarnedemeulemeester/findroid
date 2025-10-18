@@ -150,7 +150,7 @@ fun AboutScreen(
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
-                                            uriHandler.openUri("https://github.com/jarnedemeulemeester/findroid")
+                                            uriHandler.openUri("https://github.com/Jordigb44/JellyCast")
                                         } catch (e: IllegalArgumentException) {
                                             Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
                                         }

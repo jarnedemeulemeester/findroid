@@ -92,7 +92,7 @@
     <string name="offline_mode">Offline Mode</string>
     <string name="offline_mode_icon">Ikon for offlinetilstand</string>
     <string name="not_enough_storage">Dette element kræver %1$s ledig lagerplads, men kun %2$s er tilgængeligt</string>
-    <string name="privacy_policy_notice">Ved at bruge Findroid accepterer du <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privatlivspolitikken</a> som angiver, at vi ikke indsamler nogen data</string>
+    <string name="privacy_policy_notice">Ved at bruge JellyCast accepterer du <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Privatlivspolitikken</a> som angiver, at vi ikke indsamler nogen data</string>
     <string name="live_tv">Live-TV</string>
     <string name="not_set">Ikke angivet</string>
     <string name="manage_servers">Håndter servere</string>

@@ -79,7 +79,7 @@
     <string name="no_server_connection">Jellyfin 서버에 연결되지 않음, 오프라인으로 시청하려면 오프라인 모드를 키세요</string>
     <string name="storage_unavailable">저장 위치를 사용할수 없습니다</string>
     <string name="stop_download">다운로드 중지</string>
-    <string name="privacy_policy_notice">Findroid를 사용하면, 데이터를 수집하지 않는다는 <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">개인 정보 보호 정책</a>에 동의합니다</string>
+    <string name="privacy_policy_notice">JellyCast를 사용하면, 데이터를 수집하지 않는다는 <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">개인 정보 보호 정책</a>에 동의합니다</string>
     <string name="downloaded_indicator">다운로드 표시기</string>
     <string name="temp">임시</string>
     <string name="subtitle_chip_text">CC</string>

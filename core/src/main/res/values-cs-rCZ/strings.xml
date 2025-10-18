@@ -85,7 +85,7 @@
     <string name="storage_unavailable">Lokace ůložiště je nepřístupné</string>
     <string name="storage_name">%1$s (zbývá %2$d MB)</string>
     <string name="preparing_download">Připravuji stahování</string>
-    <string name="privacy_policy_notice">Používáním Findroidu souhlasíš s našima <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Podmínkama použití</a>, které říkají, že nesbíráme žádná data</string>
+    <string name="privacy_policy_notice">Používáním JellyCastu souhlasíš s našima <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Podmínkama použití</a>, které říkají, že nesbíráme žádná data</string>
     <string name="watch_trailer">Přehrát trailer</string>
     <string name="mark_as_played">Označit jako přehrané</string>
     <string name="unmark_as_played">Označit jako nepřehrané</string>

@@ -93,7 +93,7 @@
     <string name="internal">Dahili</string>
     <string name="external">Harici</string>
     <string name="live_tv">Canlı Televizyon</string>
-    <string name="privacy_policy_notice">Findroid\'i kullanmakla gizlilik sözleşmesini<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY"> kabul etmiş oluyorsunuz, Gizlilik Sözleşmesinde</a> hiçbir veriyi toplamadığımız biliriliyor</string>
+    <string name="privacy_policy_notice">JellyCast\'i kullanmakla gizlilik sözleşmesini<a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY"> kabul etmiş oluyorsunuz, Gizlilik Sözleşmesinde</a> hiçbir veriyi toplamadığımız biliriliyor</string>
     <string name="play">Oynat</string>
     <string name="watch_trailer">Fragmanı izle</string>
     <string name="mark_as_played">İzlendi olarak işaretle</string>

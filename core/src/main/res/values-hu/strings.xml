@@ -81,7 +81,7 @@
     <string name="cancel_download_message">Biztosan le akarod állítani a letöltést\?</string>
     <string name="stop_download">Letöltés leállítása</string>
     <string name="size">Méret</string>
-    <string name="privacy_policy_notice">A Findroid használatával elfogadod az <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
+    <string name="privacy_policy_notice">A JellyCast használatával elfogadod az <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
     <string name="subtitle_chip_text">Felirat</string>
     <string name="unmark_as_played">Megjelölés nem megtekintettként</string>
     <string name="add_to_favorites">Hozzáadás kedvencekhez</string>

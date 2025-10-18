@@ -82,7 +82,7 @@
     <string name="cancel_download_message">Czy na pewno chcesz anulować pobieranie\?</string>
     <string name="stop_download">Zatrzymaj pobieranie</string>
     <string name="size">Rozmiar</string>
-    <string name="privacy_policy_notice">Korzystając z Findroid zgadzasz się z <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Polityką Prywatności</a>, zgodnie z którą nie zbieramy żadnych danych</string>
+    <string name="privacy_policy_notice">Korzystając z JellyCast zgadzasz się z <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Polityką Prywatności</a>, zgodnie z którą nie zbieramy żadnych danych</string>
     <string name="collection_no_media">Ta kolekcja nie zawiera żadnych elementów</string>
     <string name="live_tv">Telewizja na żywo</string>
     <string name="play">Odtwórz</string>

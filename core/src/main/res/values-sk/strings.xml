@@ -81,7 +81,7 @@
     <string name="select_storage_location">Vyberte úložisko</string>
     <string name="no_server_connection">Žiadne pripojenie k serveru Jellyfin, ak chcete sledovať offline, zapnite režim offline</string>
     <string name="downloaded_indicator">Indikátor sťahnutia</string>
-    <string name="privacy_policy_notice">Používaním aplikácie Findroid súhlasíte so <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">zásadami ochrany osobných údajov</a>, v ktorých sa uvádza, že nezhromažďujeme žiadne údaje</string>
+    <string name="privacy_policy_notice">Používaním aplikácie JellyCast súhlasíte so <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">zásadami ochrany osobných údajov</a>, v ktorých sa uvádza, že nezhromažďujeme žiadne údaje</string>
     <string name="size">Veľkosť</string>
     <string name="live_tv">Živá TV</string>
     <string name="play">Prehrať</string>

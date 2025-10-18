@@ -1,74 +1,142 @@
-![Findroid banner](images/findroid-banner.png)
+![JellyCast banner](images/findroid-banner.png)
 
-# Findroid
-![GitHub release (with filter)](https://img.shields.io/github/v/release/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub repo stars](https://img.shields.io/github/stars/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
+# JellyCast
 
-> [!IMPORTANT]
-> Findroid is currently being rewritten to Jetpack Compose. Because of this, the main branch may be unusable for some time.
->
-> Also, please refrain from creating pull requests which involve the old Views based UI.
+<div align="center">
 
-Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
+![GitHub](https://img.shields.io/github/license/Jordigb44/JellyCast?style=for-the-badge)
+![Platform](https://img.shields.io/badge/platform-Android-green?style=for-the-badge)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-purple?style=for-the-badge&logo=kotlin)
 
-I am developing this application in my spare time.
+**A feature-rich Jellyfin client for Android with DLNA casting support**
 
-**This project is in its early stages so expect bugs.**
+[Features](#features) • [Screenshots](#screenshots) • [Technology](#technology-stack) • [Credits](#credits)
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin)
-[<img src="https://user-images.githubusercontent.com/32322857/219019331-027a6775-7362-44bb-a026-281f71e9b37b.png" alt="Available at Amazon Appstore" height="80">](https://www.amazon.com/gp/product/B0BTWC8DNZ)
-[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/dev.jdtech.jellyfin)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/dev.jdtech.jellyfin)
+</div>
+
+---
+
+> [!NOTE]
+> JellyCast is based on [Findroid 0.15.3](https://github.com/jarnedemeulemeester/findroid) with significant additional features and improvements.
+
+## 🎯 What's New in JellyCast
+
+JellyCast extends the original Findroid with powerful new capabilities:
+
+### 🎭 **DLNA Casting**
+Stream your media to any DLNA-enabled device on your network:
+- 📡 Automatic device discovery
+- 🎮 Full playback control (play, pause, stop, seek, volume)
+- 📺 Support for smart TVs, speakers, and media renderers
+- 🎬 Works with both movies and TV series
+
+### 📥 **Enhanced Downloads**
+Beautiful download management with real-time feedback:
+- ⭕ Circular progress indicators with percentage display
+- 🌫️ Elegant blur effects on downloading items
+- 📊 Live progress updates
+- 📺 Automatic series grouping in Downloads section
+
+### 🎨 **UI Improvements**
+- ✨ Refined status bar handling
+- 🎯 Better visual hierarchy
+- 🔄 Improved state synchronization
+- ⚙️ Settings toggles for DLNA and Chromecast
 
 ## Screenshots
-| Home                                | Library                             | Movie                           | Season                            | Episode                             |
-|-------------------------------------|-------------------------------------|---------------------------------|-----------------------------------|-------------------------------------|
-| ![Home](images/home-light-dark.png) | ![Library](images/library-dark.png) | ![Movie](images/movie-dark.png) | ![Season](images/season-dark.png) | ![Episode](images/episode-dark.png) |
 
-## Features
-- Completely native interface
-- Supported media items: movies, series, seasons, episodes 
-  - Direct play only, (no transcoding)
-- Offline playback / downloads
-- ExoPlayer
-  - Video codecs: H.263, H.264, H.265, VP8, VP9, AV1 
-    - Support depends on Android device
-  - Audio codecs: Vorbis, Opus, FLAC, ALAC, PCM, MP3, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
-    - Support provided by ExoPlayer FFmpeg extension
-  - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
-    - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
-- mpv
-  - Container formats: mkv, mov, mp4, avi
-  - Video codecs: H.264, H.265, H.266, VP8, VP9, AV1
-  - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
-  - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
-  - Optionally force software decoding when hardware decoding has issues.
-- Picture-in-picture mode
-- Media chapters
-  - Timeline markers
-  - Chapter navigation gestures
-- Trickplay (requires Jellyfin 10.9 or higher)
-- Media segments (requires Jellyfin 10.10 or higher)
-  - Skip button
-  - Auto skip
+### Main Interface
+| Home | Library | Movie Details |
+|------|---------|---------------|
+| ![Home](images/jellycast_home.png) | ![Library](images/jellycast_library.png) | ![Movie](images/jellycast_movie.png) |
 
-## Planned features
-- Android TV
-- Websocket connection (Syncplay)
-- Chromecast support
+### New Features
+| DLNA Casting | Downloads Progress | Settings |
+|--------------|-------------------|----------|
+| ![DLNA](images/jellycast_dlna.png) | ![Downloads](images/jellycast_downloads.png) | ![Settings](images/jellycast_settings.png) |
 
-## Translating
-[JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
+## ✨ Features
 
-## Questions?
-[![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\
-We have a Discord server to discuss future development or ask general questions.
+### 🆕 JellyCast Exclusive Features
 
-## License
+#### DLNA Casting
+- 🔍 **Device Discovery**: Automatic detection of DLNA devices on your network
+- 🎮 **Full Control**: Play, pause, stop, seek, and volume control
+- 📱 **Mini Player**: Persistent playback controls
+- 🎬 **Universal Support**: Works with movies and TV series
+
+#### Download Experience
+- ⭕ **Visual Progress**: Circular indicators with real-time percentage
+- 🌫️ **Blur Effects**: Beautiful visual feedback during downloads (Android 12+)
+- 📺 **Smart Grouping**: Episodes automatically organized by series
+- 🗑️ **Instant Updates**: Download list refreshes immediately after deletions
+
+#### Settings & Control
+- ⚙️ **DLNA Toggle**: Enable/disable DLNA functionality
+- 📡 **Chromecast Toggle**: Control Chromecast availability
+- 🎯 **User-Friendly**: Easy access to all casting options
+
+### 🎥 Core Features (from Findroid)
+
+#### Media Support
+- 🎬 **Content Types**: Movies, TV series, seasons, episodes
+- 📥 **Offline Playback**: Download and watch without internet
+- 🎯 **Direct Play**: No transcoding required for compatible formats
+
+#### ExoPlayer Integration
+- 🎞️ **Video Codecs**: H.263, H.264, H.265, VP8, VP9, AV1
+  - Support depends on device capabilities
+- 🔊 **Audio Codecs**: Vorbis, Opus, FLAC, ALAC, PCM, MP3, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+  - Enhanced by ExoPlayer FFmpeg extension
+- 📝 **Subtitles**: SRT, VTT, SSA/ASS, PGSSUB
+  - SSA/ASS with [limited styling](https://github.com/google/ExoPlayer/issues/8435)
+
+#### MPV Alternative
+- 📦 **Containers**: MKV, MOV, MP4, AVI
+- 🎞️ **Video**: H.264, H.265, H.266, VP8, VP9, AV1
+- 🔊 **Audio**: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
+- 📝 **Subtitles**: SRT, VTT, SSA/ASS, DVDSUB
+- 💻 **Software Decoding**: Optional fallback for hardware issues
+
+#### Advanced Features
+- 📺 **Picture-in-Picture**: Watch while using other apps
+- 📑 **Media Chapters**: Timeline markers and gesture navigation
+- 🎯 **Trickplay**: Thumbnail previews (Jellyfin 10.9+)
+- ⏭️ **Media Segments**: Auto-skip intros/credits (Jellyfin 10.10+)
+
+## 🛠️ Technology Stack
+
+### DLNA Implementation
+- **Server**: Jetty 9.4.54.v20240208
+- **UPnP Stack**: jUPnP 3.0.2
+- **Discovery**: AndroidUpnpServiceConfiguration
+
+### UI Framework
+- **Compose**: Jetpack Compose with Material 3
+- **Design**: Material Design 3 components
+- **Effects**: RenderEffect API for blur (Android 12+)
+
+### Architecture
+- **Pattern**: MVVM (Model-View-ViewModel)
+- **Async**: Kotlin Coroutines & Flow
+- **DI**: Hilt for dependency injection
+- **Persistence**: Room database for downloads
+
+## 🚀 Planned Features
+- 📺 **Android TV**: Full TV interface support
+- 🔗 **Syncplay**: WebSocket-based synchronized playback
+- 📡 **Enhanced Chromecast**: Improved casting experience
+
+## 🙏 Credits
+
+This project is based on [**Findroid**](https://github.com/jarnedemeulemeester/findroid) version **0.15.3** by [Jarne De Meulemeester](https://github.com/jarnedemeulemeester).
+
+Special thanks to:
+- The original Findroid project and all its contributors
+- The Jellyfin community
+- All open-source libraries used in this project
+
+## 📄 License
 This project is licensed under [GPLv3](LICENSE).
 
 The logo is a combination of the Jellyfin logo and the Android robot.

@@ -88,7 +88,7 @@
     <string name="cancel_download">إلغاء التحميل</string>
     <string name="cancel_download_message">هل أنت متأكد من إلغاء التحميل؟</string>
     <string name="stop_download">إيقاف التحميل</string>
-    <string name="privacy_policy_notice">لدى استخدامك لفين درويد أنت توافق على <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">سياسة الخصوصية</a> و التي تنص على أننا لا نجمع أية بيانات</string>
+    <string name="privacy_policy_notice">لدى استخدامك لفين درويد أنت توافق على <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">سياسة الخصوصية</a> و التي تنص على أننا لا نجمع أية بيانات</string>
     <string name="live_tv">البث المباشر</string>
     <string name="play">تشغيل</string>
     <string name="watch_trailer">شاهد المقطع الدعائي</string>

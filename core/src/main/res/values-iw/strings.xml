@@ -78,7 +78,7 @@
     <string name="offline_mode_go_online">עבור למצב מקוון</string>
     <string name="downloading_error">אירעה שגיאה במהלך ההורדה</string>
     <string name="no_server_connection">אין חיבור לשרת ה-Jellyfin, כדי לצפות במצב לא מקוון, הפעל מצב לא מקוון</string>
-    <string name="privacy_policy_notice">על ידי שימוש ב-Findroid הנך מסכים עם <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">מדיניות הפרטיות</a> אשר מציינת כי איננו אוספים שום נתונים</string>
+    <string name="privacy_policy_notice">על ידי שימוש ב-JellyCast הנך מסכים עם <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">מדיניות הפרטיות</a> אשר מציינת כי איננו אוספים שום נתונים</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">ע%1$d:פ%2$d-%3$d - %4$s</string>
     <string name="storage_name">%1$s (%2$d מ\"ב פנויים)</string>

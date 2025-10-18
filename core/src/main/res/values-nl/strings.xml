@@ -61,7 +61,7 @@
     <string name="add">Toevoegen</string>
     <string name="subtitle">Ondertiteling</string>
     <string name="size">Grootte</string>
-    <string name="privacy_policy_notice">Door Findroid te gebruikt wordt ingestemd met de <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Privacy Policy</a> welke noemt dat wij geen enkele data verzamelen</string>
+    <string name="privacy_policy_notice">Door JellyCast te gebruikt wordt ingestemd met de <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Privacy Policy</a> welke noemt dat wij geen enkele data verzamelen</string>
     <string name="offline_mode_icon">Offline Modus icoon</string>
     <string name="offline_mode_go_online">Ga online</string>
     <string name="not_enough_storage">Dit item heeft %1$s vrije ruimte nodig, maar slechts %2$s is beschikbaar</string>

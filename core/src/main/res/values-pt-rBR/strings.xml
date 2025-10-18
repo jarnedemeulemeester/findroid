@@ -82,7 +82,7 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">T%1$d:E%2$d-%3$d - %4$s</string>
     <string name="size">Tamanho</string>
-    <string name="privacy_policy_notice">Ao usar o Findroid, você concorda com a <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos nenhum dado</string>
+    <string name="privacy_policy_notice">Ao usar o JellyCast, você concorda com a <a href="https://raw.githubusercontent.com/Jordigb44/JellyCast/main/PRIVACY">Política de Privacidade</a>, que afirma que não coletamos nenhum dado</string>
     <string name="mark_as_played">Marcar como reproduzido</string>
     <string name="unmark_as_played">Desmarcar como reproduzido</string>
     <string name="add_to_favorites">Adicionar aos favoritos</string>
