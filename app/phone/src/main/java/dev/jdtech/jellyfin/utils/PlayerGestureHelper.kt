@@ -179,6 +179,7 @@ class PlayerGestureHelper(
     }
 
     private fun displayChapter(chapter: PlayerChapter) {
+        activity.binding.progressScrubberTrickplay.visibility = View.GONE
         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
         activity.binding.progressScrubberText.text = chapter.name ?: ""
     }
