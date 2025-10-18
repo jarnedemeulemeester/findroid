@@ -165,7 +165,6 @@ fun ItemButtonsBar(
                     } else if (item.canDownload) {
                         FilledTonalIconButton(
                             onClick = onDownloadClick,
-                            enabled = !item.isDownloading(),
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_download),
