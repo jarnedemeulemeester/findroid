@@ -41,6 +41,12 @@
             android:theme="@style/Theme.Findroid.Player" />
 
         <activity
+            android:name=".TrailerActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|keyboard|keyboardHidden|navigation"
+            android:theme="@style/Theme.Findroid.Player"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">

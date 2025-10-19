@@ -59,13 +59,15 @@ android {
         }
     }
 
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-        }
-    }
+    // Splits disabled for App Bundle (.aab) generation
+    // Enable this only for APK builds
+    // splits {
+    //     abi {
+    //         isEnable = true
+    //         reset()
+    //         include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+    //     }
+    // }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true

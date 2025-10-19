@@ -70,6 +70,9 @@ fun ItemButtonsBar(
         is FindroidShow -> {
             item.trailer
         }
+        is dev.jdtech.jellyfin.models.FindroidEpisode -> {
+            item.trailer
+        }
         else -> null
     }
 

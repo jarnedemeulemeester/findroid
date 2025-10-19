@@ -54,6 +54,7 @@ val dummyEpisode = FindroidEpisode(
     seasonId = UUID.randomUUID(),
     communityRating = 9.2f,
     people = emptyList(),
+    trailer = null,
     images = FindroidImages(),
     chapters = emptyList(),
     trickplayInfo = null,

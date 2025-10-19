@@ -40,6 +40,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.TrailerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
@@ -169,6 +170,17 @@ fun EpisodeScreen(
                         intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                         intent.putExtra("startFromBeginning", action.startFromBeginning)
                         context.startActivity(intent)
+                    }
+                }
+                is EpisodeAction.PlayTrailer -> {
+                    try {
+                        // Play trailer in a WebView (for YouTube trailers)
+                        val intent = Intent(context, dev.jdtech.jellyfin.TrailerActivity::class.java)
+                        intent.putExtra("trailerUrl", action.trailer)
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error playing trailer")
+                        Toast.makeText(context, "Error al reproducir el trailer", Toast.LENGTH_SHORT).show()
                     }
                 }
                 is EpisodeAction.Download -> {
@@ -334,7 +346,9 @@ private fun EpisodeScreenLayout(
                                 showDlnaDevicePicker = true
                             }
                         },
-                        onTrailerClick = {},
+                        onTrailerClick = { uri ->
+                            onAction(EpisodeAction.PlayTrailer(uri))
+                        },
                         onDownloadClick = { onAction(EpisodeAction.Download) },
                         onDeleteClick = {
                             val local = episode.sources.firstOrNull { it.type == dev.jdtech.jellyfin.models.FindroidSourceType.LOCAL }

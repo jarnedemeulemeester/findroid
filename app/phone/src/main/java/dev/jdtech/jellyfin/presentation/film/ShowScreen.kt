@@ -44,6 +44,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.TrailerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
@@ -94,9 +95,12 @@ fun ShowScreen(
                 }
                 is ShowAction.PlayTrailer -> {
                     try {
-                        uriHandler.openUri(action.trailer)
-                    } catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        // Play trailer in a WebView (for YouTube trailers)
+                        val intent = Intent(context, TrailerActivity::class.java)
+                        intent.putExtra("trailerUrl", action.trailer)
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Error al reproducir el trailer", Toast.LENGTH_SHORT).show()
                     }
                 }
                 is ShowAction.OnBackClick -> navigateBack()
