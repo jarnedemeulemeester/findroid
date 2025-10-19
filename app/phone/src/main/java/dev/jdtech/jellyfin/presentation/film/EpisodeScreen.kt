@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -164,12 +166,58 @@ fun EpisodeScreen(
                             }
                         }
                     } else {
-                        // Play locally
-                        val intent = Intent(context, PlayerActivity::class.java)
-                        intent.putExtra("itemId", episodeId.toString())
-                        intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
-                        intent.putExtra("startFromBeginning", action.startFromBeginning)
-                        context.startActivity(intent)
+                        // Play locally or with external player
+                        if (isExternalPlayerEnabled(context)) {
+                            // Use external player
+                            state.episode?.let { episode ->
+                                try {
+                                    val streamUrl = episode.sources.firstOrNull()?.path
+                                    if (streamUrl != null) {
+                                        val intent = Intent(Intent.ACTION_VIEW)
+                                        intent.setDataAndType(Uri.parse(streamUrl), "video/*")
+                                        intent.putExtra("title", "${episode.seriesName} - S${episode.parentIndexNumber}E${episode.indexNumber} - ${episode.name}")
+                                        intent.putExtra("position", if (action.startFromBeginning) 0L else episode.playbackPositionTicks / 10000)
+                                        
+                                        val selectedPlayer = getSelectedExternalPlayer(context)
+                                        if (selectedPlayer != null) {
+                                            // Use the selected player directly
+                                            intent.setPackage(selectedPlayer)
+                                            try {
+                                                context.startActivity(intent)
+                                            } catch (e: Exception) {
+                                                Timber.e(e, "Selected player not available, showing chooser")
+                                                // If the selected player is not available, show chooser
+                                                intent.setPackage(null)
+                                                if (intent.resolveActivity(context.packageManager) != null) {
+                                                    context.startActivity(Intent.createChooser(intent, context.getString(dev.jdtech.jellyfin.settings.R.string.select_external_player)))
+                                                } else {
+                                                    Toast.makeText(context, "No se encontró ningún reproductor externo", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        } else {
+                                            // No player selected, show chooser
+                                            if (intent.resolveActivity(context.packageManager) != null) {
+                                                context.startActivity(Intent.createChooser(intent, context.getString(dev.jdtech.jellyfin.settings.R.string.select_external_player)))
+                                            } else {
+                                                Toast.makeText(context, "No se encontró ningún reproductor externo", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "Error: No se encontró URL de reproducción", Toast.LENGTH_SHORT).show()
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Error launching external player")
+                                    Toast.makeText(context, "Error al abrir reproductor externo", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            // Use internal player
+                            val intent = Intent(context, PlayerActivity::class.java)
+                            intent.putExtra("itemId", episodeId.toString())
+                            intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
+                            intent.putExtra("startFromBeginning", action.startFromBeginning)
+                            context.startActivity(intent)
+                        }
                     }
                 }
                 is EpisodeAction.PlayTrailer -> {

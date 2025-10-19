@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceButton
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
@@ -188,6 +190,25 @@ constructor(
                                                     ),
                                                 ),
                                             )
+                                        }
+                                    },
+                                ),
+                            ),
+                        ),
+                        PreferenceGroup(
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.pref_player_external,
+                                    descriptionStringRes = R.string.pref_player_external_summary,
+                                    backendPreference = appPreferences.playerExternal,
+                                ),
+                                PreferenceButton(
+                                    nameStringResource = R.string.pref_player_external_app,
+                                    descriptionStringRes = R.string.pref_player_external_app_summary,
+                                    dependencies = listOf(appPreferences.playerExternal),
+                                    onClick = {
+                                        viewModelScope.launch {
+                                            eventsChannel.send(SettingsEvent.LaunchPlayerPicker)
                                         }
                                     },
                                 ),
@@ -592,6 +613,11 @@ constructor(
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
+                            is PreferenceButton -> {
+                                preference.copy(
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
+                                )
+                            }
                             else -> preference
                         }
                     },
@@ -620,6 +646,27 @@ constructor(
                 }
             }
             else -> Unit
+        }
+    }
+    
+    fun updateExternalPlayerDescription(playerName: String?) {
+        viewModelScope.launch {
+            val currentState = _state.value
+            val updatedGroups = currentState.preferenceGroups.map { group ->
+                group.copy(
+                    preferences = group.preferences.map { pref ->
+                        if (pref is PreferenceButton && pref.nameStringResource == R.string.pref_player_external_app) {
+                            pref.copy(
+                                descriptionString = playerName,
+                                enabled = pref.enabled && pref.dependencies.all { appPreferences.getValue(it) }
+                            )
+                        } else {
+                            pref
+                        }
+                    }
+                )
+            }
+            _state.emit(currentState.copy(preferenceGroups = updatedGroups))
         }
     }
 }

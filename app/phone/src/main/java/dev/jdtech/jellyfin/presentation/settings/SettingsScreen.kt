@@ -1,7 +1,9 @@
 package dev.jdtech.jellyfin.presentation.settings
 
 import android.app.UiModeManager
+import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +23,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -61,11 +67,46 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    // Function to update external player description
+    fun updatePlayerDescription() {
+        val prefsName = context.packageName + "_preferences"
+        val sharedPreferences = context.getSharedPreferences(prefsName, android.content.Context.MODE_PRIVATE)
+        val selectedPlayerPackage = sharedPreferences.getString("pref_player_external_app", null)
+        
+        if (selectedPlayerPackage != null) {
+            try {
+                val appInfo = context.packageManager.getApplicationInfo(selectedPlayerPackage, 0)
+                val appName = context.packageManager.getApplicationLabel(appInfo).toString()
+                viewModel.updateExternalPlayerDescription(appName)
+            } catch (e: Exception) {
+                // Player no longer installed
+                viewModel.updateExternalPlayerDescription(null)
+            }
+        } else {
+            viewModel.updateExternalPlayerDescription(null)
+        }
+    }
+
     LaunchedEffect(true) {
         viewModel.loadPreferences(indexes, DeviceType.PHONE)
+        updatePlayerDescription()
+    }
+    
+    // Update player description when screen becomes visible again (after returning from PlayerPickerActivity)
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                updatePlayerDescription()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     ObserveAsEvents(viewModel.events) { event ->
@@ -93,6 +134,18 @@ fun SettingsScreen(
                 try {
                     context.startActivity(event.intent)
                 } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+            is SettingsEvent.LaunchPlayerPicker -> {
+                try {
+                    Log.d("SettingsScreen", "LaunchPlayerPicker event triggered")
+                    val intent = Intent(context, dev.jdtech.jellyfin.PlayerPickerActivity::class.java)
+                    Log.d("SettingsScreen", "Starting PlayerPickerActivity")
+                    context.startActivity(intent)
+                    Log.d("SettingsScreen", "PlayerPickerActivity started successfully")
+                } catch (e: Exception) {
+                    Log.e("SettingsScreen", "Error starting PlayerPickerActivity", e)
                     Timber.e(e)
                 }
             }

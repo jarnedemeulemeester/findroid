@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.dlna.DlnaHelper
+import dev.jdtech.jellyfin.roku.RokuHelper
 import dev.jdtech.jellyfin.models.FindroidItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -154,14 +155,16 @@ fun ItemButtonsBar(
                 
                 if (isDlnaEnabled(context)) {
                     var isDlnaActive by remember { mutableStateOf(false) }
+                    var isRokuActive by remember { mutableStateOf(false) }
                     
-                    // Update DLNA active state periodically
+                    // Update DLNA and Roku active state periodically
                     DisposableEffect(Unit) {
                         var updateJob: Job? = null
                         
                         updateJob = CoroutineScope(Dispatchers.Main).launch {
                             while (isActive) {
                                 isDlnaActive = DlnaHelper.isDlnaDeviceAvailable(context)
+                                isRokuActive = RokuHelper.isRokuDeviceAvailable()
                                 delay(500) // Check every 500ms
                             }
                         }
@@ -171,8 +174,9 @@ fun ItemButtonsBar(
                         }
                     }
                     
-                    if (isDlnaActive) {
-                        // Filled button when DLNA is active
+                    // Show filled button if DLNA or Roku is active, otherwise tonal button
+                    if (isDlnaActive || isRokuActive) {
+                        // Filled button when DLNA or Roku is active
                         FilledIconButton(
                             onClick = onDlnaClick,
                             colors = IconButtonDefaults.filledIconButtonColors(
@@ -182,17 +186,17 @@ fun ItemButtonsBar(
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_tv),
-                                contentDescription = "DLNA Active",
+                                contentDescription = "DLNA/Roku Active",
                             )
                         }
                     } else {
-                        // Tonal button when DLNA is inactive
+                        // Tonal button when both are inactive
                         FilledTonalIconButton(
                             onClick = onDlnaClick,
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_tv),
-                                contentDescription = "DLNA",
+                                contentDescription = "DLNA/Roku",
                             )
                         }
                     }

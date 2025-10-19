@@ -28,6 +28,8 @@ constructor(
 
     // Player
     val playerBrightness = Preference("pref_player_brightness", -1.0f)
+    val playerExternal = Preference("pref_player_external", false)
+    val playerExternalApp = Preference<String?>("pref_player_external_app", null)
 
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", true)

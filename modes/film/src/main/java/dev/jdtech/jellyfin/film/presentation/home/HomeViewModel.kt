@@ -8,6 +8,7 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.UiText
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.toView
@@ -101,15 +102,22 @@ constructor(
         }
 
         val resumeItems = repository.getResumeItems()
+        
+        // Filter out non-downloaded items when in offline mode
+        val filteredItems = if (appPreferences.getValue(appPreferences.offlineMode)) {
+            resumeItems.filter { it.isDownloaded() }
+        } else {
+            resumeItems
+        }
 
-        val section = if (resumeItems.isEmpty()) {
+        val section = if (filteredItems.isEmpty()) {
             null
         } else {
             HomeItem.Section(
                 HomeSection(
                     uuidContinueWatching,
                     uiTextContinueWatching,
-                    resumeItems,
+                    filteredItems,
                 ),
             )
         }

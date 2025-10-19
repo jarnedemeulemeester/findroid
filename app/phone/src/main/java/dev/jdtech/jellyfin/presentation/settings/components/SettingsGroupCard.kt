@@ -20,6 +20,7 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceButton
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
@@ -67,6 +68,11 @@ fun SettingsGroupCard(
                                 ),
                             )
                         },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    )
+                    is PreferenceButton -> SettingsButtonCard(
+                        preference = preference,
                         modifier = Modifier
                             .fillMaxWidth(),
                     )

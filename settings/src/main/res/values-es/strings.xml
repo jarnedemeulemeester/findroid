@@ -60,6 +60,12 @@
     <string name="player_gestures_chapter_skip_summary">Clic prolongado en el lado Izquierdo / Derecho para saltar capítulos (sobreescribe el gesto velocidad x2)</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Mostrar marcadores de capítulo en la barra de tiempo</string>
+    <string name="pref_player_external">Usar reproductor externo</string>
+    <string name="pref_player_external_summary">Abrir videos con una aplicación reproductora externa en lugar del reproductor integrado</string>
+    <string name="pref_player_external_app">Aplicación reproductora externa</string>
+    <string name="pref_player_external_app_summary">Selecciona qué reproductor externo usar (toca para elegir)</string>
+    <string name="select_external_player">Seleccionar reproductor externo</string>
+    <string name="no_external_player_selected">Ningún reproductor seleccionado</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Muestra previsualizaciones cuando navega por la barra de progreso</string>
     <string name="picture_in_picture">Pantalla en pantalla</string>

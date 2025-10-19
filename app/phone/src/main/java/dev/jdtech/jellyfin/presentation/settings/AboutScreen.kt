@@ -164,7 +164,7 @@ fun AboutScreen(
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
-                                            uriHandler.openUri("https://ko-fi.com/jarnedemeulemeester")
+                                            uriHandler.openUri("https://www.jordiguix.es")
                                         } catch (e: IllegalArgumentException) {
                                             Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
                                         }

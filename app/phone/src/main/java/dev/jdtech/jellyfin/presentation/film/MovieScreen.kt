@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,6 +64,7 @@ import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dev.jdtech.jellyfin.cast.CastHelper
 import dev.jdtech.jellyfin.dlna.DlnaHelper
+import dev.jdtech.jellyfin.roku.RokuHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,6 +72,18 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
+
+fun isExternalPlayerEnabled(context: Context): Boolean {
+    val prefsName = context.packageName + "_preferences"
+    val sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("pref_player_external", false)
+}
+
+fun getSelectedExternalPlayer(context: Context): String? {
+    val prefsName = context.packageName + "_preferences"
+    val sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    return sharedPreferences.getString("pref_player_external_app", null)
+}
 
 @Composable
 fun MovieScreen(
@@ -91,8 +106,41 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    // Check if DLNA device is available first
-                    if (DlnaHelper.isDlnaDeviceAvailable(context)) {
+                    // Check devices in order: Roku -> DLNA -> Chromecast -> Local
+                    if (RokuHelper.isRokuDeviceAvailable()) {
+                        // Send to Roku device
+                        state.movie?.let { movie ->
+                            try {
+                                val streamUrl = movie.sources.firstOrNull()?.path ?: return@let
+                                val positionMs = if (action.startFromBeginning) {
+                                    0L
+                                } else {
+                                    movie.playbackPositionTicks / 10000
+                                }
+                                
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val success = RokuHelper.playMedia(
+                                        contentUrl = streamUrl,
+                                        title = movie.name,
+                                        subtitle = movie.overview.orEmpty(),
+                                        imageUrl = movie.images.primary.toString(),
+                                        position = positionMs
+                                    )
+                                    
+                                    launch(Dispatchers.Main) {
+                                        if (success) {
+                                            Toast.makeText(context, "Enviando a Roku...", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(context, "Error al enviar a Roku", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Timber.e(e, "Error sending to Roku")
+                                Toast.makeText(context, "Error al enviar a Roku", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else if (DlnaHelper.isDlnaDeviceAvailable(context)) {
                         // Send to DLNA device
                         state.movie?.let { movie ->
                             try {
@@ -149,12 +197,58 @@ fun MovieScreen(
                             }
                         }
                     } else {
-                        // Play locally
-                        val intent = Intent(context, PlayerActivity::class.java)
-                        intent.putExtra("itemId", movieId.toString())
-                        intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
-                        intent.putExtra("startFromBeginning", action.startFromBeginning)
-                        context.startActivity(intent)
+                        // Play locally or with external player
+                        if (isExternalPlayerEnabled(context)) {
+                            // Use external player
+                            state.movie?.let { movie ->
+                                try {
+                                    val streamUrl = movie.sources.firstOrNull()?.path
+                                    if (streamUrl != null) {
+                                        val intent = Intent(Intent.ACTION_VIEW)
+                                        intent.setDataAndType(Uri.parse(streamUrl), "video/*")
+                                        intent.putExtra("title", movie.name)
+                                        intent.putExtra("position", if (action.startFromBeginning) 0L else movie.playbackPositionTicks / 10000)
+                                        
+                                        val selectedPlayer = getSelectedExternalPlayer(context)
+                                        if (selectedPlayer != null) {
+                                            // Use the selected player directly
+                                            intent.setPackage(selectedPlayer)
+                                            try {
+                                                context.startActivity(intent)
+                                            } catch (e: Exception) {
+                                                Timber.e(e, "Selected player not available, showing chooser")
+                                                // If the selected player is not available, show chooser
+                                                intent.setPackage(null)
+                                                if (intent.resolveActivity(context.packageManager) != null) {
+                                                    context.startActivity(Intent.createChooser(intent, context.getString(dev.jdtech.jellyfin.settings.R.string.select_external_player)))
+                                                } else {
+                                                    Toast.makeText(context, "No se encontró ningún reproductor externo", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        } else {
+                                            // No player selected, show chooser
+                                            if (intent.resolveActivity(context.packageManager) != null) {
+                                                context.startActivity(Intent.createChooser(intent, context.getString(dev.jdtech.jellyfin.settings.R.string.select_external_player)))
+                                            } else {
+                                                Toast.makeText(context, "No se encontró ningún reproductor externo", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "Error: No se encontró URL de reproducción", Toast.LENGTH_SHORT).show()
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Error launching external player")
+                                    Toast.makeText(context, "Error al abrir reproductor externo", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            // Use internal player
+                            val intent = Intent(context, PlayerActivity::class.java)
+                            intent.putExtra("itemId", movieId.toString())
+                            intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
+                            intent.putExtra("startFromBeginning", action.startFromBeginning)
+                            context.startActivity(intent)
+                        }
                     }
                 }
                 is MovieAction.PlayTrailer -> {
@@ -330,11 +424,12 @@ private fun MovieScreenLayout(
                             }
                         },
                         onDlnaClick = {
-                            if (DlnaHelper.isDlnaDeviceAvailable(appContext)) {
-                                // If already connected, stop DLNA
+                            if (DlnaHelper.isDlnaDeviceAvailable(appContext) || RokuHelper.isRokuDeviceAvailable()) {
+                                // If already connected, disconnect both
                                 DlnaHelper.stopDlna(appContext)
+                                RokuHelper.disconnect()
                             } else {
-                                // Show device picker
+                                // Show device picker (includes both DLNA and Roku devices)
                                 showDlnaDevicePicker = true
                             }
                         },
