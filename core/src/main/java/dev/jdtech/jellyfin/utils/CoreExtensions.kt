@@ -11,7 +11,7 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import com.google.android.material.button.MaterialButton
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.models.View
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -21,7 +21,7 @@ import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
 
-fun BaseItemDto.toView(items: List<FindroidItem>): View {
+fun BaseItemDto.toView(items: List<JellyCastItem>): View {
     return View(
         id = id,
         name = name ?: "",

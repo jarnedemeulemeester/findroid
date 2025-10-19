@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 
 @Composable
 fun VideoPlayerMediaTitle(
@@ -32,7 +32,7 @@ fun VideoPlayerMediaTitle(
 @Preview
 @Composable
 private fun VideoPlayerMediaTitlePreview() {
-    FindroidTheme {
+    JellyCastTheme {
         VideoPlayerMediaTitle(
             title = "S1:E23 - Handler One",
             subtitle = "86 EIGHTY-SIX",

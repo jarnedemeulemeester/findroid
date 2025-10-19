@@ -29,18 +29,18 @@ import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.dlna.DlnaHelper
 import dev.jdtech.jellyfin.roku.RokuHelper
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -52,7 +52,7 @@ fun isDlnaEnabled(context: Context): Boolean {
 
 @Composable
 fun ItemButtonsBar(
-    item: FindroidItem,
+    item: JellyCastItem,
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
@@ -65,13 +65,13 @@ fun ItemButtonsBar(
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     val trailerUri = when (item) {
-        is FindroidMovie -> {
+        is JellyCastMovie -> {
             item.trailer
         }
-        is FindroidShow -> {
+        is JellyCastShow -> {
             item.trailer
         }
-        is dev.jdtech.jellyfin.models.FindroidEpisode -> {
+        is dev.jdtech.jellyfin.models.JellyCastEpisode -> {
             item.trailer
         }
         else -> null
@@ -233,7 +233,7 @@ fun ItemButtonsBar(
 @Preview(showBackground = true)
 @Composable
 private fun ItemButtonsBarPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ItemButtonsBar(
             item = dummyEpisode,
             onPlayClick = {},

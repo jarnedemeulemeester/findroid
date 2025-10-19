@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
@@ -44,7 +44,7 @@ class PlayerPickerActivity : ComponentActivity() {
         val currentPlayer = sharedPreferences.getString("pref_player_external_app", null)
         
         setContent {
-            FindroidTheme {
+            JellyCastTheme {
                 PlayerPickerScreen(
                     currentPlayerPackage = currentPlayer,
                     onPlayerSelected = { packageName ->

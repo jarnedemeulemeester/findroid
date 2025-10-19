@@ -47,13 +47,13 @@ import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionViewModel
 import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
 import dev.jdtech.jellyfin.presentation.utils.plus
@@ -65,7 +65,7 @@ fun CollectionScreen(
     collectionId: UUID,
     collectionName: String,
     onePerGenre: Boolean = false,
-    onItemClick: (item: FindroidItem) -> Unit,
+    onItemClick: (item: JellyCastItem) -> Unit,
     navigateBack: () -> Unit,
     viewModel: CollectionViewModel = hiltViewModel(),
 ) {
@@ -99,7 +99,7 @@ fun CollectionScreenLayout(
     collectionName: String,
     state: CollectionState,
     onBack: () -> Unit,
-    onItemClick: (FindroidItem) -> Unit,
+    onItemClick: (JellyCastItem) -> Unit,
     onGenreSelected: (String?) -> Unit,
     onePerGenreState: Boolean,
     onToggleOnePerGenre: () -> Unit,
@@ -203,7 +203,7 @@ fun CollectionScreenLayout(
                     ) { item ->
                         ItemCard(
                             item = item,
-                            direction = if (item is FindroidEpisode) Direction.HORIZONTAL else Direction.VERTICAL,
+                            direction = if (item is JellyCastEpisode) Direction.HORIZONTAL else Direction.VERTICAL,
                             onClick = {
                                 onItemClick(item)
                             },
@@ -234,7 +234,7 @@ fun CollectionScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun CollectionScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         CollectionScreenLayout(
             collectionName = "Marvel",
             state = CollectionState(sections = listOf(CollectionSection(id = 0, name = UiText.StringResource(CoreR.string.movies_label), items = dummyMovies))),

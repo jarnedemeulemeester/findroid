@@ -26,7 +26,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
@@ -112,7 +112,7 @@ fun SettingsMultiSelectCard(
 @Preview
 @Composable
 private fun SettingsMultiSelectCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsMultiSelectCard(
             preference = PreferenceMultiSelect(
                 nameStringResource = SettingsR.string.settings_preferred_audio_language,

@@ -17,7 +17,7 @@ import androidx.tv.material3.MaterialTheme as MaterialThemeTv
 import androidx.tv.material3.contentColorFor as contentColorForTv
 
 @Composable
-fun FindroidTheme(
+fun JellyCastTheme(
     content: @Composable BoxScope.() -> Unit,
 ) {
     MaterialTheme(

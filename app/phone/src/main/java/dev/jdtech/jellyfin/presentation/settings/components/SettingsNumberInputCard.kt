@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastFilterNotNull
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
@@ -153,7 +153,7 @@ fun SettingsNumberInputCard(
 @Preview
 @Composable
 private fun SettingsIntInputCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsIntInputCard(
             preference = PreferenceIntInput(
                 nameStringResource = SettingsR.string.settings_cache_size,
@@ -169,7 +169,7 @@ private fun SettingsIntInputCardPreview() {
 @Preview
 @Composable
 private fun SettingsLongInputCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsLongInputCard(
             preference = PreferenceLongInput(
                 nameStringResource = SettingsR.string.settings_cache_size,

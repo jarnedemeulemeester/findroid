@@ -7,21 +7,21 @@ import org.jellyfin.sdk.model.api.MediaSourceInfo
 import java.io.File
 import java.util.UUID
 
-data class FindroidSource(
+data class JellyCastSource(
     val id: String,
     val name: String,
-    val type: FindroidSourceType,
+    val type: JellyCastSourceType,
     val path: String,
     val size: Long,
-    val mediaStreams: List<FindroidMediaStream>,
+    val mediaStreams: List<JellyCastMediaStream>,
     val downloadId: Long? = null,
 )
 
-suspend fun MediaSourceInfo.toFindroidSource(
+suspend fun MediaSourceInfo.toJellyCastSource(
     jellyfinRepository: JellyfinRepository,
     itemId: UUID,
     includePath: Boolean = false,
-): FindroidSource {
+): JellyCastSource {
     val path = when (protocol) {
         MediaProtocol.FILE -> {
             try {
@@ -33,31 +33,31 @@ suspend fun MediaSourceInfo.toFindroidSource(
         MediaProtocol.HTTP -> this.path.orEmpty()
         else -> ""
     }
-    return FindroidSource(
+    return JellyCastSource(
         id = id.orEmpty(),
         name = name.orEmpty(),
-        type = FindroidSourceType.REMOTE,
+        type = JellyCastSourceType.REMOTE,
         path = path,
         size = size ?: 0,
-        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList(),
+        mediaStreams = mediaStreams?.map { it.toJellyCastMediaStream(jellyfinRepository) } ?: emptyList(),
     )
 }
 
-fun FindroidSourceDto.toFindroidSource(
+fun JellyCastSourceDto.toJellyCastSource(
     serverDatabaseDao: ServerDatabaseDao,
-): FindroidSource {
-    return FindroidSource(
+): JellyCastSource {
+    return JellyCastSource(
         id = id,
         name = name,
         type = type,
         path = path,
         size = File(path).length(),
-        mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toFindroidMediaStream() },
+        mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toJellyCastMediaStream() },
         downloadId = downloadId,
     )
 }
 
-enum class FindroidSourceType {
+enum class JellyCastSourceType {
     REMOTE,
     LOCAL,
 }

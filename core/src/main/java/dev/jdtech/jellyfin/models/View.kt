@@ -5,6 +5,6 @@ import java.util.UUID
 data class View(
     val id: UUID,
     val name: String,
-    val items: List<FindroidItem>,
+    val items: List<JellyCastItem>,
     val type: CollectionType,
 )

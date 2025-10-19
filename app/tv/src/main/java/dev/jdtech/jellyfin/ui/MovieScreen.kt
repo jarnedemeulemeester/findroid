@@ -49,7 +49,7 @@ import dev.jdtech.jellyfin.core.presentation.theme.Yellow
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
@@ -312,7 +312,7 @@ private fun MovieScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun MovieScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         MovieScreenLayout(
             state = MovieState(
                 movie = dummyMovie,

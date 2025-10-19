@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -62,7 +62,7 @@ fun DiscoveredServerItem(
 @Composable
 @Preview
 private fun DiscoveredServerItemPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         DiscoveredServerItem(
             name = "Jellyfin Server",
         )

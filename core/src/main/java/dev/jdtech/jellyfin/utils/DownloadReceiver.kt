@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.toFindroidEpisode
-import dev.jdtech.jellyfin.models.toFindroidMovie
-import dev.jdtech.jellyfin.models.toFindroidSeason
-import dev.jdtech.jellyfin.models.toFindroidShow
-import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.toJellyCastEpisode
+import dev.jdtech.jellyfin.models.toJellyCastMovie
+import dev.jdtech.jellyfin.models.toJellyCastSeason
+import dev.jdtech.jellyfin.models.toJellyCastShow
+import dev.jdtech.jellyfin.models.toJellyCastSource
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,23 +42,23 @@ class DownloadReceiver : BroadcastReceiver() {
                     if (successfulRename) {
                         database.setSourcePath(source.id, path)
                     } else {
-                        val items = mutableListOf<FindroidItem>()
+                        val items = mutableListOf<JellyCastItem>()
                         items.addAll(
-                            database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) },
+                            database.getMovies().map { it.toJellyCastMovie(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) },
+                            database.getShows().map { it.toJellyCastShow(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) },
+                            database.getSeasons().map { it.toJellyCastSeason(database, repository.getUserId()) },
                         )
                         items.addAll(
-                            database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) },
+                            database.getEpisodes().map { it.toJellyCastEpisode(database, repository.getUserId()) },
                         )
 
                         items.firstOrNull { it.id == source.itemId }?.let {
                             CoroutineScope(Dispatchers.IO).launch {
-                                downloader.deleteItem(it, source.toFindroidSource(database))
+                                downloader.deleteItem(it, source.toJellyCastSource(database))
                             }
                         }
                     }

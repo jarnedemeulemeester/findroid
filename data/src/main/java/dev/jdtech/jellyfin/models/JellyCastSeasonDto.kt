@@ -10,7 +10,7 @@ import java.util.UUID
     tableName = "seasons",
     foreignKeys = [
         ForeignKey(
-            entity = FindroidShowDto::class,
+            entity = JellyCastShowDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
             onDelete = ForeignKey.CASCADE,
@@ -20,7 +20,7 @@ import java.util.UUID
         Index("seriesId"),
     ],
 )
-data class FindroidSeasonDto(
+data class JellyCastSeasonDto(
     @PrimaryKey
     val id: UUID,
     val seriesId: UUID,
@@ -30,8 +30,8 @@ data class FindroidSeasonDto(
     val indexNumber: Int,
 )
 
-fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
-    return FindroidSeasonDto(
+fun JellyCastSeason.toJellyCastSeasonDto(): JellyCastSeasonDto {
+    return JellyCastSeasonDto(
         id = id,
         seriesId = seriesId,
         name = name,

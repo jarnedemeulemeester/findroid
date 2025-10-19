@@ -4,9 +4,9 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import coil3.load
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
 import dev.jdtech.jellyfin.models.User
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -24,10 +24,10 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
         .posterDescription(item.name)
 }
 
-fun bindItemImage(imageView: ImageView, item: FindroidItem) {
-    // Use the images from FindroidItem which already have full URIs
+fun bindItemImage(imageView: ImageView, item: JellyCastItem) {
+    // Use the images from JellyCastItem which already have full URIs
     val imageUri = when (item) {
-        is FindroidEpisode -> item.images.showPrimary ?: item.images.primary
+        is JellyCastEpisode -> item.images.showPrimary ?: item.images.primary
         else -> item.images.primary
     }
 
@@ -35,7 +35,7 @@ fun bindItemImage(imageView: ImageView, item: FindroidItem) {
     imageView.contentDescription = imageView.context.resources.getString(CoreR.string.image_description_poster, item.name)
 }
 
-fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
+fun bindItemBackdropImage(imageView: ImageView, item: JellyCastItem?) {
     if (item == null) return
 
     imageView
@@ -53,9 +53,9 @@ fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
         .posterDescription(person.name)
 }
 
-fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
+fun bindCardItemImage(imageView: ImageView, item: JellyCastItem) {
     val imageUri = when (item) {
-        is FindroidMovie -> item.images.backdrop ?: item.images.primary
+        is JellyCastMovie -> item.images.backdrop ?: item.images.primary
         else -> item.images.primary
     }
 

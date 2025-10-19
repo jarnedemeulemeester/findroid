@@ -14,13 +14,13 @@ import androidx.tv.material3.Carousel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun HomeCarousel(
-    items: List<FindroidItem>,
+    items: List<JellyCastItem>,
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -40,7 +40,7 @@ fun HomeCarousel(
 @Composable
 @Preview(showBackground = true)
 private fun HomeCarouselPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         HomeCarousel(
             items = dummyMovies,
             onAction = {},

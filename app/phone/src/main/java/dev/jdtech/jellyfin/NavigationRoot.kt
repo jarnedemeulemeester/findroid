@@ -37,13 +37,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidBoxSet
-import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastBoxSet
+import dev.jdtech.jellyfin.models.JellyCastCollection
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastSeason
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.FavoritesScreen
@@ -558,14 +558,14 @@ fun NavigationRoot(
     }
 }
 
-fun navigateToItem(navController: NavHostController, item: FindroidItem) {
+fun navigateToItem(navController: NavHostController, item: JellyCastItem) {
     when (item) {
-    is FindroidBoxSet -> navController.safeNavigate(CollectionRoute(collectionId = item.id.toString(), collectionName = item.name, onePerGenre = false))
-        is FindroidMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))
-        is FindroidShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
-        is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
-        is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
-        is FindroidCollection -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = item.type))
+    is JellyCastBoxSet -> navController.safeNavigate(CollectionRoute(collectionId = item.id.toString(), collectionName = item.name, onePerGenre = false))
+        is JellyCastMovie -> navController.safeNavigate(MovieRoute(movieId = item.id.toString()))
+        is JellyCastShow -> navController.safeNavigate(ShowRoute(showId = item.id.toString()))
+        is JellyCastSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
+        is JellyCastEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
+        is JellyCastCollection -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = item.type))
         else -> Unit
     }
 }

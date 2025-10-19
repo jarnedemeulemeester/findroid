@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
@@ -116,7 +116,7 @@ private fun SettingsScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun SettingsScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsScreenLayout(
             state = SettingsState(
                 preferenceGroups = listOf(

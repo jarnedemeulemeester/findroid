@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.internal.managers.ViewComponentManager
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
@@ -30,10 +30,10 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import timber.log.Timber
 
 class ViewItemListAdapter(
-    private val onClickListener: (item: FindroidItem) -> Unit,
+    private val onClickListener: (item: JellyCastItem) -> Unit,
     private val fixedWidth: Boolean = false,
-    private val onLongClickListener: ((item: FindroidItem) -> Unit)? = null,
-) : ListAdapter<FindroidItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
+    private val onLongClickListener: ((item: JellyCastItem) -> Unit)? = null,
+) : ListAdapter<JellyCastItem, ViewItemListAdapter.ItemViewHolder>(DiffCallback) {
 
     class ItemViewHolder(private var binding: BaseItemBinding, private val parent: ViewGroup) :
         RecyclerView.ViewHolder(binding.root) {
@@ -48,7 +48,7 @@ class ViewItemListAdapter(
                 null
             }
         }
-        fun bind(item: FindroidItem, fixedWidth: Boolean) {
+        fun bind(item: JellyCastItem, fixedWidth: Boolean) {
             android.util.Log.d("DownloadsUI", "Bind item ${item.id} name=${item.name} itemView size BEFORE: w=${itemView.width} h=${itemView.height}")
             itemView.post {
                 android.util.Log.d("DownloadsUI", "Bind item ${item.id} itemView size AFTER LAYOUT: w=${itemView.width} h=${itemView.height}")
@@ -61,7 +61,7 @@ class ViewItemListAdapter(
                     index, source.type, source.path, source.downloadId)
             }
             
-            binding.itemName.text = if (item is FindroidEpisode) item.seriesName else item.name
+            binding.itemName.text = if (item is JellyCastEpisode) item.seriesName else item.name
             binding.itemCount.visibility =
                 if (item.unplayedItemCount != null && item.unplayedItemCount!! > 0) View.VISIBLE else View.GONE
             if (fixedWidth) {
@@ -152,12 +152,12 @@ class ViewItemListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<FindroidItem>() {
-        override fun areItemsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<JellyCastItem>() {
+        override fun areItemsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+        override fun areContentsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
             return oldItem.name == newItem.name
         }
     }

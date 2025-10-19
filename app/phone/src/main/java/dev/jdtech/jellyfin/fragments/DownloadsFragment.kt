@@ -15,8 +15,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentDownloadsBinding
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastSourceType
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
@@ -191,9 +191,9 @@ class DownloadsFragment : Fragment() {
         android.util.Log.d("DownloadsUI", "======== onPause ======== Fragment going HIDDEN")
     }
 
-    private fun onItemLongClick(item: FindroidItem) {
+    private fun onItemLongClick(item: JellyCastItem) {
         // Only act on items that have a local source
-        val localSource = item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }
+        val localSource = item.sources.firstOrNull { it.type == JellyCastSourceType.LOCAL }
         if (localSource == null) return
 
         val isDownloading = item.isDownloading()
@@ -293,7 +293,7 @@ class DownloadsFragment : Fragment() {
         binding.noDownloadsText.isVisible = false
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
+    private fun navigateToMediaItem(item: JellyCastItem) {
         // Use existing NavigationRoot routing conventions by delegating to the Activity
         try {
             (activity as? dev.jdtech.jellyfin.MainActivity)?.let { mainActivity ->

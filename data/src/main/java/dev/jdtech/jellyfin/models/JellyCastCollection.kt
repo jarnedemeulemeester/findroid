@@ -4,7 +4,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
 
-data class FindroidCollection(
+data class JellyCastCollection(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String? = null,
@@ -13,28 +13,28 @@ data class FindroidCollection(
     override val favorite: Boolean = false,
     override val canPlay: Boolean = false,
     override val canDownload: Boolean = false,
-    override val sources: List<FindroidSource> = emptyList(),
+    override val sources: List<JellyCastSource> = emptyList(),
     override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int? = null,
     val type: CollectionType,
-    override val images: FindroidImages,
-    override val chapters: List<FindroidChapter> = emptyList(),
-) : FindroidItem
+    override val images: JellyCastImages,
+    override val chapters: List<JellyCastChapter> = emptyList(),
+) : JellyCastItem
 
-fun BaseItemDto.toFindroidCollection(
+fun BaseItemDto.toJellyCastCollection(
     jellyfinRepository: JellyfinRepository,
-): FindroidCollection? {
+): JellyCastCollection? {
     val type = CollectionType.fromString(collectionType?.serialName)
 
     if (type !in CollectionType.supported) {
         return null
     }
 
-    return FindroidCollection(
+    return JellyCastCollection(
         id = id,
         name = name.orEmpty(),
         type = type,
-        images = toFindroidImages(jellyfinRepository),
+        images = toJellyCastImages(jellyfinRepository),
     )
 }

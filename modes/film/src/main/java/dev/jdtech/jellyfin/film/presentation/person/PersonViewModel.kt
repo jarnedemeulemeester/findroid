@@ -3,8 +3,8 @@ package dev.jdtech.jellyfin.film.presentation.person
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,8 +31,8 @@ class PersonViewModel @Inject internal constructor(
                     recursive = true,
                 )
 
-                val movies = items.filterIsInstance<FindroidMovie>()
-                val shows = items.filterIsInstance<FindroidShow>()
+                val movies = items.filterIsInstance<JellyCastMovie>()
+                val shows = items.filterIsInstance<JellyCastShow>()
 
                 _state.emit(_state.value.copy(person = person, starredInMovies = movies, starredInShows = shows))
             } catch (e: Exception) {

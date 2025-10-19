@@ -8,10 +8,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.models.toFindroidEpisode
-import dev.jdtech.jellyfin.models.toFindroidMovie
+import dev.jdtech.jellyfin.models.toJellyCastEpisode
+import dev.jdtech.jellyfin.models.toJellyCastMovie
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -46,8 +46,8 @@ class SyncWorker @AssistedInject constructor(
                         )
                         userId = user.id
                     }
-                    val movies = database.getMoviesByServerId(server.id).map { it.toFindroidMovie(database, user.id) }
-                    val episodes = database.getEpisodesByServerId(server.id).map { it.toFindroidEpisode(database, user.id) }
+                    val movies = database.getMoviesByServerId(server.id).map { it.toJellyCastMovie(database, user.id) }
+                    val episodes = database.getEpisodesByServerId(server.id).map { it.toJellyCastEpisode(database, user.id) }
 
                     syncUserData(jellyfinApi, user, movies)
                     syncUserData(jellyfinApi, user, episodes)
@@ -61,7 +61,7 @@ class SyncWorker @AssistedInject constructor(
     private suspend fun syncUserData(
         jellyfinApi: JellyfinApi,
         user: User,
-        items: List<FindroidItem>,
+        items: List<JellyCastItem>,
     ) {
         for (item in items) {
             val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue

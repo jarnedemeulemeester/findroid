@@ -47,7 +47,7 @@ import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import dev.jdtech.jellyfin.BuildConfig
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
@@ -137,7 +137,7 @@ fun AboutScreen(
                             )
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
                             Text(
-                                text = "Based on Findroid version 0.15.3",
+                                text = "Based on JellyCast version 0.15.3",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -188,7 +188,7 @@ fun AboutScreen(
 @Composable
 @PreviewScreenSizes
 private fun AboutScreenPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         AboutScreen(
             navigateBack = {},
         )

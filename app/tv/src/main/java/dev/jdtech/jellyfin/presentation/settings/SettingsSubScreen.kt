@@ -29,7 +29,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsMultiSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectDetailsCard
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
@@ -191,7 +191,7 @@ private fun SettingsSubScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun SettingsSubScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsSubScreenLayout(
             title = SettingsR.string.title_settings,
             state = SettingsState(

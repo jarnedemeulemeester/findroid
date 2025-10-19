@@ -9,22 +9,22 @@ import java.util.UUID
     primaryKeys = ["itemId", "type"],
     foreignKeys = [
         ForeignKey(
-            entity = FindroidEpisodeDto::class,
+            entity = JellyCastEpisodeDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("itemId"),
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class FindroidSegmentDto(
+data class JellyCastSegmentDto(
     val itemId: UUID,
-    val type: FindroidSegmentType,
+    val type: JellyCastSegmentType,
     val startTicks: Long,
     val endTicks: Long,
 )
 
-fun FindroidSegment.toFindroidSegmentsDto(itemId: UUID): FindroidSegmentDto {
-    return FindroidSegmentDto(
+fun JellyCastSegment.toJellyCastSegmentsDto(itemId: UUID): JellyCastSegmentDto {
+    return JellyCastSegmentDto(
         itemId = itemId,
         type = type,
         startTicks = startTicks,

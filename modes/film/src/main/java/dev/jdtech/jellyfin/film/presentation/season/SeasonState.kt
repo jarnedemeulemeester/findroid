@@ -1,10 +1,10 @@
 package dev.jdtech.jellyfin.film.presentation.season
 
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastSeason
 
 data class SeasonState(
-    val season: FindroidSeason? = null,
-    val episodes: List<FindroidEpisode> = emptyList(),
+    val season: JellyCastSeason? = null,
+    val episodes: List<JellyCastEpisode> = emptyList(),
     val error: Exception? = null,
 )

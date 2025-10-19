@@ -6,16 +6,16 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
 import java.util.UUID
 
-data class FindroidSeason(
+data class JellyCastSeason(
     override val id: UUID,
     override val name: String,
     val seriesId: UUID,
     val seriesName: String,
     override val originalTitle: String?,
     override val overview: String,
-    override val sources: List<FindroidSource>,
+    override val sources: List<JellyCastSource>,
     val indexNumber: Int,
-    val episodes: Collection<FindroidEpisode>,
+    val episodes: Collection<JellyCastEpisode>,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -23,14 +23,14 @@ data class FindroidSeason(
     override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
-    override val images: FindroidImages,
-    override val chapters: List<FindroidChapter> = emptyList(),
-) : FindroidItem
+    override val images: JellyCastImages,
+    override val chapters: List<JellyCastChapter> = emptyList(),
+) : JellyCastItem
 
-fun BaseItemDto.toFindroidSeason(
+fun BaseItemDto.toJellyCastSeason(
     jellyfinRepository: JellyfinRepository,
-): FindroidSeason {
-    return FindroidSeason(
+): JellyCastSeason {
+    return JellyCastSeason(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
@@ -45,13 +45,13 @@ fun BaseItemDto.toFindroidSeason(
         episodes = emptyList(),
         seriesId = seriesId!!,
         seriesName = seriesName.orEmpty(),
-        images = toFindroidImages(jellyfinRepository),
+        images = toJellyCastImages(jellyfinRepository),
     )
 }
 
-fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason {
+fun JellyCastSeasonDto.toJellyCastSeason(database: ServerDatabaseDao, userId: UUID): JellyCastSeason {
     val userData = database.getUserDataOrCreateNew(id, userId)
-    return FindroidSeason(
+    return JellyCastSeason(
         id = id,
         name = name,
         originalTitle = null,
@@ -66,6 +66,6 @@ fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID
         episodes = emptyList(),
         seriesId = seriesId,
         seriesName = seriesName,
-        images = FindroidImages(),
+        images = JellyCastImages(),
     )
 }

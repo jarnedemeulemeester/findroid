@@ -7,16 +7,16 @@ import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.PersonKind
 import java.util.UUID
 
-data class FindroidItemPersonImage(
+data class JellyCastItemPersonImage(
     val uri: Uri?,
     val blurHash: String?,
 )
 
-fun BaseItemPerson.toFindroidImage(
+fun BaseItemPerson.toJellyCastImage(
     repository: JellyfinRepository,
-): FindroidItemPersonImage {
+): JellyCastItemPersonImage {
     val baseUrl = Uri.parse(repository.getBaseUrl())
-    return FindroidItemPersonImage(
+    return JellyCastItemPersonImage(
         uri = primaryImageTag?.let { tag ->
             baseUrl.buildUpon()
                 .appendEncodedPath("items/$id/Images/${ImageType.PRIMARY}")
@@ -27,22 +27,22 @@ fun BaseItemPerson.toFindroidImage(
     )
 }
 
-data class FindroidItemPerson(
+data class JellyCastItemPerson(
     val id: UUID,
     val name: String,
     val type: PersonKind,
     val role: String,
-    val image: FindroidItemPersonImage,
+    val image: JellyCastItemPersonImage,
 )
 
-fun BaseItemPerson.toFindroidPerson(
+fun BaseItemPerson.toJellyCastPerson(
     repository: JellyfinRepository,
-): FindroidItemPerson {
-    return FindroidItemPerson(
+): JellyCastItemPerson {
+    return JellyCastItemPerson(
         id = id,
         name = name.orEmpty(),
         type = type,
         role = role.orEmpty(),
-        image = toFindroidImage(repository),
+        image = toJellyCastImage(repository),
     )
 }

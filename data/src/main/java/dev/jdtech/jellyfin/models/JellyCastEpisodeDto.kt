@@ -11,13 +11,13 @@ import java.util.UUID
     tableName = "episodes",
     foreignKeys = [
         ForeignKey(
-            entity = FindroidSeasonDto::class,
+            entity = JellyCastSeasonDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seasonId"),
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = FindroidShowDto::class,
+            entity = JellyCastShowDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
             onDelete = ForeignKey.CASCADE,
@@ -28,7 +28,7 @@ import java.util.UUID
         Index("seriesId"),
     ],
 )
-data class FindroidEpisodeDto(
+data class JellyCastEpisodeDto(
     @PrimaryKey
     val id: UUID,
     val serverId: String?,
@@ -43,11 +43,11 @@ data class FindroidEpisodeDto(
     val runtimeTicks: Long,
     val premiereDate: LocalDateTime?,
     val communityRating: Float?,
-    val chapters: List<FindroidChapter>?,
+    val chapters: List<JellyCastChapter>?,
 )
 
-fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpisodeDto {
-    return FindroidEpisodeDto(
+fun JellyCastEpisode.toJellyCastEpisodeDto(serverId: String? = null): JellyCastEpisodeDto {
+    return JellyCastEpisodeDto(
         id = id,
         serverId = serverId,
         seasonId = seasonId,

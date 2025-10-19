@@ -18,14 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun PlayButton(
-    item: FindroidItem,
+    item: JellyCastItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -57,7 +57,7 @@ fun PlayButton(
 @Preview(showBackground = true)
 @Composable
 private fun PlayButtonMoviePreview() {
-    FindroidTheme {
+    JellyCastTheme {
         PlayButton(
             item = dummyMovie,
             onClick = {},
@@ -68,7 +68,7 @@ private fun PlayButtonMoviePreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PlayButtonEpisodePreview() {
-    FindroidTheme {
+    JellyCastTheme {
         PlayButton(
             item = dummyEpisode,
             onClick = {},

@@ -40,7 +40,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.plus
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
@@ -235,7 +235,7 @@ private fun SettingsScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun SettingsScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsScreenLayout(
             title = CoreR.string.title_settings,
             state = SettingsState(

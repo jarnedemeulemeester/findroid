@@ -23,7 +23,7 @@ class SimpleUpnpService private constructor(context: Context) {
             
             // Acquire multicast lock
             val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as? WifiManager
-            multicastLock = wifiManager?.createMulticastLock("findroid_upnp")?.apply {
+            multicastLock = wifiManager?.createMulticastLock("jellycast_upnp")?.apply {
                 setReferenceCounted(true)
                 acquire()
                 Timber.d("✓ Multicast lock acquired")

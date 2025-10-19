@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.presentation.components.BaseDialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
@@ -98,7 +98,7 @@ private fun SettingsSelectDialogItem(
 @Preview
 @Composable
 private fun SettingsSelectDialogPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsSelectDialog(
             preference = PreferenceSelect(
                 nameStringResource = SettingsR.string.settings_preferred_audio_language,

@@ -1,12 +1,12 @@
 package dev.jdtech.jellyfin.film.presentation.person
 
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidPerson
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastPerson
+import dev.jdtech.jellyfin.models.JellyCastShow
 
 data class PersonState(
-    val person: FindroidPerson? = null,
-    val starredInMovies: List<FindroidMovie> = emptyList(),
-    val starredInShows: List<FindroidShow> = emptyList(),
+    val person: JellyCastPerson? = null,
+    val starredInMovies: List<JellyCastMovie> = emptyList(),
+    val starredInShows: List<JellyCastShow> = emptyList(),
     val error: Exception? = null,
 )

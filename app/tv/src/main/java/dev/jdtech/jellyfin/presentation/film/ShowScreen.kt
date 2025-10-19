@@ -62,8 +62,8 @@ import dev.jdtech.jellyfin.core.presentation.theme.Yellow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
 import dev.jdtech.jellyfin.film.presentation.show.ShowViewModel
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -74,7 +74,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun ShowScreen(
     showId: UUID,
-    navigateToItem: (item: FindroidItem) -> Unit,
+    navigateToItem: (item: JellyCastItem) -> Unit,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
 ) {
@@ -387,7 +387,7 @@ private fun ShowScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun ShowScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ShowScreenLayout(
             state = ShowState(
                 show = dummyShow,

@@ -49,7 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import org.jellyfin.sdk.model.api.SortOrder
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -209,7 +209,7 @@ private fun SortByDialogItem(
 @Preview
 @Composable
 private fun SortByDialogPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SortByDialog(
             currentSortBy = SortBy.NAME,
             currentSortOrder = SortOrder.ASCENDING,
@@ -222,7 +222,7 @@ private fun SortByDialogPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun SortByDialogItemPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SortByDialogItem(
             option = Pair(SortBy.NAME, "Title"),
             isSelected = true,

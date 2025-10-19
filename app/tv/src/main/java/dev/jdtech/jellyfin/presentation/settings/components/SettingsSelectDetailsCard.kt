@@ -28,7 +28,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
@@ -134,7 +134,7 @@ private fun SettingsSelectDetailsCardItem(
 @Preview
 @Composable
 private fun SettingsSelectDetailsCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsSelectDetailsCard(
             preference = PreferenceSelect(
                 nameStringResource = SettingsR.string.settings_preferred_audio_language,

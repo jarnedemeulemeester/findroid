@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.models.CollectionSection
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -46,8 +46,8 @@ constructor(
                     val seenGenres = mutableSetOf<String>()
                     items = items.filter { item ->
                         val itemGenres = when (item) {
-                            is FindroidMovie -> item.genres
-                            is FindroidShow -> item.genres
+                            is JellyCastMovie -> item.genres
+                            is JellyCastShow -> item.genres
                             else -> emptyList()
                         }
                         // If item has no genre, include it but only once
@@ -78,8 +78,8 @@ constructor(
                 // extract genres from all items
                 val genres = items.flatMap {
                     when (it) {
-                        is FindroidMovie -> it.genres
-                        is FindroidShow -> it.genres
+                        is JellyCastMovie -> it.genres
+                        is JellyCastShow -> it.genres
                         else -> emptyList()
                     }
                 }.distinct().sorted()
@@ -91,7 +91,7 @@ constructor(
                     CollectionSection(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(CoreR.string.movies_label),
-                        items.filterIsInstance<FindroidMovie>(),
+                        items.filterIsInstance<JellyCastMovie>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
                             sections.add(
@@ -102,7 +102,7 @@ constructor(
                     CollectionSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(CoreR.string.shows_label),
-                        items.filterIsInstance<FindroidShow>(),
+                        items.filterIsInstance<JellyCastShow>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
                             sections.add(
@@ -113,7 +113,7 @@ constructor(
                     CollectionSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(CoreR.string.episodes_label),
-                        items.filterIsInstance<FindroidEpisode>(),
+                        items.filterIsInstance<JellyCastEpisode>(),
                     ).let {
                         if (it.items.isNotEmpty()) {
                             sections.add(
@@ -144,8 +144,8 @@ constructor(
                 allSections.map { section ->
                     section.copy(items = section.items.filter { item ->
                         when (item) {
-                            is FindroidMovie -> item.genres.contains(newSelectedGenre)
-                            is FindroidShow -> item.genres.contains(newSelectedGenre)
+                            is JellyCastMovie -> item.genres.contains(newSelectedGenre)
+                            is JellyCastShow -> item.genres.contains(newSelectedGenre)
                             else -> false
                         }
                     })

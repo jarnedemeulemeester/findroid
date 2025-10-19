@@ -5,7 +5,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType
 
-data class FindroidImages(
+data class JellyCastImages(
     val primary: Uri? = null,
     val backdrop: Uri? = null,
     val logo: Uri? = null,
@@ -14,9 +14,9 @@ data class FindroidImages(
     val showLogo: Uri? = null,
 )
 
-fun BaseItemDto.toFindroidImages(
+fun BaseItemDto.toJellyCastImages(
     jellyfinRepository: JellyfinRepository,
-): FindroidImages {
+): JellyCastImages {
     val baseUrl = Uri.parse(jellyfinRepository.getBaseUrl())
     val primary = imageTags?.get(ImageType.PRIMARY)?.let { tag ->
         baseUrl.buildUpon()
@@ -55,7 +55,7 @@ fun BaseItemDto.toFindroidImages(
             .build()
     }
 
-    return FindroidImages(
+    return JellyCastImages(
         primary = primary,
         backdrop = backdrop,
         logo = logo,

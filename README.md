@@ -1,4 +1,4 @@
-![JellyCast banner](images/findroid-banner.png)
+![JellyCast banner](images/jellycast-banner.png)
 
 # JellyCast
 
@@ -17,11 +17,11 @@
 ---
 
 > [!NOTE]
-> JellyCast is based on [Findroid 0.15.3](https://github.com/jarnedemeulemeester/findroid) with significant additional features and improvements.
+> JellyCast is based on [JellyCast 0.15.3](https://github.com/jarnedemeulemeester/jellycast) with significant additional features and improvements.
 
 ## 🎯 What's New in JellyCast
 
-JellyCast extends the original Findroid with powerful new capabilities:
+JellyCast extends the original JellyCast with powerful new capabilities:
 
 ### 🎭 **DLNA Casting**
 Stream your media to any DLNA-enabled device on your network:
@@ -76,7 +76,7 @@ Beautiful download management with real-time feedback:
 - 📡 **Chromecast Toggle**: Control Chromecast availability
 - 🎯 **User-Friendly**: Easy access to all casting options
 
-### 🎥 Core Features (from Findroid)
+### 🎥 Core Features (from JellyCast)
 
 #### Media Support
 - 🎬 **Content Types**: Movies, TV series, seasons, episodes
@@ -129,10 +129,10 @@ Beautiful download management with real-time feedback:
 
 ## 🙏 Credits
 
-This project is based on [**Findroid**](https://github.com/jarnedemeulemeester/findroid) version **0.15.3** by [Jarne De Meulemeester](https://github.com/jarnedemeulemeester).
+This project is based on [**JellyCast**](https://github.com/jarnedemeulemeester/jellycast) version **0.15.3** by [Jarne De Meulemeester](https://github.com/jarnedemeulemeester).
 
 Special thanks to:
-- The original Findroid project and all its contributors
+- The original JellyCast project and all its contributors
 - The Jellyfin community
 - All open-source libraries used in this project
 

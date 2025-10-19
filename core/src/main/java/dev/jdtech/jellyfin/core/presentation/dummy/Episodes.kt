@@ -1,15 +1,15 @@
 package dev.jdtech.jellyfin.core.presentation.dummy
 
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidImages
-import dev.jdtech.jellyfin.models.FindroidMediaStream
-import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastImages
+import dev.jdtech.jellyfin.models.JellyCastMediaStream
+import dev.jdtech.jellyfin.models.JellyCastSource
+import dev.jdtech.jellyfin.models.JellyCastSourceType
 import org.jellyfin.sdk.model.api.MediaStreamType
 import java.time.LocalDateTime
 import java.util.UUID
 
-val dummyEpisode = FindroidEpisode(
+val dummyEpisode = JellyCastEpisode(
     id = UUID.randomUUID(),
     name = "Mother and Children",
     originalTitle = null,
@@ -18,14 +18,14 @@ val dummyEpisode = FindroidEpisode(
     indexNumberEnd = null,
     parentIndexNumber = 1,
     sources = listOf(
-        FindroidSource(
+        JellyCastSource(
             id = "",
             name = "",
-            type = FindroidSourceType.REMOTE,
+            type = JellyCastSourceType.REMOTE,
             path = "",
             size = 0L,
             mediaStreams = listOf(
-                FindroidMediaStream(
+                JellyCastMediaStream(
                     title = "",
                     displayTitle = "",
                     language = "en",
@@ -55,7 +55,7 @@ val dummyEpisode = FindroidEpisode(
     communityRating = 9.2f,
     people = emptyList(),
     trailer = null,
-    images = FindroidImages(),
+    images = JellyCastImages(),
     chapters = emptyList(),
     trickplayInfo = null,
 )

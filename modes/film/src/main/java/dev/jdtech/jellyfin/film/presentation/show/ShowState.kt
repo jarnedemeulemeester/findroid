@@ -1,16 +1,16 @@
 package dev.jdtech.jellyfin.film.presentation.show
 
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItemPerson
-import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItemPerson
+import dev.jdtech.jellyfin.models.JellyCastSeason
+import dev.jdtech.jellyfin.models.JellyCastShow
 
 data class ShowState(
-    val show: FindroidShow? = null,
-    val nextUp: FindroidEpisode? = null,
-    val seasons: List<FindroidSeason> = emptyList(),
-    val actors: List<FindroidItemPerson> = emptyList(),
-    val director: FindroidItemPerson? = null,
-    val writers: List<FindroidItemPerson> = emptyList(),
+    val show: JellyCastShow? = null,
+    val nextUp: JellyCastEpisode? = null,
+    val seasons: List<JellyCastSeason> = emptyList(),
+    val actors: List<JellyCastItemPerson> = emptyList(),
+    val director: JellyCastItemPerson? = null,
+    val writers: List<JellyCastItemPerson> = emptyList(),
     val error: Exception? = null,
 )

@@ -18,7 +18,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.SurfaceDefaults
 import androidx.tv.material3.Text
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
@@ -113,7 +113,7 @@ fun SettingsGroupCard(
 @Preview
 @Composable
 private fun SettingsGroupCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsGroupCard(
             group = PreferenceGroup(
                 nameStringResource = SettingsR.string.mpv_player,

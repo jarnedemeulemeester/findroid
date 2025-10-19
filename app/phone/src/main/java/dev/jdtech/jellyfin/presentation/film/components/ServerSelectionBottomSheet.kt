@@ -25,7 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
@@ -131,7 +131,7 @@ private fun ServerSelectionBottomSheetLayout(
 @Composable
 @Preview
 private fun ServerSelectionBottomSheetPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ServerSelectionBottomSheetLayout(
             currentServerId = "",
             state = ServersState(

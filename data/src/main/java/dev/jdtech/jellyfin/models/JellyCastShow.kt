@@ -7,13 +7,13 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
 import java.util.UUID
 
-data class FindroidShow(
+data class JellyCastShow(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String?,
     override val overview: String,
-    override val sources: List<FindroidSource>,
-    val seasons: List<FindroidSeason>,
+    override val sources: List<JellyCastSource>,
+    val seasons: List<JellyCastSeason>,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -21,7 +21,7 @@ data class FindroidShow(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     val genres: List<String>,
-    val people: List<FindroidItemPerson>,
+    val people: List<JellyCastItemPerson>,
     override val runtimeTicks: Long,
     val communityRating: Float?,
     val officialRating: String?,
@@ -29,14 +29,14 @@ data class FindroidShow(
     val productionYear: Int?,
     val endDate: DateTime?,
     val trailer: String?,
-    override val images: FindroidImages,
-    override val chapters: List<FindroidChapter> = emptyList(),
-) : FindroidItem
+    override val images: JellyCastImages,
+    override val chapters: List<JellyCastChapter> = emptyList(),
+) : JellyCastItem
 
-fun BaseItemDto.toFindroidShow(
+fun BaseItemDto.toJellyCastShow(
     jellyfinRepository: JellyfinRepository,
-): FindroidShow {
-    return FindroidShow(
+): JellyCastShow {
+    return JellyCastShow(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
@@ -49,7 +49,7 @@ fun BaseItemDto.toFindroidShow(
         sources = emptyList(),
         seasons = emptyList(),
         genres = genres ?: emptyList(),
-        people = people?.map { it.toFindroidPerson(jellyfinRepository) } ?: emptyList(),
+        people = people?.map { it.toJellyCastPerson(jellyfinRepository) } ?: emptyList(),
         runtimeTicks = runTimeTicks ?: 0,
         communityRating = communityRating,
         officialRating = officialRating,
@@ -57,17 +57,17 @@ fun BaseItemDto.toFindroidShow(
         productionYear = productionYear,
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
-        images = toFindroidImages(jellyfinRepository),
+        images = toJellyCastImages(jellyfinRepository),
     )
 }
 
-fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidShow {
+fun JellyCastShowDto.toJellyCastShow(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): JellyCastShow {
     val userData = database.getUserDataOrCreateNew(id, userId)
     
     // Build image URIs from baseUrl if available
     val images = if (baseUrl != null) {
         val uri = android.net.Uri.parse(baseUrl)
-        FindroidImages(
+        JellyCastImages(
             primary = uri.buildUpon()
                 .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
                 .build(),
@@ -76,10 +76,10 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID, ba
                 .build()
         )
     } else {
-        FindroidImages()
+        JellyCastImages()
     }
     
-    return FindroidShow(
+    return JellyCastShow(
         id = id,
         name = name,
         originalTitle = originalTitle,

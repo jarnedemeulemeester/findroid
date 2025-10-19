@@ -17,14 +17,14 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.dlna.DlnaDeviceManager
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
-    private var navigateToItemCallback: ((dev.jdtech.jellyfin.models.FindroidItem) -> Unit)? = null
+    private var navigateToItemCallback: ((dev.jdtech.jellyfin.models.JellyCastItem) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +37,12 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
-            FindroidTheme(
+            JellyCastTheme(
                 dynamicColor = state.isDynamicColors,
             ) {
                 val navController = rememberNavController()
                 val navigateFn = remember {
-                    { item: dev.jdtech.jellyfin.models.FindroidItem ->
+                    { item: dev.jdtech.jellyfin.models.JellyCastItem ->
                         dev.jdtech.jellyfin.navigateToItem(navController, item)
                     }
                 }
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             .enqueue()
     }
 
-    fun navigateToItem(item: dev.jdtech.jellyfin.models.FindroidItem) {
+    fun navigateToItem(item: dev.jdtech.jellyfin.models.JellyCastItem) {
         navigateToItemCallback?.invoke(item)
     }
 }

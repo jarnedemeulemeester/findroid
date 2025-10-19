@@ -24,7 +24,7 @@ import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import org.jellyfin.sdk.model.api.ImageType
 
 @Composable
@@ -78,7 +78,7 @@ fun ProfileButton(
 @Preview
 @Composable
 private fun ProfileButtonPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ProfileButton(
             user = dummyUser,
             onClick = {},

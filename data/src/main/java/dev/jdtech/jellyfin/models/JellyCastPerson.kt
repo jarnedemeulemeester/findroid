@@ -4,20 +4,20 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
 
-data class FindroidPerson(
+data class JellyCastPerson(
     val id: UUID,
     val name: String,
     val overview: String,
-    val images: FindroidImages,
+    val images: JellyCastImages,
 )
 
-fun BaseItemDto.toFindroidPerson(
+fun BaseItemDto.toJellyCastPerson(
     repository: JellyfinRepository,
-): FindroidPerson {
-    return FindroidPerson(
+): JellyCastPerson {
+    return JellyCastPerson(
         id = id,
         name = name.orEmpty(),
         overview = overview.orEmpty(),
-        images = toFindroidImages(repository),
+        images = toJellyCastImages(repository),
     )
 }

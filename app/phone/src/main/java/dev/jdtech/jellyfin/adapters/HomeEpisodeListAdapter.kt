@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.internal.managers.ViewComponentManager
 import dev.jdtech.jellyfin.bindCardItemImage
 import dev.jdtech.jellyfin.databinding.HomeEpisodeItemBinding
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.downloads.DownloaderEntryPoint
@@ -31,9 +31,9 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import timber.log.Timber
 
 class HomeEpisodeListAdapter(
-    private val onClickListener: (item: FindroidItem) -> Unit,
-    private val onLongClickListener: ((item: FindroidItem) -> Unit)? = null,
-) : ListAdapter<FindroidItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
+    private val onClickListener: (item: JellyCastItem) -> Unit,
+    private val onLongClickListener: ((item: JellyCastItem) -> Unit)? = null,
+) : ListAdapter<JellyCastItem, HomeEpisodeListAdapter.EpisodeViewHolder>(DiffCallback) {
     class EpisodeViewHolder(
         private var binding: HomeEpisodeItemBinding,
         private val parent: ViewGroup,
@@ -52,7 +52,7 @@ class HomeEpisodeListAdapter(
             }
         }
         
-        fun bind(item: FindroidItem) {
+        fun bind(item: JellyCastItem) {
             android.util.Log.d("DownloadsUI", "Bind episode ${item.id} name=${item.name} itemView size: w=${itemView.width} h=${itemView.height}")
             Timber.tag("DownloadsUI").d("Bind episode item %s downloaded=%s downloading=%s", item.id, item.isDownloaded(), item.isDownloading())
             if (item.playbackPositionTicks > 0) {
@@ -127,11 +127,11 @@ class HomeEpisodeListAdapter(
             }
 
             when (item) {
-                is FindroidMovie -> {
+                is JellyCastMovie -> {
                     binding.primaryName.text = item.name
                     binding.secondaryName.visibility = View.GONE
                 }
-                is FindroidEpisode -> {
+                is JellyCastEpisode -> {
                     binding.primaryName.text = item.seriesName
                     binding.secondaryName.text = if (item.indexNumberEnd == null) {
                         parent.resources.getString(CoreR.string.episode_name_extended, item.parentIndexNumber, item.indexNumber, item.name)
@@ -145,12 +145,12 @@ class HomeEpisodeListAdapter(
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<FindroidItem>() {
-        override fun areItemsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<JellyCastItem>() {
+        override fun areItemsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+        override fun areContentsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
             return oldItem.name == newItem.name
         }
     }

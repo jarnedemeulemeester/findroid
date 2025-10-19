@@ -26,13 +26,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun EpisodeCard(
-    episode: FindroidEpisode,
+    episode: JellyCastEpisode,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -104,7 +104,7 @@ fun EpisodeCard(
 @Preview(showBackground = true)
 @Composable
 private fun EpisodeCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         EpisodeCard(
             episode = dummyEpisode,
             onClick = {},

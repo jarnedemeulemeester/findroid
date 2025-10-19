@@ -43,7 +43,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerAddress
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.setup.presentation.addresses.ServerAddressesAction
@@ -207,7 +207,7 @@ fun ServerAddressesLayout(
 @PreviewScreenSizes
 @Composable
 private fun ServerAddressesLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ServerAddressesLayout(
             state = ServerAddressesState(
                 addresses = listOf(dummyServerAddress),

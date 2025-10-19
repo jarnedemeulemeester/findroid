@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.JellyCastSeason
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
@@ -241,7 +241,7 @@ fun NavigationRoot(
                 showId = UUID.fromString(route.itemId),
                 navigateToItem = { item ->
                     when (item) {
-                        is FindroidSeason -> {
+                        is JellyCastSeason -> {
                             navController.navigate(SeasonRoute(seasonId = item.id.toString()))
                         }
                     }

@@ -27,7 +27,7 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import org.jellyfin.sdk.model.api.ImageType
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -93,7 +93,7 @@ fun UserItem(
 @Preview
 @Composable
 private fun UserComponentPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         UserItem(
             user = dummyUser,
         )

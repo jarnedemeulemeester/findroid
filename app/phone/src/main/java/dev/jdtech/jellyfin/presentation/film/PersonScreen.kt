@@ -46,12 +46,12 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
 import dev.jdtech.jellyfin.film.presentation.person.PersonAction
 import dev.jdtech.jellyfin.film.presentation.person.PersonState
 import dev.jdtech.jellyfin.film.presentation.person.PersonViewModel
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidPerson
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastPerson
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import java.util.UUID
@@ -61,7 +61,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun PersonScreen(
     personId: UUID,
     navigateBack: () -> Unit,
-    navigateToItem: (item: FindroidItem) -> Unit,
+    navigateToItem: (item: JellyCastItem) -> Unit,
     viewModel: PersonViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -254,7 +254,7 @@ private fun PersonScreenLayout(
 
 @Composable
 private fun PersonImage(
-    person: FindroidPerson,
+    person: JellyCastPerson,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -274,7 +274,7 @@ private fun PersonImage(
 @PreviewScreenSizes
 @Composable
 private fun PersonScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         PersonScreenLayout(
             state = PersonState(
                 person = dummyPersonDetail,

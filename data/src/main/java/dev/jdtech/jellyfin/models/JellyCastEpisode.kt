@@ -8,7 +8,7 @@ import org.jellyfin.sdk.model.api.LocationType
 import org.jellyfin.sdk.model.api.PlayAccess
 import java.util.UUID
 
-data class FindroidEpisode(
+data class JellyCastEpisode(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String?,
@@ -16,7 +16,7 @@ data class FindroidEpisode(
     val indexNumber: Int,
     val indexNumberEnd: Int?,
     val parentIndexNumber: Int,
-    override val sources: List<FindroidSource>,
+    override val sources: List<JellyCastSource>,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -28,26 +28,26 @@ data class FindroidEpisode(
     val seriesId: UUID,
     val seasonId: UUID,
     val communityRating: Float?,
-    val people: List<FindroidItemPerson>,
+    val people: List<JellyCastItemPerson>,
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
     val missing: Boolean = false,
-    override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>,
-    override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
-) : FindroidItem, FindroidSources
+    override val images: JellyCastImages,
+    override val chapters: List<JellyCastChapter>,
+    override val trickplayInfo: Map<String, JellyCastTrickplayInfo>?,
+) : JellyCastItem, JellyCastSources
 
-suspend fun BaseItemDto.toFindroidEpisode(
+suspend fun BaseItemDto.toJellyCastEpisode(
     jellyfinRepository: JellyfinRepository,
     database: ServerDatabaseDao? = null,
-): FindroidEpisode? {
-    val sources = mutableListOf<FindroidSource>()
-    sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
+): JellyCastEpisode? {
+    val sources = mutableListOf<JellyCastSource>()
+    sources.addAll(mediaSources?.map { it.toJellyCastSource(jellyfinRepository, id) } ?: emptyList())
     if (database != null) {
-        sources.addAll(database.getSources(id).map { it.toFindroidSource(database) })
+        sources.addAll(database.getSources(id).map { it.toJellyCastSource(database) })
     }
     return try {
-        FindroidEpisode(
+        JellyCastEpisode(
             id = id,
             name = name.orEmpty(),
             originalTitle = originalTitle,
@@ -67,24 +67,24 @@ suspend fun BaseItemDto.toFindroidEpisode(
             seriesId = seriesId!!,
             seasonId = seasonId!!,
             communityRating = communityRating,
-            people = people?.map { it.toFindroidPerson(jellyfinRepository) } ?: emptyList(),
+            people = people?.map { it.toJellyCastPerson(jellyfinRepository) } ?: emptyList(),
             trailer = remoteTrailers?.getOrNull(0)?.url,
             missing = locationType == LocationType.VIRTUAL,
-            images = toFindroidImages(jellyfinRepository),
-            chapters = toFindroidChapters(),
-            trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
+            images = toJellyCastImages(jellyfinRepository),
+            chapters = toJellyCastChapters(),
+            trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toJellyCastTrickplayInfo() },
         )
     } catch (_: NullPointerException) {
         null
     }
 }
 
-fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidEpisode {
+fun JellyCastEpisodeDto.toJellyCastEpisode(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): JellyCastEpisode {
     val userData = database.getUserDataOrCreateNew(id, userId)
-    val sources = database.getSources(id).map { it.toFindroidSource(database) }
-    val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
+    val sources = database.getSources(id).map { it.toJellyCastSource(database) }
+    val trickplayInfos = mutableMapOf<String, JellyCastTrickplayInfo>()
     for (source in sources) {
-        database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
+        database.getTrickplayInfo(source.id)?.toJellyCastTrickplayInfo()?.let {
             trickplayInfos[source.id] = it
         }
     }
@@ -92,7 +92,7 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
     // Build image URIs from baseUrl if available
     val images = if (baseUrl != null) {
         val uri = android.net.Uri.parse(baseUrl)
-        FindroidImages(
+        JellyCastImages(
             primary = uri.buildUpon()
                 .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
                 .build(),
@@ -101,10 +101,10 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
                 .build()
         )
     } else {
-        FindroidImages()
+        JellyCastImages()
     }
     
-    return FindroidEpisode(
+    return JellyCastEpisode(
         id = id,
         name = name,
         originalTitle = "",

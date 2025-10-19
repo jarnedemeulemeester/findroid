@@ -2,12 +2,12 @@ package dev.jdtech.jellyfin.player.local.domain
 
 import androidx.core.net.toUri
 import androidx.media3.common.MimeTypes
-import dev.jdtech.jellyfin.models.FindroidChapter
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidSourceType
-import dev.jdtech.jellyfin.models.FindroidSources
+import dev.jdtech.jellyfin.models.JellyCastChapter
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastSourceType
+import dev.jdtech.jellyfin.models.JellyCastSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
@@ -25,8 +25,8 @@ class PlaylistManager
 internal constructor(
     private val repository: JellyfinRepository,
 ) {
-    private var startItem: FindroidItem? = null
-    private var items: List<FindroidItem> = emptyList()
+    private var startItem: JellyCastItem? = null
+    private var items: List<JellyCastItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
     var currentItemIndex: Int = 0
 
@@ -115,8 +115,8 @@ internal constructor(
 
         val itemIndex = currentItemIndex - 1
         val playerItem = when (startItem) {
-            is FindroidMovie -> null
-            is FindroidEpisode -> {
+            is JellyCastMovie -> null
+            is JellyCastEpisode -> {
                 if (currentItemIndex == 0) {
                     null
                 } else {
@@ -148,8 +148,8 @@ internal constructor(
 
         val itemIndex = currentItemIndex + 1
         val playerItem = when (startItem) {
-            is FindroidMovie -> null
-            is FindroidEpisode -> {
+            is JellyCastMovie -> null
+            is JellyCastEpisode -> {
                 if (currentItemIndex == items.lastIndex) {
                     null
                 } else {
@@ -180,15 +180,15 @@ internal constructor(
         currentItemIndex = items.indexOfFirst { it.id == itemId }
     }
 
-    private suspend fun FindroidItem.toPlayerItem(
+    private suspend fun JellyCastItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
     ): PlayerItem {
-        Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
+        Timber.d("Converting JellyCastItem ${this.id} to PlayerItem")
 
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource = if (mediaSourceIndex == null) {
-            mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
+            mediaSources.firstOrNull { it.type == JellyCastSourceType.LOCAL } ?: mediaSources[0]
         } else {
             mediaSources[mediaSourceIndex]
         }
@@ -210,7 +210,7 @@ internal constructor(
                 )
             }
         val trickplayInfo = when (this) {
-            is FindroidSources -> {
+            is JellyCastSources -> {
                 this.trickplayInfo?.get(mediaSource.id)?.let {
                     TrickplayInfo(
                         width = it.width,
@@ -231,16 +231,16 @@ internal constructor(
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,
             playbackPosition = playbackPosition,
-            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-            indexNumber = if (this is FindroidEpisode) indexNumber else null,
-            indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            parentIndexNumber = if (this is JellyCastEpisode) parentIndexNumber else null,
+            indexNumber = if (this is JellyCastEpisode) indexNumber else null,
+            indexNumberEnd = if (this is JellyCastEpisode) indexNumberEnd else null,
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
         )
     }
 
-    private fun List<FindroidChapter>.toPlayerChapters(): List<PlayerChapter> {
+    private fun List<JellyCastChapter>.toPlayerChapters(): List<PlayerChapter> {
         return this.map { chapter ->
             PlayerChapter(
                 startPosition = chapter.startPosition,

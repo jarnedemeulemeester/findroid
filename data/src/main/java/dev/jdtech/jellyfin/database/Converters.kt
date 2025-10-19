@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.database
 
 import androidx.room.TypeConverter
-import dev.jdtech.jellyfin.models.FindroidChapter
+import dev.jdtech.jellyfin.models.JellyCastChapter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.jellyfin.sdk.model.DateTime
@@ -30,12 +30,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromFindroidChaptersToString(value: List<FindroidChapter>?): String? {
+    fun fromJellyCastChaptersToString(value: List<JellyCastChapter>?): String? {
         return value?.let { Json.encodeToString(value) }
     }
 
     @TypeConverter
-    fun fromStringToFindroidChapters(value: String?): List<FindroidChapter>? {
+    fun fromStringToJellyCastChapters(value: String?): List<JellyCastChapter>? {
         return value?.let { Json.decodeFromString(value) }
     }
 }

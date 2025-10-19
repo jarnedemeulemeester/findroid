@@ -14,8 +14,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.coroutines.delay
 
@@ -36,7 +36,7 @@ private val dynamicPageSize = object : PageSize {
 
 @Composable
 fun HomeCarousel(
-    items: List<FindroidItem>,
+    items: List<JellyCastItem>,
     itemsPadding: PaddingValues,
     onAction: (HomeAction) -> Unit,
 ) {
@@ -73,7 +73,7 @@ fun HomeCarousel(
 @Composable
 @Preview(showBackground = true)
 private fun HomeCarouselPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         HomeCarousel(
             items = dummyMovies,
             itemsPadding = PaddingValues(horizontal = 0.dp),

@@ -41,7 +41,7 @@
         android:localeConfig="@xml/locales_config"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Findroid">
+        android:theme="@style/Theme.JellyCast">
 
         <!-- Cast Configuration -->
         <meta-data
@@ -55,18 +55,18 @@
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
             android:autoRemoveFromRecents="true"
-            android:theme="@style/Theme.Findroid.Player" />
+            android:theme="@style/Theme.JellyCast.Player" />
 
         <activity
             android:name=".TrailerActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|keyboard|keyboardHidden|navigation"
-            android:theme="@style/Theme.Findroid.Player"
+            android:theme="@style/Theme.JellyCast.Player"
             android:exported="false" />
 
         <activity
             android:name=".PlayerPickerActivity"
             android:exported="false"
-            android:theme="@style/Theme.Findroid" />
+            android:theme="@style/Theme.JellyCast" />
 
         <activity
             android:name=".MainActivity"

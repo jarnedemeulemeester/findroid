@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.MaterialTheme
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -122,7 +122,7 @@ fun VideoPlayerSeekBar(
 @Preview
 @Composable
 fun VideoPlayerSeekBarPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         VideoPlayerSeekBar(
             progress = 0.4f,
             onSeek = {},

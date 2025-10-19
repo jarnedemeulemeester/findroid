@@ -9,12 +9,12 @@ import dev.jdtech.jellyfin.core.Constants
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.jdtech.jellyfin.databinding.FavoriteSectionBinding
 import dev.jdtech.jellyfin.models.CollectionSection
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import timber.log.Timber
 
 class FavoritesListAdapter(
-    private val onItemClickListener: (item: FindroidItem) -> Unit,
-    private val onItemLongClickListener: ((item: FindroidItem) -> Unit)? = null,
+    private val onItemClickListener: (item: JellyCastItem) -> Unit,
+    private val onItemLongClickListener: ((item: JellyCastItem) -> Unit)? = null,
     private val onGenreClickListener: ((String?) -> Unit)? = null,
 ) : ListAdapter<CollectionSection, FavoritesListAdapter.SectionViewHolder>(DiffCallback) {
     
@@ -31,8 +31,8 @@ class FavoritesListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             section: CollectionSection,
-            onItemClickListener: (item: FindroidItem) -> Unit,
-            onItemLongClickListener: ((item: FindroidItem) -> Unit)?,
+            onItemClickListener: (item: JellyCastItem) -> Unit,
+            onItemLongClickListener: ((item: JellyCastItem) -> Unit)?,
             genres: List<String>,
             selectedGenre: String?,
             onGenreClickListener: ((String?) -> Unit)?,

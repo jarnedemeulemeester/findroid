@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.film.domain.VideoMetadataParser
-import dev.jdtech.jellyfin.models.FindroidItemPerson
-import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.JellyCastItemPerson
+import dev.jdtech.jellyfin.models.JellyCastMovie
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,19 +44,19 @@ constructor(
         }
     }
 
-    private suspend fun getActors(item: FindroidMovie): List<FindroidItemPerson> {
+    private suspend fun getActors(item: JellyCastMovie): List<JellyCastItemPerson> {
         return withContext(Dispatchers.Default) {
             item.people.filter { it.type == PersonKind.ACTOR }
         }
     }
 
-    private suspend fun getDirector(item: FindroidMovie): FindroidItemPerson? {
+    private suspend fun getDirector(item: JellyCastMovie): JellyCastItemPerson? {
         return withContext(Dispatchers.Default) {
             item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
         }
     }
 
-    private suspend fun getWriters(item: FindroidMovie): List<FindroidItemPerson> {
+    private suspend fun getWriters(item: JellyCastMovie): List<JellyCastItemPerson> {
         return withContext(Dispatchers.Default) {
             item.people.filter { it.type == PersonKind.WRITER }
         }

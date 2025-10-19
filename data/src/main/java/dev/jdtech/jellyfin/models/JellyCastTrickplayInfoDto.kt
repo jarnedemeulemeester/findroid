@@ -8,14 +8,14 @@ import androidx.room.PrimaryKey
     tableName = "trickplayInfos",
     foreignKeys = [
         ForeignKey(
-            entity = FindroidSourceDto::class,
+            entity = JellyCastSourceDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("sourceId"),
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class FindroidTrickplayInfoDto(
+data class JellyCastTrickplayInfoDto(
     @PrimaryKey
     val sourceId: String,
     val width: Int,
@@ -27,8 +27,8 @@ data class FindroidTrickplayInfoDto(
     val bandwidth: Int,
 )
 
-fun FindroidTrickplayInfo.toFindroidTrickplayInfoDto(sourceId: String): FindroidTrickplayInfoDto {
-    return FindroidTrickplayInfoDto(
+fun JellyCastTrickplayInfo.toJellyCastTrickplayInfoDto(sourceId: String): JellyCastTrickplayInfoDto {
+    return JellyCastTrickplayInfoDto(
         sourceId = sourceId,
         width = width,
         height = height,

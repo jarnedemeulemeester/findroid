@@ -56,7 +56,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.components.DlnaDevicePicker
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.dialogs.getStorageSelectionDialog
@@ -436,7 +436,7 @@ private fun MovieScreenLayout(
                         onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
                         onDownloadClick = { onAction(MovieAction.Download) },
                         onDeleteClick = {
-                            val local = movie.sources.firstOrNull { it.type == dev.jdtech.jellyfin.models.FindroidSourceType.LOCAL }
+                            val local = movie.sources.firstOrNull { it.type == dev.jdtech.jellyfin.models.JellyCastSourceType.LOCAL }
                             if (local != null) {
                                 val downloader = EntryPointAccessors.fromApplication(appContext, DownloaderEntryPoint::class.java).downloader()
                                 CoroutineScope(Dispatchers.IO).launch {
@@ -524,7 +524,7 @@ private fun MovieScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun MovieScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         MovieScreenLayout(
             state = MovieState(
                 movie = dummyMovie,

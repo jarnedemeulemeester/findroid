@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.film.domain
 import dev.jdtech.jellyfin.models.AudioChannel
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
-import dev.jdtech.jellyfin.models.FindroidSource
+import dev.jdtech.jellyfin.models.JellyCastSource
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoCodec
 import dev.jdtech.jellyfin.models.VideoMetadata
@@ -13,7 +13,7 @@ import org.jellyfin.sdk.model.api.MediaStreamType
 import org.jellyfin.sdk.model.api.VideoRangeType
 
 class VideoMetadataParser {
-    suspend fun parse(source: FindroidSource): VideoMetadata {
+    suspend fun parse(source: JellyCastSource): VideoMetadata {
         val resolution = mutableListOf<Resolution>()
         val videoCodecs = mutableListOf<VideoCodec?>()
         val audioChannels = mutableListOf<AudioChannel>()

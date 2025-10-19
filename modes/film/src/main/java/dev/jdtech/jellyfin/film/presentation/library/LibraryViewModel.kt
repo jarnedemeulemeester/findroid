@@ -71,8 +71,8 @@ constructor(
                 val sample = jellyfinRepository.getItems(parentId = parentId, includeTypes = itemType, recursive = recursive, sortBy = sortBy, sortOrder = sortOrder, startIndex = 0, limit = 200)
                 val genres = sample.flatMap {
                     when (it) {
-                        is dev.jdtech.jellyfin.models.FindroidMovie -> it.genres
-                        is dev.jdtech.jellyfin.models.FindroidShow -> it.genres
+                        is dev.jdtech.jellyfin.models.JellyCastMovie -> it.genres
+                        is dev.jdtech.jellyfin.models.JellyCastShow -> it.genres
                         else -> emptyList()
                     }
                 }.distinct().sorted()
@@ -84,8 +84,8 @@ constructor(
                     items.map { pagingData ->
                         pagingData.filter { item ->
                             when (item) {
-                                is dev.jdtech.jellyfin.models.FindroidMovie -> item.genres.contains(_state.value.selectedGenre)
-                                is dev.jdtech.jellyfin.models.FindroidShow -> item.genres.contains(_state.value.selectedGenre)
+                                is dev.jdtech.jellyfin.models.JellyCastMovie -> item.genres.contains(_state.value.selectedGenre)
+                                is dev.jdtech.jellyfin.models.JellyCastShow -> item.genres.contains(_state.value.selectedGenre)
                                 else -> false
                             }
                         }

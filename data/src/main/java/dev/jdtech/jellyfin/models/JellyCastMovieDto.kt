@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Entity(tableName = "shows")
-data class FindroidShowDto(
+@Entity(tableName = "movies")
+data class JellyCastMovieDto(
     @PrimaryKey
     val id: UUID,
     val serverId: String?,
@@ -14,25 +14,29 @@ data class FindroidShowDto(
     val originalTitle: String?,
     val overview: String,
     val runtimeTicks: Long,
+    val premiereDate: LocalDateTime?,
     val communityRating: Float?,
     val officialRating: String?,
     val status: String,
     val productionYear: Int?,
     val endDate: LocalDateTime?,
+    val chapters: List<JellyCastChapter>?,
 )
 
-fun FindroidShow.toFindroidShowDto(serverId: String? = null): FindroidShowDto {
-    return FindroidShowDto(
+fun JellyCastMovie.toJellyCastMovieDto(serverId: String? = null): JellyCastMovieDto {
+    return JellyCastMovieDto(
         id = id,
         serverId = serverId,
         name = name,
         originalTitle = originalTitle,
         overview = overview,
         runtimeTicks = runtimeTicks,
+        premiereDate = premiereDate,
         communityRating = communityRating,
         officialRating = officialRating,
         status = status,
         productionYear = productionYear,
         endDate = endDate,
+        chapters = chapters,
     )
 }

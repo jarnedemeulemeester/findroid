@@ -20,7 +20,7 @@ import dev.jdtech.jellyfin.models.DisplayProfile
 import dev.jdtech.jellyfin.models.Resolution
 import dev.jdtech.jellyfin.models.VideoCodec
 import dev.jdtech.jellyfin.models.VideoMetadata
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -99,7 +99,7 @@ fun VideoMetadataBarItem(
 @Composable
 @Preview(showBackground = true)
 private fun VideoMetadataBarPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         VideoMetadataBar(
             videoMetadata = VideoMetadata(
                 resolution = listOf(Resolution.UHD),

@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.Findroid" parent="Base.Theme.Findroid">
+    <style name="Theme.JellyCast" parent="Base.Theme.JellyCast">
         <!-- Primary -->
         <item name="colorPrimary">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/on_primary_dark</item>
@@ -17,7 +17,7 @@
         <item name="colorSurface">@color/neutral_900</item>
     </style>
 
-    <style name="ThemeOverlay.Findroid.Amoled" parent="">
+    <style name="ThemeOverlay.JellyCast.Amoled" parent="">
         <!-- Surface -->
         <item name="android:colorBackground">@android:color/black</item>
         <item name="colorSurface">@android:color/black</item>

@@ -5,7 +5,7 @@ import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
 import org.jellyfin.sdk.model.api.VideoRangeType
 
-data class FindroidMediaStream(
+data class JellyCastMediaStream(
     val title: String,
     val displayTitle: String?,
     val language: String,
@@ -20,8 +20,8 @@ data class FindroidMediaStream(
     val videoDoViTitle: String?,
 )
 
-fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream {
-    return FindroidMediaStream(
+fun MediaStream.toJellyCastMediaStream(jellyfinRepository: JellyfinRepository): JellyCastMediaStream {
+    return JellyCastMediaStream(
         title = title.orEmpty(),
         displayTitle = displayTitle,
         language = language.orEmpty(),
@@ -37,8 +37,8 @@ fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): F
     )
 }
 
-fun FindroidMediaStreamDto.toFindroidMediaStream(): FindroidMediaStream {
-    return FindroidMediaStream(
+fun JellyCastMediaStreamDto.toJellyCastMediaStream(): JellyCastMediaStream {
+    return JellyCastMediaStream(
         title = title,
         displayTitle = displayTitle,
         language = language,

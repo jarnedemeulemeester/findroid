@@ -46,7 +46,7 @@ import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.models.UiText
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.login.LoginAction
 import dev.jdtech.jellyfin.setup.presentation.login.LoginEvent
@@ -286,7 +286,7 @@ private fun LoginScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun LoginScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         LoginScreenLayout(
             state = LoginState(
                 serverName = "Demo Server",
@@ -300,7 +300,7 @@ private fun LoginScreenLayoutPreview() {
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun LoginScreenLayoutPreviewError() {
-    FindroidTheme {
+    JellyCastTheme {
         LoginScreenLayout(
             state = LoginState(
                 serverName = "Demo Server",

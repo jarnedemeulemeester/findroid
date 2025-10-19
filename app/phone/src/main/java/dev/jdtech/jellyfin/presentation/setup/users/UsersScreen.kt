@@ -36,7 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.UserItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.setup.presentation.users.UsersAction
 import dev.jdtech.jellyfin.setup.presentation.users.UsersEvent
 import dev.jdtech.jellyfin.setup.presentation.users.UsersState
@@ -223,7 +223,7 @@ private fun UsersScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun UsersScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         UsersScreenLayout(
             state = UsersState(
                 users = listOf(

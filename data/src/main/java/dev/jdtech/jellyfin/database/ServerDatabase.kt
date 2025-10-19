@@ -8,21 +8,21 @@ import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import dev.jdtech.jellyfin.models.FindroidEpisodeDto
-import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
-import dev.jdtech.jellyfin.models.FindroidMovieDto
-import dev.jdtech.jellyfin.models.FindroidSeasonDto
-import dev.jdtech.jellyfin.models.FindroidSegmentDto
-import dev.jdtech.jellyfin.models.FindroidShowDto
-import dev.jdtech.jellyfin.models.FindroidSourceDto
-import dev.jdtech.jellyfin.models.FindroidTrickplayInfoDto
-import dev.jdtech.jellyfin.models.FindroidUserDataDto
+import dev.jdtech.jellyfin.models.JellyCastEpisodeDto
+import dev.jdtech.jellyfin.models.JellyCastMediaStreamDto
+import dev.jdtech.jellyfin.models.JellyCastMovieDto
+import dev.jdtech.jellyfin.models.JellyCastSeasonDto
+import dev.jdtech.jellyfin.models.JellyCastSegmentDto
+import dev.jdtech.jellyfin.models.JellyCastShowDto
+import dev.jdtech.jellyfin.models.JellyCastSourceDto
+import dev.jdtech.jellyfin.models.JellyCastTrickplayInfoDto
+import dev.jdtech.jellyfin.models.JellyCastUserDataDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.User
 
 @Database(
-    entities = [Server::class, ServerAddress::class, User::class, FindroidMovieDto::class, FindroidShowDto::class, FindroidSeasonDto::class, FindroidEpisodeDto::class, FindroidSourceDto::class, FindroidMediaStreamDto::class, FindroidUserDataDto::class, FindroidTrickplayInfoDto::class, FindroidSegmentDto::class],
+    entities = [Server::class, ServerAddress::class, User::class, JellyCastMovieDto::class, JellyCastShowDto::class, JellyCastSeasonDto::class, JellyCastEpisodeDto::class, JellyCastSourceDto::class, JellyCastMediaStreamDto::class, JellyCastUserDataDto::class, JellyCastTrickplayInfoDto::class, JellyCastSegmentDto::class],
     version = 7,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),

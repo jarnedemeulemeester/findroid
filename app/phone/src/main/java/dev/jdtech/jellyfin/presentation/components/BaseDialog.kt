@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
@@ -91,7 +91,7 @@ fun BaseDialog(
 @Preview
 @Composable
 private fun BaseDialogPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         BaseDialog(
             title = "Dialog Title",
             onDismiss = {},
@@ -108,7 +108,7 @@ private fun BaseDialogPreview() {
 @Preview
 @Composable
 private fun BaseDialogButtonsPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         BaseDialog(
             title = "Dialog Title",
             negativeButton = {

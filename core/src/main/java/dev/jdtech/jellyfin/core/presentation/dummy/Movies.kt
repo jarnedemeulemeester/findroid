@@ -1,28 +1,28 @@
 package dev.jdtech.jellyfin.core.presentation.dummy
 
-import dev.jdtech.jellyfin.models.FindroidImages
-import dev.jdtech.jellyfin.models.FindroidMediaStream
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidSource
-import dev.jdtech.jellyfin.models.FindroidSourceType
+import dev.jdtech.jellyfin.models.JellyCastImages
+import dev.jdtech.jellyfin.models.JellyCastMediaStream
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastSource
+import dev.jdtech.jellyfin.models.JellyCastSourceType
 import org.jellyfin.sdk.model.api.MediaStreamType
 import java.time.LocalDateTime
 import java.util.UUID
 
-val dummyMovie = FindroidMovie(
+val dummyMovie = JellyCastMovie(
     id = UUID.randomUUID(),
     name = "Alita: Battle Angel",
     originalTitle = null,
     overview = "When Alita awakens with no memory of who she is in a future world she does not recognize, she is taken in by Ido, a compassionate doctor who realizes that somewhere in this abandoned cyborg shell is the heart and soul of a young woman with an extraordinary past.",
     sources = listOf(
-        FindroidSource(
+        JellyCastSource(
             id = "",
             name = "",
-            type = FindroidSourceType.REMOTE,
+            type = JellyCastSourceType.REMOTE,
             path = "",
             size = 0L,
             mediaStreams = listOf(
-                FindroidMediaStream(
+                JellyCastMediaStream(
                     title = "",
                     displayTitle = "",
                     language = "en",
@@ -54,7 +54,7 @@ val dummyMovie = FindroidMovie(
     productionYear = 2019,
     endDate = null,
     trailer = "https://www.youtube.com/watch?v=puKWa8hrvA8",
-    images = FindroidImages(),
+    images = JellyCastImages(),
     chapters = emptyList(),
     trickplayInfo = null,
 )

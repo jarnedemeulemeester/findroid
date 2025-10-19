@@ -6,25 +6,25 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidPerson
-import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.models.FindroidSource
+import dev.jdtech.jellyfin.models.JellyCastCollection
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastPerson
+import dev.jdtech.jellyfin.models.JellyCastSeason
+import dev.jdtech.jellyfin.models.JellyCastSegment
+import dev.jdtech.jellyfin.models.JellyCastShow
+import dev.jdtech.jellyfin.models.JellyCastSource
 import dev.jdtech.jellyfin.models.SortBy
-import dev.jdtech.jellyfin.models.toFindroidCollection
-import dev.jdtech.jellyfin.models.toFindroidEpisode
-import dev.jdtech.jellyfin.models.toFindroidItem
-import dev.jdtech.jellyfin.models.toFindroidMovie
-import dev.jdtech.jellyfin.models.toFindroidPerson
-import dev.jdtech.jellyfin.models.toFindroidSeason
-import dev.jdtech.jellyfin.models.toFindroidSegment
-import dev.jdtech.jellyfin.models.toFindroidShow
-import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.toJellyCastCollection
+import dev.jdtech.jellyfin.models.toJellyCastEpisode
+import dev.jdtech.jellyfin.models.toJellyCastItem
+import dev.jdtech.jellyfin.models.toJellyCastMovie
+import dev.jdtech.jellyfin.models.toJellyCastPerson
+import dev.jdtech.jellyfin.models.toJellyCastSeason
+import dev.jdtech.jellyfin.models.toJellyCastSegment
+import dev.jdtech.jellyfin.models.toJellyCastShow
+import dev.jdtech.jellyfin.models.toJellyCastSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -62,44 +62,44 @@ class JellyfinRepositoryImpl(
         jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items
     }
 
-    override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
+    override suspend fun getEpisode(itemId: UUID): JellyCastEpisode =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 itemId,
                 jellyfinApi.userId!!,
-            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            ).content.toJellyCastEpisode(this@JellyfinRepositoryImpl, database)!!
         }
 
-    override suspend fun getMovie(itemId: UUID): FindroidMovie =
+    override suspend fun getMovie(itemId: UUID): JellyCastMovie =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 itemId,
                 jellyfinApi.userId!!,
-            ).content.toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            ).content.toJellyCastMovie(this@JellyfinRepositoryImpl, database)
         }
 
-    override suspend fun getShow(itemId: UUID): FindroidShow =
+    override suspend fun getShow(itemId: UUID): JellyCastShow =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 itemId,
                 jellyfinApi.userId!!,
-            ).content.toFindroidShow(this@JellyfinRepositoryImpl)
+            ).content.toJellyCastShow(this@JellyfinRepositoryImpl)
         }
 
-    override suspend fun getSeason(itemId: UUID): FindroidSeason =
+    override suspend fun getSeason(itemId: UUID): JellyCastSeason =
         withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getItem(
                 itemId,
                 jellyfinApi.userId!!,
-            ).content.toFindroidSeason(this@JellyfinRepositoryImpl)
+            ).content.toJellyCastSeason(this@JellyfinRepositoryImpl)
         }
 
-    override suspend fun getLibraries(): List<FindroidCollection> =
+    override suspend fun getLibraries(): List<JellyCastCollection> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
             ).content.items
-                .mapNotNull { it.toFindroidCollection(this@JellyfinRepositoryImpl) }
+                .mapNotNull { it.toJellyCastCollection(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getItems(
@@ -110,7 +110,7 @@ class JellyfinRepositoryImpl(
         sortOrder: SortOrder,
         startIndex: Int?,
         limit: Int?,
-    ): List<FindroidItem> =
+    ): List<JellyCastItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -123,7 +123,7 @@ class JellyfinRepositoryImpl(
                 startIndex = startIndex,
                 limit = limit,
             ).content.items
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
+                .mapNotNull { it.toJellyCastItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getItemsPaging(
@@ -132,7 +132,7 @@ class JellyfinRepositoryImpl(
         recursive: Boolean,
         sortBy: SortBy,
         sortOrder: SortOrder,
-    ): Flow<PagingData<FindroidItem>> {
+    ): Flow<PagingData<JellyCastItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -151,16 +151,16 @@ class JellyfinRepositoryImpl(
         ).flow
     }
 
-    override suspend fun getPerson(personId: UUID): FindroidPerson =
+    override suspend fun getPerson(personId: UUID): JellyCastPerson =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(personId, jellyfinApi.userId!!).content.toFindroidPerson(this@JellyfinRepositoryImpl)
+            jellyfinApi.userLibraryApi.getItem(personId, jellyfinApi.userId!!).content.toJellyCastPerson(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getPersonItems(
         personIds: List<UUID>,
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean,
-    ): List<FindroidItem> = withContext(Dispatchers.IO) {
+    ): List<JellyCastItem> = withContext(Dispatchers.IO) {
         jellyfinApi.itemsApi.getItems(
             jellyfinApi.userId!!,
             personIds = personIds,
@@ -168,11 +168,11 @@ class JellyfinRepositoryImpl(
             recursive = recursive,
         ).content.items
             .mapNotNull {
-                it.toFindroidItem(this@JellyfinRepositoryImpl, database)
+                it.toJellyCastItem(this@JellyfinRepositoryImpl, database)
             }
     }
 
-    override suspend fun getFavoriteItems(): List<FindroidItem> =
+    override suspend fun getFavoriteItems(): List<JellyCastItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -184,10 +184,10 @@ class JellyfinRepositoryImpl(
                 ),
                 recursive = true,
             ).content.items
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
+                .mapNotNull { it.toJellyCastItem(this@JellyfinRepositoryImpl, database) }
         }
 
-    override suspend fun getSearchItems(query: String): List<FindroidItem> =
+    override suspend fun getSearchItems(query: String): List<JellyCastItem> =
         withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getItems(
                 jellyfinApi.userId!!,
@@ -198,10 +198,10 @@ class JellyfinRepositoryImpl(
                 ),
                 recursive = true,
             ).content.items
-                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
+                .mapNotNull { it.toJellyCastItem(this@JellyfinRepositoryImpl, database) }
         }
 
-    override suspend fun getSuggestions(): List<FindroidItem> {
+    override suspend fun getSuggestions(): List<JellyCastItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.suggestionsApi.getSuggestions(
                 jellyfinApi.userId!!,
@@ -210,11 +210,11 @@ class JellyfinRepositoryImpl(
             ).content.items
         }
         return items.mapNotNull {
-            it.toFindroidItem(this, database)
+            it.toJellyCastItem(this, database)
         }
     }
 
-    override suspend fun getResumeItems(): List<FindroidItem> {
+    override suspend fun getResumeItems(): List<JellyCastItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.itemsApi.getResumeItems(
                 jellyfinApi.userId!!,
@@ -223,11 +223,11 @@ class JellyfinRepositoryImpl(
             ).content.items
         }
         return items.mapNotNull {
-            it.toFindroidItem(this, database)
+            it.toJellyCastItem(this, database)
         }
     }
 
-    override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> {
+    override suspend fun getLatestMedia(parentId: UUID): List<JellyCastItem> {
         val items = withContext(Dispatchers.IO) {
             jellyfinApi.userLibraryApi.getLatestMedia(
                 jellyfinApi.userId!!,
@@ -236,21 +236,21 @@ class JellyfinRepositoryImpl(
             ).content
         }
         return items.mapNotNull {
-            it.toFindroidItem(this, database)
+            it.toJellyCastItem(this, database)
         }
     }
 
-    override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
+    override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<JellyCastSeason> =
         withContext(Dispatchers.IO) {
             if (!offline) {
                 jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
-                    .map { it.toFindroidSeason(this@JellyfinRepositoryImpl) }
+                    .map { it.toJellyCastSeason(this@JellyfinRepositoryImpl) }
             } else {
-                database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
+                database.getSeasonsByShowId(seriesId).map { it.toJellyCastSeason(database, jellyfinApi.userId!!) }
             }
         }
 
-    override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
+    override suspend fun getNextUp(seriesId: UUID?): List<JellyCastEpisode> =
         withContext(Dispatchers.IO) {
             jellyfinApi.showsApi.getNextUp(
                 jellyfinApi.userId!!,
@@ -258,7 +258,7 @@ class JellyfinRepositoryImpl(
                 seriesId = seriesId,
                 enableResumable = false,
             ).content.items
-                .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
+                .mapNotNull { it.toJellyCastEpisode(this@JellyfinRepositoryImpl) }
         }
 
     override suspend fun getEpisodes(
@@ -268,7 +268,7 @@ class JellyfinRepositoryImpl(
         startItemId: UUID?,
         limit: Int?,
         offline: Boolean,
-    ): List<FindroidEpisode> =
+    ): List<JellyCastEpisode> =
         withContext(Dispatchers.IO) {
             if (!offline) {
                 jellyfinApi.showsApi.getEpisodes(
@@ -279,15 +279,15 @@ class JellyfinRepositoryImpl(
                     startItemId = startItemId,
                     limit = limit,
                 ).content.items
-                    .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
+                    .mapNotNull { it.toJellyCastEpisode(this@JellyfinRepositoryImpl, database) }
             } else {
-                database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                database.getEpisodesBySeasonId(seasonId).map { it.toJellyCastEpisode(database, jellyfinApi.userId!!) }
             }
         }
 
-    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
+    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<JellyCastSource> =
         withContext(Dispatchers.IO) {
-            val sources = mutableListOf<FindroidSource>()
+            val sources = mutableListOf<JellyCastSource>()
             sources.addAll(
                 jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
                     itemId,
@@ -309,7 +309,7 @@ class JellyfinRepositoryImpl(
                         maxStreamingBitrate = 1_000_000_000,
                     ),
                 ).content.mediaSources.map {
-                    it.toFindroidSource(
+                    it.toJellyCastSource(
                         this@JellyfinRepositoryImpl,
                         itemId,
                         includePath,
@@ -317,7 +317,7 @@ class JellyfinRepositoryImpl(
                 },
             )
             sources.addAll(
-                database.getSources(itemId).map { it.toFindroidSource(database) },
+                database.getSources(itemId).map { it.toJellyCastSource(database) },
             )
             sources
         }
@@ -336,10 +336,10 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
+    override suspend fun getSegments(itemId: UUID): List<JellyCastSegment> =
         withContext(Dispatchers.IO) {
             val databaseSegments = database.getSegments(itemId).map {
-                it.toFindroidSegment()
+                it.toJellyCastSegment()
             }
 
             if (databaseSegments.isNotEmpty()) {
@@ -348,7 +348,7 @@ class JellyfinRepositoryImpl(
 
             try {
                 val apiSegments = jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map {
-                    it.toFindroidSegment()
+                    it.toJellyCastSegment()
                 }
 
                 return@withContext apiSegments
@@ -519,36 +519,36 @@ class JellyfinRepositoryImpl(
         jellyfinApi.userApi.getCurrentUser().content.configuration!!
     }
 
-    override suspend fun getDownloads(): List<FindroidItem> =
+    override suspend fun getDownloads(): List<JellyCastItem> =
         withContext(Dispatchers.IO) {
             val serverId = appPreferences.getValue(appPreferences.currentServer)
             val userId = jellyfinApi.userId ?: return@withContext emptyList()
             val baseUrl = getBaseUrl()
-            val items = mutableListOf<FindroidItem>()
+            val items = mutableListOf<JellyCastItem>()
             Timber.tag("Repo").d("getDownloads(online) serverId=%s userId=%s baseUrl=%s", serverId, userId, baseUrl)
 
             // Include entries for current server and any entries where serverId is null (created before we set serverId)
             items.addAll(
                 database.getMovies()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { movieDto -> movieDto.toFindroidMovie(database, userId, baseUrl) },
+                    .map { movieDto -> movieDto.toJellyCastMovie(database, userId, baseUrl) },
             )
             items.addAll(
                 database.getShows()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { showDto -> showDto.toFindroidShow(database, userId, baseUrl) },
+                    .map { showDto -> showDto.toJellyCastShow(database, userId, baseUrl) },
             )
             items.addAll(
                 database.getEpisodes()
                     .filter { dto -> serverId == null || dto.serverId == serverId || dto.serverId == null }
-                    .map { episodeDto -> episodeDto.toFindroidEpisode(database, userId, baseUrl) },
+                    .map { episodeDto -> episodeDto.toJellyCastEpisode(database, userId, baseUrl) },
             )
             Timber.tag("Repo").d(
                 "getDownloads(online) -> total=%d movies=%d shows=%d episodes=%d",
                 items.size,
-                items.count { it is FindroidMovie },
-                items.count { it is FindroidShow },
-                items.count { it is FindroidEpisode },
+                items.count { it is JellyCastMovie },
+                items.count { it is JellyCastShow },
+                items.count { it is JellyCastEpisode },
             )
             items
         }

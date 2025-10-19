@@ -25,15 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun HomeCarouselItem(
-    item: FindroidItem,
+    item: JellyCastItem,
     onAction: (HomeAction) -> Unit,
 ) {
     val colorStops = arrayOf(
@@ -81,8 +81,8 @@ fun HomeCarouselItem(
                 },
         ) {
             val genres = when (item) {
-                is FindroidMovie -> item.genres
-                is FindroidShow -> item.genres
+                is JellyCastMovie -> item.genres
+                is JellyCastShow -> item.genres
                 else -> emptyList()
             }
             Text(
@@ -107,7 +107,7 @@ fun HomeCarouselItem(
 @Composable
 @Preview(showBackground = true)
 private fun HomeCarouselItemPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         HomeCarouselItem(
             item = dummyMovie,
             onAction = {},

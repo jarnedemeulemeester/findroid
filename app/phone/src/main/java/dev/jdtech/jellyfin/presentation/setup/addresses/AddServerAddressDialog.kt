@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.presentation.components.BaseDialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
 
@@ -91,7 +91,7 @@ fun AddServerAddressDialog(
 @Preview
 @Composable
 private fun AddServerAddressDialogPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         AddServerAddressDialog(
             onAdd = {},
             onDismiss = {},

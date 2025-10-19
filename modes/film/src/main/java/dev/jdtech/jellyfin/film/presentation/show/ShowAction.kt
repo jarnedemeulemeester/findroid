@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.film.presentation.show
 
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import java.util.UUID
 
 sealed interface ShowAction {
@@ -11,6 +11,6 @@ sealed interface ShowAction {
     data object MarkAsFavorite : ShowAction
     data object UnmarkAsFavorite : ShowAction
     data object OnBackClick : ShowAction
-    data class NavigateToItem(val item: FindroidItem) : ShowAction
+    data class NavigateToItem(val item: JellyCastItem) : ShowAction
     data class NavigateToPerson(val personId: UUID) : ShowAction
 }

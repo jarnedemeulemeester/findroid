@@ -3,9 +3,9 @@ package dev.jdtech.jellyfin.film.presentation.show
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItemPerson
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItemPerson
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,24 +44,24 @@ constructor(
         }
     }
 
-    private suspend fun getNextUp(showId: UUID): FindroidEpisode? {
+    private suspend fun getNextUp(showId: UUID): JellyCastEpisode? {
         val nextUpItems = repository.getNextUp(showId)
         return nextUpItems.getOrNull(0)
     }
 
-    private suspend fun getActors(item: FindroidShow): List<FindroidItemPerson> {
+    private suspend fun getActors(item: JellyCastShow): List<JellyCastItemPerson> {
         return withContext(Dispatchers.Default) {
             item.people.filter { it.type == PersonKind.ACTOR }
         }
     }
 
-    private suspend fun getDirector(item: FindroidShow): FindroidItemPerson? {
+    private suspend fun getDirector(item: JellyCastShow): JellyCastItemPerson? {
         return withContext(Dispatchers.Default) {
             item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
         }
     }
 
-    private suspend fun getWriters(item: FindroidShow): List<FindroidItemPerson> {
+    private suspend fun getWriters(item: JellyCastShow): List<JellyCastItemPerson> {
         return withContext(Dispatchers.Default) {
             item.people.filter { it.type == PersonKind.WRITER }
         }

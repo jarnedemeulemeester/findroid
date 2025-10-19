@@ -37,12 +37,12 @@ import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidFolder
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.JellyCastFolder
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
@@ -85,9 +85,9 @@ fun LibraryScreen(
             when (action) {
                 is LibraryAction.OnItemClick -> {
                     when (action.item) {
-                        is FindroidMovie -> navigateToMovie(action.item.id)
-                        is FindroidShow -> navigateToShow(action.item.id)
-                        is FindroidFolder -> navigateToLibrary(action.item.id, action.item.name, libraryType)
+                        is JellyCastMovie -> navigateToMovie(action.item.id)
+                        is JellyCastShow -> navigateToShow(action.item.id)
+                        is JellyCastFolder -> navigateToLibrary(action.item.id, action.item.name, libraryType)
                     }
                 }
                 else -> Unit
@@ -189,8 +189,8 @@ private fun LibraryScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun LibraryScreenLayoutPreview() {
-    val items: Flow<PagingData<FindroidItem>> = flowOf(PagingData.from(dummyMovies))
-    FindroidTheme {
+    val items: Flow<PagingData<JellyCastItem>> = flowOf(PagingData.from(dummyMovies))
+    JellyCastTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
             state = LibraryState(items = items),

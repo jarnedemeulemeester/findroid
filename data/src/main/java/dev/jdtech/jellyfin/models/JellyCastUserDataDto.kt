@@ -7,7 +7,7 @@ import java.util.UUID
     tableName = "userdata",
     primaryKeys = ["userId", "itemId"],
 )
-data class FindroidUserDataDto(
+data class JellyCastUserDataDto(
     val userId: UUID,
     val itemId: UUID,
     val played: Boolean,
@@ -16,8 +16,8 @@ data class FindroidUserDataDto(
     val toBeSynced: Boolean = false,
 )
 
-fun FindroidItem.toFindroidUserDataDto(userId: UUID): FindroidUserDataDto {
-    return FindroidUserDataDto(
+fun JellyCastItem.toJellyCastUserDataDto(userId: UUID): JellyCastUserDataDto {
+    return JellyCastUserDataDto(
         userId = userId,
         itemId = id,
         played = played,

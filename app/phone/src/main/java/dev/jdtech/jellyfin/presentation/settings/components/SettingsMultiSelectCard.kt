@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
@@ -103,7 +103,7 @@ fun SettingsMultiSelectCard(
 @Preview
 @Composable
 private fun SettingsSelectCardPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SettingsMultiSelectCard(
             preference = PreferenceMultiSelect(
                 nameStringResource = SettingsR.string.pref_player_media_segments_skip_button_type,

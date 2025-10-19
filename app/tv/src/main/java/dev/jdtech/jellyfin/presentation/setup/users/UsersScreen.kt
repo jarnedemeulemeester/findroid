@@ -33,7 +33,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUsers
 import dev.jdtech.jellyfin.presentation.setup.components.UserItem
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.users.UsersAction
 import dev.jdtech.jellyfin.setup.presentation.users.UsersEvent
@@ -158,7 +158,7 @@ private fun UsersScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun UsersScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         UsersScreenLayout(
             state = UsersState(users = dummyUsers, publicUsers = dummyUsers, serverName = "Demo"),
             onAction = {},
@@ -170,7 +170,7 @@ private fun UsersScreenLayoutPreview() {
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun UsersScreenLayoutPreviewNoUsers() {
-    FindroidTheme {
+    JellyCastTheme {
         UsersScreenLayout(
             state = UsersState(serverName = "Demo"),
             onAction = {},

@@ -49,13 +49,13 @@ import dev.jdtech.jellyfin.film.presentation.library.LibraryAction.SelectGenre
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
 import dev.jdtech.jellyfin.presentation.utils.plus
@@ -69,7 +69,7 @@ fun LibraryScreen(
     libraryId: UUID,
     libraryName: String,
     libraryType: CollectionType,
-    onItemClick: (item: FindroidItem) -> Unit,
+    onItemClick: (item: JellyCastItem) -> Unit,
     navigateBack: () -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
@@ -293,8 +293,8 @@ private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, mo
 @PreviewScreenSizes
 @Composable
 private fun LibraryScreenLayoutPreview() {
-    val items: Flow<PagingData<FindroidItem>> = flowOf(PagingData.from(dummyMovies))
-    FindroidTheme {
+    val items: Flow<PagingData<JellyCastItem>> = flowOf(PagingData.from(dummyMovies))
+    JellyCastTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
             state = LibraryState(items = items),

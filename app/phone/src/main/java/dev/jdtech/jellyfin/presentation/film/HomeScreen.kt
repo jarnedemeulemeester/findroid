@@ -33,25 +33,25 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.film.presentation.home.HomeState
 import dev.jdtech.jellyfin.film.presentation.home.HomeViewModel
-import dev.jdtech.jellyfin.models.FindroidCollection
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.JellyCastCollection
+import dev.jdtech.jellyfin.models.JellyCastItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.HomeCarousel
 import dev.jdtech.jellyfin.presentation.film.components.HomeHeader
 import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.film.components.ServerSelectionBottomSheet
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    onLibraryClick: (library: FindroidCollection) -> Unit,
+    onLibraryClick: (library: JellyCastCollection) -> Unit,
     onSettingsClick: () -> Unit,
     onManageServers: () -> Unit,
-    onItemClick: (item: FindroidItem) -> Unit,
+    onItemClick: (item: JellyCastItem) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -214,7 +214,7 @@ private fun HomeScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun HomeScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         HomeScreenLayout(
             state = HomeState(
                 server = dummyServer,

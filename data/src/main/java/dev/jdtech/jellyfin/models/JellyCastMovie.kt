@@ -7,12 +7,12 @@ import org.jellyfin.sdk.model.api.PlayAccess
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class FindroidMovie(
+data class JellyCastMovie(
     override val id: UUID,
     override val name: String,
     override val originalTitle: String?,
     override val overview: String,
-    override val sources: List<FindroidSource>,
+    override val sources: List<JellyCastSource>,
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
@@ -20,7 +20,7 @@ data class FindroidMovie(
     override val runtimeTicks: Long,
     override val playbackPositionTicks: Long,
     val premiereDate: LocalDateTime?,
-    val people: List<FindroidItemPerson>,
+    val people: List<JellyCastItemPerson>,
     val genres: List<String>,
     val communityRating: Float?,
     val officialRating: String?,
@@ -29,21 +29,21 @@ data class FindroidMovie(
     val endDate: LocalDateTime?,
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
-    override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>,
-    override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
-) : FindroidItem, FindroidSources
+    override val images: JellyCastImages,
+    override val chapters: List<JellyCastChapter>,
+    override val trickplayInfo: Map<String, JellyCastTrickplayInfo>?,
+) : JellyCastItem, JellyCastSources
 
-suspend fun BaseItemDto.toFindroidMovie(
+suspend fun BaseItemDto.toJellyCastMovie(
     jellyfinRepository: JellyfinRepository,
     serverDatabase: ServerDatabaseDao? = null,
-): FindroidMovie {
-    val sources = mutableListOf<FindroidSource>()
-    sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
+): JellyCastMovie {
+    val sources = mutableListOf<JellyCastSource>()
+    sources.addAll(mediaSources?.map { it.toJellyCastSource(jellyfinRepository, id) } ?: emptyList())
     if (serverDatabase != null) {
-        sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) })
+        sources.addAll(serverDatabase.getSources(id).map { it.toJellyCastSource(serverDatabase) })
     }
-    return FindroidMovie(
+    return JellyCastMovie(
         id = id,
         name = name.orEmpty(),
         originalTitle = originalTitle,
@@ -58,24 +58,24 @@ suspend fun BaseItemDto.toFindroidMovie(
         premiereDate = premiereDate,
         communityRating = communityRating,
         genres = genres ?: emptyList(),
-        people = people?.map { it.toFindroidPerson(jellyfinRepository) } ?: emptyList(),
+        people = people?.map { it.toJellyCastPerson(jellyfinRepository) } ?: emptyList(),
         officialRating = officialRating,
         status = status ?: "Ended",
         productionYear = productionYear,
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
-        images = toFindroidImages(jellyfinRepository),
-        chapters = toFindroidChapters(),
-        trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
+        images = toJellyCastImages(jellyfinRepository),
+        chapters = toJellyCastChapters(),
+        trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toJellyCastTrickplayInfo() },
     )
 }
 
-fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): FindroidMovie {
+fun JellyCastMovieDto.toJellyCastMovie(database: ServerDatabaseDao, userId: UUID, baseUrl: String? = null): JellyCastMovie {
     val userData = database.getUserDataOrCreateNew(id, userId)
-    val sources = database.getSources(id).map { it.toFindroidSource(database) }
-    val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
+    val sources = database.getSources(id).map { it.toJellyCastSource(database) }
+    val trickplayInfos = mutableMapOf<String, JellyCastTrickplayInfo>()
     for (source in sources) {
-        database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
+        database.getTrickplayInfo(source.id)?.toJellyCastTrickplayInfo()?.let {
             trickplayInfos[source.id] = it
         }
     }
@@ -83,7 +83,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID, 
     // Build image URIs from baseUrl if available
     val images = if (baseUrl != null) {
         val uri = android.net.Uri.parse(baseUrl)
-        FindroidImages(
+        JellyCastImages(
             primary = uri.buildUpon()
                 .appendEncodedPath("items/$id/Images/${org.jellyfin.sdk.model.api.ImageType.PRIMARY}")
                 .build(),
@@ -92,10 +92,10 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID, 
                 .build()
         )
     } else {
-        FindroidImages()
+        JellyCastImages()
     }
     
-    return FindroidMovie(
+    return JellyCastMovie(
         id = id,
         name = name,
         originalTitle = originalTitle,
@@ -114,7 +114,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID, 
         endDate = endDate,
         canDownload = false,
         canPlay = true,
-        sources = database.getSources(id).map { it.toFindroidSource(database) },
+        sources = database.getSources(id).map { it.toJellyCastSource(database) },
         trailer = null,
         images = images,
         chapters = chapters ?: emptyList(),

@@ -25,7 +25,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
 import java.util.UUID
@@ -117,7 +117,7 @@ private fun SeasonScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun SeasonScreenLayoutPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         SeasonScreenLayout(
             state = SeasonState(
                 season = dummySeason,

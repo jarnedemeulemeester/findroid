@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -134,7 +134,7 @@ fun ServerSelectionItem(
 @Composable
 @Preview
 private fun ServerSelectionItemPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ServerSelectionItem(
             server = ServerWithAddresses(
                 server = dummyServer,
@@ -153,7 +153,7 @@ private fun ServerSelectionItemPreview() {
 @Composable
 @Preview
 private fun ServerSelectionItemSelectedPreview() {
-    FindroidTheme {
+    JellyCastTheme {
         ServerSelectionItem(
             server = ServerWithAddresses(
                 server = dummyServer,

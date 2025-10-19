@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.jdtech.jellyfin.bindItemImage
 import dev.jdtech.jellyfin.databinding.BaseItemBinding
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastMovie
+import dev.jdtech.jellyfin.models.JellyCastShow
+import dev.jdtech.jellyfin.models.JellyCastEpisode
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.models.isDownloading
 
 class DownloadsAdapter(
-    private val onItemClickListener: (item: FindroidItem) -> Unit,
-    private val onItemLongClickListener: (item: FindroidItem) -> Unit,
-) : ListAdapter<FindroidItem, DownloadsAdapter.ItemViewHolder>(DiffCallback) {
+    private val onItemClickListener: (item: JellyCastItem) -> Unit,
+    private val onItemLongClickListener: (item: JellyCastItem) -> Unit,
+) : ListAdapter<JellyCastItem, DownloadsAdapter.ItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = BaseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -35,11 +35,11 @@ class DownloadsAdapter(
     inner class ItemViewHolder(private val binding: BaseItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: FindroidItem) {
+        fun bind(item: JellyCastItem) {
             val itemName = when (item) {
-                is FindroidMovie -> item.name
-                is FindroidShow -> item.name
-                is FindroidEpisode -> item.name
+                is JellyCastMovie -> item.name
+                is JellyCastShow -> item.name
+                is JellyCastEpisode -> item.name
                 else -> ""
             }
             
@@ -71,7 +71,7 @@ class DownloadsAdapter(
             }
 
             // Item count (for shows)
-            if (item is FindroidShow) {
+            if (item is JellyCastShow) {
                 val downloadedCount = item.sources.size
                 binding.itemCount.isVisible = downloadedCount > 0
                 binding.itemCount.text = downloadedCount.toString()
@@ -91,12 +91,12 @@ class DownloadsAdapter(
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<FindroidItem>() {
-            override fun areItemsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+        private val DiffCallback = object : DiffUtil.ItemCallback<JellyCastItem>() {
+            override fun areItemsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: FindroidItem, newItem: FindroidItem): Boolean {
+            override fun areContentsTheSame(oldItem: JellyCastItem, newItem: JellyCastItem): Boolean {
                 return oldItem == newItem
             }
         }

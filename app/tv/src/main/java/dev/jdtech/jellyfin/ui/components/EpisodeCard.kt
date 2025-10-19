@@ -27,14 +27,14 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.presentation.theme.JellyCastTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun EpisodeCard(
-    episode: FindroidEpisode,
-    onClick: (FindroidEpisode) -> Unit,
+    episode: JellyCastEpisode,
+    onClick: (JellyCastEpisode) -> Unit,
 ) {
     Surface(
         onClick = { onClick(episode) },
@@ -99,7 +99,7 @@ fun EpisodeCard(
 @Preview
 @Composable
 private fun ItemCardPreviewEpisode() {
-    FindroidTheme {
+    JellyCastTheme {
         EpisodeCard(
             episode = dummyEpisode,
             onClick = {},

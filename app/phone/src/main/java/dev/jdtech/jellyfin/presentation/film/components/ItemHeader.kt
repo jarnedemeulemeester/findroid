@@ -21,22 +21,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.models.JellyCastEpisode
+import dev.jdtech.jellyfin.models.JellyCastItem
+import dev.jdtech.jellyfin.models.JellyCastSeason
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
 
 @Composable
 fun ItemHeader(
-    item: FindroidItem,
+    item: JellyCastItem,
     scrollState: ScrollState,
     showLogo: Boolean = false,
     paddingTop: Dp = 0.dp,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val backdropUri = when (item) {
-        is FindroidEpisode -> item.images.primary
+        is JellyCastEpisode -> item.images.primary
         else -> item.images.backdrop
     }
 
@@ -64,15 +64,15 @@ fun ItemHeader(
 
 @Composable
 fun ItemHeader(
-    item: FindroidItem,
+    item: JellyCastItem,
     lazyListState: LazyListState,
     showLogo: Boolean = false,
     paddingTop: Dp = 0.dp,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val backdropUri = when (item) {
-        is FindroidEpisode -> item.images.primary
-        is FindroidSeason -> item.images.showBackdrop
+        is JellyCastEpisode -> item.images.primary
+        is JellyCastSeason -> item.images.showBackdrop
         else -> item.images.backdrop
     }
 
@@ -100,7 +100,7 @@ fun ItemHeader(
 
 @Composable
 private fun ItemHeaderBase(
-    item: FindroidItem,
+    item: JellyCastItem,
     showLogo: Boolean = false,
     paddingTop: Dp = 0.dp,
     backdropImage: @Composable (() -> Unit),
@@ -109,7 +109,7 @@ private fun ItemHeaderBase(
     val backgroundColor = MaterialTheme.colorScheme.background
 
     val logoUri = when (item) {
-        is FindroidEpisode -> item.images.showLogo
+        is JellyCastEpisode -> item.images.showLogo
         else -> item.images.logo
     }
 
