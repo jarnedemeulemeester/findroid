@@ -17,7 +17,7 @@ android {
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        applicationId = "dev.jdtech.jellyfin"
+        applicationId = "dev.jdtech.jellycast"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
 
