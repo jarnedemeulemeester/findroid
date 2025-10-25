@@ -2,7 +2,7 @@
 <resources>
     <string name="select_a_version">Seleziona una versione</string>
     <string name="select_audio_track">Traccia audio</string>
-    <string name="select_subtile_track">Traccia dei sottotitoli</string>
+    <string name="select_subtitle_track">Traccia dei sottotitoli</string>
     <string name="select_playback_speed">Velocità di riproduzione</string>
     <string name="external">Esterno</string>
     <string name="player_controls_fast_forward">Avanti veloce</string>

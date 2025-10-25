@@ -49,7 +49,7 @@ fun VideoPlayerTrackSelectorDialog(
 ) {
     val dialogTitle = when (trackType) {
         C.TRACK_TYPE_AUDIO -> PlayerLocalR.string.select_audio_track
-        C.TRACK_TYPE_TEXT -> PlayerLocalR.string.select_subtile_track
+        C.TRACK_TYPE_TEXT -> PlayerLocalR.string.select_subtitle_track
         else -> CoreR.string.unknown_error
     }
     Surface {

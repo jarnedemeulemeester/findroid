@@ -2,7 +2,7 @@
 <resources>
     <string name="select_a_version">Selecionar a versão</string>
     <string name="select_audio_track">Selecione a faixa de áudio</string>
-    <string name="select_subtile_track">Selecione as legendas</string>
+    <string name="select_subtitle_track">Selecione as legendas</string>
     <string name="select_playback_speed">Selecionar velocidade de reprodução</string>
     <string name="external">Externo</string>
     <string name="player_controls_rewind">Voltar</string>
