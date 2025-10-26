@@ -514,8 +514,12 @@ class PlayerGestureHelper(
     }
 
     init {
-        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-            activity.window.attributes.screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
+        if (appPreferences.getValue(appPreferences.playerGesturesVB) &&
+            appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)
+        ) {
+            activity.window.attributes = activity.window.attributes.apply {
+                screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
+            }
         }
 
         updateZoomMode(appPreferences.getValue(appPreferences.playerGesturesStartMaximized))

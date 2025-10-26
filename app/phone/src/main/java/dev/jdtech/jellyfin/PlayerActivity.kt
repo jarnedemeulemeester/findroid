@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
-import android.provider.Settings
 import android.util.Rational
 import android.view.SurfaceView
 import android.view.View
@@ -455,16 +454,12 @@ class PlayerActivity : BasePlayerActivity() {
                 playerGestureHelper?.updateZoomMode(wasZoom)
 
                 // Override auto brightness
-                window.attributes = window.attributes.apply {
-                    screenBrightness =
-                        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-                            appPreferences.getValue(appPreferences.playerBrightness)
-                        } else {
-                            Settings.System.getInt(
-                                contentResolver,
-                                Settings.System.SCREEN_BRIGHTNESS,
-                            ).toFloat() / 255
-                        }
+                if (appPreferences.getValue(appPreferences.playerGesturesVB) &&
+                    appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)
+                ) {
+                    window.attributes = window.attributes.apply {
+                        screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
+                    }
                 }
             }
         }
