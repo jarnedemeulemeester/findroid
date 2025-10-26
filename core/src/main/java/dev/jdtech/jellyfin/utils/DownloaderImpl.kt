@@ -97,7 +97,7 @@ class DownloaderImpl(
 
             val sourceDto = source.toFindroidSourceDto(item.id, path.path.orEmpty())
 
-            database.insertSource(sourceDto.copy(downloadId=downloadId))
+            database.insertSource(sourceDto.copy(downloadId = downloadId))
             database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
 
             downloadExternalMediaStreams(item, source, storageIndex)
