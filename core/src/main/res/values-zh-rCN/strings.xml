@@ -97,5 +97,6 @@
     <string name="title_download">下载</string>
     <string name="not_set">未设置</string>
     <string name="offline_mode">离线模式</string>
-    <string name="season_episode">第%1$d季-第%2$d集</string>
+    <string name="season_number">第%1$d季</string>
+    <string name="episode_number">第%2$d集</string>
 </resources>

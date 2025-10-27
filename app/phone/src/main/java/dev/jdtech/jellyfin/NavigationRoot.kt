@@ -431,6 +431,12 @@ fun NavigationRoot(
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
+                    navigateToSeries = { seriesId ->
+                        navController.safeNavigate(ShowRoute(showId = seriesId.toString())) {
+                            popUpTo(ShowRoute(showId = seriesId.toString()))
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
             composable<EpisodeRoute> { backStackEntry ->
@@ -442,6 +448,12 @@ fun NavigationRoot(
                     },
                     navigateToPerson = { personId ->
                         navController.safeNavigate(PersonRoute(personId.toString()))
+                    },
+                    navigateToSeason = { seasonId ->
+                        navController.safeNavigate(SeasonRoute(seasonId = seasonId.toString())) {
+                            popUpTo(SeasonRoute(seasonId = seasonId.toString()))
+                            launchSingleTop = true
+                        }
                     },
                 )
             }

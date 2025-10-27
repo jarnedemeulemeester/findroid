@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +61,7 @@ fun SeasonScreen(
     seasonId: UUID,
     navigateBack: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
+    navigateToSeries: (seriesId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -80,6 +83,7 @@ fun SeasonScreen(
                 }
                 is SeasonAction.OnBackClick -> navigateBack()
                 is SeasonAction.NavigateToItem -> navigateToItem(action.item)
+                is SeasonAction.NavigateToSeries -> navigateToSeries(action.seriesId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -226,6 +230,23 @@ private fun SeasonScreenLayout(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
                     contentDescription = null,
                 )
+            }
+            state.season?.let { season ->
+                Button(
+                    onClick = { onAction(SeasonAction.NavigateToSeries(season.seriesId)) },
+                    modifier = Modifier
+                        .alpha(0.7f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                    ),
+                ) {
+                    Text(
+                        text = season.seriesName,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                    )
+                }
             }
         }
     }

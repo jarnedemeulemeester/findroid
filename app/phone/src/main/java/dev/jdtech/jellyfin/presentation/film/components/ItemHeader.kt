@@ -109,7 +109,7 @@ private fun ItemHeaderBase(
 
     Box(
         modifier = Modifier
-            .height(240.dp)
+            .height(288.dp)
             .clipToBounds(),
     ) {
         backdropImage()

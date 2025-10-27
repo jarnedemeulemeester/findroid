@@ -93,7 +93,8 @@
     <string name="collection_no_media">Deze collectie bevat geen media</string>
     <string name="title_settings">Instellingen</string>
     <string name="title_download">Downloads</string>
-    <string name="season_episode">Seizoen %1$d - Aflevering %2$d</string>
+    <string name="season_number">Seizoen %1$d</string>
+    <string name="episode_number">Aflevering %2$d</string>
     <string name="sort_by_options_6">Willekeurig</string>
     <string name="offline_mode">Offline Modus</string>
     <string name="not_set">Niet ingesteld</string>

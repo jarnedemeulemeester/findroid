@@ -82,7 +82,8 @@
     <string name="sort_by_options_2">Forældre-bedømmelse</string>
     <string name="title_settings">Indstillinger</string>
     <string name="title_download">Downloads</string>
-    <string name="season_episode">Sæson %1$d - Episode %2$d</string>
+    <string name="season_number">Sæson %1$d</string>
+    <string name="episode_number">Episode %2$d</string>
     <string name="series_poster">Plakat for serie</string>
     <string name="image_description_poster">%1$s plakat</string>
     <string name="sort_by_options_5">Udgivelsesdato</string>

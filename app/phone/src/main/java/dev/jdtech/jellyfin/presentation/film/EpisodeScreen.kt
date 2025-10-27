@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +61,7 @@ fun EpisodeScreen(
     episodeId: UUID,
     navigateBack: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
+    navigateToSeason: (seasonId: UUID) -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -81,6 +84,7 @@ fun EpisodeScreen(
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.NavigateToPerson -> navigateToPerson(action.personId)
+                is EpisodeAction.NavigateToSeason -> navigateToSeason(action.seasonId)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -122,13 +126,14 @@ private fun EpisodeScreenLayout(
                                     end = paddingEnd,
                                 ),
                         ) {
+                            val seasonName = episode.seasonName ?: run {
+                                stringResource(CoreR.string.season_number, episode.parentIndexNumber)
+                            }
                             Text(
-                                text = stringResource(
-                                    id = CoreR.string.season_episode,
-                                    episode.parentIndexNumber,
+                                text = "$seasonName - " + stringResource(
+                                    id = CoreR.string.episode_number,
                                     episode.indexNumber,
                                 ),
-                                overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 style = MaterialTheme.typography.labelLarge,
                             )
@@ -255,6 +260,23 @@ private fun EpisodeScreenLayout(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
                     contentDescription = null,
                 )
+            }
+            state.episode?.let { episode ->
+                Button(
+                    onClick = { onAction(EpisodeAction.NavigateToSeason(episode.seasonId)) },
+                    modifier = Modifier
+                        .alpha(0.7f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                    ),
+                ) {
+                    episode.seasonName?.let { seasonName ->
+                        Text(seasonName)
+                    } ?: run {
+                        Text(stringResource(CoreR.string.season_number, episode.parentIndexNumber))
+                    }
+                }
             }
         }
     }

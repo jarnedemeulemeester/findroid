@@ -10,4 +10,5 @@ sealed interface EpisodeAction {
     data object UnmarkAsFavorite : EpisodeAction
     data object OnBackClick : EpisodeAction
     data class NavigateToPerson(val personId: UUID) : EpisodeAction
+    data class NavigateToSeason(val seasonId: UUID) : EpisodeAction
 }

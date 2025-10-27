@@ -27,7 +27,8 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">م%1$d:ح%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">م%1$d:ح%2$d-%3$d - %4$s</string>
-    <string name="season_episode">الموسم %1$d - الحلقة %2$d</string>
+    <string name="season_number">الموسم %1$d</string>
+    <string name="episode_number">الحلقة %2$d</string>
     <string name="next_up">التالي</string>
     <string name="libraries">المكتبات</string>
     <string name="series_poster">ملصق السلسلة</string>

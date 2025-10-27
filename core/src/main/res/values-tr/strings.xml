@@ -61,7 +61,8 @@
     <string name="offline_mode_go_online">Çevrimiçi ol</string>
     <string name="search_hint">Filmleri, dizileri, bölümleri arayın…</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="season_episode">Sezon%1$d - Bölüm%2$d</string>
+    <string name="season_number">Sezon%1$d</string>
+    <string name="episode_number">Bölüm%2$d</string>
     <string name="show_stacktrace">Hata izini görüntüle</string>
     <string name="not_set">Ayarlanmadı</string>
     <string name="title_download">İndirilenler</string>

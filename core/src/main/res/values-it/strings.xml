@@ -94,7 +94,8 @@
     <string name="show_stacktrace">Mostra stacktrace</string>
     <string name="title_settings">Impostazioni</string>
     <string name="title_download">Download</string>
-    <string name="season_episode">Stagione %1$d - Episodio %2$d</string>
+    <string name="season_number">Stagione %1$d</string>
+    <string name="episode_number">Episodio %2$d</string>
     <string name="sort_by_options_6">Casuale</string>
     <string name="offline_mode">Modalità Offline</string>
     <string name="not_set">Non impostato</string>

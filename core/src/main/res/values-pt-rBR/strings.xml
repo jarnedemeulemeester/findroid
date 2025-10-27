@@ -92,7 +92,8 @@
     <string name="watch_trailer">Assista o trailer</string>
     <string name="collection_no_media">Esta coleção não contém nenhuma mídia</string>
     <string name="sort_by_options_6">Aleatório</string>
-    <string name="season_episode">Temporada %1$d - Episódio %2$d</string>
+    <string name="season_number">Temporada %1$d</string>
+    <string name="episode_number">Episódio %2$d</string>
     <string name="show_stacktrace">Mostrar rastreamento de pilha</string>
     <string name="not_set">Não definido</string>
     <string name="title_settings">Configurações</string>

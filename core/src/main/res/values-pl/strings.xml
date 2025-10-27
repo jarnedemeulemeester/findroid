@@ -93,7 +93,8 @@
     <string name="remove_from_favorites">Usuń z ulubionych</string>
     <string name="title_settings">Ustawienia</string>
     <string name="title_download">Pobrane</string>
-    <string name="season_episode">Sezon %1$d - Odcinek %2$d</string>
+    <string name="season_number">Sezon %1$d</string>
+    <string name="episode_number">Odcinek %2$d</string>
     <string name="sort_by_options_6">Losowo</string>
     <string name="offline_mode">Tryb offline</string>
     <string name="not_set">Nie ustawione</string>
