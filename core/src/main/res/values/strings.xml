@@ -65,6 +65,7 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
+    <string name="runtime_minutes_left">%1$d mins left</string>
     <string name="select_video_version_title">Select version</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add">Add</string>

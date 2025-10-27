@@ -47,38 +47,62 @@ fun ItemButtonsBar(
         else -> null
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-    ) {
-        Row {
-            PlayButton(
-                item = item,
-                onClick = {
-                    onPlayClick(false)
-                },
-                modifier = Modifier.weight(
-                    weight = 1f,
-                    fill = !windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND),
-                ),
-            )
-            if (item.playbackPositionTicks.div(600000000) > 0) {
-                FilledTonalIconButton(
-                    onClick = {
-                        onPlayClick(true)
-                    },
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+        ) {
+            if (!windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                 ) {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                        contentDescription = null,
+                    PlayButton(
+                        item = item,
+                        onClick = {
+                            onPlayClick(false)
+                        },
+                        modifier = Modifier.weight(
+                            weight = 1f,
+                            fill = true,
+                        ),
                     )
+                    if (item.playbackPositionTicks.div(600000000) > 0) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                onPlayClick(true)
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                contentDescription = null,
+                            )
+                        }
+                    }
                 }
             }
-        }
-        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             ) {
+                if (windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+                    PlayButton(
+                        item = item,
+                        onClick = {
+                            onPlayClick(false)
+                        },
+                    )
+                    if (item.playbackPositionTicks.div(600000000) > 0) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                onPlayClick(true)
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
                 trailerUri?.let { uri ->
                     FilledTonalIconButton(
                         onClick = {
