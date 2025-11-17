@@ -101,4 +101,5 @@
     <string name="episode_number">Episodio %2$d</string>
     <string name="none">Ninguno</string>
     <string name="manage_servers">Administrar servidores</string>
+    <string name="runtime_minutes_left">%1$d minutos restantes</string>
 </resources>
