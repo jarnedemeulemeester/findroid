@@ -49,9 +49,9 @@
     <string name="select_video_version_title">Chọn phiên bản</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add">Thêm</string>
-    <string name="app_description">Máy khách native không chính thức cho Jellyfin</string>
+    <string name="app_description">Máy khách riếng không chính thức cho Jellyfin</string>
     <string name="genres">Thể loại</string>
-    <string name="cast_amp_crew">Diễn viên &amp; Êkíp</string>
+    <string name="cast_amp_crew"><![CDATA[Diễn viên & Êkíp]]></string>
     <string name="check_button_description">Đánh dấu là đã xem hoặc chưa xem</string>
     <string name="series_poster">Bìa của bộ phim</string>
     <string name="view_details">Xem chi tiết</string>
@@ -66,7 +66,7 @@
     <string name="no_server_connection">Không có kết nối tới máy chủ Jellyfin, để xem ngoại tuyến xin hãy bật Chế độ Ngoại tuyến</string>
     <string name="internal">Nội</string>
     <string name="not_enough_storage">Nội dùng này yêu cầu %1$s bộ nhớ trống nhưng chỉ có %2$s là có sẵn</string>
-    <string name="privacy_policy_notice">Bằng việc sử dụng Findroid, bạn đồng ý với <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Chính sách Bảo mật</a> rằng chúng tôi không thu thập bất cứ dữ liệu nào</string>
+    <string name="privacy_policy_notice">Bằng việc sử dụng Findroid, bạn đồng ý với <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Chính sách quyền Riêng tư</a> rằng chúng tôi không thu thập bất cứ dữ liệu nào</string>
     <string name="external">Ngoại</string>
     <string name="preparing_download">Đang chuẩn bị tải về</string>
     <string name="cancel_download">Hủy tải về</string>
@@ -97,4 +97,9 @@
     <string name="remove_from_favorites">Xóa khỏi mục yêu thích</string>
     <string name="collection_no_media">Bộ sưu tập này không có nội dung nào</string>
     <string name="sort_by_options_6">Ngẫu nhiên</string>
+    <string name="season_number">Mùa %1d</string>
+    <string name="episode_number">Tập %1d</string>
+    <string name="runtime_minutes_left">Còn %1$d phút</string>
+    <string name="none">Trống</string>
+    <string name="manage_servers">Quản lý máy chủ</string>
 </resources>
