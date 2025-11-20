@@ -101,4 +101,5 @@
     <string name="show_stacktrace">Afficher la trace de la pile</string>
     <string name="none">Aucun</string>
     <string name="manage_servers">Gérer les serveurs</string>
+    <string name="runtime_minutes_left">%1$d minutes restantes</string>
 </resources>
