@@ -34,6 +34,7 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -509,6 +510,10 @@ private fun navigateToItem(navController: NavHostController, item: FindroidItem)
         is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
         is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
         is FindroidCollection -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = item.type))
+        is FindroidFolder -> {
+            val currentRoute: LibraryRoute = navController.currentBackStackEntry!!.toRoute()
+            navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = currentRoute.libraryType))
+        }
         else -> Unit
     }
 }
