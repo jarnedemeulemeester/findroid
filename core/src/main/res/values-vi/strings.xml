@@ -49,7 +49,7 @@
     <string name="select_video_version_title">Chọn phiên bản</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="add">Thêm</string>
-    <string name="app_description">Máy khách riếng không chính thức cho Jellyfin</string>
+    <string name="app_description">Máy khách riêng không chính thức cho Jellyfin</string>
     <string name="genres">Thể loại</string>
     <string name="cast_amp_crew"><![CDATA[Diễn viên & Êkíp]]></string>
     <string name="check_button_description">Đánh dấu là đã xem hoặc chưa xem</string>
