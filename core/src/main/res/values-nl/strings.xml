@@ -99,4 +99,7 @@
     <string name="offline_mode">Offline Modus</string>
     <string name="not_set">Niet ingesteld</string>
     <string name="manage_servers">Servers beheren</string>
+    <string name="show_stacktrace">Toon stacktrace</string>
+    <string name="runtime_minutes_left">nog %1$d minuten</string>
+    <string name="none">Geen</string>
 </resources>
