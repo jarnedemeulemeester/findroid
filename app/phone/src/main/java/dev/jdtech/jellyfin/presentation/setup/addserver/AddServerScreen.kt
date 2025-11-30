@@ -3,9 +3,11 @@ package dev.jdtech.jellyfin.presentation.setup.addserver
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,12 +54,14 @@ import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun AddServerScreen(
     onSuccess: () -> Unit,
     onBackClick: () -> Unit,
+    onProxySettingsClick: () -> Unit = {},
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -77,6 +81,7 @@ fun AddServerScreen(
         onAction = { action ->
             when (action) {
                 is AddServerAction.OnBackClick -> onBackClick()
+                is AddServerAction.OnProxySettingsClick -> onProxySettingsClick()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -104,93 +109,107 @@ private fun AddServerScreenLayout(
     }
 
     RootLayout {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 24.dp)
-                .widthIn(max = 480.dp)
-                .align(Alignment.Center)
-                .verticalScroll(scrollState),
+        Box(
+            modifier = Modifier.fillMaxSize(),
         ) {
-            Image(
-                painter = painterResource(id = CoreR.drawable.ic_banner),
-                contentDescription = null,
+            Column(
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .width(250.dp)
-                    .align(Alignment.CenterHorizontally),
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(16.dp))
-            AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
-                LazyRow {
-                    items(state.discoveredServers) { discoveredServer ->
-                        DiscoveredServerItem(
-                            name = discoveredServer.name,
-                            onClick = {
-                                serverAddress = discoveredServer.address
-                                onAction(AddServerAction.OnConnectClick(discoveredServer.address))
-                            },
-                            modifier = Modifier.animateItem(),
-                        )
+                    .fillMaxHeight()
+                    .padding(horizontal = 24.dp)
+                    .widthIn(max = 480.dp)
+                    .align(Alignment.Center)
+                    .verticalScroll(scrollState),
+            ) {
+                Image(
+                    painter = painterResource(id = CoreR.drawable.ic_banner),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(250.dp)
+                        .align(Alignment.CenterHorizontally),
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
+                    LazyRow {
+                        items(state.discoveredServers) { discoveredServer ->
+                            DiscoveredServerItem(
+                                name = discoveredServer.name,
+                                onClick = {
+                                    serverAddress = discoveredServer.address
+                                    onAction(AddServerAction.OnConnectClick(discoveredServer.address))
+                                },
+                                modifier = Modifier.animateItem(),
+                            )
+                        }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = serverAddress,
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_server),
-                        contentDescription = null,
-                    )
-                },
-                onValueChange = { serverAddress = it },
-                label = {
-                    Text(
-                        text = stringResource(SetupR.string.edit_text_server_address_hint),
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Go,
-                ),
-                keyboardActions = KeyboardActions(
-                    onGo = { doConnect() },
-                ),
-                isError = state.error != null,
-                enabled = !state.isLoading,
-                supportingText = {
-                    if (state.error != null) {
-                        Text(
-                            text = state.error!!.joinToString {
-                                it.asString(
-                                    context.resources,
-                                )
-                            },
-                            color = MaterialTheme.colorScheme.error,
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = serverAddress,
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_server),
+                            contentDescription = null,
                         )
-                    }
-                },
+                    },
+                    onValueChange = { serverAddress = it },
+                    label = {
+                        Text(
+                            text = stringResource(SetupR.string.edit_text_server_address_hint),
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Uri,
+                        imeAction = ImeAction.Go,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onGo = { doConnect() },
+                    ),
+                    isError = state.error != null,
+                    enabled = !state.isLoading,
+                    supportingText = {
+                        if (state.error != null) {
+                            Text(
+                                text = state.error!!.joinToString {
+                                    it.asString(
+                                        context.resources,
+                                    )
+                                },
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                )
+                LoadingButton(
+                    text = stringResource(SetupR.string.add_server_btn_connect),
+                    onClick = { doConnect() },
+                    isLoading = state.isLoading,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            IconButton(
+                onClick = { onAction(AddServerAction.OnBackClick) },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-            )
-            LoadingButton(
-                text = stringResource(SetupR.string.add_server_btn_connect),
-                onClick = { doConnect() },
-                isLoading = state.isLoading,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-        IconButton(
-            onClick = { onAction(AddServerAction.OnBackClick) },
-            modifier = Modifier.padding(start = 8.dp),
-        ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+                    .align(Alignment.TopStart)
+                    .padding(start = 8.dp),
+            ) {
+                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            }
+            IconButton(
+                onClick = { onAction(AddServerAction.OnProxySettingsClick) },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 8.dp),
+            ) {
+                Icon(painter = painterResource(CoreR.drawable.ic_settings), contentDescription = stringResource(SettingsR.string.proxy_settings))
+            }
         }
     }
 }

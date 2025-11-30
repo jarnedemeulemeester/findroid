@@ -142,6 +142,9 @@ fun NavigationRoot(
                 onSuccess = {
                     navController.navigate(UsersRoute)
                 },
+                onProxySettingsClick = {
+                    navController.navigate(SettingsRoute)
+                },
             )
         }
         composable<UsersRoute> {
