@@ -7,7 +7,8 @@ enum class ProxyType {
     NONE,
     HTTP,
     HTTPS,
-    SOCKS5;
+    SOCKS5,
+    ;
 
     companion object {
         fun fromString(value: String?): ProxyType {
