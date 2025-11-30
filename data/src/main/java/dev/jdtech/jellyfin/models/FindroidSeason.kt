@@ -66,6 +66,6 @@ fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID
         episodes = emptyList(),
         seriesId = seriesId,
         seriesName = seriesName,
-        images = FindroidImages(),
+        images = toLocalFindroidImages(itemId = id),
     )
 }

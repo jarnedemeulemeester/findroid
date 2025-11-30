@@ -27,7 +27,13 @@ import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.util.UUID
 import kotlin.Exception
 import kotlin.math.ceil
@@ -41,6 +47,8 @@ class DownloaderImpl(
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
+    // TODO: We should probably move most (if not all) code to a worker.
+    //  At this moment it is possible that some things are not downloaded due to the user leaving the current screen
     override suspend fun downloadItem(
         item: FindroidItem,
         sourceId: String,
@@ -84,14 +92,14 @@ class DownloaderImpl(
                     database.insertMovie(item.toFindroidMovieDto(appPreferences.getValue(appPreferences.currentServer)))
                 }
                 is FindroidEpisode -> {
-                    database.insertShow(
-                        jellyfinRepository.getShow(item.seriesId)
-                            .toFindroidShowDto(appPreferences.getValue(appPreferences.currentServer)),
-                    )
-                    database.insertSeason(
-                        jellyfinRepository.getSeason(item.seasonId).toFindroidSeasonDto(),
-                    )
+                    val show = jellyfinRepository.getShow(item.seriesId)
+                    database.insertShow(show.toFindroidShowDto(appPreferences.getValue(appPreferences.currentServer)))
+                    val season = jellyfinRepository.getSeason(item.seasonId)
+                    database.insertSeason(season.toFindroidSeasonDto())
                     database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.getValue(appPreferences.currentServer)))
+
+                    downloadImages(show)
+                    downloadImages(season)
                 }
             }
 
@@ -109,6 +117,8 @@ class DownloaderImpl(
             if (trickplayInfo != null) {
                 downloadTrickplayData(item.id, sourceId, trickplayInfo)
             }
+
+            downloadImages(item)
 
             return Pair(downloadId, null)
         } catch (e: Exception) {
@@ -140,10 +150,12 @@ class DownloaderImpl(
                 if (remainingEpisodes.isEmpty()) {
                     database.deleteSeason(item.seasonId)
                     database.deleteUserData(item.seasonId)
+                    File(context.filesDir, "trickplay/${item.seasonId}").deleteRecursively()
                     val remainingSeasons = database.getSeasonsByShowId(item.seriesId)
                     if (remainingSeasons.isEmpty()) {
                         database.deleteShow(item.seriesId)
                         database.deleteUserData(item.seriesId)
+                        File(context.filesDir, "trickplay/${item.seriesId}").deleteRecursively()
                     }
                 }
             }
@@ -161,6 +173,7 @@ class DownloaderImpl(
         database.deleteUserData(item.id)
 
         File(context.filesDir, "trickplay/${item.id}").deleteRecursively()
+        File(context.filesDir, "images/${item.id}").deleteRecursively()
     }
 
     override suspend fun getProgress(downloadId: Long?): Pair<Int, Int> {
@@ -248,6 +261,57 @@ class DownloaderImpl(
         for ((i, byteArray) in byteArrays.withIndex()) {
             val file = File(context.filesDir, "$basePath/$i")
             file.writeBytes(byteArray)
+        }
+    }
+
+    private suspend fun downloadImages(
+        item: FindroidItem,
+    ) {
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val uris = mapOf(
+                "primary" to item.images.primary,
+                "backdrop" to item.images.backdrop,
+                "showPrimary" to item.images.showPrimary,
+                "showBackdrop" to item.images.showBackdrop,
+            )
+            val basePath = "images/${item.id}"
+
+            try {
+                File(context.filesDir, basePath).mkdirs()
+            } catch (e: IOException) {
+                Timber.e(e)
+                return@withContext
+            }
+
+            for ((name, uri) in uris) {
+                if (uri == null) {
+                    continue
+                }
+
+                val request = Request.Builder().url(uri.toString()).build()
+
+                val imageBytes = try {
+                    client.newCall(request).execute().use { response ->
+                        if (!response.isSuccessful) {
+                            Timber.e("Failed to download image: ${response.code}")
+                            continue
+                        }
+
+                        response.body.bytes()
+                    }
+                } catch (e: IOException) {
+                    Timber.e(e)
+                    continue
+                }
+
+                try {
+                    val file = File(context.filesDir, "$basePath/$name")
+                    file.writeBytes(imageBytes)
+                } catch (e: IOException) {
+                    Timber.e(e)
+                }
+            }
         }
     }
 }

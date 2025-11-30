@@ -100,7 +100,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         canPlay = true,
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
-        images = FindroidImages(),
+        images = toLocalFindroidImages(itemId = id),
         chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )

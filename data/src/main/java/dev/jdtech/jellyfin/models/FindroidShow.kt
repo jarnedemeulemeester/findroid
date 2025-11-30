@@ -84,6 +84,6 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         productionYear = productionYear,
         endDate = endDate,
         trailer = null,
-        images = FindroidImages(),
+        images = toLocalFindroidImages(itemId = id),
     )
 }
