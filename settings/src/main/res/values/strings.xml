@@ -18,6 +18,22 @@
     <string name="settings_request_timeout">Request timeout</string>
     <string name="settings_connect_timeout">Connect timeout</string>
     <string name="settings_socket_timeout">Socket timeout</string>
+    <!-- Proxy settings -->
+    <string name="settings_proxy">Proxy</string>
+    <string name="settings_proxy_enabled">Enable proxy</string>
+    <string name="settings_proxy_enabled_summary">Route network traffic through a proxy server</string>
+    <string name="settings_proxy_type">Proxy type</string>
+    <string name="settings_proxy_host">Proxy host</string>
+    <string name="settings_proxy_host_hint">hostname or IP address</string>
+    <string name="settings_proxy_port">Proxy port</string>
+    <string name="settings_proxy_auth_required">Authentication required</string>
+    <string name="settings_proxy_auth_required_summary">Enable if your proxy requires username and password</string>
+    <string name="settings_proxy_username">Username</string>
+    <string name="settings_proxy_password">Password</string>
+    <string name="settings_proxy_type_http">HTTP</string>
+    <string name="settings_proxy_type_https">HTTPS</string>
+    <string name="settings_proxy_type_socks5">SOCKS5</string>
+    <string name="proxy_settings">Proxy Settings</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
     <string name="pref_player_mpv_vo">Video output</string>
     <string name="pref_player_mpv_ao">Audio output</string>

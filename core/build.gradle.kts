@@ -64,5 +64,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.material)
+    implementation(libs.okhttp)
     implementation(libs.timber)
 }

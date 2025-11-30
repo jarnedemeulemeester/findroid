@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
+import androidx.tv.material3.IconButton
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -52,10 +54,13 @@ import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerEvent
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerState
 import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun AddServerScreen(
     onSuccess: () -> Unit,
+    onProxySettingsClick: () -> Unit = {},
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -73,6 +78,10 @@ fun AddServerScreen(
     AddServerScreenLayout(
         state = state,
         onAction = { action ->
+            when (action) {
+                is AddServerAction.OnProxySettingsClick -> onProxySettingsClick()
+                else -> Unit
+            }
             viewModel.onAction(action)
         },
     )
@@ -195,6 +204,17 @@ private fun AddServerScreenLayout(
                     }
                 }
             }
+        }
+        IconButton(
+            onClick = { onAction(AddServerAction.OnProxySettingsClick) },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(end = 16.dp, top = 16.dp),
+        ) {
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_settings),
+                contentDescription = stringResource(SettingsR.string.proxy_settings),
+            )
         }
     }
 }

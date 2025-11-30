@@ -57,5 +57,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okhttp)
     implementation(libs.timber)
 }

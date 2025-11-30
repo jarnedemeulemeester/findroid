@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.network.ProxyOkHttpClientFactory
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
@@ -20,9 +21,14 @@ object ApiModule {
         @ApplicationContext application: Context,
         appPreferences: AppPreferences,
         database: ServerDatabaseDao,
+        proxyOkHttpClientFactory: ProxyOkHttpClientFactory,
     ): JellyfinApi {
+        // Create proxy-configured OkHttpClient
+        val okHttpClient = proxyOkHttpClientFactory.createClient()
+
         val jellyfinApi = JellyfinApi.getInstance(
             context = application,
+            okHttpClient = okHttpClient,
             requestTimeout = appPreferences.getValue(appPreferences.requestTimeout),
             connectTimeout = appPreferences.getValue(appPreferences.connectTimeout),
             socketTimeout = appPreferences.getValue(appPreferences.socketTimeout),

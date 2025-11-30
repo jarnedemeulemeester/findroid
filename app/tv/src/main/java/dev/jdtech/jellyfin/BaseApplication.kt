@@ -12,6 +12,7 @@ import coil3.request.CachePolicy
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import dagger.hilt.android.HiltAndroidApp
+import dev.jdtech.jellyfin.network.ProxyOkHttpClientFactory
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import okio.Path.Companion.toOkioPath
 import javax.inject.Inject
@@ -22,12 +23,19 @@ class BaseApplication : Application(), SingletonImageLoader.Factory {
     @Inject
     lateinit var appPreferences: AppPreferences
 
+    @Inject
+    lateinit var proxyOkHttpClientFactory: ProxyOkHttpClientFactory
+
     @OptIn(ExperimentalCoilApi::class, ExperimentalTime::class)
     override fun newImageLoader(context: PlatformContext): ImageLoader {
+        // Create proxy-configured OkHttpClient for image loading
+        val okHttpClient = proxyOkHttpClientFactory.createClient()
+
         return ImageLoader.Builder(this)
             .components {
                 add(
                     OkHttpNetworkFetcherFactory(
+                        callFactory = { okHttpClient },
                         cacheStrategy = { CacheControlCacheStrategy() },
                     ),
                 )

@@ -55,6 +55,7 @@ class MPVPlayer(
     videoOutput: String = "gpu",
     audioOutput: String = "audiotrack",
     hwDec: String = "mediacodec",
+    proxyUrl: String? = null,
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -73,6 +74,7 @@ class MPVPlayer(
         videoOutput = builder.videoOutput,
         audioOutput = builder.audioOutput,
         hwDec = builder.hwDec,
+        proxyUrl = builder.proxyUrl,
     )
 
     class Builder(
@@ -105,6 +107,9 @@ class MPVPlayer(
         var hwDec: String = "mediacodec"
             private set
 
+        var proxyUrl: String? = null
+            private set
+
         fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) = apply {
             this.audioAttributes = audioAttributes
             this.handleAudioFocus = handleAudioFocus
@@ -116,6 +121,7 @@ class MPVPlayer(
         fun setVideoOutput(videoOutput: String) = apply { this.videoOutput = videoOutput }
         fun setAudioOutput(audioOutput: String) = apply { this.audioOutput = audioOutput }
         fun setHwDec(hwDec: String) = apply { this.hwDec = hwDec }
+        fun setProxyUrl(proxyUrl: String?) = apply { this.proxyUrl = proxyUrl }
 
         fun build() = MPVPlayer(this)
     }
@@ -149,6 +155,12 @@ class MPVPlayer(
 
         // TLS
         MPVLib.setOptionString("tls-verify", "no")
+
+        // Proxy configuration for network streams
+        proxyUrl?.let { url ->
+            Timber.i("Setting MPV proxy: $url")
+            MPVLib.setOptionString("http-proxy", url)
+        }
 
         // Cache
         MPVLib.setOptionString("cache", "yes")

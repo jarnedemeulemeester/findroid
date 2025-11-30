@@ -48,4 +48,14 @@
         <item>COMMERCIAL</item>
         <item>UNKNOWN</item>
     </string-array>
+    <string-array name="proxy_types">
+        <item>@string/settings_proxy_type_http</item>
+        <item>@string/settings_proxy_type_https</item>
+        <item>@string/settings_proxy_type_socks5</item>
+    </string-array>
+    <string-array name="proxy_types_values">
+        <item>HTTP</item>
+        <item>HTTPS</item>
+        <item>SOCKS5</item>
+    </string-array>
 </resources>

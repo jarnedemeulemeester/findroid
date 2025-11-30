@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Serializable
 data object WelcomeRoute
@@ -266,6 +267,9 @@ fun NavigationRoot(
                     },
                     onBackClick = {
                         navController.safePopBackStack()
+                    },
+                    onProxySettingsClick = {
+                        navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings, SettingsR.string.settings_category_network)))
                     },
                 )
             }

@@ -28,6 +28,7 @@ ktlint = "12.3.0"
 libmpv = "0.5.1"
 material = "1.13.0"
 media3-ffmpeg-decoder = "1.8.0+1"
+okhttp = "4.12.0"
 timber = "5.0.1"
 
 [libraries]
@@ -75,6 +76,7 @@ jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.re
 libmpv = { group = "dev.jdtech.mpv", name = "libmpv", version.ref = "libmpv" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 media3-ffmpeg-decoder = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version.ref = "media3-ffmpeg-decoder" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

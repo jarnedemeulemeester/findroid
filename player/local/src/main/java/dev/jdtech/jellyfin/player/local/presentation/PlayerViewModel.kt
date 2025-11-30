@@ -121,6 +121,7 @@ constructor(
         )
 
         if (appPreferences.getValue(appPreferences.playerMpv)) {
+            val proxyUrl = appPreferences.getProxyConfig().toMpvProxyUrl()
             player = MPVPlayer.Builder(application)
                 .setAudioAttributes(audioAttributes, true)
                 .setTrackSelectionParameters(trackSelector.parameters)
@@ -130,6 +131,7 @@ constructor(
                 .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
                 .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
                 .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
+                .setProxyUrl(proxyUrl)
                 .build()
         } else {
             val renderersFactory =
