@@ -27,7 +27,11 @@ import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -53,8 +57,9 @@ class DownloaderImpl(
         item: FindroidItem,
         sourceId: String,
         storageIndex: Int,
-    ): Pair<Long, UiText?> {
+    ): Pair<Long, UiText?> = coroutineScope {
         try {
+            val jobs = mutableListOf<Deferred<Unit>>()
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val segments = jellyfinRepository.getSegments(item.id)
             val trickplayInfo = if (item is FindroidSources) {
@@ -64,13 +69,13 @@ class DownloaderImpl(
             }
             val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
             if (storageLocation == null || Environment.getExternalStorageState(storageLocation) != Environment.MEDIA_MOUNTED) {
-                return Pair(-1, UiText.StringResource(CoreR.string.storage_unavailable))
+                return@coroutineScope Pair(-1, UiText.StringResource(CoreR.string.storage_unavailable))
             }
             val path =
                 Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.download"))
             val stats = StatFs(storageLocation.path)
             if (stats.availableBytes < source.size) {
-                return Pair(
+                return@coroutineScope Pair(
                     -1,
                     UiText.StringResource(
                         CoreR.string.not_enough_storage,
@@ -98,8 +103,8 @@ class DownloaderImpl(
                     database.insertSeason(season.toFindroidSeasonDto())
                     database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.getValue(appPreferences.currentServer)))
 
-                    downloadImages(show)
-                    downloadImages(season)
+                    jobs.add(async { downloadImages(show) })
+                    jobs.add(async { downloadImages(season) })
                 }
             }
 
@@ -118,16 +123,18 @@ class DownloaderImpl(
                 downloadTrickplayData(item.id, sourceId, trickplayInfo)
             }
 
-            downloadImages(item)
+            jobs.add(async { downloadImages(item) })
 
-            return Pair(downloadId, null)
+            jobs.awaitAll()
+
+            return@coroutineScope Pair(downloadId, null)
         } catch (e: Exception) {
             try {
                 val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
                 deleteItem(item, source)
             } catch (_: Exception) {}
 
-            return Pair(-1, if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(CoreR.string.unknown_error))
+            return@coroutineScope Pair(-1, if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(CoreR.string.unknown_error))
         }
     }
 
