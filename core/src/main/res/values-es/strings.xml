@@ -97,8 +97,8 @@
     <string name="not_set">No establecido</string>
     <string name="title_download">Descargas</string>
     <string name="title_settings">Preferencias</string>
-    <string name="season_number">Temporada %1$d</string>
-    <string name="episode_number">Episodio %2$d</string>
+    <string name="season_number">Temporada %1d</string>
+    <string name="episode_number">Episodio %1d</string>
     <string name="none">Ninguno</string>
     <string name="manage_servers">Administrar servidores</string>
     <string name="runtime_minutes_left">%1$d minutos restantes</string>
