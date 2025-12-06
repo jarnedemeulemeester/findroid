@@ -102,6 +102,14 @@ class JellyfinRepositoryImpl(
                 .mapNotNull { it.toFindroidCollection(this@JellyfinRepositoryImpl) }
         }
 
+    override suspend fun getItem(itemId: UUID): FindroidItem? =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userLibraryApi.getItem(
+                itemId = itemId,
+                userId = jellyfinApi.userId!!,
+            ).content.toFindroidItem(this@JellyfinRepositoryImpl)
+        }
+
     override suspend fun getItems(
         parentId: UUID?,
         includeTypes: List<BaseItemKind>?,

@@ -7,6 +7,9 @@ import android.os.Environment
 import android.os.StatFs
 import android.text.format.Formatter
 import androidx.core.net.toUri
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -27,17 +30,9 @@ import dev.jdtech.jellyfin.models.toFindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import dev.jdtech.jellyfin.work.ImagesDownloaderWorker
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import timber.log.Timber
 import java.io.File
-import java.io.IOException
 import java.util.UUID
 import kotlin.Exception
 import kotlin.math.ceil
@@ -48,6 +43,7 @@ class DownloaderImpl(
     private val database: ServerDatabaseDao,
     private val jellyfinRepository: JellyfinRepository,
     private val appPreferences: AppPreferences,
+    private val workManager: WorkManager,
 ) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
@@ -59,7 +55,6 @@ class DownloaderImpl(
         storageIndex: Int,
     ): Pair<Long, UiText?> = coroutineScope {
         try {
-            val jobs = mutableListOf<Deferred<Unit>>()
             val source = jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val segments = jellyfinRepository.getSegments(item.id)
             val trickplayInfo = if (item is FindroidSources) {
@@ -103,8 +98,8 @@ class DownloaderImpl(
                     database.insertSeason(season.toFindroidSeasonDto())
                     database.insertEpisode(item.toFindroidEpisodeDto(appPreferences.getValue(appPreferences.currentServer)))
 
-                    jobs.add(async { downloadImages(show) })
-                    jobs.add(async { downloadImages(season) })
+                    startImagesDownloader(show)
+                    startImagesDownloader(season)
                 }
             }
 
@@ -123,10 +118,7 @@ class DownloaderImpl(
                 downloadTrickplayData(item.id, sourceId, trickplayInfo)
             }
 
-            jobs.add(async { downloadImages(item) })
-
-            jobs.awaitAll()
-
+            startImagesDownloader(item)
             return@coroutineScope Pair(downloadId, null)
         } catch (e: Exception) {
             try {
@@ -158,11 +150,13 @@ class DownloaderImpl(
                     database.deleteSeason(item.seasonId)
                     database.deleteUserData(item.seasonId)
                     File(context.filesDir, "trickplay/${item.seasonId}").deleteRecursively()
+                    File(context.filesDir, "images/${item.seasonId}").deleteRecursively()
                     val remainingSeasons = database.getSeasonsByShowId(item.seriesId)
                     if (remainingSeasons.isEmpty()) {
                         database.deleteShow(item.seriesId)
                         database.deleteUserData(item.seriesId)
                         File(context.filesDir, "trickplay/${item.seriesId}").deleteRecursively()
+                        File(context.filesDir, "images/${item.seriesId}").deleteRecursively()
                     }
                 }
             }
@@ -271,54 +265,17 @@ class DownloaderImpl(
         }
     }
 
-    private suspend fun downloadImages(
+    private fun startImagesDownloader(
         item: FindroidItem,
     ) {
-        withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
-            val uris = mapOf(
-                "primary" to item.images.primary,
-                "backdrop" to item.images.backdrop,
-                "showPrimary" to item.images.showPrimary,
-                "showBackdrop" to item.images.showBackdrop,
+        val downloadImagesRequest = OneTimeWorkRequestBuilder<ImagesDownloaderWorker>()
+            .setInputData(
+                workDataOf(
+                    ImagesDownloaderWorker.KEY_ITEM_ID to item.id.toString(),
+                ),
             )
-            val basePath = "images/${item.id}"
+            .build()
 
-            try {
-                File(context.filesDir, basePath).mkdirs()
-            } catch (e: IOException) {
-                Timber.e(e)
-                return@withContext
-            }
-
-            for ((name, uri) in uris) {
-                if (uri == null) {
-                    continue
-                }
-
-                val request = Request.Builder().url(uri.toString()).build()
-
-                val imageBytes = try {
-                    client.newCall(request).execute().use { response ->
-                        if (!response.isSuccessful) {
-                            Timber.e("Failed to download image: ${response.code}")
-                            continue
-                        }
-
-                        response.body.bytes()
-                    }
-                } catch (e: IOException) {
-                    Timber.e(e)
-                    continue
-                }
-
-                try {
-                    val file = File(context.filesDir, "$basePath/$name")
-                    file.writeBytes(imageBytes)
-                } catch (e: IOException) {
-                    Timber.e(e)
-                }
-            }
-        }
+        workManager.enqueue(downloadImagesRequest)
     }
 }
