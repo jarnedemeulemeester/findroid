@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.app.DownloadManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,6 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
-import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -34,7 +34,6 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun ItemButtonsBar(
     item: FindroidItem,
-    downloaderState: DownloaderState,
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
@@ -43,6 +42,7 @@ fun ItemButtonsBar(
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
+    downloaderState: DownloaderState? = null,
 ) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
@@ -152,7 +152,7 @@ fun ItemButtonsBar(
                         }
                     }
                 }
-                if (!downloaderState.isDownloading) {
+                if (downloaderState != null && !downloaderState.isDownloading) {
                     if (item.isDownloaded()) {
                         FilledTonalIconButton(
                             onClick = onDownloadDeleteClick,
@@ -174,15 +174,17 @@ fun ItemButtonsBar(
                     }
                 }
             }
-        }
-        AnimatedVisibility(downloaderState.isDownloading) {
-            Column {
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
-                DownloaderCard(
-                    state = downloaderState,
-                    onCancelClick = onDownloadCancelClick,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacings.small))
+            if (downloaderState != null) {
+                AnimatedVisibility(downloaderState.isDownloading) {
+                    Column {
+                        DownloaderCard(
+                            state = downloaderState,
+                            onCancelClick = onDownloadCancelClick,
+                            onRetryClick = onDownloadClick,
+                        )
+                        Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    }
+                }
             }
         }
     }
@@ -194,7 +196,27 @@ private fun ItemButtonsBarPreview() {
     FindroidTheme {
         ItemButtonsBar(
             item = dummyEpisode,
-            downloaderState = DownloaderState(),
+            onPlayClick = {},
+            onMarkAsPlayedClick = {},
+            onMarkAsFavoriteClick = {},
+            onDownloadClick = {},
+            onDownloadCancelClick = {},
+            onDownloadDeleteClick = {},
+            onTrailerClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemButtonsBarDownloadingPreview() {
+    FindroidTheme {
+        ItemButtonsBar(
+            item = dummyEpisode,
+            downloaderState = DownloaderState(
+                status = DownloadManager.STATUS_RUNNING,
+                progress = 0.3f,
+            ),
             onPlayClick = {},
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},

@@ -9,8 +9,6 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
-import dev.jdtech.jellyfin.models.toFindroidSeason
-import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.CoroutineScope
@@ -45,12 +43,6 @@ class DownloadReceiver : BroadcastReceiver() {
                         val items = mutableListOf<FindroidItem>()
                         items.addAll(
                             database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) },
-                        )
-                        items.addAll(
-                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) },
-                        )
-                        items.addAll(
-                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) },
                         )
                         items.addAll(
                             database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) },

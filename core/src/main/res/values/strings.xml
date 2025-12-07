@@ -102,4 +102,8 @@
     <string name="not_set">Not set</string>
     <string name="none">None</string>
     <string name="manage_servers">Manage servers</string>
+    <string name="download_pending">Pending…</string>
+    <string name="download_paused">Paused</string>
+    <string name="download_downloading">Downloading…</string>
+    <string name="download_failed">Failed to download</string>
 </resources>

@@ -56,7 +56,7 @@ constructor(
                 this@DownloaderViewModel.downloadId = downloadId
                 pollDownloadProgress(downloadId)
             } else {
-                _state.emit(DownloaderState(status = DownloadManager.STATUS_FAILED))
+                _state.emit(DownloaderState(status = DownloadManager.STATUS_FAILED, errorText = uiText))
             }
         }
     }
@@ -65,12 +65,19 @@ constructor(
         item: FindroidItem,
     ) {
         viewModelScope.launch {
+            // Stop progress polling
+            handler.removeCallbacksAndMessages(null)
+
+            // Cancel the download
             downloadId?.let {
                 downloader.cancelDownload(
                     item = item,
                     downloadId = it,
                 )
             }
+
+            // Emit empty DownloadState
+            _state.emit(DownloaderState())
         }
     }
 

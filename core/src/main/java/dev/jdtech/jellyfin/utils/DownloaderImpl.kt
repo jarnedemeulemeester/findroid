@@ -32,6 +32,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.ImagesDownloaderWorker
 import kotlinx.coroutines.coroutineScope
+import timber.log.Timber
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
@@ -125,7 +126,7 @@ class DownloaderImpl(
                 val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
                 deleteItem(item, source)
             } catch (_: Exception) {}
-
+            Timber.e(e)
             return@coroutineScope Pair(-1, if (e.message != null) UiText.DynamicString(e.message!!) else UiText.StringResource(CoreR.string.unknown_error))
         }
     }
