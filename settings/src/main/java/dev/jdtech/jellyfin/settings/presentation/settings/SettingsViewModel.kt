@@ -17,6 +17,7 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceTextInput
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -462,6 +463,51 @@ constructor(
                                 ),
                             ),
                         ),
+                        PreferenceGroup(
+                            nameStringResource = R.string.settings_proxy,
+                            preferences = listOf(
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.settings_proxy_enabled,
+                                    descriptionStringRes = R.string.settings_proxy_enabled_summary,
+                                    backendPreference = appPreferences.proxyEnabled,
+                                ),
+                                PreferenceSelect(
+                                    nameStringResource = R.string.settings_proxy_type,
+                                    dependencies = listOf(appPreferences.proxyEnabled),
+                                    backendPreference = appPreferences.proxyType,
+                                    options = R.array.proxy_types,
+                                    optionValues = R.array.proxy_types_values,
+                                ),
+                                PreferenceTextInput(
+                                    nameStringResource = R.string.settings_proxy_host,
+                                    hintRes = R.string.settings_proxy_host_hint,
+                                    dependencies = listOf(appPreferences.proxyEnabled),
+                                    backendPreference = appPreferences.proxyHost,
+                                ),
+                                PreferenceIntInput(
+                                    nameStringResource = R.string.settings_proxy_port,
+                                    dependencies = listOf(appPreferences.proxyEnabled),
+                                    backendPreference = appPreferences.proxyPort,
+                                ),
+                                PreferenceSwitch(
+                                    nameStringResource = R.string.settings_proxy_auth_required,
+                                    descriptionStringRes = R.string.settings_proxy_auth_required_summary,
+                                    dependencies = listOf(appPreferences.proxyEnabled),
+                                    backendPreference = appPreferences.proxyAuthRequired,
+                                ),
+                                PreferenceTextInput(
+                                    nameStringResource = R.string.settings_proxy_username,
+                                    dependencies = listOf(appPreferences.proxyEnabled, appPreferences.proxyAuthRequired),
+                                    backendPreference = appPreferences.proxyUsername,
+                                ),
+                                PreferenceTextInput(
+                                    nameStringResource = R.string.settings_proxy_password,
+                                    isPassword = true,
+                                    dependencies = listOf(appPreferences.proxyEnabled, appPreferences.proxyAuthRequired),
+                                    backendPreference = appPreferences.proxyPassword,
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),
@@ -563,6 +609,12 @@ constructor(
                                     value = appPreferences.getValue(preference.backendPreference),
                                 )
                             }
+                            is PreferenceTextInput -> {
+                                preference.copy(
+                                    enabled = preference.enabled && preference.dependencies.all { appPreferences.getValue(it) },
+                                    value = appPreferences.getValue(preference.backendPreference) ?: "",
+                                )
+                            }
                             else -> preference
                         }
                     },
@@ -582,6 +634,7 @@ constructor(
                     is PreferenceMultiSelect -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceIntInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                     is PreferenceLongInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
+                    is PreferenceTextInput -> appPreferences.setValue(action.preference.backendPreference, action.preference.value)
                 }
             }
             else -> Unit

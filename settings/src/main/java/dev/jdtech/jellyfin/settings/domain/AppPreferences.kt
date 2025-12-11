@@ -2,6 +2,8 @@ package dev.jdtech.jellyfin.settings.domain
 
 import android.content.SharedPreferences
 import dev.jdtech.jellyfin.settings.domain.models.Preference
+import dev.jdtech.jellyfin.settings.domain.models.ProxyConfig
+import dev.jdtech.jellyfin.settings.domain.models.ProxyType
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -74,6 +76,15 @@ constructor(
     val connectTimeout = Preference("pref_network_connect_timeout", Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT)
     val socketTimeout = Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
 
+    // Proxy
+    val proxyEnabled = Preference("pref_proxy_enabled", false)
+    val proxyType = Preference<String?>("pref_proxy_type", "HTTP")
+    val proxyHost = Preference<String?>("pref_proxy_host", null)
+    val proxyPort = Preference("pref_proxy_port", 8080)
+    val proxyAuthRequired = Preference("pref_proxy_auth_required", false)
+    val proxyUsername = Preference<String?>("pref_proxy_username", null)
+    val proxyPassword = Preference<String?>("pref_proxy_password", null)
+
     // Cache
     val imageCache = Preference("pref_image_cache", true)
     val imageCacheSize = Preference("pref_image_cache_size", 20)
@@ -117,5 +128,23 @@ constructor(
             else -> throw Exception()
         }
         editor.apply()
+    }
+
+    /**
+     * Builds a ProxyConfig from the current proxy preferences
+     */
+    fun getProxyConfig(): ProxyConfig {
+        if (!getValue(proxyEnabled)) {
+            return ProxyConfig(type = ProxyType.NONE)
+        }
+
+        return ProxyConfig(
+            type = ProxyType.fromString(getValue(proxyType)),
+            host = getValue(proxyHost) ?: "",
+            port = getValue(proxyPort),
+            authRequired = getValue(proxyAuthRequired),
+            username = getValue(proxyUsername) ?: "",
+            password = getValue(proxyPassword) ?: "",
+        )
     }
 }
