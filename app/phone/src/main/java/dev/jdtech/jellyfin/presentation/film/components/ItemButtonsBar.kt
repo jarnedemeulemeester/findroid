@@ -15,6 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -55,6 +59,8 @@ fun ItemButtonsBar(
         }
         else -> null
     }
+
+    var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
@@ -179,13 +185,26 @@ fun ItemButtonsBar(
                     Column {
                         DownloaderCard(
                             state = downloaderState,
-                            onCancelClick = onDownloadCancelClick,
+                            onCancelClick = {
+                                cancelDownloadDialogOpen = true
+                            },
                             onRetryClick = onDownloadClick,
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
                 }
             }
+        }
+        if (cancelDownloadDialogOpen) {
+            CancelDownloadDialog(
+                onCancel = {
+                    onDownloadCancelClick()
+                    cancelDownloadDialogOpen = false
+                },
+                onDismiss = {
+                    cancelDownloadDialogOpen = false
+                },
+            )
         }
     }
 }
