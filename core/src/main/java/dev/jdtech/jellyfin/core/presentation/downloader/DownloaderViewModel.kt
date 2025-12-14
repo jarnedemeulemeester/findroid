@@ -87,7 +87,7 @@ constructor(
         viewModelScope.launch {
             downloader.deleteItem(
                 item = item,
-                source = item.sources.first(),
+                source = item.sources.first { it.type == FindroidSourceType.LOCAL },
             )
         }
     }
