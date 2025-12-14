@@ -11,7 +11,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
@@ -71,7 +73,9 @@ constructor(
                 _state.emit(
                     _state.value.copy(isLoading = true, error = null),
                 )
-                repository.login(username, password)
+                withContext(Dispatchers.IO) {
+                    repository.login(username, password)
+                }
                 _state.emit(
                     _state.value.copy(isLoading = false),
                 )
