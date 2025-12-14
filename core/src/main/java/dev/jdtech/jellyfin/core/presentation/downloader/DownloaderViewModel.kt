@@ -113,7 +113,7 @@ constructor(
 
     fun onAction(action: DownloaderAction) {
         when (action) {
-            is DownloaderAction.Download -> download(action.item)
+            is DownloaderAction.Download -> download(action.item, action.storageIndex)
             is DownloaderAction.DeleteDownload -> deleteDownload(action.item)
             is DownloaderAction.CancelDownload -> cancelDownload(action.item)
         }
