@@ -11,8 +11,10 @@ import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.isDownloading
 import dev.jdtech.jellyfin.utils.Downloader
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +26,9 @@ constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(DownloaderState())
     val state = _state.asStateFlow()
+
+    private val eventsChannel = Channel<DownloaderEvent>()
+    val events = eventsChannel.receiveAsFlow()
 
     var downloadId: Long? = null
 
@@ -89,6 +94,7 @@ constructor(
                 item = item,
                 source = item.sources.first { it.type == FindroidSourceType.LOCAL },
             )
+            eventsChannel.send(DownloaderEvent.Deleted)
         }
     }
 
@@ -101,6 +107,10 @@ constructor(
                 viewModelScope.launch {
                     val (status, progress) = downloader.getProgress(downloadId)
                     _state.emit(DownloaderState(status = status, progress = progress.coerceAtLeast(0) / 100f))
+                }
+
+                if (_state.value.status == DownloadManager.STATUS_SUCCESSFUL) {
+                    eventsChannel.trySend(DownloaderEvent.Successful)
                 }
 
                 if (_state.value.isDownloading) {

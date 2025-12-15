@@ -39,6 +39,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
@@ -55,6 +56,7 @@ import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -80,6 +82,14 @@ fun MovieScreen(
     LaunchedEffect(state.movie) {
         state.movie?.let { movie ->
             downloaderViewModel.update(movie)
+        }
+    }
+
+    ObserveAsEvents(downloaderViewModel.events) { event ->
+        when (event) {
+            is DownloaderEvent.Successful, DownloaderEvent.Deleted -> {
+                viewModel.loadMovie(movieId = movieId)
+            }
         }
     }
 

@@ -39,6 +39,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
@@ -54,6 +55,7 @@ import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
@@ -79,6 +81,14 @@ fun EpisodeScreen(
     LaunchedEffect(state.episode) {
         state.episode?.let { episode ->
             downloaderViewModel.update(episode)
+        }
+    }
+
+    ObserveAsEvents(downloaderViewModel.events) { event ->
+        when (event) {
+            is DownloaderEvent.Successful, DownloaderEvent.Deleted -> {
+                viewModel.loadEpisode(episodeId = episodeId)
+            }
         }
     }
 
