@@ -67,6 +67,7 @@ fun ItemButtonsBar(
 
     var storageSelectionDialogOpen by remember { mutableStateOf(false) }
     var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
+    var deleteDownloadDialogOpen by remember { mutableStateOf(false) }
 
     var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
@@ -170,7 +171,9 @@ fun ItemButtonsBar(
                 if (downloaderState != null && !downloaderState.isDownloading) {
                     if (item.isDownloaded()) {
                         FilledTonalIconButton(
-                            onClick = onDownloadDeleteClick,
+                            onClick = {
+                                deleteDownloadDialogOpen = true
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
@@ -250,6 +253,17 @@ fun ItemButtonsBar(
                 },
                 onDismiss = {
                     cancelDownloadDialogOpen = false
+                },
+            )
+        }
+        if (deleteDownloadDialogOpen) {
+            DeleteDownloadDialog(
+                onDelete = {
+                    onDownloadDeleteClick()
+                    deleteDownloadDialogOpen = false
+                },
+                onDismiss = {
+                    deleteDownloadDialogOpen = false
                 },
             )
         }
