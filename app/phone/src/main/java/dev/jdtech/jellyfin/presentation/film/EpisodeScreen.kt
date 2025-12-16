@@ -54,6 +54,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
@@ -71,6 +72,8 @@ fun EpisodeScreen(
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val isOfflineMode = LocalOfflineMode.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
@@ -86,8 +89,15 @@ fun EpisodeScreen(
 
     ObserveAsEvents(downloaderViewModel.events) { event ->
         when (event) {
-            is DownloaderEvent.Successful, DownloaderEvent.Deleted -> {
+            is DownloaderEvent.Successful -> {
                 viewModel.loadEpisode(episodeId = episodeId)
+            }
+            is DownloaderEvent.Deleted -> {
+                if (isOfflineMode) {
+                    navigateBack()
+                } else {
+                    viewModel.loadEpisode(episodeId = episodeId)
+                }
             }
         }
     }

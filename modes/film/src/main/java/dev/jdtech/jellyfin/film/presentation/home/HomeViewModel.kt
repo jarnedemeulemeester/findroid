@@ -46,7 +46,6 @@ constructor(
                 appPreferences.getValue(appPreferences.currentServer)?.let { serverId ->
                     loadServerName(serverId)
                 }
-                if (appPreferences.getValue(appPreferences.offlineMode)) _state.emit(_state.value.copy(isOffline = true))
 
                 loadSuggestions()
                 loadResumeItems()

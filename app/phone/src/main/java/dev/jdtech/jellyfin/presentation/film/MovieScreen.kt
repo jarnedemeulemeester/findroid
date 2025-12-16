@@ -55,6 +55,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -71,6 +72,7 @@ fun MovieScreen(
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val isOfflineMode = LocalOfflineMode.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
@@ -87,8 +89,15 @@ fun MovieScreen(
 
     ObserveAsEvents(downloaderViewModel.events) { event ->
         when (event) {
-            is DownloaderEvent.Successful, DownloaderEvent.Deleted -> {
+            is DownloaderEvent.Successful -> {
                 viewModel.loadMovie(movieId = movieId)
+            }
+            is DownloaderEvent.Deleted -> {
+                if (isOfflineMode) {
+                    navigateBack()
+                } else {
+                    viewModel.loadMovie(movieId = movieId)
+                }
             }
         }
     }
