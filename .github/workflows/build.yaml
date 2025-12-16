@@ -37,42 +37,42 @@ jobs:
         run: ./gradlew assembleDebug
         # Upload all build artifacts in separate steps. This can be shortened once https://github.com/actions/upload-artifact/pull/354 is merged.
       - name: Upload artifact phone-libre-arm64-v8a-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: phone-libre-arm64-v8a-debug.apk
           path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-arm64-v8a-debug.apk
       - name: Upload artifact phone-libre-armeabi-v7a-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: phone-libre-armeabi-v7a-debug.apk
           path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-armeabi-v7a-debug.apk
       - name: Upload artifact phone-libre-x86_64-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: phone-libre-x86_64-debug.apk
           path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-x86_64-debug.apk
       - name: Upload artifact phone-libre-x86-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: phone-libre-x86-debug.apk
           path: ./app/phone/build/outputs/apk/libre/debug/phone-libre-x86-debug.apk
       - name: Upload artifact tv-libre-arm64-v8a-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: tv-libre-arm64-v8a-debug.apk
           path: ./app/tv/build/outputs/apk/libre/debug/tv-libre-arm64-v8a-debug.apk
       - name: Upload artifact tv-libre-armeabi-v7a-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: tv-libre-armeabi-v7a-debug.apk
           path: ./app/tv/build/outputs/apk/libre/debug/tv-libre-armeabi-v7a-debug.apk
       - name: Upload artifact tv-libre-x86_64-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: tv-libre-x86_64-debug.apk
           path: ./app/tv/build/outputs/apk/libre/debug/tv-libre-x86_64-debug.apk
       - name: Upload artifact tv-libre-x86-debug.apk
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: tv-libre-x86-debug.apk
           path: ./app/tv/build/outputs/apk/libre/debug/tv-libre-x86-debug.apk
