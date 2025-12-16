@@ -69,7 +69,11 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> {
-        TODO("Not yet implemented")
+        return emptyList()
+    }
+
+    override suspend fun getItem(itemId: UUID): FindroidItem? {
+        return null
     }
 
     override suspend fun getItems(
@@ -81,7 +85,7 @@ class JellyfinRepositoryOfflineImpl(
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getItemsPaging(

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings
 
+import android.app.Activity
 import android.app.UiModeManager
 import android.os.Build
 import androidx.annotation.StringRes
@@ -45,6 +46,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsEvent
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsState
 import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
@@ -94,6 +96,11 @@ fun SettingsScreen(
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
+            }
+            is SettingsEvent.RestartActivity -> {
+                try {
+                    (context as Activity).restart()
+                } catch (_: Exception) {}
             }
         }
     }

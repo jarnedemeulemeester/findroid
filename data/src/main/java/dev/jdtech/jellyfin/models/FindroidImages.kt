@@ -4,6 +4,7 @@ import android.net.Uri
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType
+import java.util.UUID
 
 data class FindroidImages(
     val primary: Uri? = null,
@@ -62,5 +63,45 @@ fun BaseItemDto.toFindroidImages(
         showPrimary = showPrimary,
         showBackdrop = showBackdrop,
         showLogo = showLogo,
+    )
+}
+
+fun FindroidMovieDto.toLocalFindroidImages(
+    itemId: UUID,
+): FindroidImages {
+    return FindroidImages(
+        primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
+        backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+    )
+}
+
+fun FindroidShowDto.toLocalFindroidImages(
+    itemId: UUID,
+): FindroidImages {
+    return FindroidImages(
+        primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
+        backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+    )
+}
+
+fun FindroidSeasonDto.toLocalFindroidImages(
+    itemId: UUID,
+): FindroidImages {
+    return FindroidImages(
+        primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
+        backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        showPrimary = Uri.Builder().appendEncodedPath("images/$seriesId/primary").build(),
+        showBackdrop = Uri.Builder().appendEncodedPath("images/$seriesId/backdrop").build(),
+    )
+}
+
+fun FindroidEpisodeDto.toLocalFindroidImages(
+    itemId: UUID,
+): FindroidImages {
+    return FindroidImages(
+        primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
+        backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        showPrimary = Uri.Builder().appendEncodedPath("images/$seriesId/primary").build(),
+        showBackdrop = Uri.Builder().appendEncodedPath("images/$seriesId/backdrop").build(),
     )
 }

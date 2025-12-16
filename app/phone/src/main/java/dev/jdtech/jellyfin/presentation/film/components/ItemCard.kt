@@ -1,8 +1,10 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -55,12 +58,16 @@ fun ItemCard(
                     item = item,
                     direction = direction,
                 )
-                ProgressBadge(
-                    item = item,
+                Row(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(MaterialTheme.spacings.small),
-                )
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                ) {
+                    if (item.isDownloaded()) DownloadedBadge()
+                    if (item.played) PlayedBadge()
+                    item.unplayedItemCount?.let { ItemCountBadge(it) }
+                }
                 if (direction == Direction.HORIZONTAL) {
                     ProgressBar(
                         item = item,

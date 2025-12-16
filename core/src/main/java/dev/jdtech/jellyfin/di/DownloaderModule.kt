@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.di
 
 import android.app.Application
+import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,8 @@ object DownloaderModule {
         serverDatabase: ServerDatabaseDao,
         jellyfinRepository: JellyfinRepository,
         appPreferences: AppPreferences,
+        workManager: WorkManager,
     ): Downloader {
-        return DownloaderImpl(application, serverDatabase, jellyfinRepository, appPreferences)
+        return DownloaderImpl(application, serverDatabase, jellyfinRepository, appPreferences, workManager)
     }
 }

@@ -34,6 +34,8 @@ interface JellyfinRepository {
 
     suspend fun getLibraries(): List<FindroidCollection>
 
+    suspend fun getItem(itemId: UUID): FindroidItem?
+
     suspend fun getItems(
         parentId: UUID? = null,
         includeTypes: List<BaseItemKind>? = null,

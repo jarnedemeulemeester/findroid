@@ -38,6 +38,10 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
@@ -51,7 +55,9 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -62,18 +68,43 @@ fun MovieScreen(
     navigateBack: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
+    downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val isOfflineMode = LocalOfflineMode.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
         viewModel.loadMovie(movieId = movieId)
     }
 
+    LaunchedEffect(state.movie) {
+        state.movie?.let { movie ->
+            downloaderViewModel.update(movie)
+        }
+    }
+
+    ObserveAsEvents(downloaderViewModel.events) { event ->
+        when (event) {
+            is DownloaderEvent.Successful -> {
+                viewModel.loadMovie(movieId = movieId)
+            }
+            is DownloaderEvent.Deleted -> {
+                if (isOfflineMode) {
+                    navigateBack()
+                } else {
+                    viewModel.loadMovie(movieId = movieId)
+                }
+            }
+        }
+    }
+
     MovieScreenLayout(
         state = state,
+        downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
@@ -96,13 +127,18 @@ fun MovieScreen(
             }
             viewModel.onAction(action)
         },
+        onDownloaderAction = { action ->
+            downloaderViewModel.onAction(action)
+        },
     )
 }
 
 @Composable
 private fun MovieScreenLayout(
     state: MovieState,
+    downloaderState: DownloaderState,
     onAction: (MovieAction) -> Unit,
+    onDownloaderAction: (DownloaderAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
 
@@ -204,6 +240,7 @@ private fun MovieScreenLayout(
                     }
                     ItemButtonsBar(
                         item = movie,
+                        downloaderState = downloaderState,
                         onPlayClick = { startFromBeginning ->
                             onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -222,7 +259,15 @@ private fun MovieScreenLayout(
                         onTrailerClick = { uri ->
                             onAction(MovieAction.PlayTrailer(uri))
                         },
-                        onDownloadClick = {},
+                        onDownloadClick = { storageIndex ->
+                            onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
+                        },
+                        onDownloadCancelClick = {
+                            onDownloaderAction(DownloaderAction.CancelDownload(movie))
+                        },
+                        onDownloadDeleteClick = {
+                            onDownloaderAction(DownloaderAction.DeleteDownload(movie))
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
@@ -295,7 +340,9 @@ private fun EpisodeScreenLayoutPreview() {
                 movie = dummyMovie,
                 videoMetadata = dummyVideoMetadata,
             ),
+            downloaderState = DownloaderState(),
             onAction = {},
+            onDownloaderAction = {},
         )
     }
 }

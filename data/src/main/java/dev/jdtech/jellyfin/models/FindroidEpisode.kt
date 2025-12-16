@@ -110,7 +110,7 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         seasonName = null,
         communityRating = communityRating,
         people = emptyList(),
-        images = FindroidImages(),
+        images = toLocalFindroidImages(itemId = id),
         chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )
