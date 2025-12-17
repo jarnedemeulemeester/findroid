@@ -97,7 +97,7 @@
     <string name="not_set">Non définie</string>
     <string name="offline_mode">Mode hors ligne</string>
     <string name="season_number">Saison %1$d</string>
-    <string name="episode_number">Episode %2$d</string>
+    <string name="episode_number">Episode %1$d</string>
     <string name="show_stacktrace">Afficher la trace de la pile</string>
     <string name="none">Aucun</string>
     <string name="manage_servers">Gérer les serveurs</string>
