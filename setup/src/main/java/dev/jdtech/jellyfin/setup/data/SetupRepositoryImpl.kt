@@ -11,7 +11,9 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.discovery.RecommendedServerIssue
@@ -48,17 +50,20 @@ class SetupRepositoryImpl(
         database.delete(serverId)
     }
 
-    override suspend fun getIsQuickConnectEnabled(): Boolean {
-        return jellyfinApi.quickConnectApi.getQuickConnectEnabled().content
-    }
+    override suspend fun getIsQuickConnectEnabled(): Boolean =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.quickConnectApi.getQuickConnectEnabled().content
+        }
 
-    override suspend fun initiateQuickConnect(): QuickConnectResult {
-        return jellyfinApi.quickConnectApi.initiateQuickConnect().content
-    }
+    override suspend fun initiateQuickConnect(): QuickConnectResult =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.quickConnectApi.initiateQuickConnect().content
+        }
 
-    override suspend fun getQuickConnectState(secret: String): QuickConnectResult {
-        return jellyfinApi.quickConnectApi.getQuickConnectState(secret).content
-    }
+    override suspend fun getQuickConnectState(secret: String): QuickConnectResult =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.quickConnectApi.getQuickConnectState(secret).content
+        }
 
     override suspend fun setCurrentServer(serverId: String) {
         val serverWithAddressAndUser = database.getServerWithAddressAndUser(serverId) ?: return
@@ -193,27 +198,32 @@ class SetupRepositoryImpl(
         }
     }
 
-    override suspend fun loadDisclaimer(): String? {
-        return jellyfinApi.brandingApi.getBrandingOptions().content.loginDisclaimer
-    }
+    override suspend fun loadDisclaimer(): String? =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.brandingApi.getBrandingOptions().content.loginDisclaimer
+        }
 
     override suspend fun login(username: String, password: String) {
-        val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
-            data = AuthenticateUserByName(
-                username = username,
-                pw = password,
-            ),
-        )
+        withContext(Dispatchers.IO) {
+            val authenticationResult by jellyfinApi.userApi.authenticateUserByName(
+                data = AuthenticateUserByName(
+                    username = username,
+                    pw = password,
+                ),
+            )
 
-        saveAuthenticationResult(authenticationResult)
+            saveAuthenticationResult(authenticationResult)
+        }
     }
 
     override suspend fun loginWithSecret(secret: String) {
-        val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
-            data = QuickConnectDto(secret = secret),
-        )
+        withContext(Dispatchers.IO) {
+            val authenticationResult by jellyfinApi.userApi.authenticateWithQuickConnect(
+                data = QuickConnectDto(secret = secret),
+            )
 
-        saveAuthenticationResult(authenticationResult)
+            saveAuthenticationResult(authenticationResult)
+        }
     }
 
     private fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
@@ -237,15 +247,16 @@ class SetupRepositoryImpl(
         return database.getUsers(serverId)
     }
 
-    override suspend fun getPublicUsers(serverId: String): List<User> {
-        return jellyfinApi.userApi.getPublicUsers().content.mapNotNull {
-            User(
-                id = it.id,
-                name = it.name ?: return@mapNotNull null,
-                serverId = serverId,
-            )
+    override suspend fun getPublicUsers(serverId: String): List<User> =
+        withContext(Dispatchers.IO) {
+            jellyfinApi.userApi.getPublicUsers().content.mapNotNull {
+                User(
+                    id = it.id,
+                    name = it.name ?: return@mapNotNull null,
+                    serverId = serverId,
+                )
+            }
         }
-    }
 
     override suspend fun getCurrentUser(): User? {
         val currentServer = getCurrentServer() ?: return null
