@@ -342,6 +342,10 @@ fun NavigationRoot(
                     onLibraryClick = {
                         navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
                     },
+                    onSearchClick = {
+                        searchExpanded = true
+                        navController.safeNavigate(MediaRoute)
+                    },
                     onSettingsClick = {
                         navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                     },

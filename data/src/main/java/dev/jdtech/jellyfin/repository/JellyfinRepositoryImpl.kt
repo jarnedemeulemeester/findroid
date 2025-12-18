@@ -421,7 +421,7 @@ class JellyfinRepositoryImpl(
                     playMethod = PlayMethod.DIRECT_PLAY,
                     repeatMode = RepeatMode.REPEAT_NONE,
                     playbackOrder = PlaybackOrder.DEFAULT,
-                    )
+                ),
             )
         }
     }
@@ -453,7 +453,7 @@ class JellyfinRepositoryImpl(
                         itemId = itemId,
                         positionTicks = positionTicks,
                         failed = false,
-                    )
+                    ),
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -480,7 +480,7 @@ class JellyfinRepositoryImpl(
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,
-                    )
+                    ),
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)

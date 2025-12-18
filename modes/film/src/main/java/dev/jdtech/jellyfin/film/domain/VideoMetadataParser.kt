@@ -79,7 +79,8 @@ class VideoMetadataParser {
                                 VideoRangeType.DOVI_WITH_HLG,
                                 VideoRangeType.DOVI_WITH_SDR,
                                 VideoRangeType.DOVI_WITH_HDR10,
-                                VideoRangeType.DOVI_WITH_HDR10_PLUS -> DisplayProfile.DOLBY_VISION
+                                VideoRangeType.DOVI_WITH_HDR10_PLUS,
+                                -> DisplayProfile.DOLBY_VISION
                                 else -> null
                             }?.let { displayProfiles.add(it) }
 

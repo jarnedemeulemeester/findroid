@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
@@ -41,9 +42,12 @@ fun HomeHeader(
     onServerClick: () -> Unit,
     onErrorClick: () -> Unit,
     onRetryClick: () -> Unit,
+    onSearchClick: () -> Unit,
     onUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isOfflineMode = LocalOfflineMode.current
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -150,6 +154,29 @@ fun HomeHeader(
                 }
             }
 
+            if (!isOfflineMode) {
+                Surface(
+                    onClick = onSearchClick,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_search),
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+
             Surface(
                 onClick = onUserClick,
                 modifier = Modifier
@@ -185,6 +212,7 @@ private fun HomeHeaderLoadingPreview() {
             onServerClick = {},
             onErrorClick = {},
             onRetryClick = {},
+            onSearchClick = {},
             onUserClick = {},
         )
     }
@@ -201,6 +229,7 @@ private fun HomeHeaderErrorPreview() {
             onServerClick = {},
             onErrorClick = {},
             onRetryClick = {},
+            onSearchClick = {},
             onUserClick = {},
         )
     }

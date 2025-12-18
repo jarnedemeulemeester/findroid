@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     onLibraryClick: (library: FindroidCollection) -> Unit,
+    onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onManageServers: () -> Unit,
     onItemClick: (item: FindroidItem) -> Unit,
@@ -66,6 +67,7 @@ fun HomeScreen(
             when (action) {
                 is HomeAction.OnItemClick -> onItemClick(action.item)
                 is HomeAction.OnLibraryClick -> onLibraryClick(action.library)
+                is HomeAction.OnSearchClick -> onSearchClick()
                 is HomeAction.OnSettingsClick -> onSettingsClick()
                 is HomeAction.OnManageServers -> onManageServers()
                 else -> Unit
@@ -176,6 +178,9 @@ private fun HomeScreenLayout(
         },
         onRetryClick = {
             onAction(HomeAction.OnRetryClick)
+        },
+        onSearchClick = {
+            onAction(HomeAction.OnSearchClick)
         },
         onUserClick = {
             onAction(HomeAction.OnSettingsClick)

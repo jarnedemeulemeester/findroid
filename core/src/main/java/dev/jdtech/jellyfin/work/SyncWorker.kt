@@ -75,7 +75,7 @@ class SyncWorker @AssistedInject constructor(
                         playbackPositionTicks = userData.playbackPositionTicks,
                         isFavorite = userData.favorite,
                         played = userData.played,
-                    )
+                    ),
                 )
 
                 database.setUserDataToBeSynced(user.id, item.id, false)
