@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.model.api.UpdateUserItemDataDto
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
@@ -67,19 +68,14 @@ class SyncWorker @AssistedInject constructor(
             val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue
 
             try {
-                when (userData.played) {
-                    true -> jellyfinApi.playStateApi.markPlayedItem(item.id, user.id)
-                    false -> jellyfinApi.playStateApi.markUnplayedItem(item.id, user.id)
-                }
-
-                when (userData.favorite) {
-                    true -> jellyfinApi.userLibraryApi.markFavoriteItem(item.id, user.id)
-                    false -> jellyfinApi.userLibraryApi.unmarkFavoriteItem(item.id, user.id)
-                }
-
-                jellyfinApi.playStateApi.onPlaybackStopped(
+                jellyfinApi.itemsApi.updateItemUserData(
                     itemId = item.id,
-                    positionTicks = userData.playbackPositionTicks,
+                    userId = user.id,
+                    data = UpdateUserItemDataDto(
+                        playbackPositionTicks = userData.playbackPositionTicks,
+                        isFavorite = userData.favorite,
+                        played = userData.played,
+                    )
                 )
 
                 database.setUserDataToBeSynced(user.id, item.id, false)

@@ -38,8 +38,14 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.ItemFilter
 import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.MediaType
+import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PlaybackInfoDto
+import org.jellyfin.sdk.model.api.PlaybackOrder
+import org.jellyfin.sdk.model.api.PlaybackProgressInfo
+import org.jellyfin.sdk.model.api.PlaybackStartInfo
+import org.jellyfin.sdk.model.api.PlaybackStopInfo
 import org.jellyfin.sdk.model.api.PublicSystemInfo
+import org.jellyfin.sdk.model.api.RepeatMode
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
@@ -406,7 +412,17 @@ class JellyfinRepositoryImpl(
     override suspend fun postPlaybackStart(itemId: UUID) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
-            jellyfinApi.playStateApi.onPlaybackStart(itemId)
+            jellyfinApi.playStateApi.reportPlaybackStart(
+                PlaybackStartInfo(
+                    itemId = itemId,
+                    canSeek = true,
+                    isPaused = false,
+                    isMuted = false,
+                    playMethod = PlayMethod.DIRECT_PLAY,
+                    repeatMode = RepeatMode.REPEAT_NONE,
+                    playbackOrder = PlaybackOrder.DEFAULT,
+                    )
+            )
         }
     }
 
@@ -432,9 +448,12 @@ class JellyfinRepositoryImpl(
                 }
             }
             try {
-                jellyfinApi.playStateApi.onPlaybackStopped(
-                    itemId,
-                    positionTicks = positionTicks,
+                jellyfinApi.playStateApi.reportPlaybackStopped(
+                    PlaybackStopInfo(
+                        itemId = itemId,
+                        positionTicks = positionTicks,
+                        failed = false,
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -451,10 +470,17 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             try {
-                jellyfinApi.playStateApi.onPlaybackProgress(
-                    itemId,
-                    positionTicks = positionTicks,
-                    isPaused = isPaused,
+                jellyfinApi.playStateApi.reportPlaybackProgress(
+                    PlaybackProgressInfo(
+                        itemId = itemId,
+                        canSeek = true,
+                        isPaused = isPaused,
+                        isMuted = false,
+                        playMethod = PlayMethod.DIRECT_PLAY,
+                        repeatMode = RepeatMode.REPEAT_NONE,
+                        playbackOrder = PlaybackOrder.DEFAULT,
+                        positionTicks = positionTicks,
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)

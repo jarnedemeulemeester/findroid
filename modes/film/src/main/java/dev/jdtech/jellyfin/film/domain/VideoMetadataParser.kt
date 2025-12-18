@@ -17,7 +17,7 @@ class VideoMetadataParser {
         val resolution = mutableListOf<Resolution>()
         val videoCodecs = mutableListOf<VideoCodec?>()
         val audioChannels = mutableListOf<AudioChannel>()
-        val displayProfile = mutableListOf<DisplayProfile>()
+        val displayProfiles = mutableListOf<DisplayProfile>()
         val audioCodecs = mutableListOf<AudioCodec?>()
         val isAtmosAudio = mutableListOf<Boolean>()
 
@@ -26,7 +26,7 @@ class VideoMetadataParser {
                 when (stream.type) {
                     MediaStreamType.AUDIO -> {
                         /**
-                         * Match audio profile from [MediaStream.channelLayout]
+                         * Match audio profile from [org.jellyfin.sdk.model.api.MediaStream.channelLayout]
                          */
                         audioChannels.add(
                             when (stream.channelLayout) {
@@ -38,14 +38,14 @@ class VideoMetadataParser {
                         )
 
                         /**
-                         * Match [MediaStream.displayTitle] for Dolby Atmos
+                         * Match [org.jellyfin.sdk.model.api.MediaStream.displayTitle] for Dolby Atmos
                          */
                         stream.displayTitle?.apply {
                             isAtmosAudio.add(contains("ATMOS", true))
                         }
 
                         /**
-                         * Match audio codec from [MediaStream.codec]
+                         * Match audio codec from [org.jellyfin.sdk.model.api.MediaStream.codec]
                          */
                         audioCodecs.add(
                             when (stream.codec.lowercase()) {
@@ -66,28 +66,25 @@ class VideoMetadataParser {
                     MediaStreamType.VIDEO -> {
                         with(stream) {
                             /**
-                             * Match dynamic range from [MediaStream.videoRangeType]
+                             * Match dynamic range from [org.jellyfin.sdk.model.api.MediaStream.videoRangeType]
                              */
-                            displayProfile.add(
-                                /**
-                                 * Since [MediaStream.videoRangeType] is [DisplayProfile.HDR10]
-                                 * Check if [MediaStream.videoDoViTitle] is not null and return
-                                 * [DisplayProfile.DOLBY_VISION] accordingly
-                                 */
-                                if (stream.videoDoViTitle != null) {
-                                    DisplayProfile.DOLBY_VISION
-                                } else {
-                                    when (videoRangeType) {
-                                        VideoRangeType.HDR10 -> DisplayProfile.HDR10
-                                        VideoRangeType.HDR10_PLUS -> DisplayProfile.HDR10_PLUS
-                                        VideoRangeType.HLG -> DisplayProfile.HLG
-                                        else -> DisplayProfile.SDR
-                                    }
-                                },
-                            )
+                            when (videoRangeType) {
+                                VideoRangeType.SDR -> DisplayProfile.SDR
+                                VideoRangeType.HDR10 -> DisplayProfile.HDR10
+                                VideoRangeType.HDR10_PLUS -> DisplayProfile.HDR10_PLUS
+                                VideoRangeType.HLG -> DisplayProfile.HLG
+                                VideoRangeType.DOVI,
+                                VideoRangeType.DOVI_WITH_EL,
+                                VideoRangeType.DOVI_WITH_ELHDR10_PLUS,
+                                VideoRangeType.DOVI_WITH_HLG,
+                                VideoRangeType.DOVI_WITH_SDR,
+                                VideoRangeType.DOVI_WITH_HDR10,
+                                VideoRangeType.DOVI_WITH_HDR10_PLUS -> DisplayProfile.DOLBY_VISION
+                                else -> null
+                            }?.let { displayProfiles.add(it) }
 
                             /**
-                             * Force stream [MediaStream.height] and [MediaStream.width] as not null
+                             * Force stream [org.jellyfin.sdk.model.api.MediaStream.height] and [org.jellyfin.sdk.model.api.MediaStream.width] as not null
                              * since we are inside [MediaStreamType.VIDEO] block
                              */
                             resolution.add(
@@ -125,7 +122,7 @@ class VideoMetadataParser {
         return VideoMetadata(
             resolution = resolution,
             videoCodecs = videoCodecs.toSet().toList(),
-            displayProfiles = displayProfile.toSet().toList(),
+            displayProfiles = displayProfiles.toSet().toList(),
             audioChannels = audioChannels.toSet().toList(),
             audioCodecs = audioCodecs.toSet().toList(),
             isAtmos = isAtmosAudio,
