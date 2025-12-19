@@ -1414,6 +1414,14 @@ class MPVPlayer(
         return MPVLib.setPropertyBoolean("mute", muted)
     }
 
+    override fun mute() {
+        MPVLib.setPropertyBoolean("mute", true)
+    }
+
+    override fun unmute() {
+        MPVLib.setPropertyBoolean("mute", false)
+    }
+
     override fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) {
         TODO("Not yet implemented")
     }
