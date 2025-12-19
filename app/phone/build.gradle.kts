@@ -138,6 +138,7 @@ dependencies {
     implementation(libs.coil.network.cache.control)
     implementation(libs.coil.svg)
     implementation(libs.hilt.android)
+    ksp(libs.kotlin.metadata.jvm)
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     compileOnly(libs.libmpv)

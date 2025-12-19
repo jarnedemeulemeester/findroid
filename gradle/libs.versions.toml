@@ -18,9 +18,9 @@ androidx-work = "2.11.0"
 coil = "3.3.0"
 hilt = "2.57.2"
 jellyfin = "1.8.5"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinx-serialization = "1.9.0"
-ksp = "2.3.3"
+ksp = "2.3.4"
 ktlint = "12.3.0"
 libmpv = "0.5.1"
 material = "1.13.0"
@@ -67,6 +67,7 @@ coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil"
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.ref = "jellyfin" }
+kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 libmpv = { group = "dev.jdtech.mpv", name = "libmpv", version.ref = "libmpv" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
