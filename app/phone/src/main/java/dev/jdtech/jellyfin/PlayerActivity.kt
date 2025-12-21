@@ -189,13 +189,18 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             // Chapters
+                            val playerControlView =
+                                findViewById<PlayerControlView>(R.id.exo_controller)
                             if (currentChapters.isNotEmpty()) {
-                                val playerControlView =
-                                    findViewById<PlayerControlView>(R.id.exo_controller)
                                 val numOfChapters = currentChapters.size
                                 playerControlView.setExtraAdGroupMarkers(
                                     LongArray(numOfChapters) { index -> currentChapters[index].startPosition },
                                     BooleanArray(numOfChapters) { false },
+                                )
+                            } else {
+                                playerControlView.setExtraAdGroupMarkers(
+                                    null,
+                                    null,
                                 )
                             }
 
