@@ -302,12 +302,6 @@ class MPVPlayer(
                 "seekable" -> {
                     if (isSeekable != value) {
                         isSeekable = value
-                        listeners.sendEvent(EVENT_TIMELINE_CHANGED) { listener ->
-                            listener.onTimelineChanged(
-                                timeline,
-                                TIMELINE_CHANGE_REASON_SOURCE_UPDATE,
-                            )
-                        }
                     }
                 }
             }
@@ -322,12 +316,6 @@ class MPVPlayer(
                     val newDuration = value * C.MILLIS_PER_SECOND
                     if (currentDurationMs != newDuration) {
                         currentDurationMs = newDuration
-                        listeners.sendEvent(EVENT_TIMELINE_CHANGED) { listener ->
-                            listener.onTimelineChanged(
-                                timeline,
-                                TIMELINE_CHANGE_REASON_SOURCE_UPDATE,
-                            )
-                        }
                     }
                 }
                 "demuxer-cache-time" -> currentCacheDurationMs = value * C.MILLIS_PER_SECOND
@@ -381,6 +369,10 @@ class MPVPlayer(
                             MPVLib.command(command)
                         }
                     }
+                }
+                MPVLib.MPV_EVENT_FILE_LOADED -> {
+                    isSeekable = MPVLib.getPropertyBoolean("seekable")
+                    currentDurationMs = (MPVLib.getPropertyDouble("duration") * C.MILLIS_PER_SECOND).toLong()
                 }
                 MPVLib.MPV_EVENT_SEEK -> {
                     setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
@@ -498,11 +490,11 @@ class MPVPlayer(
                 /* isSeekable = */
                 isSeekable,
                 /* isDynamic = */
-                !isSeekable,
+                false,
                 /* liveConfiguration = */
                 currentMediaItem.liveConfiguration,
                 /* defaultPositionUs = */
-                C.TIME_UNSET,
+                0,
                 /* durationUs = */
                 Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
                 /* firstPeriodIndex = */
@@ -510,7 +502,7 @@ class MPVPlayer(
                 /* lastPeriodIndex = */
                 windowIndex,
                 /* positionInFirstPeriodUs = */
-                C.TIME_UNSET,
+                0,
             )
         }
 
