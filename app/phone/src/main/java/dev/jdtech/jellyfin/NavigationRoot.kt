@@ -210,11 +210,8 @@ fun NavigationRoot(
                         }
 
                         navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
+                            popUpTo(navController.graph.startDestinationId)
                             launchSingleTop = true
-                            restoreState = true
                         }
                     },
                     icon = {
@@ -344,7 +341,10 @@ fun NavigationRoot(
                     },
                     onSearchClick = {
                         searchExpanded = true
-                        navController.safeNavigate(MediaRoute)
+                        navController.safeNavigate(MediaRoute) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
                     },
                     onSettingsClick = {
                         navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
