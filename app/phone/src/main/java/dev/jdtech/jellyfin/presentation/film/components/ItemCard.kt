@@ -66,7 +66,7 @@ fun ItemCard(
                 ) {
                     if (item.isDownloaded()) DownloadedBadge()
                     if (item.played) PlayedBadge()
-                    item.unplayedItemCount?.let { ItemCountBadge(it) }
+                    item.unplayedItemCount?.takeIf { it > 0 }?.let { ItemCountBadge(it) }
                 }
                 if (direction == Direction.HORIZONTAL) {
                     ProgressBar(
