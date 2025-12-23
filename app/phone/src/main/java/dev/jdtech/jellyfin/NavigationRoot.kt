@@ -510,10 +510,7 @@ private fun navigateToItem(navController: NavHostController, item: FindroidItem)
         is FindroidSeason -> navController.safeNavigate(SeasonRoute(seasonId = item.id.toString()))
         is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = item.id.toString()))
         is FindroidCollection -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = item.type))
-        is FindroidFolder -> {
-            val currentRoute: LibraryRoute = navController.currentBackStackEntry!!.toRoute()
-            navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = currentRoute.libraryType))
-        }
+        is FindroidFolder -> navController.safeNavigate(LibraryRoute(libraryId = item.id.toString(), libraryName = item.name, libraryType = CollectionType.Folders))
         else -> Unit
     }
 }

@@ -10,6 +10,7 @@ enum class CollectionType(val type: String) {
     LiveTv("livetv"),
     BoxSets("boxsets"),
     Mixed("null"),
+    Folders("folders"),
     Unknown("unknown"),
     ;
 
@@ -21,6 +22,7 @@ enum class CollectionType(val type: String) {
             TvShows,
             BoxSets,
             Mixed,
+            Folders,
         )
 
         fun fromString(string: String?): CollectionType {
