@@ -83,7 +83,8 @@ fun ItemCard(
         Text(
             text = if (item is FindroidEpisode) item.seriesName else item.name,
             style = MaterialTheme.typography.bodyMedium,
-            maxLines = if (direction == Direction.HORIZONTAL) 1 else 2,
+            minLines = if (direction == Direction.HORIZONTAL || (item is FindroidEpisode)) 1 else 2,
+            maxLines = if (direction == Direction.HORIZONTAL || (item is FindroidEpisode)) 1 else 2,
             overflow = TextOverflow.Ellipsis,
         )
         if (item is FindroidEpisode) {
@@ -135,6 +136,18 @@ private fun ItemCardPreviewEpisode() {
         ItemCard(
             item = dummyEpisode,
             direction = Direction.HORIZONTAL,
+            onClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemCardPreviewEpisodeVertical() {
+    FindroidTheme {
+        ItemCard(
+            item = dummyEpisode,
+            direction = Direction.VERTICAL,
             onClick = {},
         )
     }
