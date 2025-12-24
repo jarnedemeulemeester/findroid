@@ -83,8 +83,8 @@ fun ItemCard(
         Text(
             text = if (item is FindroidEpisode) item.seriesName else item.name,
             style = MaterialTheme.typography.bodyMedium,
-            minLines = if (direction == Direction.HORIZONTAL || (item is FindroidEpisode)) 1 else 2,
-            maxLines = if (direction == Direction.HORIZONTAL || (item is FindroidEpisode)) 1 else 2,
+            minLines = if (direction == Direction.HORIZONTAL || item is FindroidEpisode) 1 else 2,
+            maxLines = if (direction == Direction.HORIZONTAL || item is FindroidEpisode) 1 else 2,
             overflow = TextOverflow.Ellipsis,
         )
         if (item is FindroidEpisode) {
