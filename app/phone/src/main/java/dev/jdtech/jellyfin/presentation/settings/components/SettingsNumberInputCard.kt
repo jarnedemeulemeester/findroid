@@ -22,11 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastFilterNotNull
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
-import dev.jdtech.jellyfin.settings.R as SettingsR
-import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
 fun SettingsIntInputCard(
@@ -34,24 +34,16 @@ fun SettingsIntInputCard(
     onUpdate: (value: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
-    val prefix = preference.prefixRes?.let {
-        stringResource(it)
-    }
+    val prefix = preference.prefixRes?.let { stringResource(it) }
 
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputCard(
         preference = preference,
         text = listOf(prefix, preference.value, suffix).fastFilterNotNull().joinToString(" "),
-        onClick = {
-            showDialog = true
-        },
+        onClick = { showDialog = true },
         modifier = modifier,
     )
 
@@ -62,9 +54,7 @@ fun SettingsIntInputCard(
                 showDialog = false
                 onUpdate(value)
             },
-            onDismissRequest = {
-                showDialog = false
-            },
+            onDismissRequest = { showDialog = false },
         )
     }
 }
@@ -75,24 +65,16 @@ fun SettingsLongInputCard(
     onUpdate: (value: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
-    val prefix = preference.prefixRes?.let {
-        stringResource(it)
-    }
+    val prefix = preference.prefixRes?.let { stringResource(it) }
 
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputCard(
         preference = preference,
         text = listOf(prefix, preference.value, suffix).fastFilterNotNull().joinToString(" "),
-        onClick = {
-            showDialog = true
-        },
+        onClick = { showDialog = true },
         modifier = modifier,
     )
 
@@ -103,9 +85,7 @@ fun SettingsLongInputCard(
                 showDialog = false
                 onUpdate(value)
             },
-            onDismissRequest = {
-                showDialog = false
-            },
+            onDismissRequest = { showDialog = false },
         )
     }
 }
@@ -117,11 +97,7 @@ fun SettingsNumberInputCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SettingsBaseCard(
-        preference = preference,
-        onClick = onClick,
-        modifier = modifier,
-    ) {
+    SettingsBaseCard(preference = preference, onClick = onClick, modifier = modifier) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             verticalAlignment = Alignment.CenterVertically,
@@ -133,18 +109,13 @@ fun SettingsNumberInputCard(
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Text(text = text, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -155,12 +126,13 @@ fun SettingsNumberInputCard(
 private fun SettingsIntInputCardPreview() {
     FindroidTheme {
         SettingsIntInputCard(
-            preference = PreferenceIntInput(
-                nameStringResource = SettingsR.string.settings_cache_size,
-                backendPreference = PreferenceBackend("", 0),
-                suffixRes = SettingsR.string.mb,
-                value = 25,
-            ),
+            preference =
+                PreferenceIntInput(
+                    nameStringResource = SettingsR.string.settings_cache_size,
+                    backendPreference = PreferenceBackend("", 0),
+                    suffixRes = SettingsR.string.mb,
+                    value = 25,
+                ),
             onUpdate = {},
         )
     }
@@ -171,12 +143,13 @@ private fun SettingsIntInputCardPreview() {
 private fun SettingsLongInputCardPreview() {
     FindroidTheme {
         SettingsLongInputCard(
-            preference = PreferenceLongInput(
-                nameStringResource = SettingsR.string.settings_cache_size,
-                backendPreference = PreferenceBackend("", 0L),
-                suffixRes = SettingsR.string.mb,
-                value = 25,
-            ),
+            preference =
+                PreferenceLongInput(
+                    nameStringResource = SettingsR.string.settings_cache_size,
+                    backendPreference = PreferenceBackend("", 0L),
+                    suffixRes = SettingsR.string.mb,
+                    value = 25,
+                ),
             onUpdate = {},
         )
     }

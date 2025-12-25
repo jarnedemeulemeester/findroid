@@ -33,24 +33,17 @@ fun BaseDialog(
     onDismiss: () -> Unit,
     content: @Composable ColumnScope.(contentPadding: PaddingValues) -> Unit,
 ) {
-    Dialog(
-        onDismissRequest = onDismiss,
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 540.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(max = 540.dp),
             shape = RoundedCornerShape(28.dp),
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(top = MaterialTheme.spacings.default),
-            ) {
+            Column(modifier = Modifier.padding(top = MaterialTheme.spacings.default)) {
                 Text(
                     text = title,
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacings.default)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier.padding(horizontal = MaterialTheme.spacings.default)
+                            .fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineSmall,
                 )
@@ -69,16 +62,11 @@ fun BaseDialog(
     positiveButton: @Composable () -> Unit,
     content: @Composable ColumnScope.(contentPadding: PaddingValues) -> Unit,
 ) {
-    BaseDialog(
-        title = title,
-        onDismiss = onDismiss,
-    ) { contentPadding ->
+    BaseDialog(title = title, onDismiss = onDismiss) { contentPadding ->
         content(contentPadding)
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
         Row(
-            modifier = Modifier
-                .padding(horizontal = MaterialTheme.spacings.default)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(horizontal = MaterialTheme.spacings.default).fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
         ) {
             negativeButton()
@@ -92,15 +80,8 @@ fun BaseDialog(
 @Composable
 private fun BaseDialogPreview() {
     FindroidTheme {
-        BaseDialog(
-            title = "Dialog Title",
-            onDismiss = {},
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Red),
-            )
+        BaseDialog(title = "Dialog Title", onDismiss = {}) {
+            Box(modifier = Modifier.fillMaxSize().background(Color.Red))
         }
     }
 }
@@ -111,32 +92,11 @@ private fun BaseDialogButtonsPreview() {
     FindroidTheme {
         BaseDialog(
             title = "Dialog Title",
-            negativeButton = {
-                TextButton(
-                    onClick = {},
-                ) {
-                    Text(
-                        text = "Negative",
-                    )
-                }
-            },
-            positiveButton = {
-                TextButton(
-                    onClick = {},
-                ) {
-                    Text(
-                        text = "Positive",
-                    )
-                }
-            },
+            negativeButton = { TextButton(onClick = {}) { Text(text = "Negative") } },
+            positiveButton = { TextButton(onClick = {}) { Text(text = "Positive") } },
             onDismiss = {},
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f, fill = false)
-                    .background(Color.Red),
-            )
+            Box(modifier = Modifier.fillMaxSize().weight(1f, fill = false).background(Color.Red))
         }
     }
 }

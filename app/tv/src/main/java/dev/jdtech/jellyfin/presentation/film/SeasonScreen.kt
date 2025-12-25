@@ -38,11 +38,7 @@ fun SeasonScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.loadSeason(
-            seasonId = seasonId,
-        )
-    }
+    LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
     SeasonScreenLayout(
         state = state,
@@ -56,61 +52,40 @@ fun SeasonScreen(
 }
 
 @Composable
-private fun SeasonScreenLayout(
-    state: SeasonState,
-    onAction: (SeasonAction) -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
         state.season?.let { season ->
-            Row(
-                modifier = Modifier.fillMaxSize(),
-            ) {
+            Row(modifier = Modifier.fillMaxSize()) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = MaterialTheme.spacings.extraLarge,
-                            top = MaterialTheme.spacings.large,
-                            end = MaterialTheme.spacings.large,
-                        ),
+                    modifier =
+                        Modifier.weight(1f)
+                            .padding(
+                                start = MaterialTheme.spacings.extraLarge,
+                                top = MaterialTheme.spacings.large,
+                                end = MaterialTheme.spacings.large,
+                            )
                 ) {
-                    Text(
-                        text = season.name,
-                        style = MaterialTheme.typography.displayMedium,
-                    )
-                    Text(
-                        text = season.seriesName,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
+                    Text(text = season.name, style = MaterialTheme.typography.displayMedium)
+                    Text(text = season.seriesName, style = MaterialTheme.typography.headlineMedium)
                 }
                 LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = MaterialTheme.spacings.large,
-                        bottom = MaterialTheme.spacings.large,
-                    ),
+                    contentPadding =
+                        PaddingValues(
+                            top = MaterialTheme.spacings.large,
+                            bottom = MaterialTheme.spacings.large,
+                        ),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    modifier = Modifier
-                        .weight(2f)
-                        .padding(end = MaterialTheme.spacings.extraLarge),
+                    modifier = Modifier.weight(2f).padding(end = MaterialTheme.spacings.extraLarge),
                 ) {
                     items(state.episodes) { episode ->
                         EpisodeCard(
                             episode = episode,
-                            onClick = {
-                                onAction(SeasonAction.NavigateToItem(episode))
-                            },
+                            onClick = { onAction(SeasonAction.NavigateToItem(episode)) },
                         )
                     }
                 }
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
     }
 }
 
@@ -119,10 +94,7 @@ private fun SeasonScreenLayout(
 private fun SeasonScreenLayoutPreview() {
     FindroidTheme {
         SeasonScreenLayout(
-            state = SeasonState(
-                season = dummySeason,
-                episodes = dummyEpisodes,
-            ),
+            state = SeasonState(season = dummySeason, episodes = dummyEpisodes),
             onAction = {},
         )
     }

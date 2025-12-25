@@ -7,14 +7,14 @@ import dev.jdtech.jellyfin.film.domain.VideoMetadataParser
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.PersonKind
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class MovieViewModel
@@ -37,7 +37,15 @@ constructor(
                 val actors = getActors(movie)
                 val director = getDirector(movie)
                 val writers = getWriters(movie)
-                _state.emit(_state.value.copy(movie = movie, videoMetadata = videoMetadata, actors = actors, director = director, writers = writers))
+                _state.emit(
+                    _state.value.copy(
+                        movie = movie,
+                        videoMetadata = videoMetadata,
+                        actors = actors,
+                        director = director,
+                        writers = writers,
+                    )
+                )
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }

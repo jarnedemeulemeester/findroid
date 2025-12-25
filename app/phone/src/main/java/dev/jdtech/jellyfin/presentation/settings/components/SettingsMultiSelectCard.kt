@@ -20,12 +20,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsMultiSelectCard(
@@ -37,23 +37,15 @@ fun SettingsMultiSelectCard(
     val optionNames = stringArrayResource(preference.options)
     val noneString = stringResource(CoreR.string.none)
 
-    val options = remember(preference.nameStringResource) {
-        optionValues.zip(optionNames)
-    }
+    val options = remember(preference.nameStringResource) { optionValues.zip(optionNames) }
 
-    val optionsMap = remember(options) {
-        options.toMap()
-    }
+    val optionsMap = remember(options) { options.toMap() }
 
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
     SettingsBaseCard(
         preference = preference,
-        onClick = {
-            showDialog = true
-        },
+        onClick = { showDialog = true },
         modifier = modifier,
     ) {
         Row(
@@ -67,18 +59,17 @@ fun SettingsMultiSelectCard(
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
-                    text = preference.value
-                        .joinToString(", ") { key -> optionsMap[key].toString() }
-                        .ifEmpty { noneString },
+                    text =
+                        preference.value
+                            .joinToString(", ") { key -> optionsMap[key].toString() }
+                            .ifEmpty { noneString },
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -93,9 +84,7 @@ fun SettingsMultiSelectCard(
                 showDialog = false
                 onUpdate(value)
             },
-            onDismissRequest = {
-                showDialog = false
-            },
+            onDismissRequest = { showDialog = false },
         )
     }
 }
@@ -105,13 +94,15 @@ fun SettingsMultiSelectCard(
 private fun SettingsSelectCardPreview() {
     FindroidTheme {
         SettingsMultiSelectCard(
-            preference = PreferenceMultiSelect(
-                nameStringResource = SettingsR.string.pref_player_media_segments_skip_button_type,
-                iconDrawableId = CoreR.drawable.ic_speaker,
-                backendPreference = Preference("", setOf("INTRO", "OUTRO")),
-                options = SettingsR.array.media_segments_type,
-                optionValues = SettingsR.array.media_segments_type_values,
-            ),
+            preference =
+                PreferenceMultiSelect(
+                    nameStringResource =
+                        SettingsR.string.pref_player_media_segments_skip_button_type,
+                    iconDrawableId = CoreR.drawable.ic_speaker,
+                    backendPreference = Preference("", setOf("INTRO", "OUTRO")),
+                    options = SettingsR.array.media_segments_type,
+                    optionValues = SettingsR.array.media_segments_type_values,
+                ),
             onUpdate = {},
         )
     }

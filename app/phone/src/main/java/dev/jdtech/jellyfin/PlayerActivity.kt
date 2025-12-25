@@ -42,19 +42,18 @@ import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
 
 var isControlsLocked: Boolean = false
 
 @AndroidEntryPoint
 class PlayerActivity : BasePlayerActivity() {
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
+    @Inject lateinit var appPreferences: AppPreferences
 
     lateinit var binding: ActivityPlayerBinding
     private var playerGestureHelper: PlayerGestureHelper? = null
@@ -105,7 +104,7 @@ class PlayerActivity : BasePlayerActivity() {
                 if (visibility == View.GONE) {
                     hideSystemUI()
                 }
-            },
+            }
         )
 
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
@@ -117,12 +116,13 @@ class PlayerActivity : BasePlayerActivity() {
         configureInsets(lockedControls)
 
         if (appPreferences.getValue(appPreferences.playerGestures)) {
-            playerGestureHelper = PlayerGestureHelper(
-                appPreferences,
-                this,
-                binding.playerView,
-                getSystemService(AUDIO_SERVICE) as AudioManager,
-            )
+            playerGestureHelper =
+                PlayerGestureHelper(
+                    appPreferences,
+                    this,
+                    binding.playerView,
+                    getSystemService(AUDIO_SERVICE) as AudioManager,
+                )
         }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
@@ -167,26 +167,20 @@ class PlayerActivity : BasePlayerActivity() {
                                     viewModel.skipSegment(segment)
                                     skipSegmentButton.isVisible = false
                                 }
-                            } ?: run {
-                                skipSegmentButton.isVisible = false
-                            }
+                            } ?: run { skipSegmentButton.isVisible = false }
 
                             binding.playerView.setControllerVisibilityListener(
                                 PlayerView.ControllerVisibilityListener { visibility ->
                                     if (skipButtonTimeoutExpired && currentSegment != null) {
                                         skipSegmentButton.visibility = visibility
                                     }
-                                },
+                                }
                             )
 
                             // Trickplay
-                            previewScrubListener?.let {
-                                it.currentTrickplay = currentTrickplay
-                            }
+                            previewScrubListener?.let { it.currentTrickplay = currentTrickplay }
 
-                            playerGestureHelper?.let {
-                                it.currentTrickplay = currentTrickplay
-                            }
+                            playerGestureHelper?.let { it.currentTrickplay = currentTrickplay }
 
                             // Chapters
                             val playerControlView =
@@ -194,14 +188,13 @@ class PlayerActivity : BasePlayerActivity() {
                             if (currentChapters.isNotEmpty()) {
                                 val numOfChapters = currentChapters.size
                                 playerControlView.setExtraAdGroupMarkers(
-                                    LongArray(numOfChapters) { index -> currentChapters[index].startPosition },
+                                    LongArray(numOfChapters) { index ->
+                                        currentChapters[index].startPosition
+                                    },
                                     BooleanArray(numOfChapters) { false },
                                 )
                             } else {
-                                playerControlView.setExtraAdGroupMarkers(
-                                    null,
-                                    null,
-                                )
+                                playerControlView.setExtraAdGroupMarkers(null, null)
                             }
 
                             // File Loaded
@@ -229,13 +222,15 @@ class PlayerActivity : BasePlayerActivity() {
                                 if (event.isPlaying) {
                                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                                 } else {
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                                    window.clearFlags(
+                                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                                    )
                                 }
 
                                 if (appPreferences.getValue(appPreferences.playerPipGesture)) {
                                     try {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
-                                    } catch (_: IllegalArgumentException) { }
+                                    } catch (_: IllegalArgumentException) {}
                                 }
                             }
                         }
@@ -249,7 +244,10 @@ class PlayerActivity : BasePlayerActivity() {
                     }
                 }
 
-                if (appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) || appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)) {
+                if (
+                    appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton) ||
+                        appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
+                ) {
                     launch {
                         while (true) {
                             viewModel.updateCurrentSegment()
@@ -282,10 +280,8 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         audioButton.setOnClickListener {
-            TrackSelectionDialogFragment(C.TRACK_TYPE_AUDIO, viewModel).show(
-                supportFragmentManager,
-                "trackselectiondialog",
-            )
+            TrackSelectionDialogFragment(C.TRACK_TYPE_AUDIO, viewModel)
+                .show(supportFragmentManager, "trackselectiondialog")
         }
 
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
@@ -306,22 +302,16 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         subtitleButton.setOnClickListener {
-            TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel).show(
-                supportFragmentManager,
-                "trackselectiondialog",
-            )
+            TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel)
+                .show(supportFragmentManager, "trackselectiondialog")
         }
 
         speedButton.setOnClickListener {
-            SpeedSelectionDialogFragment(viewModel).show(
-                supportFragmentManager,
-                "speedselectiondialog",
-            )
+            SpeedSelectionDialogFragment(viewModel)
+                .show(supportFragmentManager, "speedselectiondialog")
         }
 
-        pipButton.setOnClickListener {
-            pictureInPicture()
-        }
+        pipButton.setOnClickListener { pictureInPicture() }
 
         // Set marker color
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
@@ -329,11 +319,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         if (appPreferences.getValue(appPreferences.playerTrickplay)) {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
-            previewScrubListener = PreviewScrubListener(
-                imagePreview,
-                timeBar,
-                viewModel.player,
-            )
+            previewScrubListener = PreviewScrubListener(imagePreview, timeBar, viewModel.player)
 
             timeBar.addListener(previewScrubListener!!)
         }
@@ -363,10 +349,11 @@ class PlayerActivity : BasePlayerActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
-            appPreferences.getValue(appPreferences.playerPipGesture) &&
-            viewModel.player.isPlaying &&
-            !isControlsLocked
+        if (
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
+                appPreferences.getValue(appPreferences.playerPipGesture) &&
+                viewModel.player.isPlaying &&
+                !isControlsLocked
         ) {
             pictureInPicture()
         }
@@ -374,7 +361,9 @@ class PlayerActivity : BasePlayerActivity() {
 
     private fun finishPlayback() {
         try {
-            viewModel.player.clearVideoSurfaceView(binding.playerView.videoSurfaceView as SurfaceView)
+            viewModel.player.clearVideoSurfaceView(
+                binding.playerView.videoSurfaceView as SurfaceView
+            )
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -382,39 +371,48 @@ class PlayerActivity : BasePlayerActivity() {
         finish()
     }
 
-    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
+    private fun pipParams(
+        enableAutoEnter: Boolean = viewModel.player.isPlaying
+    ): PictureInPictureParams {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
-        val aspectRatio = binding.playerView.player?.videoSize?.let {
-            Rational(
-                it.width.coerceAtMost((it.height * 2.39f).toInt()),
-                it.height.coerceAtMost((it.width * 2.39f).toInt()),
-            )
-        }
+        val aspectRatio =
+            binding.playerView.player?.videoSize?.let {
+                Rational(
+                    it.width.coerceAtMost((it.height * 2.39f).toInt()),
+                    it.height.coerceAtMost((it.width * 2.39f).toInt()),
+                )
+            }
 
-        val sourceRectHint = if (displayAspectRatio < aspectRatio!!) {
-            val space =
-                ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
-            Rect(
-                0,
-                space,
-                binding.playerView.width,
-                (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
-            )
-        } else {
-            val space =
-                ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
-            Rect(
-                space,
-                0,
-                (binding.playerView.height.toFloat() * aspectRatio.toFloat()).toInt() + space,
-                binding.playerView.height,
-            )
-        }
+        val sourceRectHint =
+            if (displayAspectRatio < aspectRatio!!) {
+                val space =
+                    ((binding.playerView.height -
+                            (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2)
+                        .toInt()
+                Rect(
+                    0,
+                    space,
+                    binding.playerView.width,
+                    (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
+                )
+            } else {
+                val space =
+                    ((binding.playerView.width -
+                            (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2)
+                        .toInt()
+                Rect(
+                    space,
+                    0,
+                    (binding.playerView.height.toFloat() * aspectRatio.toFloat()).toInt() + space,
+                    binding.playerView.height,
+                )
+            }
 
-        val builder = PictureInPictureParams.Builder()
-            .setAspectRatio(aspectRatio)
-            .setSourceRectHint(sourceRectHint)
+        val builder =
+            PictureInPictureParams.Builder()
+                .setAspectRatio(aspectRatio)
+                .setSourceRectHint(sourceRectHint)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setAutoEnterEnabled(enableAutoEnter)
@@ -430,8 +428,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         try {
             enterPictureInPictureMode(pipParams())
-        } catch (_: IllegalArgumentException) {
-        }
+        } catch (_: IllegalArgumentException) {}
     }
 
     override fun onPictureInPictureModeChanged(
@@ -449,9 +446,10 @@ class PlayerActivity : BasePlayerActivity() {
                 playerGestureHelper?.updateZoomMode(false)
 
                 // Brightness mode Auto
-                window.attributes = window.attributes.apply {
-                    screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
-                }
+                window.attributes =
+                    window.attributes.apply {
+                        screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                    }
             }
 
             false -> {
@@ -459,12 +457,15 @@ class PlayerActivity : BasePlayerActivity() {
                 playerGestureHelper?.updateZoomMode(wasZoom)
 
                 // Override auto brightness
-                if (appPreferences.getValue(appPreferences.playerGesturesVB) &&
-                    appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)
+                if (
+                    appPreferences.getValue(appPreferences.playerGesturesVB) &&
+                        appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)
                 ) {
-                    window.attributes = window.attributes.apply {
-                        screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
-                    }
+                    window.attributes =
+                        window.attributes.apply {
+                            screenBrightness =
+                                appPreferences.getValue(appPreferences.playerBrightness)
+                        }
                 }
             }
         }

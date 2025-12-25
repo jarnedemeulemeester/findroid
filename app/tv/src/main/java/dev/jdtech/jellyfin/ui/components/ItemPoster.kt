@@ -13,15 +13,12 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 
 enum class Direction {
-    HORIZONTAL, VERTICAL
+    HORIZONTAL,
+    VERTICAL,
 }
 
 @Composable
-fun ItemPoster(
-    item: FindroidItem,
-    direction: Direction,
-    modifier: Modifier = Modifier,
-) {
+fun ItemPoster(item: FindroidItem, direction: Direction, modifier: Modifier = Modifier) {
     var imageUri = item.images.primary
 
     when (direction) {
@@ -39,11 +36,10 @@ fun ItemPoster(
         model = imageUri,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
-            .background(
-                MaterialTheme.colorScheme.surface,
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
+                .background(MaterialTheme.colorScheme.surface),
     )
 }

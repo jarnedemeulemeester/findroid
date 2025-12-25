@@ -11,13 +11,13 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class DownloadsViewModel
@@ -34,7 +34,9 @@ constructor(
 
     sealed class UiState {
         data class Normal(val sections: List<CollectionSection>) : UiState()
+
         data object Loading : UiState()
+
         data class Error(val error: Exception) : UiState()
     }
 
@@ -64,27 +66,25 @@ constructor(
             val items = repository.getDownloads()
 
             CollectionSection(
-                Constants.FAVORITE_TYPE_MOVIES,
-                UiText.StringResource(R.string.movies_label),
-                items.filterIsInstance<FindroidMovie>(),
-            ).let {
-                if (it.items.isNotEmpty()) {
-                    sections.add(
-                        it,
-                    )
+                    Constants.FAVORITE_TYPE_MOVIES,
+                    UiText.StringResource(R.string.movies_label),
+                    items.filterIsInstance<FindroidMovie>(),
+                )
+                .let {
+                    if (it.items.isNotEmpty()) {
+                        sections.add(it)
+                    }
                 }
-            }
             CollectionSection(
-                Constants.FAVORITE_TYPE_SHOWS,
-                UiText.StringResource(R.string.shows_label),
-                items.filterIsInstance<FindroidShow>(),
-            ).let {
-                if (it.items.isNotEmpty()) {
-                    sections.add(
-                        it,
-                    )
+                    Constants.FAVORITE_TYPE_SHOWS,
+                    UiText.StringResource(R.string.shows_label),
+                    items.filterIsInstance<FindroidShow>(),
+                )
+                .let {
+                    if (it.items.isNotEmpty()) {
+                        sections.add(it)
+                    }
                 }
-            }
             _uiState.emit(UiState.Normal(sections))
         }
     }

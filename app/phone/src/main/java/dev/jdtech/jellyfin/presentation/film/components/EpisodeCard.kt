@@ -32,31 +32,25 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
-fun EpisodeCard(
-    episode: FindroidEpisode,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
     Row(
-        modifier = modifier
-            .height(84.dp)
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .height(84.dp)
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .clickable(onClick = onClick)
     ) {
         Box {
             ItemPoster(
                 item = episode,
                 direction = Direction.HORIZONTAL,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.small),
+                modifier = Modifier.clip(MaterialTheme.shapes.small),
             )
             Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(MaterialTheme.spacings.small),
+                modifier = Modifier.align(Alignment.TopEnd).padding(MaterialTheme.spacings.small),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             ) {
                 if (episode.isDownloaded()) DownloadedBadge()
@@ -64,41 +58,39 @@ fun EpisodeCard(
             }
         }
         Spacer(Modifier.width(MaterialTheme.spacings.default / 2))
-        Box(
-            modifier = Modifier
-                .fillMaxHeight(),
-        ) {
+        Box(modifier = Modifier.fillMaxHeight()) {
             Column {
                 Text(
-                    text = stringResource(
-                        id = dev.jdtech.jellyfin.core.R.string.episode_name,
-                        episode.indexNumber,
-                        episode.name,
-                    ),
+                    text =
+                        stringResource(
+                            id = dev.jdtech.jellyfin.core.R.string.episode_name,
+                            episode.indexNumber,
+                            episode.name,
+                        ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
                     text = episode.overview,
-                    modifier = Modifier
-                        .alpha(0.7f),
+                    modifier = Modifier.alpha(0.7f),
                     maxLines = 5,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
             Canvas(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .height(MaterialTheme.spacings.default),
+                modifier =
+                    Modifier.align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .height(MaterialTheme.spacings.default)
             ) {
                 drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, backgroundColor),
-                        startY = 0f,
-                    ),
+                    brush =
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, backgroundColor),
+                            startY = 0f,
+                        )
                 )
             }
         }
@@ -108,10 +100,5 @@ fun EpisodeCard(
 @Preview(showBackground = true)
 @Composable
 private fun EpisodeCardPreview() {
-    FindroidTheme {
-        EpisodeCard(
-            episode = dummyEpisode,
-            onClick = {},
-        )
-    }
+    FindroidTheme { EpisodeCard(episode = dummyEpisode, onClick = {}) }
 }

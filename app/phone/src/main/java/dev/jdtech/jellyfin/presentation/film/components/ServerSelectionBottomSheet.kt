@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
@@ -32,7 +33,6 @@ import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,9 +46,7 @@ fun ServerSelectionBottomSheet(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadServers()
-    }
+    LaunchedEffect(true) { viewModel.loadServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -61,9 +59,7 @@ fun ServerSelectionBottomSheet(
         currentServerId = currentServerId,
         state = state,
         onManage = onManage,
-        onAction = { action ->
-            viewModel.onAction(action)
-        },
+        onAction = { action -> viewModel.onAction(action) },
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
     )
@@ -79,48 +75,30 @@ private fun ServerSelectionBottomSheetLayout(
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
-    ) {
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         LazyColumn(
-            contentPadding = PaddingValues(
-                start = MaterialTheme.spacings.medium,
-                end = MaterialTheme.spacings.medium,
-                bottom = MaterialTheme.spacings.default,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = MaterialTheme.spacings.medium,
+                    end = MaterialTheme.spacings.medium,
+                    bottom = MaterialTheme.spacings.default,
+                ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
-            items(
-                items = state.servers,
-                key = {
-                    it.server.id
-                },
-            ) { server ->
+            items(items = state.servers, key = { it.server.id }) { server ->
                 ServerSelectionItem(
                     server = server,
                     selected = server.server.id == currentServerId,
-                    onClick = {
-                        onAction(ServersAction.OnServerClick(server.server.id))
-                    },
+                    onClick = { onAction(ServersAction.OnServerClick(server.server.id)) },
                     onClickAddress = { addressId ->
                         onAction(ServersAction.OnAddressClick(addressId = addressId))
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
-            item(
-                key = "manage",
-            ) {
-                OutlinedButton(
-                    onClick = onManage,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = stringResource(CoreR.string.manage_servers),
-                    )
+            item(key = "manage") {
+                OutlinedButton(onClick = onManage, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = stringResource(CoreR.string.manage_servers))
                 }
             }
         }
@@ -134,17 +112,17 @@ private fun ServerSelectionBottomSheetPreview() {
     FindroidTheme {
         ServerSelectionBottomSheetLayout(
             currentServerId = "",
-            state = ServersState(
-                servers = listOf(
-                    ServerWithAddresses(
-                        server = dummyServer,
-                        addresses = listOf(
-                            dummyServerAddress,
-                        ),
-                        user = null,
-                    ),
+            state =
+                ServersState(
+                    servers =
+                        listOf(
+                            ServerWithAddresses(
+                                server = dummyServer,
+                                addresses = listOf(dummyServerAddress),
+                                user = null,
+                            )
+                        )
                 ),
-            ),
             onManage = {},
             onAction = {},
             onDismissRequest = {},

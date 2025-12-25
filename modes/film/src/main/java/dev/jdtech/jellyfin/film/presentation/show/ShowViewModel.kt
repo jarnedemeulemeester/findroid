@@ -7,21 +7,17 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.PersonKind
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
-class ShowViewModel
-@Inject
-constructor(
-    private val repository: JellyfinRepository,
-) : ViewModel() {
+class ShowViewModel @Inject constructor(private val repository: JellyfinRepository) : ViewModel() {
     private val _state = MutableStateFlow(ShowState())
     val state = _state.asStateFlow()
 
@@ -37,7 +33,16 @@ constructor(
                 val actors = getActors(show)
                 val director = getDirector(show)
                 val writers = getWriters(show)
-                _state.emit(_state.value.copy(show = show, nextUp = nextUp, seasons = seasons, actors = actors, director = director, writers = writers))
+                _state.emit(
+                    _state.value.copy(
+                        show = show,
+                        nextUp = nextUp,
+                        seasons = seasons,
+                        actors = actors,
+                        director = director,
+                        writers = writers,
+                    )
+                )
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }

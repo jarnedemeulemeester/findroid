@@ -3,10 +3,7 @@ package dev.jdtech.jellyfin.models
 import androidx.room.Entity
 import java.util.UUID
 
-@Entity(
-    tableName = "segments",
-    primaryKeys = ["itemId", "type"],
-)
+@Entity(tableName = "segments", primaryKeys = ["itemId", "type"])
 data class FindroidSegmentDto(
     val itemId: UUID,
     val type: FindroidSegmentType,

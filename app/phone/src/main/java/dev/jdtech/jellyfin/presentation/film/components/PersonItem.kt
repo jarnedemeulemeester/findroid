@@ -23,27 +23,19 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
-fun PersonItem(
-    person: FindroidItemPerson,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .width(110.dp)
-            .clip(MaterialTheme.shapes.small)
-            .clickable(onClick = onClick),
+        modifier =
+            modifier.width(110.dp).clip(MaterialTheme.shapes.small).clickable(onClick = onClick)
     ) {
         AsyncImage(
             model = person.image.uri,
             contentDescription = null,
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainer,
-                )
-                .fillMaxWidth()
-                .height(160.dp),
+            modifier =
+                Modifier.clip(MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .fillMaxWidth()
+                    .height(160.dp),
             contentScale = ContentScale.Crop,
         )
         Spacer(Modifier.height(MaterialTheme.spacings.extraSmall))
@@ -67,10 +59,5 @@ fun PersonItem(
 @Composable
 @Preview(showBackground = true)
 private fun PersonItemPreview() {
-    FindroidTheme {
-        PersonItem(
-            person = dummyPerson,
-            onClick = {},
-        )
-    }
+    FindroidTheme { PersonItem(person = dummyPerson, onClick = {}) }
 }

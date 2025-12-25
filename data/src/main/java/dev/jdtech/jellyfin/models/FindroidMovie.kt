@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.PlayAccess
 import java.time.LocalDateTime
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.PlayAccess
 
 data class FindroidMovie(
     override val id: UUID,
@@ -66,7 +66,8 @@ suspend fun BaseItemDto.toFindroidMovie(
         trailer = remoteTrailers?.getOrNull(0)?.url,
         images = toFindroidImages(jellyfinRepository),
         chapters = toFindroidChapters(),
-        trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
+        trickplayInfo =
+            trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
     )
 }
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionAction
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
@@ -32,7 +33,6 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.film.components.CollectionGrid
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun CollectionScreen(
@@ -44,11 +44,7 @@ fun CollectionScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadItems(
-            collectionId,
-        )
-    }
+    LaunchedEffect(true) { viewModel.loadItems(collectionId) }
 
     CollectionScreenLayout(
         collectionName = collectionName,
@@ -72,21 +68,15 @@ fun CollectionScreenLayout(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .recalculateWindowInsets()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier.fillMaxSize()
+                .recalculateWindowInsets()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(collectionName)
-                },
+                title = { Text(collectionName) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(CollectionAction.OnBackClick)
-                        },
-                    ) {
+                    IconButton(onClick = { onAction(CollectionAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
@@ -99,11 +89,7 @@ fun CollectionScreenLayout(
         },
         contentWindowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
     ) { innerPadding ->
-        CollectionGrid(
-            sections = state.sections,
-            innerPadding = innerPadding,
-            onAction = onAction,
-        )
+        CollectionGrid(sections = state.sections, innerPadding = innerPadding, onAction = onAction)
     }
 }
 
@@ -113,7 +99,17 @@ private fun CollectionScreenLayoutPreview() {
     FindroidTheme {
         CollectionScreenLayout(
             collectionName = "Marvel",
-            state = CollectionState(sections = listOf(CollectionSection(id = 0, name = UiText.StringResource(CoreR.string.movies_label), items = dummyMovies))),
+            state =
+                CollectionState(
+                    sections =
+                        listOf(
+                            CollectionSection(
+                                id = 0,
+                                name = UiText.StringResource(CoreR.string.movies_label),
+                                items = dummyMovies,
+                            )
+                        )
+                ),
             onAction = {},
         )
     }

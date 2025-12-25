@@ -8,13 +8,13 @@ import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.SortOrder
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel
@@ -32,22 +32,22 @@ constructor(
     lateinit var sortBy: SortBy
     lateinit var sortOrder: SortOrder
 
-    fun setup(
-        parentId: UUID,
-        libraryType: CollectionType,
-    ) {
+    fun setup(parentId: UUID, libraryType: CollectionType) {
         this.parentId = parentId
         this.libraryType = libraryType
     }
 
     fun loadItems() {
-        val itemType = when (libraryType) {
-            CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
-            CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
-            CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
-            CollectionType.Mixed, CollectionType.Folders -> listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
-            else -> null
-        }
+        val itemType =
+            when (libraryType) {
+                CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
+                CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
+                CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
+                CollectionType.Mixed,
+                CollectionType.Folders ->
+                    listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
+                else -> null
+            }
 
         val recursive = itemType == null || !itemType.contains(BaseItemKind.FOLDER)
 
@@ -57,13 +57,23 @@ constructor(
             initSorting()
 
             try {
-                val items = jellyfinRepository.getItemsPaging(
-                    parentId = parentId,
-                    includeTypes = itemType,
-                    recursive = recursive,
-                    sortBy = if (libraryType == CollectionType.TvShows && sortBy == SortBy.DATE_PLAYED) SortBy.SERIES_DATE_PLAYED else sortBy, // Jellyfin uses a different enum for sorting series by data played
-                    sortOrder = sortOrder,
-                ).cachedIn(viewModelScope)
+                val items =
+                    jellyfinRepository
+                        .getItemsPaging(
+                            parentId = parentId,
+                            includeTypes = itemType,
+                            recursive = recursive,
+                            sortBy =
+                                if (
+                                    libraryType == CollectionType.TvShows &&
+                                        sortBy == SortBy.DATE_PLAYED
+                                )
+                                    SortBy.SERIES_DATE_PLAYED
+                                else sortBy, // Jellyfin uses a different enum for sorting series by
+                            // data played
+                            sortOrder = sortOrder,
+                        )
+                        .cachedIn(viewModelScope)
                 _state.emit(_state.value.copy(items = items))
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))

@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -37,7 +38,6 @@ import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ItemButtonsBar(
@@ -55,15 +55,16 @@ fun ItemButtonsBar(
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    val trailerUri = when (item) {
-        is FindroidMovie -> {
-            item.trailer
+    val trailerUri =
+        when (item) {
+            is FindroidMovie -> {
+                item.trailer
+            }
+            is FindroidShow -> {
+                item.trailer
+            }
+            else -> null
         }
-        is FindroidShow -> {
-            item.trailer
-        }
-        else -> null
-    }
 
     var storageSelectionDialogOpen by remember { mutableStateOf(false) }
     var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
@@ -77,26 +78,19 @@ fun ItemButtonsBar(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
-            if (!windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-                ) {
+            if (
+                !windowSizeClass.isWidthAtLeastBreakpoint(
+                    WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+                )
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
                     PlayButton(
                         item = item,
-                        onClick = {
-                            onPlayClick(false)
-                        },
-                        modifier = Modifier.weight(
-                            weight = 1f,
-                            fill = true,
-                        ),
+                        onClick = { onPlayClick(false) },
+                        modifier = Modifier.weight(weight = 1f, fill = true),
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
-                        FilledTonalIconButton(
-                            onClick = {
-                                onPlayClick(true)
-                            },
-                        ) {
+                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                                 contentDescription = null,
@@ -105,22 +99,15 @@ fun ItemButtonsBar(
                     }
                 }
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-            ) {
-                if (windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
-                    PlayButton(
-                        item = item,
-                        onClick = {
-                            onPlayClick(false)
-                        },
+            Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+                if (
+                    windowSizeClass.isWidthAtLeastBreakpoint(
+                        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
                     )
+                ) {
+                    PlayButton(item = item, onClick = { onPlayClick(false) })
                     if (item.playbackPositionTicks.div(600000000) > 0) {
-                        FilledTonalIconButton(
-                            onClick = {
-                                onPlayClick(true)
-                            },
-                        ) {
+                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                                 contentDescription = null,
@@ -129,29 +116,21 @@ fun ItemButtonsBar(
                     }
                 }
                 trailerUri?.let { uri ->
-                    FilledTonalIconButton(
-                        onClick = {
-                            onTrailerClick(uri)
-                        },
-                    ) {
+                    FilledTonalIconButton(onClick = { onTrailerClick(uri) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_film),
                             contentDescription = null,
                         )
                     }
                 }
-                FilledTonalIconButton(
-                    onClick = onMarkAsPlayedClick,
-                ) {
+                FilledTonalIconButton(onClick = onMarkAsPlayedClick) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_check),
                         contentDescription = null,
                         tint = if (item.played) Color.Red else LocalContentColor.current,
                     )
                 }
-                FilledTonalIconButton(
-                    onClick = onMarkAsFavoriteClick,
-                ) {
+                FilledTonalIconButton(onClick = onMarkAsFavoriteClick) {
                     when (item.favorite) {
                         true -> {
                             Icon(
@@ -170,11 +149,7 @@ fun ItemButtonsBar(
                 }
                 if (downloaderState != null && !downloaderState.isDownloading) {
                     if (item.isDownloaded()) {
-                        FilledTonalIconButton(
-                            onClick = {
-                                deleteDownloadDialogOpen = true
-                            },
-                        ) {
+                        FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
                                 contentDescription = null,
@@ -190,7 +165,7 @@ fun ItemButtonsBar(
                                     selectedStorageIndex = 0
                                     onDownloadClick(selectedStorageIndex)
                                 }
-                            },
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_download),
@@ -205,12 +180,8 @@ fun ItemButtonsBar(
                     Column {
                         DownloaderCard(
                             state = downloaderState,
-                            onCancelClick = {
-                                cancelDownloadDialogOpen = true
-                            },
-                            onRetryClick = {
-                                onDownloadClick(selectedStorageIndex)
-                            },
+                            onCancelClick = { cancelDownloadDialogOpen = true },
+                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
@@ -221,16 +192,13 @@ fun ItemButtonsBar(
             val locations = remember {
                 storageLocations.map { dir ->
                     val locationStringRes =
-                        if (Environment.isExternalStorageRemovable(dir)) CoreR.string.external else CoreR.string.internal
+                        if (Environment.isExternalStorageRemovable(dir)) CoreR.string.external
+                        else CoreR.string.internal
                     val locationString = context.getString(locationStringRes)
 
                     val stat = StatFs(dir.path)
                     val availableMegaBytes = stat.availableBytes.div(1000000)
-                    context.getString(
-                        CoreR.string.storage_name,
-                        locationString,
-                        availableMegaBytes,
-                    )
+                    context.getString(CoreR.string.storage_name, locationString, availableMegaBytes)
                 }
             }
             StorageSelectionDialog(
@@ -240,9 +208,7 @@ fun ItemButtonsBar(
                     onDownloadClick(selectedStorageIndex)
                     storageSelectionDialogOpen = false
                 },
-                onDismiss = {
-                    storageSelectionDialogOpen = false
-                },
+                onDismiss = { storageSelectionDialogOpen = false },
             )
         }
         if (cancelDownloadDialogOpen) {
@@ -251,9 +217,7 @@ fun ItemButtonsBar(
                     onDownloadCancelClick()
                     cancelDownloadDialogOpen = false
                 },
-                onDismiss = {
-                    cancelDownloadDialogOpen = false
-                },
+                onDismiss = { cancelDownloadDialogOpen = false },
             )
         }
         if (deleteDownloadDialogOpen) {
@@ -262,9 +226,7 @@ fun ItemButtonsBar(
                     onDownloadDeleteClick()
                     deleteDownloadDialogOpen = false
                 },
-                onDismiss = {
-                    deleteDownloadDialogOpen = false
-                },
+                onDismiss = { deleteDownloadDialogOpen = false },
             )
         }
     }
@@ -293,10 +255,8 @@ private fun ItemButtonsBarDownloadingPreview() {
     FindroidTheme {
         ItemButtonsBar(
             item = dummyEpisode,
-            downloaderState = DownloaderState(
-                status = DownloadManager.STATUS_RUNNING,
-                progress = 0.3f,
-            ),
+            downloaderState =
+                DownloaderState(status = DownloadManager.STATUS_RUNNING, progress = 0.3f),
             onPlayClick = {},
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},

@@ -28,18 +28,16 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.core.domain.models.Track
+import dev.jdtech.jellyfin.player.local.R as PlayerLocalR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.parcelize.Parcelize
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.player.local.R as PlayerLocalR
 
 @Parcelize
-data class VideoPlayerTrackSelectorDialogResult(
-    val trackType: @C.TrackType Int,
-    val index: Int,
-) : Parcelable
+data class VideoPlayerTrackSelectorDialogResult(val trackType: @C.TrackType Int, val index: Int) :
+    Parcelable
 
 @Composable
 fun VideoPlayerTrackSelectorDialog(
@@ -47,62 +45,62 @@ fun VideoPlayerTrackSelectorDialog(
     tracks: Array<Track>,
     // resultNavigator: ResultBackNavigator<VideoPlayerTrackSelectorDialogResult>,
 ) {
-    val dialogTitle = when (trackType) {
-        C.TRACK_TYPE_AUDIO -> PlayerLocalR.string.select_audio_track
-        C.TRACK_TYPE_TEXT -> PlayerLocalR.string.select_subtitle_track
-        else -> CoreR.string.unknown_error
-    }
+    val dialogTitle =
+        when (trackType) {
+            C.TRACK_TYPE_AUDIO -> PlayerLocalR.string.select_audio_track
+            C.TRACK_TYPE_TEXT -> PlayerLocalR.string.select_subtitle_track
+            else -> CoreR.string.unknown_error
+        }
     Surface {
-        Column(
-            modifier = Modifier.padding(MaterialTheme.spacings.medium),
-        ) {
+        Column(modifier = Modifier.padding(MaterialTheme.spacings.medium)) {
             Text(
                 text = stringResource(id = dialogTitle),
                 style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
+                verticalArrangement =
+                    Arrangement.spacedBy(
+                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall
+                    ),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
                 items(tracks) { track ->
                     Surface(
                         onClick = {
-                            // resultNavigator.navigateBack(result = VideoPlayerTrackSelectorDialogResult(trackType, track.id))
+                            // resultNavigator.navigateBack(result =
+                            // VideoPlayerTrackSelectorDialogResult(trackType, track.id))
                         },
                         enabled = track.supported,
                         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
-                        colors = ClickableSurfaceDefaults.colors(
-                            containerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                        ),
-                        border = ClickableSurfaceDefaults.border(
-                            focusedBorder = Border(
-                                BorderStroke(
-                                    4.dp,
-                                    Color.White,
-                                ),
-                                shape = RoundedCornerShape(10.dp),
+                        colors =
+                            ClickableSurfaceDefaults.colors(
+                                containerColor = Color.Transparent,
+                                focusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
                             ),
-                        ),
+                        border =
+                            ClickableSurfaceDefaults.border(
+                                focusedBorder =
+                                    Border(
+                                        BorderStroke(4.dp, Color.White),
+                                        shape = RoundedCornerShape(10.dp),
+                                    )
+                            ),
                         scale = ClickableSurfaceScale.None,
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(MaterialTheme.spacings.extraSmall),
                         ) {
-                            RadioButton(
-                                selected = track.selected,
-                                onClick = null,
-                                enabled = true,
-                            )
+                            RadioButton(selected = track.selected, onClick = null, enabled = true)
                             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
                             Text(
-                                text = listOf(track.label, track.language, track.codec)
-                                    .mapNotNull { it }
-                                    .joinToString(" - ")
-                                    .ifEmpty { stringResource(id = PlayerLocalR.string.none) },
+                                text =
+                                    listOf(track.label, track.language, track.codec)
+                                        .mapNotNull { it }
+                                        .joinToString(" - ")
+                                        .ifEmpty { stringResource(id = PlayerLocalR.string.none) },
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }
@@ -119,32 +117,33 @@ private fun VideoPlayerTrackSelectorDialogPreview() {
     FindroidTheme {
         VideoPlayerTrackSelectorDialog(
             trackType = C.TRACK_TYPE_AUDIO,
-            tracks = arrayOf(
-                Track(
-                    id = 0,
-                    label = null,
-                    language = "English",
-                    codec = "flac",
-                    selected = true,
-                    supported = true,
+            tracks =
+                arrayOf(
+                    Track(
+                        id = 0,
+                        label = null,
+                        language = "English",
+                        codec = "flac",
+                        selected = true,
+                        supported = true,
+                    ),
+                    Track(
+                        id = 0,
+                        label = null,
+                        language = "Japanese",
+                        codec = "flac",
+                        selected = false,
+                        supported = true,
+                    ),
+                    Track(
+                        id = 0,
+                        label = null,
+                        language = "English",
+                        codec = "truehd",
+                        selected = false,
+                        supported = false,
+                    ),
                 ),
-                Track(
-                    id = 0,
-                    label = null,
-                    language = "Japanese",
-                    codec = "flac",
-                    selected = false,
-                    supported = true,
-                ),
-                Track(
-                    id = 0,
-                    label = null,
-                    language = "English",
-                    codec = "truehd",
-                    selected = false,
-                    supported = false,
-                ),
-            ),
         )
     }
 }

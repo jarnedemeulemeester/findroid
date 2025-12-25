@@ -4,12 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity(
-    tableName = "sources",
-)
+@Entity(tableName = "sources")
 data class FindroidSourceDto(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey val id: String,
     val itemId: UUID,
     val name: String,
     val type: FindroidSourceType,

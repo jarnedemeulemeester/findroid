@@ -18,21 +18,20 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 
 @Composable
-fun OverviewText(
-    text: String,
-    maxCollapsedLines: Int = Int.MAX_VALUE,
-) {
+fun OverviewText(text: String, maxCollapsedLines: Int = Int.MAX_VALUE) {
     var showChevron by remember { mutableStateOf(false) }
     var isOverviewExpanded by remember { mutableStateOf(false) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = text,
-            modifier = Modifier
-                .then(if (showChevron) Modifier.clickable { isOverviewExpanded = !isOverviewExpanded } else Modifier)
-                .animateContentSize(),
+            modifier =
+                Modifier.then(
+                        if (showChevron)
+                            Modifier.clickable { isOverviewExpanded = !isOverviewExpanded }
+                        else Modifier
+                    )
+                    .animateContentSize(),
             overflow = TextOverflow.Ellipsis,
             maxLines = if (isOverviewExpanded) Int.MAX_VALUE else maxCollapsedLines,
             onTextLayout = { textLayoutResult ->
@@ -48,10 +47,5 @@ fun OverviewText(
 @Composable
 @Preview(showBackground = true)
 private fun OverviewTextPreview() {
-    FindroidTheme {
-        OverviewText(
-            text = dummyMovie.overview,
-            maxCollapsedLines = 3,
-        )
-    }
+    FindroidTheme { OverviewText(text = dummyMovie.overview, maxCollapsedLines = 3) }
 }

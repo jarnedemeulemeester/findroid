@@ -18,11 +18,7 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideServerDatabaseDao(@ApplicationContext app: Context): ServerDatabaseDao {
-        return Room.databaseBuilder(
-            app.applicationContext,
-            ServerDatabase::class.java,
-            "servers",
-        )
+        return Room.databaseBuilder(app.applicationContext, ServerDatabase::class.java, "servers")
             .addMigrations(MIGRATION_6_7)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .allowMainThreadQueries()

@@ -5,12 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PlayerChapter(
-    /**
-     * The start position.
-     */
+    /** The start position. */
     val startPosition: Long,
-    /**
-     * The name.
-     */
+    /** The name. */
     val name: String? = null,
 ) : Parcelable

@@ -5,21 +5,19 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class ServersViewModel
 @Inject
-constructor(
-    private val repository: SetupRepository,
-    private val appPreferences: AppPreferences,
-) : ViewModel() {
+constructor(private val repository: SetupRepository, private val appPreferences: AppPreferences) :
+    ViewModel() {
     private val _state = MutableStateFlow(ServersState())
     val state = _state.asStateFlow()
 
@@ -29,9 +27,7 @@ constructor(
     fun loadServers() {
         viewModelScope.launch {
             val servers = repository.getServers()
-            _state.emit(
-                ServersState(servers = servers),
-            )
+            _state.emit(ServersState(servers = servers))
         }
     }
 

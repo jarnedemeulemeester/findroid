@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.film.R as FilmR
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
-import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeView(
@@ -27,9 +27,7 @@ fun HomeView(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = FilmR.string.latest_library, view.view.name),
             style = MaterialTheme.typography.headlineMedium,
@@ -44,9 +42,7 @@ fun HomeView(
                 ItemCard(
                     item = item,
                     direction = Direction.VERTICAL,
-                    onClick = {
-                        onAction(HomeAction.OnItemClick(it))
-                    },
+                    onClick = { onAction(HomeAction.OnItemClick(it)) },
                 )
             }
         }

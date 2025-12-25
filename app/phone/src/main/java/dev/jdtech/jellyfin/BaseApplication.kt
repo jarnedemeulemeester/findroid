@@ -18,23 +18,19 @@ import coil3.svg.SvgDecoder
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import okio.Path.Companion.toOkioPath
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
+import okio.Path.Companion.toOkioPath
+import timber.log.Timber
 
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory {
-    @Inject
-    lateinit var appPreferences: AppPreferences
+    @Inject lateinit var appPreferences: AppPreferences
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     override fun onCreate() {
         super.onCreate()
@@ -44,12 +40,13 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            val mode = when (appPreferences.getValue(appPreferences.theme)) {
-                "system" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                "dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
+            val mode =
+                when (appPreferences.getValue(appPreferences.theme)) {
+                    "system" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                    "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
             AppCompatDelegate.setDefaultNightMode(mode)
         }
 
@@ -62,18 +59,19 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
-                add(
-                    OkHttpNetworkFetcherFactory(
-                        cacheStrategy = { CacheControlCacheStrategy() },
-                    ),
-                )
+                add(OkHttpNetworkFetcherFactory(cacheStrategy = { CacheControlCacheStrategy() }))
                 add(SvgDecoder.Factory())
             }
-            .diskCachePolicy(if (appPreferences.getValue(appPreferences.imageCache)) CachePolicy.ENABLED else CachePolicy.DISABLED)
+            .diskCachePolicy(
+                if (appPreferences.getValue(appPreferences.imageCache)) CachePolicy.ENABLED
+                else CachePolicy.DISABLED
+            )
             .diskCache {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("image_cache").toOkioPath())
-                    .maxSizeBytes(appPreferences.getValue(appPreferences.imageCacheSize) * 1024L * 1024)
+                    .maxSizeBytes(
+                        appPreferences.getValue(appPreferences.imageCacheSize) * 1024L * 1024
+                    )
                     .build()
             }
             .crossfade(true)

@@ -33,9 +33,9 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsMultiSelectDetailsCard(
@@ -46,46 +46,45 @@ fun SettingsMultiSelectDetailsCard(
     val optionValues = stringArrayResource(preference.optionValues)
     val optionNames = stringArrayResource(preference.options)
 
-    val options = remember(preference.nameStringResource) {
-        optionValues.zip(optionNames)
-    }
+    val options = remember(preference.nameStringResource) { optionValues.zip(optionNames) }
 
-    var selectedOptions by remember {
-        mutableStateOf(preference.value)
-    }
+    var selectedOptions by remember { mutableStateOf(preference.value) }
 
-    Surface(
-        modifier = modifier,
-    ) {
+    Surface(modifier = modifier) {
         Column(
-            modifier = Modifier.padding(
-                horizontal = MaterialTheme.spacings.default,
-                vertical = MaterialTheme.spacings.medium,
-            ),
+            modifier =
+                Modifier.padding(
+                    horizontal = MaterialTheme.spacings.default,
+                    vertical = MaterialTheme.spacings.medium,
+                )
         ) {
-            Text(text = stringResource(id = preference.nameStringResource), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(id = preference.nameStringResource),
+                style = MaterialTheme.typography.headlineMedium,
+            )
             preference.descriptionStringRes?.let {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                 Text(text = stringResource(id = it), style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
+                verticalArrangement =
+                    Arrangement.spacedBy(
+                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall
+                    ),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
-                items(
-                    items = options,
-                    key = { it.first },
-                ) { option ->
+                items(items = options, key = { it.first }) { option ->
                     SettingsMultiSelectDetailsCardItem(
                         option = option,
                         checked = selectedOptions.contains(option.first),
                         onCheckedChange = { key ->
-                            selectedOptions = if (selectedOptions.contains(key)) {
-                                selectedOptions - setOfNotNull(key)
-                            } else {
-                                selectedOptions + listOfNotNull(key)
-                            }
+                            selectedOptions =
+                                if (selectedOptions.contains(key)) {
+                                    selectedOptions - setOfNotNull(key)
+                                } else {
+                                    selectedOptions + listOfNotNull(key)
+                                }
 
                             onUpdate(selectedOptions)
                         },
@@ -107,19 +106,16 @@ private fun SettingsMultiSelectDetailsCardItem(
     Surface(
         onClick = { onCheckedChange(option.first) },
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-        ),
-        border = ClickableSurfaceDefaults.border(
-            focusedBorder = Border(
-                BorderStroke(
-                    4.dp,
-                    Color.White,
-                ),
-                shape = RoundedCornerShape(10.dp),
+        colors =
+            ClickableSurfaceDefaults.colors(
+                containerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
             ),
-        ),
+        border =
+            ClickableSurfaceDefaults.border(
+                focusedBorder =
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+            ),
         scale = ClickableSurfaceScale.None,
     ) {
         Row(
@@ -142,12 +138,13 @@ private fun SettingsMultiSelectDetailsCardItem(
 private fun SettingsSelectDetailsCardPreview() {
     FindroidTheme {
         SettingsMultiSelectDetailsCard(
-            preference = PreferenceMultiSelect(
-                nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
-                backendPreference = Preference("", emptySet()),
-                options = SettingsR.array.mpv_hwdec,
-                optionValues = SettingsR.array.mpv_hwdec,
-            ),
+            preference =
+                PreferenceMultiSelect(
+                    nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
+                    backendPreference = Preference("", emptySet()),
+                    options = SettingsR.array.mpv_hwdec,
+                    optionValues = SettingsR.array.mpv_hwdec,
+                ),
             onUpdate = {},
         )
     }

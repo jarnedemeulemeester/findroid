@@ -18,14 +18,17 @@ class ErrorDialogFragment : DialogFragment() {
             builder
                 .setTitle(error.message ?: getString(R.string.unknown_error))
                 .setMessage(error.stackTraceToString())
-                .setPositiveButton(getString(R.string.close)) { _, _ ->
-                }
+                .setPositiveButton(getString(R.string.close)) { _, _ -> }
                 .setNeutralButton(getString(R.string.share)) { _, _ ->
-                    val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "${error.message}\n ${error.stackTraceToString()}")
-                        type = "text/plain"
-                    }
+                    val sendIntent: Intent =
+                        Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "${error.message}\n ${error.stackTraceToString()}",
+                            )
+                            type = "text/plain"
+                        }
 
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     startActivity(shareIntent)

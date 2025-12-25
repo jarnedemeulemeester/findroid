@@ -19,20 +19,19 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.coroutines.delay
 
-private val dynamicPageSize = object : PageSize {
-    override fun Density.calculateMainAxisPageSize(
-        availableSpace: Int,
-        pageSpacing: Int,
-    ): Int {
-        val nPages = when {
-            availableSpace.toDp() >= 840.dp -> 3
-            availableSpace.toDp() >= 600.dp -> 2
-            else -> 1
-        }
+private val dynamicPageSize =
+    object : PageSize {
+        override fun Density.calculateMainAxisPageSize(availableSpace: Int, pageSpacing: Int): Int {
+            val nPages =
+                when {
+                    availableSpace.toDp() >= 840.dp -> 3
+                    availableSpace.toDp() >= 600.dp -> 2
+                    else -> 1
+                }
 
-        return (availableSpace - (nPages - 1) * pageSpacing) / nPages
+            return (availableSpace - (nPages - 1) * pageSpacing) / nPages
+        }
     }
-}
 
 @Composable
 fun HomeCarousel(
@@ -49,11 +48,12 @@ fun HomeCarousel(
         LaunchedEffect(pagerState) {
             while (true) {
                 delay(autoScrollDelay)
-                val nextPage = if (pagerState.canScrollForward) {
-                    pagerState.currentPage + 1
-                } else {
-                    0
-                }
+                val nextPage =
+                    if (pagerState.canScrollForward) {
+                        pagerState.currentPage + 1
+                    } else {
+                        0
+                    }
                 pagerState.animateScrollToPage(nextPage)
             }
         }

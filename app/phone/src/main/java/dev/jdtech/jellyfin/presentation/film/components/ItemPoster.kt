@@ -14,15 +14,12 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 
 enum class Direction {
-    HORIZONTAL, VERTICAL
+    HORIZONTAL,
+    VERTICAL,
 }
 
 @Composable
-fun ItemPoster(
-    item: FindroidItem,
-    direction: Direction,
-    modifier: Modifier = Modifier,
-) {
+fun ItemPoster(item: FindroidItem, direction: Direction, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var imageUri = item.images.primary
 
@@ -39,17 +36,20 @@ fun ItemPoster(
 
     // Ugly workaround to append the files directory when loading local images
     if (imageUri?.scheme == null) {
-        imageUri = Uri.Builder().appendEncodedPath("${context.filesDir}").appendEncodedPath(imageUri?.path).build()
+        imageUri =
+            Uri.Builder()
+                .appendEncodedPath("${context.filesDir}")
+                .appendEncodedPath(imageUri?.path)
+                .build()
     }
 
     AsyncImage(
         model = imageUri,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
-            .background(
-                MaterialTheme.colorScheme.surfaceContainer,
-            ),
+        modifier =
+            modifier
+                .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
+                .background(MaterialTheme.colorScheme.surfaceContainer),
     )
 }

@@ -29,11 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.presentation.components.BaseDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
-import dev.jdtech.jellyfin.settings.R as SettingsR
-import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
 fun SettingsIntInputDialog(
@@ -41,18 +41,12 @@ fun SettingsIntInputDialog(
     onUpdate: (value: Int) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
-        onUpdate = { value ->
-            value.toIntOrNull()?.let { value ->
-                onUpdate(value)
-            }
-        },
+        onUpdate = { value -> value.toIntOrNull()?.let { value -> onUpdate(value) } },
         onDismissRequest = onDismissRequest,
         suffix = suffix,
     )
@@ -64,18 +58,12 @@ fun SettingsLongInputDialog(
     onUpdate: (value: Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
-        onUpdate = { value ->
-            value.toLongOrNull()?.let { value ->
-                onUpdate(value)
-            }
-        },
+        onUpdate = { value -> value.toLongOrNull()?.let { value -> onUpdate(value) } },
         onDismissRequest = onDismissRequest,
         suffix = suffix,
     )
@@ -91,10 +79,7 @@ fun SettingsNumberInputDialog(
 ) {
     var textFieldValue by remember {
         mutableStateOf(
-            TextFieldValue(
-                text = initialValue,
-                selection = TextRange(initialValue.length),
-            ),
+            TextFieldValue(text = initialValue, selection = TextRange(initialValue.length))
         )
     }
 
@@ -103,35 +88,23 @@ fun SettingsNumberInputDialog(
     // Only digits pattern
     val pattern = remember { Regex("^\\d+\$") }
 
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 
     BaseDialog(
         title = stringResource(preference.nameStringResource),
         onDismiss = onDismissRequest,
         negativeButton = {
-            TextButton(
-                onClick = onDismissRequest,
-            ) {
-                Text(
-                    text = stringResource(SettingsR.string.cancel),
-                )
+            TextButton(onClick = onDismissRequest) {
+                Text(text = stringResource(SettingsR.string.cancel))
             }
         },
         positiveButton = {
-            TextButton(
-                onClick = { onUpdate(textFieldValue.text) },
-            ) {
-                Text(
-                    text = stringResource(SettingsR.string.save),
-                )
+            TextButton(onClick = { onUpdate(textFieldValue.text) }) {
+                Text(text = stringResource(SettingsR.string.save))
             }
         },
     ) { contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-        ) {
+        Column(modifier = Modifier.padding(contentPadding)) {
             preference.descriptionStringRes?.let {
                 Text(
                     text = stringResource(it),
@@ -147,23 +120,11 @@ fun SettingsNumberInputDialog(
                         textFieldValue = it
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                suffix = {
-                    suffix?.let {
-                        Text(text = it)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onUpdate(textFieldValue.text)
-                    },
-                ),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                suffix = { suffix?.let { Text(text = it) } },
+                keyboardOptions =
+                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onUpdate(textFieldValue.text) }),
                 singleLine = true,
             )
         }
@@ -175,12 +136,13 @@ fun SettingsNumberInputDialog(
 private fun SettingsNumberInputDialogPreview() {
     FindroidTheme {
         SettingsNumberInputDialog(
-            preference = PreferenceIntInput(
-                nameStringResource = SettingsR.string.settings_cache_size,
-                descriptionStringRes = SettingsR.string.settings_cache_size_message,
-                backendPreference = PreferenceBackend("", 0),
-                suffixRes = SettingsR.string.mb,
-            ),
+            preference =
+                PreferenceIntInput(
+                    nameStringResource = SettingsR.string.settings_cache_size,
+                    descriptionStringRes = SettingsR.string.settings_cache_size_message,
+                    backendPreference = PreferenceBackend("", 0),
+                    suffixRes = SettingsR.string.mb,
+                ),
             initialValue = "20",
             onUpdate = {},
             onDismissRequest = {},

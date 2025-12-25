@@ -20,69 +20,42 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.components.BaseDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
-fun AddServerAddressDialog(
-    onAdd: (address: String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var textFieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = "",
-            ),
-        )
-    }
+fun AddServerAddressDialog(onAdd: (address: String) -> Unit, onDismiss: () -> Unit) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(text = "")) }
 
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 
     BaseDialog(
         title = stringResource(SetupR.string.add_server_address),
         onDismiss = onDismiss,
         negativeButton = {
-            TextButton(
-                onClick = onDismiss,
-            ) {
-                Text(
-                    text = stringResource(SetupR.string.cancel),
-                )
-            }
+            TextButton(onClick = onDismiss) { Text(text = stringResource(SetupR.string.cancel)) }
         },
         positiveButton = {
             TextButton(
                 onClick = { onAdd(textFieldValue.text) },
                 enabled = textFieldValue.text.isNotBlank(),
             ) {
-                Text(
-                    text = stringResource(CoreR.string.add),
-                )
+                Text(text = stringResource(CoreR.string.add))
             }
         },
     ) { contentPadding ->
         OutlinedTextField(
             value = textFieldValue,
-            onValueChange = {
-                textFieldValue = it
-            },
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            placeholder = {
-                Text("http://<server_ip>:8096")
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Uri,
-                imeAction = ImeAction.Done,
-            ),
+            onValueChange = { textFieldValue = it },
+            modifier =
+                Modifier.padding(contentPadding).fillMaxWidth().focusRequester(focusRequester),
+            placeholder = { Text("http://<server_ip>:8096") },
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Done),
             singleLine = true,
         )
     }
@@ -91,10 +64,5 @@ fun AddServerAddressDialog(
 @Preview
 @Composable
 private fun AddServerAddressDialogPreview() {
-    FindroidTheme {
-        AddServerAddressDialog(
-            onAdd = {},
-            onDismiss = {},
-        )
-    }
+    FindroidTheme { AddServerAddressDialog(onAdd = {}, onDismiss = {}) }
 }

@@ -31,9 +31,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
 
 @Composable
-fun WelcomeScreen(
-    onContinueClick: () -> Unit,
-) {
+fun WelcomeScreen(onContinueClick: () -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     WelcomeScreenLayout(
@@ -44,19 +42,15 @@ fun WelcomeScreen(
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
-        },
+        }
     )
 }
 
 @Composable
-private fun WelcomeScreenLayout(
-    onAction: (WelcomeAction) -> Unit,
-) {
+private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
     val focusRequester = remember { FocusRequester() }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center),
@@ -80,7 +74,9 @@ private fun WelcomeScreenLayout(
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(onClick = { onAction(WelcomeAction.OnLearnMoreClick) }) {
-                Text(text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_learn_more))
+                Text(
+                    text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_learn_more)
+                )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Button(
@@ -92,17 +88,11 @@ private fun WelcomeScreenLayout(
         }
     }
 
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun WelcomeScreenLayoutPreview() {
-    FindroidTheme {
-        WelcomeScreenLayout(
-            onAction = {},
-        )
-    }
+    FindroidTheme { WelcomeScreenLayout(onAction = {}) }
 }

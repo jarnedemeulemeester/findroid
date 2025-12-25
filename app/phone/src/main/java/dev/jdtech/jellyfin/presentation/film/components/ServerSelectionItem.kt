@@ -29,13 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ServerSelectionItem(
@@ -50,46 +50,45 @@ fun ServerSelectionItem(
         modifier = modifier,
         enabled = server.server.currentUserId != null,
     ) {
-        Column(
-            modifier = Modifier
-                .padding(MaterialTheme.spacings.medium),
-        ) {
-            Row(
-                modifier = Modifier
-                    .height(48.dp),
-            ) {
+        Column(modifier = Modifier.padding(MaterialTheme.spacings.medium)) {
+            Row(modifier = Modifier.height(48.dp)) {
                 Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
+                    modifier =
+                        Modifier.size(48.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primaryContainer
+                                else Color.Transparent
+                            )
                 ) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_server),
                         contentDescription = null,
                         modifier = Modifier.align(Alignment.Center),
-                        tint = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else LocalContentColor.current,
+                        tint =
+                            if (selected) MaterialTheme.colorScheme.onPrimaryContainer
+                            else LocalContentColor.current,
                     )
                 }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
                 Column(
-                    modifier = Modifier
-                        .fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Text(
-                        text = server.server.name,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                    Text(text = server.server.name, style = MaterialTheme.typography.titleMedium)
                     if (!selected || server.addresses.count() < 2) {
-                        server.addresses.firstOrNull { it.id == server.server.currentServerAddressId }?.let { address ->
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                            Text(
-                                text = address.address,
-                                style = MaterialTheme.typography.bodyMedium,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
+                        server.addresses
+                            .firstOrNull { it.id == server.server.currentServerAddressId }
+                            ?.let { address ->
+                                Spacer(
+                                    modifier = Modifier.height(MaterialTheme.spacings.extraSmall)
+                                )
+                                Text(
+                                    text = address.address,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
                     }
                 }
             }
@@ -97,25 +96,24 @@ fun ServerSelectionItem(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                 server.addresses.forEach { address ->
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(MaterialTheme.spacings.medium))
-                            .clickable(
-                                onClick = {
-                                    onClickAddress(address.id)
-                                },
-                            ),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .clip(RoundedCornerShape(MaterialTheme.spacings.medium))
+                                .clickable(onClick = { onClickAddress(address.id) })
                     ) {
                         Row(
-                            modifier = Modifier
-                                .padding(all = MaterialTheme.spacings.medium),
+                            modifier = Modifier.padding(all = MaterialTheme.spacings.medium),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .clip(CircleShape)
-                                    .background(if (address.id == server.server.currentServerAddressId) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
+                                modifier =
+                                    Modifier.size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (address.id == server.server.currentServerAddressId)
+                                                MaterialTheme.colorScheme.primaryContainer
+                                            else Color.Transparent
+                                        )
                             )
                             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
                             Text(
@@ -136,13 +134,12 @@ fun ServerSelectionItem(
 private fun ServerSelectionItemPreview() {
     FindroidTheme {
         ServerSelectionItem(
-            server = ServerWithAddresses(
-                server = dummyServer,
-                addresses = listOf(
-                    dummyServerAddress,
+            server =
+                ServerWithAddresses(
+                    server = dummyServer,
+                    addresses = listOf(dummyServerAddress),
+                    user = null,
                 ),
-                user = null,
-            ),
             selected = false,
             onClick = {},
             onClickAddress = {},
@@ -155,14 +152,12 @@ private fun ServerSelectionItemPreview() {
 private fun ServerSelectionItemSelectedPreview() {
     FindroidTheme {
         ServerSelectionItem(
-            server = ServerWithAddresses(
-                server = dummyServer,
-                addresses = listOf(
-                    dummyServerAddress,
-                    dummyServerAddress,
+            server =
+                ServerWithAddresses(
+                    server = dummyServer,
+                    addresses = listOf(dummyServerAddress, dummyServerAddress),
+                    user = null,
                 ),
-                user = null,
-            ),
             selected = true,
             onClick = {},
             onClickAddress = {},

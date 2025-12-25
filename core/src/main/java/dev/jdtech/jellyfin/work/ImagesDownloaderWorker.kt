@@ -7,17 +7,19 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.io.File
+import java.io.IOException
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
-import java.util.UUID
 
 @HiltWorker
-class ImagesDownloaderWorker @AssistedInject constructor(
+class ImagesDownloaderWorker
+@AssistedInject
+constructor(
     @Assisted private val appContext: Context,
     @Assisted private val params: WorkerParameters,
     private val repository: JellyfinRepository,
@@ -28,9 +30,7 @@ class ImagesDownloaderWorker @AssistedInject constructor(
         return Result.success()
     }
 
-    private suspend fun downloadImages(
-        itemId: UUID,
-    ) {
+    private suspend fun downloadImages(itemId: UUID) {
         withContext(Dispatchers.IO) {
             val item = repository.getItem(itemId) ?: return@withContext
 
@@ -42,10 +42,7 @@ class ImagesDownloaderWorker @AssistedInject constructor(
             if (baseDir.exists()) return@withContext
 
             val client = OkHttpClient()
-            val uris = mapOf(
-                "primary" to item.images.primary,
-                "backdrop" to item.images.backdrop,
-            )
+            val uris = mapOf("primary" to item.images.primary, "backdrop" to item.images.backdrop)
 
             try {
                 baseDir.mkdirs()
@@ -61,19 +58,20 @@ class ImagesDownloaderWorker @AssistedInject constructor(
 
                 val request = Request.Builder().url(uri.toString()).build()
 
-                val imageBytes = try {
-                    client.newCall(request).execute().use { response ->
-                        if (!response.isSuccessful) {
-                            Timber.e("Failed to download image: ${response.code}")
-                            continue
-                        }
+                val imageBytes =
+                    try {
+                        client.newCall(request).execute().use { response ->
+                            if (!response.isSuccessful) {
+                                Timber.e("Failed to download image: ${response.code}")
+                                continue
+                            }
 
-                        response.body.bytes()
+                            response.body.bytes()
+                        }
+                    } catch (e: IOException) {
+                        Timber.e(e)
+                        continue
                     }
-                } catch (e: IOException) {
-                    Timber.e(e)
-                    continue
-                }
 
                 try {
                     val file = File(appContext.filesDir, "$basePath/$name")

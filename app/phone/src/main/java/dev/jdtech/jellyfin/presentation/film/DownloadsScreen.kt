@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionAction
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
@@ -32,7 +33,6 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.presentation.film.components.CollectionGrid
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun DownloadsScreen(
@@ -41,9 +41,7 @@ fun DownloadsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadItems()
-    }
+    LaunchedEffect(true) { viewModel.loadItems() }
 
     DownloadsScreenLayout(
         state = state,
@@ -58,31 +56,24 @@ fun DownloadsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DownloadsScreenLayout(
-    state: CollectionState,
-    onAction: (CollectionAction) -> Unit,
-) {
+private fun DownloadsScreenLayout(state: CollectionState, onAction: (CollectionAction) -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .recalculateWindowInsets()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier.fillMaxSize()
+                .recalculateWindowInsets()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = stringResource(CoreR.string.title_download))
-                },
+                title = { Text(text = stringResource(CoreR.string.title_download)) },
                 windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
                 scrollBehavior = scrollBehavior,
             )
         },
         contentWindowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
     ) { innerPadding ->
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             if (state.sections.isEmpty()) {
                 Text(
                     text = stringResource(CoreR.string.no_downloads),
@@ -92,11 +83,7 @@ private fun DownloadsScreenLayout(
             }
         }
 
-        CollectionGrid(
-            sections = state.sections,
-            innerPadding = innerPadding,
-            onAction = onAction,
-        )
+        CollectionGrid(sections = state.sections, innerPadding = innerPadding, onAction = onAction)
     }
 }
 
@@ -105,15 +92,17 @@ private fun DownloadsScreenLayout(
 private fun DownloadsScreenLayoutPreview() {
     FindroidTheme {
         DownloadsScreenLayout(
-            state = CollectionState(
-                sections = listOf(
-                    CollectionSection(
-                        id = 0,
-                        name = UiText.StringResource(CoreR.string.movies_label),
-                        items = dummyMovies,
-                    ),
+            state =
+                CollectionState(
+                    sections =
+                        listOf(
+                            CollectionSection(
+                                id = 0,
+                                name = UiText.StringResource(CoreR.string.movies_label),
+                                items = dummyMovies,
+                            )
+                        )
                 ),
-            ),
             onAction = {},
         )
     }

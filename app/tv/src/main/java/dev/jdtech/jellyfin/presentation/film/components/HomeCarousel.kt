@@ -26,9 +26,7 @@ fun HomeCarousel(
 ) {
     Carousel(
         itemCount = items.size,
-        modifier = modifier
-            .height(300.dp)
-            .fillMaxWidth(),
+        modifier = modifier.height(300.dp).fillMaxWidth(),
         contentTransformEndToStart = fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000))),
         contentTransformStartToEnd = fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000))),
     ) { itemIndex ->
@@ -40,10 +38,5 @@ fun HomeCarousel(
 @Composable
 @Preview(showBackground = true)
 private fun HomeCarouselPreview() {
-    FindroidTheme {
-        HomeCarousel(
-            items = dummyMovies,
-            onAction = {},
-        )
-    }
+    FindroidTheme { HomeCarousel(items = dummyMovies, onAction = {}) }
 }

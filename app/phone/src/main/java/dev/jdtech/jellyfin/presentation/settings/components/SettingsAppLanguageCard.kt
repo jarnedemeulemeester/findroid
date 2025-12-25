@@ -25,16 +25,11 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 
 @Composable
-fun SettingsAppLanguageCard(
-    preference: Preference,
-    modifier: Modifier = Modifier,
-) {
+fun SettingsAppLanguageCard(preference: Preference, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
-    val currentValue = remember {
-        configuration.locales.get(0).displayName
-    }
+    val currentValue = remember { configuration.locales.get(0).displayName }
 
     SettingsBaseCard(
         preference = preference,
@@ -44,7 +39,7 @@ fun SettingsAppLanguageCard(
                     Intent(
                         Settings.ACTION_APP_LOCALE_SETTINGS,
                         "package:${context.packageName}".toUri(),
-                    ),
+                    )
                 )
             }
         },
@@ -61,18 +56,13 @@ fun SettingsAppLanguageCard(
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                Text(
-                    text = currentValue,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Text(text = currentValue, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

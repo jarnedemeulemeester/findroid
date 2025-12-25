@@ -26,6 +26,8 @@ import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import java.io.File
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -51,8 +53,6 @@ import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
-import java.io.File
-import java.util.UUID
 
 class JellyfinRepositoryImpl(
     private val context: Context,
@@ -61,9 +61,7 @@ class JellyfinRepositoryImpl(
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
     override suspend fun getPublicSystemInfo(): PublicSystemInfo =
-        withContext(Dispatchers.IO) {
-            jellyfinApi.systemApi.getPublicSystemInfo().content
-        }
+        withContext(Dispatchers.IO) { jellyfinApi.systemApi.getPublicSystemInfo().content }
 
     override suspend fun getUserViews(): List<BaseItemDto> =
         withContext(Dispatchers.IO) {
@@ -72,50 +70,49 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(
-                itemId,
-                jellyfinApi.userId!!,
-            ).content.toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            jellyfinApi.userLibraryApi
+                .getItem(itemId, jellyfinApi.userId!!)
+                .content
+                .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(
-                itemId,
-                jellyfinApi.userId!!,
-            ).content.toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            jellyfinApi.userLibraryApi
+                .getItem(itemId, jellyfinApi.userId!!)
+                .content
+                .toFindroidMovie(this@JellyfinRepositoryImpl, database)
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(
-                itemId,
-                jellyfinApi.userId!!,
-            ).content.toFindroidShow(this@JellyfinRepositoryImpl)
+            jellyfinApi.userLibraryApi
+                .getItem(itemId, jellyfinApi.userId!!)
+                .content
+                .toFindroidShow(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(
-                itemId,
-                jellyfinApi.userId!!,
-            ).content.toFindroidSeason(this@JellyfinRepositoryImpl)
+            jellyfinApi.userLibraryApi
+                .getItem(itemId, jellyfinApi.userId!!)
+                .content
+                .toFindroidSeason(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getItems(
-                jellyfinApi.userId!!,
-            ).content.items
-                .mapNotNull { it.toFindroidCollection(this@JellyfinRepositoryImpl) }
+            jellyfinApi.itemsApi.getItems(jellyfinApi.userId!!).content.items.mapNotNull {
+                it.toFindroidCollection(this@JellyfinRepositoryImpl)
+            }
         }
 
     override suspend fun getItem(itemId: UUID): FindroidItem? =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(
-                itemId = itemId,
-                userId = jellyfinApi.userId!!,
-            ).content.toFindroidItem(this@JellyfinRepositoryImpl)
+            jellyfinApi.userLibraryApi
+                .getItem(itemId = itemId, userId = jellyfinApi.userId!!)
+                .content
+                .toFindroidItem(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getItems(
@@ -128,16 +125,19 @@ class JellyfinRepositoryImpl(
         limit: Int?,
     ): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getItems(
-                jellyfinApi.userId!!,
-                parentId = parentId,
-                includeItemTypes = includeTypes,
-                recursive = recursive,
-                sortBy = listOf(ItemSortBy.fromName(sortBy.sortString)),
-                sortOrder = listOf(sortOrder),
-                startIndex = startIndex,
-                limit = limit,
-            ).content.items
+            jellyfinApi.itemsApi
+                .getItems(
+                    jellyfinApi.userId!!,
+                    parentId = parentId,
+                    includeItemTypes = includeTypes,
+                    recursive = recursive,
+                    sortBy = listOf(ItemSortBy.fromName(sortBy.sortString)),
+                    sortOrder = listOf(sortOrder),
+                    startIndex = startIndex,
+                    limit = limit,
+                )
+                .content
+                .items
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
@@ -149,26 +149,20 @@ class JellyfinRepositoryImpl(
         sortOrder: SortOrder,
     ): Flow<PagingData<FindroidItem>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = {
-                ItemsPagingSource(
-                    this,
-                    parentId,
-                    includeTypes,
-                    recursive,
-                    sortBy,
-                    sortOrder,
-                )
-            },
-        ).flow
+                config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+                pagingSourceFactory = {
+                    ItemsPagingSource(this, parentId, includeTypes, recursive, sortBy, sortOrder)
+                },
+            )
+            .flow
     }
 
     override suspend fun getPerson(personId: UUID): FindroidPerson =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getItem(personId, jellyfinApi.userId!!).content.toFindroidPerson(this@JellyfinRepositoryImpl)
+            jellyfinApi.userLibraryApi
+                .getItem(personId, jellyfinApi.userId!!)
+                .content
+                .toFindroidPerson(this@JellyfinRepositoryImpl)
         }
 
     override suspend fun getPersonItems(
@@ -177,97 +171,105 @@ class JellyfinRepositoryImpl(
         recursive: Boolean,
     ): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getItems(
-                jellyfinApi.userId!!,
-                personIds = personIds,
-                includeItemTypes = includeTypes,
-                recursive = recursive,
-            ).content.items
-                .mapNotNull {
-                    it.toFindroidItem(this@JellyfinRepositoryImpl, database)
-                }
+            jellyfinApi.itemsApi
+                .getItems(
+                    jellyfinApi.userId!!,
+                    personIds = personIds,
+                    includeItemTypes = includeTypes,
+                    recursive = recursive,
+                )
+                .content
+                .items
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getFavoriteItems(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getItems(
-                jellyfinApi.userId!!,
-                filters = listOf(ItemFilter.IS_FAVORITE),
-                includeItemTypes = listOf(
-                    BaseItemKind.MOVIE,
-                    BaseItemKind.SERIES,
-                    BaseItemKind.EPISODE,
-                ),
-                recursive = true,
-            ).content.items
+            jellyfinApi.itemsApi
+                .getItems(
+                    jellyfinApi.userId!!,
+                    filters = listOf(ItemFilter.IS_FAVORITE),
+                    includeItemTypes =
+                        listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES, BaseItemKind.EPISODE),
+                    recursive = true,
+                )
+                .content
+                .items
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getSearchItems(query: String): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getItems(
-                jellyfinApi.userId!!,
-                searchTerm = query,
-                includeItemTypes = listOf(
-                    BaseItemKind.MOVIE,
-                    BaseItemKind.SERIES,
-                ),
-                recursive = true,
-            ).content.items
+            jellyfinApi.itemsApi
+                .getItems(
+                    jellyfinApi.userId!!,
+                    searchTerm = query,
+                    includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+                    recursive = true,
+                )
+                .content
+                .items
                 .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getSuggestions(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.suggestionsApi.getSuggestions(
-                jellyfinApi.userId!!,
-                limit = 6,
-                type = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
-            ).content.items.mapNotNull {
-                it.toFindroidItem(this@JellyfinRepositoryImpl, database)
-            }
+            jellyfinApi.suggestionsApi
+                .getSuggestions(
+                    jellyfinApi.userId!!,
+                    limit = 6,
+                    type = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+                )
+                .content
+                .items
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getResumeItems(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.itemsApi.getResumeItems(
-                jellyfinApi.userId!!,
-                limit = 12,
-                includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
-            ).content.items.mapNotNull {
-                it.toFindroidItem(this@JellyfinRepositoryImpl, database)
-            }
+            jellyfinApi.itemsApi
+                .getResumeItems(
+                    jellyfinApi.userId!!,
+                    limit = 12,
+                    includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.EPISODE),
+                )
+                .content
+                .items
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi.getLatestMedia(
-                jellyfinApi.userId!!,
-                parentId = parentId,
-                limit = 16,
-            ).content.mapNotNull {
-                it.toFindroidItem(this@JellyfinRepositoryImpl, database)
-            }
+            jellyfinApi.userLibraryApi
+                .getLatestMedia(jellyfinApi.userId!!, parentId = parentId, limit = 16)
+                .content
+                .mapNotNull { it.toFindroidItem(this@JellyfinRepositoryImpl, database) }
         }
 
     override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
         withContext(Dispatchers.IO) {
             if (!offline) {
-                jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items
-                    .map { it.toFindroidSeason(this@JellyfinRepositoryImpl) }
+                jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items.map {
+                    it.toFindroidSeason(this@JellyfinRepositoryImpl)
+                }
             } else {
-                database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
+                database.getSeasonsByShowId(seriesId).map {
+                    it.toFindroidSeason(database, jellyfinApi.userId!!)
+                }
             }
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
-            jellyfinApi.showsApi.getNextUp(
-                jellyfinApi.userId!!,
-                limit = 24,
-                seriesId = seriesId,
-                enableResumable = false,
-            ).content.items
+            jellyfinApi.showsApi
+                .getNextUp(
+                    jellyfinApi.userId!!,
+                    limit = 24,
+                    seriesId = seriesId,
+                    enableResumable = false,
+                )
+                .content
+                .items
                 .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl) }
         }
 
@@ -281,17 +283,22 @@ class JellyfinRepositoryImpl(
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             if (!offline) {
-                jellyfinApi.showsApi.getEpisodes(
-                    seriesId,
-                    jellyfinApi.userId!!,
-                    seasonId = seasonId,
-                    fields = fields,
-                    startItemId = startItemId,
-                    limit = limit,
-                ).content.items
+                jellyfinApi.showsApi
+                    .getEpisodes(
+                        seriesId,
+                        jellyfinApi.userId!!,
+                        seasonId = seasonId,
+                        fields = fields,
+                        startItemId = startItemId,
+                        limit = limit,
+                    )
+                    .content
+                    .items
                     .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
             } else {
-                database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                database.getEpisodesBySeasonId(seasonId).map {
+                    it.toFindroidEpisode(database, jellyfinApi.userId!!)
+                }
             }
         }
 
@@ -299,36 +306,34 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
             sources.addAll(
-                jellyfinApi.mediaInfoApi.getPostedPlaybackInfo(
-                    itemId,
-                    PlaybackInfoDto(
-                        userId = jellyfinApi.userId!!,
-                        deviceProfile = DeviceProfile(
-                            name = "Direct play all",
-                            maxStaticBitrate = 1_000_000_000,
-                            maxStreamingBitrate = 1_000_000_000,
-                            codecProfiles = emptyList(),
-                            containerProfiles = emptyList(),
-                            directPlayProfiles = emptyList(),
-                            transcodingProfiles = emptyList(),
-                            subtitleProfiles = listOf(
-                                SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                                SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                            ),
-                        ),
-                        maxStreamingBitrate = 1_000_000_000,
-                    ),
-                ).content.mediaSources.map {
-                    it.toFindroidSource(
-                        this@JellyfinRepositoryImpl,
+                jellyfinApi.mediaInfoApi
+                    .getPostedPlaybackInfo(
                         itemId,
-                        includePath,
+                        PlaybackInfoDto(
+                            userId = jellyfinApi.userId!!,
+                            deviceProfile =
+                                DeviceProfile(
+                                    name = "Direct play all",
+                                    maxStaticBitrate = 1_000_000_000,
+                                    maxStreamingBitrate = 1_000_000_000,
+                                    codecProfiles = emptyList(),
+                                    containerProfiles = emptyList(),
+                                    directPlayProfiles = emptyList(),
+                                    transcodingProfiles = emptyList(),
+                                    subtitleProfiles =
+                                        listOf(
+                                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                                        ),
+                                ),
+                            maxStreamingBitrate = 1_000_000_000,
+                        ),
                     )
-                },
+                    .content
+                    .mediaSources
+                    .map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId, includePath) }
             )
-            sources.addAll(
-                database.getSources(itemId).map { it.toFindroidSource(database) },
-            )
+            sources.addAll(database.getSources(itemId).map { it.toFindroidSource(database) })
             sources
         }
 
@@ -348,18 +353,17 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
         withContext(Dispatchers.IO) {
-            val databaseSegments = database.getSegments(itemId).map {
-                it.toFindroidSegment()
-            }
+            val databaseSegments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
             if (databaseSegments.isNotEmpty()) {
                 return@withContext databaseSegments
             }
 
             try {
-                val apiSegments = jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map {
-                    it.toFindroidSegment()
-                }
+                val apiSegments =
+                    jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map {
+                        it.toFindroidSegment()
+                    }
 
                 return@withContext apiSegments
             } catch (e: Exception) {
@@ -376,9 +380,11 @@ class JellyfinRepositoryImpl(
                     if (sources != null) {
                         return@withContext File(sources.first(), index.toString()).readBytes()
                     }
-                } catch (_: Exception) { }
+                } catch (_: Exception) {}
 
-                return@withContext jellyfinApi.trickplayApi.getTrickplayTileImage(itemId, width, index).content
+                return@withContext jellyfinApi.trickplayApi
+                    .getTrickplayTileImage(itemId, width, index)
+                    .content
             } catch (_: Exception) {
                 return@withContext null
             }
@@ -389,21 +395,22 @@ class JellyfinRepositoryImpl(
         withContext(Dispatchers.IO) {
             jellyfinApi.sessionApi.postCapabilities(
                 playableMediaTypes = listOf(MediaType.VIDEO),
-                supportedCommands = listOf(
-                    GeneralCommandType.VOLUME_UP,
-                    GeneralCommandType.VOLUME_DOWN,
-                    GeneralCommandType.TOGGLE_MUTE,
-                    GeneralCommandType.SET_AUDIO_STREAM_INDEX,
-                    GeneralCommandType.SET_SUBTITLE_STREAM_INDEX,
-                    GeneralCommandType.MUTE,
-                    GeneralCommandType.UNMUTE,
-                    GeneralCommandType.SET_VOLUME,
-                    GeneralCommandType.DISPLAY_MESSAGE,
-                    GeneralCommandType.PLAY,
-                    GeneralCommandType.PLAY_STATE,
-                    GeneralCommandType.PLAY_NEXT,
-                    GeneralCommandType.PLAY_MEDIA_SOURCE,
-                ),
+                supportedCommands =
+                    listOf(
+                        GeneralCommandType.VOLUME_UP,
+                        GeneralCommandType.VOLUME_DOWN,
+                        GeneralCommandType.TOGGLE_MUTE,
+                        GeneralCommandType.SET_AUDIO_STREAM_INDEX,
+                        GeneralCommandType.SET_SUBTITLE_STREAM_INDEX,
+                        GeneralCommandType.MUTE,
+                        GeneralCommandType.UNMUTE,
+                        GeneralCommandType.SET_VOLUME,
+                        GeneralCommandType.DISPLAY_MESSAGE,
+                        GeneralCommandType.PLAY,
+                        GeneralCommandType.PLAY_STATE,
+                        GeneralCommandType.PLAY_NEXT,
+                        GeneralCommandType.PLAY_MEDIA_SOURCE,
+                    ),
                 supportsMediaControl = true,
             )
         }
@@ -421,7 +428,7 @@ class JellyfinRepositoryImpl(
                     playMethod = PlayMethod.DIRECT_PLAY,
                     repeatMode = RepeatMode.REPEAT_NONE,
                     playbackOrder = PlaybackOrder.DEFAULT,
-                ),
+                )
             )
         }
     }
@@ -449,11 +456,7 @@ class JellyfinRepositoryImpl(
             }
             try {
                 jellyfinApi.playStateApi.reportPlaybackStopped(
-                    PlaybackStopInfo(
-                        itemId = itemId,
-                        positionTicks = positionTicks,
-                        failed = false,
-                    ),
+                    PlaybackStopInfo(itemId = itemId, positionTicks = positionTicks, failed = false)
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -480,7 +483,7 @@ class JellyfinRepositoryImpl(
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,
-                    ),
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -546,20 +549,20 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getUserConfiguration(): UserConfiguration =
-        withContext(Dispatchers.IO) {
-            jellyfinApi.userApi.getCurrentUser().content.configuration!!
-        }
+        withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.configuration!! }
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
             val items = mutableListOf<FindroidItem>()
             items.addAll(
-                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
+                database
+                    .getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
+                database
+                    .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
             )
             items
         }

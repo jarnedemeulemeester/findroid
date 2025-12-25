@@ -9,16 +9,9 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 
 @Composable
-fun VideoPlayerMediaTitle(
-    title: String,
-    subtitle: String?,
-) {
+fun VideoPlayerMediaTitle(title: String, subtitle: String?) {
     Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.White,
-        )
+        Text(text = title, style = MaterialTheme.typography.headlineMedium, color = Color.White)
         if (subtitle != null) {
             Text(
                 text = subtitle,
@@ -33,9 +26,6 @@ fun VideoPlayerMediaTitle(
 @Composable
 private fun VideoPlayerMediaTitlePreview() {
     FindroidTheme {
-        VideoPlayerMediaTitle(
-            title = "S1:E23 - Handler One",
-            subtitle = "86 EIGHTY-SIX",
-        )
+        VideoPlayerMediaTitle(title = "S1:E23 - Handler One", subtitle = "86 EIGHTY-SIX")
     }
 }

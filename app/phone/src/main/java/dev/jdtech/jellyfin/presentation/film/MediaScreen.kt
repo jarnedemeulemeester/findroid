@@ -55,9 +55,7 @@ fun MediaScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val searchState by searchViewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadData()
-    }
+    LaunchedEffect(true) { viewModel.loadData() }
 
     MediaScreenLayout(
         state = state,
@@ -91,36 +89,37 @@ private fun MediaScreenLayout(
     onAction: (MediaAction) -> Unit,
     onSearchAction: (SearchAction) -> Unit,
 ) {
-    val safePadding = rememberSafePadding(
-        handleStartInsets = false,
-    )
+    val safePadding = rememberSafePadding(handleStartInsets = false)
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
-    val contentPaddingTop by animateDpAsState(
-        targetValue = if (state.error != null) {
-            safePadding.top + 144.dp
-        } else {
-            safePadding.top + 88.dp
-        },
-        label = "content_padding",
-    )
+    val contentPaddingTop by
+        animateDpAsState(
+            targetValue =
+                if (state.error != null) {
+                    safePadding.top + 144.dp
+                } else {
+                    safePadding.top + 88.dp
+                },
+            label = "content_padding",
+        )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val minColumnSize = when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 320.dp
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> 240.dp
-        else -> 160.dp
-    }
+    val minColumnSize =
+        when {
+            windowSizeClass.isWidthAtLeastBreakpoint(
+                WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+            ) -> 320.dp
+            windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ->
+                240.dp
+            else -> 160.dp
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         FilmSearchBar(
             state = searchState,
             expanded = searchExpanded,
@@ -133,51 +132,39 @@ private fun MediaScreenLayout(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = paddingStart,
-                top = contentPaddingTop,
-                end = paddingEnd,
-                bottom = paddingBottom,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = paddingStart,
+                    top = contentPaddingTop,
+                    end = paddingEnd,
+                    bottom = paddingBottom,
+                ),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         ) {
-            item(
-                span = { GridItemSpan(maxLineSpan) },
-            ) {
-                FavoritesCard(
-                    onClick = {
-                        onAction(MediaAction.OnFavoritesClick)
-                    },
-                )
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                FavoritesCard(onClick = { onAction(MediaAction.OnFavoritesClick) })
             }
             items(state.libraries, key = { it.id }) { library ->
                 ItemCard(
                     item = library,
                     direction = Direction.HORIZONTAL,
-                    onClick = {
-                        onAction(MediaAction.OnItemClick(library))
-                    },
-                    modifier = Modifier
-                        .animateItem(),
+                    onClick = { onAction(MediaAction.OnItemClick(library)) },
+                    modifier = Modifier.animateItem(),
                 )
             }
         }
         if (state.error != null) {
             ErrorCard(
-                onShowStacktrace = {
-                    showErrorDialog = true
-                },
-                onRetryClick = {
-                    onAction(MediaAction.OnRetryClick)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = paddingStart,
-                        top = safePadding.top + 80.dp,
-                        end = paddingEnd,
-                    ),
+                onShowStacktrace = { showErrorDialog = true },
+                onRetryClick = { onAction(MediaAction.OnRetryClick) },
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(
+                            start = paddingStart,
+                            top = safePadding.top + 80.dp,
+                            end = paddingEnd,
+                        ),
             )
             if (showErrorDialog) {
                 ErrorDialog(
@@ -194,10 +181,8 @@ private fun MediaScreenLayout(
 private fun MediaScreenLayoutPreview() {
     FindroidTheme {
         MediaScreenLayout(
-            state = MediaState(
-                libraries = dummyCollections,
-                error = Exception("Failed to load data"),
-            ),
+            state =
+                MediaState(libraries = dummyCollections, error = Exception("Failed to load data")),
             searchState = SearchState(),
             searchExpanded = false,
             onSearchExpand = {},

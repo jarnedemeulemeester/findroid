@@ -6,17 +6,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
-class PersonViewModel @Inject internal constructor(
-    private val repository: JellyfinRepository,
-) : ViewModel() {
+class PersonViewModel @Inject internal constructor(private val repository: JellyfinRepository) :
+    ViewModel() {
     private val _state = MutableStateFlow(PersonState())
     val state = _state.asStateFlow()
 
@@ -25,16 +24,23 @@ class PersonViewModel @Inject internal constructor(
             try {
                 val person = repository.getPerson(personId)
 
-                val items = repository.getPersonItems(
-                    personIds = listOf(personId),
-                    includeTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
-                    recursive = true,
-                )
+                val items =
+                    repository.getPersonItems(
+                        personIds = listOf(personId),
+                        includeTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+                        recursive = true,
+                    )
 
                 val movies = items.filterIsInstance<FindroidMovie>()
                 val shows = items.filterIsInstance<FindroidShow>()
 
-                _state.emit(_state.value.copy(person = person, starredInMovies = movies, starredInShows = shows))
+                _state.emit(
+                    _state.value.copy(
+                        person = person,
+                        starredInMovies = movies,
+                        starredInShows = shows,
+                    )
+                )
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }

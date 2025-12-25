@@ -54,15 +54,10 @@ import dev.jdtech.jellyfin.setup.presentation.addserver.AddServerViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 
 @Composable
-fun AddServerScreen(
-    onSuccess: () -> Unit,
-    viewModel: AddServerViewModel = hiltViewModel(),
-) {
+fun AddServerScreen(onSuccess: () -> Unit, viewModel: AddServerViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.discoverServers()
-    }
+    LaunchedEffect(true) { viewModel.discoverServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -70,41 +65,24 @@ fun AddServerScreen(
         }
     }
 
-    AddServerScreenLayout(
-        state = state,
-        onAction = { action ->
-            viewModel.onAction(action)
-        },
-    )
+    AddServerScreenLayout(state = state, onAction = { action -> viewModel.onAction(action) })
 }
 
 @Composable
-private fun AddServerScreenLayout(
-    state: AddServerState,
-    onAction: (AddServerAction) -> Unit,
-) {
+private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAction) -> Unit) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
-    var serverAddress by rememberSaveable {
-        mutableStateOf("")
-    }
+    var serverAddress by rememberSaveable { mutableStateOf("") }
 
     val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
 
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier = Modifier.fillMaxWidth().align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = R.string.add_server),
@@ -133,42 +111,34 @@ private fun AddServerScreenLayout(
                 value = serverAddress,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = dev.jdtech.jellyfin.core.R.drawable.ic_server),
+                        painter =
+                            painterResource(id = dev.jdtech.jellyfin.core.R.drawable.ic_server),
                         contentDescription = null,
                     )
                 },
                 onValueChange = { serverAddress = it },
                 label = {
-                    Text(
-                        text = stringResource(id = R.string.edit_text_server_address_hint),
-                    )
+                    Text(text = stringResource(id = R.string.edit_text_server_address_hint))
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Go,
-                ),
-                keyboardActions = KeyboardActions(
-                    onGo = { doConnect() },
-                ),
+                keyboardOptions =
+                    KeyboardOptions(
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Uri,
+                        imeAction = ImeAction.Go,
+                    ),
+                keyboardActions = KeyboardActions(onGo = { doConnect() }),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
                     if (state.error != null) {
                         Text(
-                            text = state.error!!.joinToString {
-                                it.asString(
-                                    context.resources,
-                                )
-                            },
+                            text = state.error!!.joinToString { it.asString(context.resources) },
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
                 },
-                modifier = Modifier
-                    .width(360.dp)
-                    .focusRequester(focusRequester),
+                modifier = Modifier.width(360.dp).focusRequester(focusRequester),
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Box {
@@ -177,15 +147,11 @@ private fun AddServerScreenLayout(
                     enabled = !state.isLoading,
                     modifier = Modifier.width(360.dp),
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
                         if (state.isLoading) {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .align(Alignment.CenterStart),
+                                modifier = Modifier.size(24.dp).align(Alignment.CenterStart),
                             )
                         }
                         Text(
@@ -202,12 +168,7 @@ private fun AddServerScreenLayout(
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun AddServerScreenLayoutPreview() {
-    FindroidTheme {
-        AddServerScreenLayout(
-            state = AddServerState(),
-            onAction = {},
-        )
-    }
+    FindroidTheme { AddServerScreenLayout(state = AddServerState(), onAction = {}) }
 }
 
 @Preview(device = "id:tv_1080p")
@@ -215,9 +176,7 @@ private fun AddServerScreenLayoutPreview() {
 private fun AddServerScreenLayoutDiscoveredPreview() {
     FindroidTheme {
         AddServerScreenLayout(
-            state = AddServerState(
-                discoveredServers = listOf(dummyDiscoveredServer),
-            ),
+            state = AddServerState(discoveredServers = listOf(dummyDiscoveredServer)),
             onAction = {},
         )
     }

@@ -2,14 +2,10 @@ package dev.jdtech.jellyfin.settings.domain
 
 import android.content.SharedPreferences
 import dev.jdtech.jellyfin.settings.domain.models.Preference
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
-class AppPreferences
-@Inject
-constructor(
-    val sharedPreferences: SharedPreferences,
-) {
+class AppPreferences @Inject constructor(val sharedPreferences: SharedPreferences) {
     // Server
     val currentServer = Preference<String?>("pref_current_server", null)
 
@@ -51,13 +47,30 @@ constructor(
     val playerChapterMarkers = Preference("pref_player_chapter_markers", true)
 
     // Player - Media Segments
-    val playerMediaSegmentsSkipButton get() = Preference("pref_player_media_segments_skip_button", true)
-    val playerMediaSegmentsSkipButtonType get() = Preference("pref_player_media_segments_skip_button_type", setOf("INTRO", "OUTRO"))
-    val playerMediaSegmentsSkipButtonDuration get() = Preference("pref_player_media_segments_skip_button_duration", 5L)
-    val playerMediaSegmentsAutoSkip get() = Preference("pref_player_media_segments_auto_skip", false)
-    val playerMediaSegmentsAutoSkipMode get() = Preference("pref_player_media_segments_auto_skip_mode", Constants.PlayerMediaSegmentsAutoSkip.ALWAYS)
-    val playerMediaSegmentsAutoSkipType get() = Preference("pref_player_media_segments_auto_skip_type", setOf("INTRO", "OUTRO"))
-    val playerMediaSegmentsNextEpisodeThreshold get() = Preference("pref_player_media_segments_next_episode_threshold", 5_000L)
+    val playerMediaSegmentsSkipButton
+        get() = Preference("pref_player_media_segments_skip_button", true)
+
+    val playerMediaSegmentsSkipButtonType
+        get() = Preference("pref_player_media_segments_skip_button_type", setOf("INTRO", "OUTRO"))
+
+    val playerMediaSegmentsSkipButtonDuration
+        get() = Preference("pref_player_media_segments_skip_button_duration", 5L)
+
+    val playerMediaSegmentsAutoSkip
+        get() = Preference("pref_player_media_segments_auto_skip", false)
+
+    val playerMediaSegmentsAutoSkipMode
+        get() =
+            Preference(
+                "pref_player_media_segments_auto_skip_mode",
+                Constants.PlayerMediaSegmentsAutoSkip.ALWAYS,
+            )
+
+    val playerMediaSegmentsAutoSkipType
+        get() = Preference("pref_player_media_segments_auto_skip_type", setOf("INTRO", "OUTRO"))
+
+    val playerMediaSegmentsNextEpisodeThreshold
+        get() = Preference("pref_player_media_segments_next_episode_threshold", 5_000L)
 
     // Player - trickplay
     val playerTrickplay = Preference("pref_player_trickplay", true)
@@ -70,9 +83,12 @@ constructor(
     val downloadWhenRoaming = Preference("pref_downloads_roaming", false)
 
     // Network
-    val requestTimeout = Preference("pref_network_request_timeout", Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT)
-    val connectTimeout = Preference("pref_network_connect_timeout", Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT)
-    val socketTimeout = Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
+    val requestTimeout =
+        Preference("pref_network_request_timeout", Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT)
+    val connectTimeout =
+        Preference("pref_network_connect_timeout", Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT)
+    val socketTimeout =
+        Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
 
     // Cache
     val imageCache = Preference("pref_image_cache", true)
@@ -89,16 +105,29 @@ constructor(
         return try {
             @Suppress("UNCHECKED_CAST")
             when (preference.defaultValue) {
-                is Boolean -> sharedPreferences.getBoolean(preference.backendName, preference.defaultValue) as T
-                is Int -> sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
-                is Long -> sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
-                is Float -> sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
-                is String? -> sharedPreferences.getString(preference.backendName, preference.defaultValue) as T
-                is Set<*> -> sharedPreferences.getStringSet(preference.backendName, preference.defaultValue as Set<String>) as T
+                is Boolean ->
+                    sharedPreferences.getBoolean(preference.backendName, preference.defaultValue)
+                        as T
+                is Int ->
+                    sharedPreferences.getInt(preference.backendName, preference.defaultValue) as T
+                is Long ->
+                    sharedPreferences.getLong(preference.backendName, preference.defaultValue) as T
+                is Float ->
+                    sharedPreferences.getFloat(preference.backendName, preference.defaultValue) as T
+                is String? ->
+                    sharedPreferences.getString(preference.backendName, preference.defaultValue)
+                        as T
+                is Set<*> ->
+                    sharedPreferences.getStringSet(
+                        preference.backendName,
+                        preference.defaultValue as Set<String>,
+                    ) as T
                 else -> preference.defaultValue
             }
         } catch (_: Exception) {
-            Timber.w("Failed to load ${preference.backendName} preference. Resetting to default value...")
+            Timber.w(
+                "Failed to load ${preference.backendName} preference. Resetting to default value..."
+            )
             setValue(preference, preference.defaultValue)
             preference.defaultValue
         }

@@ -28,8 +28,8 @@ import dev.jdtech.jellyfin.presentation.film.components.HomeSection
 import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 @Composable
 fun HomeScreen(
@@ -41,13 +41,9 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadData()
-    }
+    LaunchedEffect(true) { viewModel.loadData() }
 
-    LaunchedEffect(state.isLoading) {
-        isLoading(state.isLoading)
-    }
+    LaunchedEffect(state.isLoading) { isLoading(state.isLoading) }
 
     HomeScreenLayout(
         state = state,
@@ -70,18 +66,16 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeScreenLayout(
-    state: HomeState,
-    onAction: (HomeAction) -> Unit,
-) {
-    val itemsPadding = PaddingValues(
-        horizontal = MaterialTheme.spacings.large,
-    )
+private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
+    val itemsPadding = PaddingValues(horizontal = MaterialTheme.spacings.large)
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(top = MaterialTheme.spacings.extraSmall, bottom = MaterialTheme.spacings.large),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding =
+            PaddingValues(
+                top = MaterialTheme.spacings.extraSmall,
+                bottom = MaterialTheme.spacings.large,
+            ),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
     ) {
         state.suggestionsSection?.let { section ->
@@ -89,9 +83,7 @@ private fun HomeScreenLayout(
                 HomeCarousel(
                     items = section.items,
                     onAction = onAction,
-                    modifier = Modifier
-                        .animateItem()
-                        .padding(itemsPadding),
+                    modifier = Modifier.animateItem().padding(itemsPadding),
                 )
             }
         }
@@ -131,11 +123,12 @@ private fun HomeScreenLayout(
 private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
-            state = HomeState(
-                suggestionsSection = dummyHomeSuggestions,
-                resumeSection = dummyHomeSection,
-                views = listOf(dummyHomeView),
-            ),
+            state =
+                HomeState(
+                    suggestionsSection = dummyHomeSuggestions,
+                    resumeSection = dummyHomeSection,
+                    views = listOf(dummyHomeView),
+                ),
             onAction = {},
         )
     }

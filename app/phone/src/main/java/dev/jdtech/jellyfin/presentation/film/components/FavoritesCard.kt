@@ -15,31 +15,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun FavoritesCard(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    OutlinedCard(
-        onClick = onClick,
-        modifier = modifier,
-    ) {
+fun FavoritesCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    OutlinedCard(onClick = onClick, modifier = modifier) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                painter = painterResource(CoreR.drawable.ic_star),
-                contentDescription = null,
-            )
-            Text(
-                text = stringResource(CoreR.string.title_favorite),
-            )
+            Icon(painter = painterResource(CoreR.drawable.ic_star), contentDescription = null)
+            Text(text = stringResource(CoreR.string.title_favorite))
         }
     }
 }
@@ -47,10 +36,5 @@ fun FavoritesCard(
 @Preview
 @Composable
 private fun FavoritesCardPreview() {
-    FindroidTheme {
-        FavoritesCard(
-            onClick = {},
-            modifier = Modifier.width(320.dp),
-        )
-    }
+    FindroidTheme { FavoritesCard(onClick = {}, modifier = Modifier.width(320.dp)) }
 }

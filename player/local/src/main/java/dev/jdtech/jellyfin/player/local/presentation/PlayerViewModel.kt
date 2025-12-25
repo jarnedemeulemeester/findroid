@@ -27,6 +27,9 @@ import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
+import java.util.UUID
+import javax.inject.Inject
+import kotlin.math.ceil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -40,9 +43,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
-import kotlin.math.ceil
 
 @HiltViewModel
 class PlayerViewModel
@@ -56,16 +56,17 @@ constructor(
 ) : ViewModel(), Player.Listener {
     val player: Player
 
-    private val _uiState = MutableStateFlow(
-        UiState(
-            currentItemTitle = "",
-            currentSegment = null,
-            currentSkipButtonStringRes = R.string.player_controls_skip_intro,
-            currentTrickplay = null,
-            currentChapters = emptyList(),
-            fileLoaded = false,
-        ),
-    )
+    private val _uiState =
+        MutableStateFlow(
+            UiState(
+                currentItemTitle = "",
+                currentSegment = null,
+                currentSkipButtonStringRes = R.string.player_controls_skip_intro,
+                currentTrickplay = null,
+                currentChapters = emptyList(),
+                fileLoaded = false,
+            )
+        )
     val uiState = _uiState.asStateFlow()
 
     private val eventsChannel = Channel<PlayerEvents>()
@@ -102,64 +103,80 @@ constructor(
 
     init {
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
-        segmentsSkipButtonTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
-        segmentsSkipButtonDuration = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration)
+        segmentsSkipButtonTypes =
+            appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
+        segmentsSkipButtonDuration =
+            appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonDuration)
         segmentsAutoSkip = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
-        segmentsAutoSkipTypes = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
-        segmentsAutoSkipMode = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
+        segmentsAutoSkipTypes =
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
+        segmentsAutoSkipMode =
+            appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
 
-        val audioAttributes = AudioAttributes.Builder()
-            .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-            .setUsage(C.USAGE_MEDIA)
-            .build()
+        val audioAttributes =
+            AudioAttributes.Builder()
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .setUsage(C.USAGE_MEDIA)
+                .build()
 
         trackSelector.setParameters(
-            trackSelector.buildUponParameters()
+            trackSelector
+                .buildUponParameters()
                 .setTunnelingEnabled(true)
-                .setPreferredAudioLanguage(appPreferences.getValue(appPreferences.preferredAudioLanguage))
-                .setPreferredTextLanguage(appPreferences.getValue(appPreferences.preferredSubtitleLanguage)),
+                .setPreferredAudioLanguage(
+                    appPreferences.getValue(appPreferences.preferredAudioLanguage)
+                )
+                .setPreferredTextLanguage(
+                    appPreferences.getValue(appPreferences.preferredSubtitleLanguage)
+                )
         )
 
         if (appPreferences.getValue(appPreferences.playerMpv)) {
-            player = MPVPlayer.Builder(application)
-                .setAudioAttributes(audioAttributes, true)
-                .setTrackSelectionParameters(trackSelector.parameters)
-                .setSeekBackIncrementMs(appPreferences.getValue(appPreferences.playerSeekBackInc))
-                .setSeekForwardIncrementMs(appPreferences.getValue(appPreferences.playerSeekForwardInc))
-                .setPauseAtEndOfMediaItems(true)
-                .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
-                .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
-                .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
-                .build()
+            player =
+                MPVPlayer.Builder(application)
+                    .setAudioAttributes(audioAttributes, true)
+                    .setTrackSelectionParameters(trackSelector.parameters)
+                    .setSeekBackIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekBackInc)
+                    )
+                    .setSeekForwardIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                    )
+                    .setPauseAtEndOfMediaItems(true)
+                    .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
+                    .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
+                    .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
+                    .build()
         } else {
             val renderersFactory =
-                DefaultRenderersFactory(application).setExtensionRendererMode(
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON,
-                )
-            player = ExoPlayer.Builder(application, renderersFactory)
-                .setAudioAttributes(audioAttributes, true)
-                .setTrackSelector(trackSelector)
-                .setSeekBackIncrementMs(appPreferences.getValue(appPreferences.playerSeekBackInc))
-                .setSeekForwardIncrementMs(appPreferences.getValue(appPreferences.playerSeekForwardInc))
-                .setPauseAtEndOfMediaItems(true)
-                .build()
+                DefaultRenderersFactory(application)
+                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+            player =
+                ExoPlayer.Builder(application, renderersFactory)
+                    .setAudioAttributes(audioAttributes, true)
+                    .setTrackSelector(trackSelector)
+                    .setSeekBackIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekBackInc)
+                    )
+                    .setSeekForwardIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                    )
+                    .setPauseAtEndOfMediaItems(true)
+                    .build()
         }
     }
 
-    fun initializePlayer(
-        itemId: UUID,
-        itemKind: String,
-        startFromBeginning: Boolean,
-    ) {
+    fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
         player.addListener(this)
 
         viewModelScope.launch {
-            val startItem = playlistManager.getInitialItem(
-                itemId = itemId,
-                itemKind = BaseItemKind.fromName(itemKind),
-                mediaSourceIndex = null,
-                startFromBeginning = startFromBeginning,
-            )
+            val startItem =
+                playlistManager.getInitialItem(
+                    itemId = itemId,
+                    itemKind = BaseItemKind.fromName(itemKind),
+                    mediaSourceIndex = null,
+                    startFromBeginning = startFromBeginning,
+                )
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
@@ -173,17 +190,14 @@ constructor(
                 Timber.e(e)
             }
 
-            val startPosition = if (playbackPosition == 0L) {
-                items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET
-            } else {
-                playbackPosition
-            }
+            val startPosition =
+                if (playbackPosition == 0L) {
+                    items.getOrNull(currentMediaItemIndex)?.playbackPosition ?: C.TIME_UNSET
+                } else {
+                    playbackPosition
+                }
 
-            player.setMediaItems(
-                mediaItems,
-                0,
-                startPosition,
-            )
+            player.setMediaItems(mediaItems, 0, startPosition)
             player.prepare()
             player.play()
         }
@@ -191,24 +205,23 @@ constructor(
 
     private fun PlayerItem.toMediaItem(): MediaItem {
         val streamUrl = mediaSourceUri
-        val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
-            MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
-                .setLabel(externalSubtitle.title.ifBlank { application.getString(R.string.external) })
-                .setMimeType(externalSubtitle.mimeType)
-                .setLanguage(externalSubtitle.language)
-                .build()
-        }
+        val mediaSubtitles =
+            externalSubtitles.map { externalSubtitle ->
+                MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                    .setLabel(
+                        externalSubtitle.title.ifBlank { application.getString(R.string.external) }
+                    )
+                    .setMimeType(externalSubtitle.mimeType)
+                    .setLanguage(externalSubtitle.language)
+                    .build()
+            }
 
         Timber.d("Stream url: $streamUrl")
         val mediaItem =
             MediaItem.Builder()
                 .setMediaId(itemId.toString())
                 .setUri(streamUrl)
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle(name)
-                        .build(),
-                )
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(name).build())
                 .setSubtitleConfigurations(mediaSubtitles)
                 .build()
 
@@ -270,7 +283,10 @@ constructor(
             val milliSeconds = player.currentPosition
 
             // Get current segment, - 100 milliseconds to avoid showing button after segment ends
-            val currentSegment = currentMediaItemSegments.find { segment -> milliSeconds in segment.startTicks..<(segment.endTicks - 100L) }
+            val currentSegment =
+                currentMediaItemSegments.find { segment ->
+                    milliSeconds in segment.startTicks..<(segment.endTicks - 100L)
+                }
 
             if (currentSegment == null) {
                 // Remove button if not pressed and there is no current segment
@@ -282,17 +298,23 @@ constructor(
 
             Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
-            if (segmentsAutoSkip && segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
-                (
-                    segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
-                        (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP && isInPictureInPictureMode)
-                    )
+            if (
+                segmentsAutoSkip &&
+                    segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
+                    (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                        (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
+                            isInPictureInPictureMode))
             ) {
                 // Auto Skip segment
                 skipSegment(currentSegment)
             } else if (segmentsSkipButtonTypes.contains(currentSegment.type.toString())) {
                 // Skip Button segment
-                _uiState.update { it.copy(currentSegment = currentSegment, currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment)) }
+                _uiState.update {
+                    it.copy(
+                        currentSegment = currentSegment,
+                        currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment),
+                    )
+                }
             } else {
                 _uiState.update { it.copy(currentSegment = null) }
             }
@@ -304,17 +326,19 @@ constructor(
         savedStateHandle["mediaItemIndex"] = player.currentMediaItemIndex
         viewModelScope.launch {
             try {
-                items.first { it.itemId.toString() == player.currentMediaItem?.mediaId }
+                items
+                    .first { it.itemId.toString() == player.currentMediaItem?.mediaId }
                     .let { item ->
-                        val itemTitle = if (item.parentIndexNumber != null && item.indexNumber != null) {
-                            if (item.indexNumberEnd == null) {
-                                "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                        val itemTitle =
+                            if (item.parentIndexNumber != null && item.indexNumber != null) {
+                                if (item.indexNumberEnd == null) {
+                                    "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                                } else {
+                                    "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
+                                }
                             } else {
-                                "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
+                                item.name
                             }
-                        } else {
-                            item.name
-                        }
                         _uiState.update {
                             it.copy(
                                 currentItemTitle = itemTitle,
@@ -339,13 +363,19 @@ constructor(
                         val previousItem = playlistManager.getPreviousPlayerItem()
                         if (previousItem != null) {
                             items.add(player.currentMediaItemIndex, previousItem)
-                            player.addMediaItem(player.currentMediaItemIndex, previousItem.toMediaItem())
+                            player.addMediaItem(
+                                player.currentMediaItemIndex,
+                                previousItem.toMediaItem(),
+                            )
                         }
 
                         val nextItem = playlistManager.getNextPlayerItem()
                         if (nextItem != null) {
                             items.add(player.currentMediaItemIndex + 1, nextItem)
-                            player.addMediaItem(player.currentMediaItemIndex + 1, nextItem.toMediaItem())
+                            player.addMediaItem(
+                                player.currentMediaItemIndex + 1,
+                                nextItem.toMediaItem(),
+                            )
                         }
 
                         Timber.tag("PlayerItems").d(items.map { it.indexNumber }.toString())
@@ -358,7 +388,11 @@ constructor(
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
         // Report playback stopped for current item and transition to the next one
-        if (!playWhenReady && reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM && player.playbackState == ExoPlayer.STATE_READY) {
+        if (
+            !playWhenReady &&
+                reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
+                player.playbackState == ExoPlayer.STATE_READY
+        ) {
             viewModelScope.launch {
                 val mediaId = player.currentMediaItem?.mediaId
                 val position = player.currentPosition
@@ -408,19 +442,26 @@ constructor(
     fun switchToTrack(trackType: @C.TrackType Int, index: Int) {
         // Index -1 equals disable track
         if (index == -1) {
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .clearOverridesOfType(trackType)
-                .setTrackTypeDisabled(trackType, true)
-                .build()
+            player.trackSelectionParameters =
+                player.trackSelectionParameters
+                    .buildUpon()
+                    .clearOverridesOfType(trackType)
+                    .setTrackTypeDisabled(trackType, true)
+                    .build()
         } else {
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .setOverrideForType(
-                    TrackSelectionOverride(player.currentTracks.groups.filter { it.type == trackType && it.isSupported }[index].mediaTrackGroup, 0),
-                )
-                .setTrackTypeDisabled(trackType, false)
-                .build()
+            player.trackSelectionParameters =
+                player.trackSelectionParameters
+                    .buildUpon()
+                    .setOverrideForType(
+                        TrackSelectionOverride(
+                            player.currentTracks.groups
+                                .filter { it.type == trackType && it.isSupported }[index]
+                                .mediaTrackGroup,
+                            0,
+                        )
+                    )
+                    .setTrackTypeDisabled(trackType, false)
+                    .build()
         }
     }
 
@@ -443,25 +484,40 @@ constructor(
         Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
 
         withContext(Dispatchers.Default) {
-            val maxIndex = ceil(trickplayInfo.thumbnailCount.toDouble().div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)).toInt()
+            val maxIndex =
+                ceil(
+                        trickplayInfo.thumbnailCount
+                            .toDouble()
+                            .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
+                    )
+                    .toInt()
             val bitmaps = mutableListOf<Bitmap>()
 
             for (i in 0..maxIndex) {
-                repository.getTrickplayData(
-                    item.itemId,
-                    trickplayInfo.width,
-                    i,
-                )?.let { byteArray ->
+                repository.getTrickplayData(item.itemId, trickplayInfo.width, i)?.let { byteArray ->
                     val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                    for (offsetY in 0..<trickplayInfo.height * trickplayInfo.tileHeight step trickplayInfo.height) {
-                        for (offsetX in 0..<trickplayInfo.width * trickplayInfo.tileWidth step trickplayInfo.width) {
-                            val bitmap = Bitmap.createBitmap(fullBitmap, offsetX, offsetY, trickplayInfo.width, trickplayInfo.height)
+                    for (offsetY in
+                        0..<trickplayInfo.height * trickplayInfo.tileHeight step
+                            trickplayInfo.height) {
+                        for (offsetX in
+                            0..<trickplayInfo.width * trickplayInfo.tileWidth step
+                                trickplayInfo.width) {
+                            val bitmap =
+                                Bitmap.createBitmap(
+                                    fullBitmap,
+                                    offsetX,
+                                    offsetY,
+                                    trickplayInfo.width,
+                                    trickplayInfo.height,
+                                )
                             bitmaps.add(bitmap)
                         }
                     }
                 }
             }
-            _uiState.update { it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps)) }
+            _uiState.update {
+                it.copy(currentTrickplay = Trickplay(trickplayInfo.interval, bitmaps))
+            }
         }
     }
 
@@ -479,7 +535,9 @@ constructor(
         return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem()) {
             val segmentEndTimeMillis = segment.endTicks
             val playerDurationMillis = player.duration
-            val thresholdMillis = playerDurationMillis - appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
+            val thresholdMillis =
+                playerDurationMillis -
+                    appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
 
             segmentEndTimeMillis > thresholdMillis
         } else {
@@ -490,19 +548,21 @@ constructor(
     private fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
         return when (shouldSkipToNextEpisode(segment)) {
             true -> R.string.player_controls_next_episode
-            false -> when (segment.type) {
-                FindroidSegmentType.INTRO -> R.string.player_controls_skip_intro
-                FindroidSegmentType.OUTRO -> R.string.player_controls_skip_outro
-                FindroidSegmentType.RECAP -> R.string.player_controls_skip_recap
-                FindroidSegmentType.COMMERCIAL -> R.string.player_controls_skip_commercial
-                FindroidSegmentType.PREVIEW -> R.string.player_controls_skip_preview
-                else -> R.string.player_controls_skip_unknown
-            }
+            false ->
+                when (segment.type) {
+                    FindroidSegmentType.INTRO -> R.string.player_controls_skip_intro
+                    FindroidSegmentType.OUTRO -> R.string.player_controls_skip_outro
+                    FindroidSegmentType.RECAP -> R.string.player_controls_skip_recap
+                    FindroidSegmentType.COMMERCIAL -> R.string.player_controls_skip_commercial
+                    FindroidSegmentType.PREVIEW -> R.string.player_controls_skip_preview
+                    else -> R.string.player_controls_skip_unknown
+                }
         }
     }
 
     /**
      * Get chapters of current item
+     *
      * @return list of [PlayerChapter]
      */
     private fun getChapters(): List<PlayerChapter> {
@@ -511,6 +571,7 @@ constructor(
 
     /**
      * Get the index of the current chapter
+     *
      * @return the index of the current chapter
      */
     private fun getCurrentChapterIndex(): Int? {
@@ -527,6 +588,7 @@ constructor(
 
     /**
      * Get the index of the next chapter
+     *
      * @return the index of the next chapter
      */
     private fun getNextChapterIndex(): Int? {
@@ -537,8 +599,9 @@ constructor(
     }
 
     /**
-     * Get the index of the previous chapter.
-     * Only use this for seeking as it will return the current chapter when player position is more than 5 seconds past the start of the chapter
+     * Get the index of the previous chapter. Only use this for seeking as it will return the
+     * current chapter when player position is more than 5 seconds past the start of the chapter
+     *
      * @return the index of the previous chapter
      */
     private fun getPreviousChapterIndex(): Int? {
@@ -553,10 +616,12 @@ constructor(
         return maxOf(0, currentChapterIndex - 1)
     }
 
-    fun isLastChapter(): Boolean? = getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
+    fun isLastChapter(): Boolean? =
+        getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
     /**
      * Seek to chapter
+     *
      * @param [chapterIndex] the index of the chapter to seek to
      * @return the [PlayerChapter] which has been sought to
      */
@@ -568,6 +633,7 @@ constructor(
 
     /**
      * Seek to the next chapter
+     *
      * @return the [PlayerChapter] which has been sought to
      */
     fun seekToNextChapter(): PlayerChapter? {
@@ -575,8 +641,9 @@ constructor(
     }
 
     /**
-     * Seek to the previous chapter
-     * Will seek to start of current chapter if player position is more than 5 seconds past start of chapter
+     * Seek to the previous chapter Will seek to start of current chapter if player position is more
+     * than 5 seconds past start of chapter
+     *
      * @return the [PlayerChapter] which has been sought to
      */
     fun seekToPreviousChapter(): PlayerChapter? {
@@ -591,5 +658,6 @@ constructor(
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
+
     data class IsPlayingChanged(val isPlaying: Boolean) : PlayerEvents
 }
