@@ -10,6 +10,4 @@ object Versions {
     const val BUILD_TOOLS = "36.1.0"
 
     val JAVA = JavaVersion.VERSION_21
-
-    const val KTLINT = "0.50.0"
 }

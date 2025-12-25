@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -24,9 +23,7 @@ android {
     }
 
     buildTypes {
-        named("debug") {
-            applicationIdSuffix = ".debug"
-        }
+        named("debug") { applicationIdSuffix = ".debug" }
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -69,11 +66,7 @@ android {
         compose = true
     }
 
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -81,12 +74,6 @@ android {
         // Disables dependency metadata when building Android App Bundles.
         includeInBundle = false
     }
-}
-
-ktlint {
-    version.set(Versions.KTLINT)
-    android.set(true)
-    ignoreFailures.set(false)
 }
 
 dependencies {

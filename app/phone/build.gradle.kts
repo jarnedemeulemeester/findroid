@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.aboutlibraries.android)
-    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -33,16 +32,15 @@ android {
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
             .forEach { output ->
                 if (variant.buildType.name == "release") {
-                    val outputFileName = "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
+                    val outputFileName =
+                        "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
                     output.outputFileName = outputFileName
                 }
             }
     }
 
     buildTypes {
-        named("debug") {
-            applicationIdSuffix = ".debug"
-        }
+        named("debug") { applicationIdSuffix = ".debug" }
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -92,12 +90,6 @@ android {
         // Disables dependency metadata when building Android App Bundles.
         includeInBundle = false
     }
-}
-
-ktlint {
-    version.set(Versions.KTLINT)
-    android.set(true)
-    ignoreFailures.set(false)
 }
 
 dependencies {
