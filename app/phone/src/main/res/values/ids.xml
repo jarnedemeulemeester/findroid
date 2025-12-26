@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Fix issue with missing exo_top_controls id in minified builds-->
+    <item name="exo_top_controls" type="id"/>
+</resources>
