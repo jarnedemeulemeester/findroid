@@ -160,7 +160,6 @@ class MPVPlayer(
         MPVLib.setOptionString("ao", audioOutput)
         MPVLib.setOptionString("gpu-context", "android")
         MPVLib.setOptionString("opengl-es", "yes")
-        MPVLib.setOptionString("vid", "no")
 
         // Hardware video decoding
         MPVLib.setOptionString("hwdec", hwDec)
@@ -1449,7 +1448,6 @@ class MPVPlayer(
                 MPVLib.attachSurface(holder.surface)
                 MPVLib.setOptionString("force-window", "yes")
                 MPVLib.setOptionString("vo", videoOutput)
-                MPVLib.setOptionString("vid", "auto")
             }
 
             /**
@@ -1480,7 +1478,6 @@ class MPVPlayer(
              * @param holder The SurfaceHolder whose surface is being destroyed.
              */
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                MPVLib.setOptionString("vid", "no")
                 MPVLib.setOptionString("vo", "null")
                 MPVLib.setOptionString("force-window", "no")
                 MPVLib.detachSurface()
