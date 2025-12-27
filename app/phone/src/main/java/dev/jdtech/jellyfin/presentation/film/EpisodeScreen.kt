@@ -159,12 +159,7 @@ private fun EpisodeScreenLayout(
                                         )
                                     }
                             Text(
-                                text =
-                                    "$seasonName - " +
-                                        stringResource(
-                                            id = CoreR.string.episode_number,
-                                            episode.indexNumber,
-                                        ),
+                                text = seasonName,
                                 maxLines = 1,
                                 style = MaterialTheme.typography.labelLarge,
                             )
