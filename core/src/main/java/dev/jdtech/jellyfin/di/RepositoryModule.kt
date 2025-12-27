@@ -38,7 +38,12 @@ object RepositoryModule {
         appPreferences: AppPreferences,
     ): JellyfinRepositoryOfflineImpl {
         println("Creating new jellyfinRepositoryOfflineImpl")
-        return JellyfinRepositoryOfflineImpl(application, jellyfinApi, serverDatabase, appPreferences)
+        return JellyfinRepositoryOfflineImpl(
+            application,
+            jellyfinApi,
+            serverDatabase,
+            appPreferences,
+        )
     }
 
     @Provides

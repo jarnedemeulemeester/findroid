@@ -13,16 +13,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BaseBadge(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
-) {
+fun BaseBadge(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(
-        modifier = modifier
-            .height(24.dp)
-            .defaultMinSize(24.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.primary),
+        modifier =
+            modifier
+                .height(24.dp)
+                .defaultMinSize(24.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primary)
     ) {
         content()
     }

@@ -25,6 +25,7 @@ import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -35,7 +36,6 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsScreen(
@@ -48,9 +48,7 @@ fun SettingsScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadPreferences(intArrayOf(), DeviceType.TV)
-    }
+    LaunchedEffect(true) { viewModel.loadPreferences(intArrayOf(), DeviceType.TV) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -91,20 +89,19 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsScreenLayout(
-    state: SettingsState,
-    onAction: (SettingsAction) -> Unit,
-) {
+private fun SettingsScreenLayout(state: SettingsState, onAction: (SettingsAction) -> Unit) {
     val focusRequester = remember { FocusRequester() }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
-        modifier = Modifier
-            .fillMaxSize()
-            .focusRequester(focusRequester),
+        contentPadding =
+            PaddingValues(
+                horizontal = MaterialTheme.spacings.default * 2,
+                vertical = MaterialTheme.spacings.large,
+            ),
+        modifier = Modifier.fillMaxSize().focusRequester(focusRequester),
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Text(
@@ -113,15 +110,10 @@ private fun SettingsScreenLayout(
             )
         }
         items(state.preferenceGroups) { group ->
-            SettingsGroupCard(
-                group = group,
-                onAction = onAction,
-            )
+            SettingsGroupCard(group = group, onAction = onAction)
         }
     }
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 }
 
 @Preview(device = "id:tv_1080p")
@@ -129,28 +121,34 @@ private fun SettingsScreenLayout(
 private fun SettingsScreenLayoutPreview() {
     FindroidTheme {
         SettingsScreenLayout(
-            state = SettingsState(
-                preferenceGroups = listOf(
-                    PreferenceGroup(
-                        nameStringResource = null,
-                        preferences = listOf(
-                            PreferenceCategory(
-                                nameStringResource = SettingsR.string.settings_category_language,
-                                iconDrawableId = SettingsR.drawable.ic_languages,
+            state =
+                SettingsState(
+                    preferenceGroups =
+                        listOf(
+                            PreferenceGroup(
+                                nameStringResource = null,
+                                preferences =
+                                    listOf(
+                                        PreferenceCategory(
+                                            nameStringResource =
+                                                SettingsR.string.settings_category_language,
+                                            iconDrawableId = SettingsR.drawable.ic_languages,
+                                        )
+                                    ),
                             ),
-                        ),
-                    ),
-                    PreferenceGroup(
-                        nameStringResource = null,
-                        preferences = listOf(
-                            PreferenceCategory(
-                                nameStringResource = SettingsR.string.settings_category_appearance,
-                                iconDrawableId = SettingsR.drawable.ic_palette,
+                            PreferenceGroup(
+                                nameStringResource = null,
+                                preferences =
+                                    listOf(
+                                        PreferenceCategory(
+                                            nameStringResource =
+                                                SettingsR.string.settings_category_appearance,
+                                            iconDrawableId = SettingsR.drawable.ic_palette,
+                                        )
+                                    ),
                             ),
-                        ),
-                    ),
+                        )
                 ),
-            ),
             onAction = {},
         )
     }

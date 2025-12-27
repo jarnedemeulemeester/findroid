@@ -17,25 +17,23 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun ProgressBadge(
-    item: FindroidItem,
-    modifier: Modifier = Modifier,
-) {
+fun ProgressBadge(item: FindroidItem, modifier: Modifier = Modifier) {
     if (!(!item.played && item.unplayedItemCount == null)) {
         Box(
-            modifier = modifier
-                .height(24.dp)
-                .defaultMinSize(24.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.primary),
+            modifier =
+                modifier
+                    .height(24.dp)
+                    .defaultMinSize(24.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary)
         ) {
             when (item.played) {
                 true -> {
@@ -43,9 +41,7 @@ fun ProgressBadge(
                         painter = painterResource(id = CoreR.drawable.ic_check),
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .align(Alignment.Center),
+                        modifier = Modifier.size(16.dp).align(Alignment.Center),
                     )
                 }
 
@@ -54,9 +50,9 @@ fun ProgressBadge(
                         text = item.unplayedItemCount.toString(),
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(horizontal = MaterialTheme.spacings.extraSmall),
+                        modifier =
+                            Modifier.align(Alignment.Center)
+                                .padding(horizontal = MaterialTheme.spacings.extraSmall),
                     )
                 }
             }
@@ -67,19 +63,11 @@ fun ProgressBadge(
 @Preview
 @Composable
 private fun ProgressBadgePreviewWatched() {
-    FindroidTheme {
-        ProgressBadge(
-            item = dummyEpisode,
-        )
-    }
+    FindroidTheme { ProgressBadge(item = dummyEpisode) }
 }
 
 @Preview
 @Composable
 private fun ProgressBadgePreviewItemRemaining() {
-    FindroidTheme {
-        ProgressBadge(
-            item = dummyShow,
-        )
-    }
+    FindroidTheme { ProgressBadge(item = dummyShow) }
 }

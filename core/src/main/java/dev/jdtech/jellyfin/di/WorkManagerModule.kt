@@ -13,9 +13,7 @@ import javax.inject.Singleton
 object WorkManagerModule {
     @Singleton
     @Provides
-    fun provideWorkManager(
-        application: Application,
-    ): WorkManager {
+    fun provideWorkManager(application: Application): WorkManager {
         return WorkManager.getInstance(application)
     }
 }

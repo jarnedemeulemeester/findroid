@@ -8,8 +8,7 @@ import kotlinx.parcelize.Parcelize
 enum class MPVTrackType(val type: String) : Parcelable {
     VIDEO("video"),
     AUDIO("audio"),
-    SUBTITLE("sub"),
-    ;
+    SUBTITLE("sub");
 
     companion object {
         fun fromMedia3TrackType(trackType: Int): MPVTrackType {

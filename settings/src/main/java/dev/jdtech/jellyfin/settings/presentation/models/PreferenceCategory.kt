@@ -2,8 +2,8 @@ package dev.jdtech.jellyfin.settings.presentation.models
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
+import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 
 data class PreferenceCategory(
     @param:StringRes override val nameStringResource: Int,

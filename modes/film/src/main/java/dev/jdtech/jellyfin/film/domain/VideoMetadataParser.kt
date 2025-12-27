@@ -26,7 +26,8 @@ class VideoMetadataParser {
                 when (stream.type) {
                     MediaStreamType.AUDIO -> {
                         /**
-                         * Match audio profile from [org.jellyfin.sdk.model.api.MediaStream.channelLayout]
+                         * Match audio profile from
+                         * [org.jellyfin.sdk.model.api.MediaStream.channelLayout]
                          */
                         audioChannels.add(
                             when (stream.channelLayout) {
@@ -34,19 +35,16 @@ class VideoMetadataParser {
                                 AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
                                 AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
                                 else -> AudioChannel.CH_2_0
-                            },
+                            }
                         )
 
                         /**
-                         * Match [org.jellyfin.sdk.model.api.MediaStream.displayTitle] for Dolby Atmos
+                         * Match [org.jellyfin.sdk.model.api.MediaStream.displayTitle] for Dolby
+                         * Atmos
                          */
-                        stream.displayTitle?.apply {
-                            isAtmosAudio.add(contains("ATMOS", true))
-                        }
+                        stream.displayTitle?.apply { isAtmosAudio.add(contains("ATMOS", true)) }
 
-                        /**
-                         * Match audio codec from [org.jellyfin.sdk.model.api.MediaStream.codec]
-                         */
+                        /** Match audio codec from [org.jellyfin.sdk.model.api.MediaStream.codec] */
                         audioCodecs.add(
                             when (stream.codec.lowercase()) {
                                 AudioCodec.FLAC.toString() -> AudioCodec.FLAC
@@ -58,7 +56,7 @@ class VideoMetadataParser {
                                 AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
                                 AudioCodec.DTS.toString() -> AudioCodec.DTS
                                 else -> null
-                            },
+                            }
                         )
                         true
                     }
@@ -66,7 +64,8 @@ class VideoMetadataParser {
                     MediaStreamType.VIDEO -> {
                         with(stream) {
                             /**
-                             * Match dynamic range from [org.jellyfin.sdk.model.api.MediaStream.videoRangeType]
+                             * Match dynamic range from
+                             * [org.jellyfin.sdk.model.api.MediaStream.videoRangeType]
                              */
                             when (videoRangeType) {
                                 VideoRangeType.SDR -> DisplayProfile.SDR
@@ -79,14 +78,14 @@ class VideoMetadataParser {
                                 VideoRangeType.DOVI_WITH_HLG,
                                 VideoRangeType.DOVI_WITH_SDR,
                                 VideoRangeType.DOVI_WITH_HDR10,
-                                VideoRangeType.DOVI_WITH_HDR10_PLUS,
-                                -> DisplayProfile.DOLBY_VISION
+                                VideoRangeType.DOVI_WITH_HDR10_PLUS -> DisplayProfile.DOLBY_VISION
                                 else -> null
                             }?.let { displayProfiles.add(it) }
 
                             /**
-                             * Force stream [org.jellyfin.sdk.model.api.MediaStream.height] and [org.jellyfin.sdk.model.api.MediaStream.width] as not null
-                             * since we are inside [MediaStreamType.VIDEO] block
+                             * Force stream [org.jellyfin.sdk.model.api.MediaStream.height] and
+                             * [org.jellyfin.sdk.model.api.MediaStream.width] as not null since we
+                             * are inside [MediaStreamType.VIDEO] block
                              */
                             resolution.add(
                                 when {
@@ -99,7 +98,7 @@ class VideoMetadataParser {
                                     }
 
                                     else -> Resolution.SD
-                                },
+                                }
                             )
 
                             videoCodecs.add(
@@ -109,7 +108,7 @@ class VideoMetadataParser {
                                     VideoCodec.VVC.toString() -> VideoCodec.VVC
                                     VideoCodec.AV1.toString() -> VideoCodec.AV1
                                     else -> null
-                                },
+                                }
                             )
                         }
                         true

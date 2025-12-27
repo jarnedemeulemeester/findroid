@@ -20,13 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.film.R as FilmR
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidImages
 import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.film.R as FilmR
 
 @Composable
 fun HomeView(
@@ -35,15 +35,8 @@ fun HomeView(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(42.dp)
-                .padding(itemsPadding),
-        ) {
+    Column(modifier = modifier) {
+        Box(modifier = Modifier.fillMaxWidth().height(42.dp).padding(itemsPadding)) {
             Text(
                 text = stringResource(FilmR.string.latest_library, view.view.name),
                 modifier = Modifier.align(Alignment.CenterStart),
@@ -58,8 +51,8 @@ fun HomeView(
                                 name = view.view.name,
                                 images = FindroidImages(),
                                 type = view.view.type,
-                            ),
-                        ),
+                            )
+                        )
                     )
                 },
                 modifier = Modifier.align(Alignment.CenterEnd),
@@ -79,9 +72,7 @@ fun HomeView(
                 ItemCard(
                     item = item,
                     direction = Direction.VERTICAL,
-                    onClick = {
-                        onAction(HomeAction.OnItemClick(item))
-                    },
+                    onClick = { onAction(HomeAction.OnItemClick(item)) },
                 )
             }
         }

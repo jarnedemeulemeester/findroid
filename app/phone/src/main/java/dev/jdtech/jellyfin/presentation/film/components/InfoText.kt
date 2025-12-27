@@ -6,9 +6,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun InfoText(
@@ -16,9 +16,7 @@ fun InfoText(
     director: FindroidItemPerson?,
     writers: List<FindroidItemPerson>,
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
         Text(
             text = "${stringResource(CoreR.string.genres)}: ${genres.joinToString()}",
             style = MaterialTheme.typography.bodyMedium,
@@ -31,7 +29,8 @@ fun InfoText(
         }
         if (writers.isNotEmpty()) {
             Text(
-                text = "${stringResource(CoreR.string.writers)}: ${writers.joinToString { it.name }}",
+                text =
+                    "${stringResource(CoreR.string.writers)}: ${writers.joinToString { it.name }}",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

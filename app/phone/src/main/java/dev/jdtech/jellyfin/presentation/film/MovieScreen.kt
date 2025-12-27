@@ -38,6 +38,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
@@ -58,9 +59,8 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 @Composable
 fun MovieScreen(
@@ -77,15 +77,9 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadMovie(movieId = movieId)
-    }
+    LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
-    LaunchedEffect(state.movie) {
-        state.movie?.let { movie ->
-            downloaderViewModel.update(movie)
-        }
-    }
+    LaunchedEffect(state.movie) { state.movie?.let { movie -> downloaderViewModel.update(movie) } }
 
     ObserveAsEvents(downloaderViewModel.events) { event ->
         when (event) {
@@ -127,9 +121,7 @@ fun MovieScreen(
             }
             viewModel.onAction(action)
         },
-        onDownloaderAction = { action ->
-            downloaderViewModel.onAction(action)
-        },
+        onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 }
 
@@ -148,26 +140,17 @@ private fun MovieScreenLayout(
 
     val scrollState = rememberScrollState()
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         state.movie?.let { movie ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(scrollState),
-            ) {
+            Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)) {
                 ItemHeader(
                     item = movie,
                     scrollState = scrollState,
                     content = {
                         Column(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(
-                                    start = paddingStart,
-                                    end = paddingEnd,
-                                ),
+                            modifier =
+                                Modifier.align(Alignment.BottomStart)
+                                    .padding(start = paddingStart, end = paddingEnd)
                         ) {
                             Text(
                                 text = movie.name,
@@ -188,12 +171,7 @@ private fun MovieScreenLayout(
                         }
                     },
                 )
-                Column(
-                    modifier = Modifier.padding(
-                        start = paddingStart,
-                        end = paddingEnd,
-                    ),
-                ) {
+                Column(modifier = Modifier.padding(start = paddingStart, end = paddingEnd)) {
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -207,19 +185,18 @@ private fun MovieScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(CoreR.string.runtime_minutes, movie.runtimeTicks.div(600000000)),
+                            text =
+                                stringResource(
+                                    CoreR.string.runtime_minutes,
+                                    movie.runtimeTicks.div(600000000),
+                                ),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         movie.officialRating?.let { officialRating ->
-                            Text(
-                                text = officialRating,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
+                            Text(text = officialRating, style = MaterialTheme.typography.bodyMedium)
                         }
                         movie.communityRating?.let { communityRating ->
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                            ) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,
@@ -256,9 +233,7 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
-                        onTrailerClick = { uri ->
-                            onAction(MovieAction.PlayTrailer(uri))
-                        },
+                        onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
                         onDownloadClick = { storageIndex ->
                             onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
                         },
@@ -271,10 +246,7 @@ private fun MovieScreenLayout(
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    OverviewText(
-                        text = movie.overview,
-                        maxCollapsedLines = 3,
-                    )
+                    OverviewText(text = movie.overview, maxCollapsedLines = 3)
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                     InfoText(
                         genres = movie.genres,
@@ -289,38 +261,30 @@ private fun MovieScreenLayout(
                         onActorClick = { personId ->
                             onAction(MovieAction.NavigateToPerson(personId))
                         },
-                        contentPadding = PaddingValues(
-                            start = paddingStart,
-                            end = paddingEnd,
-                        ),
+                        contentPadding = PaddingValues(start = paddingStart, end = paddingEnd),
                     )
                 }
                 Spacer(Modifier.height(paddingBottom))
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = safePadding.start + MaterialTheme.spacings.small,
-                    top = safePadding.top + MaterialTheme.spacings.small,
-                    end = safePadding.end + MaterialTheme.spacings.small,
-                ),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(
+                        start = safePadding.start + MaterialTheme.spacings.small,
+                        top = safePadding.top + MaterialTheme.spacings.small,
+                        end = safePadding.end + MaterialTheme.spacings.small,
+                    )
         ) {
             IconButton(
                 onClick = { onAction(MovieAction.OnBackClick) },
-                modifier = Modifier
-                    .alpha(0.7f),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
-                ),
+                modifier = Modifier.alpha(0.7f),
+                colors =
+                    IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                    ),
             ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
@@ -336,10 +300,7 @@ private fun MovieScreenLayout(
 private fun EpisodeScreenLayoutPreview() {
     FindroidTheme {
         MovieScreenLayout(
-            state = MovieState(
-                movie = dummyMovie,
-                videoMetadata = dummyVideoMetadata,
-            ),
+            state = MovieState(movie = dummyMovie, videoMetadata = dummyVideoMetadata),
             downloaderState = DownloaderState(),
             onAction = {},
             onDownloaderAction = {},

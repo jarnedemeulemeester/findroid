@@ -41,16 +41,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.addresses.ServerAddressesAction
 import dev.jdtech.jellyfin.setup.presentation.addresses.ServerAddressesState
 import dev.jdtech.jellyfin.setup.presentation.addresses.ServerAddressesViewModel
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun ServerAddressesScreen(
@@ -60,11 +60,7 @@ fun ServerAddressesScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadAddresses(
-            serverId,
-        )
-    }
+    LaunchedEffect(true) { viewModel.loadAddresses(serverId) }
 
     ServerAddressesLayout(
         state = state,
@@ -80,10 +76,7 @@ fun ServerAddressesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServerAddressesLayout(
-    state: ServerAddressesState,
-    onAction: (ServerAddressesAction) -> Unit,
-) {
+fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddressesAction) -> Unit) {
     val layoutDirection = LocalLayoutDirection.current
     val safePadding = rememberSafePadding()
 
@@ -98,20 +91,12 @@ fun ServerAddressesLayout(
     var openDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(stringResource(SetupR.string.addresses))
-                },
+                title = { Text(stringResource(SetupR.string.addresses)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(ServerAddressesAction.OnBackClick)
-                        },
-                    ) {
+                    IconButton(onClick = { onAction(ServerAddressesAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
@@ -124,52 +109,42 @@ fun ServerAddressesLayout(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = {
-                    Text(stringResource(SetupR.string.add_address))
-                },
+                text = { Text(stringResource(SetupR.string.add_address)) },
                 icon = {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_plus),
                         contentDescription = null,
                     )
                 },
-                onClick = {
-                    openAddDialog = true
-                },
+                onClick = { openAddDialog = true },
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
-        ) {
+        Column(modifier = Modifier.padding(top = innerPadding.calculateTopPadding())) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
-                    top = paddingTop,
-                    end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
-                    bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-                ),
+                contentPadding =
+                    PaddingValues(
+                        start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
+                        top = paddingTop,
+                        end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
+                        bottom = paddingBottom + innerPadding.calculateBottomPadding(),
+                    ),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             ) {
-                items(
-                    items = state.addresses,
-                    key = { it.id },
-                ) { address ->
+                items(items = state.addresses, key = { it.id }) { address ->
                     Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CardDefaults.outlinedShape)
-                            .combinedClickable(
-                                onClick = {},
-                                onLongClick = {
-                                    selectedAddress = address
-                                    openDeleteDialog = true
-                                },
-                            )
-                            .padding(
-                                MaterialTheme.spacings.small,
-                            ),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .clip(CardDefaults.outlinedShape)
+                                .combinedClickable(
+                                    onClick = {},
+                                    onLongClick = {
+                                        selectedAddress = address
+                                        openDeleteDialog = true
+                                    },
+                                )
+                                .padding(MaterialTheme.spacings.small)
                     ) {
                         Text(address.address)
                     }
@@ -184,9 +159,7 @@ fun ServerAddressesLayout(
                 onAction(ServerAddressesAction.AddAddress(address))
                 openAddDialog = false
             },
-            onDismiss = {
-                openAddDialog = false
-            },
+            onDismiss = { openAddDialog = false },
         )
     }
 
@@ -197,9 +170,7 @@ fun ServerAddressesLayout(
                 onAction(ServerAddressesAction.DeleteAddress(selectedAddress!!.id))
                 openDeleteDialog = false
             },
-            onDismiss = {
-                openDeleteDialog = false
-            },
+            onDismiss = { openDeleteDialog = false },
         )
     }
 }
@@ -209,9 +180,7 @@ fun ServerAddressesLayout(
 private fun ServerAddressesLayoutPreview() {
     FindroidTheme {
         ServerAddressesLayout(
-            state = ServerAddressesState(
-                addresses = listOf(dummyServerAddress),
-            ),
+            state = ServerAddressesState(addresses = listOf(dummyServerAddress)),
             onAction = {},
         )
     }

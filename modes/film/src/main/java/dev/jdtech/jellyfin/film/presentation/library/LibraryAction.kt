@@ -6,6 +6,8 @@ import org.jellyfin.sdk.model.api.SortOrder
 
 sealed interface LibraryAction {
     data class OnItemClick(val item: FindroidItem) : LibraryAction
+
     data object OnBackClick : LibraryAction
+
     data class ChangeSorting(val sortBy: SortBy, val sortOrder: SortOrder) : LibraryAction
 }

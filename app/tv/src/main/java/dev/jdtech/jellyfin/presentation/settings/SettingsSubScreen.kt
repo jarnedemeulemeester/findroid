@@ -32,6 +32,7 @@ import dev.jdtech.jellyfin.presentation.settings.components.SettingsMultiSelectD
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -44,7 +45,6 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSubScreen(
@@ -58,9 +58,7 @@ fun SettingsSubScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadPreferences(indexes, DeviceType.TV)
-    }
+    LaunchedEffect(true) { viewModel.loadPreferences(indexes, DeviceType.TV) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -109,38 +107,32 @@ private fun SettingsSubScreenLayout(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    var focusedPreference by remember(state.preferenceGroups.isNotEmpty()) {
-        mutableStateOf(state.preferenceGroups.firstOrNull()?.preferences?.firstOrNull())
-    }
+    var focusedPreference by
+        remember(state.preferenceGroups.isNotEmpty()) {
+            mutableStateOf(state.preferenceGroups.firstOrNull()?.preferences?.firstOrNull())
+        }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = MaterialTheme.spacings.large,
-                top = MaterialTheme.spacings.default * 2,
-                end = MaterialTheme.spacings.large,
-            ),
+        modifier =
+            Modifier.fillMaxSize()
+                .padding(
+                    start = MaterialTheme.spacings.large,
+                    top = MaterialTheme.spacings.default * 2,
+                    end = MaterialTheme.spacings.large,
+                )
     ) {
         Column {
-            Text(
-                text = stringResource(id = title),
-                style = MaterialTheme.typography.displayMedium,
-            )
+            Text(text = stringResource(id = title), style = MaterialTheme.typography.displayMedium)
             Text(
                 text = stringResource(id = SettingsR.string.title_settings),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large)) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.large),
-                modifier = Modifier
-                    .weight(1f)
-                    .focusRequester(focusRequester),
+                modifier = Modifier.weight(1f).focusRequester(focusRequester),
             ) {
                 items(state.preferenceGroups) { group ->
                     SettingsGroupCard(
@@ -154,22 +146,18 @@ private fun SettingsSubScreenLayout(
                     )
                 }
             }
-            Box(
-                modifier = Modifier.weight(2f),
-            ) {
+            Box(modifier = Modifier.weight(2f)) {
                 focusedPreference?.let { preference ->
                     when (preference) {
                         is PreferenceSelect -> {
                             SettingsSelectDetailsCard(
                                 preference = preference,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(bottom = MaterialTheme.spacings.large),
+                                modifier =
+                                    Modifier.fillMaxSize()
+                                        .padding(bottom = MaterialTheme.spacings.large),
                                 onUpdate = { value ->
                                     onAction(
-                                        SettingsAction.OnUpdate(
-                                            preference.copy(value = value),
-                                        ),
+                                        SettingsAction.OnUpdate(preference.copy(value = value))
                                     )
                                 },
                             )
@@ -177,14 +165,12 @@ private fun SettingsSubScreenLayout(
                         is PreferenceMultiSelect -> {
                             SettingsMultiSelectDetailsCard(
                                 preference = preference,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(bottom = MaterialTheme.spacings.large),
+                                modifier =
+                                    Modifier.fillMaxSize()
+                                        .padding(bottom = MaterialTheme.spacings.large),
                                 onUpdate = { value ->
                                     onAction(
-                                        SettingsAction.OnUpdate(
-                                            preference.copy(value = value),
-                                        ),
+                                        SettingsAction.OnUpdate(preference.copy(value = value))
                                     )
                                 },
                             )
@@ -194,9 +180,7 @@ private fun SettingsSubScreenLayout(
             }
         }
     }
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 }
 
 @Preview(device = "id:tv_1080p")
@@ -205,20 +189,24 @@ private fun SettingsSubScreenLayoutPreview() {
     FindroidTheme {
         SettingsSubScreenLayout(
             title = SettingsR.string.title_settings,
-            state = SettingsState(
-                preferenceGroups = listOf(
-                    PreferenceGroup(
-                        preferences = listOf(
-                            PreferenceSelect(
-                                nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
-                                backendPreference = Preference("", ""),
-                                options = SettingsR.array.mpv_hwdec,
-                                optionValues = SettingsR.array.mpv_hwdec,
-                            ),
-                        ),
-                    ),
+            state =
+                SettingsState(
+                    preferenceGroups =
+                        listOf(
+                            PreferenceGroup(
+                                preferences =
+                                    listOf(
+                                        PreferenceSelect(
+                                            nameStringResource =
+                                                SettingsR.string.pref_player_mpv_hwdec,
+                                            backendPreference = Preference("", ""),
+                                            options = SettingsR.array.mpv_hwdec,
+                                            optionValues = SettingsR.array.mpv_hwdec,
+                                        )
+                                    )
+                            )
+                        )
                 ),
-            ),
             onAction = {},
         )
     }

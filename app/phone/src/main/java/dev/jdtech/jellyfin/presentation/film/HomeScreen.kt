@@ -57,9 +57,7 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadData()
-    }
+    LaunchedEffect(true) { viewModel.loadData() }
 
     HomeScreenLayout(
         state = state,
@@ -79,24 +77,16 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreenLayout(
-    state: HomeState,
-    onAction: (HomeAction) -> Unit,
-) {
+private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
     val scope = rememberCoroutineScope()
-    val safePadding = rememberSafePadding(
-        handleStartInsets = false,
-    )
+    val safePadding = rememberSafePadding(handleStartInsets = false)
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingTop = safePadding.top + MaterialTheme.spacings.small
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
-    val itemsPadding = PaddingValues(
-        start = paddingStart,
-        end = paddingEnd,
-    )
+    val itemsPadding = PaddingValues(start = paddingStart, end = paddingEnd)
 
     val contentPaddingTop = safePadding.top + 88.dp
 
@@ -104,19 +94,10 @@ private fun HomeScreenLayout(
     val showServerSelectionSheetState = rememberModalBottomSheetState()
     var showServerSelectionBottomSheet by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { isTraversalGroup = true },
-    ) {
+    Box(modifier = Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .semantics { traversalIndex = 1f },
-            contentPadding = PaddingValues(
-                top = contentPaddingTop,
-                bottom = paddingBottom,
-            ),
+            modifier = Modifier.fillMaxSize().semantics { traversalIndex = 1f },
+            contentPadding = PaddingValues(top = contentPaddingTop, bottom = paddingBottom),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             state.suggestionsSection?.let { section ->
@@ -159,10 +140,7 @@ private fun HomeScreenLayout(
         }
 
         if (state.error != null && showErrorDialog) {
-            ErrorDialog(
-                exception = state.error!!,
-                onDismissRequest = { showErrorDialog = false },
-            )
+            ErrorDialog(exception = state.error!!, onDismissRequest = { showErrorDialog = false })
         }
     }
 
@@ -170,27 +148,12 @@ private fun HomeScreenLayout(
         serverName = state.server?.name ?: "",
         isLoading = state.isLoading,
         isError = state.error != null,
-        onServerClick = {
-            showServerSelectionBottomSheet = true
-        },
-        onErrorClick = {
-            showErrorDialog = true
-        },
-        onRetryClick = {
-            onAction(HomeAction.OnRetryClick)
-        },
-        onSearchClick = {
-            onAction(HomeAction.OnSearchClick)
-        },
-        onUserClick = {
-            onAction(HomeAction.OnSettingsClick)
-        },
-        modifier = Modifier
-            .padding(
-                start = paddingStart,
-                top = paddingTop,
-                end = paddingEnd,
-            ),
+        onServerClick = { showServerSelectionBottomSheet = true },
+        onErrorClick = { showErrorDialog = true },
+        onRetryClick = { onAction(HomeAction.OnRetryClick) },
+        onSearchClick = { onAction(HomeAction.OnSearchClick) },
+        onUserClick = { onAction(HomeAction.OnSettingsClick) },
+        modifier = Modifier.padding(start = paddingStart, top = paddingTop, end = paddingEnd),
     )
 
     if (showServerSelectionBottomSheet) {
@@ -198,19 +161,19 @@ private fun HomeScreenLayout(
             currentServerId = state.server?.id ?: "",
             onUpdate = {
                 onAction(HomeAction.OnRetryClick)
-                scope.launch { showServerSelectionSheetState.hide() }.invokeOnCompletion {
-                    if (!showServerSelectionSheetState.isVisible) {
-                        showServerSelectionBottomSheet = false
+                scope
+                    .launch { showServerSelectionSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!showServerSelectionSheetState.isVisible) {
+                            showServerSelectionBottomSheet = false
+                        }
                     }
-                }
             },
             onManage = {
                 onAction(HomeAction.OnManageServers)
                 scope.launch { showServerSelectionSheetState.hide() }
             },
-            onDismissRequest = {
-                showServerSelectionBottomSheet = false
-            },
+            onDismissRequest = { showServerSelectionBottomSheet = false },
             sheetState = showServerSelectionSheetState,
         )
     }
@@ -221,13 +184,14 @@ private fun HomeScreenLayout(
 private fun HomeScreenLayoutPreview() {
     FindroidTheme {
         HomeScreenLayout(
-            state = HomeState(
-                server = dummyServer,
-                suggestionsSection = dummyHomeSuggestions,
-                resumeSection = dummyHomeSection,
-                views = listOf(dummyHomeView),
-                error = Exception("Failed to load data"),
-            ),
+            state =
+                HomeState(
+                    server = dummyServer,
+                    suggestionsSection = dummyHomeSuggestions,
+                    resumeSection = dummyHomeSection,
+                    views = listOf(dummyHomeView),
+                    error = Exception("Failed to load data"),
+                ),
             onAction = {},
         )
     }

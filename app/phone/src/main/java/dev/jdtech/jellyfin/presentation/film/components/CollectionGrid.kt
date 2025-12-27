@@ -26,12 +26,8 @@ fun CollectionGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
-        modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize(),
-        contentPadding = PaddingValues(
-            all = MaterialTheme.spacings.default,
-        ),
+        modifier = Modifier.padding(innerPadding).fillMaxSize(),
+        contentPadding = PaddingValues(all = MaterialTheme.spacings.default),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
     ) {
@@ -40,8 +36,8 @@ fun CollectionGrid(
                 Card {
                     Text(
                         text = section.name.asString(),
-                        modifier = Modifier
-                            .padding(
+                        modifier =
+                            Modifier.padding(
                                 horizontal = MaterialTheme.spacings.medium,
                                 vertical = MaterialTheme.spacings.medium,
                             ),
@@ -50,16 +46,12 @@ fun CollectionGrid(
                     )
                 }
             }
-            items(
-                items = section.items,
-                key = { it.id },
-            ) { item ->
+            items(items = section.items, key = { it.id }) { item ->
                 ItemCard(
                     item = item,
-                    direction = if (item is FindroidEpisode) Direction.HORIZONTAL else Direction.VERTICAL,
-                    onClick = {
-                        onAction(CollectionAction.OnItemClick(item))
-                    },
+                    direction =
+                        if (item is FindroidEpisode) Direction.HORIZONTAL else Direction.VERTICAL,
+                    onClick = { onAction(CollectionAction.OnItemClick(item)) },
                     modifier = Modifier.animateItem(),
                 )
             }

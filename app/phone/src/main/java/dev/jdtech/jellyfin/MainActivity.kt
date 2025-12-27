@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
-            FindroidTheme(
-                dynamicColor = state.isDynamicColors,
-            ) {
+            FindroidTheme(dynamicColor = state.isDynamicColors) {
                 val navController = rememberNavController()
                 if (!state.isLoading) {
                     CompositionLocalProvider(LocalOfflineMode provides state.isOfflineMode) {
@@ -54,19 +52,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun scheduleUserDataSync() {
-        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(
-                        NetworkType.CONNECTED,
-                    )
-                    .build(),
-            )
-            .build()
+        val syncWorkRequest =
+            OneTimeWorkRequestBuilder<SyncWorker>()
+                .setConstraints(
+                    Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                )
+                .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
 
-        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
+        workManager
+            .beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
             .enqueue()
     }
 }

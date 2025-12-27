@@ -14,17 +14,13 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 fun RootLayout(padding: PaddingValues = PaddingValues(), content: @Composable BoxScope.() -> Unit) {
     val safePadding = rememberSafePadding()
 
-    val safePaddingValues = PaddingValues(
-        start = safePadding.start,
-        top = safePadding.top,
-        end = safePadding.end,
-        bottom = safePadding.bottom,
-    )
+    val safePaddingValues =
+        PaddingValues(
+            start = safePadding.start,
+            top = safePadding.top,
+            end = safePadding.end,
+            bottom = safePadding.bottom,
+        )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(safePaddingValues + padding),
-        content = content,
-    )
+    Box(modifier = Modifier.fillMaxSize().padding(safePaddingValues + padding), content = content)
 }

@@ -36,32 +36,24 @@ fun ItemCard(
     onClick: (FindroidItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val width = when (direction) {
-        Direction.HORIZONTAL -> 260
-        Direction.VERTICAL -> 150
-    }
+    val width =
+        when (direction) {
+            Direction.HORIZONTAL -> 260
+            Direction.VERTICAL -> 150
+        }
     Column(
-        modifier = modifier
-            .width(width.dp)
-            .clip(MaterialTheme.shapes.small)
-            .clickable(
-                onClick = {
-                    onClick(item)
-                },
-            ),
+        modifier =
+            modifier
+                .width(width.dp)
+                .clip(MaterialTheme.shapes.small)
+                .clickable(onClick = { onClick(item) })
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
-        ) {
+        Surface(shape = MaterialTheme.shapes.small) {
             Box {
-                ItemPoster(
-                    item = item,
-                    direction = direction,
-                )
+                ItemPoster(item = item, direction = direction)
                 Row(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(MaterialTheme.spacings.small),
+                    modifier =
+                        Modifier.align(Alignment.TopEnd).padding(MaterialTheme.spacings.small),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                 ) {
                     if (item.isDownloaded()) DownloadedBadge()
@@ -72,9 +64,9 @@ fun ItemCard(
                     ProgressBar(
                         item = item,
                         width = width,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(MaterialTheme.spacings.small),
+                        modifier =
+                            Modifier.align(Alignment.BottomStart)
+                                .padding(MaterialTheme.spacings.small),
                     )
                 }
             }
@@ -110,37 +102,19 @@ fun ItemCard(
 @Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewMovie() {
-    FindroidTheme {
-        ItemCard(
-            item = dummyMovie,
-            direction = Direction.HORIZONTAL,
-            onClick = {},
-        )
-    }
+    FindroidTheme { ItemCard(item = dummyMovie, direction = Direction.HORIZONTAL, onClick = {}) }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewMovieVertical() {
-    FindroidTheme {
-        ItemCard(
-            item = dummyMovie,
-            direction = Direction.VERTICAL,
-            onClick = {},
-        )
-    }
+    FindroidTheme { ItemCard(item = dummyMovie, direction = Direction.VERTICAL, onClick = {}) }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ItemCardPreviewEpisode() {
-    FindroidTheme {
-        ItemCard(
-            item = dummyEpisode,
-            direction = Direction.HORIZONTAL,
-            onClick = {},
-        )
-    }
+    FindroidTheme { ItemCard(item = dummyEpisode, direction = Direction.HORIZONTAL, onClick = {}) }
 }
 
 @Preview(showBackground = true)

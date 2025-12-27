@@ -55,17 +55,18 @@ import dev.jdtech.jellyfin.ui.components.player.VideoPlayerSeeker
 import dev.jdtech.jellyfin.ui.components.player.VideoPlayerState
 import dev.jdtech.jellyfin.ui.components.player.rememberVideoPlayerState
 import dev.jdtech.jellyfin.utils.handleDPadKeyEvents
-import kotlinx.coroutines.delay
 import java.util.Locale
 import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun PlayerScreen(
     itemId: UUID,
     itemKind: String,
     startFromBeginning: Boolean,
-    // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
+    // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination,
+    // VideoPlayerTrackSelectorDialogResult>,
 ) {
     val viewModel = hiltViewModel<PlayerViewModel>()
 
@@ -77,17 +78,11 @@ fun PlayerScreen(
     // Keep the screen on while player is show
     DisposableEffect(Unit) {
         currentView.keepScreenOn = true
-        onDispose {
-            currentView.keepScreenOn = false
-        }
+        onDispose { currentView.keepScreenOn = false }
     }
 
-    var lifecycle by remember {
-        mutableStateOf(Lifecycle.Event.ON_CREATE)
-    }
-    var mediaSession by remember {
-        mutableStateOf<MediaSession?>(null)
-    }
+    var lifecycle by remember { mutableStateOf(Lifecycle.Event.ON_CREATE) }
+    var mediaSession by remember { mutableStateOf<MediaSession?>(null) }
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -110,19 +105,13 @@ fun PlayerScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
 
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     val videoPlayerState = rememberVideoPlayerState()
 
-    var currentPosition by remember {
-        mutableLongStateOf(0L)
-    }
-    var isPlaying by remember {
-        mutableStateOf(viewModel.player.isPlaying)
-    }
+    var currentPosition by remember { mutableLongStateOf(0L) }
+    var isPlaying by remember { mutableStateOf(viewModel.player.isPlaying) }
     LaunchedEffect(Unit) {
         while (true) {
             delay(300)
@@ -167,9 +156,7 @@ fun PlayerScreen(
 
         SkipButton(
             stringRes = uiState.currentSkipButtonStringRes,
-            onClick = {
-                viewModel.skipSegment(segment)
-            },
+            onClick = { viewModel.skipSegment(segment) },
             skipButtonFocusRequester = skipButtonFocusRequester,
         )
 
@@ -181,12 +168,9 @@ fun PlayerScreen(
     }
 
     Box(
-        modifier = Modifier
-            .dPadEvents(
-                exoPlayer = viewModel.player,
-                videoPlayerState = videoPlayerState,
-            )
-            .focusable(),
+        modifier =
+            Modifier.dPadEvents(exoPlayer = viewModel.player, videoPlayerState = videoPlayerState)
+                .focusable()
     ) {
         AndroidView(
             factory = { context ->
@@ -199,10 +183,7 @@ fun PlayerScreen(
                         startFromBeginning = startFromBeginning,
                     )
                     playerView.setBackgroundColor(
-                        context.resources.getColor(
-                            android.R.color.black,
-                            context.theme,
-                        ),
+                        context.resources.getColor(android.R.color.black, context.theme)
                     )
                 }
             },
@@ -220,8 +201,7 @@ fun PlayerScreen(
                     else -> Unit
                 }
             },
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
         )
         val focusRequester = remember { FocusRequester() }
         VideoPlayerOverlay(
@@ -264,12 +244,7 @@ fun VideoPlayerControls(
     }
 
     VideoPlayerControlsLayout(
-        mediaTitle = {
-            VideoPlayerMediaTitle(
-                title = title,
-                subtitle = null,
-            )
-        },
+        mediaTitle = { VideoPlayerMediaTitle(title = title, subtitle = null) },
         seeker = {
             VideoPlayerSeeker(
                 focusRequester = focusRequester,
@@ -282,16 +257,15 @@ fun VideoPlayerControls(
             )
         },
         mediaActions = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-            ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)) {
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_speaker),
                     state = state,
                     isPlaying = isPlaying,
                     onClick = {
                         // val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
-                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
+                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO,
+                        // tracks))
                     },
                 )
                 VideoPlayerMediaButton(
@@ -300,7 +274,8 @@ fun VideoPlayerControls(
                     isPlaying = isPlaying,
                     onClick = {
                         // val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
-                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
+                        // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT,
+                        // tracks))
                     },
                 )
             }
@@ -315,48 +290,38 @@ private fun SkipButton(
     skipButtonFocusRequester: FocusRequester,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(MaterialTheme.spacings.large)
-            .zIndex(1f),
+        modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacings.large).zIndex(1f),
         contentAlignment = Alignment.BottomEnd,
     ) {
         Button(
             onClick = onClick,
             modifier = Modifier.focusRequester(skipButtonFocusRequester),
-            glow = ButtonDefaults.glow(
-                focusedGlow = Glow(
-                    elevationColor = Color.Gray,
-                    elevation = 20.dp,
+            glow =
+                ButtonDefaults.glow(
+                    focusedGlow = Glow(elevationColor = Color.Gray, elevation = 20.dp)
                 ),
-            ),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_skip_forward),
                 contentDescription = null,
             )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-            Text(
-                text = stringResource(stringRes),
-                color = Color.Black,
-            )
+            Text(text = stringResource(stringRes), color = Color.Black)
         }
     }
 }
 
-private fun Modifier.dPadEvents(
-    exoPlayer: Player,
-    videoPlayerState: VideoPlayerState,
-): Modifier = this.handleDPadKeyEvents(
-    onLeft = {},
-    onRight = {},
-    onUp = {},
-    onDown = {},
-    onEnter = {
-        exoPlayer.pause()
-        videoPlayerState.showControls()
-    },
-)
+private fun Modifier.dPadEvents(exoPlayer: Player, videoPlayerState: VideoPlayerState): Modifier =
+    this.handleDPadKeyEvents(
+        onLeft = {},
+        onRight = {},
+        onUp = {},
+        onDown = {},
+        onEnter = {
+            exoPlayer.pause()
+            videoPlayerState.showControls()
+        },
+    )
 
 @androidx.annotation.OptIn(UnstableApi::class)
 private fun getTracks(player: Player, type: Int): Array<Track> {
@@ -366,26 +331,28 @@ private fun getTracks(player: Player, type: Int): Array<Track> {
         if (group.type == type) {
             val format = group.mediaTrackGroup.getFormat(0)
 
-            val track = Track(
-                id = groupIndex,
-                label = format.label,
-                language = Locale(format.language.toString()).displayLanguage,
-                codec = format.codecs,
-                selected = group.isSelected,
-                supported = group.isSupported,
-            )
+            val track =
+                Track(
+                    id = groupIndex,
+                    label = format.label,
+                    language = Locale(format.language.toString()).displayLanguage,
+                    codec = format.codecs,
+                    selected = group.isSelected,
+                    supported = group.isSupported,
+                )
 
             tracks.add(track)
         }
     }
 
-    val noneTrack = Track(
-        id = -1,
-        label = null,
-        language = null,
-        codec = null,
-        selected = !tracks.any { it.selected },
-        supported = true,
-    )
+    val noneTrack =
+        Track(
+            id = -1,
+            label = null,
+            language = null,
+            codec = null,
+            selected = !tracks.any { it.selected },
+            supported = true,
+        )
     return arrayOf(noneTrack) + tracks
 }

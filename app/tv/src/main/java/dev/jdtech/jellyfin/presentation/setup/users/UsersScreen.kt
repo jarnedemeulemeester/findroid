@@ -35,12 +35,12 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyUsers
 import dev.jdtech.jellyfin.presentation.setup.components.UserItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.users.UsersAction
 import dev.jdtech.jellyfin.setup.presentation.users.UsersEvent
 import dev.jdtech.jellyfin.setup.presentation.users.UsersState
 import dev.jdtech.jellyfin.setup.presentation.users.UsersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun UsersScreen(
@@ -54,9 +54,7 @@ fun UsersScreen(
     val api = JellyfinApi.getInstance(context)
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.loadUsers()
-    }
+    LaunchedEffect(true) { viewModel.loadUsers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -80,22 +78,13 @@ fun UsersScreen(
 }
 
 @Composable
-private fun UsersScreenLayout(
-    state: UsersState,
-    onAction: (UsersAction) -> Unit,
-    baseUrl: String,
-) {
+private fun UsersScreenLayout(state: UsersState, onAction: (UsersAction) -> Unit, baseUrl: String) {
     val focusRequester = remember { FocusRequester() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier = Modifier.fillMaxWidth().align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = SetupR.string.users),
@@ -122,9 +111,7 @@ private fun UsersScreenLayout(
                         UserItem(
                             user = it,
                             modifier = Modifier.padding(8.dp),
-                            onClick = { user ->
-                                onAction(UsersAction.OnUserClick(user.id))
-                            },
+                            onClick = { user -> onAction(UsersAction.OnUserClick(user.id)) },
                             baseUrl = baseUrl,
                         )
                     }
@@ -139,16 +126,10 @@ private fun UsersScreenLayout(
                         )
                     }
                 }
-                LaunchedEffect(true) {
-                    focusRequester.requestFocus()
-                }
+                LaunchedEffect(true) { focusRequester.requestFocus() }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
-            OutlinedButton(
-                onClick = {
-                    onAction(UsersAction.OnAddClick)
-                },
-            ) {
+            OutlinedButton(onClick = { onAction(UsersAction.OnAddClick) }) {
                 Text(text = stringResource(id = SetupR.string.users_btn_add_user))
             }
         }

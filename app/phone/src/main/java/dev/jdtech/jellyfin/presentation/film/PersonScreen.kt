@@ -41,6 +41,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
 import dev.jdtech.jellyfin.film.presentation.person.PersonAction
@@ -55,7 +56,6 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun PersonScreen(
@@ -66,9 +66,7 @@ fun PersonScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadPerson(personId)
-    }
+    LaunchedEffect(true) { viewModel.loadPerson(personId) }
 
     PersonScreenLayout(
         state = state,
@@ -82,10 +80,7 @@ fun PersonScreen(
 }
 
 @Composable
-private fun PersonScreenLayout(
-    state: PersonState,
-    onAction: (PersonAction) -> Unit,
-) {
+private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> Unit) {
     val safePadding = rememberSafePadding()
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
@@ -94,51 +89,41 @@ private fun PersonScreenLayout(
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
-    val itemsPadding = PaddingValues(
-        start = paddingStart,
-        end = paddingEnd,
-    )
+    val itemsPadding = PaddingValues(start = paddingStart, end = paddingEnd)
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         state.person?.let { person ->
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState()),
-            ) {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Spacer(Modifier.height(paddingTop))
                 when {
-                    windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                    windowSizeClass.isWidthAtLeastBreakpoint(
+                        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+                    ) -> {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(itemsPadding),
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                            modifier = Modifier.fillMaxWidth().padding(itemsPadding),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(MaterialTheme.spacings.default),
                         ) {
                             PersonImage(person)
                             Column(
-                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                                verticalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.medium)
                             ) {
                                 Text(
                                     text = person.name,
                                     style = MaterialTheme.typography.headlineMedium,
                                 )
                                 if (person.overview.isNotBlank()) {
-                                    OverviewText(
-                                        text = person.overview,
-                                        maxCollapsedLines = 12,
-                                    )
+                                    OverviewText(text = person.overview, maxCollapsedLines = 12)
                                 }
                             }
                         }
                     }
                     else -> {
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(itemsPadding),
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                            modifier = Modifier.fillMaxWidth().padding(itemsPadding),
+                            verticalArrangement =
+                                Arrangement.spacedBy(MaterialTheme.spacings.medium),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             PersonImage(person)
@@ -147,10 +132,7 @@ private fun PersonScreenLayout(
                                 style = MaterialTheme.typography.headlineMedium,
                             )
                             if (person.overview.isNotBlank()) {
-                                OverviewText(
-                                    text = person.overview,
-                                    maxCollapsedLines = 4,
-                                )
+                                OverviewText(text = person.overview, maxCollapsedLines = 4)
                             }
                         }
                     }
@@ -158,21 +140,19 @@ private fun PersonScreenLayout(
 
                 Spacer(Modifier.height(MaterialTheme.spacings.default))
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default)) {
                     if (state.starredInMovies.isNotEmpty()) {
                         Column {
                             Text(
                                 text = stringResource(CoreR.string.movies_label),
-                                modifier = Modifier
-                                    .padding(itemsPadding),
+                                modifier = Modifier.padding(itemsPadding),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                             LazyRow(
                                 contentPadding = itemsPadding,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.default),
                             ) {
                                 items(state.starredInMovies, key = { it.id }) { item ->
                                     ItemCard(
@@ -189,22 +169,20 @@ private fun PersonScreenLayout(
                         Column {
                             Text(
                                 text = stringResource(CoreR.string.shows_label),
-                                modifier = Modifier
-                                    .padding(itemsPadding),
+                                modifier = Modifier.padding(itemsPadding),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                             LazyRow(
                                 contentPadding = itemsPadding,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.default),
                             ) {
                                 items(state.starredInShows, key = { it.id }) { item ->
                                     ItemCard(
                                         item = item,
                                         direction = Direction.VERTICAL,
-                                        onClick = {
-                                            onAction(PersonAction.NavigateToItem(item))
-                                        },
+                                        onClick = { onAction(PersonAction.NavigateToItem(item)) },
                                     )
                                 }
                             }
@@ -214,29 +192,22 @@ private fun PersonScreenLayout(
 
                 Spacer(Modifier.height(paddingBottom))
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .safeDrawingPadding()
-                .padding(horizontal = MaterialTheme.spacings.small),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .safeDrawingPadding()
+                    .padding(horizontal = MaterialTheme.spacings.small)
         ) {
             IconButton(
-                onClick = {
-                    onAction(PersonAction.NavigateBack)
-                },
-                modifier = Modifier
-                    .alpha(0.7f),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
-                ),
+                onClick = { onAction(PersonAction.NavigateBack) },
+                modifier = Modifier.alpha(0.7f),
+                colors =
+                    IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                    ),
             ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
@@ -248,21 +219,17 @@ private fun PersonScreenLayout(
 }
 
 @Composable
-private fun PersonImage(
-    person: FindroidPerson,
-    modifier: Modifier = Modifier,
-) {
+private fun PersonImage(person: FindroidPerson, modifier: Modifier = Modifier) {
     AsyncImage(
         model = person.images.primary,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .height(320.dp)
-            .aspectRatio(0.66f)
-            .clip(MaterialTheme.shapes.extraLarge)
-            .background(
-                MaterialTheme.colorScheme.surfaceContainer,
-            ),
+        modifier =
+            modifier
+                .height(320.dp)
+                .aspectRatio(0.66f)
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(MaterialTheme.colorScheme.surfaceContainer),
     )
 }
 
@@ -271,10 +238,7 @@ private fun PersonImage(
 private fun PersonScreenLayoutPreview() {
     FindroidTheme {
         PersonScreenLayout(
-            state = PersonState(
-                person = dummyPersonDetail,
-                starredInMovies = dummyMovies,
-            ),
+            state = PersonState(person = dummyPersonDetail, starredInMovies = dummyMovies),
             onAction = {},
         )
     }

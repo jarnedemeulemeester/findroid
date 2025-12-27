@@ -32,6 +32,7 @@ import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
@@ -46,10 +47,9 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun LibraryScreen(
@@ -63,15 +63,10 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    var initialLoad by rememberSaveable {
-        mutableStateOf(true)
-    }
+    var initialLoad by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(true) {
-        viewModel.setup(
-            parentId = libraryId,
-            libraryType = libraryType,
-        )
+        viewModel.setup(parentId = libraryId, libraryType = libraryType)
         if (initialLoad) {
             viewModel.loadItems()
             initialLoad = false
@@ -87,7 +82,8 @@ fun LibraryScreen(
                     when (action.item) {
                         is FindroidMovie -> navigateToMovie(action.item.id)
                         is FindroidShow -> navigateToShow(action.item.id)
-                        is FindroidFolder -> navigateToLibrary(action.item.id, action.item.name, libraryType)
+                        is FindroidFolder ->
+                            navigateToLibrary(action.item.id, action.item.name, libraryType)
                     }
                 }
                 else -> Unit
@@ -107,42 +103,33 @@ private fun LibraryScreenLayout(
 
     val items = state.items.collectAsLazyPagingItems()
 
-    var showSortByDialog by remember {
-        mutableStateOf(false)
-    }
+    var showSortByDialog by remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
-        modifier = Modifier
-            .fillMaxSize()
-            .focusRequester(focusRequester),
+        contentPadding =
+            PaddingValues(
+                horizontal = MaterialTheme.spacings.default * 2,
+                vertical = MaterialTheme.spacings.large,
+            ),
+        modifier = Modifier.fillMaxSize().focusRequester(focusRequester),
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = libraryName,
-                    style = MaterialTheme.typography.displayMedium,
-                )
-                Button(
-                    onClick = {
-                        showSortByDialog = true
-                    },
-                ) {
+                Text(text = libraryName, style = MaterialTheme.typography.displayMedium)
+                Button(onClick = { showSortByDialog = true }) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_arrow_down_up),
                         contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize),
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(
-                        text = stringResource(CoreR.string.sort_by),
-                    )
+                    Text(text = stringResource(CoreR.string.sort_by))
                 }
             }
         }
@@ -152,9 +139,7 @@ private fun LibraryScreenLayout(
                 ItemCard(
                     item = item,
                     direction = Direction.VERTICAL,
-                    onClick = {
-                        onAction(LibraryAction.OnItemClick(item))
-                    },
+                    onClick = { onAction(LibraryAction.OnItemClick(item)) },
                     modifier = Modifier.animateItem(),
                 )
             }
@@ -168,9 +153,7 @@ private fun LibraryScreenLayout(
             onUpdate = { sortBy, sortOrder ->
                 onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
-            onDismissRequest = {
-                showSortByDialog = false
-            },
+            onDismissRequest = { showSortByDialog = false },
         )
     }
 

@@ -56,6 +56,7 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
@@ -69,7 +70,6 @@ import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.getShowDateString
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ShowScreen(
@@ -83,9 +83,7 @@ fun ShowScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadShow(showId)
-    }
+    LaunchedEffect(true) { viewModel.loadShow(showId) }
 
     ShowScreenLayout(
         state = state,
@@ -110,10 +108,7 @@ fun ShowScreen(
 }
 
 @Composable
-private fun ShowScreenLayout(
-    state: ShowState,
-    onAction: (ShowAction) -> Unit,
-) {
+private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
     val focusRequester = remember { FocusRequester() }
     val configuration = LocalConfiguration.current
     val locale = configuration.locales.get(0)
@@ -122,76 +117,66 @@ private fun ShowScreenLayout(
     val listSize = remember { mutableIntStateOf(2) }
     var currentIndex by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(currentIndex) {
-        listState.animateScrollToItem(currentIndex)
-    }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    LaunchedEffect(currentIndex) { listState.animateScrollToItem(currentIndex) }
+    Box(modifier = Modifier.fillMaxSize()) {
         state.show?.let { show ->
-            var size by remember {
-                mutableStateOf(Size.Zero)
-            }
+            var size by remember { mutableStateOf(Size.Zero) }
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .onGloballyPositioned { coordinates ->
+                modifier =
+                    Modifier.fillMaxSize().onGloballyPositioned { coordinates ->
                         size = coordinates.size.toSize()
-                    },
+                    }
             ) {
                 AsyncImage(
                     model = show.images.backdrop,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                 )
                 if (size != Size.Zero) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.radialGradient(
-                                    listOf(Color.Black.copy(alpha = .2f), Color.Black),
-                                    center = Offset(size.width, 0f),
-                                    radius = size.width * .8f,
-                                ),
-                            ),
+                        modifier =
+                            Modifier.fillMaxSize()
+                                .background(
+                                    Brush.radialGradient(
+                                        listOf(Color.Black.copy(alpha = .2f), Color.Black),
+                                        center = Offset(size.width, 0f),
+                                        radius = size.width * .8f,
+                                    )
+                                )
                     )
                 }
                 LazyColumn(
                     state = listState,
-                    contentPadding = PaddingValues(
-                        top = 112.dp,
-                        bottom = MaterialTheme.spacings.large,
-                    ),
+                    contentPadding =
+                        PaddingValues(top = 112.dp, bottom = MaterialTheme.spacings.large),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     userScrollEnabled = false,
-                    modifier = Modifier.onPreviewKeyEvent { keyEvent ->
-                        when (keyEvent.key.nativeKeyCode) {
-                            KeyEvent.KEYCODE_DPAD_DOWN -> {
-                                currentIndex = (++currentIndex).coerceIn(0, listSize.intValue - 1)
-                            }
+                    modifier =
+                        Modifier.onPreviewKeyEvent { keyEvent ->
+                            when (keyEvent.key.nativeKeyCode) {
+                                KeyEvent.KEYCODE_DPAD_DOWN -> {
+                                    currentIndex =
+                                        (++currentIndex).coerceIn(0, listSize.intValue - 1)
+                                }
 
-                            KeyEvent.KEYCODE_DPAD_UP -> {
-                                currentIndex = (--currentIndex).coerceIn(0, listSize.intValue - 1)
+                                KeyEvent.KEYCODE_DPAD_UP -> {
+                                    currentIndex =
+                                        (--currentIndex).coerceIn(0, listSize.intValue - 1)
+                                }
                             }
-                        }
-                        false
-                    },
+                            false
+                        },
                 ) {
                     item {
                         Column(
-                            modifier = Modifier
-                                .padding(
+                            modifier =
+                                Modifier.padding(
                                     start = MaterialTheme.spacings.default * 2,
                                     end = MaterialTheme.spacings.default * 2,
-                                ),
+                                )
                         ) {
-                            Text(
-                                text = show.name,
-                                style = MaterialTheme.typography.displayMedium,
-                            )
+                            Text(text = show.name, style = MaterialTheme.typography.displayMedium)
                             if (show.originalTitle != show.name) {
                                 show.originalTitle?.let { originalTitle ->
                                     Text(
@@ -202,21 +187,23 @@ private fun ShowScreenLayout(
                             }
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.small)
                             ) {
                                 Text(
                                     text = getShowDateString(show),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                                 Text(
-                                    text = stringResource(CoreR.string.runtime_minutes, show.runtimeTicks.div(600000000)),
+                                    text =
+                                        stringResource(
+                                            CoreR.string.runtime_minutes,
+                                            show.runtimeTicks.div(600000000),
+                                        ),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                                 show.officialRating?.let {
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.labelMedium,
-                                    )
+                                    Text(text = it, style = MaterialTheme.typography.labelMedium)
                                 }
                                 show.communityRating?.let {
                                     Row {
@@ -226,7 +213,10 @@ private fun ShowScreenLayout(
                                             tint = Yellow,
                                             modifier = Modifier.size(16.dp),
                                         )
-                                        Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
+                                        Spacer(
+                                            modifier =
+                                                Modifier.width(MaterialTheme.spacings.extraSmall)
+                                        )
                                         Text(
                                             text = String.format(locale, "%.1f", it),
                                             style = MaterialTheme.typography.labelMedium,
@@ -244,12 +234,11 @@ private fun ShowScreenLayout(
                             )
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.medium)
                             ) {
                                 Button(
-                                    onClick = {
-                                        onAction(ShowAction.Play())
-                                    },
+                                    onClick = { onAction(ShowAction.Play()) },
                                     modifier = Modifier.focusRequester(focusRequester),
                                 ) {
                                     Icon(
@@ -261,9 +250,7 @@ private fun ShowScreenLayout(
                                 }
                                 show.trailer?.let { trailerUri ->
                                     Button(
-                                        onClick = {
-                                            onAction(ShowAction.PlayTrailer(trailerUri))
-                                        },
+                                        onClick = { onAction(ShowAction.PlayTrailer(trailerUri)) }
                                     ) {
                                         Icon(
                                             painter = painterResource(id = CoreR.drawable.ic_film),
@@ -279,15 +266,24 @@ private fun ShowScreenLayout(
                                             true -> onAction(ShowAction.UnmarkAsPlayed)
                                             false -> onAction(ShowAction.MarkAsPlayed)
                                         }
-                                    },
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(id = CoreR.drawable.ic_check),
                                         contentDescription = null,
-                                        tint = if (show.played) Color.Red else LocalContentColor.current,
+                                        tint =
+                                            if (show.played) Color.Red
+                                            else LocalContentColor.current,
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(text = stringResource(id = if (show.played) CoreR.string.unmark_as_played else CoreR.string.mark_as_played))
+                                    Text(
+                                        text =
+                                            stringResource(
+                                                id =
+                                                    if (show.played) CoreR.string.unmark_as_played
+                                                    else CoreR.string.mark_as_played
+                                            )
+                                    )
                                 }
                                 Button(
                                     onClick = {
@@ -295,20 +291,37 @@ private fun ShowScreenLayout(
                                             true -> onAction(ShowAction.UnmarkAsFavorite)
                                             false -> onAction(ShowAction.MarkAsFavorite)
                                         }
-                                    },
+                                    }
                                 ) {
                                     Icon(
-                                        painter = painterResource(id = if (show.favorite) CoreR.drawable.ic_heart_filled else CoreR.drawable.ic_heart),
+                                        painter =
+                                            painterResource(
+                                                id =
+                                                    if (show.favorite)
+                                                        CoreR.drawable.ic_heart_filled
+                                                    else CoreR.drawable.ic_heart
+                                            ),
                                         contentDescription = null,
-                                        tint = if (show.favorite) Color.Red else LocalContentColor.current,
+                                        tint =
+                                            if (show.favorite) Color.Red
+                                            else LocalContentColor.current,
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(text = stringResource(id = if (show.favorite) CoreR.string.remove_from_favorites else CoreR.string.add_to_favorites))
+                                    Text(
+                                        text =
+                                            stringResource(
+                                                id =
+                                                    if (show.favorite)
+                                                        CoreR.string.remove_from_favorites
+                                                    else CoreR.string.add_to_favorites
+                                            )
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.large)
                             ) {
                                 Column {
                                     Text(
@@ -355,16 +368,16 @@ private fun ShowScreenLayout(
                     }
                     item {
                         LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(MaterialTheme.spacings.default),
+                            contentPadding =
+                                PaddingValues(horizontal = MaterialTheme.spacings.default * 2),
                         ) {
                             items(state.seasons) { season ->
                                 ItemCard(
                                     item = season,
                                     direction = Direction.VERTICAL,
-                                    onClick = {
-                                        onAction(ShowAction.NavigateToItem(season))
-                                    },
+                                    onClick = { onAction(ShowAction.NavigateToItem(season)) },
                                 )
                             }
                         }
@@ -372,15 +385,8 @@ private fun ShowScreenLayout(
                 }
             }
 
-            LaunchedEffect(true) {
-                focusRequester.requestFocus()
-            }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+            LaunchedEffect(true) { focusRequester.requestFocus() }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
     }
 }
 
@@ -388,12 +394,6 @@ private fun ShowScreenLayout(
 @Composable
 private fun ShowScreenLayoutPreview() {
     FindroidTheme {
-        ShowScreenLayout(
-            state = ShowState(
-                show = dummyShow,
-                nextUp = dummyEpisode,
-            ),
-            onAction = {},
-        )
+        ShowScreenLayout(state = ShowState(show = dummyShow, nextUp = dummyEpisode), onAction = {})
     }
 }

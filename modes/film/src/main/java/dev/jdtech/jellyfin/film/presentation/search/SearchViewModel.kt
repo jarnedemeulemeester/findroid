@@ -4,18 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel
-@Inject
-constructor(
-    private val repository: JellyfinRepository,
-) : ViewModel() {
+class SearchViewModel @Inject constructor(private val repository: JellyfinRepository) :
+    ViewModel() {
     private val _state = MutableStateFlow(SearchState())
     val state = _state.asStateFlow()
 

@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -26,12 +25,8 @@ android {
     }
 
     buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-        }
-        register("staging") {
-            initWith(getByName("release"))
-        }
+        named("release") { isMinifyEnabled = false }
+        register("staging") { initWith(getByName("release")) }
     }
 
     compileOptions {
@@ -39,15 +34,7 @@ android {
         targetCompatibility = Versions.JAVA
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
-ktlint {
-    version.set(Versions.KTLINT)
-    android.set(true)
-    ignoreFailures.set(false)
+    buildFeatures { buildConfig = true }
 }
 
 dependencies {

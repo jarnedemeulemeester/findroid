@@ -8,32 +8,18 @@ import androidx.compose.ui.res.stringResource
 import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
-fun DeleteServerAddressDialog(
-    address: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
+fun DeleteServerAddressDialog(address: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
-        title = {
-            Text(text = stringResource(SetupR.string.remove_server_address))
-        },
+        title = { Text(text = stringResource(SetupR.string.remove_server_address)) },
         text = {
             Text(text = stringResource(SetupR.string.remove_server_address_dialog_text, address))
         },
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-            ) {
-                Text(text = stringResource(SetupR.string.confirm))
-            }
+            TextButton(onClick = onConfirm) { Text(text = stringResource(SetupR.string.confirm)) }
         },
         dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-            ) {
-                Text(text = stringResource(SetupR.string.cancel))
-            }
+            TextButton(onClick = onDismiss) { Text(text = stringResource(SetupR.string.cancel)) }
         },
     )
 }

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
@@ -42,14 +43,13 @@ import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.ServerBottomSheet
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import kotlinx.coroutines.launch
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun ServersScreen(
@@ -62,9 +62,7 @@ fun ServersScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadServers()
-    }
+    LaunchedEffect(true) { viewModel.loadServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -103,22 +101,23 @@ private fun ServersScreenLayout(
 
     RootLayout {
         Column(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .widthIn(max = 480.dp)
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier =
+                Modifier.padding(horizontal = 24.dp)
+                    .widthIn(max = 480.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(250.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.width(250.dp).align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.servers), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(SetupR.string.servers),
+                style = MaterialTheme.typography.headlineMedium,
+            )
             Spacer(modifier = Modifier.height(32.dp))
             if (state.servers.isEmpty()) {
                 Text(
@@ -129,9 +128,7 @@ private fun ServersScreenLayout(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                 ) {
                     items(state.servers) { server ->
                         ServerItem(
@@ -139,9 +136,7 @@ private fun ServersScreenLayout(
                             address = server.addresses.first().address,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                onAction(
-                                    ServersAction.OnServerClick(serverId = server.server.id),
-                                )
+                                onAction(ServersAction.OnServerClick(serverId = server.server.id))
                             },
                             onLongClick = {
                                 selectedServer = server
@@ -157,51 +152,52 @@ private fun ServersScreenLayout(
                 onClick = { onAction(ServersAction.OnBackClick) },
                 modifier = Modifier.padding(start = 8.dp),
             ) {
-                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_left),
+                    contentDescription = null,
+                )
             }
         }
         ExtendedFloatingActionButton(
             onClick = { onAction(ServersAction.OnAddClick) },
             icon = { Icon(painterResource(CoreR.drawable.ic_plus), contentDescription = null) },
             text = { Text(text = stringResource(SetupR.string.servers_btn_add_server)) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
         )
     }
 
     if (openDeleteDialog && selectedServer != null) {
         AlertDialog(
-            title = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog))
-            },
+            title = { Text(text = stringResource(SetupR.string.remove_server_dialog)) },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.server.name))
+                Text(
+                    text =
+                        stringResource(
+                            SetupR.string.remove_server_dialog_text,
+                            selectedServer!!.server.name,
+                        )
+                )
             },
-            onDismissRequest = {
-                openDeleteDialog = false
-            },
+            onDismissRequest = { openDeleteDialog = false },
             confirmButton = {
                 TextButton(
                     onClick = {
                         openDeleteDialog = false
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                        scope
+                            .launch { sheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
                             }
-                        }
                         onAction(ServersAction.DeleteServer(selectedServer!!.server.id))
-                    },
+                    }
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
                 }
             },
             dismissButton = {
-                TextButton(
-                    onClick = {
-                        openDeleteDialog = false
-                    },
-                ) {
+                TextButton(onClick = { openDeleteDialog = false }) {
                     Text(text = stringResource(SetupR.string.cancel))
                 }
             },
@@ -216,12 +212,8 @@ private fun ServersScreenLayout(
                 showBottomSheet = false
                 onAction(ServersAction.NavigateToAddresses(selectedServer!!.server.id))
             },
-            onRemoveServer = {
-                openDeleteDialog = true
-            },
-            onDismissRequest = {
-                showBottomSheet = false
-            },
+            onRemoveServer = { openDeleteDialog = true },
+            onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
         )
     }
@@ -232,17 +224,17 @@ private fun ServersScreenLayout(
 private fun ServersScreenLayoutPreview() {
     FindroidTheme {
         ServersScreenLayout(
-            state = ServersState(
-                servers = listOf(
-                    ServerWithAddresses(
-                        server = dummyServer,
-                        addresses = listOf(
-                            dummyServerAddress,
-                        ),
-                        user = null,
-                    ),
+            state =
+                ServersState(
+                    servers =
+                        listOf(
+                            ServerWithAddresses(
+                                server = dummyServer,
+                                addresses = listOf(dummyServerAddress),
+                                user = null,
+                            )
+                        )
                 ),
-            ),
             onAction = {},
         )
     }

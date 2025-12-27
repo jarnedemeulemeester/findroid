@@ -1,3 +1,5 @@
+import com.android.utils.TraceUtils.simpleId
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -8,13 +10,21 @@ plugins {
     alias(libs.plugins.aboutlibraries) apply false
     alias(libs.plugins.aboutlibraries.android) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.ktfmt) apply false
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+subprojects {
+    apply(plugin = "com.ncorti.ktfmt.gradle")
+
+    configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
+        kotlinLangStyle()
     }
 }
 

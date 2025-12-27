@@ -7,21 +7,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.ServerAddress
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class ServerAddressesViewModel
 @Inject
-constructor(
-    val application: Application,
-    private val database: ServerDatabaseDao,
-) : ViewModel() {
+constructor(val application: Application, private val database: ServerDatabaseDao) : ViewModel() {
     private val _state = MutableStateFlow(ServerAddressesState())
     val state = _state.asStateFlow()
 
@@ -55,9 +52,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val jellyfinApi = JellyfinApi(application.applicationContext)
-                jellyfinApi.api.update(
-                    baseUrl = address,
-                )
+                jellyfinApi.api.update(baseUrl = address)
                 val systemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
                 if (systemInfo.id != currentServerId) {
                     return@launch

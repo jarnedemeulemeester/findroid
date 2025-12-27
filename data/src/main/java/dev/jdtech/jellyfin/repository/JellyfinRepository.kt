@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -18,7 +19,6 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
-import java.util.UUID
 
 interface JellyfinRepository {
     suspend fun getPublicSystemInfo(): PublicSystemInfo
@@ -26,6 +26,7 @@ interface JellyfinRepository {
     suspend fun getUserViews(): List<BaseItemDto>
 
     suspend fun getEpisode(itemId: UUID): FindroidEpisode
+
     suspend fun getMovie(itemId: UUID): FindroidMovie
 
     suspend fun getShow(itemId: UUID): FindroidShow
@@ -54,9 +55,7 @@ interface JellyfinRepository {
         sortOrder: SortOrder = SortOrder.ASCENDING,
     ): Flow<PagingData<FindroidItem>>
 
-    suspend fun getPerson(
-        personId: UUID,
-    ): FindroidPerson
+    suspend fun getPerson(personId: UUID): FindroidPerson
 
     suspend fun getPersonItems(
         personIds: List<UUID>,

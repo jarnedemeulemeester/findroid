@@ -4,20 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
-class UsersViewModel
-@Inject
-constructor(
-    private val repository: SetupRepository,
-) : ViewModel() {
+class UsersViewModel @Inject constructor(private val repository: SetupRepository) : ViewModel() {
     private val _state = MutableStateFlow(UsersState())
     val state = _state.asStateFlow()
 
@@ -34,7 +30,11 @@ constructor(
 
             try {
                 val publicUsers = repository.getPublicUsers(server.id)
-                _state.emit(_state.value.copy(publicUsers = publicUsers.filterNot { userIds.contains(it.id) }))
+                _state.emit(
+                    _state.value.copy(
+                        publicUsers = publicUsers.filterNot { userIds.contains(it.id) }
+                    )
+                )
             } catch (_: Exception) {}
         }
     }

@@ -34,10 +34,12 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.plus
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -48,8 +50,6 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsScreen(
@@ -65,9 +65,7 @@ fun SettingsScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadPreferences(indexes, DeviceType.PHONE)
-    }
+    LaunchedEffect(true) { viewModel.loadPreferences(indexes, DeviceType.PHONE) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -77,12 +75,25 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToAbout -> navigateToAbout()
             is SettingsEvent.UpdateTheme -> {
                 val uiModeManager = context.getSystemService(UiModeManager::class.java)
-                val nightMode = when (event.theme) {
-                    "system" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    "light" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_NO
-                    "dark" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_YES
-                    else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
+                val nightMode =
+                    when (event.theme) {
+                        "system" ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                                UiModeManager.MODE_NIGHT_AUTO
+                            else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        "light" ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                                UiModeManager.MODE_NIGHT_NO
+                            else AppCompatDelegate.MODE_NIGHT_NO
+                        "dark" ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                                UiModeManager.MODE_NIGHT_YES
+                            else AppCompatDelegate.MODE_NIGHT_YES
+                        else ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                                UiModeManager.MODE_NIGHT_AUTO
+                            else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     uiModeManager.setApplicationNightMode(nightMode)
@@ -127,28 +138,20 @@ private fun SettingsScreenLayout(
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
 ) {
-    val contentPadding = PaddingValues(
-        all = MaterialTheme.spacings.default,
-    )
+    val contentPadding = PaddingValues(all = MaterialTheme.spacings.default)
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .recalculateWindowInsets()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier.fillMaxSize()
+                .recalculateWindowInsets()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(stringResource(title))
-                },
+                title = { Text(stringResource(title)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(SettingsAction.OnBackClick)
-                        },
-                    ) {
+                    IconButton(onClick = { onAction(SettingsAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
@@ -160,8 +163,7 @@ private fun SettingsScreenLayout(
         },
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentPadding = contentPadding + innerPadding,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -170,8 +172,7 @@ private fun SettingsScreenLayout(
                 SettingsGroupCard(
                     group = group,
                     onAction = onAction,
-                    modifier = Modifier
-                        .widthIn(max = 640.dp),
+                    modifier = Modifier.widthIn(max = 640.dp),
                 )
             }
         }
@@ -184,28 +185,34 @@ private fun SettingsScreenLayoutPreview() {
     FindroidTheme {
         SettingsScreenLayout(
             title = CoreR.string.title_settings,
-            state = SettingsState(
-                preferenceGroups = listOf(
-                    PreferenceGroup(
-                        nameStringResource = null,
-                        preferences = listOf(
-                            PreferenceCategory(
-                                nameStringResource = SettingsR.string.settings_category_language,
-                                iconDrawableId = SettingsR.drawable.ic_languages,
+            state =
+                SettingsState(
+                    preferenceGroups =
+                        listOf(
+                            PreferenceGroup(
+                                nameStringResource = null,
+                                preferences =
+                                    listOf(
+                                        PreferenceCategory(
+                                            nameStringResource =
+                                                SettingsR.string.settings_category_language,
+                                            iconDrawableId = SettingsR.drawable.ic_languages,
+                                        )
+                                    ),
                             ),
-                        ),
-                    ),
-                    PreferenceGroup(
-                        nameStringResource = null,
-                        preferences = listOf(
-                            PreferenceCategory(
-                                nameStringResource = SettingsR.string.settings_category_interface,
-                                iconDrawableId = SettingsR.drawable.ic_palette,
+                            PreferenceGroup(
+                                nameStringResource = null,
+                                preferences =
+                                    listOf(
+                                        PreferenceCategory(
+                                            nameStringResource =
+                                                SettingsR.string.settings_category_interface,
+                                            iconDrawableId = SettingsR.drawable.ic_palette,
+                                        )
+                                    ),
                             ),
-                        ),
-                    ),
+                        )
                 ),
-            ),
             onAction = {},
         )
     }

@@ -47,23 +47,23 @@ import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import dev.jdtech.jellyfin.BuildConfig
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun AboutScreen(
-    navigateBack: () -> Unit,
-) {
+fun AboutScreen(navigateBack: () -> Unit) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
 
     val paddingStart = safePaddingStart
     val paddingEnd = safePaddingEnd
@@ -73,18 +73,12 @@ fun AboutScreen(
     val libraries by produceLibraries(R.raw.aboutlibraries)
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = stringResource(SettingsR.string.about))
-                },
+                title = { Text(text = stringResource(SettingsR.string.about)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack,
-                    ) {
+                    IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
@@ -99,21 +93,19 @@ fun AboutScreen(
         LibrariesContainer(
             libraries = libraries,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
-                top = innerPadding.calculateTopPadding(),
-                end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
-                bottom = innerPadding.calculateBottomPadding(),
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
+                    top = innerPadding.calculateTopPadding(),
+                    end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
+                    bottom = innerPadding.calculateBottomPadding(),
+                ),
             header = {
                 item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
-                    ) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacings.default),
+                            modifier =
+                                Modifier.padding(horizontal = MaterialTheme.spacings.default),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
@@ -136,16 +128,24 @@ fun AboutScreen(
                             HorizontalDivider()
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(MaterialTheme.spacings.small)
                             ) {
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
-                                            uriHandler.openUri("https://github.com/jarnedemeulemeester/findroid")
+                                            uriHandler.openUri(
+                                                "https://github.com/jarnedemeulemeester/findroid"
+                                            )
                                         } catch (e: IllegalArgumentException) {
-                                            Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                    context,
+                                                    e.localizedMessage,
+                                                    Toast.LENGTH_SHORT,
+                                                )
+                                                .show()
                                         }
-                                    },
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(CoreR.drawable.ic_github),
@@ -155,11 +155,18 @@ fun AboutScreen(
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
-                                            uriHandler.openUri("https://ko-fi.com/jarnedemeulemeester")
+                                            uriHandler.openUri(
+                                                "https://ko-fi.com/jarnedemeulemeester"
+                                            )
                                         } catch (e: IllegalArgumentException) {
-                                            Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                    context,
+                                                    e.localizedMessage,
+                                                    Toast.LENGTH_SHORT,
+                                                )
+                                                .show()
                                         }
-                                    },
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(CoreR.drawable.ic_coffee),
@@ -179,9 +186,5 @@ fun AboutScreen(
 @Composable
 @PreviewScreenSizes
 private fun AboutScreenPreview() {
-    FindroidTheme {
-        AboutScreen(
-            navigateBack = {},
-        )
-    }
+    FindroidTheme { AboutScreen(navigateBack = {}) }
 }

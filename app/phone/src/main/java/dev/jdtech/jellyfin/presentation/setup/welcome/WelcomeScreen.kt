@@ -23,16 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.setup.R as SetupR
+import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
 
 @Composable
-fun WelcomeScreen(
-    onContinueClick: () -> Unit,
-) {
+fun WelcomeScreen(onContinueClick: () -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     WelcomeScreenLayout(
@@ -43,22 +41,16 @@ fun WelcomeScreen(
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
-        },
+        }
     )
 }
 
 @Composable
-private fun WelcomeScreenLayout(
-    onAction: (WelcomeAction) -> Unit,
-) {
-    RootLayout(
-        padding = PaddingValues(horizontal = 24.dp),
-    ) {
+private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
+    RootLayout(padding = PaddingValues(horizontal = 24.dp)) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.align(Alignment.Center).verticalScroll(rememberScrollState()),
         ) {
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
@@ -77,9 +69,7 @@ private fun WelcomeScreenLayout(
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Column(
-                modifier = Modifier.widthIn(max = 480.dp),
-            ) {
+            Column(modifier = Modifier.widthIn(max = 480.dp)) {
                 OutlinedButton(
                     onClick = { onAction(WelcomeAction.OnLearnMoreClick) },
                     modifier = Modifier.fillMaxWidth(),
@@ -101,9 +91,5 @@ private fun WelcomeScreenLayout(
 @PreviewScreenSizes
 @Composable
 private fun WelcomeScreenLayoutPreview() {
-    FindroidTheme {
-        WelcomeScreenLayout(
-            onAction = {},
-        )
-    }
+    FindroidTheme { WelcomeScreenLayout(onAction = {}) }
 }

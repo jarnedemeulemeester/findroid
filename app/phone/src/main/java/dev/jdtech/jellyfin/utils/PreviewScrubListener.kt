@@ -47,14 +47,17 @@ class PreviewScrubListener(
             val minX = scrubbingPreview.left
             val maxX = parent.width - parent.paddingRight
 
-            val startX = timeBarView.left + (timeBarView.right - timeBarView.left) * offset - scrubbingPreview.width / 2
+            val startX =
+                timeBarView.left + (timeBarView.right - timeBarView.left) * offset -
+                    scrubbingPreview.width / 2
             val endX = startX + scrubbingPreview.width
 
-            val layoutX = when {
-                startX >= minX && endX <= maxX -> startX
-                startX < minX -> minX
-                else -> maxX - scrubbingPreview.width
-            }.toFloat()
+            val layoutX =
+                when {
+                    startX >= minX && endX <= maxX -> startX
+                    startX < minX -> minX
+                    else -> maxX - scrubbingPreview.width
+                }.toFloat()
 
             scrubbingPreview.x = layoutX
 

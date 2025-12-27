@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
-import java.util.UUID
 
 data class FindroidShow(
     override val id: UUID,
@@ -33,9 +33,7 @@ data class FindroidShow(
     override val chapters: List<FindroidChapter> = emptyList(),
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidShow(
-    jellyfinRepository: JellyfinRepository,
-): FindroidShow {
+fun BaseItemDto.toFindroidShow(jellyfinRepository: JellyfinRepository): FindroidShow {
     return FindroidShow(
         id = id,
         name = name.orEmpty(),

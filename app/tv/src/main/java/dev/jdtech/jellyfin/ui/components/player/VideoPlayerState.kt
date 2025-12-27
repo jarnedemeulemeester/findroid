@@ -13,12 +13,11 @@ import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 
-class VideoPlayerState internal constructor(
-    @param:IntRange(from = 0)
-    private val hideSeconds: Int,
-) {
+class VideoPlayerState
+internal constructor(@param:IntRange(from = 0) private val hideSeconds: Int) {
     private var _controlsVisible by mutableStateOf(true)
-    val controlsVisible get() = _controlsVisible
+    val controlsVisible
+        get() = _controlsVisible
 
     fun showControls(seconds: Int = hideSeconds) {
         _controlsVisible = true
@@ -29,17 +28,11 @@ class VideoPlayerState internal constructor(
 
     @OptIn(FlowPreview::class)
     suspend fun observe() {
-        channel.consumeAsFlow()
-            .debounce { it.toLong() * 1000 }
-            .collect { _controlsVisible = false }
+        channel.consumeAsFlow().debounce { it.toLong() * 1000 }.collect { _controlsVisible = false }
     }
 }
 
 @Composable
 fun rememberVideoPlayerState(@IntRange(from = 0) hideSeconds: Int = 2) =
-    remember {
-        VideoPlayerState(hideSeconds = hideSeconds)
-    }
-        .also {
-            LaunchedEffect(it) { it.observe() }
-        }
+    remember { VideoPlayerState(hideSeconds = hideSeconds) }
+        .also { LaunchedEffect(it) { it.observe() } }

@@ -3,10 +3,10 @@ package dev.jdtech.jellyfin.setup.domain
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.User
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.QuickConnectResult
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
-import java.util.UUID
 
 interface SetupRepository {
     fun discoverServers(): Flow<ServerDiscoveryInfo>

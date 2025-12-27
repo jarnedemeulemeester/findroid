@@ -25,6 +25,12 @@ object DownloaderModule {
         appPreferences: AppPreferences,
         workManager: WorkManager,
     ): Downloader {
-        return DownloaderImpl(application, serverDatabase, jellyfinRepository, appPreferences, workManager)
+        return DownloaderImpl(
+            application,
+            serverDatabase,
+            jellyfinRepository,
+            appPreferences,
+            workManager,
+        )
     }
 }
