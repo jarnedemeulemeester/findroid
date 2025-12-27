@@ -12,15 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -29,11 +25,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
@@ -51,6 +44,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidPerson
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -61,6 +55,7 @@ import java.util.UUID
 fun PersonScreen(
     personId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
     viewModel: PersonViewModel = hiltViewModel(),
 ) {
@@ -73,6 +68,7 @@ fun PersonScreen(
         onAction = { action ->
             when (action) {
                 is PersonAction.NavigateBack -> navigateBack()
+                is PersonAction.NavigateHome -> navigateHome()
                 is PersonAction.NavigateToItem -> navigateToItem(action.item)
             }
         },
@@ -194,27 +190,12 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
             }
         } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .safeDrawingPadding()
-                    .padding(horizontal = MaterialTheme.spacings.small)
-        ) {
-            IconButton(
-                onClick = { onAction(PersonAction.NavigateBack) },
-                modifier = Modifier.alpha(0.7f),
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
-        }
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(PersonAction.NavigateBack) },
+            onHomeClick = { onAction(PersonAction.NavigateHome) },
+        )
     }
 }
 

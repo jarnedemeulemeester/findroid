@@ -18,9 +18,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,14 +29,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
@@ -50,6 +45,7 @@ import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
@@ -60,6 +56,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 fun SeasonScreen(
     seasonId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToSeries: (seriesId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
@@ -80,6 +77,7 @@ fun SeasonScreen(
                     context.startActivity(intent)
                 }
                 is SeasonAction.OnBackClick -> navigateBack()
+                is SeasonAction.OnHomeClick -> navigateHome()
                 is SeasonAction.NavigateToItem -> navigateToItem(action.item)
                 is SeasonAction.NavigateToSeries -> navigateToSeries(action.seriesId)
                 else -> Unit
@@ -178,29 +176,13 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
             }
         } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(
-                        start = safePadding.start + MaterialTheme.spacings.small,
-                        top = safePadding.top + MaterialTheme.spacings.small,
-                        end = safePadding.end + MaterialTheme.spacings.small,
-                    )
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(SeasonAction.OnBackClick) },
+            onHomeClick = { onAction(SeasonAction.OnHomeClick) },
         ) {
-            IconButton(
-                onClick = { onAction(SeasonAction.OnBackClick) },
-                modifier = Modifier.alpha(0.7f),
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
+            Spacer(modifier = Modifier.width(4.dp))
             state.season?.let { season ->
                 Button(
                     onClick = { onAction(SeasonAction.NavigateToSeries(season.seriesId)) },

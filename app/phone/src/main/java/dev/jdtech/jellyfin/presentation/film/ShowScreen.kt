@@ -21,8 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +28,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +54,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -69,6 +67,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 fun ShowScreen(
     showId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
@@ -98,6 +97,7 @@ fun ShowScreen(
                     }
                 }
                 is ShowAction.OnBackClick -> navigateBack()
+                is ShowAction.OnHomeClick -> navigateHome()
                 is ShowAction.NavigateToItem -> navigateToItem(action.item)
                 is ShowAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
@@ -287,30 +287,12 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
             }
         } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(
-                        start = safePadding.start + MaterialTheme.spacings.small,
-                        top = safePadding.top + MaterialTheme.spacings.small,
-                        end = safePadding.end + MaterialTheme.spacings.small,
-                    )
-        ) {
-            IconButton(
-                onClick = { onAction(ShowAction.OnBackClick) },
-                modifier = Modifier.alpha(0.7f),
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
-        }
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(ShowAction.OnBackClick) },
+            onHomeClick = { onAction(ShowAction.OnHomeClick) },
+        )
     }
 }
 

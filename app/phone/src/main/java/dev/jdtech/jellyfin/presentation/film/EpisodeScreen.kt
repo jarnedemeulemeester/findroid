@@ -18,8 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,6 +50,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -66,6 +66,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 fun EpisodeScreen(
     episodeId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     navigateToSeason: (seasonId: UUID) -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
@@ -111,6 +112,7 @@ fun EpisodeScreen(
                     context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
+                is EpisodeAction.OnHomeClick -> navigateHome()
                 is EpisodeAction.NavigateToPerson -> navigateToPerson(action.personId)
                 is EpisodeAction.NavigateToSeason -> navigateToSeason(action.seasonId)
                 else -> Unit
@@ -263,29 +265,13 @@ private fun EpisodeScreenLayout(
             }
         } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(
-                        start = safePadding.start + MaterialTheme.spacings.small,
-                        top = safePadding.top + MaterialTheme.spacings.small,
-                        end = safePadding.end + MaterialTheme.spacings.small,
-                    )
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(EpisodeAction.OnBackClick) },
+            onHomeClick = { onAction(EpisodeAction.OnHomeClick) },
         ) {
-            IconButton(
-                onClick = { onAction(EpisodeAction.OnBackClick) },
-                modifier = Modifier.alpha(0.7f),
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
+            Spacer(modifier = Modifier.width(4.dp))
             state.episode?.let { episode ->
                 Button(
                     onClick = { onAction(EpisodeAction.NavigateToSeason(episode.seasonId)) },

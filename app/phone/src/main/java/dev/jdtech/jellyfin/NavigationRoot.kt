@@ -369,6 +369,7 @@ fun NavigationRoot(
                 MovieScreen(
                     movieId = UUID.fromString(route.movieId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToPerson = { personId ->
                         navController.safeNavigate(PersonRoute(personId.toString()))
                     },
@@ -379,6 +380,7 @@ fun NavigationRoot(
                 ShowScreen(
                     showId = UUID.fromString(route.showId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -392,6 +394,7 @@ fun NavigationRoot(
                 SeasonScreen(
                     seasonId = UUID.fromString(route.seasonId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -408,6 +411,7 @@ fun NavigationRoot(
                 EpisodeScreen(
                     episodeId = UUID.fromString(route.episodeId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToPerson = { personId ->
                         navController.safeNavigate(PersonRoute(personId.toString()))
                     },
@@ -424,6 +428,7 @@ fun NavigationRoot(
                 PersonScreen(
                     personId = UUID.fromString(route.personId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -446,6 +451,13 @@ fun NavigationRoot(
                 AboutScreen(navigateBack = { navController.safePopBackStack() })
             }
         }
+    }
+}
+
+private fun navigateHome(navController: NavHostController) {
+    navController.safeNavigate(HomeRoute) {
+        popUpTo(navController.graph.startDestinationId)
+        launchSingleTop = true
     }
 }
 
