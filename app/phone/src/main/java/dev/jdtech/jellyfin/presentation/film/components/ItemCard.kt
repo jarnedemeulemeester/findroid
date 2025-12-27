@@ -72,28 +72,29 @@ fun ItemCard(
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-        Text(
-            text = if (item is FindroidEpisode) item.seriesName else item.name,
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = if (direction == Direction.HORIZONTAL) 1 else 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-        if (item is FindroidEpisode) {
+        Column(modifier = Modifier.height(42.dp)) {
             Text(
-                text =
-                    stringResource(
-                        id = R.string.episode_name_extended,
-                        item.parentIndexNumber,
-                        item.indexNumber,
-                        item.name,
-                    ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-                maxLines = 1,
+                text = if (item is FindroidEpisode) item.seriesName else item.name,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = if (item is FindroidEpisode) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
             )
+            if (item is FindroidEpisode) {
+                Text(
+                    text =
+                        stringResource(
+                            id = R.string.episode_name_extended,
+                            item.parentIndexNumber,
+                            item.indexNumber,
+                            item.name,
+                        ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
-        Spacer(Modifier.height(2.dp))
     }
 }
 
@@ -113,4 +114,10 @@ private fun ItemCardPreviewMovieVertical() {
 @Composable
 private fun ItemCardPreviewEpisode() {
     FindroidTheme { ItemCard(item = dummyEpisode, direction = Direction.HORIZONTAL, onClick = {}) }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemCardPreviewEpisodeVertical() {
+    FindroidTheme { ItemCard(item = dummyEpisode, direction = Direction.VERTICAL, onClick = {}) }
 }
