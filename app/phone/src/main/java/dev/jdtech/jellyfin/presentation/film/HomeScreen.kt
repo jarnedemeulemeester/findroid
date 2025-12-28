@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -95,47 +96,49 @@ private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
     var showServerSelectionBottomSheet by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().semantics { traversalIndex = 1f },
-            contentPadding = PaddingValues(top = contentPaddingTop, bottom = paddingBottom),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-        ) {
-            state.suggestionsSection?.let { section ->
-                item(key = section.id) {
-                    HomeCarousel(
-                        items = section.items,
-                        itemsPadding = itemsPadding,
-                        onAction = onAction,
-                    )
+        PullToRefreshBox(isRefreshing = false, onRefresh = { onAction(HomeAction.OnRetryClick) }) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().semantics { traversalIndex = 1f },
+                contentPadding = PaddingValues(top = contentPaddingTop, bottom = paddingBottom),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
+            ) {
+                state.suggestionsSection?.let { section ->
+                    item(key = section.id) {
+                        HomeCarousel(
+                            items = section.items,
+                            itemsPadding = itemsPadding,
+                            onAction = onAction,
+                        )
+                    }
                 }
-            }
-            state.resumeSection?.let { section ->
-                item(key = section.id) {
-                    HomeSection(
-                        section = section.homeSection,
+                state.resumeSection?.let { section ->
+                    item(key = section.id) {
+                        HomeSection(
+                            section = section.homeSection,
+                            itemsPadding = itemsPadding,
+                            onAction = onAction,
+                            modifier = Modifier.animateItem(),
+                        )
+                    }
+                }
+                state.nextUpSection?.let { section ->
+                    item(key = section.id) {
+                        HomeSection(
+                            section = section.homeSection,
+                            itemsPadding = itemsPadding,
+                            onAction = onAction,
+                            modifier = Modifier.animateItem(),
+                        )
+                    }
+                }
+                items(state.views, key = { it.id }) { view ->
+                    HomeView(
+                        view = view,
                         itemsPadding = itemsPadding,
                         onAction = onAction,
                         modifier = Modifier.animateItem(),
                     )
                 }
-            }
-            state.nextUpSection?.let { section ->
-                item(key = section.id) {
-                    HomeSection(
-                        section = section.homeSection,
-                        itemsPadding = itemsPadding,
-                        onAction = onAction,
-                        modifier = Modifier.animateItem(),
-                    )
-                }
-            }
-            items(state.views, key = { it.id }) { view ->
-                HomeView(
-                    view = view,
-                    itemsPadding = itemsPadding,
-                    onAction = onAction,
-                    modifier = Modifier.animateItem(),
-                )
             }
         }
 
