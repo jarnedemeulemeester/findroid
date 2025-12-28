@@ -154,7 +154,7 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
                                     ItemCard(
                                         item = item,
                                         direction = Direction.VERTICAL,
-                                        onClick = {},
+                                        onClick = { onAction(PersonAction.NavigateToItem(item)) },
                                     )
                                 }
                             }
