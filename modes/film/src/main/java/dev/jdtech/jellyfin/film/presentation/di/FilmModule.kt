@@ -13,6 +13,6 @@ object FilmModule {
     @Singleton
     @Provides
     fun provideVideoMetadataParser(): VideoMetadataParser {
-        return VideoMetadataParser()
+        return VideoMetadataParser
     }
 }

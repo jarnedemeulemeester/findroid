@@ -48,6 +48,7 @@ import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
+import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
@@ -249,6 +250,10 @@ private fun EpisodeScreenLayout(
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    if (state.displayExtraInfo && state.videoMetadata != null) {
+                        ExtraInfoText(videoMetadata = state.videoMetadata!!)
+                        Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                    }
                     OverviewText(text = episode.overview)
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }

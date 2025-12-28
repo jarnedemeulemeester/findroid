@@ -12,8 +12,11 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.MediaStreamType
 import org.jellyfin.sdk.model.api.VideoRangeType
 
-class VideoMetadataParser {
+object VideoMetadataParser {
     suspend fun parse(source: FindroidSource): VideoMetadata {
+        val videoTracks = mutableListOf<String>()
+        val audioTracks = mutableListOf<String>()
+        val subtitleTracks = mutableListOf<String>()
         val resolution = mutableListOf<Resolution>()
         val videoCodecs = mutableListOf<VideoCodec?>()
         val audioChannels = mutableListOf<AudioChannel>()
@@ -22,9 +25,11 @@ class VideoMetadataParser {
         val isAtmosAudio = mutableListOf<Boolean>()
 
         withContext(Dispatchers.Default) {
-            source.mediaStreams.filter { stream ->
+            source.mediaStreams.forEach { stream ->
                 when (stream.type) {
                     MediaStreamType.AUDIO -> {
+                        stream.displayTitle?.let { audioTracks.add(it) }
+
                         /**
                          * Match audio profile from
                          * [org.jellyfin.sdk.model.api.MediaStream.channelLayout]
@@ -48,6 +53,7 @@ class VideoMetadataParser {
                         audioCodecs.add(
                             when (stream.codec.lowercase()) {
                                 AudioCodec.FLAC.toString() -> AudioCodec.FLAC
+                                AudioCodec.MP3.toString() -> AudioCodec.MP3
                                 AudioCodec.AAC.toString() -> AudioCodec.AAC
                                 AudioCodec.AC3.toString() -> AudioCodec.AC3
                                 AudioCodec.EAC3.toString() -> AudioCodec.EAC3
@@ -58,11 +64,12 @@ class VideoMetadataParser {
                                 else -> null
                             }
                         )
-                        true
                     }
 
                     MediaStreamType.VIDEO -> {
                         with(stream) {
+                            displayTitle?.let { videoTracks.add(it) }
+
                             /**
                              * Match dynamic range from
                              * [org.jellyfin.sdk.model.api.MediaStream.videoRangeType]
@@ -111,15 +118,22 @@ class VideoMetadataParser {
                                 }
                             )
                         }
-                        true
                     }
 
-                    else -> false
+                    MediaStreamType.SUBTITLE -> {
+                        stream.displayTitle?.let { subtitleTracks.add(it) }
+                    }
+
+                    else -> {}
                 }
             }
         }
 
         return VideoMetadata(
+            size = source.size,
+            videoTracks = videoTracks,
+            audioTracks = audioTracks,
+            subtitleTracks = subtitleTracks,
             resolution = resolution,
             videoCodecs = videoCodecs.toSet().toList(),
             displayProfiles = displayProfiles.toSet().toList(),

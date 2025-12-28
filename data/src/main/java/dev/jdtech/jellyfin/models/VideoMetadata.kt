@@ -1,8 +1,10 @@
-@file:Suppress("Unused")
-
 package dev.jdtech.jellyfin.models
 
 data class VideoMetadata(
+    val size: Long,
+    val videoTracks: List<String>,
+    val audioTracks: List<String>,
+    val subtitleTracks: List<String>,
     val resolution: List<Resolution>,
     val videoCodecs: List<VideoCodec?>,
     val displayProfiles: List<DisplayProfile>,
