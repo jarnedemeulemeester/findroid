@@ -8,11 +8,6 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
 
-> [!IMPORTANT]
-> Findroid is currently being rewritten to Jetpack Compose. Because of this, the main branch may be unusable for some time.
->
-> Also, please refrain from creating pull requests which involve the old Views based UI.
-
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
 I am developing this application in my spare time.
