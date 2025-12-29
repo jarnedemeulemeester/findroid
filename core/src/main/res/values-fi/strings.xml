@@ -23,8 +23,8 @@
     <string name="favorite_button_description">Lisää suosikkeihin</string>
     <string name="downloaded_indicator">Ladattuna indikaattori</string>
     <string name="episode_watched_indicator">Katsottu jakso indikaattori</string>
-    <string name="season_number">Kausi %1d</string>
-    <string name="episode_number">Jakso %1d</string>
+    <string name="season_number">Kausi %1$d</string>
+    <string name="episode_number">Jakso %1$d</string>
     <string name="next_up">Seuraavaksi</string>
     <string name="libraries">Kirjastot</string>
     <string name="series_poster">Sarjan juliste</string>

@@ -28,8 +28,8 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">シーズン %1$d - %2$d. %3$s</string>
     <string name="episode_name_extended_with_end">シーズン %1$d - %2$d-%3$d. %4$s</string>
-    <string name="season_number">シーズン %1d</string>
-    <string name="episode_number">エピソード %1d</string>
+    <string name="season_number">シーズン %1$d</string>
+    <string name="episode_number">エピソード %1$d</string>
     <string name="next_up">次に再生</string>
     <string name="libraries">ライブラリ</string>
     <string name="series_poster">シリーズポスター</string>

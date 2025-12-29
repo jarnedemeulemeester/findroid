@@ -97,8 +97,8 @@
     <string name="remove_from_favorites">Xóa khỏi mục yêu thích</string>
     <string name="collection_no_media">Bộ sưu tập này không có nội dung nào</string>
     <string name="sort_by_options_6">Ngẫu nhiên</string>
-    <string name="season_number">Mùa %1d</string>
-    <string name="episode_number">Tập %1d</string>
+    <string name="season_number">Mùa %1$d</string>
+    <string name="episode_number">Tập %1$d</string>
     <string name="runtime_minutes_left">Còn %1$d phút</string>
     <string name="none">Trống</string>
     <string name="manage_servers">Quản lý máy chủ</string>

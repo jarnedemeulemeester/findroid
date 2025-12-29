@@ -98,5 +98,5 @@
     <string name="title_download">Descargas</string>
     <string name="title_settings">Configuraciones</string>
     <string name="season_number">Temporada %1$d</string>
-    <string name="episode_number">Episodio %2$d</string>
+    <string name="episode_number">Episodio %1$d</string>
 </resources>

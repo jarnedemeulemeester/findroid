@@ -80,7 +80,7 @@
     <string name="stop_download">Ustavi prenos</string>
     <string name="preparing_download">Priprava prenosa</string>
     <string name="season_number">Sezona %1$d</string>
-    <string name="episode_number">Epizoda %2$d</string>
+    <string name="episode_number">Epizoda %1$d</string>
     <string name="offline_mode_icon">Ikona načina brez povezave</string>
     <string name="offline_mode">Način brez povezave</string>
     <string name="title_settings">Nastavitve</string>

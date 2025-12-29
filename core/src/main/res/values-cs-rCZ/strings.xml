@@ -75,7 +75,7 @@
     <string name="downloaded_indicator">Indikátor stahování</string>
     <string name="sort_order">Pořadí řazení</string>
     <string name="season_number">Sezóna %1$d</string>
-    <string name="episode_number">Epizoda %2$d</string>
+    <string name="episode_number">Epizoda %1$d</string>
     <string name="offline_mode">Offline režim</string>
     <string name="live_tv">Živá televize</string>
     <string name="play">Přehrát</string>
