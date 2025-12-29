@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
                             hasServers = state.hasServers,
                             hasCurrentServer = state.hasCurrentServer,
                             hasCurrentUser = state.hasCurrentUser,
-                            isOfflineMode = state.isOfflineMode,
                         )
                     }
                 }

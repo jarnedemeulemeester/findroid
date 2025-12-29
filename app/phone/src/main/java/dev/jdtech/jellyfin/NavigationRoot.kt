@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import java.util.UUID
 import kotlinx.serialization.Serializable
 
@@ -133,8 +134,9 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
-    isOfflineMode: Boolean,
 ) {
+    val isOfflineMode = LocalOfflineMode.current
+
     val startDestination =
         when {
             hasServers && hasCurrentServer && hasCurrentUser -> HomeRoute
@@ -195,8 +197,9 @@ fun NavigationRoot(
                         }
 
                         navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId)
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     icon = {
@@ -222,7 +225,7 @@ fun NavigationRoot(
             composable<WelcomeRoute> {
                 WelcomeScreen(onContinueClick = { navController.safeNavigate(ServersRoute) })
             }
-            composable<ServersRoute> { backStackEntry ->
+            composable<ServersRoute> {
                 ServersScreen(
                     navigateToUsers = { navController.safeNavigate(UsersRoute) },
                     navigateToAddresses = { serverId ->
@@ -246,14 +249,9 @@ fun NavigationRoot(
                     navigateBack = { navController.safePopBackStack() },
                 )
             }
-            composable<UsersRoute> { backStackEntry ->
+            composable<UsersRoute> {
                 UsersScreen(
-                    navigateToHome = {
-                        navController.safeNavigate(HomeRoute) {
-                            popUpTo(0)
-                            launchSingleTop = true
-                        }
-                    },
+                    navigateToHome = { navigateHome(navController) },
                     onChangeServerClick = {
                         navController.safeNavigate(ServersRoute) {
                             popUpTo(ServersRoute) { inclusive = false }
@@ -301,8 +299,9 @@ fun NavigationRoot(
                     onSearchClick = {
                         searchExpanded = true
                         navController.safeNavigate(MediaRoute) {
-                            popUpTo(navController.graph.startDestinationId)
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     onSettingsClick = {
