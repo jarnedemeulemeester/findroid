@@ -48,7 +48,14 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            // Detect app bundle and conditionally disable split abis
+            // This is needed due to a "Multiple shrunk-resources files found in directory" error
+            // present since AGP 8.9.0, for more info see:
+            // https://issuetracker.google.com/issues/402800800
+            val isBuildingBundle =
+                gradle.startParameter.taskNames.any { it.lowercase().contains("bundle") }
+            isEnable = !isBuildingBundle
+
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         }
