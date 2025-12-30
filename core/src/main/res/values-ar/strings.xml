@@ -102,4 +102,10 @@
     <string name="manage_servers">إدارة الخوادم</string>
     <string name="jellyfin_banner">لافتة جيلي فين</string>
     <string name="runtime_minutes_left">باقي %1$d دقيقة</string>
+    <string name="delete_download">حذف</string>
+    <string name="delete_download_message">هل أنت متأكد من حذف الملف المحمل من جهازك؟</string>
+    <string name="download_pending">جاري العمل…</string>
+    <string name="download_paused">متوقف مؤقتاً</string>
+    <string name="download_downloading">جاري التنزيل…</string>
+    <string name="download_failed">فشل التنزيل</string>
 </resources>
