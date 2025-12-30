@@ -53,7 +53,7 @@
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="select_video_version_title">Sélectionner une version</string>
     <string name="episode_watched_indicator">Indicateur d\'épisode vu</string>
-    <string name="series_poster">Affiche des séries</string>
+    <string name="series_poster">Poster des séries</string>
     <string name="error_preparing_player_items">Erreur lors de la préparation de la lecture de vos médias.</string>
     <string name="person_detail_title">Détails</string>
     <string name="libraries">Librairies</string>
@@ -102,4 +102,10 @@
     <string name="none">Aucun</string>
     <string name="manage_servers">Gérer les serveurs</string>
     <string name="runtime_minutes_left">%1$d minutes restantes</string>
+    <string name="delete_download">Supprimer le téléchargement</string>
+    <string name="delete_download_message">Êtes-vous sûr de vouloir supprimer ce téléchargement de votre appareil ?</string>
+    <string name="download_pending">En attente…</string>
+    <string name="download_paused">En pause</string>
+    <string name="download_downloading">En cours de téléchargement…</string>
+    <string name="download_failed">Échec du téléchargement</string>
 </resources>
