@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_description">Tredjeparts nativ Jellyfin-app</string>
     <string name="jellyfin_banner">Jellyfinbanderoll</string>
@@ -18,7 +18,7 @@
     <string name="no_downloads">Du har inget nedladdat</string>
     <string name="search">Sök</string>
     <string name="favorite_button_description">Favorit</string>
-    <string name="episode_watched_indicator">Episod sedd indikator</string>
+    <string name="episode_watched_indicator">Sett avsnitt indikator</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="device_name">Enhetsnamn</string>
     <string name="error_preparing_player_items">Fel vid förberedelse av spelarobjekt.</string>
@@ -92,4 +92,20 @@
     <string name="cancel_download_message">Är du säker på att du vill avbryta nedladdningen?</string>
     <string name="unmark_as_played">Avmarkera som uppspelad</string>
     <string name="collection_no_media">Denna samling innehåller inte några media</string>
+    <string name="delete_download_message">Är du säker på att du vill ta bort denna nedladdning från din enhet?</string>
+    <string name="none">Inga</string>
+    <string name="manage_servers">Hantera servrar</string>
+    <string name="download_pending">Väntar…</string>
+    <string name="download_paused">Pausad</string>
+    <string name="download_downloading">Laddar ner…</string>
+    <string name="download_failed">Nedladdning misslyckades</string>
+    <string name="title_settings">Inställningar</string>
+    <string name="title_download">Nedladdningar</string>
+    <string name="season_number">Säsong %1$d</string>
+    <string name="episode_number">Avsnitt %1$d</string>
+    <string name="runtime_minutes_left">%1$d min kvar</string>
+    <string name="offline_mode">Offlineläge</string>
+    <string name="external">Extern</string>
+    <string name="delete_download">Ta bort nedladdning</string>
+    <string name="not_set">Inte angivet</string>
 </resources>
