@@ -98,7 +98,7 @@
     <string name="title_settings">Einstellungen</string>
     <string name="offline_mode">Offline Modus</string>
     <string name="season_number">Staffel %1$d</string>
-    <string name="episode_number">Staffel %1$d</string>
+    <string name="episode_number">Folge %1$d</string>
     <string name="delete_download">Download löschen</string>
     <string name="manage_servers">Server verwalten</string>
     <string name="download_paused">Pausiert</string>
