@@ -208,6 +208,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         onDownloadCancelClick = {},
                         onDownloadDeleteClick = {},
                         modifier = Modifier.fillMaxWidth(),
+                        canPlay = state.seasons.isNotEmpty(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(text = show.overview, maxCollapsedLines = 3)

@@ -164,6 +164,7 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                         onDownloadDeleteClick = {},
                         modifier =
                             Modifier.padding(start = paddingStart, end = paddingEnd).fillMaxWidth(),
+                        canPlay = state.episodes.isNotEmpty(),
                     )
                 }
                 items(items = state.episodes, key = { episode -> episode.id }) { episode ->
