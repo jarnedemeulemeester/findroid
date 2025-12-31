@@ -11,13 +11,13 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.SortOrder
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
-import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
 
 interface JellyfinRepository {
