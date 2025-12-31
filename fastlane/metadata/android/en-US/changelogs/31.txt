@@ -1,0 +1,3 @@
+Fixes:
+- Fixed crash when browsing libraries.
+- Fixed wrong playback items when resuming a series or season.
