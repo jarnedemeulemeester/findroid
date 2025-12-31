@@ -97,4 +97,15 @@
     <string name="title_download">Downloads</string>
     <string name="title_settings">Einstellungen</string>
     <string name="offline_mode">Offline Modus</string>
+    <string name="season_number">Staffel %1$d</string>
+    <string name="episode_number">Staffel %1$d</string>
+    <string name="delete_download">Download löschen</string>
+    <string name="manage_servers">Server verwalten</string>
+    <string name="download_paused">Pausiert</string>
+    <string name="download_downloading">Wird heruntergeladen…</string>
+    <string name="download_failed">Fehler beim Download</string>
+    <string name="delete_download_message">Möchten Sie diesen Download wirklich von Ihrem Gerät löschen?</string>
+    <string name="runtime_minutes_left">%1$d Min. verbleibend</string>
+    <string name="download_pending">Ausstehend…</string>
+    <string name="none">Keine</string>
 </resources>
