@@ -135,7 +135,8 @@ class PlayerActivity : BasePlayerActivity() {
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
-        val subtitleTimingButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle_timing)
+        val subtitleTimingButton =
+            binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle_timing)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
@@ -320,10 +321,14 @@ class PlayerActivity : BasePlayerActivity() {
                     .show(supportFragmentManager, "subtitletimingdialog")
             } else {
                 Toast.makeText(
-                    this,
-                    getString(dev.jdtech.jellyfin.player.local.R.string.subtitle_timing_exoplayer_not_supported),
-                    Toast.LENGTH_LONG
-                ).show()
+                        this,
+                        getString(
+                            dev.jdtech.jellyfin.player.local.R.string
+                                .subtitle_timing_exoplayer_not_supported
+                        ),
+                        Toast.LENGTH_LONG,
+                    )
+                    .show()
             }
         }
 

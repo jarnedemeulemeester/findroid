@@ -33,18 +33,25 @@ class SubtitleTimingDialogFragment(private val viewModel: PlayerViewModel) : Dia
 
             updateOffsetText(offsetText, currentOffset)
 
-            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (fromUser) {
-                        val offset = (progress * 100L) - 15000L
-                        viewModel.setSubtitleOffset(offset)
-                        updateOffsetText(offsetText, offset)
+            seekBar.setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean,
+                    ) {
+                        if (fromUser) {
+                            val offset = (progress * 100L) - 15000L
+                            viewModel.setSubtitleOffset(offset)
+                            updateOffsetText(offsetText, offset)
+                        }
                     }
-                }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+                }
+            )
 
             decrementButton.setOnClickListener {
                 val newOffset = viewModel.subtitleOffset.value - 100L
@@ -67,11 +74,10 @@ class SubtitleTimingDialogFragment(private val viewModel: PlayerViewModel) : Dia
             }
 
             val builder = MaterialAlertDialogBuilder(activity)
-            builder.setTitle(getString(PlayerR.string.subtitle_timing))
+            builder
+                .setTitle(getString(PlayerR.string.subtitle_timing))
                 .setView(view)
-                .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                    dialog.dismiss()
-                }
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

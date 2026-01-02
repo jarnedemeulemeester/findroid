@@ -1014,8 +1014,8 @@ class MPVPlayer(
     }
 
     /**
-     * Sets the subtitle delay in milliseconds.
-     * Positive values delay subtitles (show later), negative values advance them (show earlier).
+     * Sets the subtitle delay in milliseconds. Positive values delay subtitles (show later),
+     * negative values advance them (show earlier).
      *
      * @param delayMs The subtitle delay in milliseconds.
      */
