@@ -101,6 +101,21 @@ constructor(
 
     var isInPictureInPictureMode: Boolean = false
 
+    private val _subtitleOffset = MutableStateFlow(0L)
+    val subtitleOffset = _subtitleOffset.asStateFlow()
+
+    fun setSubtitleOffset(offset: Long) {
+        _subtitleOffset.value = offset.coerceIn(-15000L, 15000L)
+        if (player is MPVPlayer) {
+            // The Negative Subtitle appear later behavior is witnessed in official Jellyfin Client
+            (player as MPVPlayer).setSubtitleDelay(-_subtitleOffset.value)
+        }
+    }
+
+    fun isUsingMpvPlayer(): Boolean {
+        return player is MPVPlayer
+    }
+
     init {
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes =

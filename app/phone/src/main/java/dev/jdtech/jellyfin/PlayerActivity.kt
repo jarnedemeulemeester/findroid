@@ -24,6 +24,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Space
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -38,6 +39,7 @@ import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
+import dev.jdtech.jellyfin.presentation.player.SubtitleTimingDialogFragment
 import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
@@ -133,6 +135,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
+        val subtitleTimingButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle_timing)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
@@ -205,6 +208,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 lockButton.imageAlpha = 255
                                 subtitleButton.isEnabled = true
                                 subtitleButton.imageAlpha = 255
+                                subtitleTimingButton.isEnabled = true
+                                subtitleTimingButton.imageAlpha = 255
                                 speedButton.isEnabled = true
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
@@ -267,6 +272,9 @@ class PlayerActivity : BasePlayerActivity() {
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
 
+        subtitleTimingButton.isEnabled = false
+        subtitleTimingButton.imageAlpha = 75
+
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
@@ -304,6 +312,19 @@ class PlayerActivity : BasePlayerActivity() {
         subtitleButton.setOnClickListener {
             TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel)
                 .show(supportFragmentManager, "trackselectiondialog")
+        }
+
+        subtitleTimingButton.setOnClickListener {
+            if (viewModel.isUsingMpvPlayer()) {
+                SubtitleTimingDialogFragment(viewModel)
+                    .show(supportFragmentManager, "subtitletimingdialog")
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(dev.jdtech.jellyfin.player.local.R.string.subtitle_timing_exoplayer_not_supported),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
         speedButton.setOnClickListener {

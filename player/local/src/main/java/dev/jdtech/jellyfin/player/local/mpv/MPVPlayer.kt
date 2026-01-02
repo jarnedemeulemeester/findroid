@@ -1014,6 +1014,17 @@ class MPVPlayer(
     }
 
     /**
+     * Sets the subtitle delay in milliseconds.
+     * Positive values delay subtitles (show later), negative values advance them (show earlier).
+     *
+     * @param delayMs The subtitle delay in milliseconds.
+     */
+    fun setSubtitleDelay(delayMs: Long) {
+        // mpv's sub-delay is in seconds, positive values delay subtitles
+        MPVLib.setPropertyDouble("sub-delay", delayMs / 1000.0)
+    }
+
+    /**
      * Returns the currently active playback parameters.
      *
      * @see Player.Listener.onPlaybackParametersChanged

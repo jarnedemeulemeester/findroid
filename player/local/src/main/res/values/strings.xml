@@ -22,4 +22,11 @@
     <string name="player_controls_skip_preview">Skip preview</string>
     <string name="player_controls_skip_commercial">Skip commercial</string>
     <string name="player_controls_skip_unknown">Skip</string>
+    <string name="subtitle_timing">Subtitle timing</string>
+    <string name="subtitle_timing_description">Adjust subtitle delay</string>
+    <string name="subtitle_timing_decrement">-100ms</string>
+    <string name="subtitle_timing_increment">+100ms</string>
+    <string name="subtitle_timing_reset">Reset</string>
+    <string name="subtitle_timing_hint">Positive: subtitles appear earlier, Negative: later</string>
+    <string name="subtitle_timing_exoplayer_not_supported">Subtitle timing is only supported with MPV player. Enable MPV in settings to use this feature.</string>
 </resources>
