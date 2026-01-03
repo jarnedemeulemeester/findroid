@@ -53,7 +53,7 @@
     <string name="image_description_backdrop">Toile de fond %1$s</string>
     <string name="select_video_version_title">Sélectionner une version</string>
     <string name="episode_watched_indicator">Indicateur d\'épisode vu</string>
-    <string name="series_poster">Poster des séries</string>
+    <string name="series_poster">Affiches des séries</string>
     <string name="error_preparing_player_items">Erreur lors de la préparation de la lecture de vos médias.</string>
     <string name="person_detail_title">Détails</string>
     <string name="libraries">Librairies</string>
