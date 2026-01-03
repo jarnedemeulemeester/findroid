@@ -29,4 +29,14 @@
    <string name="addresses">Adressen</string>
    <string name="remove_server_address_dialog_text">Bist du sicher, dass du die Server Adresse \"%1$s\" entfernen möchtest?</string>
    <string name="remove_server_address">Serveradresse entfernen</string>
+   <string name="servers">Server</string>
+   <string name="servers_btn_add_server">Server hinzufügen</string>
+   <string name="confirm">Bestätigen</string>
+   <string name="cancel">Abbrechen</string>
+   <string name="or">ODER</string>
+   <string name="server_subtitle">Server: %s</string>
+   <string name="welcome">Willkommen bei Findroid</string>
+   <string name="welcome_btn_continue">Weiter</string>
+   <string name="welcome_btn_learn_more">Erfahren Sie mehr über Jellyfin</string>
+   <string name="welcome_text">Findroid ist ein Drittanbieter-Client für Jellyfin. Findroid enthält selbst keine Medien.\n\nUm diesen Client zu verwenden, müssen Sie Ihren eigenen Jellyfin-Server hosten.</string>
 </resources>
