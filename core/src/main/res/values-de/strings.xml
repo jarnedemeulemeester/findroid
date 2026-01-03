@@ -9,7 +9,7 @@
     <string name="genres">Genres</string>
     <string name="director">Regisseur</string>
     <string name="writers">Autoren</string>
-    <string name="cast_amp_crew">Darsteller &amp; Crew</string>
+    <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Staffeln</string>
     <string name="check_button_description">Als gesehen oder ungesehen markieren</string>
     <string name="favorite_button_description">Favorit</string>
