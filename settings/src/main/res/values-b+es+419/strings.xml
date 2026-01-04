@@ -55,8 +55,8 @@
     <string name="trickplay">Trickplay</string>
     <string name="player_start_maximized_summary">Abrir por defecto el vídeo en modo maximizado</string>
     <string name="player_start_maximized">Iniciar maximizado</string>
-    <string name="player_gestures_chapter_skip">Gesto para cambiar capítulos</string>
-    <string name="player_gestures_chapter_skip_summary">Toque prolongado en el lado izquierdo/derecho para saltar capítulos (sobreescribe el gesto de velocidad x2)</string>
+    <string name="player_gestures_hold">Gesto para cambiar capítulos</string>
+    <string name="player_gestures_hold_summary">Toque prolongado en el lado izquierdo/derecho para saltar capítulos (sobreescribe el gesto de velocidad x2)</string>
     <string name="privacy_policy">Política de privacidad</string>
     <string name="title_settings">Ajustes</string>
     <string name="title_download">Descargas</string>

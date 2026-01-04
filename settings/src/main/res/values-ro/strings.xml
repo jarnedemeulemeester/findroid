@@ -35,10 +35,10 @@
     <string name="player_gestures_vb">Gesturi pentru volum și luminozitate</string>
     <string name="player_gestures_zoom">Gestură de zoom</string>
     <string name="player_gestures_seek">Gestură de derulare</string>
-    <string name="player_gestures_chapter_skip">Gestură pentru schimbarea capitolului</string>
+    <string name="player_gestures_hold">Gestură pentru schimbarea capitolului</string>
     <string name="player_gestures_vb_summary">Glisați în sus și în jos pe partea dreaptă a ecranului pentru a schimba volumul și pe partea stângă a ecranului pentru a schimba luminozitatea</string>
     <string name="player_gestures_zoom_summary">Ciupiți pentru a vedea videoclipul pe tot ecranul</string>
-    <string name="player_gestures_chapter_skip_summary">Apăsați lung pe partea stângă / dreaptă pentru a sări capitole (suprascrie gestura de viteză 2x)</string>
+    <string name="player_gestures_hold_summary">Apăsați lung pe partea stângă / dreaptă pentru a sări capitole (suprascrie gestura de viteză 2x)</string>
     <string name="player_gestures_seek_summary">Glisați orizontal pentru a derula înainte sau înapoi</string>
     <string name="player_brightness_remember">Țineți minte luminozitatea</string>
     <string name="player_start_maximized">Pornește maximizat</string>

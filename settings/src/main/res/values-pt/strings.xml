@@ -59,8 +59,8 @@
     <string name="extra_info_summary">Exibe informações detalhadas sobre áudio, vídeo e legendas</string>
     <string name="player_start_maximized">Inicie maximizado</string>
     <string name="player_start_maximized_summary">Abra o vídeo no modo maximizado por padrão</string>
-    <string name="player_gestures_chapter_skip">Gesto de capítulo</string>
+    <string name="player_gestures_hold">Gesto de capítulo</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Exibir marcadores de capítulo na barra de tempo</string>
-    <string name="player_gestures_chapter_skip_summary">Manter pressionado no Esquerdo / Direito para saltar capítulos (anula o gesto de velocidade x2)</string>
+    <string name="player_gestures_hold_summary">Manter pressionado no Esquerdo / Direito para saltar capítulos (anula o gesto de velocidade x2)</string>
 </resources>

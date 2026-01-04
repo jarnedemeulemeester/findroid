@@ -59,8 +59,8 @@
     <string name="picture_in_picture_gesture">画中画返回手势</string>
     <string name="player_start_maximized">最大化启动</string>
     <string name="player_start_maximized_summary">默认以最大化模式打开视频</string>
-    <string name="player_gestures_chapter_skip">章节手势</string>
-    <string name="player_gestures_chapter_skip_summary">长按左/右侧可跳过章节（覆盖 2 倍速度手势）</string>
+    <string name="player_gestures_hold">章节手势</string>
+    <string name="player_gestures_hold_summary">长按左/右侧可跳过章节（覆盖 2 倍速度手势）</string>
     <string name="pref_player_chapter_markers">章节标记</string>
     <string name="pref_player_chapter_markers_summary">在进度栏上显示章节标记</string>
     <string name="pref_player_trickplay">Trickplay</string>

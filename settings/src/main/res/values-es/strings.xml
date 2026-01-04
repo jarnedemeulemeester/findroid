@@ -56,8 +56,8 @@
     <string name="app_language">Idioma de la aplicación</string>
     <string name="player_start_maximized_summary">Abrir por defecto el vídeo en modo maximizado</string>
     <string name="player_start_maximized">Iniciar maximizado</string>
-    <string name="player_gestures_chapter_skip">Gesto de capítulo</string>
-    <string name="player_gestures_chapter_skip_summary">Clic prolongado en el lado Izquierdo / Derecho para saltar capítulos (sobreescribe el gesto velocidad x2)</string>
+    <string name="player_gestures_hold">Gesto de capítulo</string>
+    <string name="player_gestures_hold_summary">Clic prolongado en el lado Izquierdo / Derecho para saltar capítulos (sobreescribe el gesto velocidad x2)</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Mostrar marcadores de capítulo en la barra de tiempo</string>
     <string name="pref_player_trickplay">Trickplay</string>

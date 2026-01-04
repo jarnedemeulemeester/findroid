@@ -321,17 +321,18 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference =
                                                         appPreferences.playerGesturesZoom,
                                                 ),
-                                                PreferenceSwitch(
+                                                PreferenceSelect(
                                                     nameStringResource =
-                                                        R.string.player_gestures_chapter_skip,
+                                                        R.string.player_gestures_hold,
                                                     descriptionStringRes =
-                                                        R.string
-                                                            .player_gestures_chapter_skip_summary,
+                                                        R.string.player_gestures_hold_summary,
                                                     dependencies =
                                                         listOf(appPreferences.playerGestures),
-                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
                                                     backendPreference =
-                                                        appPreferences.playerGesturesChapterSkip,
+                                                        appPreferences.playerGesturesHold,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    options = R.array.gesture_hold,
+                                                    optionValues = R.array.gesture_hold,
                                                 ),
                                                 PreferenceSwitch(
                                                     nameStringResource =

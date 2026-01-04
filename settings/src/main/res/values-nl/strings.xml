@@ -57,8 +57,8 @@
     <string name="picture_in_picture">Scherm-in-scherm</string>
     <string name="picture_in_picture_gesture_summary">Gebruik de startknop of een gebaar om beeld-in-beeld te openen terwijl de video wordt afgespeeld</string>
     <string name="picture_in_picture_gesture">Scherm-in-scherm huisgebaar</string>
-    <string name="player_gestures_chapter_skip">Hoofdstuk gebaar</string>
-    <string name="player_gestures_chapter_skip_summary">Druk lang op de linker-/rechterkant om hoofdstukken over te slaan (overschrijft 2x snelheidsgebaar)</string>
+    <string name="player_gestures_hold">Hoofdstuk gebaar</string>
+    <string name="player_gestures_hold_summary">Druk lang op de linker-/rechterkant om hoofdstukken over te slaan (overschrijft 2x snelheidsgebaar)</string>
     <string name="player_start_maximized">Gemaximaliseerd starten</string>
     <string name="player_start_maximized_summary">Open video standaard in de gemaximaliseerde modus</string>
     <string name="pref_player_chapter_markers">Hoofdstukmarkeringen</string>
