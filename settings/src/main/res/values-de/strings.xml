@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Einstellungen</string>
     <string name="title_download">Downloads</string>
@@ -99,4 +99,5 @@
     <string name="media_segments_type_outro">Abspann</string>
     <string name="media_segments_type_intro">Einleitung</string>
     <string name="none">Keine</string>
+    <string name="users">Benutzer</string>
 </resources>
