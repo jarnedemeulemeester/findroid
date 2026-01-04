@@ -26,7 +26,7 @@
     <string name="settings_category_servers">सर्वर्स</string>
     <string name="settings_use_cache_summary">डिस्क पर इमेजेस कैश (cache) करें ताकि लोडिंग टाइम तेज हो। यह ऐप रीस्टार्ट के बाद प्रभावी होगा।</string>
     <string name="download_mobile_data">मोबाइल डेटा का उपयोग करके डाउनलोड करें</string>
-    <string name="player_gestures_chapter_skip_summary">अध्यायों को छोड़ने के लिए बाएँ / दाएँ हिस्से पर लंबे समय तक दबाएँ (2x गति इशारे को ओवरराइड करता है)</string>
+    <string name="player_gestures_hold_summary">अध्यायों को छोड़ने के लिए बाएँ / दाएँ हिस्से पर लंबे समय तक दबाएँ (2x गति इशारे को ओवरराइड करता है)</string>
     <string name="theme">थीम</string>
     <string name="settings_use_cache_title">कैश (cache) इमेजेस</string>
     <string name="settings_cache_size_message">जेलीफिन सर्वर से छवियों को संग्रहीत करने के लिए ऐप आपके डिस्क की इस एमबी का उपयोग करेगी। धीमे नेटवर्क पर बड़े मान फायदेमंद हो सकता हैं।</string>

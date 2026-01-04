@@ -57,8 +57,8 @@
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="picture_in_picture_gesture">Picture-in-Picture</string>
     <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
-    <string name="player_gestures_chapter_skip">Gesto do capítulo</string>
-    <string name="player_gestures_chapter_skip_summary">Pressione longamente no lado esquerdo/direito para pular capítulos (substitui o gesto de velocidade 2x)</string>
+    <string name="player_gestures_hold">Gesto do capítulo</string>
+    <string name="player_gestures_hold_summary">Pressione longamente no lado esquerdo/direito para pular capítulos (substitui o gesto de velocidade 2x)</string>
     <string name="player_start_maximized">Iniciar maximizado</string>
     <string name="player_start_maximized_summary">Abra o vídeo no modo maximizado por padrão</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>

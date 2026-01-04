@@ -59,8 +59,8 @@
     <string name="picture_in_picture_gesture_summary">Użyj przycisku strony głównej lub gestu, aby przejść do trybu obrazu w obrazie podczas odtwarzania wideo</string>
     <string name="player_start_maximized">Uruchom w trybie pełnoekranowym</string>
     <string name="player_start_maximized_summary">Domyślnie odtwórz wideo w trybie pełnoekranowym</string>
-    <string name="player_gestures_chapter_skip_summary">Długo przytrzymaj z prawej lub lewej strony aby pominąć rozdziały (omija 2x przyspieszenie wideo)</string>
-    <string name="player_gestures_chapter_skip">Gest rozdziału</string>
+    <string name="player_gestures_hold_summary">Długo przytrzymaj z prawej lub lewej strony aby pominąć rozdziały (omija 2x przyspieszenie wideo)</string>
+    <string name="player_gestures_hold">Gest rozdziału</string>
     <string name="pref_player_chapter_markers">Znaczniki rozdziałów</string>
     <string name="pref_player_chapter_markers_summary">Wyświetl znaczniki rozdziałów na pasku odtwarzania</string>
     <string name="pref_player_trickplay">Trickplay</string>
