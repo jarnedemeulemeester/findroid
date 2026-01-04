@@ -322,13 +322,17 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         appPreferences.playerGesturesZoom,
                                                 ),
                                                 PreferenceSelect(
-                                                    nameStringResource = R.string.player_gestures_hold,
-                                                    descriptionStringRes = R.string.player_gestures_hold_summary,
-                                                    dependencies = listOf(appPreferences.playerGestures),
-                                                    backendPreference = appPreferences.playerGesturesHold,
+                                                    nameStringResource =
+                                                        R.string.player_gestures_hold,
+                                                    descriptionStringRes =
+                                                        R.string.player_gestures_hold_summary,
+                                                    dependencies =
+                                                        listOf(appPreferences.playerGestures),
+                                                    backendPreference =
+                                                        appPreferences.playerGesturesHold,
                                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                                                     options = R.array.gesture_hold,
-                                                    optionValues = R.array.gesture_hold
+                                                    optionValues = R.array.gesture_hold,
                                                 ),
                                                 PreferenceSwitch(
                                                     nameStringResource =
