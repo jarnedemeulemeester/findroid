@@ -71,7 +71,7 @@
     <string name="offline_mode_go_online">Online gehen</string>
     <string name="cancel_download_message">Sind Sie sicher, dass Sie den Download abbrechen möchten\?</string>
     <string name="downloading_error">Fehler beim Herunterladen</string>
-    <string name="offline_mode_icon">Offline-Modus Icon</string>
+    <string name="offline_mode_icon">Offline-Modus Symbol</string>
     <string name="not_enough_storage">Dieses Element benötigt %1$s an freiem Speicher, aber es sind nur %2$s verfügbar</string>
     <string name="select_storage_location">Speicherort auswählen</string>
     <string name="no_server_connection">Keine Verbindung zum Jellyfin-Server, aktiviere den Offline-Modus in den Einstellungen</string>
@@ -96,7 +96,7 @@
     <string name="show_stacktrace">Stacktrace anzeigen</string>
     <string name="title_download">Downloads</string>
     <string name="title_settings">Einstellungen</string>
-    <string name="offline_mode">Offline Modus</string>
+    <string name="offline_mode">Offline-Modus</string>
     <string name="season_number">Staffel %1$d</string>
     <string name="episode_number">Folge %1$d</string>
     <string name="delete_download">Download löschen</string>
