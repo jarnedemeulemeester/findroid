@@ -24,7 +24,7 @@ ksp = "2.3.4"
 ktfmt = "0.25.0"
 libmpv = "0.5.1"
 material = "1.13.0"
-media3-ffmpeg-decoder = "1.8.0+1"
+media3-ffmpeg-decoder = "1.9.0+1"
 okhttp = "5.3.2"
 timber = "5.0.1"
 
