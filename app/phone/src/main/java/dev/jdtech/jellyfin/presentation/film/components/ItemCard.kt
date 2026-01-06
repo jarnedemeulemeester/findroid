@@ -17,17 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.utils.getShowDateString
 
 @Composable
 fun ItemCard(
@@ -41,14 +46,12 @@ fun ItemCard(
             Direction.HORIZONTAL -> 260
             Direction.VERTICAL -> 150
         }
-    Column(
-        modifier =
-            modifier
-                .width(width.dp)
-                .clip(MaterialTheme.shapes.small)
-                .clickable(onClick = { onClick(item) })
-    ) {
-        Surface(shape = MaterialTheme.shapes.small) {
+    Column(modifier = modifier.width(width.dp)) {
+        Surface(
+            modifier =
+                Modifier.clip(MaterialTheme.shapes.small).clickable(onClick = { onClick(item) }),
+            shape = MaterialTheme.shapes.small,
+        ) {
             Box {
                 ItemPoster(item = item, direction = direction)
                 Row(
@@ -72,29 +75,42 @@ fun ItemCard(
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-        Column(modifier = Modifier.height(42.dp)) {
-            Text(
-                text = if (item is FindroidEpisode) item.seriesName else item.name,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = if (item is FindroidEpisode) 1 else 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (item is FindroidEpisode) {
-                Text(
-                    text =
+        Text(
+            text = if (item is FindroidEpisode) item.seriesName else item.name,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text =
+                when (item) {
+                    is FindroidMovie -> {
+                        item.premiereDate?.year.toString()
+                    }
+
+                    is FindroidShow -> {
+                        getShowDateString(item)
+                    }
+
+                    is FindroidEpisode -> {
                         stringResource(
                             id = R.string.episode_name_extended,
                             item.parentIndexNumber,
                             item.indexNumber,
                             item.name,
-                        ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
+                        )
+                    }
+
+                    else -> {
+                        ""
+                    }
+                },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -108,6 +124,18 @@ private fun ItemCardPreviewMovie() {
 @Composable
 private fun ItemCardPreviewMovieVertical() {
     FindroidTheme { ItemCard(item = dummyMovie, direction = Direction.VERTICAL, onClick = {}) }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemCardPreviewShow() {
+    FindroidTheme { ItemCard(item = dummyShow, direction = Direction.HORIZONTAL, onClick = {}) }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemCardPreviewShowVertical() {
+    FindroidTheme { ItemCard(item = dummyShow, direction = Direction.VERTICAL, onClick = {}) }
 }
 
 @Preview(showBackground = true)
