@@ -5,11 +5,12 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
@@ -29,7 +30,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
-import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
@@ -172,21 +175,34 @@ fun NavigationRoot(
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val customNavSuiteType =
         with(windowAdaptiveInfo) {
-            if (
-                windowSizeClass.isWidthAtLeastBreakpoint(
-                    WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
-                )
-            ) {
-                NavigationSuiteType.NavigationRail
-            } else {
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
+            // HEIGHT
+            // Phone Landscape
+            if (!windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND)) {
+                NavigationSuiteType.WideNavigationRailCollapsed
+            }
+            // WIDTH
+            else {
+                when {
+                    // PC, Tablet Landscape
+                    windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
+                        NavigationSuiteType.WideNavigationRailCollapsed
+                    }
+                    // Tablet Portrait, Foldable
+                    windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                        NavigationSuiteType.ShortNavigationBarMedium
+                    }
+                    // Phone Portrait
+                    else -> {
+                        NavigationSuiteType.NavigationBar
+                    }
+                }
             }
         }
 
     NavigationSuiteScaffold(
-        navigationSuiteItems = {
+        navigationItems = {
             navigationItems.forEach { item ->
-                item(
+                NavigationSuiteItem(
                     selected = currentRoute == item.route::class.qualifiedName,
                     onClick = {
                         if (
@@ -210,10 +226,12 @@ fun NavigationRoot(
                     },
                     enabled = item.enabled,
                     label = { Text(text = stringResource(item.title)) },
+                    navigationSuiteType = customNavSuiteType,
                 )
             }
         },
-        layoutType = customNavSuiteType,
+        navigationItemVerticalArrangement = Arrangement.Center,
+        navigationSuiteType = customNavSuiteType,
         state = navigationSuiteScaffoldState,
     ) {
         NavHost(
