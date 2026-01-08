@@ -102,4 +102,10 @@
     <string name="not_set">未設定</string>
     <string name="none">なし</string>
     <string name="manage_servers">サーバーを管理</string>
+    <string name="delete_download">ダウンロードを削除</string>
+    <string name="delete_download_message">このダウンロードをデバイスから削除してもよろしいですか？</string>
+    <string name="download_pending">保留中…</string>
+    <string name="download_paused">一時停止中</string>
+    <string name="download_downloading">ダウンロード中…</string>
+    <string name="download_failed">ダウンロードに失敗しました</string>
 </resources>
