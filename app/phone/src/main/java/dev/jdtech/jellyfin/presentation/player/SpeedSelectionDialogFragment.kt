@@ -19,7 +19,6 @@ class SpeedSelectionDialogFragment(private val viewModel: PlayerViewModel) : Dia
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-
         val customLabel = getString(R.string.custom_playback_speed_label)
         val currentSpeed = viewModel.playbackSpeed
 

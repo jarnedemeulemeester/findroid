@@ -30,7 +30,6 @@ class SpeedSelectionCustomSpeedDialogFragment(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
-
             val speedText = TextView(activity.baseContext)
             speedText.text = createLabel(currentSpeed)
             speedText.gravity = Gravity.CENTER
@@ -40,16 +39,21 @@ class SpeedSelectionCustomSpeedDialogFragment(
             seekBar.max = SeekBarConstants.MAX
             seekBar.progress = speedToSeekBarValue(currentSpeed)
 
-            val listener = object : SeekBar.OnSeekBarChangeListener {
+            val listener =
+                object : SeekBar.OnSeekBarChangeListener {
 
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    speedText.text = createLabel(seekBarValueToSpeed(seekBar?.progress ?: 0))
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean,
+                    ) {
+                        speedText.text = createLabel(seekBarValueToSpeed(seekBar?.progress ?: 0))
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {} // NO-OP
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {} // NO-OP
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {} // NO-OP
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {} // NO-OP
-            }
             seekBar.setOnSeekBarChangeListener(listener)
 
             val container = LinearLayout(activity.baseContext)
@@ -60,7 +64,8 @@ class SpeedSelectionCustomSpeedDialogFragment(
             MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.custom_playback_speed)
                 .setView(container)
-                .setPositiveButton(R.string.custom_playback_speed_confirm_button_label) { dialog, _ ->
+                .setPositiveButton(R.string.custom_playback_speed_confirm_button_label) { dialog, _
+                    ->
                     speedSelectionDialog.setCustomSpeed(seekBarValueToSpeed(seekBar.progress))
                     dialog.dismiss()
                 }
@@ -69,10 +74,9 @@ class SpeedSelectionCustomSpeedDialogFragment(
     }
 
     /**
-     * Scale the integer value from the SeekBar to the associated playback speed multiplier.
-     * Uses a logarithmic scale so that X speed and 1/X speed are equidistant from 1x speed.
-     * Discards precision beyond 2 decimal places.
-     * Inverted by [speedToSeekBarValue].
+     * Scale the integer value from the SeekBar to the associated playback speed multiplier. Uses a
+     * logarithmic scale so that X speed and 1/X speed are equidistant from 1x speed. Discards
+     * precision beyond 2 decimal places. Inverted by [speedToSeekBarValue].
      */
     private fun seekBarValueToSpeed(int: Int): Float {
         val preciseSpeed = exp((int.toFloat() / SeekBarConstants.NORMALIZATION))
@@ -88,9 +92,7 @@ class SpeedSelectionCustomSpeedDialogFragment(
         return (SeekBarConstants.NORMALIZATION * ln(float)).toInt()
     }
 
-    /**
-     * Create a formatted string for a label describing the selected playback speed multiplier.
-     */
+    /** Create a formatted string for a label describing the selected playback speed multiplier. */
     private fun createLabel(float: Float): String {
         return "%.2fx".format(float)
     }
