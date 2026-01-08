@@ -25,17 +25,13 @@ fun VideoPlayerControlsLayout(
     seeker: @Composable () -> Unit,
     mediaActions: @Composable () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                mediaTitle()
-            }
+            Box(modifier = Modifier.weight(1f)) { mediaTitle() }
             mediaActions()
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
@@ -50,29 +46,26 @@ private fun VideoPlayerControlsLayoutPreview() {
         VideoPlayerControlsLayout(
             mediaTitle = {
                 Box(
-                    Modifier
-                        .border(2.dp, Color.Red)
+                    Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(96.dp),
+                        .height(96.dp)
                 )
             },
             seeker = {
                 Box(
-                    Modifier
-                        .border(2.dp, Color.Red)
+                    Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(48.dp)
                 )
             },
             mediaActions = {
                 Box(
-                    Modifier
-                        .border(2.dp, Color.Red)
+                    Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(48.dp)
                 )
             },
         )

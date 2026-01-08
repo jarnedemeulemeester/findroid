@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.jdtech.jellyfin.database.MIGRATION_6_7
 import dev.jdtech.jellyfin.database.ServerDatabase
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import javax.inject.Singleton
@@ -17,11 +18,8 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideServerDatabaseDao(@ApplicationContext app: Context): ServerDatabaseDao {
-        return Room.databaseBuilder(
-            app.applicationContext,
-            ServerDatabase::class.java,
-            "servers",
-        )
+        return Room.databaseBuilder(app.applicationContext, ServerDatabase::class.java, "servers")
+            .addMigrations(MIGRATION_6_7)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .allowMainThreadQueries()
             .build()

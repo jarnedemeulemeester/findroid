@@ -1,6 +1,12 @@
 package dev.jdtech.jellyfin.settings.domain
 
 object Constants {
+    // Player - Media Segments
+    object PlayerMediaSegmentsAutoSkip {
+        const val ALWAYS = "always"
+        const val PIP = "pip"
+    }
+
     // Network
     const val NETWORK_DEFAULT_REQUEST_TIMEOUT = 30_000L
     const val NETWORK_DEFAULT_CONNECT_TIMEOUT = 6_000L

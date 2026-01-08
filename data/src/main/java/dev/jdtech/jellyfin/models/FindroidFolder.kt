@@ -1,8 +1,8 @@
 package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import org.jellyfin.sdk.model.api.BaseItemDto
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
 
 data class FindroidFolder(
     override val id: UUID,
@@ -18,12 +18,10 @@ data class FindroidFolder(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>? = null,
+    override val chapters: List<FindroidChapter> = emptyList(),
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidFolder(
-    jellyfinRepository: JellyfinRepository,
-): FindroidFolder {
+fun BaseItemDto.toFindroidFolder(jellyfinRepository: JellyfinRepository): FindroidFolder {
     return FindroidFolder(
         id = id,
         name = name.orEmpty(),

@@ -58,9 +58,6 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="libraries">Bibliotecas</string>
     <string name="episodes_label">Episodios</string>
-    <string name="addresses">Direcciones</string>
-    <string name="add_address">Agregar dirección</string>
-    <string name="add_server_address">Agregar dirección del servidor</string>
     <string name="add">Agregar</string>
     <string name="size">Tamaño</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
@@ -86,8 +83,6 @@
     <string name="offline_mode_icon">Icono de modo desconectado</string>
     <string name="offline_mode_go_online">Cambiar a Conectado</string>
     <string name="downloading_error">Ocurrió un error al descargar</string>
-    <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
-    <string name="remove_server_address">Remover dirección del servidor</string>
     <string name="collection_no_media">Ésta colección no contiene elementos</string>
     <string name="remove_from_favorites">Quitar de favoritos</string>
     <string name="add_to_favorites">Agregar a favoritos</string>
@@ -97,10 +92,11 @@
     <string name="mark_as_played">Marcar como reproducido</string>
     <string name="unmark_as_played">Desmarca como reproducido</string>
     <string name="sort_by_options_6">Aleatorio</string>
-    <string name="users">Usuarios</string>
     <string name="show_stacktrace">Mostrar pila de llamadas</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="not_set">No establecido</string>
     <string name="title_download">Descargas</string>
     <string name="title_settings">Configuraciones</string>
+    <string name="season_number">Temporada %1$d</string>
+    <string name="episode_number">Episodio %1$d</string>
 </resources>

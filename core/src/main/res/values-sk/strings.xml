@@ -45,9 +45,6 @@
     <string name="runtime_minutes">%1$d minút</string>
     <string name="select_video_version_title">Zvoľte verziu</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Adresy</string>
-    <string name="add_address">Pridať adresu</string>
-    <string name="add_server_address">Pridať adresu servera</string>
     <string name="add">Pridať</string>
     <string name="app_description">Neoficiálna natívna Jellyfin aplikácia</string>
     <string name="jellyfin_banner">Jellyfin baner</string>
@@ -86,8 +83,6 @@
     <string name="downloaded_indicator">Indikátor sťahnutia</string>
     <string name="privacy_policy_notice">Používaním aplikácie Findroid súhlasíte so <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">zásadami ochrany osobných údajov</a>, v ktorých sa uvádza, že nezhromažďujeme žiadne údaje</string>
     <string name="size">Veľkosť</string>
-    <string name="remove_server_address">Odstrániť adresu serveru</string>
-    <string name="remove_server_address_dialog_text">Skutočne chcete odstrániť adresu serveru %1$s</string>
     <string name="live_tv">Živá TV</string>
     <string name="play">Prehrať</string>
     <string name="watch_trailer">Prehrať trailer</string>
@@ -96,7 +91,8 @@
     <string name="add_to_favorites">Pridať k obľúbeným</string>
     <string name="remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="collection_no_media">Táto kolekcia neobsahuje žiadne média</string>
-    <string name="season_episode">Séria %1$d - Epizóda %2$d</string>
+    <string name="season_number">Séria %1$d</string>
+    <string name="episode_number">Epizóda %1$d</string>
     <string name="offline_mode">Režim offline</string>
     <string name="title_settings">Nastavenia</string>
     <string name="show_stacktrace">Zobraziť stacktrace</string>

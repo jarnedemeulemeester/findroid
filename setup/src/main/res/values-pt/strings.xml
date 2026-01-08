@@ -24,4 +24,9 @@
     <string name="users_no_users">Nenhum utilizador encontrado</string>
     <string name="remove_server_dialog">Remover servidor</string>
     <string name="remove_server_dialog_text">Têm a certeza que pretende remover o servidor %1$s</string>
+    <string name="remove_server_address">Remover endereço do servidor</string>
+    <string name="add_address">Adicionar endereço</string>
+    <string name="remove_server_address_dialog_text">Tem certeza de que deseja remover o endereço do servidor %1$s</string>
+    <string name="add_server_address">Adicionar endereço do servidor</string>
+    <string name="addresses">Endereços</string>
 </resources>

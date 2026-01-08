@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin zászló</string>
     <string name="remove">Törlés</string>
@@ -12,7 +12,7 @@
     <string name="genres">Műfajok</string>
     <string name="director">Rendező</string>
     <string name="writers">Írók</string>
-    <string name="cast_amp_crew">Szereplők &amp; Stáb</string>
+    <string name="cast_amp_crew"><![CDATA[Szereplők és Stáb]]></string>
     <string name="seasons">Évadok</string>
     <string name="trailer_button_description">Előzetes megtekintése</string>
     <string name="check_button_description">Megjelölés megtekintettnek, vagy nem-megtekintettnek</string>
@@ -56,9 +56,6 @@
     <string name="search_hint">Filmek, sorozatok, epizódok keresése…</string>
     <string name="image_description_poster">%1$s poszter</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Címek</string>
-    <string name="add_address">Cím hozzáadása</string>
-    <string name="add_server_address">Szerver címének hozzáadása</string>
     <string name="add">Hozzáadás</string>
     <string name="episodes_label">Epizódok</string>
     <string name="libraries">Könyvtárak</string>
@@ -86,8 +83,6 @@
     <string name="size">Méret</string>
     <string name="privacy_policy_notice">A Findroid használatával elfogadod az <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Adatvédelmi szabályzatot</a> amely kimondja, hogy nem gyűjtünk adatokat</string>
     <string name="subtitle_chip_text">Felirat</string>
-    <string name="remove_server_address">Szerver címének eltávolítása</string>
-    <string name="remove_server_address_dialog_text">Biztosan el akarod távolítani a %1$s szervert</string>
     <string name="unmark_as_played">Megjelölés nem megtekintettként</string>
     <string name="add_to_favorites">Hozzáadás kedvencekhez</string>
     <string name="remove_from_favorites">Eltávolítás kedvencekből</string>
@@ -96,4 +91,21 @@
     <string name="play">Lejátszás</string>
     <string name="watch_trailer">Előzetes megtekintése</string>
     <string name="collection_no_media">Ez a gyűjtemény nem tartalmaz médiát</string>
-    </resources>
+    <string name="title_settings">Beállítások</string>
+    <string name="title_download">Letöltések</string>
+    <string name="show_stacktrace">Hibakövetés megjelenítése</string>
+    <string name="season_number">%1$d. évad</string>
+    <string name="episode_number">%1$d. rész</string>
+    <string name="sort_by_options_6">Véletlen</string>
+    <string name="runtime_minutes_left">%1$d perc maradt</string>
+    <string name="offline_mode">Offline mód</string>
+    <string name="delete_download">Letöltés törlése</string>
+    <string name="delete_download_message">Biztosan törölni szeretnéd a letöltést az eszközről?</string>
+    <string name="not_set">Nincs beállítva</string>
+    <string name="none">Egyik sem</string>
+    <string name="manage_servers">Szerverek kezelése</string>
+    <string name="download_pending">Függőben…</string>
+    <string name="download_paused">Megállítva</string>
+    <string name="download_downloading">Letöltés…</string>
+    <string name="download_failed">Sikertelen letöltés</string>
+</resources>

@@ -5,24 +5,23 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
     alias(libs.plugins.aboutlibraries)
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.aboutlibraries.android)
 }
 
 android {
     namespace = "dev.jdtech.jellyfin"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
-        minSdk = Versions.minSdk
-        targetSdk = Versions.targetSdk
+        minSdk = Versions.MIN_SDK
+        targetSdk = Versions.TARGET_SDK
 
-        versionCode = Versions.appCode
-        versionName = Versions.appName
+        versionCode = Versions.APP_CODE
+        versionName = Versions.APP_NAME
 
         testInstrumentationRunner = "dev.jdtech.jellyfin.HiltTestRunner"
     }
@@ -33,16 +32,15 @@ android {
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
             .forEach { output ->
                 if (variant.buildType.name == "release") {
-                    val outputFileName = "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
+                    val outputFileName =
+                        "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
                     output.outputFileName = outputFileName
                 }
             }
     }
 
     buildTypes {
-        named("debug") {
-            applicationIdSuffix = ".debug"
-        }
+        named("debug") { applicationIdSuffix = ".debug" }
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -67,7 +65,14 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            // Detect app bundle and conditionally disable split abis
+            // This is needed due to a "Multiple shrunk-resources files found in directory" error
+            // present since AGP 8.9.0, for more info see:
+            // https://issuetracker.google.com/issues/402800800
+            val isBuildingBundle =
+                gradle.startParameter.taskNames.any { it.lowercase().contains("bundle") }
+            isEnable = !isBuildingBundle
+
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         }
@@ -76,8 +81,8 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 
     buildFeatures {
@@ -94,17 +99,11 @@ android {
     }
 }
 
-ktlint {
-    version.set(Versions.ktlint)
-    android.set(true)
-    ignoreFailures.set(false)
-}
-
 dependencies {
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.player.core)
-    implementation(projects.player.video)
+    implementation(projects.player.local)
     implementation(projects.setup)
     implementation(projects.modes.film)
     implementation(projects.settings)
@@ -123,19 +122,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
 
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.work)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -144,6 +139,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
+    ksp(libs.kotlin.metadata.jvm)
     compileOnly(libs.libmpv)
     implementation(libs.material)
     implementation(libs.media3.ffmpeg.decoder)
@@ -152,6 +148,5 @@ dependencies {
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
 }

@@ -39,11 +39,11 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import org.jellyfin.sdk.model.api.SortOrder
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun SortByDialog(
@@ -60,44 +60,36 @@ fun SortByDialog(
     val orderNames = stringArrayResource(CoreR.array.sort_order_options)
     val orderOptions = orderValues.zip(orderNames)
 
-    var selectedOption by remember {
-        mutableStateOf(currentSortBy)
-    }
-    var selectedOrder by remember {
-        mutableStateOf(currentSortOrder)
-    }
+    var selectedOption by remember { mutableStateOf(currentSortBy) }
+    var selectedOrder by remember { mutableStateOf(currentSortOrder) }
 
     val lazyListState = rememberLazyListState()
 
     val isAtTop by remember {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0
+            lazyListState.firstVisibleItemIndex == 0 &&
+                lazyListState.firstVisibleItemScrollOffset == 0
         }
     }
 
-    Dialog(
-        onDismissRequest = { onDismissRequest() },
-    ) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 540.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(max = 540.dp),
             shape = MaterialTheme.shapes.large,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                 Text(
                     text = stringResource(CoreR.string.sort_by),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacings.default),
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacings.default),
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacings.default)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier.padding(horizontal = MaterialTheme.spacings.default).fillMaxWidth()
                 ) {
                     orderOptions.forEachIndexed { index, order ->
                         SegmentedButton(
@@ -106,10 +98,11 @@ fun SortByDialog(
                                 selectedOrder = order.first
                                 onUpdate(selectedOption, selectedOrder)
                             },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = orderOptions.size,
-                            ),
+                            shape =
+                                SegmentedButtonDefaults.itemShape(
+                                    index = index,
+                                    count = orderOptions.size,
+                                ),
                             icon = {
                                 AnimatedVisibility(
                                     visible = order.first == selectedOrder,
@@ -122,12 +115,7 @@ fun SortByDialog(
                                     )
                                 }
                             },
-                            label = {
-                                Text(
-                                    text = order.second,
-                                    fontWeight = FontWeight.Medium,
-                                )
-                            },
+                            label = { Text(text = order.second, fontWeight = FontWeight.Medium) },
                         )
                     }
                 }
@@ -135,11 +123,7 @@ fun SortByDialog(
                 if (!isAtTop) {
                     HorizontalDivider()
                 }
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    state = lazyListState,
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxWidth(), state = lazyListState) {
                     items(options) { option ->
                         SortByDialogItem(
                             option = option,
@@ -164,27 +148,19 @@ private fun SortByDialogItem(
     onSelect: (SortBy) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onSelect(option.first)
-            }
-            .padding(
-                horizontal = MaterialTheme.spacings.default,
-            ),
+        modifier =
+            Modifier.fillMaxWidth()
+                .clickable { onSelect(option.first) }
+                .padding(horizontal = MaterialTheme.spacings.default),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
             selected = isSelected,
-            onClick = {
-                onSelect(option.first)
-            },
+            onClick = { onSelect(option.first) },
             modifier = Modifier.padding(MaterialTheme.spacings.default / 2),
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
-        Text(
-            text = option.second,
-        )
+        Text(text = option.second)
     }
 }
 
@@ -205,10 +181,6 @@ private fun SortByDialogPreview() {
 @Composable
 private fun SortByDialogItemPreview() {
     FindroidTheme {
-        SortByDialogItem(
-            option = Pair(SortBy.NAME, "Title"),
-            isSelected = true,
-            onSelect = {},
-        )
+        SortByDialogItem(option = Pair(SortBy.NAME, "Title"), isSelected = true, onSelect = {})
     }
 }

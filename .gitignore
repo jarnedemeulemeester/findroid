@@ -17,7 +17,9 @@ output.json
 
 # IntelliJ
 *.iml
-.idea/
+.idea/*
+!.idea/dictionaries/
+!.idea/ktfmt.xml
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml

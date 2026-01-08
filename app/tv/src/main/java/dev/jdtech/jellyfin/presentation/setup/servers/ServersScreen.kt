@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
@@ -37,31 +37,28 @@ import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun ServersScreen(
-    navigateToLogin: () -> Unit,
     navigateToUsers: () -> Unit,
     onAddClick: () -> Unit,
     viewModel: ServersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.loadServers()
-    }
+    LaunchedEffect(true) { viewModel.loadServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ServersEvent.NavigateToLogin -> navigateToLogin()
-            is ServersEvent.NavigateToUsers -> navigateToUsers()
+            is ServersEvent.ServerChanged -> navigateToUsers()
+            else -> Unit
         }
     }
 
@@ -78,22 +75,14 @@ fun ServersScreen(
 }
 
 @Composable
-private fun ServersScreenLayout(
-    state: ServersState,
-    onAction: (ServersAction) -> Unit,
-) {
+private fun ServersScreenLayout(state: ServersState, onAction: (ServersAction) -> Unit) {
     var openDeleteDialog by remember { mutableStateOf(false) }
     var selectedServer by remember { mutableStateOf<Server?>(null) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier = Modifier.fillMaxWidth().align(Alignment.Center),
         ) {
             Text(
                 text = stringResource(id = SetupR.string.servers),
@@ -114,9 +103,7 @@ private fun ServersScreenLayout(
                         ServerItem(
                             name = server.server.name,
                             address = server.addresses.first().address,
-                            onClick = {
-                                onAction(ServersAction.OnServerClick(server.server.id))
-                            },
+                            onClick = { onAction(ServersAction.OnServerClick(server.server.id)) },
                             onLongClick = {
                                 selectedServer = server.server
                                 openDeleteDialog = true
@@ -126,9 +113,7 @@ private fun ServersScreenLayout(
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
-            OutlinedButton(
-                onClick = { onAction(ServersAction.OnAddClick) },
-            ) {
+            OutlinedButton(onClick = { onAction(ServersAction.OnAddClick) }) {
                 Text(text = stringResource(id = SetupR.string.add_server))
             }
         }
@@ -137,44 +122,49 @@ private fun ServersScreenLayout(
     if (openDeleteDialog && selectedServer != null) {
         var firstInteraction by remember { mutableStateOf(true) }
         AlertDialog(
-            title = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog))
-            },
+            title = { Text(text = stringResource(SetupR.string.remove_server_dialog)) },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.name))
+                Text(
+                    text =
+                        stringResource(
+                            SetupR.string.remove_server_dialog_text,
+                            selectedServer!!.name,
+                        )
+                )
             },
-            onDismissRequest = {
-                openDeleteDialog = false
-            },
+            onDismissRequest = { openDeleteDialog = false },
             confirmButton = {
                 TextButton(
                     onClick = {
                         openDeleteDialog = false
                         onAction(ServersAction.DeleteServer(selectedServer!!.id))
-                    },
+                    }
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
                 }
             },
             dismissButton = {
                 TextButton(
-                    onClick = {
-                        openDeleteDialog = false
-                    },
-                    modifier = Modifier.onPreviewKeyEvent { event ->
-                        // Long press on server would trigger the cancel button. This fixes that by capturing the first up event.
-                        when (event.nativeKeyEvent.keyCode) {
-                            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                                if (firstInteraction) {
-                                    if (event.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
-                                        firstInteraction = false
+                    onClick = { openDeleteDialog = false },
+                    modifier =
+                        Modifier.onPreviewKeyEvent { event ->
+                            // Long press on server would trigger the cancel button. This fixes that
+                            // by capturing
+                            // the first up event.
+                            when (event.nativeKeyEvent.keyCode) {
+                                KeyEvent.KEYCODE_DPAD_CENTER,
+                                KeyEvent.KEYCODE_ENTER,
+                                KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                                    if (firstInteraction) {
+                                        if (event.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
+                                            firstInteraction = false
+                                        }
+                                        return@onPreviewKeyEvent true
                                     }
-                                    return@onPreviewKeyEvent true
                                 }
                             }
-                        }
-                        false
-                    },
+                            false
+                        },
                 ) {
                     Text(text = stringResource(SetupR.string.cancel))
                 }
@@ -188,21 +178,24 @@ private fun ServersScreenLayout(
 private fun ServersScreenLayoutPreview() {
     FindroidTheme {
         ServersScreenLayout(
-            state = ServersState(
-                servers = listOf(
-                    ServerWithAddresses(
-                        server = dummyServer,
-                        addresses = listOf(
-                            ServerAddress(
-                                id = UUID.randomUUID(),
-                                address = dummyDiscoveredServer.address,
-                                serverId = "",
-                            ),
-                        ),
-                        user = null,
-                    ),
+            state =
+                ServersState(
+                    servers =
+                        listOf(
+                            ServerWithAddresses(
+                                server = dummyServer,
+                                addresses =
+                                    listOf(
+                                        ServerAddress(
+                                            id = UUID.randomUUID(),
+                                            address = dummyDiscoveredServer.address,
+                                            serverId = "",
+                                        )
+                                    ),
+                                user = null,
+                            )
+                        )
                 ),
-            ),
             onAction = {},
         )
     }
@@ -211,10 +204,5 @@ private fun ServersScreenLayoutPreview() {
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun ServersScreenLayoutPreviewNoServers() {
-    FindroidTheme {
-        ServersScreenLayout(
-            state = ServersState(),
-            onAction = {},
-        )
-    }
+    FindroidTheme { ServersScreenLayout(state = ServersState(), onAction = {}) }
 }

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -33,9 +35,20 @@ fun ItemHeader(
     showLogo: Boolean = false,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
-    val backdropUri = when (item) {
-        is FindroidEpisode -> item.images.primary
-        else -> item.images.backdrop
+    val context = LocalContext.current
+    var backdropUri =
+        when (item) {
+            is FindroidEpisode -> item.images.primary
+            else -> item.images.backdrop
+        }
+
+    // Ugly workaround to append the files directory when loading local images
+    if (backdropUri?.scheme == null) {
+        backdropUri =
+            Uri.Builder()
+                .appendEncodedPath("${context.filesDir}")
+                .appendEncodedPath(backdropUri?.path)
+                .build()
     }
 
     ItemHeaderBase(
@@ -45,12 +58,9 @@ fun ItemHeader(
             AsyncImage(
                 model = backdropUri,
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .parallaxLayoutModifier(
-                        scrollState = scrollState,
-                        rate = 2,
-                    ),
+                modifier =
+                    Modifier.fillMaxSize()
+                        .parallaxLayoutModifier(scrollState = scrollState, rate = 2),
                 placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
@@ -66,10 +76,21 @@ fun ItemHeader(
     showLogo: Boolean = false,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
-    val backdropUri = when (item) {
-        is FindroidEpisode -> item.images.primary
-        is FindroidSeason -> item.images.showBackdrop
-        else -> item.images.backdrop
+    val context = LocalContext.current
+    var backdropUri =
+        when (item) {
+            is FindroidEpisode -> item.images.primary
+            is FindroidSeason -> item.images.showBackdrop
+            else -> item.images.backdrop
+        }
+
+    // Ugly workaround to append the files directory when loading local images
+    if (backdropUri?.scheme == null) {
+        backdropUri =
+            Uri.Builder()
+                .appendEncodedPath("${context.filesDir}")
+                .appendEncodedPath(backdropUri?.path)
+                .build()
     }
 
     ItemHeaderBase(
@@ -79,12 +100,9 @@ fun ItemHeader(
             AsyncImage(
                 model = backdropUri,
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .parallaxLayoutModifier(
-                        lazyListState = lazyListState,
-                        rate = 2,
-                    ),
+                modifier =
+                    Modifier.fillMaxSize()
+                        .parallaxLayoutModifier(lazyListState = lazyListState, rate = 2),
                 placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
@@ -102,29 +120,22 @@ private fun ItemHeaderBase(
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
-    val logoUri = when (item) {
-        is FindroidEpisode -> item.images.showLogo
-        else -> item.images.logo
-    }
+    val logoUri =
+        when (item) {
+            is FindroidEpisode -> item.images.showLogo
+            else -> item.images.logo
+        }
 
-    Box(
-        modifier = Modifier
-            .height(240.dp)
-            .clipToBounds(),
-    ) {
+    Box(modifier = Modifier.height(288.dp).clipToBounds()) {
         backdropImage()
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize(),
-        ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRect(Color.Black.copy(alpha = 0.1f))
             drawRect(
-                Color.Black.copy(alpha = 0.1f),
-            )
-            drawRect(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, backgroundColor),
-                    startY = 0f,
-                ),
+                brush =
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, backgroundColor),
+                        startY = 0f,
+                    )
             )
         }
         content()
@@ -132,11 +143,11 @@ private fun ItemHeaderBase(
             AsyncImage(
                 model = logoUri,
                 contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(MaterialTheme.spacings.default)
-                    .height(100.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier.align(Alignment.BottomCenter)
+                        .padding(MaterialTheme.spacings.default)
+                        .height(100.dp)
+                        .fillMaxWidth(),
                 contentScale = ContentScale.Fit,
             )
         }

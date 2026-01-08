@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Column
@@ -17,22 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 
 @Composable
-fun SettingsAppLanguageCard(
-    preference: Preference,
-    modifier: Modifier = Modifier,
-) {
+fun SettingsAppLanguageCard(preference: Preference, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
 
-    val currentValue = remember {
-        context.resources.configuration.locales.get(0).displayName
-    }
+    val currentValue = remember { configuration.locales.get(0).displayName }
 
     SettingsBaseCard(
         preference = preference,
@@ -41,8 +38,8 @@ fun SettingsAppLanguageCard(
                 context.startActivity(
                     Intent(
                         Settings.ACTION_APP_LOCALE_SETTINGS,
-                        Uri.parse("package:${context.packageName}"),
-                    ),
+                        "package:${context.packageName}".toUri(),
+                    )
                 )
             }
         },
@@ -59,18 +56,13 @@ fun SettingsAppLanguageCard(
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-                Text(
-                    text = currentValue,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Text(text = currentValue, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

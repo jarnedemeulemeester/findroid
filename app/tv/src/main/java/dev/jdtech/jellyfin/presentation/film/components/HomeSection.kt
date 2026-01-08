@@ -25,9 +25,7 @@ fun HomeSection(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = section.name.asString(),
             style = MaterialTheme.typography.headlineMedium,
@@ -42,9 +40,7 @@ fun HomeSection(
                 ItemCard(
                     item = item,
                     direction = Direction.HORIZONTAL,
-                    onClick = {
-                        onAction(HomeAction.OnItemClick(it))
-                    },
+                    onClick = { onAction(HomeAction.OnItemClick(it)) },
                 )
             }
         }

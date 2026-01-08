@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">버전 선택</string>
+    <string name="select_audio_track">오디오 트랙 선택</string>
+    <string name="select_subtitle_track">자막 트랙 선택</string>
+    <string name="select_playback_speed">재생 속도 선택</string>
+    <string name="external">외부</string>
+    <string name="player_controls_rewind">되감기</string>
+    <string name="player_controls_fast_forward">빨리 감기</string>
+    <string name="player_controls_exit">플레이어 나가기</string>
+    <string name="player_controls_skip_intro">오프닝 스킵</string>
+    <string name="player_controls_lock">플레이어 잠금</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_skip_back">뒤로 건너뛰기</string>
+    <string name="player_controls_play_pause">재생/일시정지</string>
+    <string name="player_controls_skip_forward">앞으로 건너뛰기</string>
+    <string name="player_controls_progress">진행 표시줄</string>
+    <string name="player_controls_picture_in_picture">picture-in-picture 전환</string>
+    <string name="none">없음</string>
+</resources>

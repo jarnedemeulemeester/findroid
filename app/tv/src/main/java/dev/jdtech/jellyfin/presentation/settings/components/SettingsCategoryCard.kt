@@ -26,33 +26,25 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 
 @Composable
-fun SettingsCategoryCard(
-    preference: PreferenceCategory,
-    modifier: Modifier = Modifier,
-) {
+fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Modifier) {
     Surface(
-        onClick = {
-            preference.onClick(preference)
-        },
+        onClick = { preference.onClick(preference) },
         enabled = preference.enabled,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-        ),
-        border = ClickableSurfaceDefaults.border(
-            focusedBorder = Border(
-                BorderStroke(
-                    4.dp,
-                    Color.White,
-                ),
-                shape = RoundedCornerShape(10.dp),
+        colors =
+            ClickableSurfaceDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
             ),
-        ),
+        border =
+            ClickableSurfaceDefaults.border(
+                focusedBorder =
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+            ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier,
     ) {
@@ -70,9 +62,7 @@ fun SettingsCategoryCard(
             }
 
             Spacer(modifier = Modifier.width(24.dp))
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
@@ -94,10 +84,11 @@ fun SettingsCategoryCard(
 private fun SettingsCategoryCardPreview() {
     FindroidTheme {
         SettingsCategoryCard(
-            preference = PreferenceCategory(
-                nameStringResource = SettingsR.string.settings_category_player,
-                iconDrawableId = SettingsR.drawable.ic_play,
-            ),
+            preference =
+                PreferenceCategory(
+                    nameStringResource = SettingsR.string.settings_category_player,
+                    iconDrawableId = SettingsR.drawable.ic_play,
+                )
         )
     }
 }

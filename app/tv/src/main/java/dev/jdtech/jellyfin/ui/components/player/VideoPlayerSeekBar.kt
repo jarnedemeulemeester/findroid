@@ -39,16 +39,16 @@ fun VideoPlayerSeekBar(
     val interactionSource = remember { MutableInteractionSource() }
     var isSelected by remember { mutableStateOf(false) }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val color by rememberUpdatedState(
-        newValue = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
-    )
-    val animatedHeight by animateDpAsState(
-        targetValue = 8.dp.times(if (isFocused) 2f else 1f),
-    )
+    val color by
+        rememberUpdatedState(
+            newValue =
+                if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+        )
+    val animatedHeight by animateDpAsState(targetValue = 8.dp.times(if (isFocused) 2f else 1f))
     var seekProgress by remember { mutableFloatStateOf(0f) }
     val focusManager = LocalFocusManager.current
 
@@ -59,36 +59,36 @@ fun VideoPlayerSeekBar(
     }
 
     Canvas(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(animatedHeight)
-            .padding(horizontal = 4.dp)
-            .handleDPadKeyEvents(
-                onEnter = {
-                    if (isSelected) {
-                        onSeek(seekProgress)
-                        focusManager.moveFocus(FocusDirection.Exit)
-                    } else {
-                        seekProgress = progress
-                    }
-                    isSelected = !isSelected
-                },
-                onLeft = {
-                    if (isSelected) {
-                        seekProgress = (seekProgress - 0.05f).coerceAtLeast(0f)
-                    } else {
-                        focusManager.moveFocus(FocusDirection.Left)
-                    }
-                },
-                onRight = {
-                    if (isSelected) {
-                        seekProgress = (seekProgress + 0.05f).coerceAtMost(1f)
-                    } else {
-                        focusManager.moveFocus(FocusDirection.Right)
-                    }
-                },
-            )
-            .focusable(interactionSource = interactionSource),
+        modifier =
+            Modifier.fillMaxWidth()
+                .height(animatedHeight)
+                .padding(horizontal = 4.dp)
+                .handleDPadKeyEvents(
+                    onEnter = {
+                        if (isSelected) {
+                            onSeek(seekProgress)
+                            focusManager.moveFocus(FocusDirection.Exit)
+                        } else {
+                            seekProgress = progress
+                        }
+                        isSelected = !isSelected
+                    },
+                    onLeft = {
+                        if (isSelected) {
+                            seekProgress = (seekProgress - 0.05f).coerceAtLeast(0f)
+                        } else {
+                            focusManager.moveFocus(FocusDirection.Left)
+                        }
+                    },
+                    onRight = {
+                        if (isSelected) {
+                            seekProgress = (seekProgress + 0.05f).coerceAtMost(1f)
+                        } else {
+                            focusManager.moveFocus(FocusDirection.Right)
+                        }
+                    },
+                )
+                .focusable(interactionSource = interactionSource)
     ) {
         val yOffset = size.height.div(2)
         drawLine(
@@ -101,20 +101,22 @@ fun VideoPlayerSeekBar(
         drawLine(
             color = color,
             start = Offset(x = 0f, y = yOffset),
-            end = Offset(
-                x = size.width.times(if (isSelected) seekProgress else progress),
-                y = yOffset,
-            ),
+            end =
+                Offset(
+                    x = size.width.times(if (isSelected) seekProgress else progress),
+                    y = yOffset,
+                ),
             strokeWidth = size.height.div(2),
             cap = StrokeCap.Round,
         )
         drawCircle(
             color = Color.White,
             radius = size.height.div(2),
-            center = Offset(
-                x = size.width.times(if (isSelected) seekProgress else progress),
-                y = yOffset,
-            ),
+            center =
+                Offset(
+                    x = size.width.times(if (isSelected) seekProgress else progress),
+                    y = yOffset,
+                ),
         )
     }
 }
@@ -123,10 +125,6 @@ fun VideoPlayerSeekBar(
 @Composable
 fun VideoPlayerSeekBarPreview() {
     FindroidTheme {
-        VideoPlayerSeekBar(
-            progress = 0.4f,
-            onSeek = {},
-            state = rememberVideoPlayerState(),
-        )
+        VideoPlayerSeekBar(progress = 0.4f, onSeek = {}, state = rememberVideoPlayerState())
     }
 }

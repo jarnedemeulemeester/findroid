@@ -22,14 +22,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
 import dev.jdtech.jellyfin.film.presentation.media.MediaState
 import dev.jdtech.jellyfin.film.presentation.media.MediaViewModel
-import dev.jdtech.jellyfin.models.FindroidCollection
+import dev.jdtech.jellyfin.film.presentation.search.SearchAction
+import dev.jdtech.jellyfin.film.presentation.search.SearchState
+import dev.jdtech.jellyfin.film.presentation.search.SearchViewModel
+import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ErrorCard
@@ -42,25 +45,37 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
 fun MediaScreen(
-    onItemClick: (FindroidCollection) -> Unit,
-    onSettingsClick: () -> Unit,
+    onItemClick: (FindroidItem) -> Unit,
+    onFavoritesClick: () -> Unit,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchState by searchViewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadData()
-    }
+    LaunchedEffect(true) { viewModel.loadData() }
 
     MediaScreenLayout(
         state = state,
+        searchState = searchState,
+        searchExpanded = searchExpanded,
+        onSearchExpand = onSearchExpand,
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
-                is MediaAction.OnSettingsClick -> onSettingsClick()
+                is MediaAction.OnFavoritesClick -> onFavoritesClick()
                 else -> Unit
             }
             viewModel.onAction(action)
+        },
+        onSearchAction = { action ->
+            when (action) {
+                is SearchAction.OnItemClick -> onItemClick(action.item)
+                else -> Unit
+            }
+            searchViewModel.onAction(action)
         },
     )
 }
@@ -68,94 +83,88 @@ fun MediaScreen(
 @Composable
 private fun MediaScreenLayout(
     state: MediaState,
+    searchState: SearchState,
+    searchExpanded: Boolean,
+    onSearchExpand: (Boolean) -> Unit,
     onAction: (MediaAction) -> Unit,
+    onSearchAction: (SearchAction) -> Unit,
 ) {
-    val safePadding = rememberSafePadding(
-        handleStartInsets = false,
-    )
+    val safePadding = rememberSafePadding(handleStartInsets = false)
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
-    val contentPaddingTop by animateDpAsState(
-        targetValue = if (state.error != null) {
-            safePadding.top + 144.dp
-        } else {
-            safePadding.top + 88.dp
-        },
-        label = "content_padding",
-    )
+    val contentPaddingTop by
+        animateDpAsState(
+            targetValue =
+                if (state.error != null) {
+                    safePadding.top + 144.dp
+                } else {
+                    safePadding.top + 88.dp
+                },
+            label = "content_padding",
+        )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> 320.dp
-        WindowWidthSizeClass.MEDIUM -> 240.dp
-        else -> 160.dp
-    }
+    val minColumnSize =
+        when {
+            windowSizeClass.isWidthAtLeastBreakpoint(
+                WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+            ) -> 320.dp
+            windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ->
+                240.dp
+            else -> 160.dp
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         FilmSearchBar(
-            onSettingsClick = {
-                onAction(MediaAction.OnSettingsClick)
-            },
+            state = searchState,
+            expanded = searchExpanded,
+            onExpand = onSearchExpand,
+            onAction = onSearchAction,
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
             paddingEnd = paddingEnd,
-            inputPaddingStart = safePadding.start,
-            inputPaddingEnd = safePadding.end,
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = paddingStart,
-                top = contentPaddingTop,
-                end = paddingEnd,
-                bottom = paddingBottom,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = paddingStart,
+                    top = contentPaddingTop,
+                    end = paddingEnd,
+                    bottom = paddingBottom,
+                ),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         ) {
-            item(
-                span = { GridItemSpan(maxLineSpan) },
-            ) {
-                FavoritesCard(
-                    onClick = {},
-                )
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                FavoritesCard(onClick = { onAction(MediaAction.OnFavoritesClick) })
             }
             items(state.libraries, key = { it.id }) { library ->
                 ItemCard(
                     item = library,
                     direction = Direction.HORIZONTAL,
-                    onClick = {
-                        onAction(MediaAction.OnItemClick(library))
-                    },
-                    modifier = Modifier
-                        .animateItem(),
+                    onClick = { onAction(MediaAction.OnItemClick(library)) },
+                    modifier = Modifier.animateItem(),
                 )
             }
         }
         if (state.error != null) {
             ErrorCard(
-                onShowStacktrace = {
-                    showErrorDialog = true
-                },
-                onRetryClick = {
-                    onAction(MediaAction.OnRetryClick)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = paddingStart,
-                        top = safePadding.top + 80.dp,
-                        end = paddingEnd,
-                    ),
+                onShowStacktrace = { showErrorDialog = true },
+                onRetryClick = { onAction(MediaAction.OnRetryClick) },
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(
+                            start = paddingStart,
+                            top = safePadding.top + 80.dp,
+                            end = paddingEnd,
+                        ),
             )
             if (showErrorDialog) {
                 ErrorDialog(
@@ -172,11 +181,13 @@ private fun MediaScreenLayout(
 private fun MediaScreenLayoutPreview() {
     FindroidTheme {
         MediaScreenLayout(
-            state = MediaState(
-                libraries = dummyCollections,
-                error = Exception("Failed to load data"),
-            ),
+            state =
+                MediaState(libraries = dummyCollections, error = Exception("Failed to load data")),
+            searchState = SearchState(),
+            searchExpanded = false,
+            onSearchExpand = {},
             onAction = {},
+            onSearchAction = {},
         )
     }
 }

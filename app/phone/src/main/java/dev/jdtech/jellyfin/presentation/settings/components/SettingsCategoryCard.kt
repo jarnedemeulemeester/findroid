@@ -16,22 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 
 @Composable
-fun SettingsCategoryCard(
-    preference: PreferenceCategory,
-    modifier: Modifier = Modifier,
-) {
+fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Modifier) {
     SettingsBaseCard(
         preference = preference,
-        onClick = {
-            preference.onClick(preference)
-        },
+        onClick = { preference.onClick(preference) },
         modifier = modifier,
     ) {
         Row(
@@ -48,9 +43,7 @@ fun SettingsCategoryCard(
             }
 
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
@@ -72,10 +65,11 @@ fun SettingsCategoryCard(
 private fun SettingsCategoryCardPreview() {
     FindroidTheme {
         SettingsCategoryCard(
-            preference = PreferenceCategory(
-                nameStringResource = SettingsR.string.settings_category_player,
-                iconDrawableId = CoreR.drawable.ic_play,
-            ),
+            preference =
+                PreferenceCategory(
+                    nameStringResource = SettingsR.string.settings_category_player,
+                    iconDrawableId = CoreR.drawable.ic_play,
+                )
         )
     }
 }

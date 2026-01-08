@@ -1,6 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_description">Derde-partij Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="remove">Verwijderen</string>
@@ -38,7 +37,7 @@
     <string name="genres">Categorieën</string>
     <string name="director">Regisseur</string>
     <string name="writers">Schrijvers</string>
-    <string name="cast_amp_crew">Cast en bemanning</string>
+    <string name="cast_amp_crew"><![CDATA[Cast & Bemanning]]></string>
     <string name="seasons">Seizoenen</string>
     <string name="play_button_description">Speel de media af</string>
     <string name="trailer_button_description">Kijk de trailer</string>
@@ -59,9 +58,6 @@
     <string name="search_hint">Zoek films, series, afleveringen…</string>
     <string name="download_button_description">Download</string>
     <string name="movies_label">Films</string>
-    <string name="addresses">Adressen</string>
-    <string name="add_server_address">Server adres toevoegen</string>
-    <string name="add_address">Adressen toevoegen</string>
     <string name="add">Toevoegen</string>
     <string name="subtitle">Ondertiteling</string>
     <string name="size">Grootte</string>
@@ -90,11 +86,20 @@
     <string name="watch_trailer">Bekijk trailer</string>
     <string name="mark_as_played">Markeer als afgespeeld</string>
     <string name="unmark_as_played">Markering als afgespeeld ongedaan maken</string>
-    <string name="remove_server_address">Verwijder server adres</string>
-    <string name="remove_server_address_dialog_text">Weet u zeker dat u het server adres %1$s wilt verwijderen</string>
     <string name="live_tv">Live TV</string>
     <string name="play">Afspelen</string>
     <string name="add_to_favorites">Aan favorieten toevoegen</string>
     <string name="remove_from_favorites">Van favorieten verwijderen</string>
     <string name="collection_no_media">Deze collectie bevat geen media</string>
+    <string name="title_settings">Instellingen</string>
+    <string name="title_download">Downloads</string>
+    <string name="season_number">Seizoen %1$d</string>
+    <string name="episode_number">Aflevering %1$d</string>
+    <string name="sort_by_options_6">Willekeurig</string>
+    <string name="offline_mode">Offline Modus</string>
+    <string name="not_set">Niet ingesteld</string>
+    <string name="manage_servers">Servers beheren</string>
+    <string name="show_stacktrace">Toon stacktrace</string>
+    <string name="runtime_minutes_left">nog %1$d minuten</string>
+    <string name="none">Geen</string>
 </resources>

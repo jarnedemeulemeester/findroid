@@ -1,15 +1,13 @@
 import org.gradle.api.JavaVersion
 
 object Versions {
-    const val appCode = 29
-    const val appName = "0.15.3"
+    const val APP_CODE = 31
+    const val APP_NAME = "1.0.1"
 
-    const val compileSdk = 36
-    const val buildTools = "36.0.0"
-    const val minSdk = 28
-    const val targetSdk = 36
+    const val COMPILE_SDK = 36
+    const val TARGET_SDK = 36
+    const val MIN_SDK = 28
+    const val BUILD_TOOLS = "36.1.0"
 
-    val java = JavaVersion.VERSION_21
-
-    const val ktlint = "0.50.0"
+    val JAVA = JavaVersion.VERSION_21
 }

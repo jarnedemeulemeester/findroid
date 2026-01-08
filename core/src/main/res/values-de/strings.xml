@@ -9,7 +9,7 @@
     <string name="genres">Genres</string>
     <string name="director">Regisseur</string>
     <string name="writers">Autoren</string>
-    <string name="cast_amp_crew">Cast &amp; Crew</string>
+    <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Staffeln</string>
     <string name="check_button_description">Als gesehen oder ungesehen markieren</string>
     <string name="favorite_button_description">Favorit</string>
@@ -30,7 +30,7 @@
     <string name="trailer_button_description">Trailer ansehen</string>
     <string name="no_favorites">Du hast keine Favoriten</string>
     <string name="jellyfin_banner">Jellyfin Banner</string>
-    <string name="play_button_description">Abspielen</string>
+    <string name="play_button_description">Medien abspielen</string>
     <string name="episode_watched_indicator">Folge-Angesehen Indikator</string>
     <string name="series_poster">Serienposter</string>
     <string name="download_button_description">Herunterladen</string>
@@ -59,9 +59,6 @@
     <string name="episodes_label">Episoden</string>
     <string name="libraries">Bibliotheken</string>
     <string name="add">Hinzufügen</string>
-    <string name="add_server_address">Serveradresse ergänzen</string>
-    <string name="add_address">Adresse ergänzen</string>
-    <string name="addresses">Adressen</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="video">Video</string>
     <string name="temp">temporär</string>
@@ -74,7 +71,7 @@
     <string name="offline_mode_go_online">Online gehen</string>
     <string name="cancel_download_message">Sind Sie sicher, dass Sie den Download abbrechen möchten\?</string>
     <string name="downloading_error">Fehler beim Herunterladen</string>
-    <string name="offline_mode_icon">Offline-Modus Icon</string>
+    <string name="offline_mode_icon">Offline-Modus Symbol</string>
     <string name="not_enough_storage">Dieses Element benötigt %1$s an freiem Speicher, aber es sind nur %2$s verfügbar</string>
     <string name="select_storage_location">Speicherort auswählen</string>
     <string name="no_server_connection">Keine Verbindung zum Jellyfin-Server, aktiviere den Offline-Modus in den Einstellungen</string>
@@ -88,10 +85,8 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="watch_trailer">Trailer anschauen</string>
     <string name="remove_from_favorites">Aus Favoriten entfernen</string>
-    <string name="remove_server_address_dialog_text">Bist du sicher, dass du die Server Adresse \"%1$s\" entfernen möchtest?</string>
-    <string name="remove_server_address">Serveradresse entfernen</string>
     <string name="collection_no_media">Diese Sammlung enthält keine Medien</string>
-    <string name="mark_as_played">Als angesehen markieren</string>
+    <string name="mark_as_played">Als abgespielt markieren</string>
     <string name="add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="play">Abspielen</string>
     <string name="live_tv">Live Fernsehen</string>
@@ -101,5 +96,16 @@
     <string name="show_stacktrace">Stacktrace anzeigen</string>
     <string name="title_download">Downloads</string>
     <string name="title_settings">Einstellungen</string>
-    <string name="offline_mode">Offline Modus</string>
+    <string name="offline_mode">Offline-Modus</string>
+    <string name="season_number">Staffel %1$d</string>
+    <string name="episode_number">Folge %1$d</string>
+    <string name="delete_download">Download löschen</string>
+    <string name="manage_servers">Server verwalten</string>
+    <string name="download_paused">Pausiert</string>
+    <string name="download_downloading">Wird heruntergeladen…</string>
+    <string name="download_failed">Herunterladen fehlgeschlagen</string>
+    <string name="delete_download_message">Möchten Sie diesen Download wirklich von Ihrem Gerät löschen?</string>
+    <string name="runtime_minutes_left">%1$d Min. verbleibend</string>
+    <string name="download_pending">Ausstehend…</string>
+    <string name="none">Keine</string>
 </resources>

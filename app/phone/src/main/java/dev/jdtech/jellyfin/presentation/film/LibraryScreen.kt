@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.recalculateWindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,17 +29,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
@@ -55,11 +54,10 @@ import dev.jdtech.jellyfin.presentation.film.components.SortByDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
-import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.presentation.utils.plus
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun LibraryScreen(
@@ -72,15 +70,10 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var initialLoad by rememberSaveable {
-        mutableStateOf(true)
-    }
+    var initialLoad by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(true) {
-        viewModel.setup(
-            parentId = libraryId,
-            libraryType = libraryType,
-        )
+        viewModel.setup(parentId = libraryId, libraryType = libraryType)
         if (initialLoad) {
             viewModel.loadItems()
             initialLoad = false
@@ -108,37 +101,24 @@ private fun LibraryScreenLayout(
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
-    val layoutDirection = LocalLayoutDirection.current
-    val safePadding = rememberSafePadding()
-
-    val paddingStart = safePadding.start + MaterialTheme.spacings.default
-    val paddingTop = MaterialTheme.spacings.default
-    val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val contentPadding = PaddingValues(all = MaterialTheme.spacings.default)
 
     val items = state.items.collectAsLazyPagingItems()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    var showSortByDialog by remember {
-        mutableStateOf(false)
-    }
+    var showSortByDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier.fillMaxSize()
+                .recalculateWindowInsets()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(libraryName)
-                },
+                title = { Text(libraryName) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(LibraryAction.OnBackClick)
-                        },
-                    ) {
+                    IconButton(onClick = { onAction(LibraryAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
@@ -146,11 +126,7 @@ private fun LibraryScreenLayout(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            showSortByDialog = true
-                        },
-                    ) {
+                    IconButton(onClick = { showSortByDialog = true }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_down_up),
                             contentDescription = null,
@@ -162,46 +138,26 @@ private fun LibraryScreenLayout(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
-        ) {
+        Column {
             ErrorGroup(
                 loadStates = items.loadState,
-                onRefresh = {
-                    items.refresh()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = paddingStart,
-                        top = paddingTop,
-                        end = paddingEnd,
-                    ),
+                onRefresh = { items.refresh() },
+                modifier = Modifier.fillMaxWidth().padding(contentPadding + innerPadding),
             )
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = paddingStart + innerPadding.calculateStartPadding(layoutDirection),
-                    top = paddingTop,
-                    end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
-                    bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-                ),
+                contentPadding = contentPadding + innerPadding,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             ) {
-                items(
-                    count = items.itemCount,
-                    key = items.itemKey { it.id },
-                ) {
+                items(count = items.itemCount, key = items.itemKey { it.id }) {
                     val item = items[it]
                     item?.let { item ->
                         ItemCard(
                             item = item,
                             direction = Direction.VERTICAL,
-                            onClick = {
-                                onAction(LibraryAction.OnItemClick(item))
-                            },
+                            onClick = { onAction(LibraryAction.OnItemClick(item)) },
                             modifier = Modifier.animateItem(),
                         )
                     }
@@ -217,43 +173,41 @@ private fun LibraryScreenLayout(
             onUpdate = { sortBy, sortOrder ->
                 onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
-            onDismissRequest = {
-                showSortByDialog = false
-            },
+            onDismissRequest = { showSortByDialog = false },
         )
     }
 }
 
 @Composable
-private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
+private fun ErrorGroup(
+    loadStates: CombinedLoadStates,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
-    val loadStateError = when {
-        loadStates.refresh is LoadState.Error -> {
-            loadStates.refresh as LoadState.Error
+    val loadStateError =
+        when {
+            loadStates.refresh is LoadState.Error -> {
+                loadStates.refresh as LoadState.Error
+            }
+            loadStates.prepend is LoadState.Error -> {
+                loadStates.prepend as LoadState.Error
+            }
+            loadStates.append is LoadState.Error -> {
+                loadStates.append as LoadState.Error
+            }
+            else -> null
         }
-        loadStates.prepend is LoadState.Error -> {
-            loadStates.prepend as LoadState.Error
-        }
-        loadStates.append is LoadState.Error -> {
-            loadStates.append as LoadState.Error
-        }
-        else -> null
-    }
 
     loadStateError?.let {
         ErrorCard(
-            onShowStacktrace = {
-                showErrorDialog = true
-            },
+            onShowStacktrace = { showErrorDialog = true },
             onRetryClick = onRefresh,
             modifier = modifier,
         )
         if (showErrorDialog) {
-            ErrorDialog(
-                exception = it.error,
-                onDismissRequest = { showErrorDialog = false },
-            )
+            ErrorDialog(exception = it.error, onDismissRequest = { showErrorDialog = false })
         }
     }
 }

@@ -54,9 +54,6 @@
     <string name="sort_by_options_1">Рейтингу IMDB</string>
     <string name="sort_by_options_5">Дате выпуска</string>
     <string name="runtime_minutes">%1$d минут</string>
-    <string name="addresses">Адреса</string>
-    <string name="add_address">Добавить адрес</string>
-    <string name="add_server_address">Добавить адрес сервера</string>
     <string name="add">Добавить</string>
     <string name="jellyfin_banner">Баннер Jellyfin</string>
     <string name="episodes_label">Эпизоды</string>
@@ -86,8 +83,6 @@
     <string name="downloaded_indicator">Индикатор скачивания</string>
     <string name="size">Размер</string>
     <string name="privacy_policy_notice">Используя Findroid, вы соглашаетесь с <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">политикой конфиденциальности</a>, в которой говорится, что мы не собираем никаких данных</string>
-    <string name="remove_server_address">Удалить адрес сервера</string>
-    <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
     <string name="show_stacktrace">Показать трассировку стека</string>
     <string name="offline_mode">Оффлайн режим</string>
     <string name="not_set">Не установлено</string>
@@ -102,4 +97,15 @@
     <string name="add_to_favorites">Добавить в избранное</string>
     <string name="remove_from_favorites">Убрать из избранного</string>
     <string name="collection_no_media">Эта коллекция не содержит никаких медиа</string>
+    <string name="season_number">Сезон %1d</string>
+    <string name="episode_number">Эпизод %1d</string>
+    <string name="runtime_minutes_left">%1$d минут осталось</string>
+    <string name="delete_download">Удалить скаченный объект</string>
+    <string name="delete_download_message">Вы уверены, что хотите удалить скаченный объект со своего устройства?</string>
+    <string name="none">Ничего</string>
+    <string name="manage_servers">Управление серверами</string>
+    <string name="download_pending">Ожидание…</string>
+    <string name="download_paused">Пауза</string>
+    <string name="download_downloading">Скачивание…</string>
+    <string name="download_failed">Не удалось скачать</string>
 </resources>

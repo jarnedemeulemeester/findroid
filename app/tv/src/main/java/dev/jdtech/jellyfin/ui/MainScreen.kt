@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Tab
@@ -37,10 +37,10 @@ import androidx.tv.material3.TabDefaults
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
 import androidx.tv.material3.Text
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.CollectionType
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
@@ -51,7 +51,7 @@ import dev.jdtech.jellyfin.ui.components.PillBorderIndicator
 import dev.jdtech.jellyfin.ui.components.ProfileButton
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 @Composable
 fun MainScreen(
@@ -59,14 +59,12 @@ fun MainScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val delegatedUiState by mainViewModel.uiState.collectAsState()
 
-    LaunchedEffect(true) {
-        mainViewModel.loadServerAndUser()
-    }
+    LaunchedEffect(true) { mainViewModel.loadServerAndUser() }
 
     MainScreenLayout(
         uiState = delegatedUiState,
@@ -78,10 +76,7 @@ fun MainScreen(
     )
 }
 
-enum class TabDestination(
-    @DrawableRes val icon: Int,
-    @StringRes val label: Int,
-) {
+enum class TabDestination(@param:DrawableRes val icon: Int, @param:StringRes val label: Int) {
     Search(CoreR.drawable.ic_search, CoreR.string.search),
     Home(CoreR.drawable.ic_home, CoreR.string.title_home),
     Libraries(CoreR.drawable.ic_library, CoreR.string.libraries),
@@ -95,7 +90,7 @@ private fun MainScreenLayout(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind) -> Unit,
 ) {
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
@@ -110,23 +105,18 @@ private fun MainScreenLayout(
         else -> Unit
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .padding(horizontal = MaterialTheme.spacings.default),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .height(80.dp)
+                    .padding(horizontal = MaterialTheme.spacings.default)
         ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_logo),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterStart),
+                modifier = Modifier.size(32.dp).align(Alignment.CenterStart),
             )
             TabRow(
                 selectedTabIndex = focusedTabIndex,
@@ -153,17 +143,24 @@ private fun MainScreenLayout(
                     Tab(
                         selected = activeTabIndex == index,
                         onFocus = { focusedTabIndex = index },
-                        colors = TabDefaults.pillIndicatorTabColors(
-                            contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-                            selectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                            focusedContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-                            focusedSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
+                        colors =
+                            TabDefaults.pillIndicatorTabColors(
+                                contentColor =
+                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                                selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                                focusedContentColor =
+                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                                focusedSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
                         onClick = {
                             focusedTabIndex = index
                             activeTabIndex = index
                         },
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacings.default / 2, vertical = MaterialTheme.spacings.small),
+                        modifier =
+                            Modifier.padding(
+                                horizontal = MaterialTheme.spacings.default / 2,
+                                vertical = MaterialTheme.spacings.small,
+                            ),
                     ) {
                         Icon(
                             painter = painterResource(id = tab.icon),
@@ -185,12 +182,7 @@ private fun MainScreenLayout(
                 if (isLoading) {
                     LoadingIndicator()
                 }
-                ProfileButton(
-                    user = user,
-                    onClick = {
-                        navigateToSettings()
-                    },
-                )
+                ProfileButton(user = user, onClick = { navigateToSettings() })
             }
         }
         when (activeTabIndex) {
@@ -203,10 +195,7 @@ private fun MainScreenLayout(
                 )
             }
             2 -> {
-                MediaScreen(
-                    navigateToLibrary = navigateToLibrary,
-                    isLoading = { isLoading = it },
-                )
+                MediaScreen(navigateToLibrary = navigateToLibrary, isLoading = { isLoading = it })
             }
         }
     }
@@ -222,7 +211,7 @@ private fun MainScreenLayoutPreview() {
             navigateToLibrary = { _, _, _ -> },
             navigateToMovie = {},
             navigateToShow = {},
-            navigateToPlayer = {},
+            navigateToPlayer = { _, _ -> },
         )
     }
 }

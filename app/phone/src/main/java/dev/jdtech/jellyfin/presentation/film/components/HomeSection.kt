@@ -27,15 +27,8 @@ fun HomeSection(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(42.dp)
-                .padding(itemsPadding),
-        ) {
+    Column(modifier = modifier) {
+        Box(modifier = Modifier.fillMaxWidth().height(42.dp).padding(itemsPadding)) {
             Text(
                 text = section.name.asString(),
                 modifier = Modifier.align(Alignment.CenterStart),
@@ -51,9 +44,7 @@ fun HomeSection(
                 ItemCard(
                     item = item,
                     direction = Direction.HORIZONTAL,
-                    onClick = {
-                        onAction(HomeAction.OnItemClick(item))
-                    },
+                    onClick = { onAction(HomeAction.OnItemClick(item)) },
                 )
             }
         }

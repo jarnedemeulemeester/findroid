@@ -4,48 +4,30 @@ plugins {
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.ktlint)
 }
 
 android {
     namespace = "dev.jdtech.jellyfin.core"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
-    defaultConfig {
-        minSdk = Versions.minSdk
-    }
+    defaultConfig { minSdk = Versions.MIN_SDK }
 
     buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-        }
-        register("staging") {
-            initWith(getByName("release"))
-        }
+        named("release") { isMinifyEnabled = false }
+        register("staging") { initWith(getByName("release")) }
     }
 
     flavorDimensions += "variant"
-    productFlavors {
-        register("libre")
-    }
+    productFlavors { register("libre") }
 
     compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 
-    buildFeatures {
-        compose = true
-    }
-}
-
-ktlint {
-    version.set(Versions.ktlint)
-    android.set(true)
-    ignoreFailures.set(false)
+    buildFeatures { compose = true }
 }
 
 dependencies {
@@ -65,5 +47,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
     implementation(libs.material)
+    implementation(libs.okhttp)
     implementation(libs.timber)
 }

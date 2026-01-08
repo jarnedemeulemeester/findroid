@@ -8,21 +8,19 @@ import java.util.UUID
 
 @Entity(
     tableName = "seasons",
-    foreignKeys = [
-        ForeignKey(
-            entity = FindroidShowDto::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("seriesId"),
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
-    indices = [
-        Index("seriesId"),
-    ],
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = FindroidShowDto::class,
+                parentColumns = arrayOf("id"),
+                childColumns = arrayOf("seriesId"),
+                onDelete = ForeignKey.CASCADE,
+            )
+        ],
+    indices = [Index("seriesId")],
 )
 data class FindroidSeasonDto(
-    @PrimaryKey
-    val id: UUID,
+    @PrimaryKey val id: UUID,
     val seriesId: UUID,
     val name: String,
     val seriesName: String,

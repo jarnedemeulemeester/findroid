@@ -54,9 +54,6 @@
     <string name="ascending">עולה</string>
     <string name="select_video_version_title">בחר גרסה</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">כתובות</string>
-    <string name="add_address">הוסף כתובת</string>
-    <string name="add_server_address">הוסף כתובת שרת</string>
     <string name="add">הוסף</string>
     <string name="video">וידאו</string>
     <string name="audio">שמע</string>
@@ -86,6 +83,4 @@
     <string name="episode_name_extended_with_end">ע%1$d:פ%2$d-%3$d - %4$s</string>
     <string name="storage_name">%1$s (%2$d מ\"ב פנויים)</string>
     <string name="downloaded_indicator">מחוון הורדה</string>
-    <string name="remove_server_address">הסר כתובת שרת</string>
-    <string name="remove_server_address_dialog_text">האם אתה בטוח שברצונך להסיר את כתובת השרת %1$s</string>
     </resources>

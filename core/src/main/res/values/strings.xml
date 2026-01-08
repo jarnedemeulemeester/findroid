@@ -2,8 +2,6 @@
     <string name="app_name" translatable="false">Findroid</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
-    <string name="remove_server_address">Remove server address</string>
-    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="title_home">Home</string>
@@ -30,7 +28,8 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
-    <string name="season_episode">Season %1$d - Episode %2$d</string>
+    <string name="season_number">Season %1$d</string>
+    <string name="episode_number">Episode %1$d</string>
     <string name="next_up">Next Up</string>
     <string name="libraries">Libraries</string>
     <string name="series_poster">Series poster</string>
@@ -67,11 +66,9 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>
+    <string name="runtime_minutes_left">%1$d mins left</string>
     <string name="select_video_version_title">Select version</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Addresses</string>
-    <string name="add_address">Add address</string>
-    <string name="add_server_address">Add server address</string>
     <string name="add">Add</string>
     <string name="size">Size</string>
     <string name="video">Video</string>
@@ -93,6 +90,8 @@
     <string name="preparing_download">Preparing download</string>
     <string name="cancel_download">Cancel download</string>
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
+    <string name="delete_download">Delete download</string>
+    <string name="delete_download_message">Are you sure you want to delete this download from you device?</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
     <string name="live_tv">Live TV</string>
@@ -103,4 +102,10 @@
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="not_set">Not set</string>
+    <string name="none">None</string>
+    <string name="manage_servers">Manage servers</string>
+    <string name="download_pending">Pending…</string>
+    <string name="download_paused">Paused</string>
+    <string name="download_downloading">Downloading…</string>
+    <string name="download_failed">Failed to download</string>
 </resources>

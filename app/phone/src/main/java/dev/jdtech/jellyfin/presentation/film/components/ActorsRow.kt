@@ -13,21 +13,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import dev.jdtech.jellyfin.models.FindroidPerson
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun ActorsRow(
-    actors: List<FindroidPerson>,
+    actors: List<FindroidItemPerson>,
     onActorClick: (personId: UUID) -> Unit,
     contentPadding: PaddingValues,
 ) {
-    Column(
-        modifier = Modifier
-            .padding(contentPadding),
-    ) {
+    Column(modifier = Modifier.padding(contentPadding)) {
         Text(
             text = stringResource(CoreR.string.cast_amp_crew),
             style = MaterialTheme.typography.titleMedium,
@@ -38,18 +35,8 @@ fun ActorsRow(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
     ) {
-        items(
-            items = actors,
-            key = { person ->
-                person.id
-            },
-        ) { person ->
-            PersonItem(
-                person = person,
-                onClick = {
-                    onActorClick(person.id)
-                },
-            )
+        items(items = actors, key = { person -> person.id }) { person ->
+            PersonItem(person = person, onClick = { onActorClick(person.id) })
         }
     }
 }

@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.models
 
-import org.jellyfin.sdk.model.api.TrickplayInfo
+import org.jellyfin.sdk.model.api.TrickplayInfoDto
 
 data class FindroidTrickplayInfo(
     val width: Int,
@@ -12,7 +12,7 @@ data class FindroidTrickplayInfo(
     val bandwidth: Int,
 )
 
-fun TrickplayInfo.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
+fun TrickplayInfoDto.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
     return FindroidTrickplayInfo(
         width = width,
         height = height,

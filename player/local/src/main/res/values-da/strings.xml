@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_audio_track">Vælg lyd spor</string>
+    <string name="player_controls_play_pause">Afspilnings pause</string>
+    <string name="select_subtitle_track">Vælg undertekster</string>
+    <string name="select_playback_speed">Vælg afspilnings hastighed</string>
+    <string name="select_a_version">Vælg en version</string>
+    <string name="external">Ekstern</string>
+    <string name="player_controls_picture_in_picture">Start billed i billed</string>
+    <string name="player_controls_lock">Låser afspilleren</string>
+    <string name="player_controls_skip_back">Hop tilbage</string>
+    <string name="player_controls_exit">Stop afspiller</string>
+    <string name="player_controls_skip_intro">Spring over intro</string>
+    <string name="player_controls_fast_forward">Spol frem</string>
+    <string name="player_controls_skip_forward">Spring frem</string>
+    <string name="player_trickplay">Spole afspille</string>
+    <string name="none">Ingen</string>
+    <string name="player_controls_progress">Process indikator</string>
+    <string name="player_controls_rewind">Spol tilbage</string>
+</resources>

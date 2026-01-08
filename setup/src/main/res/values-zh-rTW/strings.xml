@@ -24,4 +24,9 @@
     <string name="users_no_users">未找到相應的用戶</string>
     <string name="remove_server_dialog">移除伺服器</string>
     <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
+    <string name="addresses">地址</string>
+    <string name="add_address">添加地址</string>
+    <string name="add_server_address">添加伺服器地址</string>
+    <string name="remove_server_address">刪除伺服器位址</string>
+    <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
 </resources>

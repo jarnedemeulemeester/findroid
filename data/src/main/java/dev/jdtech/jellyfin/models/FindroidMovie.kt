@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
-import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.PlayAccess
 import java.time.LocalDateTime
 import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.PlayAccess
 
 data class FindroidMovie(
     override val id: UUID,
@@ -20,7 +20,7 @@ data class FindroidMovie(
     override val runtimeTicks: Long,
     override val playbackPositionTicks: Long,
     val premiereDate: LocalDateTime?,
-    val people: List<FindroidPerson>,
+    val people: List<FindroidItemPerson>,
     val genres: List<String>,
     val communityRating: Float?,
     val officialRating: String?,
@@ -30,7 +30,7 @@ data class FindroidMovie(
     val trailer: String?,
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>?,
+    override val chapters: List<FindroidChapter>,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
 ) : FindroidItem, FindroidSources
 
@@ -66,7 +66,8 @@ suspend fun BaseItemDto.toFindroidMovie(
         trailer = remoteTrailers?.getOrNull(0)?.url,
         images = toFindroidImages(jellyfinRepository),
         chapters = toFindroidChapters(),
-        trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
+        trickplayInfo =
+            trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
     )
 }
 
@@ -100,8 +101,8 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         canPlay = true,
         sources = database.getSources(id).map { it.toFindroidSource(database) },
         trailer = null,
-        images = FindroidImages(),
-        chapters = chapters,
+        images = toLocalFindroidImages(itemId = id),
+        chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
     )
 }

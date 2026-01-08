@@ -59,9 +59,6 @@
     <string name="view_details">查看詳情</string>
     <string name="view_details_underlined"><u>查看詳情</u></string>
     <string name="sort_by">排序方式</string>
-    <string name="addresses">地址</string>
-    <string name="add_address">添加地址</string>
-    <string name="add_server_address">添加伺服器地址</string>
     <string name="add">添加</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">第%1$d季：第%2$d-%3$d集 - %4$s</string>
@@ -86,8 +83,6 @@
     <string name="offline_mode_icon">離線模式圖標</string>
     <string name="offline_mode_go_online">聯機</string>
     <string name="external">外部的</string>
-    <string name="remove_server_address">刪除伺服器位址</string>
-    <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
     <string name="temp">臨時文件</string>
     <string name="live_tv">電視直播</string>
     <string name="play">播放</string>

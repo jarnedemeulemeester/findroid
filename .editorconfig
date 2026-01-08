@@ -1,4 +1,0 @@
-root = true
-
-[*.{kt,kts}]
-# ktlint_standard_max-line-length = disabled

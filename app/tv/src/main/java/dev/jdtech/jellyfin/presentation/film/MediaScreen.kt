@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyCollections
 import dev.jdtech.jellyfin.film.presentation.media.MediaAction
@@ -35,13 +35,9 @@ fun MediaScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.loadData()
-    }
+    LaunchedEffect(true) { viewModel.loadData() }
 
-    LaunchedEffect(state.isLoading) {
-        isLoading(state.isLoading)
-    }
+    LaunchedEffect(state.isLoading) { isLoading(state.isLoading) }
 
     LibrariesScreenLayout(
         state = state,
@@ -58,35 +54,29 @@ fun MediaScreen(
 }
 
 @Composable
-private fun LibrariesScreenLayout(
-    state: MediaState,
-    onAction: (MediaAction) -> Unit,
-) {
+private fun LibrariesScreenLayout(state: MediaState, onAction: (MediaAction) -> Unit) {
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(state.libraries) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(state.libraries) { focusRequester.requestFocus() }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
-        contentPadding = PaddingValues(
-            start = MaterialTheme.spacings.large,
-            top = MaterialTheme.spacings.small,
-            end = MaterialTheme.spacings.large,
-            bottom = MaterialTheme.spacings.large,
-        ),
+        contentPadding =
+            PaddingValues(
+                start = MaterialTheme.spacings.large,
+                top = MaterialTheme.spacings.small,
+                end = MaterialTheme.spacings.large,
+                bottom = MaterialTheme.spacings.large,
+            ),
         modifier = Modifier.focusRequester(focusRequester),
     ) {
         items(state.libraries, key = { it.id }) { library ->
             ItemCard(
                 item = library,
                 direction = Direction.HORIZONTAL,
-                onClick = {
-                    onAction(MediaAction.OnItemClick(library))
-                },
+                onClick = { onAction(MediaAction.OnItemClick(library)) },
             )
         }
     }
@@ -96,9 +86,6 @@ private fun LibrariesScreenLayout(
 @Composable
 private fun LibrariesScreenLayoutPreview() {
     FindroidTheme {
-        LibrariesScreenLayout(
-            state = MediaState(libraries = dummyCollections),
-            onAction = {},
-        )
+        LibrariesScreenLayout(state = MediaState(libraries = dummyCollections), onAction = {})
     }
 }

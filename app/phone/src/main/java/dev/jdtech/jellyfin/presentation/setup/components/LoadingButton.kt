@@ -25,30 +25,15 @@ fun LoadingButton(
         if (isLoading) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterStart)
-                    .offset(x = 8.dp),
+                modifier = Modifier.size(24.dp).align(Alignment.CenterStart).offset(x = 8.dp),
             )
         }
-        Button(
-            onClick = onClick,
-            enabled = !isLoading,
-            modifier = modifier,
-        ) {
-            Text(text = text)
-        }
+        Button(onClick = onClick, enabled = !isLoading, modifier = modifier) { Text(text = text) }
     }
 }
 
 @Composable
 @Preview
 private fun LoadingButtonPreview() {
-    FindroidTheme {
-        LoadingButton(
-            text = "Connect",
-            onClick = {},
-            isLoading = true,
-        )
-    }
+    FindroidTheme { LoadingButton(text = "Connect", onClick = {}, isLoading = true) }
 }

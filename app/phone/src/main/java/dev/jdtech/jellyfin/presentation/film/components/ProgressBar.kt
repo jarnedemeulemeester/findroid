@@ -16,32 +16,19 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 
 @Composable
-fun ProgressBar(
-    item: FindroidItem,
-    width: Int,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-    ) {
+fun ProgressBar(item: FindroidItem, width: Int, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Box(
-            modifier = Modifier
-                .height(4.dp)
-                .width(
-                    item.playbackPositionTicks
-                        .div(
-                            item.runtimeTicks.toFloat(),
-                        )
-                        .times(
-                            width - 16,
-                        ).dp,
-                )
-                .clip(
-                    MaterialTheme.shapes.extraSmall,
-                )
-                .background(
-                    MaterialTheme.colorScheme.primary,
-                ),
+            modifier =
+                Modifier.height(4.dp)
+                    .width(
+                        item.playbackPositionTicks
+                            .div(item.runtimeTicks.toFloat())
+                            .times(width - 16)
+                            .dp
+                    )
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(MaterialTheme.colorScheme.primary)
         )
     }
 }
@@ -49,10 +36,5 @@ fun ProgressBar(
 @Preview(showBackground = true)
 @Composable
 private fun ProgressBarPreview() {
-    FindroidTheme {
-        ProgressBar(
-            item = dummyMovie,
-            width = 142,
-        )
-    }
+    FindroidTheme { ProgressBar(item = dummyMovie, width = 142) }
 }

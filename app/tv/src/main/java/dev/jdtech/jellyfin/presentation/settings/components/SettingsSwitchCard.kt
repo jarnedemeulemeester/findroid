@@ -28,9 +28,9 @@ import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
-import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSwitchCard(
@@ -42,23 +42,19 @@ fun SettingsSwitchCard(
         onClick = onClick,
         enabled = preference.enabled,
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            disabledContainerColor = MaterialTheme.colorScheme.surface,
-        ),
-        border = ClickableSurfaceDefaults.border(
-            focusedBorder = Border(
-                BorderStroke(
-                    4.dp,
-                    Color.White,
-                ),
-                shape = RoundedCornerShape(10.dp),
+        colors =
+            ClickableSurfaceDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
             ),
-        ),
+        border =
+            ClickableSurfaceDefaults.border(
+                focusedBorder =
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+            ),
         scale = ClickableSurfaceScale.None,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
@@ -72,9 +68,7 @@ fun SettingsSwitchCard(
                 )
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
@@ -88,10 +82,7 @@ fun SettingsSwitchCard(
                 }
             }
 
-            Switch(
-                checked = preference.value,
-                onCheckedChange = null,
-            )
+            Switch(checked = preference.value, onCheckedChange = null)
         }
     }
 }
@@ -101,11 +92,12 @@ fun SettingsSwitchCard(
 private fun SettingsSwitchCardPreview() {
     FindroidTheme {
         SettingsSwitchCard(
-            preference = PreferenceSwitch(
-                nameStringResource = SettingsR.string.settings_use_cache_title,
-                iconDrawableId = null,
-                backendPreference = Preference("", false),
-            ),
+            preference =
+                PreferenceSwitch(
+                    nameStringResource = SettingsR.string.settings_use_cache_title,
+                    iconDrawableId = null,
+                    backendPreference = Preference("", false),
+                ),
             onClick = {},
         )
     }
@@ -116,12 +108,13 @@ private fun SettingsSwitchCardPreview() {
 private fun SettingsSwitchCardDisabledPreview() {
     FindroidTheme {
         SettingsSwitchCard(
-            preference = PreferenceSwitch(
-                nameStringResource = SettingsR.string.settings_use_cache_title,
-                iconDrawableId = null,
-                enabled = false,
-                backendPreference = Preference("", false),
-            ),
+            preference =
+                PreferenceSwitch(
+                    nameStringResource = SettingsR.string.settings_use_cache_title,
+                    iconDrawableId = null,
+                    enabled = false,
+                    backendPreference = Preference("", false),
+                ),
             onClick = {},
         )
     }
@@ -132,12 +125,13 @@ private fun SettingsSwitchCardDisabledPreview() {
 private fun SettingsSwitchCardDescriptionPreview() {
     FindroidTheme {
         SettingsSwitchCard(
-            preference = PreferenceSwitch(
-                nameStringResource = SettingsR.string.settings_use_cache_title,
-                descriptionStringRes = SettingsR.string.settings_use_cache_summary,
-                iconDrawableId = null,
-                backendPreference = Preference("", false),
-            ),
+            preference =
+                PreferenceSwitch(
+                    nameStringResource = SettingsR.string.settings_use_cache_title,
+                    descriptionStringRes = SettingsR.string.settings_use_cache_summary,
+                    iconDrawableId = null,
+                    backendPreference = Preference("", false),
+                ),
             onClick = {},
         )
     }

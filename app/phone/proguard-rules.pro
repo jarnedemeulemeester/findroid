@@ -20,8 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepnames class dev.jdtech.jellyfin.models.PlayerItem
-
 # Keep class names of all classes for easy debugging (and fix navigation route checking)
 -keepnames class dev.jdtech.jellyfin.** { *; }
 

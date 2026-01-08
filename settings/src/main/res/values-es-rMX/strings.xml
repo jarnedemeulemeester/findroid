@@ -39,8 +39,6 @@
     <string name="theme_system">Seguir al sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
-    <string name="pref_player_intro_skipper">Saltador de intros (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Requiere que el complemento Intro Skipper de jumoog esté instalado en el servidor</string>
     <string name="settings_category_network">Red</string>
     <string name="settings_connect_timeout">Espera de conexión</string>
     <string name="settings_socket_timeout">Espera del conector</string>
@@ -70,4 +68,5 @@
     <string name="pref_player_chapter_markers_summary">Muestra marcadores de capítulo en la barra de progreso</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="player_gestures_chapter_skip_summary">Toque prolongado en el lado izquierdo/derecho para saltar capítulos (sobreescribe el gesto de velocidad x2)</string>
+    <string name="users">Usuarios</string>
 </resources>

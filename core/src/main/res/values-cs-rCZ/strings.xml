@@ -34,7 +34,6 @@
     <string name="unknown_error">Neočekávaná chyba</string>
     <string name="image_description_poster">%1$s plakát</string>
     <string name="image_description_backdrop">%1$s pozadí</string>
-    <string name="remove_server_address_dialog_text">Opravdu chcete odstranit adresu serveru %1$s</string>
     <string name="sort_by_options_2">Věkové omezení</string>
     <string name="size">Velikost</string>
     <string name="episodes_label">Epizody</string>
@@ -59,8 +58,6 @@
     <string name="sort_by_options_0">Název</string>
     <string name="runtime_minutes">%1$d minut</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="addresses">Adresy</string>
-    <string name="add_server_address">Přidat adresu serveru</string>
     <string name="downloading_error">Chyba při stahování</string>
     <string name="add">Přidat</string>
     <string name="offline_mode_icon">Ikona Režimu Offline</string>
@@ -68,8 +65,6 @@
     <string name="no_downloads">Nemáte nic staženého</string>
     <string name="download_button_description">Stáhnout</string>
     <string name="person_detail_title">Podrobnosti</string>
-    <string name="add_address">Přidat adresu</string>
-    <string name="remove_server_address">Odebrat adresu serveru</string>
     <string name="share">Sdílet</string>
     <string name="ascending">Vzestupně</string>
     <string name="select_video_version_title">Vybrat verzi</string>
@@ -79,7 +74,8 @@
     <string name="shows_label">Seriály</string>
     <string name="downloaded_indicator">Indikátor stahování</string>
     <string name="sort_order">Pořadí řazení</string>
-    <string name="season_episode">Sezóna %1$d - Epizoda %2$d</string>
+    <string name="season_number">Sezóna %1$d</string>
+    <string name="episode_number">Epizoda %1$d</string>
     <string name="offline_mode">Offline režim</string>
     <string name="live_tv">Živá televize</string>
     <string name="play">Přehrát</string>

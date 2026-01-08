@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidSeason
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
@@ -25,9 +24,10 @@ import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
 import dev.jdtech.jellyfin.utils.base64ToByteArray
 import dev.jdtech.jellyfin.utils.toBase64Str
+import java.util.UUID
 import kotlinx.parcelize.parcelableCreator
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 inline fun <reified T : Parcelable> T.toBase64(): String {
     val parcel = Parcel.obtain()
@@ -46,25 +46,17 @@ inline fun <reified T : Parcelable> String.base64ToParcelable(): T {
     return item
 }
 
-@Serializable
-data object WelcomeRoute
+@Serializable data object WelcomeRoute
 
-@Serializable
-data object ServersRoute
+@Serializable data object ServersRoute
 
-@Serializable
-data object AddServerRoute
+@Serializable data object AddServerRoute
 
-@Serializable
-data object UsersRoute
+@Serializable data object UsersRoute
 
-@Serializable
-data class LoginRoute(
-    val username: String? = null,
-)
+@Serializable data class LoginRoute(val username: String? = null)
 
-@Serializable
-data object MainRoute
+@Serializable data object MainRoute
 
 @Serializable
 data class LibraryRoute(
@@ -73,33 +65,17 @@ data class LibraryRoute(
     val libraryType: CollectionType,
 )
 
-@Serializable
-data class MovieRoute(
-    val itemId: String,
-)
+@Serializable data class MovieRoute(val itemId: String)
 
-@Serializable
-data class ShowRoute(
-    val itemId: String,
-)
+@Serializable data class ShowRoute(val itemId: String)
 
-@Serializable
-data class SeasonRoute(
-    val seasonId: String,
-)
+@Serializable data class SeasonRoute(val seasonId: String)
 
-@Serializable
-data class PlayerRoute(
-    val items: Array<String>,
-)
+@Serializable data class PlayerRoute(val itemId: String, val itemKind: String)
 
-@Serializable
-data object SettingsRoute
+@Serializable data object SettingsRoute
 
-@Serializable
-data class SettingsSubRoute(
-    val indexes: IntArray,
-)
+@Serializable data class SettingsSubRoute(val indexes: IntArray)
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
@@ -109,63 +85,40 @@ fun NavigationRoot(
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
 ) {
-    val startDestination = when {
-        hasServers && hasCurrentServer && hasCurrentUser -> MainRoute
-        hasServers && hasCurrentServer -> UsersRoute
-        hasServers -> ServersRoute
-        else -> WelcomeRoute
-    }
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-    ) {
+    val startDestination =
+        when {
+            hasServers && hasCurrentServer && hasCurrentUser -> MainRoute
+            hasServers && hasCurrentServer -> UsersRoute
+            hasServers -> ServersRoute
+            else -> WelcomeRoute
+        }
+    NavHost(navController = navController, startDestination = startDestination) {
         composable<WelcomeRoute> {
-            WelcomeScreen(
-                onContinueClick = {
-                    navController.navigate(ServersRoute)
-                },
-            )
+            WelcomeScreen(onContinueClick = { navController.navigate(ServersRoute) })
         }
         composable<ServersRoute> {
             ServersScreen(
-                navigateToLogin = {
-                    navController.navigate(LoginRoute())
-                },
-                navigateToUsers = {
-                    navController.navigate(UsersRoute)
-                },
-                onAddClick = {
-                    navController.navigate(AddServerRoute)
-                },
+                navigateToUsers = { navController.navigate(UsersRoute) },
+                onAddClick = { navController.navigate(AddServerRoute) },
             )
         }
         composable<AddServerRoute> {
-            AddServerScreen(
-                onSuccess = {
-                    navController.navigate(UsersRoute)
-                },
-            )
+            AddServerScreen(onSuccess = { navController.navigate(UsersRoute) })
         }
         composable<UsersRoute> {
             UsersScreen(
                 navigateToHome = {
                     navController.navigate(MainRoute) {
-                        popUpTo(startDestination) {
-                            inclusive = true
-                        }
+                        popUpTo(startDestination) { inclusive = true }
                     }
                 },
                 onChangeServerClick = {
                     navController.navigate(ServersRoute) {
-                        popUpTo(ServersRoute) {
-                            inclusive = false
-                        }
+                        popUpTo(ServersRoute) { inclusive = false }
                         launchSingleTop = true
                     }
                 },
-                onAddClick = {
-                    navController.navigate(LoginRoute())
-                },
+                onAddClick = { navController.navigate(LoginRoute()) },
                 onPublicUserClick = { username ->
                     navController.navigate(LoginRoute(username = username))
                 },
@@ -176,16 +129,12 @@ fun NavigationRoot(
             LoginScreen(
                 onSuccess = {
                     navController.navigate(MainRoute) {
-                        popUpTo(startDestination) {
-                            inclusive = true
-                        }
+                        popUpTo(startDestination) { inclusive = true }
                     }
                 },
                 onChangeServerClick = {
                     navController.navigate(ServersRoute) {
-                        popUpTo(ServersRoute) {
-                            inclusive = false
-                        }
+                        popUpTo(ServersRoute) { inclusive = false }
                         launchSingleTop = true
                     }
                 },
@@ -194,21 +143,24 @@ fun NavigationRoot(
         }
         composable<MainRoute> {
             MainScreen(
-                navigateToSettings = {
-                    navController.navigate(SettingsRoute)
-                },
+                navigateToSettings = { navController.navigate(SettingsRoute) },
                 navigateToLibrary = { libraryId, libraryName, libraryType ->
-                    navController.navigate(LibraryRoute(libraryId = libraryId.toString(), libraryName = libraryName, libraryType = libraryType))
+                    navController.navigate(
+                        LibraryRoute(
+                            libraryId = libraryId.toString(),
+                            libraryName = libraryName,
+                            libraryType = libraryType,
+                        )
+                    )
                 },
                 navigateToMovie = { itemId ->
                     navController.navigate(MovieRoute(itemId.toString()))
                 },
-                navigateToShow = { itemId ->
-                    navController.navigate(ShowRoute(itemId.toString()))
-                },
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToShow = { itemId -> navController.navigate(ShowRoute(itemId.toString())) },
+                navigateToPlayer = { itemId, itemKind ->
+                    navController.navigate(
+                        PlayerRoute(itemId = itemId.toString(), itemKind = itemKind.serialName)
+                    )
                 },
             )
         }
@@ -219,23 +171,31 @@ fun NavigationRoot(
                 libraryName = route.libraryName,
                 libraryType = route.libraryType,
                 navigateToLibrary = { libraryId, libraryName, libraryType ->
-                    navController.navigate(LibraryRoute(libraryId = libraryId.toString(), libraryName = libraryName, libraryType = libraryType))
+                    navController.navigate(
+                        LibraryRoute(
+                            libraryId = libraryId.toString(),
+                            libraryName = libraryName,
+                            libraryType = libraryType,
+                        )
+                    )
                 },
                 navigateToMovie = { itemId ->
                     navController.navigate(MovieRoute(itemId.toString()))
                 },
-                navigateToShow = { itemId ->
-                    navController.navigate(ShowRoute(itemId.toString()))
-                },
+                navigateToShow = { itemId -> navController.navigate(ShowRoute(itemId.toString())) },
             )
         }
         composable<MovieRoute> { backStackEntry ->
             val route: MovieRoute = backStackEntry.toRoute()
             MovieScreen(
                 movieId = UUID.fromString(route.itemId),
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(
+                        PlayerRoute(
+                            itemId = itemId.toString(),
+                            itemKind = BaseItemKind.MOVIE.serialName,
+                        )
+                    )
                 },
             )
         }
@@ -250,9 +210,13 @@ fun NavigationRoot(
                         }
                     }
                 },
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(
+                        PlayerRoute(
+                            itemId = itemId.toString(),
+                            itemKind = BaseItemKind.SERIES.serialName,
+                        )
+                    )
                 },
             )
         }
@@ -260,27 +224,28 @@ fun NavigationRoot(
             val route: SeasonRoute = backStackEntry.toRoute()
             SeasonScreen(
                 seasonId = UUID.fromString(route.seasonId),
-                navigateToPlayer = { items ->
-                    val mappedItems = items.map { it.toBase64() }.toTypedArray()
-                    navController.navigate(PlayerRoute(mappedItems))
+                navigateToPlayer = { itemId ->
+                    navController.navigate(
+                        PlayerRoute(
+                            itemId = itemId.toString(),
+                            itemKind = BaseItemKind.SEASON.serialName,
+                        )
+                    )
                 },
             )
         }
         composable<PlayerRoute> { backStackEntry ->
             val route: PlayerRoute = backStackEntry.toRoute()
-            val items = route.items.map { it.base64ToParcelable<PlayerItem>() }.toTypedArray()
             PlayerScreen(
-                items = items,
+                itemId = UUID.fromString(route.itemId),
+                itemKind = route.itemKind,
+                startFromBeginning = false,
             )
         }
         composable<SettingsRoute> {
             SettingsScreen(
-                navigateToUsers = {
-                    navController.navigate(UsersRoute)
-                },
-                navigateToServers = {
-                    navController.navigate(ServersRoute)
-                },
+                navigateToUsers = { navController.navigate(UsersRoute) },
+                navigateToServers = { navController.navigate(ServersRoute) },
                 navigateToSubSettings = { indexes ->
                     navController.navigate(SettingsSubRoute(indexes = indexes))
                 },
@@ -290,12 +255,8 @@ fun NavigationRoot(
             val route: SettingsSubRoute = backStackEntry.toRoute()
             SettingsSubScreen(
                 indexes = route.indexes,
-                navigateToUsers = {
-                    navController.navigate(UsersRoute)
-                },
-                navigateToServers = {
-                    navController.navigate(ServersRoute)
-                },
+                navigateToUsers = { navController.navigate(UsersRoute) },
+                navigateToServers = { navController.navigate(ServersRoute) },
                 navigateToSubSettings = { indexes ->
                     navController.navigate(SettingsSubRoute(indexes = indexes))
                 },

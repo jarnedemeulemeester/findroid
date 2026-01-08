@@ -25,12 +25,12 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyUser
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import org.jellyfin.sdk.model.api.ImageType
-import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun UserItem(
@@ -41,39 +41,27 @@ fun UserItem(
 ) {
     val context = LocalContext.current
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .width(120.dp),
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.width(120.dp)) {
         Surface(
-            onClick = {
-                onClick(user)
-            },
-            colors = ClickableSurfaceDefaults.colors(
-                containerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-            ),
-            border = ClickableSurfaceDefaults.border(
-                border = Border(BorderStroke(1.dp, Color.White), shape = CircleShape),
-                focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape),
-            ),
-            shape = ClickableSurfaceDefaults.shape(
-                shape = CircleShape,
-                focusedShape = CircleShape,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
+            onClick = { onClick(user) },
+            colors =
+                ClickableSurfaceDefaults.colors(
+                    containerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                ),
+            border =
+                ClickableSurfaceDefaults.border(
+                    border = Border(BorderStroke(1.dp, Color.White), shape = CircleShape),
+                    focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape),
+                ),
+            shape = ClickableSurfaceDefaults.shape(shape = CircleShape, focusedShape = CircleShape),
+            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
         ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_user),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(48.dp)
-                    .align(Alignment.Center),
+                modifier = Modifier.width(48.dp).height(48.dp).align(Alignment.Center),
             )
             AsyncImage(
                 model = "$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}",
@@ -83,19 +71,12 @@ fun UserItem(
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-        Text(
-            text = user.name,
-            style = MaterialTheme.typography.titleMedium,
-        )
+        Text(text = user.name, style = MaterialTheme.typography.titleMedium)
     }
 }
 
 @Preview
 @Composable
 private fun UserComponentPreview() {
-    FindroidTheme {
-        UserItem(
-            user = dummyUser,
-        )
-    }
+    FindroidTheme { UserItem(user = dummyUser) }
 }

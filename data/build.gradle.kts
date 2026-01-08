@@ -3,19 +3,18 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktlint)
 }
 
 android {
     namespace = "dev.jdtech.jellyfin.data"
-    compileSdk = Versions.compileSdk
-    buildToolsVersion = Versions.buildTools
+    compileSdk = Versions.COMPILE_SDK
+    buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        minSdk = Versions.minSdk
+        minSdk = Versions.MIN_SDK
 
-        buildConfigField("int", "VERSION_CODE", Versions.appCode.toString())
-        buildConfigField("String", "VERSION_NAME", "\"${Versions.appName}\"")
+        buildConfigField("int", "VERSION_CODE", Versions.APP_CODE.toString())
+        buildConfigField("String", "VERSION_NAME", "\"${Versions.APP_NAME}\"")
 
         consumerProguardFile("proguard-rules.pro")
 
@@ -26,28 +25,16 @@ android {
     }
 
     buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-        }
-        register("staging") {
-            initWith(getByName("release"))
-        }
+        named("release") { isMinifyEnabled = false }
+        register("staging") { initWith(getByName("release")) }
     }
 
     compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = Versions.JAVA
+        targetCompatibility = Versions.JAVA
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
-ktlint {
-    version.set(Versions.ktlint)
-    android.set(true)
-    ignoreFailures.set(false)
+    buildFeatures { buildConfig = true }
 }
 
 dependencies {

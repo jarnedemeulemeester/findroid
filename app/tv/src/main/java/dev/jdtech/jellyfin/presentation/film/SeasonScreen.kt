@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisodes
@@ -25,42 +25,26 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
-import dev.jdtech.jellyfin.models.PlayerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
-import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
 
 @Composable
 fun SeasonScreen(
     seasonId: UUID,
-    navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
+    navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.loadSeason(
-            seasonId = seasonId,
-        )
-    }
-
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
-            is PlayerItemsEvent.PlayerItemsError -> Unit
-        }
-    }
+    LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
     SeasonScreenLayout(
         state = state,
         onAction = { action ->
             when (action) {
-                is SeasonAction.NavigateToItem -> playerViewModel.loadPlayerItems(action.item)
+                is SeasonAction.NavigateToItem -> navigateToPlayer(action.item.id)
                 else -> Unit
             }
         },
@@ -68,61 +52,40 @@ fun SeasonScreen(
 }
 
 @Composable
-private fun SeasonScreenLayout(
-    state: SeasonState,
-    onAction: (SeasonAction) -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
         state.season?.let { season ->
-            Row(
-                modifier = Modifier.fillMaxSize(),
-            ) {
+            Row(modifier = Modifier.fillMaxSize()) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = MaterialTheme.spacings.extraLarge,
-                            top = MaterialTheme.spacings.large,
-                            end = MaterialTheme.spacings.large,
-                        ),
+                    modifier =
+                        Modifier.weight(1f)
+                            .padding(
+                                start = MaterialTheme.spacings.extraLarge,
+                                top = MaterialTheme.spacings.large,
+                                end = MaterialTheme.spacings.large,
+                            )
                 ) {
-                    Text(
-                        text = season.name,
-                        style = MaterialTheme.typography.displayMedium,
-                    )
-                    Text(
-                        text = season.seriesName,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
+                    Text(text = season.name, style = MaterialTheme.typography.displayMedium)
+                    Text(text = season.seriesName, style = MaterialTheme.typography.headlineMedium)
                 }
                 LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = MaterialTheme.spacings.large,
-                        bottom = MaterialTheme.spacings.large,
-                    ),
+                    contentPadding =
+                        PaddingValues(
+                            top = MaterialTheme.spacings.large,
+                            bottom = MaterialTheme.spacings.large,
+                        ),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    modifier = Modifier
-                        .weight(2f)
-                        .padding(end = MaterialTheme.spacings.extraLarge),
+                    modifier = Modifier.weight(2f).padding(end = MaterialTheme.spacings.extraLarge),
                 ) {
                     items(state.episodes) { episode ->
                         EpisodeCard(
                             episode = episode,
-                            onClick = {
-                                onAction(SeasonAction.NavigateToItem(episode))
-                            },
+                            onClick = { onAction(SeasonAction.NavigateToItem(episode)) },
                         )
                     }
                 }
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
     }
 }
 
@@ -131,10 +94,7 @@ private fun SeasonScreenLayout(
 private fun SeasonScreenLayoutPreview() {
     FindroidTheme {
         SeasonScreenLayout(
-            state = SeasonState(
-                season = dummySeason,
-                episodes = dummyEpisodes,
-            ),
+            state = SeasonState(season = dummySeason, episodes = dummyEpisodes),
             onAction = {},
         )
     }

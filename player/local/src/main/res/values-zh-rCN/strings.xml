@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">选择版本</string>
+    <string name="select_audio_track">选择音轨</string>
+    <string name="select_subtitle_track">选择字幕轨</string>
+    <string name="select_playback_speed">选择播放速度</string>
+    <string name="external">外部</string>
+    <string name="player_controls_exit">退出播放器</string>
+    <string name="player_controls_rewind">快退</string>
+    <string name="player_controls_fast_forward">快进</string>
+    <string name="player_controls_skip_intro">跳过片头</string>
+    <string name="player_controls_lock">锁定播放器</string>
+    <string name="player_controls_skip_back">跳回</string>
+    <string name="player_controls_play_pause">播放暂停</string>
+    <string name="player_controls_skip_forward">跳过</string>
+    <string name="player_controls_progress">进度条</string>
+    <string name="player_trickplay">进度条预览图</string>
+    <string name="player_controls_picture_in_picture">进入画中画</string>
+    <string name="none">无</string>
+    <string name="player_controls_skip_outro">跳过片尾</string>
+    <string name="player_controls_next_episode">下一集</string>
+    <string name="player_controls_skip_recap">跳过回顾</string>
+    <string name="player_controls_skip_commercial">跳过广告</string>
+    <string name="player_controls_skip_unknown">跳过</string>
+    <string name="player_controls_skip_preview">跳过预告</string>
+</resources>

@@ -8,11 +8,13 @@ import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidPerson
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.models.toFindroidSeason
@@ -20,6 +22,8 @@ import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import java.io.File
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -27,10 +31,7 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
-import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.UserConfiguration
-import java.io.File
-import java.util.UUID
 
 class JellyfinRepositoryOfflineImpl(
     private val context: Context,
@@ -45,10 +46,6 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getUserViews(): List<BaseItemDto> {
         return emptyList()
-    }
-
-    override suspend fun getItem(itemId: UUID): BaseItemDto {
-        TODO("Not yet implemented")
     }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
@@ -72,7 +69,11 @@ class JellyfinRepositoryOfflineImpl(
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> {
-        TODO("Not yet implemented")
+        return emptyList()
+    }
+
+    override suspend fun getItem(itemId: UUID): FindroidItem? {
+        return null
     }
 
     override suspend fun getItems(
@@ -84,7 +85,7 @@ class JellyfinRepositoryOfflineImpl(
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getItemsPaging(
@@ -94,6 +95,10 @@ class JellyfinRepositoryOfflineImpl(
         sortBy: SortBy,
         sortOrder: SortOrder,
     ): Flow<PagingData<FindroidItem>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPerson(personId: UUID): FindroidPerson {
         TODO("Not yet implemented")
     }
 
@@ -109,11 +114,20 @@ class JellyfinRepositoryOfflineImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSearchItems(searchQuery: String): List<FindroidItem> {
+    override suspend fun getSearchItems(query: String): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
-            val movies = database.searchMovies(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-            val shows = database.searchShows(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-            val episodes = database.searchEpisodes(appPreferences.getValue(appPreferences.currentServer)!!, searchQuery).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            val movies =
+                database
+                    .searchMovies(appPreferences.getValue(appPreferences.currentServer)!!, query)
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+            val shows =
+                database
+                    .searchShows(appPreferences.getValue(appPreferences.currentServer)!!, query)
+                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
+            val episodes =
+                database
+                    .searchEpisodes(appPreferences.getValue(appPreferences.currentServer)!!, query)
+                    .map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
             movies + shows + episodes
         }
     }
@@ -124,8 +138,16 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getResumeItems(): List<FindroidItem> {
         return withContext(Dispatchers.IO) {
-            val movies = database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!).map { it.toFindroidMovie(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
-            val episodes = database.getEpisodesByServerId(appPreferences.getValue(appPreferences.currentServer)!!).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }.filter { it.playbackPositionTicks > 0 }
+            val movies =
+                database
+                    .getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+                    .filter { it.playbackPositionTicks > 0 }
+            val episodes =
+                database
+                    .getEpisodesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                    .filter { it.playbackPositionTicks > 0 }
             movies + episodes
         }
     }
@@ -136,17 +158,23 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
         withContext(Dispatchers.IO) {
-            database.getSeasonsByShowId(seriesId).map { it.toFindroidSeason(database, jellyfinApi.userId!!) }
+            database.getSeasonsByShowId(seriesId).map {
+                it.toFindroidSeason(database, jellyfinApi.userId!!)
+            }
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> {
         return withContext(Dispatchers.IO) {
             val result = mutableListOf<FindroidEpisode>()
-            val shows = database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!).filter {
-                if (seriesId != null) it.id == seriesId else true
-            }
+            val shows =
+                database
+                    .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .filter { if (seriesId != null) it.id == seriesId else true }
             for (show in shows) {
-                val episodes = database.getEpisodesByShowId(show.id).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+                val episodes =
+                    database.getEpisodesByShowId(show.id).map {
+                        it.toFindroidEpisode(database, jellyfinApi.userId!!)
+                    }
                 val indexOfLastPlayed = episodes.indexOfLast { it.played }
                 if (indexOfLastPlayed == -1) {
                     result.add(episodes.first())
@@ -167,7 +195,10 @@ class JellyfinRepositoryOfflineImpl(
         offline: Boolean,
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
-            val items = database.getEpisodesBySeasonId(seasonId).map { it.toFindroidEpisode(database, jellyfinApi.userId!!) }
+            val items =
+                database.getEpisodesBySeasonId(seasonId).map {
+                    it.toFindroidEpisode(database, jellyfinApi.userId!!)
+                }
             if (startItemId != null) return@withContext items.dropWhile { it.id != startItemId }
             items
         }
@@ -182,14 +213,14 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
-        withContext(Dispatchers.IO) {
-            database.getSegments(itemId).map { it.toFindroidSegment() }
-        }
+        withContext(Dispatchers.IO) { database.getSegments(itemId).map { it.toFindroidSegment() } }
 
     override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         withContext(Dispatchers.IO) {
             try {
-                val sources = File(context.filesDir, "trickplay/$itemId").listFiles() ?: return@withContext null
+                val sources =
+                    File(context.filesDir, "trickplay/$itemId").listFiles()
+                        ?: return@withContext null
                 File(sources.first(), index.toString()).readBytes()
             } catch (_: Exception) {
                 null
@@ -200,7 +231,11 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun postPlaybackStart(itemId: UUID) {}
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int) {
+    override suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+    ) {
         withContext(Dispatchers.IO) {
             when {
                 playedPercentage < 10 -> {
@@ -276,12 +311,14 @@ class JellyfinRepositoryOfflineImpl(
         withContext(Dispatchers.IO) {
             val items = mutableListOf<FindroidItem>()
             items.addAll(
-                database.getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
+                database
+                    .getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
             )
             items.addAll(
-                database.getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
+                database
+                    .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
             )
             items
         }

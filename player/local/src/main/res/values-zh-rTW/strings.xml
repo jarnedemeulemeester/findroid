@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">選擇版本</string>
+    <string name="select_audio_track">選擇音軌</string>
+    <string name="select_subtitle_track">選擇字幕軌道</string>
+    <string name="select_playback_speed">選擇播放速度</string>
+    <string name="external">外部的</string>
+    <string name="player_controls_exit">關閉播放器</string>
+    <string name="player_controls_rewind">倒帶</string>
+    <string name="player_controls_fast_forward">快轉</string>
+    <string name="player_controls_skip_intro">跳過片頭</string>
+    <string name="player_controls_lock">鎖定播放器</string>
+    <string name="player_controls_skip_back">跳回</string>
+    <string name="player_controls_play_pause">播放暫停</string>
+    <string name="player_controls_skip_forward">向前跳</string>
+    <string name="player_controls_picture_in_picture">輸入畫中畫</string>
+    <string name="player_trickplay">特技播放</string>
+    <string name="player_controls_progress">進度條</string>
+    <string name="none">無</string>
+</resources>

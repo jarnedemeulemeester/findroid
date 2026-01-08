@@ -2,9 +2,9 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
-import java.util.UUID
 
 interface FindroidItem {
     val id: UUID
@@ -20,7 +20,7 @@ interface FindroidItem {
     val playbackPositionTicks: Long
     val unplayedItemCount: Int?
     val images: FindroidImages
-    val chapters: List<FindroidChapter>?
+    val chapters: List<FindroidChapter>
 }
 
 suspend fun BaseItemDto.toFindroidItem(
@@ -39,9 +39,13 @@ suspend fun BaseItemDto.toFindroidItem(
 }
 
 fun FindroidItem.isDownloading(): Boolean {
-    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { it.path.endsWith(".download") }
+    return sources
+        .filter { it.type == FindroidSourceType.LOCAL }
+        .any { it.path.endsWith(".download") }
 }
 
 fun FindroidItem.isDownloaded(): Boolean {
-    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { !it.path.endsWith(".download") }
+    return sources
+        .filter { it.type == FindroidSourceType.LOCAL }
+        .any { !it.path.endsWith(".download") }
 }

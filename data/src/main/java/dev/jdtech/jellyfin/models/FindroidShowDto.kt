@@ -7,8 +7,7 @@ import java.util.UUID
 
 @Entity(tableName = "shows")
 data class FindroidShowDto(
-    @PrimaryKey
-    val id: UUID,
+    @PrimaryKey val id: UUID,
     val serverId: String?,
     val name: String,
     val originalTitle: String?,

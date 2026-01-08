@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Impostazioni</string>
     <string name="title_download">Download</string>
@@ -46,8 +46,6 @@
     <string name="settings_socket_timeout">Timeout socket</string>
     <string name="pref_player_mpv_hwdec">Decodifica hardware</string>
     <string name="pref_player_mpv_vo">Output video</string>
-    <string name="pref_player_intro_skipper">Salta intro (Intro Skipper)</string>
-    <string name="pref_player_intro_skipper_summary">Richiede il plugin <b>Intro Skipper</b> di <i>jumoog</i> installato sul server</string>
     <string name="player_gestures_seek_summary">Scorri orizzontalmente per posizionarti avanti o indietro</string>
     <string name="player_gestures_seek">Gesto posizionamento</string>
     <string name="extra_info_summary">Mostra informazioni dettagliate sulle tracce audio, video e sottotitoli</string>
@@ -62,7 +60,7 @@
     <string name="pref_player_gestures_seek_trickplay">Anteprima in gesto posizionamento</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Visualizza le immagini di anteprima quando si usa il gesto di posizionamento</string>
     <string name="player_gestures_chapter_skip">Gesto per le scene</string>
-    <string name="pref_player_trickplay">Anteprima</string>
+    <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Visualizza le immagini di anteprima quando si cambia posizione</string>
     <string name="pref_player_chapter_markers">Marcatori delle scene</string>
     <string name="pref_player_chapter_markers_summary">Mostra i marcatori delle scene sulla timebar</string>
@@ -70,4 +68,36 @@
     <string name="player_start_maximized">Adatta video al display</string>
     <string name="player_start_maximized_summary">Avvia di default il video adattato al display</string>
     <string name="trickplay">Anteprima (Trickplay)</string>
+    <string name="cancel">Annulla</string>
+    <string name="none">Nessuno</string>
+    <string name="settings_category_interface">Interfaccia</string>
+    <string name="users">Utenti</string>
+    <string name="home">Home</string>
+    <string name="home_suggestions">Mostra suggerimenti</string>
+    <string name="home_continue_watching">Mostra continua a guardare</string>
+    <string name="home_next_up">Mostra prossimo</string>
+    <string name="home_latest">Mostra ultimi aggiunti</string>
+    <string name="offline_mode_summary">Guarda film e serie senza connessione al server</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Salva</string>
+    <string name="media_segments">Media Segments</string>
+    <string name="pref_player_media_segments_skip_button">Mostra pulsante per saltare</string>
+    <string name="pref_player_media_segments_skip_button_summary">Fornisci un pulsante per saltare facilmente le parti</string>
+    <string name="pref_player_media_segments_skip_button_type">Tipo di segmento per visualizzare il pulsante per saltare</string>
+    <string name="pref_player_media_segments_skip_button_duration">Mostra il pulsante per saltare per</string>
+    <string name="pref_player_media_segments_auto_skip">Salto automatico</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Abilita il salto automatico per i tipi di segmenti scelti</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Quando saltare automaticamente</string>
+    <string name="pref_player_media_segments_auto_skip_type">Tipi di segmento per salto automatico</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Soglia per saltare al prossimo episodio</string>
+    <string name="media_segments_auto_skip_pip">Solo in modalità pip</string>
+    <string name="media_segments_auto_skip_always">Sempre</string>
+    <string name="media_segments_type_unknown">Altri</string>
+    <string name="media_segments_type_commercial">Commerciale</string>
+    <string name="media_segments_type_preview">Anteprima</string>
+    <string name="media_segments_type_recap">Riepilogo</string>
+    <string name="media_segments_type_outro">Outro</string>
+    <string name="media_segments_type_intro">Intro</string>
 </resources>

@@ -31,20 +31,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.UserItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.users.UsersAction
 import dev.jdtech.jellyfin.setup.presentation.users.UsersEvent
 import dev.jdtech.jellyfin.setup.presentation.users.UsersState
 import dev.jdtech.jellyfin.setup.presentation.users.UsersViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.setup.R as SetupR
 
 @Composable
 fun UsersScreen(
@@ -58,9 +58,7 @@ fun UsersScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadUsers()
-    }
+    LaunchedEffect(true) { viewModel.loadUsers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -95,19 +93,17 @@ private fun UsersScreenLayout(
 
     RootLayout {
         Column(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .widthIn(max = 480.dp)
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier =
+                Modifier.padding(horizontal = 24.dp)
+                    .widthIn(max = 480.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(250.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.width(250.dp).align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -128,17 +124,13 @@ private fun UsersScreenLayout(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                 ) {
                     items(state.users) { user ->
                         UserItem(
                             name = user.name,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onAction(UsersAction.OnUserClick(userId = user.id))
-                            },
+                            onClick = { onAction(UsersAction.OnUserClick(userId = user.id)) },
                             onLongClick = {
                                 selectedUser = user
                                 openDeleteDialog = true
@@ -148,9 +140,7 @@ private fun UsersScreenLayout(
                     items(state.publicUsers) { user ->
                         UserItem(
                             name = user.name,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .alpha(0.7f),
+                            modifier = Modifier.fillMaxWidth().alpha(0.7f),
                             onClick = {
                                 onAction(UsersAction.OnPublicUserClick(username = user.name))
                             },
@@ -165,14 +155,15 @@ private fun UsersScreenLayout(
                 onClick = { onAction(UsersAction.OnBackClick) },
                 modifier = Modifier.padding(start = 8.dp),
             ) {
-                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_left),
+                    contentDescription = null,
+                )
             }
         }
         IconButton(
             onClick = { onAction(UsersAction.OnChangeServerClick) },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(end = 8.dp),
+            modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp),
         ) {
             Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
         }
@@ -180,38 +171,34 @@ private fun UsersScreenLayout(
             onClick = { onAction(UsersAction.OnAddClick) },
             icon = { Icon(painterResource(CoreR.drawable.ic_plus), contentDescription = null) },
             text = { Text(text = stringResource(SetupR.string.users_btn_add_user)) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
         )
 
         if (openDeleteDialog && selectedUser != null) {
             AlertDialog(
-                title = {
-                    Text(text = stringResource(SetupR.string.remove_user_dialog))
-                },
+                title = { Text(text = stringResource(SetupR.string.remove_user_dialog)) },
                 text = {
-                    Text(text = stringResource(SetupR.string.remove_user_dialog_text, selectedUser!!.name))
+                    Text(
+                        text =
+                            stringResource(
+                                SetupR.string.remove_user_dialog_text,
+                                selectedUser!!.name,
+                            )
+                    )
                 },
-                onDismissRequest = {
-                    openDeleteDialog = false
-                },
+                onDismissRequest = { openDeleteDialog = false },
                 confirmButton = {
                     TextButton(
                         onClick = {
                             openDeleteDialog = false
                             onAction(UsersAction.OnDeleteUser(selectedUser!!.id))
-                        },
+                        }
                     ) {
                         Text(text = stringResource(SetupR.string.confirm))
                     }
                 },
                 dismissButton = {
-                    TextButton(
-                        onClick = {
-                            openDeleteDialog = false
-                        },
-                    ) {
+                    TextButton(onClick = { openDeleteDialog = false }) {
                         Text(text = stringResource(SetupR.string.cancel))
                     }
                 },
@@ -225,22 +212,12 @@ private fun UsersScreenLayout(
 private fun UsersScreenLayoutPreview() {
     FindroidTheme {
         UsersScreenLayout(
-            state = UsersState(
-                users = listOf(
-                    User(
-                        id = UUID.randomUUID(),
-                        name = "Bob",
-                        serverId = "",
-                    ),
+            state =
+                UsersState(
+                    users = listOf(User(id = UUID.randomUUID(), name = "Bob", serverId = "")),
+                    publicUsers =
+                        listOf(User(id = UUID.randomUUID(), name = "Alice", serverId = "")),
                 ),
-                publicUsers = listOf(
-                    User(
-                        id = UUID.randomUUID(),
-                        name = "Alice",
-                        serverId = "",
-                    ),
-                ),
-            ),
             onAction = {},
         )
     }

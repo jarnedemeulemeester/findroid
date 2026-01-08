@@ -5,20 +5,19 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.setup.domain.SetupRepository
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ServersViewModel
 @Inject
-constructor(
-    private val repository: SetupRepository,
-    private val appPreferences: AppPreferences,
-) : ViewModel() {
+constructor(private val repository: SetupRepository, private val appPreferences: AppPreferences) :
+    ViewModel() {
     private val _state = MutableStateFlow(ServersState())
     val state = _state.asStateFlow()
 
@@ -28,25 +27,25 @@ constructor(
     fun loadServers() {
         viewModelScope.launch {
             val servers = repository.getServers()
-            _state.emit(
-                ServersState(servers = servers),
-            )
+            _state.emit(ServersState(servers = servers))
         }
     }
 
-    private fun connectToServer(serverId: String) {
+    private fun setCurrentServer(serverId: String) {
         viewModelScope.launch {
             repository.setCurrentServer(serverId)
 
             appPreferences.setValue(appPreferences.currentServer, serverId)
 
-            val users = repository.getUsers(serverId)
+            eventsChannel.send(ServersEvent.ServerChanged)
+        }
+    }
 
-            if (users.isEmpty()) {
-                eventsChannel.send(ServersEvent.NavigateToLogin)
-            } else {
-                eventsChannel.send(ServersEvent.NavigateToUsers)
-            }
+    private fun setCurrentAddress(addressId: UUID) {
+        viewModelScope.launch {
+            repository.setCurrentAddress(addressId)
+
+            eventsChannel.send(ServersEvent.AddressChanged)
         }
     }
 
@@ -60,7 +59,10 @@ constructor(
     fun onAction(action: ServersAction) {
         when (action) {
             is ServersAction.OnServerClick -> {
-                connectToServer(action.serverId)
+                setCurrentServer(action.serverId)
+            }
+            is ServersAction.OnAddressClick -> {
+                setCurrentAddress(action.addressId)
             }
             is ServersAction.DeleteServer -> {
                 deleteServer(action.serverId)

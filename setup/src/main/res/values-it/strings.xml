@@ -18,10 +18,25 @@
     <string name="add_server_error_not_found">Server non trovato</string>
     <string name="servers_no_servers">Nessun server trovato</string>
     <string name="remove_user_dialog">Rimuovi utente</string>
-    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %1$s</string>
+    <string name="remove_user_dialog_text">Sei sicuro di voler rimuovere l\'utente %s?</string>
     <string name="users">Utenti</string>
     <string name="users_btn_add_user">Aggiungi utente</string>
     <string name="users_no_users">Nessun utente trovato</string>
     <string name="remove_server_dialog">Rimuovi server</string>
-    <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %1$s</string>
+    <string name="remove_server_dialog_text">Sei sicuro di voler rimuovere questo server %s?</string>
+    <string name="addresses">Indirizzi</string>
+    <string name="add_address">Aggiungi indirizzo</string>
+    <string name="add_server_address">Aggiungi indirizzo server</string>
+    <string name="remove_server_address">Rimuovi indirizzo server</string>
+    <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
+    <string name="cancel">Annulla</string>
+    <string name="servers">Server</string>
+    <string name="servers_btn_add_server">Aggiungi server</string>
+    <string name="welcome">Benvenuto in Findroid</string>
+    <string name="welcome_btn_continue">Continua</string>
+    <string name="welcome_btn_learn_more">Scopri di più su Jellyfin</string>
+    <string name="welcome_text">Findroid è un client di terze parti per Jellyfin. Findroid di per sé non contiene alcun contenuto multimediale.\n\nPer utilizzare questo client, è necessario ospitare il proprio server Jellyfin.</string>
+    <string name="confirm">Conferma</string>
+    <string name="or">O</string>
+    <string name="server_subtitle">Server: %s</string>
 </resources>

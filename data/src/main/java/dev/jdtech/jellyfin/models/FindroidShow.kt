@@ -2,10 +2,10 @@ package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import java.util.UUID
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.PlayAccess
-import java.util.UUID
 
 data class FindroidShow(
     override val id: UUID,
@@ -21,7 +21,7 @@ data class FindroidShow(
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     val genres: List<String>,
-    val people: List<FindroidPerson>,
+    val people: List<FindroidItemPerson>,
     override val runtimeTicks: Long,
     val communityRating: Float?,
     val officialRating: String?,
@@ -30,12 +30,10 @@ data class FindroidShow(
     val endDate: DateTime?,
     val trailer: String?,
     override val images: FindroidImages,
-    override val chapters: List<FindroidChapter>? = null,
+    override val chapters: List<FindroidChapter> = emptyList(),
 ) : FindroidItem
 
-fun BaseItemDto.toFindroidShow(
-    jellyfinRepository: JellyfinRepository,
-): FindroidShow {
+fun BaseItemDto.toFindroidShow(jellyfinRepository: JellyfinRepository): FindroidShow {
     return FindroidShow(
         id = id,
         name = name.orEmpty(),
@@ -84,6 +82,6 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         productionYear = productionYear,
         endDate = endDate,
         trailer = null,
-        images = FindroidImages(),
+        images = toLocalFindroidImages(itemId = id),
     )
 }

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Einstellungen</string>
     <string name="title_download">Downloads</string>
@@ -42,9 +42,6 @@
     <string name="settings_connect_timeout">Verbindungszeitüberschreitung</string>
     <string name="settings_socket_timeout">Zeitüberschreitung der Socket</string>
     <string name="seek_back_increment">Zurückspulstufe</string>
-    <string name="pref_player_intro_skipper">Intro überspringen</string>
-    <string name="pref_player_intro_skipper_summary">Benötigt <i>jumoog\'s</i>
-        <b>Intro Skipper</b> Plugin installiert auf dem Server</string>
     <string name="theme_system">Übernehme Systemeinstellung</string>
     <string name="pref_player_mpv_hwdec">Hardware-Dekodierung</string>
     <string name="pref_player_mpv_vo">Videoausgang</string>
@@ -71,4 +68,36 @@
     <string name="pref_player_gestures_seek_trickplay">Pseudovideo bei der Suchgeste</string>
     <string name="trickplay">Pseudovideo</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Vorschaubilder bei der Suchgeste anzeigen</string>
+    <string name="settings_category_interface">Oberfläche</string>
+    <string name="home">Startseite</string>
+    <string name="home_suggestions">Vorschläge anzeigen</string>
+    <string name="home_continue_watching">Weitersehen anzeigen</string>
+    <string name="home_next_up">Als nächstes anzeigen</string>
+    <string name="home_latest">Neueste Inhalte anzeigen</string>
+    <string name="offline_mode_summary">Filme und Serien ohne Verbindung zum Server ansehen</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="media_segments">Mediensegmente</string>
+    <string name="pref_player_media_segments_skip_button">Überspringen-Schaltfläche anzeigen</string>
+    <string name="pref_player_media_segments_skip_button_summary">Eine Schaltfläche zum einfachen Überspringen von Teilen bereitstellen</string>
+    <string name="pref_player_media_segments_skip_button_type">Segmenttyp für Überspringen-Schaltfläche</string>
+    <string name="pref_player_media_segments_skip_button_duration">Überspringen-Schaltfläche anzeigen für</string>
+    <string name="pref_player_media_segments_auto_skip">Automatisch überspringen</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Automatisches Überspringen für ausgewählte Segmenttypen aktivieren</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Wann automatisch überspringen</string>
+    <string name="pref_player_media_segments_auto_skip_type">Segmenttyp zum automatischen Überspringen</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Schwellenwert für Folgenwechsel</string>
+    <string name="media_segments_auto_skip_pip">nur im PiP-Modus</string>
+    <string name="media_segments_auto_skip_always">immer</string>
+    <string name="media_segments_type_unknown">Andere</string>
+    <string name="media_segments_type_commercial">Werbung</string>
+    <string name="media_segments_type_preview">Vorschau</string>
+    <string name="media_segments_type_recap">Zusammenfassung</string>
+    <string name="media_segments_type_outro">Abspann</string>
+    <string name="media_segments_type_intro">Einleitung</string>
+    <string name="none">Keine</string>
+    <string name="users">Benutzer</string>
 </resources>

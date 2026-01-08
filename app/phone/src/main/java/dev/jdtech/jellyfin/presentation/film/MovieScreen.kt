@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,25 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -40,79 +32,81 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.graphics.toColorInt
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
+import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
+import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import dev.jdtech.jellyfin.viewmodels.PlayerItemsEvent
-import dev.jdtech.jellyfin.viewmodels.PlayerViewModel
 import java.util.UUID
-import dev.jdtech.jellyfin.core.R as CoreR
+import org.jellyfin.sdk.model.api.BaseItemKind
 
 @Composable
 fun MovieScreen(
     movieId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel(),
+    downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val isOfflineMode = LocalOfflineMode.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
-    var isLoadingPlayer by remember { mutableStateOf(false) }
-    var isLoadingRestartPlayer by remember { mutableStateOf(false) }
+    LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
-    LaunchedEffect(true) {
-        viewModel.loadMovie(movieId = movieId)
-    }
+    LaunchedEffect(state.movie) { state.movie?.let { movie -> downloaderViewModel.update(movie) } }
 
-    ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
+    ObserveAsEvents(downloaderViewModel.events) { event ->
         when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("items", ArrayList(event.items))
-                context.startActivity(intent)
+            is DownloaderEvent.Successful -> {
+                viewModel.loadMovie(movieId = movieId)
             }
-            is PlayerItemsEvent.PlayerItemsError -> {
-                isLoadingPlayer = false
-                isLoadingRestartPlayer = false
-                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
+            is DownloaderEvent.Deleted -> {
+                if (isOfflineMode) {
+                    navigateBack()
+                } else {
+                    viewModel.loadMovie(movieId = movieId)
+                }
             }
         }
     }
 
     MovieScreenLayout(
         state = state,
-        isLoadingPlayer = isLoadingPlayer,
-        isLoadingRestartPlayer = isLoadingRestartPlayer,
+        downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    when (action.startFromBeginning) {
-                        true -> isLoadingRestartPlayer = true
-                        false -> isLoadingPlayer = true
-                    }
-                    state.movie?.let { movie ->
-                        playerViewModel.loadPlayerItems(movie, startFromBeginning = action.startFromBeginning)
-                    }
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", movieId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
+                    intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    context.startActivity(intent)
                 }
                 is MovieAction.PlayTrailer -> {
                     try {
@@ -122,20 +116,22 @@ fun MovieScreen(
                     }
                 }
                 is MovieAction.OnBackClick -> navigateBack()
+                is MovieAction.OnHomeClick -> navigateHome()
                 is MovieAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
             }
             viewModel.onAction(action)
         },
+        onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 }
 
 @Composable
 private fun MovieScreenLayout(
     state: MovieState,
-    isLoadingPlayer: Boolean,
-    isLoadingRestartPlayer: Boolean,
+    downloaderState: DownloaderState,
     onAction: (MovieAction) -> Unit,
+    onDownloaderAction: (DownloaderAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
 
@@ -145,28 +141,17 @@ private fun MovieScreenLayout(
 
     val scrollState = rememberScrollState()
 
-    var expandedOverview by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         state.movie?.let { movie ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(scrollState),
-            ) {
+            Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)) {
                 ItemHeader(
                     item = movie,
                     scrollState = scrollState,
                     content = {
                         Column(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(
-                                    start = paddingStart,
-                                    end = paddingEnd,
-                                ),
+                            modifier =
+                                Modifier.align(Alignment.BottomStart)
+                                    .padding(start = paddingStart, end = paddingEnd)
                         ) {
                             Text(
                                 text = movie.name,
@@ -187,12 +172,7 @@ private fun MovieScreenLayout(
                         }
                     },
                 )
-                Column(
-                    modifier = Modifier.padding(
-                        start = paddingStart,
-                        end = paddingEnd,
-                    ),
-                ) {
+                Column(modifier = Modifier.padding(start = paddingStart, end = paddingEnd)) {
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -206,19 +186,18 @@ private fun MovieScreenLayout(
                             )
                         }
                         Text(
-                            text = stringResource(CoreR.string.runtime_minutes, movie.runtimeTicks.div(600000000)),
+                            text =
+                                stringResource(
+                                    CoreR.string.runtime_minutes,
+                                    movie.runtimeTicks.div(600000000),
+                                ),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         movie.officialRating?.let { officialRating ->
-                            Text(
-                                text = officialRating,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
+                            Text(text = officialRating, style = MaterialTheme.typography.bodyMedium)
                         }
                         movie.communityRating?.let { communityRating ->
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                            ) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,
@@ -239,6 +218,7 @@ private fun MovieScreenLayout(
                     }
                     ItemButtonsBar(
                         item = movie,
+                        downloaderState = downloaderState,
                         onPlayClick = { startFromBeginning ->
                             onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -254,25 +234,24 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
-                        onTrailerClick = { uri ->
-                            onAction(MovieAction.PlayTrailer(uri))
+                        onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
+                        onDownloadClick = { storageIndex ->
+                            onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
                         },
-                        onDownloadClick = {},
+                        onDownloadCancelClick = {
+                            onDownloaderAction(DownloaderAction.CancelDownload(movie))
+                        },
+                        onDownloadDeleteClick = {
+                            onDownloaderAction(DownloaderAction.DeleteDownload(movie))
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        isLoadingPlayer = isLoadingPlayer,
-                        isLoadingRestartPlayer = isLoadingRestartPlayer,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    Text(
-                        text = movie.overview,
-                        modifier = Modifier
-                            .clickable {
-                                expandedOverview = !expandedOverview
-                            },
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    if (state.displayExtraInfo && state.videoMetadata != null) {
+                        ExtraInfoText(videoMetadata = state.videoMetadata!!)
+                        Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                    }
+                    OverviewText(text = movie.overview, maxCollapsedLines = 3)
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                     InfoText(
                         genres = movie.genres,
@@ -287,42 +266,19 @@ private fun MovieScreenLayout(
                         onActorClick = { personId ->
                             onAction(MovieAction.NavigateToPerson(personId))
                         },
-                        contentPadding = PaddingValues(
-                            start = paddingStart,
-                            end = paddingEnd,
-                        ),
+                        contentPadding = PaddingValues(start = paddingStart, end = paddingEnd),
                     )
                 }
                 Spacer(Modifier.height(paddingBottom))
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-            )
-        }
+        } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .safeDrawingPadding()
-                .padding(horizontal = MaterialTheme.spacings.small),
-        ) {
-            IconButton(
-                onClick = { onAction(MovieAction.OnBackClick) },
-                modifier = Modifier
-                    .alpha(0.7f),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
-        }
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(MovieAction.OnBackClick) },
+            onHomeClick = { onAction(MovieAction.OnHomeClick) },
+        )
     }
 }
 
@@ -331,13 +287,10 @@ private fun MovieScreenLayout(
 private fun EpisodeScreenLayoutPreview() {
     FindroidTheme {
         MovieScreenLayout(
-            state = MovieState(
-                movie = dummyMovie,
-                videoMetadata = dummyVideoMetadata,
-            ),
-            isLoadingPlayer = false,
-            isLoadingRestartPlayer = false,
+            state = MovieState(movie = dummyMovie, videoMetadata = dummyVideoMetadata),
+            downloaderState = DownloaderState(),
             onAction = {},
+            onDownloaderAction = {},
         )
     }
 }

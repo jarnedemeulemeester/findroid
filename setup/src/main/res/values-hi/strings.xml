@@ -20,4 +20,6 @@
    <string name="users">उपयोगकर्ता</string>
    <string name="remove_server_dialog">सर्वर हटाएं</string>
    <string name="remove_server_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर %1$s को हटाना चाहते हैं</string>
+   <string name="remove_server_address">सर्वर का पता हटाएं</string>
+   <string name="remove_server_address_dialog_text">क्या आप सुनिश्चित हैं कि आप सर्वर का पता %1$s हटाना चाहते हैं</string>
 </resources>

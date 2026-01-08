@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Banner di Jellyfin</string>
     <string name="remove">Rimuovi</string>
@@ -10,7 +10,7 @@
     <string name="retry">Riprova</string>
     <string name="genres">Generi</string>
     <string name="director">Regista</string>
-    <string name="cast_amp_crew">Cast</string>
+    <string name="cast_amp_crew"><![CDATA[Cast e troupe]]></string>
     <string name="seasons">Stagioni</string>
     <string name="play_button_description">Riproduci i contenuti multimediali</string>
     <string name="check_button_description">Segna come visto o non visto</string>
@@ -58,9 +58,6 @@
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
     <string name="libraries">Librerie</string>
     <string name="episodes_label">Episodi</string>
-    <string name="addresses">Indirizzi</string>
-    <string name="add_address">Aggiungi indirizzo</string>
-    <string name="add_server_address">Aggiungi indirizzo server</string>
     <string name="add">Aggiungi</string>
     <string name="audio">Audio</string>
     <string name="subtitle">Sottotitoli</string>
@@ -86,8 +83,6 @@
     <string name="no_server_connection">Nessuna connessione con il server Jellyfin, attivare la Modalità Offline per vedere gli elementi scaricati</string>
     <string name="select_storage_location">Seleziona la posizione di archiviazione</string>
     <string name="downloaded_indicator">Indicatore scaricato</string>
-    <string name="remove_server_address">Rimuovi indirizzo server</string>
-    <string name="remove_server_address_dialog_text">Sei sicuro di voler rimuovere l\'indirizzo del server %1$s</string>
     <string name="watch_trailer">Guarda Trailer</string>
     <string name="add_to_favorites">Aggiungi ai preferiti</string>
     <string name="mark_as_played">Segna come visto</string>
@@ -96,4 +91,21 @@
     <string name="play">Riproduci</string>
     <string name="remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="collection_no_media">Questa raccolta non contiene elementi</string>
+    <string name="show_stacktrace">Mostra stacktrace</string>
+    <string name="title_settings">Impostazioni</string>
+    <string name="title_download">Download</string>
+    <string name="season_number">Stagione %1$d</string>
+    <string name="episode_number">Episodio %1$d</string>
+    <string name="sort_by_options_6">Casuale</string>
+    <string name="offline_mode">Modalità Offline</string>
+    <string name="not_set">Non impostato</string>
+    <string name="none">Nessuno</string>
+    <string name="manage_servers">Gestisci server</string>
+    <string name="runtime_minutes_left">%1$d minuti rimasti</string>
+    <string name="delete_download">Elimina il download</string>
+    <string name="delete_download_message">Sei sicuro di voler cancellare questo download dal tuo dispositivo?</string>
+    <string name="download_pending">In sospeso…</string>
+    <string name="download_paused">Pausa</string>
+    <string name="download_downloading">Sto scaricando…</string>
+    <string name="download_failed">Download non riuscito</string>
 </resources>

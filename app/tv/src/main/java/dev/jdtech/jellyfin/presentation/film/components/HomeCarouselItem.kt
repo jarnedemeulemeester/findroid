@@ -35,28 +35,22 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
-fun HomeCarouselItem(
-    item: FindroidItem,
-    onAction: (HomeAction) -> Unit,
-) {
-    val colorStops = arrayOf(
-        0.0f to Color.Black.copy(alpha = 0.1f),
-        0.5f to Color.Black.copy(alpha = 0.5f),
-        1f to Color.Black.copy(alpha = 0.6f),
-    )
+fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
+    val colorStops =
+        arrayOf(
+            0.0f to Color.Black.copy(alpha = 0.1f),
+            0.5f to Color.Black.copy(alpha = 0.5f),
+            1f to Color.Black.copy(alpha = 0.6f),
+        )
 
     Surface(
         onClick = { onAction(HomeAction.OnItemClick(item)) },
         shape = ClickableSurfaceDefaults.shape(shape = MaterialTheme.shapes.large),
-        border = ClickableSurfaceDefaults.border(
-            focusedBorder = Border(
-                BorderStroke(
-                    4.dp,
-                    Color.White,
-                ),
-                shape = MaterialTheme.shapes.large,
+        border =
+            ClickableSurfaceDefaults.border(
+                focusedBorder =
+                    Border(BorderStroke(4.dp, Color.White), shape = MaterialTheme.shapes.large)
             ),
-        ),
         scale = ClickableSurfaceScale.None,
     ) {
         Box {
@@ -65,33 +59,26 @@ fun HomeCarouselItem(
                 placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
             )
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize(),
-            ) {
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colorStops = colorStops,
-                    ),
-                )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawRect(brush = Brush.verticalGradient(colorStops = colorStops))
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                modifier = Modifier
-                    .padding(
-                        horizontal = MaterialTheme.spacings.default,
-                        vertical = MaterialTheme.spacings.default,
-                    )
-                    .align(Alignment.BottomStart),
+                modifier =
+                    Modifier.padding(
+                            horizontal = MaterialTheme.spacings.default,
+                            vertical = MaterialTheme.spacings.default,
+                        )
+                        .align(Alignment.BottomStart),
             ) {
-                val genres = when (item) {
-                    is FindroidMovie -> item.genres
-                    is FindroidShow -> item.genres
-                    else -> emptyList()
-                }
+                val genres =
+                    when (item) {
+                        is FindroidMovie -> item.genres
+                        is FindroidShow -> item.genres
+                        else -> emptyList()
+                    }
                 Text(
                     text = genres.joinToString(),
                     color = Color.LightGray,
@@ -109,8 +96,7 @@ fun HomeCarouselItem(
                 )
                 Text(
                     text = item.overview,
-                    modifier = Modifier
-                        .width(640.dp),
+                    modifier = Modifier.width(640.dp),
                     color = Color.LightGray,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 3,
@@ -124,10 +110,5 @@ fun HomeCarouselItem(
 @Composable
 @Preview(showBackground = true)
 private fun HomeCarouselItemPreview() {
-    FindroidTheme {
-        HomeCarouselItem(
-            item = dummyMovie,
-            onAction = {},
-        )
-    }
+    FindroidTheme { HomeCarouselItem(item = dummyMovie, onAction = {}) }
 }

@@ -1,17 +1,12 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,15 +26,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import dev.jdtech.jellyfin.presentation.components.BaseDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
-import dev.jdtech.jellyfin.settings.R as SettingsR
-import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 
 @Composable
 fun SettingsIntInputDialog(
@@ -47,18 +41,12 @@ fun SettingsIntInputDialog(
     onUpdate: (value: Int) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
-        onUpdate = { value ->
-            value.toIntOrNull()?.let { value ->
-                onUpdate(value)
-            }
-        },
+        onUpdate = { value -> value.toIntOrNull()?.let { value -> onUpdate(value) } },
         onDismissRequest = onDismissRequest,
         suffix = suffix,
     )
@@ -70,18 +58,12 @@ fun SettingsLongInputDialog(
     onUpdate: (value: Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val suffix = preference.suffixRes?.let {
-        stringResource(it)
-    }
+    val suffix = preference.suffixRes?.let { stringResource(it) }
 
     SettingsNumberInputDialog(
         preference = preference,
         initialValue = preference.value.toString(),
-        onUpdate = { value ->
-            value.toLongOrNull()?.let { value ->
-                onUpdate(value)
-            }
-        },
+        onUpdate = { value -> value.toLongOrNull()?.let { value -> onUpdate(value) } },
         onDismissRequest = onDismissRequest,
         suffix = suffix,
     )
@@ -97,10 +79,7 @@ fun SettingsNumberInputDialog(
 ) {
     var textFieldValue by remember {
         mutableStateOf(
-            TextFieldValue(
-                text = initialValue,
-                selection = TextRange(initialValue.length),
-            ),
+            TextFieldValue(text = initialValue, selection = TextRange(initialValue.length))
         )
     }
 
@@ -109,82 +88,45 @@ fun SettingsNumberInputDialog(
     // Only digits pattern
     val pattern = remember { Regex("^\\d+\$") }
 
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(true) { focusRequester.requestFocus() }
 
-    Dialog(
-        onDismissRequest = { onDismissRequest() },
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 540.dp),
-            shape = RoundedCornerShape(28.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(MaterialTheme.spacings.default),
-            ) {
+    BaseDialog(
+        title = stringResource(preference.nameStringResource),
+        onDismiss = onDismissRequest,
+        negativeButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = stringResource(SettingsR.string.cancel))
+            }
+        },
+        positiveButton = {
+            TextButton(onClick = { onUpdate(textFieldValue.text) }) {
+                Text(text = stringResource(SettingsR.string.save))
+            }
+        },
+    ) { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding)) {
+            preference.descriptionStringRes?.let {
                 Text(
-                    text = stringResource(preference.nameStringResource),
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = stringResource(it),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                preference.descriptionStringRes?.let {
-                    Text(
-                        text = stringResource(it),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-                }
-                OutlinedTextField(
-                    value = textFieldValue,
-                    onValueChange = {
-                        if (it.text.isEmpty() || it.text.matches(pattern)) {
-                            textFieldValue = it
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    suffix = {
-                        suffix?.let {
-                            Text(text = it)
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onUpdate(textFieldValue.text)
-                        },
-                    ),
-                    singleLine = true,
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    TextButton(
-                        onClick = onDismissRequest,
-                    ) {
-                        Text(
-                            text = stringResource(SettingsR.string.cancel),
-                        )
-                    }
-                    TextButton(
-                        onClick = { onUpdate(textFieldValue.text) },
-                    ) {
-                        Text(
-                            text = stringResource(SettingsR.string.save),
-                        )
-                    }
-                }
             }
+            OutlinedTextField(
+                value = textFieldValue,
+                onValueChange = {
+                    if (it.text.isEmpty() || it.text.matches(pattern)) {
+                        textFieldValue = it
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                suffix = { suffix?.let { Text(text = it) } },
+                keyboardOptions =
+                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onUpdate(textFieldValue.text) }),
+                singleLine = true,
+            )
         }
     }
 }
@@ -194,12 +136,13 @@ fun SettingsNumberInputDialog(
 private fun SettingsNumberInputDialogPreview() {
     FindroidTheme {
         SettingsNumberInputDialog(
-            preference = PreferenceIntInput(
-                nameStringResource = SettingsR.string.settings_cache_size,
-                descriptionStringRes = SettingsR.string.settings_cache_size_message,
-                backendPreference = PreferenceBackend("", 0),
-                suffixRes = SettingsR.string.mb,
-            ),
+            preference =
+                PreferenceIntInput(
+                    nameStringResource = SettingsR.string.settings_cache_size,
+                    descriptionStringRes = SettingsR.string.settings_cache_size_message,
+                    backendPreference = PreferenceBackend("", 0),
+                    suffixRes = SettingsR.string.mb,
+                ),
             initialValue = "20",
             onUpdate = {},
             onDismissRequest = {},

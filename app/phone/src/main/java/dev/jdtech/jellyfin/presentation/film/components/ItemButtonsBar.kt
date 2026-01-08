@@ -1,23 +1,43 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.app.DownloadManager
+import android.os.Environment
+import android.os.StatFs
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun ItemButtonsBar(
@@ -25,106 +45,195 @@ fun ItemButtonsBar(
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
-    onDownloadClick: () -> Unit,
+    onDownloadClick: (storageIndex: Int) -> Unit,
+    onDownloadCancelClick: () -> Unit,
+    onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
-    isLoadingPlayer: Boolean = false,
-    isLoadingRestartPlayer: Boolean = false,
+    downloaderState: DownloaderState? = null,
+    canPlay: Boolean = true,
 ) {
-    val trailerUri = when (item) {
-        is FindroidMovie -> {
-            item.trailer
-        }
-        is FindroidShow -> {
-            item.trailer
-        }
-        else -> null
-    }
+    val context = LocalContext.current
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    Row(
-        modifier = modifier,
-    ) {
-        PlayButton(
-            item = item,
-            onClick = {
-                onPlayClick(false)
-            },
-            enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
-            isLoading = isLoadingPlayer,
-        )
-        if (item.playbackPositionTicks.div(600000000) > 0) {
-            FilledTonalIconButton(
-                onClick = {
-                    onPlayClick(true)
-                },
-                enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
+    val trailerUri =
+        when (item) {
+            is FindroidMovie -> {
+                item.trailer
+            }
+            is FindroidShow -> {
+                item.trailer
+            }
+            else -> null
+        }
+
+    var storageSelectionDialogOpen by remember { mutableStateOf(false) }
+    var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
+    var deleteDownloadDialogOpen by remember { mutableStateOf(false) }
+
+    var selectedStorageIndex by remember { mutableIntStateOf(0) }
+    var storageLocations = remember { context.getExternalFilesDirs(null) }
+
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+        ) {
+            if (
+                !windowSizeClass.isWidthAtLeastBreakpoint(
+                    WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+                )
             ) {
-                when (isLoadingRestartPlayer) {
-                    true -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = LocalContentColor.current,
-                        )
+                Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+                    PlayButton(
+                        item = item,
+                        onClick = { onPlayClick(false) },
+                        modifier = Modifier.weight(weight = 1f, fill = true),
+                        enabled = item.canPlay && canPlay,
+                    )
+                    if (item.playbackPositionTicks.div(600000000) > 0) {
+                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                contentDescription = null,
+                            )
+                        }
                     }
-                    false -> {
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+                if (
+                    windowSizeClass.isWidthAtLeastBreakpoint(
+                        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+                    )
+                ) {
+                    PlayButton(
+                        item = item,
+                        onClick = { onPlayClick(false) },
+                        enabled = item.canPlay && canPlay,
+                    )
+                    if (item.playbackPositionTicks.div(600000000) > 0) {
+                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+                trailerUri?.let { uri ->
+                    FilledTonalIconButton(onClick = { onTrailerClick(uri) }) {
                         Icon(
-                            painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                            painter = painterResource(CoreR.drawable.ic_film),
                             contentDescription = null,
                         )
                     }
                 }
+                FilledTonalIconButton(onClick = onMarkAsPlayedClick) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_check),
+                        contentDescription = null,
+                        tint = if (item.played) Color.Red else LocalContentColor.current,
+                    )
+                }
+                FilledTonalIconButton(onClick = onMarkAsFavoriteClick) {
+                    when (item.favorite) {
+                        true -> {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_heart_filled),
+                                contentDescription = null,
+                                tint = Color.Red,
+                            )
+                        }
+                        false -> {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_heart),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+                if (downloaderState != null && !downloaderState.isDownloading) {
+                    if (item.isDownloaded()) {
+                        FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_trash),
+                                contentDescription = null,
+                            )
+                        }
+                    } else if (item.canDownload) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                storageLocations = context.getExternalFilesDirs(null)
+                                if (storageLocations.size > 1) {
+                                    storageSelectionDialogOpen = true
+                                } else {
+                                    selectedStorageIndex = 0
+                                    onDownloadClick(selectedStorageIndex)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_download),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+            }
+            if (downloaderState != null) {
+                AnimatedVisibility(downloaderState.isDownloading) {
+                    Column {
+                        DownloaderCard(
+                            state = downloaderState,
+                            onCancelClick = { cancelDownloadDialogOpen = true },
+                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
+                        )
+                        Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    }
+                }
             }
         }
-        trailerUri?.let { uri ->
-            FilledTonalIconButton(
-                onClick = {
-                    onTrailerClick(uri)
+        if (storageSelectionDialogOpen) {
+            val locations = remember {
+                storageLocations.map { dir ->
+                    val locationStringRes =
+                        if (Environment.isExternalStorageRemovable(dir)) CoreR.string.external
+                        else CoreR.string.internal
+                    val locationString = context.getString(locationStringRes)
+
+                    val stat = StatFs(dir.path)
+                    val availableMegaBytes = stat.availableBytes.div(1000000)
+                    context.getString(CoreR.string.storage_name, locationString, availableMegaBytes)
+                }
+            }
+            StorageSelectionDialog(
+                storageLocations = locations,
+                onSelect = { storageIndex ->
+                    selectedStorageIndex = storageIndex
+                    onDownloadClick(selectedStorageIndex)
+                    storageSelectionDialogOpen = false
                 },
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_film),
-                    contentDescription = null,
-                )
-            }
-        }
-        FilledTonalIconButton(
-            onClick = onMarkAsPlayedClick,
-        ) {
-            Icon(
-                painter = painterResource(CoreR.drawable.ic_check),
-                contentDescription = null,
-                tint = if (item.played) Color.Red else LocalContentColor.current,
+                onDismiss = { storageSelectionDialogOpen = false },
             )
         }
-        FilledTonalIconButton(
-            onClick = onMarkAsFavoriteClick,
-        ) {
-            when (item.favorite) {
-                true -> {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_heart_filled),
-                        contentDescription = null,
-                        tint = Color.Red,
-                    )
-                }
-                false -> {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_heart),
-                        contentDescription = null,
-                    )
-                }
-            }
+        if (cancelDownloadDialogOpen) {
+            CancelDownloadDialog(
+                onCancel = {
+                    onDownloadCancelClick()
+                    cancelDownloadDialogOpen = false
+                },
+                onDismiss = { cancelDownloadDialogOpen = false },
+            )
         }
-        if (item.canDownload) {
-            FilledTonalIconButton(
-                onClick = onDownloadClick,
-                enabled = false,
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_download),
-                    contentDescription = null,
-                )
-            }
+        if (deleteDownloadDialogOpen) {
+            DeleteDownloadDialog(
+                onDelete = {
+                    onDownloadDeleteClick()
+                    deleteDownloadDialogOpen = false
+                },
+                onDismiss = { deleteDownloadDialogOpen = false },
+            )
         }
     }
 }
@@ -139,6 +248,27 @@ private fun ItemButtonsBarPreview() {
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
+            onDownloadCancelClick = {},
+            onDownloadDeleteClick = {},
+            onTrailerClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ItemButtonsBarDownloadingPreview() {
+    FindroidTheme {
+        ItemButtonsBar(
+            item = dummyEpisode,
+            downloaderState =
+                DownloaderState(status = DownloadManager.STATUS_RUNNING, progress = 0.3f),
+            onPlayClick = {},
+            onMarkAsPlayedClick = {},
+            onMarkAsFavoriteClick = {},
+            onDownloadClick = {},
+            onDownloadCancelClick = {},
+            onDownloadDeleteClick = {},
             onTrailerClick = {},
         )
     }

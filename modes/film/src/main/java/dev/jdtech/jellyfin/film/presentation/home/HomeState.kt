@@ -1,9 +1,10 @@
 package dev.jdtech.jellyfin.film.presentation.home
 
 import dev.jdtech.jellyfin.models.HomeItem
+import dev.jdtech.jellyfin.models.Server
 
 data class HomeState(
-    val isOffline: Boolean = false,
+    val server: Server? = null,
     val suggestionsSection: HomeItem.Suggestions? = null,
     val resumeSection: HomeItem.Section? = null,
     val nextUpSection: HomeItem.Section? = null,

@@ -46,7 +46,6 @@
     <string name="about">Over</string>
     <string name="privacy_policy">Privacybeleid</string>
     <string name="mpv_player_summary">Gebruik de experimentele mpv speler om videos af te spelen. mpv heeft ondersteuning voor meer video, audio en ondertiteling codecs.</string>
-    <string name="pref_player_intro_skipper_summary">Jumoog\'s Intro Skipper plug-in moet geïnstalleerd zijn op de server</string>
     <string name="player_gestures_seek_summary">Veeg horizontaal om vooruit of achteruit te spoelen</string>
     <string name="extra_info">Extra informatie weergeven</string>
     <string name="extra_info_summary">Laat uitgebreide informatie zijn over Audio, Video en Ondertitels</string>
@@ -54,7 +53,6 @@
     <string name="app_language">App taal</string>
     <string name="amoled_theme">AMOLED donker thema</string>
     <string name="amoled_theme_summary">Gebruik AMOLED thema met een compleet zwarte achtergrond</string>
-    <string name="pref_player_intro_skipper">Intro Overslaan</string>
     <string name="player_gestures_seek">Zoek gebaar</string>
     <string name="picture_in_picture">Scherm-in-scherm</string>
     <string name="picture_in_picture_gesture_summary">Gebruik de startknop of een gebaar om beeld-in-beeld te openen terwijl de video wordt afgespeeld</string>

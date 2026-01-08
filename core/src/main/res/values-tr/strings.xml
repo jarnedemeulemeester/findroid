@@ -32,17 +32,12 @@
     <string name="hide">Gizle</string>
     <string name="sort_by_options_1">IMDB Puanı</string>
     <string name="audio">Ses</string>
-    <string name="add_address">Adres ekle</string>
-    <string name="add_server_address">Sunucu adresi ekle</string>
-    <string name="addresses">Adresler</string>
     <string name="cancel_download">İndirmeyi iptal et</string>
     <string name="stop_download">İndirmeyi duraklat</string>
     <string name="remove_from_favorites">Favorilerden çıkar</string>
     <string name="add_to_favorites">Favorilere ekle</string>
     <string name="app_description">Üçüncü parti yerel Jellyfin uygulaması</string>
     <string name="jellyfin_banner">Jellyfin afişi</string>
-    <string name="remove_server_address">Sunucu adresini kaldır</string>
-    <string name="remove_server_address_dialog_text">%1$s sunucu adresini kaldırmak istediğinizden emin misiniz</string>
     <string name="error_loading_data">Veriler yüklenirken hata oluştu</string>
     <string name="cast_amp_crew"><![CDATA[Oyuncular ve Ekip]]></string>
     <string name="episode_name">%1$d. %2$s</string>
@@ -66,7 +61,8 @@
     <string name="offline_mode_go_online">Çevrimiçi ol</string>
     <string name="search_hint">Filmleri, dizileri, bölümleri arayın…</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="season_episode">Sezon%1$d - Bölüm%2$d</string>
+    <string name="season_number">Sezon%1$d</string>
+    <string name="episode_number">Bölüm%1$d</string>
     <string name="show_stacktrace">Hata izini görüntüle</string>
     <string name="not_set">Ayarlanmadı</string>
     <string name="title_download">İndirilenler</string>

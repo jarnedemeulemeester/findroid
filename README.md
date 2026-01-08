@@ -8,11 +8,6 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
 
-> [!IMPORTANT]
-> Findroid is currently being rewritten to Jetpack Compose. Because of this, the main branch may be unusable for some time.
->
-> Also, please refrain from creating pull requests which involve the old Views based UI.
-
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
 I am developing this application in my spare time.
@@ -27,7 +22,7 @@ I am developing this application in my spare time.
 ## Screenshots
 | Home                                | Library                             | Movie                           | Season                            | Episode                             |
 |-------------------------------------|-------------------------------------|---------------------------------|-----------------------------------|-------------------------------------|
-| ![Home](images/home-light-dark.png) | ![Library](images/library-dark.png) | ![Movie](images/movie-dark.png) | ![Season](images/season-dark.png) | ![Episode](images/episode-dark.png) |
+| ![Home](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Library](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Movie](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) | ![Season](fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png) | ![Episode](fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.png) |
 
 ## Features
 - Completely native interface
@@ -51,6 +46,10 @@ I am developing this application in my spare time.
 - Media chapters
   - Timeline markers
   - Chapter navigation gestures
+- Trickplay (requires Jellyfin 10.9 or higher)
+- Media segments (requires Jellyfin 10.10 or higher)
+  - Skip button
+  - Auto skip
 
 ## Planned features
 - Android TV
@@ -58,7 +57,7 @@ I am developing this application in my spare time.
 - Chromecast support
 
 ## Translating
-[JDTech Weblate](https://weblate.jdtech.dev) is a selfhosted instance of Weblate where you can translate this project and future projects of mine.
+[JDTech Weblate](https://weblate.jdtech.dev) is a self-hosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
 [![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\

@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -15,6 +16,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 
@@ -30,17 +32,17 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
-            FindroidTheme(
-                dynamicColor = state.isDynamicColors,
-            ) {
+            FindroidTheme(dynamicColor = state.isDynamicColors) {
                 val navController = rememberNavController()
                 if (!state.isLoading) {
-                    NavigationRoot(
-                        navController = navController,
-                        hasServers = state.hasServers,
-                        hasCurrentServer = state.hasCurrentServer,
-                        hasCurrentUser = state.hasCurrentUser,
-                    )
+                    CompositionLocalProvider(LocalOfflineMode provides state.isOfflineMode) {
+                        NavigationRoot(
+                            navController = navController,
+                            hasServers = state.hasServers,
+                            hasCurrentServer = state.hasCurrentServer,
+                            hasCurrentUser = state.hasCurrentUser,
+                        )
+                    }
                 }
             }
         }
@@ -49,19 +51,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun scheduleUserDataSync() {
-        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(
-                        NetworkType.CONNECTED,
-                    )
-                    .build(),
-            )
-            .build()
+        val syncWorkRequest =
+            OneTimeWorkRequestBuilder<SyncWorker>()
+                .setConstraints(
+                    Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                )
+                .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
 
-        workManager.beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
+        workManager
+            .beginUniqueWork("syncUserData", ExistingWorkPolicy.KEEP, syncWorkRequest)
             .enqueue()
     }
 }
