@@ -3,4 +3,5 @@
     <string name="continue_watching">Fortsätt titta</string>
     <string name="next_up">Nästa</string>
     <string name="latest_library">Senaste %1$s</string>
+    <string name="search_placeholder">Sök filmer och serier</string>
 </resources>
