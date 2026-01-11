@@ -60,8 +60,7 @@ I am developing this application in my spare time.
 [JDTech Weblate](https://weblate.jdtech.dev) is a self-hosted instance of Weblate where you can translate this project and future projects of mine.
 
 ## Questions?
-[![](https://dcbadge.vercel.app/api/server/tg5VvTFwTV)](https://discord.gg/tg5VvTFwTV)\
-We have a Discord server to discuss future development or ask general questions.
+We have a [Discord server](https://discord.gg/tg5VvTFwTV) to discuss future development or ask general questions.
 
 ## License
 This project is licensed under [GPLv3](LICENSE).
