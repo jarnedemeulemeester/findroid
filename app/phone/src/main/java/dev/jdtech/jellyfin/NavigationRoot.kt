@@ -193,7 +193,7 @@ fun NavigationRoot(
                     }
                     // Phone Portrait
                     else -> {
-                        NavigationSuiteType.NavigationBar
+                        NavigationSuiteType.ShortNavigationBarCompact
                     }
                 }
             }
