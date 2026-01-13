@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="search_placeholder">Cerca pel·lícules i sèries</string>
+    <string name="next_up">A continuació</string>
+    <string name="continue_watching">Segueix mirant</string>
+    <string name="latest_library">Recents a %1$s</string>
 </resources>
