@@ -1,3 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_category_player">Reproductor</string>
+    <string name="settings_category_language">Idioma</string>
+    <string name="settings_preferred_audio_language">Idioma d\'àudio preferit</string>
+    <string name="settings_preferred_subtitle_language">Idioma de subtítols preferit</string>
+    <string name="settings_category_servers">Servidors</string>
+    <string name="settings_category_download">Baixades</string>
+    <string name="settings_category_appearance">Aparença</string>
+    <string name="settings_category_interface">Interfície</string>
+    <string name="settings_category_device">Dispositiu</string>
+    <string name="settings_category_cache">Memòria cau</string>
+    <string name="settings_use_cache_title">Imatges a la memòria cau</string>
+    <string name="settings_cache_size">Mida de la memòria cau</string>
+    <string name="settings_use_cache_summary">Emmagatzema les imatges a la memòria cau per accelerar els temps de càrrega. Tindrà efecte després de reiniciar l\'aplicació.</string>
+    <string name="settings_cache_size_message">L\'aplicació utilitzarà aquesta quantitat de MB d\'espai en disc per emmagatzemar imatges del servidor Jellyfin. Valors més grans poden ser beneficiosos en xarxes més lentes.</string>
+    <string name="settings_category_network">Xarxa</string>
+    <string name="settings_request_timeout">Temps d\'espera de la sol·licitud</string>
+    <string name="settings_connect_timeout">Temps d\'espera de la connexió</string>
+    <string name="settings_socket_timeout">Temps d\'espera del socket</string>
+    <string name="pref_player_mpv_hwdec">Descodificació de maquinari</string>
+    <string name="pref_player_mpv_vo">Sortida de vídeo</string>
+    <string name="pref_player_mpv_ao">Sortida d\'àudio</string>
+    <string name="gestures">Gestos</string>
+    <string name="player_gestures">Gestos del reproductor</string>
+    <string name="player_gestures_vb">Gestos de volum i brillantor</string>
+    <string name="player_gestures_zoom">Gestos de zoom</string>
+    <string name="player_gestures_vb_summary">Llisca amunt i avall a la part dreta de la pantalla per canviar el volum i a l\'esquerra per canviar la brillantor</string>
+    <string name="title_download">Baixades</string>
+    <string name="download_mobile_data">Descarrega amb dades mòbils</string>
+    <string name="player_brightness_remember">Recorda el nivell de brillantor</string>
 </resources>
