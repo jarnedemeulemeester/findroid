@@ -83,7 +83,7 @@
     <string name="select_storage_location">اختر مكان التخزين</string>
     <string name="storage_unavailable">مكان التخزين غير متاح</string>
     <string name="internal">داخلي</string>
-    <string name="external">خاجي</string>
+    <string name="external">خارجي</string>
     <string name="storage_name">%1$s (%2$d ميغابايت متاح)</string>
     <string name="preparing_download">التحضير للتحميل</string>
     <string name="cancel_download">إلغاء التحميل</string>
