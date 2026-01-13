@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="select_subtitle_track">Selecciona la pista de subtítols</string>
+    <string name="select_audio_track">Selecciona la pista d\'àudio</string>
+    <string name="none">Cap</string>
+    <string name="select_playback_speed">Selecciona la velocitat de reproducció</string>
+    <string name="select_a_version">Selecciona una versió</string>
+    <string name="external">Extern</string>
 </resources>
