@@ -29,4 +29,5 @@
     <string name="title_download">Baixades</string>
     <string name="download_mobile_data">Descarrega amb dades mòbils</string>
     <string name="player_brightness_remember">Recorda el nivell de brillantor</string>
+    <string name="none">Cap</string>
 </resources>
