@@ -1,3 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="select_audio_track">اختر المسار الصوتي</string>
+    <string name="select_subtitle_track">اختر الترجمه</string>
+    <string name="select_playback_speed">اختر سرعة التشغيل</string>
+    <string name="select_a_version">اختر نسخة</string>
+    <string name="external">خارجي</string>
+    <string name="none">لا شيئ</string>
+    <string name="player_controls_picture_in_picture">تشغيل النافذة المنبثقة</string>
+    <string name="player_controls_lock">قفل المشغل</string>
+    <string name="player_controls_skip_back">رجوع للخلف</string>
+    <string name="player_controls_play_pause">تشغيل إيقاف</string>
+    <string name="player_controls_rewind">أعادة</string>
+    <string name="player_controls_exit">خروج</string>
+    <string name="player_controls_fast_forward">تسريع للأمام</string>
+    <string name="player_controls_skip_forward">تخطي للأمام</string>
+    <string name="player_trickplay">تشغيل الصور المصغرة</string>
+    <string name="player_controls_progress">شريط التقدم</string>
+    <string name="player_controls_skip_intro">تخطي المقدمة</string>
+    <string name="player_controls_skip_outro">تخطي الخاتمة</string>
+    <string name="player_controls_next_episode">الحلقة التالية</string>
+    <string name="player_controls_skip_recap">تخطي التذكير</string>
+    <string name="player_controls_skip_preview">تخطي المعاينة</string>
+    <string name="player_controls_skip_commercial">تخطي الإعلانات</string>
+    <string name="player_controls_skip_unknown">تخطي</string>
 </resources>
