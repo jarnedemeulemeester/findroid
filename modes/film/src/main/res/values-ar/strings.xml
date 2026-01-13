@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="next_up">التالي</string>
+    <string name="continue_watching">متابعة المشاهدة</string>
+    <string name="latest_library">أحدث %1$s</string>
+    <string name="search_placeholder">البحث عن الأفلام و المسلسلات</string>
 </resources>
