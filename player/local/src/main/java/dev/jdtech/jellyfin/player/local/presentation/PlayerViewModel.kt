@@ -542,7 +542,7 @@ constructor(
         } else {
             player.seekTo(
                 if (appPreferences.getValue(appPreferences.playerMpv)) {
-                    // MPV uses seconds so approximate to next second to avoid loop
+                    // MPV uses seconds, so round up to the next second boundary to avoid loop
                     val roundingBase = 1000L
                     (segment.endTicks + roundingBase - 1) / roundingBase * roundingBase
                 } else {
