@@ -174,27 +174,22 @@ fun NavigationRoot(
 
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val customNavSuiteType =
-        with(windowAdaptiveInfo) {
-            // HEIGHT
-            // Phone Landscape
-            if (!windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND)) {
-                NavigationSuiteType.WideNavigationRailCollapsed
-            }
-            // WIDTH
-            else {
-                when {
-                    // PC, Tablet Landscape
-                    windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
-                        NavigationSuiteType.WideNavigationRailCollapsed
-                    }
-                    // Tablet Portrait, Foldable
-                    windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
-                        NavigationSuiteType.ShortNavigationBarMedium
-                    }
-                    // Phone Portrait
-                    else -> {
-                        NavigationSuiteType.ShortNavigationBarCompact
-                    }
+        with(windowAdaptiveInfo.windowSizeClass) {
+            when {
+                // Compact Width (Phone Portrait) -> Always Compact Bar
+                !isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                    NavigationSuiteType.ShortNavigationBarCompact
+                }
+
+                // Expanded Width (Tablet Landscape/PC) OR Compact Height (Phone Landscape) -> Rail
+                isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) ||
+                    !isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND) -> {
+                    NavigationSuiteType.WideNavigationRailCollapsed
+                }
+
+                // Medium Width + Medium Height (Tablet Portrait) -> Medium Bar
+                else -> {
+                    NavigationSuiteType.ShortNavigationBarMedium
                 }
             }
         }
