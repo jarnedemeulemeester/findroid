@@ -540,7 +540,15 @@ constructor(
         if (shouldSkipToNextEpisode(segment)) {
             player.seekToNextMediaItem()
         } else {
-            player.seekTo(segment.endTicks)
+            player.seekTo(
+                if (appPreferences.getValue(appPreferences.playerMpv)) {
+                    // MPV uses seconds so approximate to next second to avoid loop
+                    val roundingBase = 1000L
+                    (segment.endTicks + roundingBase - 1) / roundingBase * roundingBase
+                } else {
+                    segment.endTicks
+                }
+            )
         }
         _uiState.update { it.copy(currentSegment = null) }
     }
