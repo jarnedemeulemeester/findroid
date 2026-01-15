@@ -25,7 +25,7 @@
         <item>aaudio</item>
     </string-array>
     <string-array name="gesture_hold">
-        <item>Chapter</item>
+        <item>Chapter Navigation</item>
         <item>2x Speed</item>
         <item>Disabled</item>
     </string-array>
