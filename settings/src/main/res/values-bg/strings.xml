@@ -59,8 +59,6 @@
     <string name="offline_mode">Режим без Интернет</string>
     <string name="player_start_maximized">Започни в максимизиран режим</string>
     <string name="player_start_maximized_summary">Отвори видео в максимизиран режим по подразбиране</string>
-    <string name="player_gestures_hold_summary">Дълго задържане на Лявата / Дясната страна, за пропускане на глава (отменя жеста за 2x скорост)</string>
     <string name="pref_player_chapter_markers">Маркери за глави</string>
     <string name="pref_player_chapter_markers_summary">Показвай маркери за глави на времевата линия</string>
-    <string name="player_gestures_hold">Пропусни глава</string>
 </resources>

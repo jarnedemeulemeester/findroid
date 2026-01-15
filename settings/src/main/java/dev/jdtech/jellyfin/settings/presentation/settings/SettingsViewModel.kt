@@ -324,8 +324,6 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                 PreferenceSelect(
                                                     nameStringResource =
                                                         R.string.player_gestures_hold,
-                                                    descriptionStringRes =
-                                                        R.string.player_gestures_hold_summary,
                                                     dependencies =
                                                         listOf(appPreferences.playerGestures),
                                                     backendPreference =
