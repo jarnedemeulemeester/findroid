@@ -37,7 +37,7 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val playerGesturesZoom = Preference("pref_player_gestures_zoom", true)
     val playerGesturesSeek = Preference("pref_player_gestures_seek", true)
     val playerGesturesSeekTrickplay = Preference("pref_player_gestures_seek_trickplay", true)
-    val playerGesturesHold = Preference("pref_player_gestures_hold", "Chapter")
+    val playerGesturesHold = Preference("pref_player_gestures_hold", "Disabled")
     val playerGesturesBrightnessRemember = Preference("pref_player_brightness_remember", false)
     val playerGesturesStartMaximized = Preference("pref_player_start_maximized", false)
 
