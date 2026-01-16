@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="jellyfin_banner">Jellyfin 橫幅</string>
     <string name="remove">移除</string>
@@ -92,4 +92,20 @@
     <string name="add_to_favorites">加入收藏夾</string>
     <string name="remove_from_favorites">從收藏夾中刪除</string>
     <string name="collection_no_media">該集合不包含任何媒體</string>
-    </resources>
+    <string name="title_settings">設定</string>
+    <string name="title_download">下載</string>
+    <string name="show_stacktrace">顯示堆椄追蹤</string>
+    <string name="season_number">第 %1$d 季</string>
+    <string name="episode_number">第 %1$d 集</string>
+    <string name="runtime_minutes_left">%1$d 分鐘剩餘</string>
+    <string name="offline_mode">離線模式</string>
+    <string name="delete_download">刪除下載</string>
+    <string name="delete_download_message">你確定要從設備中刪除此下載檔案吗？</string>
+    <string name="not_set">未設置</string>
+    <string name="none">無</string>
+    <string name="manage_servers">管理伺服器</string>
+    <string name="download_pending">待機中…</string>
+    <string name="download_paused">已暖停</string>
+    <string name="download_downloading">下載中…</string>
+    <string name="download_failed">下載失敗</string>
+</resources>
