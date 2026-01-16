@@ -3,4 +3,5 @@
     <string name="latest_library">最新上架的 %1$s</string>
     <string name="next_up">接下來</string>
     <string name="continue_watching">繼續觀看</string>
+    <string name="search_placeholder">搜尋電影和電視節目</string>
 </resources>
