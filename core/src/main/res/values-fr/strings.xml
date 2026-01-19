@@ -10,6 +10,7 @@
     <string name="director">Directeur</string>
     <string name="cast_amp_crew"><![CDATA[Casting & Production]]></string>
     <string name="seasons">Saisons</string>
+    <string name="select_seasons">Choisissez les saisons</string>
     <string name="play_button_description">Lancer le média</string>
     <string name="trailer_button_description">Regarder la bande-annonce</string>
     <string name="genres">Genres</string>

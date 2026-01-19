@@ -9,6 +9,7 @@
     <string name="director">Regissör</string>
     <string name="cast_amp_crew"><![CDATA[Medverkande]]></string>
     <string name="seasons">Säsonger</string>
+    <string name="select_seasons">Välj säsonger</string>
     <string name="trailer_button_description">Titta på trailern</string>
     <string name="play_button_description">Spela upp media</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>

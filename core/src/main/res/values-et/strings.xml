@@ -18,6 +18,7 @@
     <string name="writers">Stsenaristid</string>
     <string name="cast_amp_crew"><![CDATA[Näitlejad ja tiim]]></string>
     <string name="seasons">Hooajad</string>
+    <string name="select_seasons">Valige hooajad</string>
     <string name="play_button_description">Esita meediat</string>
     <string name="trailer_button_description">Vaata treilerit</string>
     <string name="check_button_description">Märgi vaadatuks või mittevaadatuks</string>

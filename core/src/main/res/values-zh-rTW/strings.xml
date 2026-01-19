@@ -12,6 +12,7 @@
     <string name="writers">編劇</string>
     <string name="cast_amp_crew">演職人員</string>
     <string name="seasons">季</string>
+    <string name="select_seasons">選擇季</string>
     <string name="play_button_description">播放媒體</string>
     <string name="trailer_button_description">觀看預告片</string>
     <string name="check_button_description">標記為已觀看或未觀看</string>
