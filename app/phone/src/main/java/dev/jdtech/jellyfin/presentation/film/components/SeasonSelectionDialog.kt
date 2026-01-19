@@ -46,9 +46,7 @@ fun SeasonSelectionDialog(
         title = stringResource(CoreR.string.select_seasons),
         onDismiss = onDismiss,
         negativeButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(CoreR.string.cancel))
-            }
+            TextButton(onClick = onDismiss) { Text(text = stringResource(CoreR.string.cancel)) }
         },
         positiveButton = {
             TextButton(
@@ -117,10 +115,6 @@ private fun SeasonSelectionDialogItem(
 @Composable
 private fun SeasonSelectionDialogPreview() {
     FindroidTheme {
-        SeasonSelectionDialog(
-            seasons = listOf(dummySeason),
-            onConfirm = {},
-            onDismiss = {},
-        )
+        SeasonSelectionDialog(seasons = listOf(dummySeason), onConfirm = {}, onDismiss = {})
     }
 }

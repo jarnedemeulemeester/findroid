@@ -45,8 +45,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
@@ -113,9 +113,7 @@ fun ShowScreen(
         onDownloadSeasons = { seasonIds, storageIndex ->
             viewModel.downloadSeasons(seasonIds, storageIndex)
         },
-        onDeleteShowDownloads = {
-            viewModel.deleteShowDownloads(state.seasons.map { it.id })
-        },
+        onDeleteShowDownloads = { viewModel.deleteShowDownloads(state.seasons.map { it.id }) },
     )
 }
 
@@ -208,7 +206,8 @@ private fun ShowScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     ItemButtonsBar(
                         item = show,
-                        downloaderState = if (state.seasons.isNotEmpty()) DownloaderState() else null,
+                        downloaderState =
+                            if (state.seasons.isNotEmpty()) DownloaderState() else null,
                         onPlayClick = { startFromBeginning ->
                             onAction(ShowAction.Play(startFromBeginning = startFromBeginning))
                         },

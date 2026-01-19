@@ -153,7 +153,8 @@ private fun SeasonScreenLayout(
                     Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
                     ItemButtonsBar(
                         item = season,
-                        downloaderState = if (state.episodes.isNotEmpty()) DownloaderState() else null,
+                        downloaderState =
+                            if (state.episodes.isNotEmpty()) DownloaderState() else null,
                         onPlayClick = { startFromBeginning ->
                             onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
                         },
