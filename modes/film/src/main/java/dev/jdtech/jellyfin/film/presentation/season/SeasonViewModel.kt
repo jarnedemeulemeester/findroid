@@ -18,10 +18,10 @@ import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.ItemFields
 
 @HiltViewModel
-class SeasonViewModel @Inject constructor(
-    private val repository: JellyfinRepository,
-    private val downloader: Downloader,
-) : ViewModel() {
+class SeasonViewModel
+@Inject
+constructor(private val repository: JellyfinRepository, private val downloader: Downloader) :
+    ViewModel() {
     private val _state = MutableStateFlow(SeasonState())
     val state = _state.asStateFlow()
 

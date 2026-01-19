@@ -23,10 +23,10 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PersonKind
 
 @HiltViewModel
-class ShowViewModel @Inject constructor(
-    private val repository: JellyfinRepository,
-    private val downloader: Downloader,
-) : ViewModel() {
+class ShowViewModel
+@Inject
+constructor(private val repository: JellyfinRepository, private val downloader: Downloader) :
+    ViewModel() {
     private val _state = MutableStateFlow(ShowState())
     val state = _state.asStateFlow()
 
