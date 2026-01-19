@@ -46,10 +46,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                 BaseItemKind.SERIES -> {
                     val nextUpEpisode = repository.getNextUp(itemId).firstOrNull()
 
-                    val episodes = when (nextUpEpisode){
-                        null -> getEpisodesBySeries(itemId)
-                        else -> getEpisodesByEpisode(nextUpEpisode)
-                    }
+                    val episodes =
+                        when (nextUpEpisode) {
+                            null -> getEpisodesBySeries(itemId)
+                            else -> getEpisodesByEpisode(nextUpEpisode)
+                        }
 
                     if (episodes.isEmpty()) {
                         return null
@@ -189,24 +190,29 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return getEpisodes(currentSeason, nextSeason)
     }
 
-    private suspend fun getEpisodes(currentSeason: FindroidSeason, nextSeason: FindroidSeason?): List<FindroidEpisode> {
-        val currentSeasonEpisodes = repository
-            .getEpisodes(
-                seriesId = currentSeason.seriesId,
-                seasonId = currentSeason.id,
-                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-            )
-            .filter { !it.missing }
+    private suspend fun getEpisodes(
+        currentSeason: FindroidSeason,
+        nextSeason: FindroidSeason?,
+    ): List<FindroidEpisode> {
+        val currentSeasonEpisodes =
+            repository
+                .getEpisodes(
+                    seriesId = currentSeason.seriesId,
+                    seasonId = currentSeason.id,
+                    fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                )
+                .filter { !it.missing }
 
         if (nextSeason == null) return currentSeasonEpisodes
 
-        val nextSeasonEpisodes = repository
-            .getEpisodes(
-                seriesId = nextSeason.seriesId,
-                seasonId = nextSeason.id,
-                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-            )
-            .filter { !it.missing }
+        val nextSeasonEpisodes =
+            repository
+                .getEpisodes(
+                    seriesId = nextSeason.seriesId,
+                    seasonId = nextSeason.id,
+                    fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                )
+                .filter { !it.missing }
 
         val fullEpisodeList = currentSeasonEpisodes + nextSeasonEpisodes
         return fullEpisodeList
