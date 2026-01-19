@@ -15,6 +15,7 @@
     <string name="writers">Escritores</string>
     <string name="cast_amp_crew">Reparto y equipo</string>
     <string name="seasons">Temporadas</string>
+    <string name="select_seasons">Seleccionar temporadas</string>
     <string name="play_button_description">Reproducir contenido</string>
     <string name="trailer_button_description">Ver el tráiler</string>
     <string name="check_button_description">Marcar como Visto o No visto</string>

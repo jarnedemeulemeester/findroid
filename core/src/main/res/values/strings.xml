@@ -18,6 +18,7 @@
     <string name="writers">Writers</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Seasons</string>
+    <string name="select_seasons">Select seasons</string>
     <string name="play_button_description">Play the media</string>
     <string name="trailer_button_description">Watch the trailer</string>
     <string name="check_button_description">Mark as watched or unwatched</string>

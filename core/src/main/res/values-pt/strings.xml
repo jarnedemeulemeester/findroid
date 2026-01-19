@@ -12,6 +12,7 @@
     <string name="title_media">O meu Conteúdo</string>
     <string name="writers">Escritores</string>
     <string name="seasons">Temporadas</string>
+    <string name="select_seasons">Selecione as temporadas</string>
     <string name="favorite_button_description">Favorito</string>
     <string name="check_button_description">Marcar como visto ou não visto</string>
     <string name="play_button_description">Reproduzir conteúdo</string>

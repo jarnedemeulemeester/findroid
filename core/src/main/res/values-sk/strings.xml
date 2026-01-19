@@ -11,6 +11,7 @@
     <string name="director">Režisér</string>
     <string name="cast_amp_crew"><![CDATA[Obsadenie & štáb]]></string>
     <string name="seasons">Série</string>
+    <string name="select_seasons">Vyberte série</string>
     <string name="play_button_description">Prehrať</string>
     <string name="trailer_button_description">Pustiť trailer</string>
     <string name="episode_name">%1$d. %2$s</string>

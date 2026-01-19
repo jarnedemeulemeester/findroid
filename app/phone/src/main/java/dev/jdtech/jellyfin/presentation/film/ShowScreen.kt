@@ -26,6 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +45,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
@@ -56,6 +61,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
+import dev.jdtech.jellyfin.presentation.film.components.SeasonSelectionDialog
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
@@ -104,11 +110,22 @@ fun ShowScreen(
             }
             viewModel.onAction(action)
         },
+        onDownloadSeasons = { seasonIds, storageIndex ->
+            viewModel.downloadSeasons(seasonIds, storageIndex)
+        },
+        onDeleteShowDownloads = {
+            viewModel.deleteShowDownloads(state.seasons.map { it.id })
+        },
     )
 }
 
 @Composable
-private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
+private fun ShowScreenLayout(
+    state: ShowState,
+    onAction: (ShowAction) -> Unit,
+    onDownloadSeasons: (seasonIds: Set<UUID>, storageIndex: Int) -> Unit,
+    onDeleteShowDownloads: () -> Unit,
+) {
     val safePadding = rememberSafePadding()
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
@@ -116,6 +133,9 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
     val scrollState = rememberScrollState()
+
+    var seasonSelectionDialogOpen by remember { mutableStateOf(false) }
+    var pendingStorageIndex by remember { mutableIntStateOf(0) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         state.show?.let { show ->
@@ -188,6 +208,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     ItemButtonsBar(
                         item = show,
+                        downloaderState = if (state.seasons.isNotEmpty()) DownloaderState() else null,
                         onPlayClick = { startFromBeginning ->
                             onAction(ShowAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -204,11 +225,18 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                             }
                         },
                         onTrailerClick = { uri -> onAction(ShowAction.PlayTrailer(uri)) },
-                        onDownloadClick = {},
+                        onDownloadClick = { storageIndex ->
+                            if (state.seasons.isNotEmpty()) {
+                                pendingStorageIndex = storageIndex
+                                seasonSelectionDialogOpen = true
+                            }
+                        },
                         onDownloadCancelClick = {},
-                        onDownloadDeleteClick = {},
+                        onDownloadDeleteClick = onDeleteShowDownloads,
                         modifier = Modifier.fillMaxWidth(),
                         canPlay = state.seasons.isNotEmpty(),
+                        canDownload = state.seasons.isNotEmpty(),
+                        isDownloaded = state.hasDownloads,
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(text = show.overview, maxCollapsedLines = 3)
@@ -294,11 +322,29 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
             onBackClick = { onAction(ShowAction.OnBackClick) },
             onHomeClick = { onAction(ShowAction.OnHomeClick) },
         )
+
+        if (seasonSelectionDialogOpen && state.seasons.isNotEmpty()) {
+            SeasonSelectionDialog(
+                seasons = state.seasons,
+                onConfirm = { selectedSeasonIds ->
+                    onDownloadSeasons(selectedSeasonIds, pendingStorageIndex)
+                    seasonSelectionDialogOpen = false
+                },
+                onDismiss = { seasonSelectionDialogOpen = false },
+            )
+        }
     }
 }
 
 @PreviewScreenSizes
 @Composable
 private fun EpisodeScreenLayoutPreview() {
-    FindroidTheme { ShowScreenLayout(state = ShowState(show = dummyShow), onAction = {}) }
+    FindroidTheme {
+        ShowScreenLayout(
+            state = ShowState(show = dummyShow),
+            onAction = {},
+            onDownloadSeasons = { _, _ -> },
+            onDeleteShowDownloads = {},
+        )
+    }
 }

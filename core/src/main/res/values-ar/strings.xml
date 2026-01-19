@@ -17,6 +17,7 @@
     <string name="writers">المؤلف</string>
     <string name="cast_amp_crew"><![CDATA[طاقم العمل و الممثلين]]></string>
     <string name="seasons">المواسم</string>
+    <string name="select_seasons">اختر المواسم</string>
     <string name="play_button_description">تشغيل الوسائط</string>
     <string name="trailer_button_description">عرض المقطع الدعائي</string>
     <string name="check_button_description">تعليم كمشاهد أو غير مشاهد</string>

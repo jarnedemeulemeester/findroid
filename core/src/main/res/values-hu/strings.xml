@@ -14,6 +14,7 @@
     <string name="writers">Írók</string>
     <string name="cast_amp_crew"><![CDATA[Szereplők és Stáb]]></string>
     <string name="seasons">Évadok</string>
+    <string name="select_seasons">Évadok kiválasztása</string>
     <string name="trailer_button_description">Előzetes megtekintése</string>
     <string name="check_button_description">Megjelölés megtekintettnek, vagy nem-megtekintettnek</string>
     <string name="favorite_button_description">Kedvenc</string>
