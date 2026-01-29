@@ -20,7 +20,7 @@
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
     <string name="settings_use_cache_summary">Armazena imagens no disco para acelerar o tempo de carregamento. Surte efeito após reiniciar o aplicativo.</string>
-    <string name="mpv_player_summary">Usa o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vídeo, áudio e legenda.</string>
+    <string name="mpv_player_summary">Usar o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vídeo, áudio e legenda.</string>
     <string name="settings_category_network">Rede</string>
     <string name="pref_player_mpv_ao">Saída de áudio</string>
     <string name="subtitles">Legendas</string>
@@ -75,7 +75,7 @@
     <string name="home">Início</string>
     <string name="home_suggestions">Mostrar sugestões</string>
     <string name="home_continue_watching">Mostrar continuar assistindo</string>
-    <string name="home_next_up">Mostrar próximo</string>
+    <string name="home_next_up">Mostrar a seguir</string>
     <string name="home_latest">Exibir itens recentes</string>
     <string name="offline_mode_summary">Assistir filmes e séries sem conexão ao servidor</string>
     <string name="mb">MB</string>
