@@ -18,15 +18,25 @@
     <string name="login_btn_quick_connect">快速連接</string>
     <string name="servers_no_servers">未找到伺服器</string>
     <string name="remove_user_dialog">移除使用者</string>
-    <string name="remove_user_dialog_text">您確定要移除使用者 %1$s</string>
+    <string name="remove_user_dialog_text">您確定要移除使用者 %s？</string>
     <string name="users">使用者</string>
     <string name="users_btn_add_user">添加使用者</string>
     <string name="users_no_users">未找到相應的用戶</string>
     <string name="remove_server_dialog">移除伺服器</string>
-    <string name="remove_server_dialog_text">您確定要刪除伺服器 %1$s</string>
+    <string name="remove_server_dialog_text">您確定要刪除伺服器 %s？</string>
     <string name="addresses">地址</string>
     <string name="add_address">添加地址</string>
     <string name="add_server_address">添加伺服器地址</string>
     <string name="remove_server_address">刪除伺服器位址</string>
     <string name="remove_server_address_dialog_text">您確定要刪除伺服器位址嗎%1$s</string>
+    <string name="servers">伺服器</string>
+    <string name="servers_btn_add_server">添加伺服器</string>
+    <string name="welcome">歡迷來到 Findroid</string>
+    <string name="welcome_btn_continue">繼續</string>
+    <string name="welcome_btn_learn_more">瞭解 Jellyfin 是什麼</string>
+    <string name="welcome_text">Findroid 是 Jellyfin 的第三方客戶端。Findroid 本身不包含任何媒體。\n\n為了使用此客戶端，你需要主機你自己的 Jellyfin 伺务器。</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="or">或</string>
+    <string name="server_subtitle">伺服器：%s</string>
 </resources>

@@ -17,4 +17,10 @@
     <string name="player_trickplay">特技播放</string>
     <string name="player_controls_progress">進度條</string>
     <string name="none">無</string>
+    <string name="player_controls_skip_outro">跳過結尾</string>
+    <string name="player_controls_next_episode">下一集</string>
+    <string name="player_controls_skip_recap">跳過回餑</string>
+    <string name="player_controls_skip_preview">法解 Jellyfin</string>
+    <string name="player_controls_skip_commercial">跳過廣告</string>
+    <string name="player_controls_skip_unknown">跳過</string>
 </resources>

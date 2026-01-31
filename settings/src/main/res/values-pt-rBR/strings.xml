@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Configurações</string>
     <string name="title_download">Downloads</string>
@@ -20,7 +20,7 @@
     <string name="settings_category_servers">Servidores</string>
     <string name="settings_category_download">Transferências</string>
     <string name="settings_use_cache_summary">Armazena imagens no disco para acelerar o tempo de carregamento. Surte efeito após reiniciar o aplicativo.</string>
-    <string name="mpv_player_summary">Usa o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vídeo, áudio e legenda.</string>
+    <string name="mpv_player_summary">Usar o reprodutor experimental mpv para reproduzir vídeos. mpv tem suporte a mais codecs de vídeo, áudio e legenda.</string>
     <string name="settings_category_network">Rede</string>
     <string name="pref_player_mpv_ao">Saída de áudio</string>
     <string name="subtitles">Legendas</string>
@@ -52,15 +52,50 @@
     <string name="amoled_theme_summary">Use o tema AMOLED com um fundo preto</string>
     <string name="player_gestures_seek">Gesto de buscar</string>
     <string name="player_gestures_seek_summary">Deslize horizontalmente para buscar para frente ou para trás</string>
-    <string name="offline_mode">Modo offline</string>
+    <string name="offline_mode">Modo off-line</string>
     <string name="app_language">Idioma do aplicativo</string>
-    <string name="picture_in_picture">Picture-in-picture</string>
-    <string name="picture_in_picture_gesture">Picture-in-Picture</string>
+    <string name="picture_in_picture">Picture-in-picture - PiP</string>
+    <string name="picture_in_picture_gesture">Gestos do botão iniciar Picture-in-Picture</string>
     <string name="picture_in_picture_gesture_summary">Use o botão home ou gestos para entrar no modo picture-in-picture enquanto o vídeo está sendo reproduzido</string>
     <string name="player_start_maximized">Iniciar maximizado</string>
     <string name="player_start_maximized_summary">Abra o vídeo no modo maximizado por padrão</string>
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Exibir marcadores de capítulo na barra de tempo</string>
-    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_trickplay">Pré-visualizações de vídeo</string>
     <string name="pref_player_trickplay_summary">Exibir imagens de visualização enquanto navega na barra de progresso</string>
+    <string name="cancel">Cancelar</string>
+    <string name="none">Nenhum</string>
+    <string name="settings_category_interface">Interface</string>
+    <string name="pref_player_gestures_seek_trickplay">Gesto de pré-visualizações de vídeo na barra de progresso</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Mostrar prévias na barra de progresso</string>
+    <string name="trickplay">Pré-visualizações de vídeo</string>
+    <string name="users">Usuários</string>
+    <string name="home">Início</string>
+    <string name="home_suggestions">Mostrar sugestões</string>
+    <string name="home_continue_watching">Mostrar continuar assistindo</string>
+    <string name="home_next_up">Mostrar a seguir</string>
+    <string name="home_latest">Exibir itens recentes</string>
+    <string name="offline_mode_summary">Assistir filmes e séries sem conexão ao servidor</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Salvar</string>
+    <string name="media_segments">Segmentos de Mídia</string>
+    <string name="pref_player_media_segments_skip_button">Exibir botão pular</string>
+    <string name="media_segments_type_unknown">Outros</string>
+    <string name="media_segments_type_commercial">Anúncio</string>
+    <string name="media_segments_type_preview">Prévia</string>
+    <string name="media_segments_type_recap">Recapitulação</string>
+    <string name="media_segments_type_intro">Intro</string>
+    <string name="media_segments_type_outro">Extra</string>
+    <string name="media_segments_auto_skip_always">sempre</string>
+    <string name="media_segments_auto_skip_pip">somente no modo PiP</string>
+    <string name="pref_player_media_segments_auto_skip">Pulo automático</string>
+    <string name="pref_player_media_segments_skip_button_summary">Fornecer um botão para pular partes facilmente</string>
+    <string name="pref_player_media_segments_skip_button_type">Tipo de segmento para exibir o botão pular</string>
+    <string name="pref_player_media_segments_skip_button_duration">Exibir botão pular para</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Ative o pulo automático para os tipos de segmento escolhidos</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Quando pular automaticamente</string>
+    <string name="pref_player_media_segments_auto_skip_type">Tipo de segmento para pular automaticamente</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Limite para pular para o próximo episódio</string>
 </resources>

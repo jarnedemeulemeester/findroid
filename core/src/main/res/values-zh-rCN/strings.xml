@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="jellyfin_banner">Jellyfin横幅</string>
+    <string name="jellyfin_banner">Jellyfin 横幅</string>
     <string name="writers">作者</string>
     <string name="remove">删除</string>
     <string name="cancel">取消</string>
@@ -15,8 +15,8 @@
     <string name="seasons">季</string>
     <string name="play_button_description">播放媒体</string>
     <string name="check_button_description">标记为已观看或未观看</string>
-    <string name="favorite_button_description">加入收藏</string>
-    <string name="episode_watched_indicator">集观看指示器</string>
+    <string name="favorite_button_description">收藏</string>
+    <string name="episode_watched_indicator">剧集观看状态</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
     <string name="next_up">接下来</string>
@@ -29,7 +29,7 @@
     <string name="view_details">查看详细</string>
     <string name="view_details_underlined"><u>查看详细</u></string>
     <string name="unknown_error">未知错误</string>
-    <string name="search_hint">搜索电影、节目、集名…</string>
+    <string name="search_hint">搜索电影、节目、集…</string>
     <string name="download_button_description">下载</string>
     <string name="person_detail_title">详情</string>
     <string name="movies_label">电影</string>
@@ -51,20 +51,20 @@
     <string name="descending">降序</string>
     <string name="runtime_minutes">%1$d 分钟</string>
     <string name="select_video_version_title">选择版本</string>
-    <string name="trailer_button_description">观看宣传片</string>
+    <string name="trailer_button_description">观看预告片</string>
     <string name="track_selection">[%1$s] %2$s (%3$s)</string>
-    <string name="app_description">第三方原生Jellyfin app</string>
+    <string name="app_description">第三方原生 Jellyfin app</string>
     <string name="no_favorites">你没有收藏过任何东西</string>
     <string name="ascending">升序</string>
     <string name="title_home">首页</string>
-    <string name="libraries">库</string>
+    <string name="libraries">媒体库</string>
     <string name="episodes_label">季</string>
     <string name="add">添加</string>
     <string name="video">视频</string>
     <string name="audio">音频</string>
     <string name="subtitle">字幕</string>
     <string name="subtitle_chip_text">隐藏式字幕</string>
-    <string name="temp">temp</string>
+    <string name="temp">临时文件</string>
     <string name="offline_mode_go_online">上线</string>
     <string name="no_server_connection">未连接到 Jellyfin 服务器，要离线观看请启用离线模式</string>
     <string name="select_storage_location">选择存储位置</string>
@@ -74,14 +74,14 @@
     <string name="downloading_error">下载时出错</string>
     <string name="preparing_download">准备下载</string>
     <string name="size">大小</string>
-    <string name="not_enough_storage">此项目需要%1$s的免费存储空间，但仅%2$s可用</string>
+    <string name="not_enough_storage">该条目需要 %1$s 的可用存储空间，但只有 %2$s 可用</string>
     <string name="privacy_policy_notice">使用 Findroid 即表示您同意<a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">隐私政策</a>其中声明我们不收集任何数据</string>
     <string name="offline_mode_icon">离线模式图标</string>
     <string name="internal">内部的</string>
-    <string name="storage_name">%1$s (%2$dMB免费）</string>
+    <string name="storage_name">%1$s（%2$d MB 可用）</string>
     <string name="cancel_download">取消下载</string>
-    <string name="external">加载</string>
-    <string name="downloaded_indicator">下载指示器</string>
+    <string name="external">外部</string>
+    <string name="downloaded_indicator">下载状态</string>
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
     <string name="live_tv">电视直播</string>
@@ -90,13 +90,22 @@
     <string name="remove_from_favorites">从收藏中删除</string>
     <string name="mark_as_played">标记为已播放</string>
     <string name="play">播放</string>
-    <string name="watch_trailer">观看预告</string>
+    <string name="watch_trailer">看预告</string>
     <string name="collection_no_media">该集合不包含任何媒体</string>
     <string name="show_stacktrace">显示堆栈跟踪</string>
     <string name="title_settings">设置</string>
     <string name="title_download">下载</string>
     <string name="not_set">未设置</string>
     <string name="offline_mode">离线模式</string>
-    <string name="season_number">第%1$d季</string>
-    <string name="episode_number">第%1$d集</string>
+    <string name="season_number">第 %1$d 季</string>
+    <string name="episode_number">第 %1$d 集</string>
+    <string name="runtime_minutes_left">剩余 %1$d 分钟</string>
+    <string name="none">无</string>
+    <string name="manage_servers">管理服务器</string>
+    <string name="delete_download">删除下载</string>
+    <string name="delete_download_message">您确定要从设备中删除此下载内容吗？</string>
+    <string name="download_pending">正在等待…</string>
+    <string name="download_paused">已暂停</string>
+    <string name="download_downloading">正在下载…</string>
+    <string name="download_failed">下载失败</string>
 </resources>

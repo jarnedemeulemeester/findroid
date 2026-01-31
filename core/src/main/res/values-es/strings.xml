@@ -93,13 +93,19 @@
     <string name="remove_from_favorites">Quitar de favoritos</string>
     <string name="sort_by_options_6">Aleatorio</string>
     <string name="show_stacktrace">Mostrar pila de llamadas</string>
-    <string name="offline_mode">Modo fuera de línea</string>
+    <string name="offline_mode">Modo sin conexión</string>
     <string name="not_set">No establecido</string>
     <string name="title_download">Descargas</string>
     <string name="title_settings">Preferencias</string>
-    <string name="season_number">Temporada %1d</string>
-    <string name="episode_number">Episodio %1d</string>
+    <string name="season_number">Temporada %1$d</string>
+    <string name="episode_number">Episodio %1$d</string>
     <string name="none">Ninguno</string>
     <string name="manage_servers">Administrar servidores</string>
     <string name="runtime_minutes_left">%1$d minutos restantes</string>
+    <string name="delete_download">Borrar descarga</string>
+    <string name="delete_download_message">¿Estás seguro de que quieres eliminar esta descarga de tu dispositivo?</string>
+    <string name="download_pending">Pendiente…</string>
+    <string name="download_paused">Pausado</string>
+    <string name="download_downloading">Descargando…</string>
+    <string name="download_failed">Error al descargar</string>
 </resources>

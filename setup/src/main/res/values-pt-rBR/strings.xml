@@ -4,7 +4,7 @@
     <string name="add_server_error_version">Versão do servidor não suportada: %1$s. Por favor atualize seu servidor</string>
     <string name="add_server_error_slow">O servidor é lendo demais para responder: %1$s</string>
     <string name="add_server_error_empty_address">Endereço de servidor vazio</string>
-    <string name="add_server_error_no_id">Servidor não possui id, algo parece errado como servidor</string>
+    <string name="add_server_error_no_id">Servidor não possui id, algo parece estar errado com o servidor</string>
     <string name="login">Entrar</string>
     <string name="login_error_wrong_username_password">Nome de usuário ou senha incorretos</string>
     <string name="edit_text_server_address_hint">Endereço do servidor</string>
@@ -20,13 +20,23 @@
     <string name="users">Usuários</string>
     <string name="users_btn_add_user">Adicionar usuário</string>
     <string name="remove_user_dialog">Excluir usuário</string>
-    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário (%1$s)</string>
+    <string name="remove_user_dialog_text">Tem certeza que deseja excluir o usuário %s?</string>
     <string name="users_no_users">Usuários não encontrados</string>
     <string name="remove_server_dialog">Excluir servidor</string>
-    <string name="remove_server_dialog_text">Tem certeza que deseja excluir o servidor (%1$s)</string>
+    <string name="remove_server_dialog_text">Tem certeza que deseja excluir o servidor %s?</string>
     <string name="addresses">Endereços</string>
     <string name="add_address">Adicionar endereço</string>
     <string name="add_server_address">Adicionar endereço do servidor</string>
     <string name="remove_server_address">Excluir endereço do servidor</string>
     <string name="remove_server_address_dialog_text">Tem certeza de que deseja excluir o endereço do servidor %1$s</string>
+    <string name="servers">Servidores</string>
+    <string name="servers_btn_add_server">Adicionar servidor</string>
+    <string name="welcome">Bem-vindo ao Findroid</string>
+    <string name="welcome_btn_continue">Continuar</string>
+    <string name="welcome_btn_learn_more">Veja mais sobre o Jellyfin</string>
+    <string name="welcome_text">Findroid é um cliente de terceiros para Jellyfin. Findroid não contém e não proveem nenhuma mídia.\n\nPara usar este cliente, você precisará hospedar seu próprio servidor de mídia Jellyfin.</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="or">OU</string>
+    <string name="server_subtitle">Servidor: %s</string>
 </resources>

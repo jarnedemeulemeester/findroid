@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Ajustes</string>
     <string name="title_download">Descargas</string>
@@ -67,4 +67,35 @@
     <string name="trickplay">Trickplay</string>
     <string name="picture_in_picture_gesture_summary">Use el botón Home o gesto para cambiar a pantalla en pantalla mientras se reproduce el video</string>
     <string name="users">Usuarios</string>
+    <string name="settings_category_interface">Interfaz</string>
+    <string name="cancel">Cancelar</string>
+    <string name="home">Inicio</string>
+    <string name="home_suggestions">Mostrar sugerencias</string>
+    <string name="home_continue_watching">Mostrar seguir viendo</string>
+    <string name="home_next_up">Mostrar siguiente</string>
+    <string name="home_latest">Mostrar últimos elementos</string>
+    <string name="offline_mode_summary">Ver películas y series sin conexión al servidor</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Guardar</string>
+    <string name="media_segments">Segmentos de medios</string>
+    <string name="pref_player_media_segments_skip_button">Mostrar botón de omitir</string>
+    <string name="pref_player_media_segments_skip_button_summary">Proporcionar un botón para saltar partes fácilmente</string>
+    <string name="pref_player_media_segments_skip_button_type">Tipo de segmento para mostrar el botón de omitir</string>
+    <string name="pref_player_media_segments_skip_button_duration">Mostrar botón de omitir para</string>
+    <string name="pref_player_media_segments_auto_skip">Saltar automáticamente</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Habilitar el salto automático para los tipos de segmentos seleccionados</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Cuando saltar automáticamente</string>
+    <string name="pref_player_media_segments_auto_skip_type">Tipo de segmento para omitir automáticamente</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Pasar al umbral del siguiente episodio</string>
+    <string name="media_segments_auto_skip_pip">solo en modo pip</string>
+    <string name="media_segments_auto_skip_always">siempre</string>
+    <string name="media_segments_type_unknown">Otros</string>
+    <string name="media_segments_type_commercial">Anuncio</string>
+    <string name="media_segments_type_preview">Previsualización</string>
+    <string name="media_segments_type_recap">Resumen</string>
+    <string name="media_segments_type_outro">Outro</string>
+    <string name="media_segments_type_intro">Intro</string>
+    <string name="none">Ninguno</string>
 </resources>

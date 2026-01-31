@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.player.local.presentation
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -171,12 +172,23 @@ constructor(
 
         viewModelScope.launch {
             val startItem =
-                playlistManager.getInitialItem(
-                    itemId = itemId,
-                    itemKind = BaseItemKind.fromName(itemKind),
-                    mediaSourceIndex = null,
-                    startFromBeginning = startFromBeginning,
-                )
+                try {
+                    playlistManager.getInitialItem(
+                        itemId = itemId,
+                        itemKind = BaseItemKind.fromName(itemKind),
+                        mediaSourceIndex = null,
+                        startFromBeginning = startFromBeginning,
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    Toast.makeText(application, e.localizedMessage, Toast.LENGTH_LONG).show()
+                    null
+                }
+
+            if (startItem == null) {
+                Timber.e("No start item, stopping player initialization")
+                return@launch
+            }
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
@@ -236,11 +248,14 @@ constructor(
         GlobalScope.launch {
             delay(200L)
             try {
-                repository.postPlaybackStop(
-                    UUID.fromString(mediaId),
-                    position.times(10000),
-                    position.div(duration.toFloat()).times(100).toInt(),
-                )
+                if (mediaId != null && duration != C.TIME_UNSET) {
+                    Timber.d("Sending playback stop")
+                    repository.postPlaybackStop(
+                        UUID.fromString(mediaId),
+                        position.times(10000),
+                        position.div(duration.toFloat()).times(100).toInt(),
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -616,7 +631,7 @@ constructor(
         return maxOf(0, currentChapterIndex - 1)
     }
 
-    fun isLastChapter(): Boolean? =
+    fun isLastChapter(): Boolean =
         getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
     /**
