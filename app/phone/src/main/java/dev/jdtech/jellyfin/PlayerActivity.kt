@@ -92,6 +92,7 @@ class PlayerActivity : BasePlayerActivity() {
 
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
         val itemKind = intent.extras!!.getString("itemKind")
+        val mediaSourceIndex = intent.extras!!.getInt("mediaSourceIndex")
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -327,6 +328,7 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(
             itemId = itemId,
             itemKind = itemKind ?: "",
+            mediaSourceIndex = mediaSourceIndex,
             startFromBeginning = startFromBeginning,
         )
         hideSystemUI()

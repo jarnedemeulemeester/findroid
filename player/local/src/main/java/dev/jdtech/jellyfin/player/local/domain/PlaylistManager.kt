@@ -118,7 +118,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
         startItem = initialItem
 
-        currentItemIndex = items.indexOfFirst { it.id == initialItem.id }
+        if(mediaSourceIndex != null){
+            currentItemIndex = mediaSourceIndex;
+        } else {
+            currentItemIndex = items.indexOfFirst { it.id == initialItem.id }
+        }
 
         val playbackPosition =
             if (!startFromBeginning) initialItem.playbackPositionTicks.div(10000) else 0

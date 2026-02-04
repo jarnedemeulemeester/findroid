@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -53,6 +59,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
+import dev.jdtech.jellyfin.presentation.film.components.VersionSelectionDialog
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -78,8 +85,18 @@ fun EpisodeScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    var hasMultipleMediaSources by remember { mutableStateOf(false) }
+    var showMediaSourceSelectorDialog by remember { mutableStateOf(false) }
+    var playMedia by remember { mutableStateOf(false) }
+    var playDataItemId by remember { mutableStateOf("") }
+    var playDataItemKind by remember { mutableStateOf("") }
+    var playDataMediaSourceIndex by remember { mutableStateOf("") }
+    var playDataStartFromBeginning by remember { mutableStateOf(false) }
+    val mediaSources = remember { mutableListOf<Pair<String, String>>()}
 
-    LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
+    LaunchedEffect(true) {
+        viewModel.loadEpisode(episodeId = episodeId)
+    }
 
     LaunchedEffect(state.episode) {
         state.episode?.let { episode -> downloaderViewModel.update(episode) }
@@ -100,17 +117,32 @@ fun EpisodeScreen(
         }
     }
 
+    if((state.episode?.sources?.size ?: 1) > 1) {
+        hasMultipleMediaSources = true;
+        if(state.episode?.sources != null) {
+            for (source in state.episode?.sources!!) {
+                mediaSources.remove(Pair(source.id, source.name))
+                mediaSources.add(Pair(source.id, source.name))
+            }
+        }
+    }
+
     EpisodeScreenLayout(
         state = state,
         downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", episodeId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
-                    intent.putExtra("startFromBeginning", action.startFromBeginning)
-                    context.startActivity(intent)
+                    playDataItemId = episodeId.toString()
+                    playDataItemKind = BaseItemKind.EPISODE.serialName
+                    playDataStartFromBeginning = action.startFromBeginning
+                    if(hasMultipleMediaSources){
+                        showMediaSourceSelectorDialog = true
+                        playMedia = false
+                    } else {
+                        playDataMediaSourceIndex = mediaSources.first().first;
+                        playMedia = true
+                    }
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.OnHomeClick -> navigateHome()
@@ -122,6 +154,46 @@ fun EpisodeScreen(
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
+
+    if(showMediaSourceSelectorDialog){
+        playMedia = false
+        VersionSelectionDialog(
+            mediaSources = mediaSources,
+            onSelect = { mediaSourceIndex ->
+                playDataMediaSourceIndex = mediaSourceIndex
+                showMediaSourceSelectorDialog = false
+                playMedia = true
+            },
+            onDismiss = { showMediaSourceSelectorDialog = false },
+        )
+    }
+
+    if(playMedia){
+        playMedia = false
+        PlayMedia(
+            context = context,
+            itemId = playDataItemId,
+            itemKind = playDataItemKind,
+            mediaSourceIndex = playDataMediaSourceIndex,
+            startFromBeginning = playDataStartFromBeginning
+        )
+    }
+}
+
+@Composable
+private fun PlayMedia(
+    context: Context,
+    itemId: String,
+    itemKind: String,
+    mediaSourceIndex: String? = null,
+    startFromBeginning: Boolean
+) {
+    val intent = Intent(context, PlayerActivity::class.java)
+    intent.putExtra("itemId", itemId)
+    intent.putExtra("itemKind", itemKind)
+    intent.putExtra("mediaSourceIndex", mediaSourceIndex)
+    intent.putExtra("startFromBeginning", startFromBeginning)
+    context.startActivity(intent)
 }
 
 @Composable
@@ -141,14 +213,17 @@ private fun EpisodeScreenLayout(
 
     Box(modifier = Modifier.fillMaxSize()) {
         state.episode?.let { episode ->
-            Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState)) {
                 ItemHeader(
                     item = episode,
                     scrollState = scrollState,
                     content = {
                         Column(
                             modifier =
-                                Modifier.align(Alignment.BottomStart)
+                                Modifier
+                                    .align(Alignment.BottomStart)
                                     .padding(start = paddingStart, end = paddingEnd)
                         ) {
                             val seasonName =
