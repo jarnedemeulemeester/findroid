@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,7 +52,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
-import dev.jdtech.jellyfin.presentation.film.components.VersionSelectionDialog
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -81,14 +76,6 @@ fun MovieScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
-    var hasMultipleMediaSources by remember { mutableStateOf(false) }
-    var showMediaSourceSelectorDialog by remember { mutableStateOf(false) }
-    var playMedia by remember { mutableStateOf(false) }
-    var playDataItemId by remember { mutableStateOf("") }
-    var playDataItemKind by remember { mutableStateOf("") }
-    var playDataMediaSourceId by remember { mutableStateOf("") }
-    var playDataStartFromBeginning by remember { mutableStateOf(false) }
-    val mediaSources = remember { mutableListOf<Pair<String, String>>() }
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -109,31 +96,18 @@ fun MovieScreen(
         }
     }
 
-    if ((state.movie?.sources?.size ?: 1) > 1) {
-        hasMultipleMediaSources = true
-        if (state.movie?.sources != null) {
-            for (source in state.movie?.sources!!) {
-                mediaSources.remove(Pair(source.id, source.name))
-                mediaSources.add(Pair(source.id, source.name))
-            }
-        }
-    }
-
     MovieScreenLayout(
         state = state,
         downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    playDataItemId = movieId.toString()
-                    playDataItemKind = BaseItemKind.MOVIE.serialName
-                    playDataStartFromBeginning = action.startFromBeginning
-                    if (hasMultipleMediaSources) {
-                        showMediaSourceSelectorDialog = true
-                        playMedia = false
-                    } else {
-                        playMedia = true
-                    }
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", movieId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
+                    intent.putExtra("mediaSourceId", action.mediaSourceId)
+                    intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    context.startActivity(intent)
                 }
                 is MovieAction.PlayTrailer -> {
                     try {
@@ -151,46 +125,6 @@ fun MovieScreen(
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
-
-    if (showMediaSourceSelectorDialog) {
-        playMedia = false
-        VersionSelectionDialog(
-            mediaSources = mediaSources,
-            onSelect = { mediaSourceId ->
-                playDataMediaSourceId = mediaSourceId
-                showMediaSourceSelectorDialog = false
-                playMedia = true
-            },
-            onDismiss = { showMediaSourceSelectorDialog = false },
-        )
-    }
-
-    if (playMedia) {
-        playMedia = false
-        PlayMedia(
-            context = context,
-            itemId = playDataItemId,
-            itemKind = playDataItemKind,
-            mediaSourceId = playDataMediaSourceId,
-            startFromBeginning = playDataStartFromBeginning,
-        )
-    }
-}
-
-@Composable
-private fun PlayMedia(
-    context: Context,
-    itemId: String,
-    itemKind: String,
-    mediaSourceId: String? = null,
-    startFromBeginning: Boolean,
-) {
-    val intent = Intent(context, PlayerActivity::class.java)
-    intent.putExtra("itemId", itemId)
-    intent.putExtra("itemKind", itemKind)
-    intent.putExtra("mediaSourceId", mediaSourceId)
-    intent.putExtra("startFromBeginning", startFromBeginning)
-    context.startActivity(intent)
 }
 
 @Composable
@@ -286,8 +220,8 @@ private fun MovieScreenLayout(
                     ItemButtonsBar(
                         item = movie,
                         downloaderState = downloaderState,
-                        onPlayClick = { startFromBeginning ->
-                            onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
+                        onPlayClick = { playOptions ->
+                            onAction(MovieAction.Play(playOptions.first, playOptions.second))
                         },
                         onMarkAsPlayedClick = {
                             when (movie.played) {
@@ -302,8 +236,14 @@ private fun MovieScreenLayout(
                             }
                         },
                         onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
+                        onDownloadClick = { downloadOptions ->
+                            onDownloaderAction(
+                                DownloaderAction.Download(
+                                    movie,
+                                    downloadOptions.first,
+                                    downloadOptions.second,
+                                )
+                            )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(movie))

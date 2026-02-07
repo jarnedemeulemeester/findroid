@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -57,7 +53,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
-import dev.jdtech.jellyfin.presentation.film.components.VersionSelectionDialog
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -83,14 +78,6 @@ fun EpisodeScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
-    var hasMultipleMediaSources by remember { mutableStateOf(false) }
-    var showMediaSourceSelectorDialog by remember { mutableStateOf(false) }
-    var playMedia by remember { mutableStateOf(false) }
-    var playDataItemId by remember { mutableStateOf("") }
-    var playDataItemKind by remember { mutableStateOf("") }
-    var playDataMediaSourceId by remember { mutableStateOf("") }
-    var playDataStartFromBeginning by remember { mutableStateOf(false) }
-    val mediaSources = remember { mutableListOf<Pair<String, String>>() }
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
@@ -113,33 +100,18 @@ fun EpisodeScreen(
         }
     }
 
-    if ((state.episode?.sources?.size ?: 1) > 1) {
-        hasMultipleMediaSources = true
-        if (state.episode?.sources != null) {
-            for (source in state.episode?.sources!!) {
-                mediaSources.remove(Pair(source.id, source.name))
-                mediaSources.add(Pair(source.id, source.name))
-            }
-        }
-    } else {
-        hasMultipleMediaSources = false
-    }
-
     EpisodeScreenLayout(
         state = state,
         downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    playDataItemId = episodeId.toString()
-                    playDataItemKind = BaseItemKind.EPISODE.serialName
-                    playDataStartFromBeginning = action.startFromBeginning
-                    if (hasMultipleMediaSources) {
-                        showMediaSourceSelectorDialog = true
-                        playMedia = false
-                    } else {
-                        playMedia = true
-                    }
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", episodeId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                    intent.putExtra("mediaSourceId", action.mediaSourceId)
+                    intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.OnHomeClick -> navigateHome()
@@ -151,46 +123,6 @@ fun EpisodeScreen(
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
-
-    if (showMediaSourceSelectorDialog) {
-        playMedia = false
-        VersionSelectionDialog(
-            mediaSources = mediaSources,
-            onSelect = { mediaSourceId ->
-                playDataMediaSourceId = mediaSourceId
-                showMediaSourceSelectorDialog = false
-                playMedia = true
-            },
-            onDismiss = { showMediaSourceSelectorDialog = false },
-        )
-    }
-
-    if (playMedia) {
-        playMedia = false
-        PlayMedia(
-            context = context,
-            itemId = playDataItemId,
-            itemKind = playDataItemKind,
-            mediaSourceId = playDataMediaSourceId,
-            startFromBeginning = playDataStartFromBeginning,
-        )
-    }
-}
-
-@Composable
-private fun PlayMedia(
-    context: Context,
-    itemId: String,
-    itemKind: String,
-    mediaSourceId: String? = null,
-    startFromBeginning: Boolean,
-) {
-    val intent = Intent(context, PlayerActivity::class.java)
-    intent.putExtra("itemId", itemId)
-    intent.putExtra("itemKind", itemKind)
-    intent.putExtra("mediaSourceId", mediaSourceId)
-    intent.putExtra("startFromBeginning", startFromBeginning)
-    context.startActivity(intent)
 }
 
 @Composable
@@ -291,8 +223,8 @@ private fun EpisodeScreenLayout(
                     ItemButtonsBar(
                         item = episode,
                         downloaderState = downloaderState,
-                        onPlayClick = { startFromBeginning ->
-                            onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
+                        onPlayClick = { playOptions ->
+                            onAction(EpisodeAction.Play(playOptions.first, playOptions.second))
                         },
                         onMarkAsPlayedClick = {
                             when (episode.played) {
@@ -307,8 +239,14 @@ private fun EpisodeScreenLayout(
                             }
                         },
                         onTrailerClick = {},
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(episode, storageIndex))
+                        onDownloadClick = { downloadOptions ->
+                            onDownloaderAction(
+                                DownloaderAction.Download(
+                                    episode,
+                                    downloadOptions.first,
+                                    downloadOptions.second,
+                                )
+                            )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(episode))
