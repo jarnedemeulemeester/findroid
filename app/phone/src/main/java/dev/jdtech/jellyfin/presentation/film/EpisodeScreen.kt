@@ -108,7 +108,7 @@ fun EpisodeScreen(
                 is EpisodeAction.Play -> {
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", episodeId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                     intent.putExtra("mediaSourceId", action.mediaSourceId)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)

@@ -293,11 +293,13 @@ fun ItemButtonsBar(
         }
         if (processMedaiAction) {
             processMedaiAction = false
-            mediaActionKind = MediaActionKind.NONE
-            if (mediaActionKind == MediaActionKind.PLAY)
+            if (mediaActionKind == MediaActionKind.PLAY) {
                 onPlayClick(Pair(mediaStartFromBeginning, selectedMediaSourceId))
-            else if (mediaActionKind == MediaActionKind.DOWNLOAD)
+                mediaActionKind = MediaActionKind.NONE
+            } else if (mediaActionKind == MediaActionKind.DOWNLOAD) {
                 onDownloadClick(Pair(selectedStorageIndex, selectedMediaSourceId))
+                mediaActionKind = MediaActionKind.NONE
+            }
         }
     }
 }
