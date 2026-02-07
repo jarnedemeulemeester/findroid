@@ -16,5 +16,11 @@
     <string name="player_controls_progress">Pasek postępu</string>
     <string name="player_controls_play_pause">Odtwórz/wstrzymaj</string>
     <string name="player_controls_picture_in_picture">Wejdź w tryb obrazu w obrazie</string>
-    <string name="none">Brak</string>
+    <string name="none">Żadne</string>
+    <string name="player_controls_skip_outro">Pomiń napisy</string>
+    <string name="player_controls_next_episode">Następny odcinek</string>
+    <string name="player_controls_skip_recap">Pomiń powtórkę</string>
+    <string name="player_controls_skip_preview">Pomiń podgląd</string>
+    <string name="player_controls_skip_commercial">Pomiń reklamę</string>
+    <string name="player_controls_skip_unknown">Pomiń</string>
 </resources>
