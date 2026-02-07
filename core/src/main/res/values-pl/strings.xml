@@ -101,4 +101,11 @@
     <string name="none">Żadne</string>
     <string name="manage_servers">Zarządzaj serwerami</string>
     <string name="show_stacktrace">Wyświetl stos wywołań</string>
+    <string name="runtime_minutes_left">Pozostało %1$d minut</string>
+    <string name="delete_download">Usuń pobrane</string>
+    <string name="delete_download_message">Czy na pewno chcesz usunąć ten plik z urządzenia?</string>
+    <string name="download_pending">Oczekiwanie…</string>
+    <string name="download_paused">Wstrzymano</string>
+    <string name="download_downloading">Pobieranie…</string>
+    <string name="download_failed">Błąd pobierania</string>
 </resources>
