@@ -24,10 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,7 +88,7 @@ fun EpisodeScreen(
     var playMedia by remember { mutableStateOf(false) }
     var playDataItemId by remember { mutableStateOf("") }
     var playDataItemKind by remember { mutableStateOf("") }
-    var playDataMediaSourceIndex by remember { mutableStateOf("") }
+    var playDataMediaSourceId by remember { mutableStateOf("") }
     var playDataStartFromBeginning by remember { mutableStateOf(false) }
     val mediaSources = remember { mutableListOf<Pair<String, String>>()}
 
@@ -118,13 +116,15 @@ fun EpisodeScreen(
     }
 
     if((state.episode?.sources?.size ?: 1) > 1) {
-        hasMultipleMediaSources = true;
+        hasMultipleMediaSources = true
         if(state.episode?.sources != null) {
             for (source in state.episode?.sources!!) {
                 mediaSources.remove(Pair(source.id, source.name))
                 mediaSources.add(Pair(source.id, source.name))
             }
         }
+    } else {
+        hasMultipleMediaSources = false
     }
 
     EpisodeScreenLayout(
@@ -140,7 +140,6 @@ fun EpisodeScreen(
                         showMediaSourceSelectorDialog = true
                         playMedia = false
                     } else {
-                        playDataMediaSourceIndex = mediaSources.first().first;
                         playMedia = true
                     }
                 }
@@ -159,8 +158,8 @@ fun EpisodeScreen(
         playMedia = false
         VersionSelectionDialog(
             mediaSources = mediaSources,
-            onSelect = { mediaSourceIndex ->
-                playDataMediaSourceIndex = mediaSourceIndex
+            onSelect = { mediaSourceId ->
+                playDataMediaSourceId = mediaSourceId
                 showMediaSourceSelectorDialog = false
                 playMedia = true
             },
@@ -174,7 +173,7 @@ fun EpisodeScreen(
             context = context,
             itemId = playDataItemId,
             itemKind = playDataItemKind,
-            mediaSourceIndex = playDataMediaSourceIndex,
+            mediaSourceId = playDataMediaSourceId,
             startFromBeginning = playDataStartFromBeginning
         )
     }
@@ -185,13 +184,13 @@ private fun PlayMedia(
     context: Context,
     itemId: String,
     itemKind: String,
-    mediaSourceIndex: String? = null,
+    mediaSourceId: String? = null,
     startFromBeginning: Boolean
 ) {
     val intent = Intent(context, PlayerActivity::class.java)
     intent.putExtra("itemId", itemId)
     intent.putExtra("itemKind", itemKind)
-    intent.putExtra("mediaSourceIndex", mediaSourceIndex)
+    intent.putExtra("mediaSourceId", mediaSourceId)
     intent.putExtra("startFromBeginning", startFromBeginning)
     context.startActivity(intent)
 }

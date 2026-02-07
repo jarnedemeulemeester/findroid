@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,6 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
-import dev.jdtech.jellyfin.presentation.components.ErrorDialog
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
@@ -88,7 +86,7 @@ fun MovieScreen(
     var playMedia by remember { mutableStateOf(false) }
     var playDataItemId by remember { mutableStateOf("") }
     var playDataItemKind by remember { mutableStateOf("") }
-    var playDataMediaSourceIndex by remember { mutableStateOf("") }
+    var playDataMediaSourceId by remember { mutableStateOf("") }
     var playDataStartFromBeginning by remember { mutableStateOf(false) }
     val mediaSources = remember { mutableListOf<Pair<String, String>>()}
 
@@ -111,8 +109,8 @@ fun MovieScreen(
         }
     }
 
-    if((state.movie?.sources?.size ?: 1) >= 1) {
-        hasMultipleMediaSources = true;
+    if((state.movie?.sources?.size ?: 1) > 1) {
+        hasMultipleMediaSources = true
         if(state.movie?.sources != null) {
             for (source in state.movie?.sources!!) {
                 mediaSources.remove(Pair(source.id, source.name))
@@ -134,7 +132,6 @@ fun MovieScreen(
                         showMediaSourceSelectorDialog = true
                         playMedia = false
                     } else {
-                        playDataMediaSourceIndex = mediaSources.first().first;
                         playMedia = true
                     }
                 }
@@ -159,8 +156,8 @@ fun MovieScreen(
         playMedia = false
         VersionSelectionDialog(
             mediaSources = mediaSources,
-            onSelect = { mediaSourceIndex ->
-                playDataMediaSourceIndex = mediaSourceIndex
+            onSelect = { mediaSourceId ->
+                playDataMediaSourceId = mediaSourceId
                 showMediaSourceSelectorDialog = false
                 playMedia = true
             },
@@ -174,7 +171,7 @@ fun MovieScreen(
             context = context,
             itemId = playDataItemId,
             itemKind = playDataItemKind,
-            mediaSourceIndex = playDataMediaSourceIndex,
+            mediaSourceId = playDataMediaSourceId,
             startFromBeginning = playDataStartFromBeginning
         )
     }
@@ -185,13 +182,13 @@ private fun PlayMedia(
     context: Context,
     itemId: String,
     itemKind: String,
-    mediaSourceIndex: String? = null,
+    mediaSourceId: String? = null,
     startFromBeginning: Boolean
 ) {
     val intent = Intent(context, PlayerActivity::class.java)
     intent.putExtra("itemId", itemId)
     intent.putExtra("itemKind", itemKind)
-    intent.putExtra("mediaSourceIndex", mediaSourceIndex)
+    intent.putExtra("mediaSourceId", mediaSourceId)
     intent.putExtra("startFromBeginning", startFromBeginning)
     context.startActivity(intent)
 }
