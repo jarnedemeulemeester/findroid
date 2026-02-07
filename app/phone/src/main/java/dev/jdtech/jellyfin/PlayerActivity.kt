@@ -95,11 +95,11 @@ class PlayerActivity : BasePlayerActivity() {
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
         var mediaSourceId: String? = null
         try {
-            if(intent.extras!!.getString("mediaSourceId") != "") {
+            if (intent.extras!!.getString("mediaSourceId") != "") {
                 mediaSourceId = intent.extras!!.getString("mediaSourceId")
             }
-        } catch (e: Error) {
-            mediaSourceId = null
+        } catch (_: NullPointerException) {
+            null
         }
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)

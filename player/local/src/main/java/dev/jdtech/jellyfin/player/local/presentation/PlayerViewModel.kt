@@ -167,7 +167,12 @@ constructor(
         }
     }
 
-    fun initializePlayer(itemId: UUID, itemKind: String, mediaSourceId: String? = null, startFromBeginning: Boolean) {
+    fun initializePlayer(
+        itemId: UUID,
+        itemKind: String,
+        mediaSourceId: String? = null,
+        startFromBeginning: Boolean,
+    ) {
         player.addListener(this)
 
         viewModelScope.launch {

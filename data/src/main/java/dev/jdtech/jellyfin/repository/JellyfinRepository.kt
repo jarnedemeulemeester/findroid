@@ -88,7 +88,11 @@ interface JellyfinRepository {
 
     suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>
 
-    suspend fun getMediaSourcesByMediaSourceId(itemId: UUID, includePath: Boolean = false, mediaSourceId: String?): List<FindroidSource>
+    suspend fun getMediaSourcesByMediaSourceId(
+        itemId: UUID,
+        includePath: Boolean = false,
+        mediaSourceId: String?,
+    ): List<FindroidSource>
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 

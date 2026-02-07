@@ -88,7 +88,7 @@ fun MovieScreen(
     var playDataItemKind by remember { mutableStateOf("") }
     var playDataMediaSourceId by remember { mutableStateOf("") }
     var playDataStartFromBeginning by remember { mutableStateOf(false) }
-    val mediaSources = remember { mutableListOf<Pair<String, String>>()}
+    val mediaSources = remember { mutableListOf<Pair<String, String>>() }
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -109,9 +109,9 @@ fun MovieScreen(
         }
     }
 
-    if((state.movie?.sources?.size ?: 1) > 1) {
+    if ((state.movie?.sources?.size ?: 1) > 1) {
         hasMultipleMediaSources = true
-        if(state.movie?.sources != null) {
+        if (state.movie?.sources != null) {
             for (source in state.movie?.sources!!) {
                 mediaSources.remove(Pair(source.id, source.name))
                 mediaSources.add(Pair(source.id, source.name))
@@ -128,7 +128,7 @@ fun MovieScreen(
                     playDataItemId = movieId.toString()
                     playDataItemKind = BaseItemKind.MOVIE.serialName
                     playDataStartFromBeginning = action.startFromBeginning
-                    if(hasMultipleMediaSources){
+                    if (hasMultipleMediaSources) {
                         showMediaSourceSelectorDialog = true
                         playMedia = false
                     } else {
@@ -152,7 +152,7 @@ fun MovieScreen(
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 
-    if(showMediaSourceSelectorDialog){
+    if (showMediaSourceSelectorDialog) {
         playMedia = false
         VersionSelectionDialog(
             mediaSources = mediaSources,
@@ -165,14 +165,14 @@ fun MovieScreen(
         )
     }
 
-    if(playMedia){
+    if (playMedia) {
         playMedia = false
         PlayMedia(
             context = context,
             itemId = playDataItemId,
             itemKind = playDataItemKind,
             mediaSourceId = playDataMediaSourceId,
-            startFromBeginning = playDataStartFromBeginning
+            startFromBeginning = playDataStartFromBeginning,
         )
     }
 }
@@ -183,7 +183,7 @@ private fun PlayMedia(
     itemId: String,
     itemKind: String,
     mediaSourceId: String? = null,
-    startFromBeginning: Boolean
+    startFromBeginning: Boolean,
 ) {
     val intent = Intent(context, PlayerActivity::class.java)
     intent.putExtra("itemId", itemId)

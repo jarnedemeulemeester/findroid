@@ -32,9 +32,10 @@ fun VersionSelectionDialog(
         onDismiss = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = MaterialTheme.spacings.default)
+            modifier =
+                Modifier.fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = MaterialTheme.spacings.default)
         ) {
             mediaSources.forEachIndexed { i, mediaSource ->
                 Row(

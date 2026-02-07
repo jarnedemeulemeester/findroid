@@ -211,7 +211,8 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             } else {
                 repository.getMediaSourcesByMediaSourceId(id, true, mediaSourceId)
             }
-        val mediaSource = mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
+        val mediaSource =
+            mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
         val externalSubtitles =
             mediaSource.mediaStreams
                 .filter { mediaStream ->

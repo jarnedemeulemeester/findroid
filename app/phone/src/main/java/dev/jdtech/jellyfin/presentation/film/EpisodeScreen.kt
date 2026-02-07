@@ -90,11 +90,9 @@ fun EpisodeScreen(
     var playDataItemKind by remember { mutableStateOf("") }
     var playDataMediaSourceId by remember { mutableStateOf("") }
     var playDataStartFromBeginning by remember { mutableStateOf(false) }
-    val mediaSources = remember { mutableListOf<Pair<String, String>>()}
+    val mediaSources = remember { mutableListOf<Pair<String, String>>() }
 
-    LaunchedEffect(true) {
-        viewModel.loadEpisode(episodeId = episodeId)
-    }
+    LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
     LaunchedEffect(state.episode) {
         state.episode?.let { episode -> downloaderViewModel.update(episode) }
@@ -115,9 +113,9 @@ fun EpisodeScreen(
         }
     }
 
-    if((state.episode?.sources?.size ?: 1) > 1) {
+    if ((state.episode?.sources?.size ?: 1) > 1) {
         hasMultipleMediaSources = true
-        if(state.episode?.sources != null) {
+        if (state.episode?.sources != null) {
             for (source in state.episode?.sources!!) {
                 mediaSources.remove(Pair(source.id, source.name))
                 mediaSources.add(Pair(source.id, source.name))
@@ -136,7 +134,7 @@ fun EpisodeScreen(
                     playDataItemId = episodeId.toString()
                     playDataItemKind = BaseItemKind.EPISODE.serialName
                     playDataStartFromBeginning = action.startFromBeginning
-                    if(hasMultipleMediaSources){
+                    if (hasMultipleMediaSources) {
                         showMediaSourceSelectorDialog = true
                         playMedia = false
                     } else {
@@ -154,7 +152,7 @@ fun EpisodeScreen(
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 
-    if(showMediaSourceSelectorDialog){
+    if (showMediaSourceSelectorDialog) {
         playMedia = false
         VersionSelectionDialog(
             mediaSources = mediaSources,
@@ -167,14 +165,14 @@ fun EpisodeScreen(
         )
     }
 
-    if(playMedia){
+    if (playMedia) {
         playMedia = false
         PlayMedia(
             context = context,
             itemId = playDataItemId,
             itemKind = playDataItemKind,
             mediaSourceId = playDataMediaSourceId,
-            startFromBeginning = playDataStartFromBeginning
+            startFromBeginning = playDataStartFromBeginning,
         )
     }
 }
@@ -185,7 +183,7 @@ private fun PlayMedia(
     itemId: String,
     itemKind: String,
     mediaSourceId: String? = null,
-    startFromBeginning: Boolean
+    startFromBeginning: Boolean,
 ) {
     val intent = Intent(context, PlayerActivity::class.java)
     intent.putExtra("itemId", itemId)
@@ -212,17 +210,14 @@ private fun EpisodeScreenLayout(
 
     Box(modifier = Modifier.fillMaxSize()) {
         state.episode?.let { episode ->
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState)) {
+            Column(modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)) {
                 ItemHeader(
                     item = episode,
                     scrollState = scrollState,
                     content = {
                         Column(
                             modifier =
-                                Modifier
-                                    .align(Alignment.BottomStart)
+                                Modifier.align(Alignment.BottomStart)
                                     .padding(start = paddingStart, end = paddingEnd)
                         ) {
                             val seasonName =

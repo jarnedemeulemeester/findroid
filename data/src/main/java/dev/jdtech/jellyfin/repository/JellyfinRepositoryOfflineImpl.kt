@@ -208,7 +208,11 @@ class JellyfinRepositoryOfflineImpl(
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
 
-    override suspend fun getMediaSourcesByMediaSourceId(itemId: UUID, includePath: Boolean, mediaSourceId: String?): List<FindroidSource> =
+    override suspend fun getMediaSourcesByMediaSourceId(
+        itemId: UUID,
+        includePath: Boolean,
+        mediaSourceId: String?,
+    ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
