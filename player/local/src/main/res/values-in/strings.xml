@@ -1,3 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="select_audio_track">Pilih trek audio</string>
+    <string name="select_subtitle_track">Pilih subtitle</string>
+    <string name="select_playback_speed">Pilih kecepatan pemutaran</string>
+    <string name="select_a_version">Pilih versi</string>
+    <string name="external">Eksternal</string>
+    <string name="player_controls_skip_back">Lewati ke belakang</string>
+    <string name="player_controls_play_pause">Putar terjeda</string>
+    <string name="player_controls_rewind">Mundur</string>
+    <string name="player_controls_exit">Keluar dari pemutar</string>
+    <string name="player_controls_fast_forward">Maju cepat</string>
+    <string name="player_controls_skip_forward">Lewati ke depan</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_progress">Bilah kemajuan</string>
+    <string name="player_controls_skip_intro">Lewati pembuka</string>
+    <string name="player_controls_skip_outro">Lewati penutup</string>
+    <string name="player_controls_next_episode">Episode selanjutnya</string>
+    <string name="player_controls_skip_recap">Lewati ringkasan</string>
+    <string name="player_controls_skip_preview">Lewati pratinjau</string>
+    <string name="player_controls_skip_commercial">Lewati iklan</string>
+    <string name="player_controls_skip_unknown">Lewati</string>
+    <string name="none">Tidak ada</string>
+    <string name="player_controls_lock">Kunci pemutar</string>
+    <string name="player_controls_picture_in_picture">Masuk ke mode gambar-dalam-gambar</string>
 </resources>
