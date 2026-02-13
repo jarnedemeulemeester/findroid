@@ -1,3 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="add_server">Tambah server</string>
+    <string name="add_server_btn_connect">Hubungkan</string>
+    <string name="add_server_error_empty_address">Alamat server kosong</string>
+    <string name="add_server_error_no_id">Server tidak mempunyai ID, terdapat sesuatu yang salah dengan server</string>
+    <string name="cancel">Batal</string>
+    <string name="add_server_error_not_found">Server tidak ditemukan</string>
+    <string name="add_server_error_version">Versi server tidak didukung: %1$s. Mohon perbarui server Anda</string>
+    <string name="edit_text_password_hint">Kata sandi</string>
+    <string name="edit_text_server_address_hint">Alamat server</string>
+    <string name="edit_text_username_hint">Nama pengguna</string>
+    <string name="login">Masuk</string>
+    <string name="login_btn_login">Masuk</string>
+    <string name="login_btn_quick_connect">Quick Connect</string>
+    <string name="login_error_wrong_username_password">Nama pengguna atau kata sandi salah</string>
+    <string name="servers">Server</string>
+    <string name="servers_no_servers">Tidak ada server yang ditemukan</string>
+    <string name="servers_btn_add_server">Tambah server</string>
+    <string name="remove_server_dialog">Hapus server</string>
+    <string name="remove_server_dialog_text">Apakah Anda yakin ingin mengapus server %s?</string>
+    <string name="welcome">Selamat datang di Findroid</string>
+    <string name="welcome_btn_continue">Lanjutkan</string>
+    <string name="welcome_btn_learn_more">Pelajari Jellyfin lebih lanjut</string>
+    <string name="welcome_text">Findroid adalah klien pihak ketiga untuk Jellyfin. Findroid sendiri tidak menyediakan konten media apa pun.\n\nUntuk menggunakan klien ini, Anda perlu meng-host server Jellyfin Anda sendiri.</string>
+    <string name="confirm">Konfirmasi</string>
+    <string name="or">ATAU</string>
+    <string name="server_subtitle">Server: %s</string>
+    <string name="users">Pengguna</string>
+    <string name="users_no_users">Tidak ada pengguna yang ditemukan</string>
+    <string name="users_btn_add_user">Tambah pengguna</string>
+    <string name="remove_user_dialog">Hapus pengguna</string>
+    <string name="remove_user_dialog_text">Apakah Anda yakin ingin menghapus pengguna %s?</string>
+    <string name="addresses">Alamat</string>
+    <string name="add_address">Tambah alamat</string>
+    <string name="add_server_address">Tambah alamat server</string>
+    <string name="remove_server_address">Hapus alamat server</string>
+    <string name="remove_server_address_dialog_text">Apakah Anda yakin ingin menghapus alamat server %1$s</string>
+    <string name="add_server_error_not_jellyfin">Bukan server Jellyfin: %1$s</string>
+    <string name="add_server_error_outdated">Versi server usang: %1$s. Harap perbarui server Anda</string>
+    <string name="add_server_error_slow">Server terlalu lambat untuk merespons: %1$s</string>
 </resources>
