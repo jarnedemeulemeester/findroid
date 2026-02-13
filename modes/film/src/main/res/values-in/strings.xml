@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="next_up">Selanjutnya</string>
+    <string name="continue_watching">Lanjutkan menonton</string>
+    <string name="latest_library">%1$s terbaru</string>
+    <string name="search_placeholder">Cari film dan acara TV</string>
 </resources>
