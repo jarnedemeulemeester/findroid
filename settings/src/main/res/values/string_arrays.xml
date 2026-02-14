@@ -24,6 +24,11 @@
         <item>opensles</item>
         <item>aaudio</item>
     </string-array>
+    <string-array name="gesture_hold">
+        <item>Chapter Navigation</item>
+        <item>2x Speed</item>
+        <item>Disabled</item>
+    </string-array>
     <string-array name="media_segments_auto_skip">
         <item>@string/media_segments_auto_skip_pip</item>
         <item>@string/media_segments_auto_skip_always</item>
