@@ -12,6 +12,7 @@
     <string name="director">Regista</string>
     <string name="cast_amp_crew"><![CDATA[Cast e troupe]]></string>
     <string name="seasons">Stagioni</string>
+    <string name="select_seasons">Seleziona le stagioni</string>
     <string name="play_button_description">Riproduci i contenuti multimediali</string>
     <string name="check_button_description">Segna come visto o non visto</string>
     <string name="favorite_button_description">Preferito</string>

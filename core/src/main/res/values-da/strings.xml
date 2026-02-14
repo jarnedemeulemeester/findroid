@@ -11,6 +11,7 @@
     <string name="retry">Prøv igen</string>
     <string name="genres">Genrer</string>
     <string name="seasons">Sæsoner</string>
+    <string name="select_seasons">Vælg sæsoner</string>
     <string name="trailer_button_description">Se traileren</string>
     <string name="favorite_button_description">Favorit</string>
     <string name="next_up">Næste</string>

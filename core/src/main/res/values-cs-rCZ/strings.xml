@@ -15,6 +15,7 @@
     <string name="writers">Scénáristé</string>
     <string name="cast_amp_crew">Obsazení &amp; štáb</string>
     <string name="seasons">Sezóny</string>
+    <string name="select_seasons">Vyber sezóny</string>
     <string name="play_button_description">Přehrát</string>
     <string name="trailer_button_description">Pustit trailer</string>
     <string name="check_button_description">Označit jako přehrané nebo nepřehrané</string>

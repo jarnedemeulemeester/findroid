@@ -14,6 +14,7 @@
     <string name="writers">लेखक</string>
     <string name="cast_amp_crew">कलाकार और क्रू</string>
     <string name="seasons">सीज़न</string>
+    <string name="select_seasons">सीज़न चुनें</string>
     <string name="trailer_button_description">ट्रेलर देखें</string>
     <string name="favorite_button_description">पसंदीदा</string>
     <string name="episode_watched_indicator">देखे हुए एपिसोड का संकेतक</string>
