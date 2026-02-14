@@ -18,7 +18,7 @@
     <string name="servers_no_servers">Tidak ada server yang ditemukan</string>
     <string name="servers_btn_add_server">Tambah server</string>
     <string name="remove_server_dialog">Hapus server</string>
-    <string name="remove_server_dialog_text">Apakah Anda yakin ingin mengapus server %s?</string>
+    <string name="remove_server_dialog_text">Apakah Anda yakin ingin menghapus server %s?</string>
     <string name="welcome">Selamat datang di Findroid</string>
     <string name="welcome_btn_continue">Lanjutkan</string>
     <string name="welcome_btn_learn_more">Pelajari Jellyfin lebih lanjut</string>
