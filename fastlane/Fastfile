@@ -4,6 +4,7 @@ platform :android do
   desc "Build and publish"
   lane :publish do
     gradle(task: "clean")
+
     gradle(
       task: "app:phone:assemble",
       flavor: "libre",

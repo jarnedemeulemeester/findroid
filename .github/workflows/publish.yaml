@@ -51,6 +51,12 @@ jobs:
           FINDROID_KEY_PASSWORD: ${{ secrets.FINDROID_KEY_PASSWORD }}
           FINDROID_PLAY_API_CREDENTIALS: ${{ steps.findroid_play_api_credentials.outputs.filePath }}
 
+      - name: Rename apk files
+        working-directory: ./app/phone/build/outputs/apk/libre/release/
+        run: |
+          rename -- 'phone' 'findroid' *.apk
+          rename -- '-release' '' *.apk
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
