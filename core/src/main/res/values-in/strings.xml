@@ -11,7 +11,7 @@
     <string name="error_loading_data">Kesalahan memuat data</string>
     <string name="show_stacktrace">Tampilkan stacktrace</string>
     <string name="retry">Coba lagi</string>
-    <string name="genres">genre</string>
+    <string name="genres">Genre</string>
     <string name="director">Sutradara</string>
     <string name="writers">Penulis</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
@@ -19,18 +19,18 @@
     <string name="play_button_description">Putar media</string>
     <string name="trailer_button_description">Tonton cuplikan</string>
     <string name="check_button_description">Tandai sebagai ditonton atau belum ditonton</string>
-    <string name="favorite_button_description">Disukai</string>
+    <string name="favorite_button_description">Favorit</string>
     <string name="episode_watched_indicator">Indikator episode yang sudah ditonton</string>
-    <string name="downloaded_indicator">Indikator unduhan</string>
+    <string name="downloaded_indicator">Indikator terunduh</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="season_number">Musim %1$d</string>
     <string name="libraries">Pustaka</string>
-    <string name="series_poster">Poster seri</string>
+    <string name="series_poster">Poster serial</string>
     <string name="collection_no_media">Koleksi ini tidak berisi media apa pun</string>
-    <string name="no_favorites">Anda tidak memiliki yang disukai</string>
+    <string name="no_favorites">Anda tidak memiliki favorit</string>
     <string name="no_downloads">Anda tidak memiliki yang telah diunduh</string>
     <string name="search">Cari</string>
-    <string name="no_search_results">Tidak ada hasil pencaruan</string>
+    <string name="no_search_results">Tidak ada hasil pencarian</string>
     <string name="device_name">Nama perangkat</string>
     <string name="error_preparing_player_items">Terjadi kesalahan saat menyiapkan item pemutar.</string>
     <string name="view_details">Lihat detail</string>
@@ -53,9 +53,9 @@
     <string name="sort_by_options_0">Judul</string>
     <string name="sort_by_options_1">Rating IMDB</string>
     <string name="sort_by_options_2">Rating Orang Tua</string>
-    <string name="sort_by_options_3">Tanggal Ditambahakan</string>
+    <string name="sort_by_options_3">Tanggal Ditambahkan</string>
     <string name="offline_mode">Mode Luring</string>
-    <string name="sort_by_options_4">Tanggal Dimainkan</string>
+    <string name="sort_by_options_4">Tanggal Diputar</string>
     <string name="sort_by_options_5">Tanggal Rilis</string>
     <string name="sort_by_options_6">Acak</string>
     <string name="ascending">Menaik</string>
@@ -77,8 +77,8 @@
     <string name="no_server_connection">Tidak ada koneksi ke server Jellyfin, untuk menonton secara offline aktifkan Mode Luring</string>
     <string name="select_storage_location">Pilih lokasi penyimpanan</string>
     <string name="title_home">Beranda</string>
-    <string name="title_media">My media</string>
-    <string name="title_favorite">favorit</string>
+    <string name="title_media">Media Saya</string>
+    <string name="title_favorite">Favorit</string>
     <string name="storage_unavailable">Lokasi penyimpanan tidak tersedia</string>
     <string name="internal">Internal</string>
     <string name="storage_name">%1$s (%2$d MB tersedia)</string>
@@ -86,7 +86,7 @@
     <string name="cancel_download">Batalkan unduhan</string>
     <string name="cancel_download_message">Apakah Anda yakin ingin membatalkan unduhan?</string>
     <string name="delete_download">Hapus unduhan</string>
-    <string name="delete_download_message">Apakah Anda yakin ingin menghapus unduhan?</string>
+    <string name="delete_download_message">Apakah Anda yakin ingin menghapus unduhan ini ?</string>
     <string name="stop_download">Hentikan unduhan</string>
     <string name="privacy_policy_notice">Dengan menggunakan Findroid, Anda menyetujui <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Kebijakan Privasi</a> yang menyatakan bahwa kami tidak mengumpulkan data apa pun</string>
     <string name="live_tv">Siaran TV Langsung</string>
@@ -98,9 +98,14 @@
     <string name="remove_from_favorites">Hapus dari favorit</string>
     <string name="not_set">Tidak disetel</string>
     <string name="none">Tidak ada</string>
-    <string name="manage_servers">Atur server</string>
+    <string name="manage_servers">Kelola server</string>
     <string name="download_pending">Tertunda…</string>
     <string name="download_paused">Terjeda</string>
     <string name="download_downloading">Mengunduh…</string>
     <string name="download_failed">Gagal diunduh</string>
+    <string name="episode_name_extended">S%1$d:E%2$d - %3$s</string>
+    <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
+    <string name="episode_name_extended_with_end">S%1$d:E%2$d-%3$d - %4$s</string>
+    <string name="episode_number">Episode %1$d</string>
+    <string name="track_selection">[%1$s] %2$s (%3$s)</string>
 </resources>
