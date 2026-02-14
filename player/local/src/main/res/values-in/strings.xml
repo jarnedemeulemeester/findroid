@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_audio_track">Pilih trek audio</string>
+    <string name="select_audio_track">Pilih audio</string>
     <string name="select_subtitle_track">Pilih subtitle</string>
     <string name="select_playback_speed">Pilih kecepatan pemutaran</string>
     <string name="select_a_version">Pilih versi</string>
     <string name="external">Eksternal</string>
     <string name="player_controls_skip_back">Lewati ke belakang</string>
-    <string name="player_controls_play_pause">Putar terjeda</string>
+    <string name="player_controls_play_pause">Putar jeda</string>
     <string name="player_controls_rewind">Mundur</string>
     <string name="player_controls_exit">Keluar dari pemutar</string>
     <string name="player_controls_fast_forward">Maju cepat</string>
