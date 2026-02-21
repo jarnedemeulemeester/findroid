@@ -944,10 +944,10 @@ class MPVPlayer(
     ) {
         if (mediaItemIndex == currentMediaItemIndex) {
             val seekTo =
-                if (positionMs != C.TIME_UNSET) positionMs / C.MILLIS_PER_SECOND else initialSeekTo
+                if (positionMs != C.TIME_UNSET) positionMs else initialSeekTo
             initialSeekTo =
                 if (isPlayerReady) {
-                    MPVLib.command(arrayOf("seek", "$seekTo", "absolute"))
+                    MPVLib.command(arrayOf("seek", "${seekTo.toDouble().div(C.MILLIS_PER_SECOND)}", "absolute"))
                     0L
                 } else {
                     seekTo
