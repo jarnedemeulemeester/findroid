@@ -17,6 +17,7 @@
     <string name="director">Ohjaaja</string>
     <string name="writers">Käsikirjoittajat</string>
     <string name="seasons">Kaudet</string>
+    <string name="select_seasons">Valitse kaudet</string>
     <string name="play_button_description">Toista</string>
     <string name="trailer_button_description">Katso traileri</string>
     <string name="check_button_description">Merkitse katsotuksi tai katsomattomaksi</string>

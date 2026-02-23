@@ -39,6 +39,7 @@
     <string name="writers">Schrijvers</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Bemanning]]></string>
     <string name="seasons">Seizoenen</string>
+    <string name="select_seasons">Selecteer seizoenen</string>
     <string name="play_button_description">Speel de media af</string>
     <string name="trailer_button_description">Kijk de trailer</string>
     <string name="check_button_description">Markeer as bekeken of niet bekeken</string>

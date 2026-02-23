@@ -10,6 +10,7 @@
     <string name="director">Director</string>
     <string name="writers">Guionistes</string>
     <string name="seasons">Temporades</string>
+    <string name="select_seasons">Selecciona les temporades</string>
     <string name="season_number">Temporada %1$d</string>
     <string name="episode_number">Episodi %1$d</string>
     <string name="next_up">A continuació</string>

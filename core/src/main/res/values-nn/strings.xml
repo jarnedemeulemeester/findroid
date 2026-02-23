@@ -18,6 +18,7 @@
     <string name="writers">Manusforfattarar</string>
     <string name="cast_amp_crew"><![CDATA[Skodespelarar og medarbeidarar]]></string>
     <string name="seasons">Sesongar</string>
+    <string name="select_seasons">Vel sesongar</string>
     <string name="play_button_description">Spel av media</string>
     <string name="trailer_button_description">Sjå trailer</string>
     <string name="check_button_description">Marker som sett eller usett</string>

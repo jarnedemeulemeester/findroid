@@ -10,6 +10,7 @@
     <string name="director">Режисер</string>
     <string name="writers">Автори</string>
     <string name="seasons">Сезони</string>
+    <string name="select_seasons">Вибрати сезони</string>
     <string name="play_button_description">Відтворити медіа</string>
     <string name="trailer_button_description">Переглянути трейлер</string>
     <string name="favorite_button_description">У вибране</string>

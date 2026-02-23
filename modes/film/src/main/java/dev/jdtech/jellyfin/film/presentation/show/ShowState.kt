@@ -9,6 +9,7 @@ data class ShowState(
     val show: FindroidShow? = null,
     val nextUp: FindroidEpisode? = null,
     val seasons: List<FindroidSeason> = emptyList(),
+    val hasDownloads: Boolean = false,
     val actors: List<FindroidItemPerson> = emptyList(),
     val director: FindroidItemPerson? = null,
     val writers: List<FindroidItemPerson> = emptyList(),

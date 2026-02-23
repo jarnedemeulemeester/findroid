@@ -43,6 +43,7 @@
     <string name="director">감독</string>
     <string name="writers">작가</string>
     <string name="seasons">시즌</string>
+    <string name="select_seasons">시즌 선택</string>
     <string name="play_button_description">미디어 재생</string>
     <string name="favorite_button_description">즐겨찾기</string>
     <string name="episode_watched_indicator">에피소드 재생 길이</string>

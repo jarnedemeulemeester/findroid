@@ -16,6 +16,7 @@
     <string name="writers">Сценаристы</string>
     <string name="cast_amp_crew"><![CDATA[Актёры и съёмочная группа]]></string>
     <string name="seasons">Сезоны</string>
+    <string name="select_seasons">Выбрать сезоны</string>
     <string name="trailer_button_description">Посмотреть трейлер</string>
     <string name="check_button_description">Отметить как просмотренное или непросмотренное</string>
     <string name="favorite_button_description">В избранное</string>

@@ -13,6 +13,7 @@
     <string name="writers">Escritor</string>
     <string name="cast_amp_crew">Elenco e Equipe</string>
     <string name="seasons">Temporadas</string>
+    <string name="select_seasons">Selecione as temporadas</string>
     <string name="play_button_description">Reproduzir</string>
     <string name="trailer_button_description">Trailer</string>
     <string name="favorite_button_description">Favoritar</string>

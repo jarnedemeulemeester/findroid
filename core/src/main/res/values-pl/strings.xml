@@ -24,6 +24,7 @@
     <string name="writers">Scenariusz</string>
     <string name="cast_amp_crew"><![CDATA[Obsada i ekipa]]></string>
     <string name="seasons">Sezony</string>
+    <string name="select_seasons">Wybierz sezony</string>
     <string name="play_button_description">Odtwórz media</string>
     <string name="trailer_button_description">Obejrzyj zwiastun</string>
     <string name="favorite_button_description">Polub</string>
