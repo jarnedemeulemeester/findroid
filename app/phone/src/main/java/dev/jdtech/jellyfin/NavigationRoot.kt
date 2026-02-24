@@ -5,11 +5,12 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
@@ -171,22 +172,30 @@ fun NavigationRoot(
 
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val customNavSuiteType =
-        with(windowAdaptiveInfo) {
-            if (
-                windowSizeClass.isWidthAtLeastBreakpoint(
-                    WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
-                )
-            ) {
-                NavigationSuiteType.NavigationRail
-            } else {
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
+        with(windowAdaptiveInfo.windowSizeClass) {
+            when {
+                // Compact Width (Phone Portrait) -> Always Compact Bar
+                !isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                    NavigationSuiteType.ShortNavigationBarCompact
+                }
+
+                // Expanded Width (Tablet Landscape/PC) OR Compact Height (Phone Landscape) -> Rail
+                isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) ||
+                    !isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> {
+                    NavigationSuiteType.WideNavigationRailCollapsed
+                }
+
+                // Medium Width + Medium Height (Tablet Portrait) -> Medium Bar
+                else -> {
+                    NavigationSuiteType.ShortNavigationBarMedium
+                }
             }
         }
 
     NavigationSuiteScaffold(
-        navigationSuiteItems = {
+        navigationItems = {
             navigationItems.forEach { item ->
-                item(
+                NavigationSuiteItem(
                     selected = currentRoute == item.route::class.qualifiedName,
                     onClick = {
                         if (
@@ -210,10 +219,12 @@ fun NavigationRoot(
                     },
                     enabled = item.enabled,
                     label = { Text(text = stringResource(item.title)) },
+                    navigationSuiteType = customNavSuiteType,
                 )
             }
         },
-        layoutType = customNavSuiteType,
+        navigationItemVerticalArrangement = Arrangement.Center,
+        navigationSuiteType = customNavSuiteType,
         state = navigationSuiteScaffoldState,
     ) {
         NavHost(
