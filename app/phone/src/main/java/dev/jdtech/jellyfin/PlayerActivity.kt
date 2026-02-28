@@ -93,6 +93,14 @@ class PlayerActivity : BasePlayerActivity() {
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))
         val itemKind = intent.extras!!.getString("itemKind")
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
+        var mediaSourceId: String? = null
+        try {
+            if (intent.extras!!.getString("mediaSourceId") != "") {
+                mediaSourceId = intent.extras!!.getString("mediaSourceId")
+            }
+        } catch (_: NullPointerException) {
+            null
+        }
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -327,6 +335,7 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(
             itemId = itemId,
             itemKind = itemKind ?: "",
+            mediaSourceId = mediaSourceId,
             startFromBeginning = startFromBeginning,
         )
         hideSystemUI()

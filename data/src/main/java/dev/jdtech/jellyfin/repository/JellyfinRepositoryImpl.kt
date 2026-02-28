@@ -338,6 +338,46 @@ class JellyfinRepositoryImpl(
             sources
         }
 
+    override suspend fun getMediaSourcesByMediaSourceId(
+        itemId: UUID,
+        includePath: Boolean,
+        mediaSourceId: String?,
+    ): List<FindroidSource> =
+        withContext(Dispatchers.IO) {
+            val sources = mutableListOf<FindroidSource>()
+            sources.addAll(
+                jellyfinApi.mediaInfoApi
+                    .getPostedPlaybackInfo(
+                        itemId,
+                        PlaybackInfoDto(
+                            userId = jellyfinApi.userId!!,
+                            mediaSourceId = mediaSourceId,
+                            deviceProfile =
+                                DeviceProfile(
+                                    name = "Direct play all",
+                                    maxStaticBitrate = 1_000_000_000,
+                                    maxStreamingBitrate = 1_000_000_000,
+                                    codecProfiles = emptyList(),
+                                    containerProfiles = emptyList(),
+                                    directPlayProfiles = emptyList(),
+                                    transcodingProfiles = emptyList(),
+                                    subtitleProfiles =
+                                        listOf(
+                                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                                        ),
+                                ),
+                            maxStreamingBitrate = 1_000_000_000,
+                        ),
+                    )
+                    .content
+                    .mediaSources
+                    .map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId, includePath) }
+            )
+            sources.addAll(database.getSources(itemId).map { it.toFindroidSource(database) })
+            sources
+        }
+
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
             try {
