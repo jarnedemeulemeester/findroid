@@ -1,7 +1,7 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="remove">Видалити</string>
-    <string name="cancel">Відміна</string>
+    <string name="cancel">Відмінити</string>
     <string name="title_home">Головна</string>
     <string name="title_favorite">Вибране</string>
     <string name="view_all">Переглянути все</string>
@@ -65,7 +65,7 @@
     <string name="jellyfin_banner">Jellyfin банер</string>
     <string name="title_media">Мої медіа</string>
     <string name="genres">Жанри</string>
-    <string name="cast_amp_crew">Актори та команда</string>
+    <string name="cast_amp_crew"><![CDATA[Актори та команда]]></string>
     <string name="check_button_description">Позначити як переглянутий або не переглянутий</string>
     <string name="no_search_results">Результатів пошуку немає</string>
     <string name="error_preparing_player_items">Помилка при підготовці елементів плеєра.</string>
@@ -83,4 +83,29 @@
     <string name="preparing_download">Підготовка до завантаження</string>
     <string name="stop_download">Зупинити завантаження</string>
     <string name="privacy_policy_notice">Використовуючи Findroid, ви погоджуєтеся з <a href="https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY">Політикою конфіденційності</a>, в якій зазначено, що ми не збираємо жодних даних</string>
+    <string name="none">Нічого</string>
+    <string name="title_settings">Налаштунки</string>
+    <string name="title_download">Завантаження</string>
+    <string name="collection_no_media">В цій колекції немає медіа</string>
+    <string name="sort_by_options_6">Випадковий</string>
+    <string name="offline_mode">Режим офлайн</string>
+    <string name="show_stacktrace">Показати трасування стека</string>
+    <string name="season_number">Сезон %1$d</string>
+    <string name="episode_number">Епізод %1$d</string>
+    <string name="runtime_minutes_left">Залишилося %1$d хвилин</string>
+    <string name="delete_download">Видалити завантаження</string>
+    <string name="delete_download_message">Ви впевнені, що хочете видалити це завантаження зі свого пристрою?</string>
+    <string name="live_tv">Живе телебачення</string>
+    <string name="play">Грати</string>
+    <string name="watch_trailer">Дивитися трейлер</string>
+    <string name="mark_as_played">Позначити як відтворене</string>
+    <string name="unmark_as_played">Зняти позначку як відтворене</string>
+    <string name="add_to_favorites">Додати до обраного</string>
+    <string name="remove_from_favorites">Видалити з обраного</string>
+    <string name="not_set">Не встановлено</string>
+    <string name="manage_servers">Керування серверами</string>
+    <string name="download_pending">Очікується…</string>
+    <string name="download_paused">Призупинено</string>
+    <string name="download_downloading">Завантажується…</string>
+    <string name="download_failed">Не вдалося завантажити</string>
 </resources>
