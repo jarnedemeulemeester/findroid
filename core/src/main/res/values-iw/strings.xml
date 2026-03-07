@@ -12,6 +12,7 @@
     <string name="writers">כותבים</string>
     <string name="cast_amp_crew">שחקנים &amp; צוות</string>
     <string name="seasons">עונות</string>
+    <string name="select_seasons">בחר עונות</string>
     <string name="favorite_button_description">מועדף</string>
     <string name="episode_name">%1$d. %2$s</string>
     <string name="libraries">ספריות</string>

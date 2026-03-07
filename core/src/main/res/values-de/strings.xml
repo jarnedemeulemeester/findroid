@@ -11,6 +11,7 @@
     <string name="writers">Autoren</string>
     <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
     <string name="seasons">Staffeln</string>
+    <string name="select_seasons">Staffeln auswählen</string>
     <string name="check_button_description">Als gesehen oder ungesehen markieren</string>
     <string name="favorite_button_description">Favorit</string>
     <string name="episode_name">%1$d. %2$s</string>

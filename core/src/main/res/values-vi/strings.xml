@@ -12,6 +12,7 @@
     <string name="director">Đạo diễn</string>
     <string name="writers">Kịch bản</string>
     <string name="seasons">Mùa</string>
+    <string name="select_seasons">Chọn mùa</string>
     <string name="play_button_description">Phát phương tiện này</string>
     <string name="trailer_button_description">Xem đoạn giới thiệu phim</string>
     <string name="favorite_button_description">Ưa thích</string>

@@ -13,6 +13,7 @@
     <string name="genres">风格</string>
     <string name="cast_amp_crew">演职人员</string>
     <string name="seasons">季</string>
+    <string name="select_seasons">选择季</string>
     <string name="play_button_description">播放媒体</string>
     <string name="check_button_description">标记为已观看或未观看</string>
     <string name="favorite_button_description">收藏</string>

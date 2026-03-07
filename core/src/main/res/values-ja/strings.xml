@@ -18,6 +18,7 @@
     <string name="writers">脚本家</string>
     <string name="cast_amp_crew">キャスト＆クルー</string>
     <string name="seasons">シーズン</string>
+    <string name="select_seasons">シーズンを選択</string>
     <string name="play_button_description">メディアを再生</string>
     <string name="trailer_button_description">予告編を視聴</string>
     <string name="check_button_description">視聴済み／未視聴に設定</string>
