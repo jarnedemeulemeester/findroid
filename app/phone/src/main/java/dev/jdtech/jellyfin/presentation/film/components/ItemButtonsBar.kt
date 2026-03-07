@@ -32,6 +32,7 @@ import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.film.presentation.media.MediaActionKind
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
@@ -42,10 +43,10 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 @Composable
 fun ItemButtonsBar(
     item: FindroidItem,
-    onPlayClick: (startFromBeginning: Boolean) -> Unit,
+    onPlayClick: (playOptions: Pair<Boolean, String>) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
-    onDownloadClick: (storageIndex: Int) -> Unit,
+    onDownloadClick: (downloadOptions: Pair<Int, String>) -> Unit,
     onDownloadCancelClick: () -> Unit,
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
@@ -74,6 +75,15 @@ fun ItemButtonsBar(
     var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
 
+    var showMediaSourceSelectorDialog by remember { mutableStateOf(false) }
+    var hasMultipleMediaSources by remember { mutableStateOf(false) }
+    var selectedMediaSourceId by remember { mutableStateOf("") }
+    val mediaSources = remember { mutableListOf<Pair<String, String>>() }
+
+    var mediaActionKind by remember { mutableStateOf(MediaActionKind.NONE) }
+    var mediaStartFromBeginning by remember { mutableStateOf(false) }
+    var processMedaiAction by remember { mutableStateOf(false) }
+
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
             modifier = modifier,
@@ -87,12 +97,22 @@ fun ItemButtonsBar(
                 Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
                     PlayButton(
                         item = item,
-                        onClick = { onPlayClick(false) },
+                        onClick = {
+                            mediaActionKind = MediaActionKind.PLAY
+                            mediaStartFromBeginning = false
+                            showMediaSourceSelectorDialog = true
+                        },
                         modifier = Modifier.weight(weight = 1f, fill = true),
                         enabled = item.canPlay && canPlay,
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
-                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                mediaActionKind = MediaActionKind.PLAY
+                                mediaStartFromBeginning = true
+                                showMediaSourceSelectorDialog = true
+                            }
+                        ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                                 contentDescription = null,
@@ -109,11 +129,21 @@ fun ItemButtonsBar(
                 ) {
                     PlayButton(
                         item = item,
-                        onClick = { onPlayClick(false) },
+                        onClick = {
+                            mediaActionKind = MediaActionKind.PLAY
+                            mediaStartFromBeginning = false
+                            showMediaSourceSelectorDialog = true
+                        },
                         enabled = item.canPlay && canPlay,
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
-                        FilledTonalIconButton(onClick = { onPlayClick(true) }) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                mediaActionKind = MediaActionKind.PLAY
+                                mediaStartFromBeginning = true
+                                showMediaSourceSelectorDialog = true
+                            }
+                        ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                                 contentDescription = null,
@@ -161,15 +191,16 @@ fun ItemButtonsBar(
                                 contentDescription = null,
                             )
                         }
-                    } else if (item.canDownload) {
+                    } else if (item.canDownload && item.sources.indexOfFirst { it.size > 0 } > -1) {
                         FilledTonalIconButton(
                             onClick = {
+                                mediaActionKind = MediaActionKind.DOWNLOAD
                                 storageLocations = context.getExternalFilesDirs(null)
                                 if (storageLocations.size > 1) {
                                     storageSelectionDialogOpen = true
                                 } else {
                                     selectedStorageIndex = 0
-                                    onDownloadClick(selectedStorageIndex)
+                                    showMediaSourceSelectorDialog = true
                                 }
                             }
                         ) {
@@ -187,11 +218,20 @@ fun ItemButtonsBar(
                         DownloaderCard(
                             state = downloaderState,
                             onCancelClick = { cancelDownloadDialogOpen = true },
-                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
+                            onRetryClick = {
+                                onDownloadClick(Pair(selectedStorageIndex, selectedMediaSourceId))
+                            },
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
                 }
+            }
+        }
+        if (item.sources.size > 1) {
+            hasMultipleMediaSources = true
+            for (source in item.sources) {
+                mediaSources.remove(Pair(source.id, source.name))
+                mediaSources.add(Pair(source.id, source.name))
             }
         }
         if (storageSelectionDialogOpen) {
@@ -211,7 +251,7 @@ fun ItemButtonsBar(
                 storageLocations = locations,
                 onSelect = { storageIndex ->
                     selectedStorageIndex = storageIndex
-                    onDownloadClick(selectedStorageIndex)
+                    showMediaSourceSelectorDialog = true
                     storageSelectionDialogOpen = false
                 },
                 onDismiss = { storageSelectionDialogOpen = false },
@@ -234,6 +274,32 @@ fun ItemButtonsBar(
                 },
                 onDismiss = { deleteDownloadDialogOpen = false },
             )
+        }
+        if (showMediaSourceSelectorDialog) {
+            if (hasMultipleMediaSources) {
+                VersionSelectionDialog(
+                    mediaSources = mediaSources,
+                    onSelect = { mediaSourceId ->
+                        selectedMediaSourceId = mediaSourceId
+                        processMedaiAction = true
+                        showMediaSourceSelectorDialog = false
+                    },
+                    onDismiss = { showMediaSourceSelectorDialog = false },
+                )
+            } else {
+                selectedMediaSourceId = item.sources.first().id
+                processMedaiAction = true
+            }
+        }
+        if (processMedaiAction) {
+            processMedaiAction = false
+            if (mediaActionKind == MediaActionKind.PLAY) {
+                onPlayClick(Pair(mediaStartFromBeginning, selectedMediaSourceId))
+                mediaActionKind = MediaActionKind.NONE
+            } else if (mediaActionKind == MediaActionKind.DOWNLOAD) {
+                onDownloadClick(Pair(selectedStorageIndex, selectedMediaSourceId))
+                mediaActionKind = MediaActionKind.NONE
+            }
         }
     }
 }
