@@ -48,7 +48,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
-import androidx.xr.scenecore.Session
+import androidx.xr.runtime.Session
+import androidx.xr.runtime.SessionCreateSuccess
 import androidx.xr.scenecore.SurfaceEntity
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Vector3
@@ -78,7 +79,14 @@ class XrPlayerActivity : AppCompatActivity() {
 
         // Initialize XR Session
         try {
-            xrSession = Session.create(this)
+            val result = Session.create(this)
+            if (result is SessionCreateSuccess) {
+                xrSession = result.session
+            } else {
+                Timber.e("XR session creation failed: $result")
+                finish()
+                return
+            }
         } catch (e: Exception) {
             Timber.e(e, "Failed to create XR session, XR not available")
             finish()

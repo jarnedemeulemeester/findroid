@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.media3.session)
 
     // XR SDK
+    implementation(libs.androidx.xr.runtime)
     implementation(libs.androidx.xr.scenecore)
 
     // Hilt
