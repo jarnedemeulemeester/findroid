@@ -5,8 +5,12 @@ import android.view.Surface as AndroidSurface
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -348,6 +352,23 @@ private fun XrPlayerScreen(
     var showSubtitleDialog by remember { mutableStateOf(false) }
     var showSpeedDialog by remember { mutableStateOf(false) }
 
+    // Controls visibility with auto-hide
+    var controlsVisible by remember { mutableStateOf(true) }
+    var hideTimestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
+
+    // Reset the auto-hide timer whenever controls become visible
+    fun resetAutoHide() {
+        hideTimestamp = System.currentTimeMillis()
+    }
+
+    // Auto-hide controls after 10 seconds of inactivity
+    LaunchedEffect(controlsVisible, hideTimestamp) {
+        if (controlsVisible) {
+            delay(10_000L)
+            controlsVisible = false
+        }
+    }
+
     // Poll player state
     LaunchedEffect(Unit) {
         while (true) {
@@ -386,7 +407,14 @@ private fun XrPlayerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                controlsVisible = !controlsVisible
+                if (controlsVisible) resetAutoHide()
+            },
     ) {
         if (showPlayerView) {
             AndroidView(
@@ -401,10 +429,16 @@ private fun XrPlayerScreen(
             )
         }
 
-        // Controls overlay
+        // Controls overlay with fade animation
+        AnimatedVisibility(
+            visible = controlsVisible,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.4f))
                 .padding(24.dp),
         ) {
             // Top bar
@@ -440,7 +474,7 @@ private fun XrPlayerScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
-                IconButton(onClick = { showAudioDialog = true }) {
+                IconButton(onClick = { showAudioDialog = true; resetAutoHide() }) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_speaker),
                         contentDescription = stringResource(LocalR.string.select_audio_track),
@@ -448,7 +482,7 @@ private fun XrPlayerScreen(
                         modifier = Modifier.size(20.dp),
                     )
                 }
-                IconButton(onClick = { showSubtitleDialog = true }) {
+                IconButton(onClick = { showSubtitleDialog = true; resetAutoHide() }) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_closed_caption),
                         contentDescription = stringResource(LocalR.string.select_subtitle_track),
@@ -456,7 +490,7 @@ private fun XrPlayerScreen(
                         modifier = Modifier.size(20.dp),
                     )
                 }
-                IconButton(onClick = { showSpeedDialog = true }) {
+                IconButton(onClick = { showSpeedDialog = true; resetAutoHide() }) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_gauge),
                         contentDescription = stringResource(LocalR.string.select_playback_speed),
@@ -496,10 +530,11 @@ private fun XrPlayerScreen(
                     Text(formatTime(currentPosition), style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.7f))
                     Slider(
                         value = sliderPosition,
-                        onValueChange = { isSeeking = true; sliderPosition = it },
+                        onValueChange = { isSeeking = true; sliderPosition = it; resetAutoHide() },
                         onValueChangeFinished = {
                             viewModel.player.seekTo((sliderPosition * duration).toLong())
                             isSeeking = false
+                            resetAutoHide()
                         },
                         modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                     )
@@ -519,7 +554,7 @@ private fun XrPlayerScreen(
             ) {
                 // Previous track
                 if (viewModel.player.hasPreviousMediaItem()) {
-                    IconButton(onClick = { viewModel.player.seekToPreviousMediaItem() }) {
+                    IconButton(onClick = { viewModel.player.seekToPreviousMediaItem(); resetAutoHide() }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_skip_back),
                             contentDescription = stringResource(LocalR.string.player_controls_skip_back),
@@ -531,7 +566,7 @@ private fun XrPlayerScreen(
                 }
 
                 // Seek back
-                IconButton(onClick = { viewModel.player.seekBack() }) {
+                IconButton(onClick = { viewModel.player.seekBack(); resetAutoHide() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_rewind),
                         contentDescription = "Seek back",
@@ -544,7 +579,7 @@ private fun XrPlayerScreen(
 
                 // Play/Pause
                 FilledIconButton(
-                    onClick = { if (isPlaying) viewModel.player.pause() else viewModel.player.play() },
+                    onClick = { if (isPlaying) viewModel.player.pause() else viewModel.player.play(); resetAutoHide() },
                     modifier = Modifier.size(56.dp),
                 ) {
                     Icon(
@@ -557,7 +592,7 @@ private fun XrPlayerScreen(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 // Seek forward
-                IconButton(onClick = { viewModel.player.seekForward() }) {
+                IconButton(onClick = { viewModel.player.seekForward(); resetAutoHide() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_forward),
                         contentDescription = "Seek forward",
@@ -569,7 +604,7 @@ private fun XrPlayerScreen(
                 // Next track
                 if (viewModel.player.hasNextMediaItem()) {
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { viewModel.player.seekToNextMediaItem() }) {
+                    IconButton(onClick = { viewModel.player.seekToNextMediaItem(); resetAutoHide() }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_skip_forward),
                             contentDescription = stringResource(LocalR.string.player_controls_skip_forward),
@@ -589,6 +624,7 @@ private fun XrPlayerScreen(
                         val nextMode = modes[(currentIndex + 1) % modes.size]
                         currentStereoMode = nextMode
                         onStereoModeChange(nextMode)
+                        resetAutoHide()
                     },
                 ) {
                     Icon(
@@ -605,6 +641,7 @@ private fun XrPlayerScreen(
                 }
             }
         }
+        } // AnimatedVisibility
     }
 
     // Dialogs
