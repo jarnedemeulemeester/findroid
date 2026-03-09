@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Paramètres</string>
     <string name="title_download">Téléchargements</string>
@@ -53,7 +53,7 @@
     <string name="amoled_theme">Thème foncé OLED</string>
     <string name="amoled_theme_summary">Utilisez le thème foncé AMOLED avec un fond purement noir</string>
     <string name="app_language">Langue de l\'application</string>
-    <string name="offline_mode">Mode hors-ligne</string>
+    <string name="offline_mode">Mode hors ligne</string>
     <string name="picture_in_picture">Fenêtre flottante</string>
     <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
@@ -68,4 +68,10 @@
     <string name="trickplay">Vignettes d’aperçu</string>
     <string name="pref_player_gestures_seek_trickplay">Vignettes d’aperçu lors du déplacement du curseur de lecture</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Afficher des vignettes d’aperçu lors du déplacement du curseur de lecture</string>
+    <string name="none">Aucun</string>
+    <string name="cancel">Annuler</string>
+    <string name="settings_category_interface">Interface</string>
+    <string name="users">Utilisateurs</string>
+    <string name="home">Accueil</string>
+    <string name="home_suggestions">Afficher les suggestions</string>
 </resources>
