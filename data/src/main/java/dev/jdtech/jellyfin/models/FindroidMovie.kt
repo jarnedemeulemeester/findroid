@@ -28,6 +28,7 @@ data class FindroidMovie(
     val productionYear: Int?,
     val endDate: LocalDateTime?,
     val trailer: String?,
+    val video3DFormat: String? = null,
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>,
@@ -64,6 +65,7 @@ suspend fun BaseItemDto.toFindroidMovie(
         productionYear = productionYear,
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
+        video3DFormat = video3dFormat?.name,
         images = toFindroidImages(jellyfinRepository),
         chapters = toFindroidChapters(),
         trickplayInfo =

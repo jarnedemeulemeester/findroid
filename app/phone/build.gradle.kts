@@ -90,6 +90,7 @@ dependencies {
     implementation(projects.data)
     implementation(projects.player.core)
     implementation(projects.player.local)
+    implementation(projects.player.xr)
     implementation(projects.setup)
     implementation(projects.modes.film)
     implementation(projects.settings)

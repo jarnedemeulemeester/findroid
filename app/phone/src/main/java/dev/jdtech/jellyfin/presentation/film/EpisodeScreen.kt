@@ -37,6 +37,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.player.xr.StereoModeDetector
+import dev.jdtech.jellyfin.player.xr.XrPlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
@@ -106,10 +108,19 @@ fun EpisodeScreen(
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
+                    val isXr = StereoModeDetector.isXrDevice(context)
+                    val targetActivity = if (isXr) {
+                        XrPlayerActivity::class.java
+                    } else {
+                        PlayerActivity::class.java
+                    }
+                    val intent = Intent(context, targetActivity)
                     intent.putExtra("itemId", episodeId.toString())
                     intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    if (isXr) {
+                        intent.putExtra("stereoMode", "mono")
+                    }
                     context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()

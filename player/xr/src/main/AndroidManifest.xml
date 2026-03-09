@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+        android:name="android.hardware.xr.immersive"
+        android:required="false" />
+
+    <application>
+        <activity
+            android:name="dev.jdtech.jellyfin.player.xr.XrPlayerActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+    </application>
+</manifest>

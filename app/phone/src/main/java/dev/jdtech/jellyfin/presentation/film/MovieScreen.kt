@@ -35,6 +35,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.player.xr.StereoModeDetector
+import dev.jdtech.jellyfin.player.xr.XrPlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
@@ -102,10 +104,30 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
+                    val movie = state.movie
+                    val stereoMode = if (movie != null) {
+                        StereoModeDetector.detect(movie.name, movie.video3DFormat)
+                    } else {
+                        StereoModeDetector.StereoMode.MONO
+                    }
+                    val isXr = StereoModeDetector.isXrDevice(context)
+                    val targetActivity = if (isXr && stereoMode != StereoModeDetector.StereoMode.MONO) {
+                        XrPlayerActivity::class.java
+                    } else {
+                        PlayerActivity::class.java
+                    }
+                    val intent = Intent(context, targetActivity)
                     intent.putExtra("itemId", movieId.toString())
                     intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    if (isXr) {
+                        val stereoModeStr = when (stereoMode) {
+                            StereoModeDetector.StereoMode.SIDE_BY_SIDE -> "sbs"
+                            StereoModeDetector.StereoMode.TOP_BOTTOM -> "top_bottom"
+                            else -> "mono"
+                        }
+                        intent.putExtra("stereoMode", stereoModeStr)
+                    }
                     context.startActivity(intent)
                 }
                 is MovieAction.PlayTrailer -> {

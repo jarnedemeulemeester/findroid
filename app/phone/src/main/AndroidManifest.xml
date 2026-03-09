@@ -10,6 +10,12 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
+    <uses-feature
+        android:name="android.hardware.xr.immersive"
+        android:required="false" />
+
+    <uses-sdk tools:overrideLibrary="androidx.xr.scenecore,androidx.xr.runtime,androidx.xr.compose,androidx.xr.media" />
+
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"

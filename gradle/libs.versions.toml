@@ -10,6 +10,7 @@ androidx-core = "1.17.0"
 androidx-hilt = "1.3.0"
 androidx-lifecycle = "2.10.0"
 androidx-media3 = "1.9.2"
+androidx-xr-scenecore = "1.0.0-alpha04"
 androidx-navigation = "2.9.7"
 androidx-paging = "3.4.1"
 androidx-room = "2.8.4"
@@ -54,6 +55,7 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 androidx-media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "androidx-media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "androidx-media3" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "androidx-media3" }
+androidx-xr-scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "androidx-xr-scenecore" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging" }

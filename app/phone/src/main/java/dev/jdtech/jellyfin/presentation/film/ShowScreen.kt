@@ -41,6 +41,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.player.xr.StereoModeDetector
+import dev.jdtech.jellyfin.player.xr.XrPlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
@@ -84,9 +86,18 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
+                    val isXr = StereoModeDetector.isXrDevice(context)
+                    val targetActivity = if (isXr) {
+                        XrPlayerActivity::class.java
+                    } else {
+                        PlayerActivity::class.java
+                    }
+                    val intent = Intent(context, targetActivity)
                     intent.putExtra("itemId", showId.toString())
                     intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                    if (isXr) {
+                        intent.putExtra("stereoMode", "mono")
+                    }
                     context.startActivity(intent)
                 }
                 is ShowAction.PlayTrailer -> {
