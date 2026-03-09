@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core)
     implementation(projects.player.core)
     implementation(projects.player.local)
     implementation(projects.data)

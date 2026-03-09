@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,13 +45,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.C
 import androidx.media3.common.Player
+import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -58,10 +66,13 @@ import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Vector3
 import androidx.xr.scenecore.SurfaceEntity
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.player.local.domain.getTrackNames
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import java.util.UUID
 import kotlinx.coroutines.delay
 import timber.log.Timber
+import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.player.local.R as LocalR
 
 @AndroidEntryPoint
 class XrPlayerActivity : AppCompatActivity() {
@@ -147,13 +158,11 @@ class XrPlayerActivity : AppCompatActivity() {
                         currentStereoMode = newMode
 
                         if (USE_SURFACE_ENTITY_RENDERING) {
-                            // Recreate SurfaceEntity with new stereo mode and reconnect
                             recreateSurfaceEntity()
                             if (isStereo3d() && videoSurface != null) {
                                 (viewModel.player as? ExoPlayer)?.setVideoSurface(videoSurface)
                             }
                         } else {
-                            // 2D fallback: apply left-eye cropping
                             applyStereoMode()
                             recreateSurfaceEntity()
                         }
@@ -211,31 +220,16 @@ class XrPlayerActivity : AppCompatActivity() {
 
     private fun createSurfaceEntity() {
         val session = xrSession ?: return
-
         val xrStereoMode = mapStereoMode(currentStereoMode)
-
-        // Position the virtual screen 2.0 meters in front of the user
         val pose = Pose(Vector3(0f, 0f, -2.0f))
-
-        // Default 16:9 quad at 2m width
         val shape = SurfaceEntity.Shape.Quad(FloatSize2d(2.0f, 1.125f))
 
         try {
             surfaceEntity = if (xrStereoMode != null) {
-                SurfaceEntity.create(
-                    session = session,
-                    pose = pose,
-                    shape = shape,
-                    stereoMode = xrStereoMode,
-                )
+                SurfaceEntity.create(session = session, pose = pose, shape = shape, stereoMode = xrStereoMode)
             } else {
-                SurfaceEntity.create(
-                    session = session,
-                    pose = pose,
-                    shape = shape,
-                )
+                SurfaceEntity.create(session = session, pose = pose, shape = shape)
             }
-
             if (USE_SURFACE_ENTITY_RENDERING) {
                 videoSurface = surfaceEntity?.getSurface()
             }
@@ -249,13 +243,10 @@ class XrPlayerActivity : AppCompatActivity() {
         if (USE_SURFACE_ENTITY_RENDERING) {
             (viewModel.player as? ExoPlayer)?.clearVideoSurface()
         }
-
         surfaceEntity?.dispose()
         surfaceEntity = null
         videoSurface = null
-
         createSurfaceEntity()
-
         val videoSize = viewModel.player.videoSize
         if (videoSize.width > 0 && videoSize.height > 0) {
             updateSurfaceShape(videoSize)
@@ -264,7 +255,6 @@ class XrPlayerActivity : AppCompatActivity() {
 
     private fun updateSurfaceShape(videoSize: VideoSize) {
         val entity = surfaceEntity ?: return
-
         val displayWidth = when (currentStereoMode) {
             "sbs" -> videoSize.width / 2f
             else -> videoSize.width.toFloat()
@@ -273,11 +263,9 @@ class XrPlayerActivity : AppCompatActivity() {
             "top_bottom" -> videoSize.height / 2f
             else -> videoSize.height.toFloat()
         }
-
         val aspectRatio = displayWidth / displayHeight
-        val quadWidth = 2.0f // meters
+        val quadWidth = 2.0f
         val quadHeight = quadWidth / aspectRatio
-
         try {
             entity.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
             Timber.d("Updated XR surface shape: ${displayWidth}x${displayHeight}, aspect=$aspectRatio, quad=${quadWidth}x${quadHeight}m")
@@ -332,12 +320,11 @@ class XrPlayerActivity : AppCompatActivity() {
     }
 }
 
+// region Compose UI
+
 @Composable
 private fun XrPlayerTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = darkColorScheme(),
-        content = content,
-    )
+    MaterialTheme(colorScheme = darkColorScheme(), content = content)
 }
 
 @Composable
@@ -355,6 +342,11 @@ private fun XrPlayerScreen(
     var duration by remember { mutableLongStateOf(0L) }
     var isPlaying by remember { mutableStateOf(false) }
     var currentStereoMode by remember { mutableStateOf(initialStereoMode) }
+
+    // Dialog state
+    var showAudioDialog by remember { mutableStateOf(false) }
+    var showSubtitleDialog by remember { mutableStateOf(false) }
+    var showSpeedDialog by remember { mutableStateOf(false) }
 
     // Poll player state
     LaunchedEffect(Unit) {
@@ -389,9 +381,6 @@ private fun XrPlayerScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    // When using SurfaceEntity rendering for 3D, video renders in the XR scene,
-    // not in the 2D window. Show PlayerView only when NOT using SurfaceEntity
-    // rendering, or when in mono mode.
     val showPlayerView = !useSurfaceEntityRendering || currentStereoMode == "mono"
 
     Box(
@@ -423,6 +412,7 @@ private fun XrPlayerScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                // Left: back + title
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_back),
@@ -439,23 +429,51 @@ private fun XrPlayerScreen(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
+
+                // Right: track selection buttons
                 if (currentStereoMode != "mono") {
-                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = stereoModeDisplayName(currentStereoMode),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color(0xFF4FC3F7),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                IconButton(onClick = { showAudioDialog = true }) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_speaker),
+                        contentDescription = stringResource(LocalR.string.select_audio_track),
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+                IconButton(onClick = { showSubtitleDialog = true }) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_closed_caption),
+                        contentDescription = stringResource(LocalR.string.select_subtitle_track),
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+                IconButton(onClick = { showSpeedDialog = true }) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_gauge),
+                        contentDescription = stringResource(LocalR.string.select_playback_speed),
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Status text
             if (uiState.fileLoaded) {
                 Text(
                     text = when {
                         currentStereoMode != "mono" && useSurfaceEntityRendering -> "Spatial 3D Video (${stereoModeDisplayName(currentStereoMode)})"
-                        currentStereoMode != "mono" -> "3D Video (${stereoModeDisplayName(currentStereoMode)}) - 2D fallback"
+                        currentStereoMode != "mono" -> "3D Video (${stereoModeDisplayName(currentStereoMode)})"
                         else -> "Video Player"
                     },
                     style = MaterialTheme.typography.bodySmall,
@@ -469,39 +487,23 @@ private fun XrPlayerScreen(
                 val progress = currentPosition.toFloat() / duration.toFloat()
                 var sliderPosition by remember { mutableFloatStateOf(progress) }
                 var isSeeking by remember { mutableStateOf(false) }
-
-                if (!isSeeking) {
-                    sliderPosition = progress
-                }
+                if (!isSeeking) sliderPosition = progress
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
-                        text = formatTime(currentPosition),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.7f),
-                    )
+                    Text(formatTime(currentPosition), style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.7f))
                     Slider(
                         value = sliderPosition,
-                        onValueChange = { value ->
-                            isSeeking = true
-                            sliderPosition = value
-                        },
+                        onValueChange = { isSeeking = true; sliderPosition = it },
                         onValueChangeFinished = {
                             viewModel.player.seekTo((sliderPosition * duration).toLong())
                             isSeeking = false
                         },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 8.dp),
+                        modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                     )
-                    Text(
-                        text = formatTime(duration),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.7f),
-                    )
+                    Text(formatTime(duration), style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.7f))
                 }
             } else {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -509,12 +511,26 @@ private fun XrPlayerScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Controls row
+            // Playback controls row
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                // Previous track
+                if (viewModel.player.hasPreviousMediaItem()) {
+                    IconButton(onClick = { viewModel.player.seekToPreviousMediaItem() }) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_skip_back),
+                            contentDescription = stringResource(LocalR.string.player_controls_skip_back),
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp),
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                // Seek back
                 IconButton(onClick = { viewModel.player.seekBack() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_rewind),
@@ -526,16 +542,13 @@ private fun XrPlayerScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // Play/Pause
                 FilledIconButton(
-                    onClick = {
-                        if (isPlaying) viewModel.player.pause() else viewModel.player.play()
-                    },
+                    onClick = { if (isPlaying) viewModel.player.pause() else viewModel.player.play() },
                     modifier = Modifier.size(56.dp),
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (isPlaying) R.drawable.ic_xr_pause else R.drawable.ic_xr_play
-                        ),
+                        painter = painterResource(if (isPlaying) R.drawable.ic_xr_pause else R.drawable.ic_xr_play),
                         contentDescription = if (isPlaying) "Pause" else "Play",
                         modifier = Modifier.size(32.dp),
                     )
@@ -543,6 +556,7 @@ private fun XrPlayerScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // Seek forward
                 IconButton(onClick = { viewModel.player.seekForward() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_forward),
@@ -552,8 +566,22 @@ private fun XrPlayerScreen(
                     )
                 }
 
+                // Next track
+                if (viewModel.player.hasNextMediaItem()) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(onClick = { viewModel.player.seekToNextMediaItem() }) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_skip_forward),
+                            contentDescription = stringResource(LocalR.string.player_controls_skip_forward),
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp),
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.width(32.dp))
 
+                // 3D mode toggle
                 TextButton(
                     onClick = {
                         val modes = listOf("mono", "sbs", "top_bottom")
@@ -578,7 +606,145 @@ private fun XrPlayerScreen(
             }
         }
     }
+
+    // Dialogs
+    if (showAudioDialog) {
+        TrackSelectionDialog(
+            title = stringResource(LocalR.string.select_audio_track),
+            player = viewModel.player,
+            trackType = C.TRACK_TYPE_AUDIO,
+            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_AUDIO, index) },
+            onDismiss = { showAudioDialog = false },
+        )
+    }
+
+    if (showSubtitleDialog) {
+        TrackSelectionDialog(
+            title = stringResource(LocalR.string.select_subtitle_track),
+            player = viewModel.player,
+            trackType = C.TRACK_TYPE_TEXT,
+            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_TEXT, index) },
+            onDismiss = { showSubtitleDialog = false },
+        )
+    }
+
+    if (showSpeedDialog) {
+        SpeedSelectionDialog(
+            currentSpeed = viewModel.playbackSpeed,
+            onSpeedSelected = { speed -> viewModel.selectSpeed(speed) },
+            onDismiss = { showSpeedDialog = false },
+        )
+    }
 }
+
+// endregion
+
+// region Dialogs
+
+@Composable
+private fun TrackSelectionDialog(
+    title: String,
+    player: Player,
+    trackType: @C.TrackType Int,
+    onTrackSelected: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val trackGroups = player.currentTracks.groups.filter { it.type == trackType && it.isSupported }
+    val trackNames = trackGroups.getTrackNames()
+    val selectedIndex = trackGroups.indexOfFirst { it.isSelected }
+    val noneLabel = stringResource(LocalR.string.none)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                // "None" option (index -1)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onTrackSelected(-1); onDismiss() }
+                        .padding(vertical = 4.dp),
+                ) {
+                    RadioButton(
+                        selected = selectedIndex == -1,
+                        onClick = { onTrackSelected(-1); onDismiss() },
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(noneLabel)
+                }
+
+                // Track options
+                trackNames.forEachIndexed { index, name ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onTrackSelected(index); onDismiss() }
+                            .padding(vertical = 4.dp),
+                    ) {
+                        RadioButton(
+                            selected = index == selectedIndex,
+                            onClick = { onTrackSelected(index); onDismiss() },
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        },
+    )
+}
+
+@Composable
+private fun SpeedSelectionDialog(
+    currentSpeed: Float,
+    onSpeedSelected: (Float) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
+    val speedLabels = listOf("0.5x", "0.75x", "1x", "1.25x", "1.5x", "1.75x", "2x")
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(LocalR.string.select_playback_speed)) },
+        text = {
+            Column {
+                speeds.forEachIndexed { index, speed ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSpeedSelected(speed); onDismiss() }
+                            .padding(vertical = 4.dp),
+                    ) {
+                        RadioButton(
+                            selected = currentSpeed == speed,
+                            onClick = { onSpeedSelected(speed); onDismiss() },
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(speedLabels[index])
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        },
+    )
+}
+
+// endregion
+
+// region Utilities
 
 private fun stereoModeDisplayName(mode: String): String {
     return when (mode) {
@@ -599,3 +765,5 @@ private fun formatTime(ms: Long): String {
         String.format("%d:%02d", minutes, seconds)
     }
 }
+
+// endregion
