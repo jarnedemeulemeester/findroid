@@ -213,20 +213,20 @@ fun SpatialPlayerScreen(
     }
 
     Subspace {
-        // Subtitle Panel: Positioned just in front of the video's bottom section
-        // Increased height and width to support larger, more readable text.
+        // Subtitle Panel: Positioned OVER the bottom area of the video entity.
+        // Enlarged significantly for comfortable IMAX-style reading.
         SpatialPanel(
             modifier = SubspaceModifier
-                .width(2000.dp)
-                .height(400.dp)
-                .offset(y = (-(videoHeight / 2 * 1000) + 150).dp, z = (-3400).dp),
+                .width(2800.dp)
+                .height(600.dp)
+                .offset(y = (-800).dp, z = (-3480).dp), // Glued just in front of the screen
         ) {
             AndroidView(
                 factory = { context ->
                     SubtitleView(context).apply {
                         setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                        // Use a large fixed text size for readability at 3.4m depth
-                        setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 64f)
+                        // Use a massive text size (120sp) to ensure clarity at 3.5m
+                        setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 120f)
                         setUserDefaultStyle()
                     }
                 },
