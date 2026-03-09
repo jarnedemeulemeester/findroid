@@ -51,9 +51,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.media3.common.C
 import androidx.media3.common.Player
+import androidx.media3.common.text.Cue
+import androidx.media3.common.text.CueGroup
 import androidx.xr.compose.spatial.Subspace
 import androidx.xr.compose.subspace.MovePolicy
 import androidx.xr.compose.subspace.ResizePolicy
@@ -75,6 +78,7 @@ import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import kotlinx.coroutines.delay
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.local.R as LocalR
+import androidx.media3.ui.SubtitleView
 
 /**
  * SpatialPlayerScreen implements a fully immersive XR playback experience.
@@ -94,6 +98,8 @@ fun SpatialPlayerScreen(
     var duration by remember { mutableLongStateOf(0L) }
     var isPlaying by remember { mutableStateOf(false) }
     var currentStereoMode by remember { mutableStateOf(initialStereoMode) }
+    var videoHeight by remember { mutableFloatStateOf(2.8125f) }
+    var currentCues by remember { mutableStateOf<List<Cue>>(emptyList()) }
 
     // Controls visibility with auto-hide logic
     var controlsVisible by remember { mutableStateOf(true) }
@@ -124,6 +130,19 @@ fun SpatialPlayerScreen(
             }
         } catch (e: Exception) {
             // Passthrough control might not be supported on all devices
+        }
+    }
+
+    // Subtitle listener
+    DisposableEffect(viewModel.player) {
+        val listener = object : Player.Listener {
+            override fun onCues(cueGroup: CueGroup) {
+                currentCues = cueGroup.cues
+            }
+        }
+        viewModel.player.addListener(listener)
+        onDispose {
+            viewModel.player.removeListener(listener)
         }
     }
 
@@ -187,11 +206,34 @@ fun SpatialPlayerScreen(
 
             val quadWidth = 5.0f 
             val quadHeight = quadWidth / aspectRatio
+            videoHeight = quadHeight
             videoEntity.value?.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
         }
     }
 
     Subspace {
+        // Subtitle Panel: Positioned just in front of the video's bottom section
+        SpatialPanel(
+            modifier = SubspaceModifier
+                .width(1200.dp)
+                .height(250.dp)
+                .offset(y = (-(videoHeight / 2 * 1000) + 150).dp, z = (-3450).dp),
+        ) {
+            AndroidView(
+                factory = { context ->
+                    SubtitleView(context).apply {
+                        setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                        setUserDefaultStyle()
+                        setUserDefaultTextSize()
+                    }
+                },
+                update = { view ->
+                    view.setCues(currentCues)
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
         // The Control Panel: Enlarged further and brought slightly closer for accessibility.
         SpatialPanel(
             modifier = SubspaceModifier
