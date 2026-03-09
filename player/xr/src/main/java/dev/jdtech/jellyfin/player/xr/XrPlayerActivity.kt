@@ -68,6 +68,7 @@ import androidx.xr.runtime.SessionCreateSuccess
 import androidx.xr.runtime.math.FloatSize2d
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Vector3
+import androidx.xr.scenecore.Spatializer
 import androidx.xr.scenecore.SurfaceEntity
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.player.local.domain.getTrackNames
@@ -104,6 +105,7 @@ class XrPlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModels()
 
     private var xrSession: Session? = null
+    private var spatializer: Spatializer? = null
     private var surfaceEntity: SurfaceEntity? = null
     private var mediaSession: MediaSession? = null
     private var videoSurface: AndroidSurface? = null
@@ -124,6 +126,7 @@ class XrPlayerActivity : AppCompatActivity() {
             val result = Session.create(this)
             if (result is SessionCreateSuccess) {
                 xrSession = result.session
+                spatializer = Spatializer.create(xrSession!!)
                 createSurfaceEntity()
             } else {
                 Timber.w("XR session creation failed: $result, using 2D playback")
@@ -140,6 +143,12 @@ class XrPlayerActivity : AppCompatActivity() {
             if (videoSurface != null) {
                 xrPlayer.setVideoSurface(videoSurface)
                 Timber.d("Connected XR player to SurfaceEntity surface for 3D playback")
+            }
+            if (spatializer != null) {
+                spatializer!!.updateSourcePose(surfaceEntity!!, Pose.Identity)
+                // Note: The actual spatialization link happens via the Spatializer's
+                // internal connection to the AudioTrack when using spatialized AudioAttributes.
+                Timber.d("Initialized spatial audio for XR player")
             }
         }
 
@@ -296,6 +305,7 @@ class XrPlayerActivity : AppCompatActivity() {
         viewModel.player.playWhenReady = viewModel.playWhenReady
         if (USE_SURFACE_ENTITY_RENDERING && isStereo3d() && videoSurface != null) {
             (viewModel.player as? ExoPlayer)?.setVideoSurface(videoSurface)
+            surfaceEntity?.let { spatializer?.updateSourcePose(it, Pose.Identity) }
         }
     }
 
@@ -317,6 +327,8 @@ class XrPlayerActivity : AppCompatActivity() {
         if (USE_SURFACE_ENTITY_RENDERING) {
             (viewModel.player as? ExoPlayer)?.clearVideoSurface()
         }
+        spatializer?.dispose()
+        spatializer = null
         surfaceEntity?.dispose()
         surfaceEntity = null
         videoSurface = null

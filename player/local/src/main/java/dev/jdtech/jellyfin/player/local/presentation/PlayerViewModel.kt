@@ -119,6 +119,7 @@ constructor(
             AudioAttributes.Builder()
                 .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                 .setUsage(C.USAGE_MEDIA)
+                .setSpatializationBehavior(C.SPATIALIZATION_BEHAVIOR_AUTO)
                 .build()
 
         trackSelector.setParameters(
