@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.player.xr
 
+import android.util.TypedValue
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -213,18 +214,20 @@ fun SpatialPlayerScreen(
 
     Subspace {
         // Subtitle Panel: Positioned just in front of the video's bottom section
+        // Increased height and width to support larger, more readable text.
         SpatialPanel(
             modifier = SubspaceModifier
-                .width(1200.dp)
-                .height(250.dp)
-                .offset(y = (-(videoHeight / 2 * 1000) + 150).dp, z = (-3450).dp),
+                .width(2000.dp)
+                .height(400.dp)
+                .offset(y = (-(videoHeight / 2 * 1000) + 150).dp, z = (-3400).dp),
         ) {
             AndroidView(
                 factory = { context ->
                     SubtitleView(context).apply {
                         setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                        // Use a large fixed text size for readability at 3.4m depth
+                        setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 64f)
                         setUserDefaultStyle()
-                        setUserDefaultTextSize()
                     }
                 },
                 update = { view ->
