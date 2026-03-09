@@ -21,11 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -53,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.xr.compose.spatial.Subspace
@@ -68,10 +67,11 @@ import androidx.xr.runtime.math.FloatSize2d
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Quaternion
 import androidx.xr.runtime.math.Vector3
+import androidx.xr.scenecore.SpatialEnvironment
 import androidx.xr.scenecore.SurfaceEntity
+import androidx.xr.scenecore.scene
 import dev.jdtech.jellyfin.player.local.domain.getTrackNames
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
-import java.util.Locale
 import kotlinx.coroutines.delay
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.local.R as LocalR
@@ -108,6 +108,22 @@ fun SpatialPlayerScreen(
         if (controlsVisible && isPlaying && !isLocked) {
             delay(10_000L)
             controlsVisible = false
+        }
+    }
+
+    // Immersive Environment Logic: Blackout when playing, passthrough when paused.
+    LaunchedEffect(isPlaying) {
+        val environment = session.scene.spatialEnvironment
+        try {
+            if (isPlaying) {
+                // Black out the world for maximum focus during playback
+                environment.preferredPassthroughOpacity = 0.0f
+            } else {
+                // Re-enable passthrough when paused to see the real world
+                environment.preferredPassthroughOpacity = 1.0f
+            }
+        } catch (e: Exception) {
+            // Passthrough control might not be supported on all devices
         }
     }
 
@@ -148,14 +164,10 @@ fun SpatialPlayerScreen(
         onDispose {
             videoEntity.value?.dispose()
             videoEntity.value = null
-        }
-    }
-
-    // Update stereo mode when changed
-    LaunchedEffect(currentStereoMode) {
-        videoEntity.value?.let { entity ->
-            // In a real implementation, we might need to recreate the entity
-            // but for now let's focus on UI correctness.
+            // Reset passthrough when leaving the player
+            try {
+                session.scene.spatialEnvironment.preferredPassthroughOpacity = 1.0f
+            } catch (e: Exception) {}
         }
     }
 
@@ -167,80 +179,77 @@ fun SpatialPlayerScreen(
             val height = videoSize.height.toFloat()
             var aspectRatio = width / height
             
-            // Correct aspect ratio for stereo modes
             if (currentStereoMode == "sbs" && aspectRatio > 3.0f) {
                 aspectRatio /= 2f
             } else if (currentStereoMode == "top_bottom" && height > width) {
                 aspectRatio *= 2f
             }
 
-            val quadWidth = 5.0f // Constant immersive width
+            val quadWidth = 5.0f 
             val quadHeight = quadWidth / aspectRatio
             videoEntity.value?.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
         }
     }
 
     Subspace {
-        // The Control Panel: A separate interactive panel floating below the video
-        // Enlarged and brought closer for better legibility and reachability.
+        // The Control Panel: Enlarged further and brought slightly closer for accessibility.
         SpatialPanel(
             modifier = SubspaceModifier
-                .width(1280.dp)
-                .height(450.dp)
+                .width(1400.dp)
+                .height(600.dp)
                 .offset(y = (-1100).dp, z = (-2000).dp),
             dragPolicy = MovePolicy(),
             resizePolicy = ResizePolicy()
         ) {
-            AnimatedVisibility(
-                visible = controlsVisible,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                ControlPanelUI(
-                    viewModel = viewModel,
-                    uiState = uiState,
-                    isPlaying = isPlaying,
-                    currentPosition = currentPosition,
-                    duration = duration,
-                    currentStereoMode = currentStereoMode,
-                    isLocked = isLocked,
-                    onStereoModeChange = { 
-                        currentStereoMode = it
-                    },
-                    onLockToggle = { isLocked = !isLocked },
-                    onBackClick = onBackClick,
-                    onInteraction = { resetAutoHide() }
-                )
-            }
-            
-            // Interaction surface to summon controls when hidden
-            if (!controlsVisible) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            controlsVisible = true
-                            resetAutoHide()
-                        }
-                )
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedVisibility(
+                    visible = controlsVisible,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    ControlPanelUI(
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        isPlaying = isPlaying,
+                        currentPosition = currentPosition,
+                        duration = duration,
+                        currentStereoMode = currentStereoMode,
+                        isLocked = isLocked,
+                        onStereoModeChange = { currentStereoMode = it },
+                        onLockToggle = { isLocked = !isLocked },
+                        onBackClick = onBackClick,
+                        onInteraction = { resetAutoHide() }
+                    )
+                }
+                
+                if (!controlsVisible) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                controlsVisible = true
+                                resetAutoHide()
+                            }
+                    )
+                }
             }
         }
 
-        // Contextual Skip Button: Enlarged for easier spatial targeting.
+        // Contextual Skip Button: Enlarged for easier targeting.
         uiState.currentSegment?.let { segment ->
             SpatialPanel(
                 modifier = SubspaceModifier
-                    .width(320.dp)
-                    .height(100.dp)
-                    .offset(x = 1600.dp, y = (-700).dp, z = (-1900).dp),
+                    .width(360.dp)
+                    .height(120.dp)
+                    .offset(x = 1800.dp, y = (-700).dp, z = (-1900).dp),
                 dragPolicy = MovePolicy()
             ) {
                 Surface(
                     onClick = { viewModel.skipSegment(segment); resetAutoHide() },
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(32.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
                     tonalElevation = 8.dp
                 ) {
@@ -252,12 +261,12 @@ fun SpatialPlayerScreen(
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_skip_forward), 
                             contentDescription = null,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(48.dp)
                         )
-                        Spacer(Modifier.width(12.dp))
+                        Spacer(Modifier.width(16.dp))
                         Text(
                             text = stringResource(uiState.currentSkipButtonStringRes),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -281,169 +290,263 @@ private fun ControlPanelUI(
     onBackClick: () -> Unit,
     onInteraction: () -> Unit,
 ) {
-    var showAudioDialog by remember { mutableStateOf(false) }
-    var showSubtitleDialog by remember { mutableStateOf(false) }
-    var showSpeedDialog by remember { mutableStateOf(false) }
+    var activeDialog by remember { mutableStateOf<String?>(null) }
 
     Surface(
-        shape = RoundedCornerShape(32.dp),
-        color = Color.Black.copy(alpha = 0.85f),
+        shape = RoundedCornerShape(48.dp),
+        color = Color.Black.copy(alpha = 0.9f),
         tonalElevation = 4.dp,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(modifier = Modifier.padding(32.dp)) {
-            // Top Row: Title and Secondary Actions
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(56.dp)) {
-                    Icon(
-                        painter = painterResource(CoreR.drawable.ic_arrow_left), 
-                        contentDescription = "Back", 
-                        tint = Color.White,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-                Spacer(Modifier.width(16.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = uiState.currentItemTitle,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = if (isLocked) "Controls Locked" else "Spatial Playback",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.6f)
-                    )
-                }
-
-                if (!isLocked) {
-                    IconButton(onClick = { showAudioDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
-                        Icon(painterResource(CoreR.drawable.ic_speaker), null, tint = Color.White, modifier = Modifier.size(32.dp))
-                    }
-                    IconButton(onClick = { showSubtitleDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
-                        Icon(painterResource(CoreR.drawable.ic_closed_caption), null, tint = Color.White, modifier = Modifier.size(32.dp))
-                    }
-                    IconButton(onClick = { showSpeedDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
-                        Icon(painterResource(CoreR.drawable.ic_gauge), null, tint = Color.White, modifier = Modifier.size(32.dp))
-                    }
-                }
-                
-                IconButton(onClick = { onLockToggle(); onInteraction() }, modifier = Modifier.size(56.dp)) {
-                    Icon(
-                        painter = painterResource(if (isLocked) CoreR.drawable.ic_lock else CoreR.drawable.ic_unlock),
-                        contentDescription = "Lock Controls",
-                        tint = if (isLocked) Color.Red else Color.White,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.weight(1f))
-
-            // Progress Section
-            if (!isLocked) {
-                ProgressSection(
-                    viewModel = viewModel,
-                    currentPosition = currentPosition,
-                    duration = duration,
-                    onInteraction = onInteraction
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            // Main Playback Controls
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (!isLocked) {
-                    IconButton(onClick = { viewModel.player.seekBack(); onInteraction() }, modifier = Modifier.size(64.dp)) {
-                        Icon(painterResource(CoreR.drawable.ic_rewind), null, tint = Color.White, modifier = Modifier.size(48.dp))
-                    }
-                    Spacer(Modifier.width(32.dp))
-                }
-
-                FilledIconButton(
-                    onClick = { 
-                        if (isPlaying) viewModel.player.pause() else viewModel.player.play()
-                        onInteraction()
-                    },
-                    modifier = Modifier.size(96.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.padding(40.dp)) {
+                // Top Row: Title and Secondary Actions (Enlarged)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        painter = painterResource(if (isPlaying) CoreR.drawable.ic_pause else CoreR.drawable.ic_play),
-                        contentDescription = null,
-                        modifier = Modifier.size(56.dp)
+                    IconButton(onClick = onBackClick, modifier = Modifier.size(80.dp)) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_arrow_left), 
+                            contentDescription = "Back", 
+                            tint = Color.White,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(24.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = uiState.currentItemTitle,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = if (isLocked) "Controls Locked" else "Spatial Playback",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White.copy(alpha = 0.6f)
+                        )
+                    }
+
+                    if (!isLocked) {
+                        IconButton(onClick = { activeDialog = "audio"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_speaker), null, tint = Color.White, modifier = Modifier.size(48.dp))
+                        }
+                        IconButton(onClick = { activeDialog = "subtitle"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_closed_caption), null, tint = Color.White, modifier = Modifier.size(48.dp))
+                        }
+                        IconButton(onClick = { activeDialog = "speed"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_gauge), null, tint = Color.White, modifier = Modifier.size(48.dp))
+                        }
+                    }
+                    
+                    IconButton(onClick = { onLockToggle(); onInteraction() }, modifier = Modifier.size(80.dp)) {
+                        Icon(
+                            painter = painterResource(if (isLocked) CoreR.drawable.ic_lock else CoreR.drawable.ic_unlock),
+                            contentDescription = "Lock Controls",
+                            tint = if (isLocked) Color.Red else Color.White,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.weight(1f))
+
+                if (!isLocked) {
+                    ProgressSection(
+                        viewModel = viewModel,
+                        currentPosition = currentPosition,
+                        duration = duration,
+                        onInteraction = onInteraction
                     )
                 }
 
-                if (!isLocked) {
-                    Spacer(Modifier.width(32.dp))
-                    IconButton(onClick = { viewModel.player.seekForward(); onInteraction() }, modifier = Modifier.size(64.dp)) {
-                        Icon(painterResource(CoreR.drawable.ic_fast_forward), null, tint = Color.White, modifier = Modifier.size(48.dp))
+                Spacer(Modifier.height(32.dp))
+
+                // Main Playback Controls (Enlarged)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!isLocked) {
+                        IconButton(onClick = { viewModel.player.seekBack(); onInteraction() }, modifier = Modifier.size(96.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_rewind), null, tint = Color.White, modifier = Modifier.size(64.dp))
+                        }
+                        Spacer(Modifier.width(48.dp))
                     }
-                    
-                    Spacer(Modifier.width(64.dp))
-                    
-                    TextButton(
-                        onClick = {
-                            val modes = listOf("mono", "sbs", "top_bottom")
-                            val next = modes[(modes.indexOf(currentStereoMode) + 1) % modes.size]
-                            onStereoModeChange(next)
+
+                    FilledIconButton(
+                        onClick = { 
+                            if (isPlaying) viewModel.player.pause() else viewModel.player.play()
                             onInteraction()
                         },
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.size(120.dp)
                     ) {
                         Icon(
-                            painterResource(CoreR.drawable.ic_3d), 
-                            null, 
-                            tint = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White,
-                            modifier = Modifier.size(32.dp)
+                            painter = painterResource(if (isPlaying) CoreR.drawable.ic_pause else CoreR.drawable.ic_play),
+                            contentDescription = null,
+                            modifier = Modifier.size(72.dp)
                         )
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            stereoModeDisplayName(currentStereoMode), 
-                            style = MaterialTheme.typography.titleMedium,
-                            color = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White
+                    }
+
+                    if (!isLocked) {
+                        Spacer(Modifier.width(48.dp))
+                        IconButton(onClick = { viewModel.player.seekForward(); onInteraction() }, modifier = Modifier.size(96.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_fast_forward), null, tint = Color.White, modifier = Modifier.size(64.dp))
+                        }
+                        
+                        Spacer(Modifier.width(80.dp))
+                        
+                        TextButton(
+                            onClick = {
+                                val modes = listOf("mono", "sbs", "top_bottom")
+                                val next = modes[(modes.indexOf(currentStereoMode) + 1) % modes.size]
+                                onStereoModeChange(next)
+                                onInteraction()
+                            },
+                            modifier = Modifier.height(80.dp)
+                        ) {
+                            Icon(
+                                painterResource(CoreR.drawable.ic_3d), 
+                                null, 
+                                tint = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White,
+                                modifier = Modifier.size(48.dp)
+                            )
+                            Spacer(Modifier.width(16.dp))
+                            Text(
+                                stereoModeDisplayName(currentStereoMode), 
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White
+                            )
+                        }
+                    }
+                }
+            }
+
+            // In-Panel Dialogs to ensure they are clickable in the spatial context.
+            if (activeDialog != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.8f))
+                        .clickable { activeDialog = null }
+                        .zIndex(10f)
+                ) {
+                    when (activeDialog) {
+                        "audio" -> SpatialDialogContent(
+                            title = stringResource(LocalR.string.select_audio_track),
+                            player = viewModel.player,
+                            trackType = C.TRACK_TYPE_AUDIO,
+                            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_AUDIO, index) },
+                            onDismiss = { activeDialog = null }
+                        )
+                        "subtitle" -> SpatialDialogContent(
+                            title = stringResource(LocalR.string.select_subtitle_track),
+                            player = viewModel.player,
+                            trackType = C.TRACK_TYPE_TEXT,
+                            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_TEXT, index) },
+                            onDismiss = { activeDialog = null }
+                        )
+                        "speed" -> SpatialSpeedDialogContent(
+                            currentSpeed = viewModel.playbackSpeed,
+                            onSpeedSelected = { speed -> viewModel.selectSpeed(speed) },
+                            onDismiss = { activeDialog = null }
                         )
                     }
                 }
             }
         }
     }
+}
 
-    // Dialogs
-    if (showAudioDialog) {
-        TrackSelectionDialog(
-            title = stringResource(LocalR.string.select_audio_track),
-            player = viewModel.player,
-            trackType = C.TRACK_TYPE_AUDIO,
-            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_AUDIO, index) },
-            onDismiss = { showAudioDialog = false }
-        )
+@Composable
+private fun SpatialDialogContent(
+    title: String,
+    player: Player,
+    trackType: @C.TrackType Int,
+    onTrackSelected: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val trackGroups = player.currentTracks.groups.filter { it.type == trackType && it.isSupported }
+    val trackNames = trackGroups.getTrackNames()
+    val selectedIndex = trackGroups.indexOfFirst { it.isSelected }
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Surface(
+            modifier = Modifier.width(600.dp).height(450.dp).clickable(enabled = false) {},
+            shape = RoundedCornerShape(32.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            tonalElevation = 12.dp
+        ) {
+            Column(modifier = Modifier.padding(32.dp)) {
+                Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(24.dp))
+                Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(-1); onDismiss() }.padding(vertical = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected = selectedIndex == -1, onClick = { onTrackSelected(-1); onDismiss() }, modifier = Modifier.size(48.dp))
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(LocalR.string.none), style = MaterialTheme.typography.titleLarge)
+                    }
+                    trackNames.forEachIndexed { index, name ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(index); onDismiss() }.padding(vertical = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = index == selectedIndex, onClick = { onTrackSelected(index); onDismiss() }, modifier = Modifier.size(48.dp))
+                            Spacer(Modifier.width(16.dp))
+                            Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleLarge)
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                    Text("CLOSE", style = MaterialTheme.typography.labelLarge)
+                }
+            }
+        }
     }
-    if (showSubtitleDialog) {
-        TrackSelectionDialog(
-            title = stringResource(LocalR.string.select_subtitle_track),
-            player = viewModel.player,
-            trackType = C.TRACK_TYPE_TEXT,
-            onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_TEXT, index) },
-            onDismiss = { showSubtitleDialog = false }
-        )
-    }
-    if (showSpeedDialog) {
-        SpeedSelectionDialog(
-            currentSpeed = viewModel.playbackSpeed,
-            onSpeedSelected = { speed -> viewModel.selectSpeed(speed) },
-            onDismiss = { showSpeedDialog = false }
-        )
+}
+
+@Composable
+private fun SpatialSpeedDialogContent(
+    currentSpeed: Float,
+    onSpeedSelected: (Float) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Surface(
+            modifier = Modifier.width(500.dp).height(450.dp).clickable(enabled = false) {},
+            shape = RoundedCornerShape(32.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            tonalElevation = 12.dp
+        ) {
+            Column(modifier = Modifier.padding(32.dp)) {
+                Text(stringResource(LocalR.string.select_playback_speed), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(24.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    speeds.forEach { speed ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clickable { onSpeedSelected(speed); onDismiss() }.padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = currentSpeed == speed, onClick = { onSpeedSelected(speed); onDismiss() }, modifier = Modifier.size(48.dp))
+                            Spacer(Modifier.width(16.dp))
+                            Text("${speed}x", style = MaterialTheme.typography.titleLarge)
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                    Text("CLOSE", style = MaterialTheme.typography.labelLarge)
+                }
+            }
+        }
     }
 }
 
@@ -462,32 +565,26 @@ private fun ProgressSection(
     if (!isDragging) sliderValue = progress
 
     Column {
-        // Trickplay Preview Thumbnail: Enlarged for spatial depth
         if (isDragging && uiState.currentTrickplay != null) {
             val trickplay = uiState.currentTrickplay!!
             val totalThumbnails = trickplay.images.size
             val index = (sliderValue * (totalThumbnails - 1)).toInt().coerceIn(0, totalThumbnails - 1)
             
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
+                modifier = Modifier.fillMaxWidth().height(220.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     bitmap = trickplay.images[index].asImageBitmap(),
                     contentDescription = null,
-                    modifier = Modifier
-                        .height(160.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.DarkGray),
+                    modifier = Modifier.height(200.dp).clip(RoundedCornerShape(16.dp)).background(Color.DarkGray),
                     contentScale = ContentScale.Fit
                 )
             }
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(formatTime(currentPosition), style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+            Text(formatTime(currentPosition), style = MaterialTheme.typography.titleLarge, color = Color.White.copy(alpha = 0.8f))
             Slider(
                 value = sliderValue,
                 onValueChange = { 
@@ -500,81 +597,11 @@ private fun ProgressSection(
                     isDragging = false
                     onInteraction()
                 },
-                modifier = Modifier.weight(1f).padding(horizontal = 16.dp)
+                modifier = Modifier.weight(1f).padding(horizontal = 24.dp)
             )
-            Text(formatTime(duration), style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+            Text(formatTime(duration), style = MaterialTheme.typography.titleLarge, color = Color.White.copy(alpha = 0.8f))
         }
     }
-}
-
-// Reuse Dialogs and Utils from XrPlayerActivity with minor adjustments if needed
-@Composable
-private fun TrackSelectionDialog(
-    title: String,
-    player: Player,
-    trackType: @C.TrackType Int,
-    onTrackSelected: (Int) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val trackGroups = player.currentTracks.groups.filter { it.type == trackType && it.isSupported }
-    val trackNames = trackGroups.getTrackNames()
-    val selectedIndex = trackGroups.indexOfFirst { it.isSelected }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
-        text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(-1); onDismiss() }.padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(selected = selectedIndex == -1, onClick = { onTrackSelected(-1); onDismiss() })
-                    Spacer(Modifier.width(12.dp))
-                    Text(stringResource(LocalR.string.none), style = MaterialTheme.typography.bodyLarge)
-                }
-                trackNames.forEachIndexed { index, name ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(index); onDismiss() }.padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = index == selectedIndex, onClick = { onTrackSelected(index); onDismiss() })
-                        Spacer(Modifier.width(12.dp))
-                        Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close", style = MaterialTheme.typography.labelLarge) } }
-    )
-}
-
-@Composable
-private fun SpeedSelectionDialog(
-    currentSpeed: Float,
-    onSpeedSelected: (Float) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(LocalR.string.select_playback_speed), style = MaterialTheme.typography.headlineSmall) },
-        text = {
-            Column {
-                speeds.forEach { speed ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().clickable { onSpeedSelected(speed); onDismiss() }.padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = currentSpeed == speed, onClick = { onSpeedSelected(speed); onDismiss() })
-                        Spacer(Modifier.width(12.dp))
-                        Text("${speed}x", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close", style = MaterialTheme.typography.labelLarge) } }
-    )
 }
 
 private fun mapStereoMode(mode: String): SurfaceEntity.StereoMode? {
