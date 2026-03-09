@@ -182,11 +182,12 @@ fun SpatialPlayerScreen(
 
     Subspace {
         // The Control Panel: A separate interactive panel floating below the video
+        // Enlarged and brought closer for better legibility and reachability.
         SpatialPanel(
             modifier = SubspaceModifier
-                .width(1000.dp)
-                .height(300.dp)
-                .offset(y = (-1200).dp, z = (-2500).dp),
+                .width(1280.dp)
+                .height(450.dp)
+                .offset(y = (-1100).dp, z = (-2000).dp),
             dragPolicy = MovePolicy(),
             resizePolicy = ResizePolicy()
         ) {
@@ -228,31 +229,35 @@ fun SpatialPlayerScreen(
             }
         }
 
-        // Contextual Skip Button
+        // Contextual Skip Button: Enlarged for easier spatial targeting.
         uiState.currentSegment?.let { segment ->
             SpatialPanel(
                 modifier = SubspaceModifier
-                    .width(240.dp)
-                    .height(80.dp)
-                    .offset(x = 1500.dp, y = (-800).dp, z = (-2400).dp),
+                    .width(320.dp)
+                    .height(100.dp)
+                    .offset(x = 1600.dp, y = (-700).dp, z = (-1900).dp),
                 dragPolicy = MovePolicy()
             ) {
                 Surface(
                     onClick = { viewModel.skipSegment(segment); resetAutoHide() },
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(24.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
                     tonalElevation = 8.dp
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier.fillMaxSize().padding(24.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Icon(painterResource(CoreR.drawable.ic_skip_forward), contentDescription = null)
-                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_skip_forward), 
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
                         Text(
                             text = stringResource(uiState.currentSkipButtonStringRes),
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -281,54 +286,59 @@ private fun ControlPanelUI(
     var showSpeedDialog by remember { mutableStateOf(false) }
 
     Surface(
-        shape = RoundedCornerShape(24.dp),
-        color = Color.Black.copy(alpha = 0.8f),
+        shape = RoundedCornerShape(32.dp),
+        color = Color.Black.copy(alpha = 0.85f),
         tonalElevation = 4.dp,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(32.dp)) {
             // Top Row: Title and Secondary Actions
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(painterResource(CoreR.drawable.ic_arrow_left), "Back", tint = Color.White)
+                IconButton(onClick = onBackClick, modifier = Modifier.size(56.dp)) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_arrow_left), 
+                        contentDescription = "Back", 
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = uiState.currentItemTitle,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = Color.White,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = if (isLocked) "Controls Locked" else "Spatial Playback",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.5f)
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.6f)
                     )
                 }
 
                 if (!isLocked) {
-                    IconButton(onClick = { showAudioDialog = true; onInteraction() }) {
-                        Icon(painterResource(CoreR.drawable.ic_speaker), null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    IconButton(onClick = { showAudioDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
+                        Icon(painterResource(CoreR.drawable.ic_speaker), null, tint = Color.White, modifier = Modifier.size(32.dp))
                     }
-                    IconButton(onClick = { showSubtitleDialog = true; onInteraction() }) {
-                        Icon(painterResource(CoreR.drawable.ic_closed_caption), null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    IconButton(onClick = { showSubtitleDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
+                        Icon(painterResource(CoreR.drawable.ic_closed_caption), null, tint = Color.White, modifier = Modifier.size(32.dp))
                     }
-                    IconButton(onClick = { showSpeedDialog = true; onInteraction() }) {
-                        Icon(painterResource(CoreR.drawable.ic_gauge), null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    IconButton(onClick = { showSpeedDialog = true; onInteraction() }, modifier = Modifier.size(56.dp)) {
+                        Icon(painterResource(CoreR.drawable.ic_gauge), null, tint = Color.White, modifier = Modifier.size(32.dp))
                     }
                 }
                 
-                IconButton(onClick = { onLockToggle(); onInteraction() }) {
+                IconButton(onClick = { onLockToggle(); onInteraction() }, modifier = Modifier.size(56.dp)) {
                     Icon(
                         painter = painterResource(if (isLocked) CoreR.drawable.ic_lock else CoreR.drawable.ic_unlock),
                         contentDescription = "Lock Controls",
                         tint = if (isLocked) Color.Red else Color.White,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
@@ -345,7 +355,7 @@ private fun ControlPanelUI(
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(24.dp))
 
             // Main Playback Controls
             Row(
@@ -354,10 +364,10 @@ private fun ControlPanelUI(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (!isLocked) {
-                    IconButton(onClick = { viewModel.player.seekBack(); onInteraction() }) {
-                        Icon(painterResource(CoreR.drawable.ic_rewind), null, tint = Color.White, modifier = Modifier.size(32.dp))
+                    IconButton(onClick = { viewModel.player.seekBack(); onInteraction() }, modifier = Modifier.size(64.dp)) {
+                        Icon(painterResource(CoreR.drawable.ic_rewind), null, tint = Color.White, modifier = Modifier.size(48.dp))
                     }
-                    Spacer(Modifier.width(24.dp))
+                    Spacer(Modifier.width(32.dp))
                 }
 
                 FilledIconButton(
@@ -365,32 +375,44 @@ private fun ControlPanelUI(
                         if (isPlaying) viewModel.player.pause() else viewModel.player.play()
                         onInteraction()
                     },
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(96.dp)
                 ) {
                     Icon(
                         painter = painterResource(if (isPlaying) CoreR.drawable.ic_pause else CoreR.drawable.ic_play),
                         contentDescription = null,
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(56.dp)
                     )
                 }
 
                 if (!isLocked) {
-                    Spacer(Modifier.width(24.dp))
-                    IconButton(onClick = { viewModel.player.seekForward(); onInteraction() }) {
-                        Icon(painterResource(CoreR.drawable.ic_fast_forward), null, tint = Color.White, modifier = Modifier.size(32.dp))
+                    Spacer(Modifier.width(32.dp))
+                    IconButton(onClick = { viewModel.player.seekForward(); onInteraction() }, modifier = Modifier.size(64.dp)) {
+                        Icon(painterResource(CoreR.drawable.ic_fast_forward), null, tint = Color.White, modifier = Modifier.size(48.dp))
                     }
                     
-                    Spacer(Modifier.width(48.dp))
+                    Spacer(Modifier.width(64.dp))
                     
-                    TextButton(onClick = {
-                        val modes = listOf("mono", "sbs", "top_bottom")
-                        val next = modes[(modes.indexOf(currentStereoMode) + 1) % modes.size]
-                        onStereoModeChange(next)
-                        onInteraction()
-                    }) {
-                        Icon(painterResource(CoreR.drawable.ic_3d), null, tint = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stereoModeDisplayName(currentStereoMode), color = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White)
+                    TextButton(
+                        onClick = {
+                            val modes = listOf("mono", "sbs", "top_bottom")
+                            val next = modes[(modes.indexOf(currentStereoMode) + 1) % modes.size]
+                            onStereoModeChange(next)
+                            onInteraction()
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Icon(
+                            painterResource(CoreR.drawable.ic_3d), 
+                            null, 
+                            tint = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            stereoModeDisplayName(currentStereoMode), 
+                            style = MaterialTheme.typography.titleMedium,
+                            color = if (currentStereoMode != "mono") Color(0xFF4FC3F7) else Color.White
+                        )
                     }
                 }
             }
@@ -440,7 +462,7 @@ private fun ProgressSection(
     if (!isDragging) sliderValue = progress
 
     Column {
-        // Trickplay Preview Thumbnail
+        // Trickplay Preview Thumbnail: Enlarged for spatial depth
         if (isDragging && uiState.currentTrickplay != null) {
             val trickplay = uiState.currentTrickplay!!
             val totalThumbnails = trickplay.images.size
@@ -449,15 +471,15 @@ private fun ProgressSection(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(180.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     bitmap = trickplay.images[index].asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
-                        .height(100.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .height(160.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(Color.DarkGray),
                     contentScale = ContentScale.Fit
                 )
@@ -465,7 +487,7 @@ private fun ProgressSection(
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(formatTime(currentPosition), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
+            Text(formatTime(currentPosition), style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
             Slider(
                 value = sliderValue,
                 onValueChange = { 
@@ -478,9 +500,9 @@ private fun ProgressSection(
                     isDragging = false
                     onInteraction()
                 },
-                modifier = Modifier.weight(1f).padding(horizontal = 12.dp)
+                modifier = Modifier.weight(1f).padding(horizontal = 16.dp)
             )
-            Text(formatTime(duration), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
+            Text(formatTime(duration), style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
         }
     }
 }
@@ -500,30 +522,30 @@ private fun TrackSelectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(title) },
+        title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(-1); onDismiss() }.padding(vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(-1); onDismiss() }.padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(selected = selectedIndex == -1, onClick = { onTrackSelected(-1); onDismiss() })
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(LocalR.string.none))
+                    Spacer(Modifier.width(12.dp))
+                    Text(stringResource(LocalR.string.none), style = MaterialTheme.typography.bodyLarge)
                 }
                 trackNames.forEachIndexed { index, name ->
                     Row(
-                        modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(index); onDismiss() }.padding(vertical = 8.dp),
+                        modifier = Modifier.fillMaxWidth().clickable { onTrackSelected(index); onDismiss() }.padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(selected = index == selectedIndex, onClick = { onTrackSelected(index); onDismiss() })
-                        Spacer(Modifier.width(8.dp))
-                        Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Spacer(Modifier.width(12.dp))
+                        Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Close", style = MaterialTheme.typography.labelLarge) } }
     )
 }
 
@@ -536,22 +558,22 @@ private fun SpeedSelectionDialog(
     val speeds = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(LocalR.string.select_playback_speed)) },
+        title = { Text(stringResource(LocalR.string.select_playback_speed), style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column {
                 speeds.forEach { speed ->
                     Row(
-                        modifier = Modifier.fillMaxWidth().clickable { onSpeedSelected(speed); onDismiss() }.padding(vertical = 8.dp),
+                        modifier = Modifier.fillMaxWidth().clickable { onSpeedSelected(speed); onDismiss() }.padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(selected = currentSpeed == speed, onClick = { onSpeedSelected(speed); onDismiss() })
-                        Spacer(Modifier.width(8.dp))
-                        Text("${speed}x")
+                        Spacer(Modifier.width(12.dp))
+                        Text("${speed}x", style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Close", style = MaterialTheme.typography.labelLarge) } }
     )
 }
 
