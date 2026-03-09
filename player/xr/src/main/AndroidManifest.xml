@@ -11,10 +11,14 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:autoRemoveFromRecents="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:resizeableActivity="true"
+            android:theme="@style/Theme.Findroid.XrPlayer">
             <property
-                android:name="android.xr.space.mode"
-                android:value="full" />
+                android:name="android.window.PROPERTY_XR_ACTIVITY_START_MODE"
+                android:value="XR_ACTIVITY_START_MODE_FULL_SPACE_MANAGED" />
+            <meta-data
+                android:name="androidx.xr.full_space_mode"
+                android:value="true" />
         </activity>
     </application>
 </manifest>

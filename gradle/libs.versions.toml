@@ -59,6 +59,7 @@ androidx-media3-effect = { group = "androidx.media3", name = "media3-effect", ve
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "androidx-media3" }
 androidx-xr-runtime = { group = "androidx.xr.runtime", name = "runtime", version.ref = "androidx-xr-runtime" }
 androidx-xr-scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "androidx-xr-scenecore" }
+androidx-xr-compose = { group = "androidx.xr.compose", name = "compose", version.ref = "androidx-xr-runtime" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging" }

@@ -54,6 +54,7 @@ dependencies {
     // XR SDK
     implementation(libs.androidx.xr.runtime)
     implementation(libs.androidx.xr.scenecore)
+    implementation(libs.androidx.xr.compose)
 
     // Hilt
     implementation(libs.hilt.android)

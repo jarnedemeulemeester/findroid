@@ -35,6 +35,7 @@
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
             android:autoRemoveFromRecents="true"
+            android:resizeableActivity="true"
             android:theme="@style/Theme.Findroid.Player" />
 
         <activity
