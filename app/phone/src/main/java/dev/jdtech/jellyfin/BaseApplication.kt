@@ -35,6 +35,39 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
     override fun onCreate() {
         super.onCreate()
 
+        Thread {
+            try {
+                Runtime.getRuntime().exec("logcat -c").waitFor()
+                val logDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+                logDir.mkdirs()
+                var logFile = java.io.File(logDir, "findroid_logs.txt")
+                
+                try {
+                    logFile.createNewFile()
+                } catch (e: Exception) {
+                    val fallbackDir = getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS)
+                    if (fallbackDir != null) {
+                        fallbackDir.mkdirs()
+                        logFile = java.io.File(fallbackDir, "findroid_logs.txt")
+                    }
+                }
+
+                val process = Runtime.getRuntime().exec("logcat -v threadtime")
+                val reader = java.io.BufferedReader(java.io.InputStreamReader(process.inputStream))
+                val writer = java.io.FileWriter(logFile, true)
+                writer.append("--- LOG START ---\n")
+                writer.flush()
+                var line: String? = reader.readLine()
+                while (line != null) {
+                    writer.append(line).append("\n")
+                    writer.flush()
+                    line = reader.readLine()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
+
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }

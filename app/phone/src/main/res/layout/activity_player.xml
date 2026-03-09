@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:animation_enabled="false"
-        app:show_buffering="always" />
+        app:show_buffering="always"
+        app:surface_type="texture_view" />
 
     <LinearLayout
         android:id="@+id/progress_scrubber_layout"

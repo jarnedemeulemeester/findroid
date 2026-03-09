@@ -5,7 +5,9 @@ import android.view.Surface as AndroidSurface
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +23,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -48,11 +50,13 @@ import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
+import androidx.media3.ui.PlayerView
 import androidx.xr.runtime.Session
 import androidx.xr.runtime.SessionCreateSuccess
-import androidx.xr.scenecore.SurfaceEntity
+import androidx.xr.runtime.math.FloatSize2d
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Vector3
+import androidx.xr.scenecore.SurfaceEntity
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import java.util.UUID
@@ -62,12 +66,34 @@ import timber.log.Timber
 @AndroidEntryPoint
 class XrPlayerActivity : AppCompatActivity() {
 
+    companion object {
+        /**
+         * Whether to use the XR SurfaceEntity for stereoscopic 3D video rendering.
+         *
+         * When true: video is sent to SurfaceEntity.getSurface() via a plain ExoPlayer,
+         * and the SurfaceEntity handles stereo eye separation natively (per the Android XR
+         * spatial video API). The PlayerView is hidden in this mode.
+         *
+         * When false: video plays in a standard PlayerView with left-eye cropping for
+         * SBS/TB content (2D fallback).
+         *
+         * Currently disabled because the SurfaceEntity media rendering pipeline requires
+         * RenderEyeTarget support, which is not available on API 34 (Samsung Galaxy XR
+         * launch firmware). Set to true once a firmware update enables this.
+         *
+         * See: https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video
+         */
+        private const val USE_SURFACE_ENTITY_RENDERING = false
+    }
+
     private val viewModel: PlayerViewModel by viewModels()
 
     private var xrSession: Session? = null
     private var surfaceEntity: SurfaceEntity? = null
     private var mediaSession: MediaSession? = null
     private var videoSurface: AndroidSurface? = null
+    private var currentStereoMode: String = "mono"
+    private var playerView: PlayerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,53 +102,70 @@ class XrPlayerActivity : AppCompatActivity() {
         val itemKind = intent.extras!!.getString("itemKind") ?: ""
         val startFromBeginning = intent.extras!!.getBoolean("startFromBeginning")
         val stereoModeStr = intent.extras?.getString("stereoMode") ?: "mono"
+        currentStereoMode = stereoModeStr
 
-        // Initialize XR Session
+        // Initialize XR Session for spatial features (non-fatal if unavailable)
         try {
             val result = Session.create(this)
             if (result is SessionCreateSuccess) {
                 xrSession = result.session
+                createSurfaceEntity()
             } else {
-                Timber.e("XR session creation failed: $result")
-                finish()
-                return
+                Timber.w("XR session creation failed: $result, using 2D playback")
             }
         } catch (e: Exception) {
-            Timber.e(e, "Failed to create XR session, XR not available")
-            finish()
-            return
+            Timber.w(e, "XR session not available, using 2D playback")
         }
 
-        // Create the stereoscopic surface
-        createSurfaceEntity(stereoModeStr)
+        // SurfaceEntity rendering path: use a plain ExoPlayer connected to the
+        // SurfaceEntity surface for native stereoscopic 3D playback.
+        if (USE_SURFACE_ENTITY_RENDERING && isStereo3d()) {
+            val xrPlayer = ExoPlayer.Builder(this).build()
+            viewModel.replacePlayer(xrPlayer)
+            if (videoSurface != null) {
+                xrPlayer.setVideoSurface(videoSurface)
+                Timber.d("Connected XR player to SurfaceEntity surface for 3D playback")
+            }
+        }
 
-        // Route ExoPlayer video output to the XR surface
-        val player = viewModel.player
-        if (player is ExoPlayer && videoSurface != null) {
-            player.setVideoSurface(videoSurface)
-
-            // Listen for video size changes to update aspect ratio
-            player.addListener(object : Player.Listener {
-                override fun onVideoSizeChanged(videoSize: VideoSize) {
-                    if (videoSize.width > 0 && videoSize.height > 0) {
-                        updateSurfaceAspectRatio(videoSize, stereoModeStr)
-                    }
+        // Listen for video size changes to update the spatial surface shape
+        viewModel.player.addListener(object : Player.Listener {
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                if (videoSize.width > 0 && videoSize.height > 0) {
+                    updateSurfaceShape(videoSize)
                 }
-            })
-        } else {
-            Timber.w("XR spatial video requires ExoPlayer backend")
-        }
+            }
+        })
 
         setContent {
             XrPlayerTheme {
                 XrPlayerScreen(
                     viewModel = viewModel,
                     initialStereoMode = stereoModeStr,
+                    useSurfaceEntityRendering = USE_SURFACE_ENTITY_RENDERING,
                     onStereoModeChange = { newMode ->
-                        recreateSurfaceEntity(newMode)
+                        currentStereoMode = newMode
+
+                        if (USE_SURFACE_ENTITY_RENDERING) {
+                            // Recreate SurfaceEntity with new stereo mode and reconnect
+                            recreateSurfaceEntity()
+                            if (isStereo3d() && videoSurface != null) {
+                                (viewModel.player as? ExoPlayer)?.setVideoSurface(videoSurface)
+                            }
+                        } else {
+                            // 2D fallback: apply left-eye cropping
+                            applyStereoMode()
+                            recreateSurfaceEntity()
+                        }
+                    },
+                    onPlayerViewCreated = { pv ->
+                        playerView = pv
+                        if (!USE_SURFACE_ENTITY_RENDERING) {
+                            applyStereoMode()
+                        }
                     },
                     onBackClick = {
-                        finishPlayback()
+                        finish()
                     },
                 )
             }
@@ -135,68 +178,98 @@ class XrPlayerActivity : AppCompatActivity() {
         )
     }
 
-    private fun createSurfaceEntity(stereoModeStr: String) {
+    private fun isStereo3d(): Boolean = currentStereoMode != "mono"
+
+    /**
+     * 2D fallback: crop the PlayerView's SurfaceView to show only one eye.
+     * For SBS: scale 2x horizontally from the left edge (left eye).
+     * For TB: scale 2x vertically from the top edge (top eye).
+     */
+    private fun applyStereoMode() {
+        val videoSurfaceView = playerView?.videoSurfaceView ?: return
+        when (currentStereoMode) {
+            "sbs" -> {
+                videoSurfaceView.scaleX = 2f
+                videoSurfaceView.pivotX = 0f
+                videoSurfaceView.scaleY = 1f
+                videoSurfaceView.pivotY = 0f
+            }
+            "top_bottom" -> {
+                videoSurfaceView.scaleX = 1f
+                videoSurfaceView.pivotX = 0f
+                videoSurfaceView.scaleY = 2f
+                videoSurfaceView.pivotY = 0f
+            }
+            else -> {
+                videoSurfaceView.scaleX = 1f
+                videoSurfaceView.scaleY = 1f
+                videoSurfaceView.pivotX = videoSurfaceView.width / 2f
+                videoSurfaceView.pivotY = videoSurfaceView.height / 2f
+            }
+        }
+    }
+
+    private fun createSurfaceEntity() {
         val session = xrSession ?: return
 
-        val xrStereoMode = mapStereoMode(stereoModeStr)
+        val xrStereoMode = mapStereoMode(currentStereoMode)
 
-        // Position the virtual screen 1.5 meters in front of the user
-        val pose = Pose(Vector3(0f, 0f, -1.5f))
+        // Position the virtual screen 2.0 meters in front of the user
+        val pose = Pose(Vector3(0f, 0f, -2.0f))
+
+        // Default 16:9 quad at 2m width
+        val shape = SurfaceEntity.Shape.Quad(FloatSize2d(2.0f, 1.125f))
 
         try {
             surfaceEntity = if (xrStereoMode != null) {
-                // Create a stereoscopic surface entity for 3D content
-                // The SurfaceEntity splits the source frame according to the stereo mode
-                // and sends each half to the appropriate eye
                 SurfaceEntity.create(
                     session = session,
-                    stereoMode = xrStereoMode,
                     pose = pose,
+                    shape = shape,
+                    stereoMode = xrStereoMode,
                 )
             } else {
-                // Create a standard (mono) surface entity for 2D content
                 SurfaceEntity.create(
                     session = session,
                     pose = pose,
+                    shape = shape,
                 )
             }
-            videoSurface = surfaceEntity?.getSurface()
+
+            if (USE_SURFACE_ENTITY_RENDERING) {
+                videoSurface = surfaceEntity?.getSurface()
+            }
+            Timber.d("Created SurfaceEntity with stereoMode=$currentStereoMode, shape=$shape")
         } catch (e: Exception) {
             Timber.e(e, "Failed to create SurfaceEntity")
         }
     }
 
-    private fun recreateSurfaceEntity(newStereoMode: String) {
-        val player = viewModel.player
-
-        // Clear old surface
-        if (player is ExoPlayer) {
-            player.clearVideoSurface()
+    private fun recreateSurfaceEntity() {
+        if (USE_SURFACE_ENTITY_RENDERING) {
+            (viewModel.player as? ExoPlayer)?.clearVideoSurface()
         }
 
-        // Destroy old entity
+        surfaceEntity?.dispose()
         surfaceEntity = null
         videoSurface = null
 
-        // Create new entity with updated mode
-        createSurfaceEntity(newStereoMode)
+        createSurfaceEntity()
 
-        // Reconnect player
-        if (player is ExoPlayer && videoSurface != null) {
-            player.setVideoSurface(videoSurface)
+        val videoSize = viewModel.player.videoSize
+        if (videoSize.width > 0 && videoSize.height > 0) {
+            updateSurfaceShape(videoSize)
         }
     }
 
-    private fun updateSurfaceAspectRatio(videoSize: VideoSize, stereoMode: String) {
+    private fun updateSurfaceShape(videoSize: VideoSize) {
         val entity = surfaceEntity ?: return
 
-        // For SBS content, actual display width is half the encoded width
-        val displayWidth = when (stereoMode) {
+        val displayWidth = when (currentStereoMode) {
             "sbs" -> videoSize.width / 2f
             else -> videoSize.width.toFloat()
         }
-        // For TB content, actual display height is half the encoded height
-        val displayHeight = when (stereoMode) {
+        val displayHeight = when (currentStereoMode) {
             "top_bottom" -> videoSize.height / 2f
             else -> videoSize.height.toFloat()
         }
@@ -205,7 +278,12 @@ class XrPlayerActivity : AppCompatActivity() {
         val quadWidth = 2.0f // meters
         val quadHeight = quadWidth / aspectRatio
 
-        Timber.d("Updated XR surface: ${displayWidth}x${displayHeight}, aspect=$aspectRatio, quad=${quadWidth}x${quadHeight}")
+        try {
+            entity.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
+            Timber.d("Updated XR surface shape: ${displayWidth}x${displayHeight}, aspect=$aspectRatio, quad=${quadWidth}x${quadHeight}m")
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to update surface shape")
+        }
     }
 
     private fun mapStereoMode(mode: String): SurfaceEntity.StereoMode? {
@@ -224,6 +302,9 @@ class XrPlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.player.playWhenReady = viewModel.playWhenReady
+        if (USE_SURFACE_ENTITY_RENDERING && isStereo3d() && videoSurface != null) {
+            (viewModel.player as? ExoPlayer)?.setVideoSurface(videoSurface)
+        }
     }
 
     override fun onPause() {
@@ -241,20 +322,13 @@ class XrPlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        val player = viewModel.player
-        if (player is ExoPlayer) {
-            player.clearVideoSurface()
+        if (USE_SURFACE_ENTITY_RENDERING) {
+            (viewModel.player as? ExoPlayer)?.clearVideoSurface()
         }
+        surfaceEntity?.dispose()
         surfaceEntity = null
         videoSurface = null
-    }
-
-    private fun finishPlayback() {
-        val player = viewModel.player
-        if (player is ExoPlayer) {
-            player.clearVideoSurface()
-        }
-        finish()
+        playerView = null
     }
 }
 
@@ -270,7 +344,9 @@ private fun XrPlayerTheme(content: @Composable () -> Unit) {
 private fun XrPlayerScreen(
     viewModel: PlayerViewModel,
     initialStereoMode: String,
+    useSurfaceEntityRendering: Boolean,
     onStereoModeChange: (String) -> Unit,
+    onPlayerViewCreated: (PlayerView) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -313,10 +389,30 @@ private fun XrPlayerScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.Black.copy(alpha = 0.85f),
+    // When using SurfaceEntity rendering for 3D, video renders in the XR scene,
+    // not in the 2D window. Show PlayerView only when NOT using SurfaceEntity
+    // rendering, or when in mono mode.
+    val showPlayerView = !useSurfaceEntityRendering || currentStereoMode == "mono"
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
     ) {
+        if (showPlayerView) {
+            AndroidView(
+                factory = { ctx ->
+                    PlayerView(ctx).apply {
+                        player = viewModel.player
+                        useController = false
+                        onPlayerViewCreated(this)
+                    }
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        // Controls overlay
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -343,7 +439,6 @@ private fun XrPlayerScreen(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
-                // Stereo mode badge
                 if (currentStereoMode != "mono") {
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
@@ -356,10 +451,13 @@ private fun XrPlayerScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Playback info
             if (uiState.fileLoaded) {
                 Text(
-                    text = "Spatial Video Player",
+                    text = when {
+                        currentStereoMode != "mono" && useSurfaceEntityRendering -> "Spatial 3D Video (${stereoModeDisplayName(currentStereoMode)})"
+                        currentStereoMode != "mono" -> "3D Video (${stereoModeDisplayName(currentStereoMode)}) - 2D fallback"
+                        else -> "Video Player"
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.5f),
                 )
@@ -417,12 +515,7 @@ private fun XrPlayerScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                // Seek back
-                IconButton(
-                    onClick = {
-                        viewModel.player.seekBack()
-                    },
-                ) {
+                IconButton(onClick = { viewModel.player.seekBack() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_rewind),
                         contentDescription = "Seek back",
@@ -433,14 +526,9 @@ private fun XrPlayerScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Play/Pause
                 FilledIconButton(
                     onClick = {
-                        if (isPlaying) {
-                            viewModel.player.pause()
-                        } else {
-                            viewModel.player.play()
-                        }
+                        if (isPlaying) viewModel.player.pause() else viewModel.player.play()
                     },
                     modifier = Modifier.size(56.dp),
                 ) {
@@ -455,12 +543,7 @@ private fun XrPlayerScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Seek forward
-                IconButton(
-                    onClick = {
-                        viewModel.player.seekForward()
-                    },
-                ) {
+                IconButton(onClick = { viewModel.player.seekForward() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_xr_forward),
                         contentDescription = "Seek forward",
@@ -471,7 +554,6 @@ private fun XrPlayerScreen(
 
                 Spacer(modifier = Modifier.width(32.dp))
 
-                // Stereo mode toggle
                 TextButton(
                     onClick = {
                         val modes = listOf("mono", "sbs", "top_bottom")

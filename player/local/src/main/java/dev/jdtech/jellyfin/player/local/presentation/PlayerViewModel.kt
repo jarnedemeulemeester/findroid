@@ -55,7 +55,8 @@ constructor(
     private val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
-    val player: Player
+    var player: Player
+        private set
 
     private val _uiState =
         MutableStateFlow(
@@ -165,6 +166,11 @@ constructor(
                     .setPauseAtEndOfMediaItems(true)
                     .build()
         }
+    }
+
+    fun replacePlayer(newPlayer: Player) {
+        player.release()
+        player = newPlayer
     }
 
     fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {

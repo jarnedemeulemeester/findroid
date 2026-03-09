@@ -52,6 +52,8 @@ fun ItemButtonsBar(
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
     canPlay: Boolean = true,
+    isForce3dMode: Boolean = false,
+    onForce3dClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -126,6 +128,17 @@ fun ItemButtonsBar(
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_film),
                             contentDescription = null,
+                        )
+                    }
+                }
+                if (onForce3dClick != null) {
+                    FilledTonalIconButton(
+                        onClick = onForce3dClick,
+                        colors = androidx.compose.material3.IconButtonDefaults.filledTonalIconButtonColors(containerColor = if (isForce3dMode) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer)
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_3d),
+                            contentDescription = "Force 3D Mode",
                         )
                     }
                 }

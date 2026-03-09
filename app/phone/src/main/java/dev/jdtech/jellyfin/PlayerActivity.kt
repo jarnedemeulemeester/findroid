@@ -35,6 +35,8 @@ import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
+import dev.jdtech.jellyfin.player.xr.StereoModeDetector
+import dev.jdtech.jellyfin.player.xr.XrPlayerActivity
 import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
@@ -63,6 +65,7 @@ class PlayerActivity : BasePlayerActivity() {
     private var skipButtonTimeoutExpired: Boolean = true
 
     private lateinit var skipSegmentButton: Button
+    private var currentStereoMode: String = "off" // "off", "sbs", "top_bottom"
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
@@ -99,6 +102,9 @@ class PlayerActivity : BasePlayerActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding.playerView.player = viewModel.player
+
+
+
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
                 if (visibility == View.GONE) {
@@ -138,6 +144,7 @@ class PlayerActivity : BasePlayerActivity() {
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
+        val stereoModeButton = binding.playerView.findViewById<ImageButton>(R.id.btn_3d_mode)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -203,6 +210,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 audioButton.imageAlpha = 255
                                 lockButton.isEnabled = true
                                 lockButton.imageAlpha = 255
+                                stereoModeButton.isEnabled = true
+                                stereoModeButton.imageAlpha = 255
                                 subtitleButton.isEnabled = true
                                 subtitleButton.imageAlpha = 255
                                 speedButton.isEnabled = true
@@ -264,6 +273,9 @@ class PlayerActivity : BasePlayerActivity() {
         lockButton.isEnabled = false
         lockButton.imageAlpha = 75
 
+        stereoModeButton.isEnabled = false
+        stereoModeButton.imageAlpha = 75
+
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
 
@@ -299,6 +311,32 @@ class PlayerActivity : BasePlayerActivity() {
             lockedLayout.visibility = View.GONE
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             isControlsLocked = false
+        }
+
+        stereoModeButton.setOnClickListener {
+            if (StereoModeDetector.isXrDevice(this)) {
+                // On XR devices, launch the XR player for proper stereoscopic 3D
+                val modes = listOf("mono", "sbs", "top_bottom")
+                val currentIndex = modes.indexOf(currentStereoMode).coerceAtLeast(0)
+                val nextMode = modes[(currentIndex + 1) % modes.size]
+                if (nextMode != "mono") {
+                    viewModel.updatePlaybackProgress()
+                    val xrIntent = Intent(this, XrPlayerActivity::class.java)
+                    xrIntent.putExtra("itemId", intent.extras!!.getString("itemId"))
+                    xrIntent.putExtra("itemKind", intent.extras!!.getString("itemKind"))
+                    xrIntent.putExtra("startFromBeginning", false)
+                    xrIntent.putExtra("stereoMode", nextMode)
+                    startActivity(xrIntent)
+                    finish()
+                }
+            } else {
+                // On non-XR devices, crop to the left eye view
+                val modes = listOf("off", "sbs", "top_bottom")
+                val currentIndex = modes.indexOf(currentStereoMode)
+                currentStereoMode = modes[(currentIndex + 1) % modes.size]
+                applyStereoMode()
+                updateStereoModeButton(stereoModeButton)
+            }
         }
 
         subtitleButton.setOnClickListener {
@@ -357,6 +395,42 @@ class PlayerActivity : BasePlayerActivity() {
         ) {
             pictureInPicture()
         }
+    }
+
+    private fun applyStereoMode() {
+        val videoSurface = binding.playerView.videoSurfaceView ?: return
+        when (currentStereoMode) {
+            "sbs" -> {
+                // Scale video 2x horizontally from the left edge to show only the left eye
+                videoSurface.scaleX = 2f
+                videoSurface.pivotX = 0f
+                videoSurface.scaleY = 1f
+                videoSurface.pivotY = 0f
+            }
+            "top_bottom" -> {
+                // Scale video 2x vertically from the top edge to show only the top eye
+                videoSurface.scaleX = 1f
+                videoSurface.pivotX = 0f
+                videoSurface.scaleY = 2f
+                videoSurface.pivotY = 0f
+            }
+            else -> {
+                // Reset to normal
+                videoSurface.scaleX = 1f
+                videoSurface.scaleY = 1f
+                videoSurface.pivotX = videoSurface.width / 2f
+                videoSurface.pivotY = videoSurface.height / 2f
+            }
+        }
+    }
+
+    private fun updateStereoModeButton(button: ImageButton) {
+        val color = if (currentStereoMode != "off") {
+            getColor(com.google.android.material.R.color.m3_sys_color_dynamic_light_primary)
+        } else {
+            Color.WHITE
+        }
+        button.setColorFilter(color)
     }
 
     private fun finishPlayback() {

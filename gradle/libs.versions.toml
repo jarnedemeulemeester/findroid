@@ -55,6 +55,7 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "androidx-media3" }
 androidx-media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "androidx-media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "androidx-media3" }
+androidx-media3-effect = { group = "androidx.media3", name = "media3-effect", version.ref = "androidx-media3" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "androidx-media3" }
 androidx-xr-runtime = { group = "androidx.xr.runtime", name = "runtime", version.ref = "androidx-xr-runtime" }
 androidx-xr-scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "androidx-xr-scenecore" }

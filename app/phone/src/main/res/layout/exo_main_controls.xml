@@ -57,6 +57,22 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
+                android:id="@+id/btn_3d_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:background="@drawable/transparent_circle_background"
+                android:contentDescription="@string/player_controls_3d_mode"
+                android:padding="16dp"
+                android:src="@drawable/ic_3d"
+                app:tint="@android:color/white" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="0dp" />
+
+            <ImageButton
                 android:id="@+id/btn_lockview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

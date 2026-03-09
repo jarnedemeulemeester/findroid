@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.film.presentation.movie
 import java.util.UUID
 
 sealed interface MovieAction {
-    data class Play(val startFromBeginning: Boolean = false) : MovieAction
+    data class Play(val startFromBeginning: Boolean = false, val force3dMode: String? = null) : MovieAction
 
     data class PlayTrailer(val trailer: String) : MovieAction
 

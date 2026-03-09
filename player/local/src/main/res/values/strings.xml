@@ -7,6 +7,7 @@
     <string name="none">None</string>
     <string name="player_controls_picture_in_picture">Enter picture-in-picture</string>
     <string name="player_controls_lock">Locks the player</string>
+    <string name="player_controls_3d_mode">3D mode</string>
     <string name="player_controls_skip_back">Skip back</string>
     <string name="player_controls_play_pause">Play pause</string>
     <string name="player_controls_rewind">Rewind</string>

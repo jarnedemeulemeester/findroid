@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -105,13 +106,18 @@ fun MovieScreen(
             when (action) {
                 is MovieAction.Play -> {
                     val movie = state.movie
-                    val stereoMode = if (movie != null) {
-                        StereoModeDetector.detect(movie.name, movie.video3DFormat)
+                    val sourceNames = movie?.sources?.flatMap { listOf(it.name, it.path) } ?: emptyList()
+                    val stereoMode = if (action.force3dMode != null) {
+                        if (action.force3dMode == "sbs") StereoModeDetector.StereoMode.SIDE_BY_SIDE
+                        else if (action.force3dMode == "top_bottom") StereoModeDetector.StereoMode.TOP_BOTTOM
+                        else StereoModeDetector.StereoMode.MONO
+                    } else if (movie != null) {
+                        StereoModeDetector.detect(movie.name, movie.video3DFormat, sourceNames)
                     } else {
                         StereoModeDetector.StereoMode.MONO
                     }
                     val isXr = StereoModeDetector.isXrDevice(context)
-                    val targetActivity = if (isXr && stereoMode != StereoModeDetector.StereoMode.MONO) {
+                    val targetActivity = if (isXr) {
                         XrPlayerActivity::class.java
                     } else {
                         PlayerActivity::class.java
@@ -162,6 +168,9 @@ private fun MovieScreenLayout(
     val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
 
     val scrollState = rememberScrollState()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val isXrDevice = androidx.compose.runtime.remember { StereoModeDetector.isXrDevice(context) }
+    var force3d by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         state.movie?.let { movie ->
@@ -238,11 +247,15 @@ private fun MovieScreenLayout(
                         VideoMetadataBar(videoMetadata)
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
+                    
+                    
                     ItemButtonsBar(
                         item = movie,
                         downloaderState = downloaderState,
+                        isForce3dMode = force3d,
+                        onForce3dClick = if (isXrDevice) { { force3d = !force3d } } else null,
                         onPlayClick = { startFromBeginning ->
-                            onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
+                            onAction(MovieAction.Play(startFromBeginning = startFromBeginning, force3dMode = if (force3d) "sbs" else null))
                         },
                         onMarkAsPlayedClick = {
                             when (movie.played) {

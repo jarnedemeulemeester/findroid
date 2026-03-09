@@ -11,6 +11,10 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:autoRemoveFromRecents="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <property
+                android:name="android.xr.space.mode"
+                android:value="full" />
+        </activity>
     </application>
 </manifest>
