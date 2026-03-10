@@ -65,6 +65,7 @@ import androidx.xr.compose.subspace.SpatialPanel
 import androidx.xr.compose.subspace.layout.SubspaceModifier
 import androidx.xr.compose.subspace.layout.height
 import androidx.xr.compose.subspace.layout.offset
+import androidx.xr.compose.subspace.layout.rotate
 import androidx.xr.compose.subspace.layout.width
 import androidx.xr.runtime.Session
 import androidx.xr.runtime.math.FloatSize2d
@@ -184,20 +185,35 @@ fun SpatialPlayerScreen(
     }
 
     // IMAX Preset & Video Entity Management
+    var videoPose by remember { mutableStateOf(Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity)) }
     val videoEntity = remember { mutableStateOf<SurfaceEntity?>(null) }
     
     DisposableEffect(session) {
         // Create the high-fidelity video entity
-        val imaxPose = Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity) // 5.0m away for true IMAX
         val initialShape = SurfaceEntity.Shape.Quad(FloatSize2d(10.0f, 5.625f)) // Massive immersive screen
         
         try {
             val entity = SurfaceEntity.create(
                 session = session,
-                pose = imaxPose,
+                pose = videoPose,
                 shape = initialShape,
                 stereoMode = mapStereoMode(currentStereoMode) ?: SurfaceEntity.StereoMode.MONO
             )
+            
+            val movable = androidx.xr.scenecore.MovableComponent.createSystemMovable(session)
+            entity.addComponent(movable)
+            val moveListener = object : androidx.xr.scenecore.EntityMoveListener {
+                override fun onMoveUpdate(
+                    movedEntity: androidx.xr.scenecore.Entity,
+                    ray: androidx.xr.runtime.math.Ray,
+                    pose: Pose,
+                    scale: Float
+                ) {
+                    videoPose = pose
+                }
+            }
+            movable.addMoveListener(moveListener)
+
             videoEntity.value = entity
             
             // Connect player to the spatial surface
@@ -279,7 +295,13 @@ fun SpatialPlayerScreen(
             modifier = SubspaceModifier
                 .width(subtitlePanelWidthDp.dp)
                 .height(subtitlePanelHeightDp.dp)
-                .offset(y = subtitleCenterYDp.dp, z = (-2000).dp),
+                .offset(
+                    x = (videoPose.translation.x * 1000f).dp,
+                    y = (videoPose.translation.y * 1000f).dp,
+                    z = (videoPose.translation.z * 1000f).dp
+                )
+                .rotate(quaternion = videoPose.rotation)
+                .offset(y = subtitleCenterYDp.dp, z = 3000.dp),
         ) {
             AndroidView(
                 factory = { context ->
@@ -313,8 +335,13 @@ fun SpatialPlayerScreen(
             modifier = SubspaceModifier
                 .width(1400.dp)
                 .height(600.dp)
-                .offset(x = 0.dp, y = controlsPanelY.dp, z = (-2000).dp),
-            dragPolicy = MovePolicy(),
+                .offset(
+                    x = (videoPose.translation.x * 1000f).dp,
+                    y = (videoPose.translation.y * 1000f).dp,
+                    z = (videoPose.translation.z * 1000f).dp
+                )
+                .rotate(quaternion = videoPose.rotation)
+                .offset(x = 0.dp, y = controlsPanelY.dp, z = 3000.dp),
             resizePolicy = ResizePolicy()
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -342,22 +369,26 @@ fun SpatialPlayerScreen(
                 
                 if (!controlsVisible) {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    controlsVisible = true
+                                    resetAutoHide()
+                                }
+                            ),
+                        contentAlignment = Alignment.BottomCenter
                     ) {
-                        FilledIconButton(
-                            onClick = {
-                                controlsVisible = true
-                                resetAutoHide()
-                            },
-                            modifier = Modifier.size(120.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(CoreR.drawable.ic_eye),
-                                contentDescription = "Show Controls",
-                                modifier = Modifier.size(72.dp)
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_eye),
+                            contentDescription = "Show Controls",
+                            tint = Color.White.copy(alpha = 0.25f),
+                            modifier = Modifier
+                                .padding(bottom = 20.dp)
+                                .size(28.dp)
+                        )
                     }
                 }
             }
@@ -369,8 +400,13 @@ fun SpatialPlayerScreen(
                 modifier = SubspaceModifier
                     .width(360.dp)
                     .height(120.dp)
-                    .offset(x = 950.dp, y = controlsPanelY.dp, z = (-2000).dp),
-                dragPolicy = MovePolicy()
+                    .offset(
+                        x = (videoPose.translation.x * 1000f).dp,
+                        y = (videoPose.translation.y * 1000f).dp,
+                        z = (videoPose.translation.z * 1000f).dp
+                    )
+                    .rotate(quaternion = videoPose.rotation)
+                    .offset(x = 950.dp, y = controlsPanelY.dp, z = 3000.dp)
             ) {
                 Surface(
                     onClick = { viewModel.skipSegment(segment); resetAutoHide() },
