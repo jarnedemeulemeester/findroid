@@ -71,6 +71,7 @@ import androidx.xr.runtime.math.FloatSize2d
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Quaternion
 import androidx.xr.runtime.math.Vector3
+import androidx.xr.scenecore.SpatialCapability
 import androidx.xr.scenecore.SpatialEnvironment
 import androidx.xr.scenecore.SurfaceEntity
 import androidx.xr.scenecore.scene
@@ -96,6 +97,23 @@ fun SpatialPlayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val xrSubtitleSize = viewModel.appPreferences.getValue(viewModel.appPreferences.xrSubtitleSize).toFloat()
+
+    // Track spatial audio capability reactively — it can change when switching between
+    // full-space and home-space modes.
+    var spatialAudioAvailable by remember {
+        mutableStateOf(session.scene.spatialCapabilities.contains(SpatialCapability.SPATIAL_AUDIO))
+    }
+    DisposableEffect(session) {
+        val listener = java.util.function.Consumer<Set<SpatialCapability>> { caps ->
+            spatialAudioAvailable = caps.contains(SpatialCapability.SPATIAL_AUDIO)
+            Timber.d("XR_AUDIO: spatial capabilities changed, spatial audio available=$spatialAudioAvailable")
+        }
+        session.scene.addSpatialCapabilitiesChangedListener(listener)
+        onDispose { session.scene.removeSpatialCapabilitiesChangedListener(listener) }
+    }
+    LaunchedEffect(spatialAudioAvailable) {
+        Timber.d("XR_AUDIO: spatial audio available=$spatialAudioAvailable")
+    }
 
     var currentPosition by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
@@ -220,72 +238,82 @@ fun SpatialPlayerScreen(
         }
     }
 
-    // Dynamic scaled positioning for IMAX experience
+    // Dynamic scaled positioning for IMAX experience.
+    // The subtitle panel must span the FULL projected video area so that PGS subtitle cue
+    // positions (encoded as fractions of the full video frame) map correctly in 3D space.
+    // E.g., a PGS cue at line=0.9 (near the bottom) should appear near the bottom of the video.
     val videoDepth = 5.0f
     val subtitleDepth = 2.0f
     val subtitleScaleFactor = subtitleDepth / videoDepth
 
-    // Calculate the scaled video size at the subtitle depth.
+    // The full projected video dimensions at subtitle depth (perspective-correct scaling).
     val scaledVideoWidthDp = videoWidth * subtitleScaleFactor * 1000f
     val scaledVideoHeightDp = videoHeight * subtitleScaleFactor * 1000f
 
-    // Use a dedicated smaller panel to avoid OS max-size limits that cause clamping.
+    // Panel covers the full projected video frame. Cap width to avoid GPU texture limits,
+    // but use the full height so cue vertical positions map correctly to the video frame.
     val subtitlePanelWidthDp = scaledVideoWidthDp.coerceAtMost(2500f)
-    val subtitlePanelHeightDp = 400f
+    val subtitlePanelHeightDp = scaledVideoHeightDp.coerceAtMost(2500f)
 
-    // Position the panel so its bottom edge aligns with the bottom edge of the scaled video.
-    // The panel's offset is its center, so we shift down by half the video height, and up by half the panel height.
-    val subtitleCenterYDp = -(scaledVideoHeightDp / 2f) + (subtitlePanelHeightDp / 2f)
+    // Center the panel on the video (y=0). SubtitleView will render PGS cues at their
+    // correct vertical position within the full frame (e.g., line=0.9 → near the bottom).
+    val subtitleCenterYDp = 0f
 
-    // Scale subtitle text size proportionally to the panel width so it stays legible.
-    val finalSubtitleSize = xrSubtitleSize * (subtitlePanelWidthDp / 1500f).coerceAtLeast(1f)
+    // Scale subtitle text size to be legible on an IMAX-sized screen.
+    // Base: ~4% of panel height gives good movie-theater proportions.
+    val finalSubtitleSize = xrSubtitleSize * (subtitlePanelHeightDp / 600f).coerceAtLeast(1f)
     LaunchedEffect(videoWidth, videoHeight, finalSubtitleSize) {
         Timber.d("XR_LAYOUT: videoSize=${videoWidth}x${videoHeight}m, subtitlePanelWidth=${subtitlePanelWidthDp}dp, subtitlePanelHeight=${subtitlePanelHeightDp}dp, finalSubtitleSize=${finalSubtitleSize}")
     }
 
+    // Position for the controls panel: just below the video, centered horizontally.
+    // This gives a movie-theater feel where you look down for controls, not sideways.
+    val controlsPanelY = -(scaledVideoHeightDp / 2f + 400f)
+
     Subspace {
-        // Subtitle Panel: Positioned OVER the entire video entity.
-        // By taking up the exact same rectangular space as the video, 
-        // the Android SubtitleView will naturally draw the subtitles exactly at the bottom edge.
+        // Subtitle Panel: Spans the FULL projected video area at subtitle depth.
+        // The SubtitleView will render PGS cue positions (line=0..1) as fractions of
+        // the full video frame height, placing them correctly in 3D space.
+        // Text subtitles use setBottomPaddingFraction to anchor to the bottom edge.
         SpatialPanel(
             modifier = SubspaceModifier
                 .width(subtitlePanelWidthDp.dp)
                 .height(subtitlePanelHeightDp.dp)
-                .offset(y = subtitleCenterYDp.dp, z = (-2000).dp), // Exact center, glued in front of screen
+                .offset(y = subtitleCenterYDp.dp, z = (-2000).dp),
         ) {
             AndroidView(
                 factory = { context ->
                     SubtitleView(context).apply {
                         setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                        // A padding fraction of 0.05 on a 5000dp tall screen is 250dp of empty space!
-                        // Let's set it to 0.0f so it sits flush at the very bottom edge.
-                        setBottomPaddingFraction(0.0f) 
-                        // Use user defined text size, scaled relative to the video size
+                        // For text-based subtitles (SRT/ASS), anchor to the very bottom.
+                        setBottomPaddingFraction(0.0f)
+                        // Scale text size for IMAX legibility.
                         setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, finalSubtitleSize)
                         setUserDefaultStyle()
-
-                        // Add explicit logging for layout bounds to debug "too high/too low" issues
-                        addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-                            if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom) {
-                                Timber.d("XR_SUBTITLE_LAYOUT: SubtitleView bound to w=${right-left}px, h=${bottom-top}px")
-                            }
-                        }
                     }
                 },
                 update = { view ->
-                    view.setCues(currentCues)
+                    // Push all cues to the bottom of the frame, regardless of their encoded position.
+                    // PGS subtitles encode line ~0.85 which visually reads as "high" on an IMAX screen.
+                    val bottomCues = currentCues.map { cue ->
+                        cue.buildUpon()
+                            .setLine(0.93f, Cue.LINE_TYPE_FRACTION)
+                            .setLineAnchor(Cue.ANCHOR_TYPE_END)
+                            .build()
+                    }
+                    view.setCues(bottomCues)
                 },
                 modifier = Modifier.fillMaxSize()
             )
         }
 
-        // The Control Panel: Moved to the left of the video for a clear IMAX experience.
-        // This requires the user to look left to see and interact with it.
+        // The Control Panel: Positioned BELOW the video for a natural movie-theater experience.
+        // The user looks down slightly to access controls, keeping the main screen unobscured.
         SpatialPanel(
             modifier = SubspaceModifier
                 .width(1400.dp)
                 .height(600.dp)
-                .offset(x = (-3000).dp, y = 0.dp, z = (-2000).dp),
+                .offset(x = 0.dp, y = controlsPanelY.dp, z = (-2000).dp),
             dragPolicy = MovePolicy(),
             resizePolicy = ResizePolicy()
         ) {
@@ -303,6 +331,7 @@ fun SpatialPlayerScreen(
                         duration = duration,
                         currentStereoMode = currentStereoMode,
                         isLocked = isLocked,
+                        spatialAudioAvailable = spatialAudioAvailable,
                         onStereoModeChange = { currentStereoMode = it },
                         onLockToggle = { isLocked = !isLocked },
                         onHideClick = { controlsVisible = false },
@@ -334,13 +363,13 @@ fun SpatialPlayerScreen(
             }
         }
 
-        // Contextual Skip Button: Moved to the right of the video
+        // Contextual Skip Button: Positioned to the right of the controls panel below the video.
         uiState.currentSegment?.let { segment ->
             SpatialPanel(
                 modifier = SubspaceModifier
                     .width(360.dp)
                     .height(120.dp)
-                    .offset(x = 2600.dp, y = 0.dp, z = (-2000).dp),
+                    .offset(x = 950.dp, y = controlsPanelY.dp, z = (-2000).dp),
                 dragPolicy = MovePolicy()
             ) {
                 Surface(
@@ -381,6 +410,7 @@ private fun ControlPanelUI(
     duration: Long,
     currentStereoMode: String,
     isLocked: Boolean,
+    spatialAudioAvailable: Boolean,
     onStereoModeChange: (String) -> Unit,
     onLockToggle: () -> Unit,
     onHideClick: () -> Unit,
@@ -420,9 +450,14 @@ private fun ControlPanelUI(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (isLocked) "Controls Locked" else "Spatial Playback",
+                            text = when {
+                                isLocked -> "Controls Locked"
+                                spatialAudioAvailable -> "Spatial Playback • Spatial Audio"
+                                else -> "Spatial Playback"
+                            },
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.White.copy(alpha = 0.6f)
+                            color = if (spatialAudioAvailable && !isLocked) Color(0xFF4FC3F7).copy(alpha = 0.8f)
+                                    else Color.White.copy(alpha = 0.6f)
                         )
                     }
 
