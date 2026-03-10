@@ -11,7 +11,8 @@ data class PreferenceMultiSelect(
     @param:DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
-    override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
+    override val supportedDeviceTypes: List<DeviceType> =
+        listOf(DeviceType.PHONE, DeviceType.TV, DeviceType.XR),
     val onUpdate: (Set<String>?) -> Unit = {},
     val backendPreference:
         PreferenceBackend<Set<String>>, // Backend preference stores a Set<String>

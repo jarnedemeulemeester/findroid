@@ -101,6 +101,12 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // Offline mode
     val offlineMode = Preference("pref_offline_mode", false)
 
+    // XR Subtitles
+    val xrSubtitleSize = Preference("pref_xr_subtitle_size", 24)
+
+    // Logging
+    val loggingEnabled = Preference("pref_logging_enabled", false)
+
     inline fun <reified T> getValue(preference: Preference<T>): T {
         return try {
             @Suppress("UNCHECKED_CAST")

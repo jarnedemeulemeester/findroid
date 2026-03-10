@@ -16,6 +16,7 @@ import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.exoplayer.util.EventLogger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
@@ -52,7 +53,7 @@ constructor(
     private val application: Application,
     private val playlistManager: PlaylistManager,
     private val repository: JellyfinRepository,
-    private val appPreferences: AppPreferences,
+    val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
     var player: Player
@@ -166,6 +167,9 @@ constructor(
                     )
                     .setPauseAtEndOfMediaItems(true)
                     .build()
+            
+            // Add comprehensive logging for network, buffering, and dropped frames
+            (player as? ExoPlayer)?.addAnalyticsListener(EventLogger(trackSelector))
         }
     }
 

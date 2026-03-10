@@ -11,5 +11,6 @@ data class PreferenceAppLanguage(
     @param:DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
-    override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
+    override val supportedDeviceTypes: List<DeviceType> =
+        listOf(DeviceType.PHONE, DeviceType.TV, DeviceType.XR),
 ) : Preference

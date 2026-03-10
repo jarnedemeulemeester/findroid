@@ -11,7 +11,8 @@ data class PreferenceLongInput(
     @param:DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
-    override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
+    override val supportedDeviceTypes: List<DeviceType> =
+        listOf(DeviceType.PHONE, DeviceType.TV, DeviceType.XR),
     val onClick: (Preference) -> Unit = {},
     val backendPreference: PreferenceBackend<Long>,
     @param:StringRes val prefixRes: Int? = null,

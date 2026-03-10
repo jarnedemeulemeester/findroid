@@ -76,6 +76,7 @@ import androidx.xr.scenecore.SurfaceEntity
 import androidx.xr.scenecore.scene
 import dev.jdtech.jellyfin.player.local.domain.getTrackNames
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
+import timber.log.Timber
 import kotlinx.coroutines.delay
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.local.R as LocalR
@@ -94,12 +95,14 @@ fun SpatialPlayerScreen(
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val xrSubtitleSize = viewModel.appPreferences.getValue(viewModel.appPreferences.xrSubtitleSize).toFloat()
 
     var currentPosition by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var isPlaying by remember { mutableStateOf(false) }
     var currentStereoMode by remember { mutableStateOf(initialStereoMode) }
-    var videoHeight by remember { mutableFloatStateOf(2.8125f) }
+    var videoWidth by remember { mutableFloatStateOf(10.0f) }
+    var videoHeight by remember { mutableFloatStateOf(5.625f) }
     var currentCues by remember { mutableStateOf<List<Cue>>(emptyList()) }
 
     // Controls visibility with auto-hide logic
@@ -123,14 +126,18 @@ fun SpatialPlayerScreen(
         val environment = session.scene.spatialEnvironment
         try {
             if (isPlaying) {
-                // Black out the world for maximum focus during playback
-                environment.preferredPassthroughOpacity = 0.0f
+                // Black out the world for maximum focus during playback.
+                // A SpatialEnvironmentPreference with null skybox and null geometry provides a completely black immersive skybox.
+                environment.preferredSpatialEnvironment = SpatialEnvironment.SpatialEnvironmentPreference(
+                    skybox = null,
+                    geometry = null
+                )
             } else {
-                // Re-enable passthrough when paused to see the real world
-                environment.preferredPassthroughOpacity = 1.0f
+                // Clear the preferred environment when paused to fall back to passthrough/real world
+                environment.preferredSpatialEnvironment = null
             }
         } catch (e: Exception) {
-            // Passthrough control might not be supported on all devices
+            // Environment control might not be supported
         }
     }
 
@@ -163,8 +170,8 @@ fun SpatialPlayerScreen(
     
     DisposableEffect(session) {
         // Create the high-fidelity video entity
-        val imaxPose = Pose(Vector3(0f, 0f, -3.5f), Quaternion.Identity) // 3.5m away
-        val initialShape = SurfaceEntity.Shape.Quad(FloatSize2d(5.0f, 2.8125f)) // Large immersive screen
+        val imaxPose = Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity) // 5.0m away for true IMAX
+        val initialShape = SurfaceEntity.Shape.Quad(FloatSize2d(10.0f, 5.625f)) // Massive immersive screen
         
         try {
             val entity = SurfaceEntity.create(
@@ -186,7 +193,7 @@ fun SpatialPlayerScreen(
             videoEntity.value = null
             // Reset passthrough when leaving the player
             try {
-                session.scene.spatialEnvironment.preferredPassthroughOpacity = 1.0f
+                session.scene.spatialEnvironment.preferredSpatialEnvironment = null
             } catch (e: Exception) {}
         }
     }
@@ -205,29 +212,64 @@ fun SpatialPlayerScreen(
                 aspectRatio *= 2f
             }
 
-            val quadWidth = 5.0f 
+            val quadWidth = 10.0f 
             val quadHeight = quadWidth / aspectRatio
+            videoWidth = quadWidth
             videoHeight = quadHeight
             videoEntity.value?.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
         }
     }
 
+    // Dynamic scaled positioning for IMAX experience
+    val videoDepth = 5.0f
+    val subtitleDepth = 2.0f
+    val subtitleScaleFactor = subtitleDepth / videoDepth
+
+    // Calculate the scaled video size at the subtitle depth.
+    val scaledVideoWidthDp = videoWidth * subtitleScaleFactor * 1000f
+    val scaledVideoHeightDp = videoHeight * subtitleScaleFactor * 1000f
+
+    // Use a dedicated smaller panel to avoid OS max-size limits that cause clamping.
+    val subtitlePanelWidthDp = scaledVideoWidthDp.coerceAtMost(2500f)
+    val subtitlePanelHeightDp = 400f
+
+    // Position the panel so its bottom edge aligns with the bottom edge of the scaled video.
+    // The panel's offset is its center, so we shift down by half the video height, and up by half the panel height.
+    val subtitleCenterYDp = -(scaledVideoHeightDp / 2f) + (subtitlePanelHeightDp / 2f)
+
+    // Scale subtitle text size proportionally to the panel width so it stays legible.
+    val finalSubtitleSize = xrSubtitleSize * (subtitlePanelWidthDp / 1500f).coerceAtLeast(1f)
+    LaunchedEffect(videoWidth, videoHeight, finalSubtitleSize) {
+        Timber.d("XR_LAYOUT: videoSize=${videoWidth}x${videoHeight}m, subtitlePanelWidth=${subtitlePanelWidthDp}dp, subtitlePanelHeight=${subtitlePanelHeightDp}dp, finalSubtitleSize=${finalSubtitleSize}")
+    }
+
     Subspace {
-        // Subtitle Panel: Positioned OVER the bottom area of the video entity.
-        // Enlarged significantly for comfortable IMAX-style reading.
+        // Subtitle Panel: Positioned OVER the entire video entity.
+        // By taking up the exact same rectangular space as the video, 
+        // the Android SubtitleView will naturally draw the subtitles exactly at the bottom edge.
         SpatialPanel(
             modifier = SubspaceModifier
-                .width(2800.dp)
-                .height(600.dp)
-                .offset(y = (-800).dp, z = (-3480).dp), // Glued just in front of the screen
+                .width(subtitlePanelWidthDp.dp)
+                .height(subtitlePanelHeightDp.dp)
+                .offset(y = subtitleCenterYDp.dp, z = (-2000).dp), // Exact center, glued in front of screen
         ) {
             AndroidView(
                 factory = { context ->
                     SubtitleView(context).apply {
                         setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                        // Use a massive text size (120sp) to ensure clarity at 3.5m
-                        setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 120f)
+                        // A padding fraction of 0.05 on a 5000dp tall screen is 250dp of empty space!
+                        // Let's set it to 0.0f so it sits flush at the very bottom edge.
+                        setBottomPaddingFraction(0.0f) 
+                        // Use user defined text size, scaled relative to the video size
+                        setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, finalSubtitleSize)
                         setUserDefaultStyle()
+
+                        // Add explicit logging for layout bounds to debug "too high/too low" issues
+                        addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+                            if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom) {
+                                Timber.d("XR_SUBTITLE_LAYOUT: SubtitleView bound to w=${right-left}px, h=${bottom-top}px")
+                            }
+                        }
                     }
                 },
                 update = { view ->
@@ -237,12 +279,13 @@ fun SpatialPlayerScreen(
             )
         }
 
-        // The Control Panel: Enlarged further and brought slightly closer for accessibility.
+        // The Control Panel: Moved to the left of the video for a clear IMAX experience.
+        // This requires the user to look left to see and interact with it.
         SpatialPanel(
             modifier = SubspaceModifier
                 .width(1400.dp)
                 .height(600.dp)
-                .offset(y = (-1100).dp, z = (-2000).dp),
+                .offset(x = (-3000).dp, y = 0.dp, z = (-2000).dp),
             dragPolicy = MovePolicy(),
             resizePolicy = ResizePolicy()
         ) {
@@ -262,34 +305,42 @@ fun SpatialPlayerScreen(
                         isLocked = isLocked,
                         onStereoModeChange = { currentStereoMode = it },
                         onLockToggle = { isLocked = !isLocked },
+                        onHideClick = { controlsVisible = false },
                         onBackClick = onBackClick,
-                        onInteraction = { resetAutoHide() }
+                        resetAutoHide = { resetAutoHide() }
                     )
                 }
                 
                 if (!controlsVisible) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        FilledIconButton(
+                            onClick = {
                                 controlsVisible = true
                                 resetAutoHide()
-                            }
-                    )
+                            },
+                            modifier = Modifier.size(120.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_eye),
+                                contentDescription = "Show Controls",
+                                modifier = Modifier.size(72.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
 
-        // Contextual Skip Button: Enlarged for easier targeting.
+        // Contextual Skip Button: Moved to the right of the video
         uiState.currentSegment?.let { segment ->
             SpatialPanel(
                 modifier = SubspaceModifier
                     .width(360.dp)
                     .height(120.dp)
-                    .offset(x = 1800.dp, y = (-700).dp, z = (-1900).dp),
+                    .offset(x = 2600.dp, y = 0.dp, z = (-2000).dp),
                 dragPolicy = MovePolicy()
             ) {
                 Surface(
@@ -332,8 +383,9 @@ private fun ControlPanelUI(
     isLocked: Boolean,
     onStereoModeChange: (String) -> Unit,
     onLockToggle: () -> Unit,
+    onHideClick: () -> Unit,
     onBackClick: () -> Unit,
-    onInteraction: () -> Unit,
+    resetAutoHide: () -> Unit,
 ) {
     var activeDialog by remember { mutableStateOf<String?>(null) }
 
@@ -375,19 +427,21 @@ private fun ControlPanelUI(
                     }
 
                     if (!isLocked) {
-                        IconButton(onClick = { activeDialog = "audio"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                        IconButton(onClick = { activeDialog = "audio"; resetAutoHide() }, modifier = Modifier.size(80.dp)) {
                             Icon(painterResource(CoreR.drawable.ic_speaker), null, tint = Color.White, modifier = Modifier.size(48.dp))
                         }
-                        IconButton(onClick = { activeDialog = "subtitle"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                        IconButton(onClick = { activeDialog = "subtitle"; resetAutoHide() }, modifier = Modifier.size(80.dp)) {
                             Icon(painterResource(CoreR.drawable.ic_closed_caption), null, tint = Color.White, modifier = Modifier.size(48.dp))
                         }
-                        IconButton(onClick = { activeDialog = "speed"; onInteraction() }, modifier = Modifier.size(80.dp)) {
+                        IconButton(onClick = { activeDialog = "speed"; resetAutoHide() }, modifier = Modifier.size(80.dp)) {
                             Icon(painterResource(CoreR.drawable.ic_gauge), null, tint = Color.White, modifier = Modifier.size(48.dp))
                         }
+                        IconButton(onClick = { onHideClick() }, modifier = Modifier.size(80.dp)) {
+                            Icon(painterResource(CoreR.drawable.ic_eye_off), "Hide Controls", tint = Color.White, modifier = Modifier.size(48.dp))
+                        }
                     }
-                    
-                    IconButton(onClick = { onLockToggle(); onInteraction() }, modifier = Modifier.size(80.dp)) {
-                        Icon(
+
+                    IconButton(onClick = { onLockToggle(); resetAutoHide() }, modifier = Modifier.size(80.dp)) {                        Icon(
                             painter = painterResource(if (isLocked) CoreR.drawable.ic_lock else CoreR.drawable.ic_unlock),
                             contentDescription = "Lock Controls",
                             tint = if (isLocked) Color.Red else Color.White,
@@ -403,7 +457,7 @@ private fun ControlPanelUI(
                         viewModel = viewModel,
                         currentPosition = currentPosition,
                         duration = duration,
-                        onInteraction = onInteraction
+                        resetAutoHide = resetAutoHide
                     )
                 }
 
@@ -416,7 +470,7 @@ private fun ControlPanelUI(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (!isLocked) {
-                        IconButton(onClick = { viewModel.player.seekBack(); onInteraction() }, modifier = Modifier.size(96.dp)) {
+                        IconButton(onClick = { viewModel.player.seekBack(); resetAutoHide() }, modifier = Modifier.size(96.dp)) {
                             Icon(painterResource(CoreR.drawable.ic_rewind), null, tint = Color.White, modifier = Modifier.size(64.dp))
                         }
                         Spacer(Modifier.width(48.dp))
@@ -425,7 +479,7 @@ private fun ControlPanelUI(
                     FilledIconButton(
                         onClick = { 
                             if (isPlaying) viewModel.player.pause() else viewModel.player.play()
-                            onInteraction()
+                            resetAutoHide()
                         },
                         modifier = Modifier.size(120.dp)
                     ) {
@@ -438,7 +492,7 @@ private fun ControlPanelUI(
 
                     if (!isLocked) {
                         Spacer(Modifier.width(48.dp))
-                        IconButton(onClick = { viewModel.player.seekForward(); onInteraction() }, modifier = Modifier.size(96.dp)) {
+                        IconButton(onClick = { viewModel.player.seekForward(); resetAutoHide() }, modifier = Modifier.size(96.dp)) {
                             Icon(painterResource(CoreR.drawable.ic_fast_forward), null, tint = Color.White, modifier = Modifier.size(64.dp))
                         }
                         
@@ -449,7 +503,7 @@ private fun ControlPanelUI(
                                 val modes = listOf("mono", "sbs", "top_bottom")
                                 val next = modes[(modes.indexOf(currentStereoMode) + 1) % modes.size]
                                 onStereoModeChange(next)
-                                onInteraction()
+                                resetAutoHide()
                             },
                             modifier = Modifier.height(80.dp)
                         ) {
@@ -600,7 +654,7 @@ private fun ProgressSection(
     viewModel: PlayerViewModel,
     currentPosition: Long,
     duration: Long,
-    onInteraction: () -> Unit
+    resetAutoHide: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var sliderValue by remember { mutableFloatStateOf(0f) }
@@ -635,12 +689,12 @@ private fun ProgressSection(
                 onValueChange = { 
                     isDragging = true
                     sliderValue = it
-                    onInteraction()
+                    resetAutoHide()
                 },
                 onValueChangeFinished = {
                     viewModel.player.seekTo((sliderValue * duration).toLong())
                     isDragging = false
-                    onInteraction()
+                    resetAutoHide()
                 },
                 modifier = Modifier.weight(1f).padding(horizontal = 24.dp)
             )

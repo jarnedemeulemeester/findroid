@@ -100,4 +100,8 @@
     <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">None</string>
+    <string name="xr_subtitle_size">XR Subtitle Size</string>
+    <string name="xr_subtitle_size_summary">Adjust the font size of subtitles in XR mode</string>
+    <string name="logging_enabled">Enable Logging</string>
+    <string name="logging_enabled_summary">Create a log file in the Downloads folder. Disabled by default.</string>
 </resources>

@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFloatInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
@@ -49,6 +50,11 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 }
                             },
                             backendPreference = appPreferences.offlineMode,
+                        ),
+                        PreferenceSwitch(
+                            nameStringResource = R.string.logging_enabled,
+                            descriptionStringRes = R.string.logging_enabled_summary,
+                            backendPreference = appPreferences.loggingEnabled,
                         )
                     )
             ),
@@ -226,6 +232,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     descriptionStringRes =
                                                         R.string.subtitles_summary,
                                                     iconDrawableId = R.drawable.ic_closed_caption,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE, DeviceType.TV),
                                                     onClick = {
                                                         viewModelScope.launch {
                                                             eventsChannel.send(
@@ -238,6 +245,12 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                             )
                                                         }
                                                     },
+                                                ),
+                                                PreferenceIntInput(
+                                                    nameStringResource = R.string.xr_subtitle_size,
+                                                    descriptionStringRes = R.string.xr_subtitle_size_summary,
+                                                    backendPreference = appPreferences.xrSubtitleSize,
+                                                    supportedDeviceTypes = listOf(DeviceType.XR),
                                                 )
                                             )
                                     ),
@@ -250,6 +263,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     descriptionStringRes =
                                                         R.string.mpv_player_summary,
                                                     backendPreference = appPreferences.playerMpv,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE, DeviceType.TV),
                                                 ),
                                                 PreferenceSelect(
                                                     nameStringResource =
@@ -259,6 +273,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         appPreferences.playerMpvHwdec,
                                                     options = R.array.mpv_hwdec,
                                                     optionValues = R.array.mpv_hwdec,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE, DeviceType.TV),
                                                 ),
                                                 PreferenceSelect(
                                                     nameStringResource =
@@ -267,6 +282,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference = appPreferences.playerMpvVo,
                                                     options = R.array.mpv_vos,
                                                     optionValues = R.array.mpv_vos,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE, DeviceType.TV),
                                                 ),
                                                 PreferenceSelect(
                                                     nameStringResource =
@@ -275,6 +291,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference = appPreferences.playerMpvAo,
                                                     options = R.array.mpv_aos,
                                                     optionValues = R.array.mpv_aos,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE, DeviceType.TV),
                                                 ),
                                             ),
                                     ),
