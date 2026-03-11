@@ -30,4 +30,13 @@
     <string name="remove_server_address">Supprimer l\'adresse du serveur</string>
     <string name="remove_server_address_dialog_text">Êtes vous sûr de vouloir retirer le serveur à l\'adresse %1$s</string>
     <string name="cancel">Annuler</string>
+    <string name="servers">Serveurs</string>
+    <string name="servers_btn_add_server">Ajouter un serveur</string>
+    <string name="welcome">Bienvenue sur Findroid</string>
+    <string name="welcome_btn_continue">Continuer</string>
+    <string name="welcome_btn_learn_more">En savoir plus sur Jellyfin</string>
+    <string name="welcome_text">Findroid est un client tiers pour Jellyfin. Findroid en lui-même ne contient aucun média.\n\nPour utiliser ce client, vous devez héberger votre propre serveur Jellyfin.</string>
+    <string name="confirm">Confirmer</string>
+    <string name="or">OU</string>
+    <string name="server_subtitle">Serveur : %s</string>
 </resources>
