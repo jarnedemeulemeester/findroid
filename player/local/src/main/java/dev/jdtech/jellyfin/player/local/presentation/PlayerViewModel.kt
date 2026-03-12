@@ -487,6 +487,11 @@ constructor(
                         )
                     )
                     .setTrackTypeDisabled(trackType, false)
+                    .apply {
+                        if (trackType == C.TRACK_TYPE_TEXT) {
+                            setIgnoredTextSelectionFlags(0)
+                        }
+                    }
                     .build()
         }
     }
