@@ -42,13 +42,13 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
         }
     }
 
-    private fun download(item: FindroidItem, storageIndex: Int = 0) {
+    private fun download(item: FindroidItem, storageIndex: Int = 0, mediaSourceId: String) {
         viewModelScope.launch {
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
             val (downloadId, uiText) =
                 downloader.downloadItem(
                     item = item,
-                    sourceId = item.sources.first().id,
+                    sourceId = mediaSourceId,
                     storageIndex = storageIndex,
                 )
             if (downloadId != -1L) {
@@ -114,7 +114,8 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
 
     fun onAction(action: DownloaderAction) {
         when (action) {
-            is DownloaderAction.Download -> download(action.item, action.storageIndex)
+            is DownloaderAction.Download ->
+                download(action.item, action.storageIndex, action.mediaSourceId)
             is DownloaderAction.DeleteDownload -> deleteDownload(action.item)
             is DownloaderAction.CancelDownload -> cancelDownload(action.item)
         }
