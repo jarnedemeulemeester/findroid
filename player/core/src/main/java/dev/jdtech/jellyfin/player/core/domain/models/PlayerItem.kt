@@ -17,4 +17,10 @@ data class PlayerItem(
     val externalSubtitles: List<ExternalSubtitle> = emptyList(),
     val chapters: List<PlayerChapter> = emptyList(),
     val trickplayInfo: TrickplayInfo? = null,
+    val people: List<PlayerPerson> = emptyList(),
+    val overview: String = "",
+    /** Episode/movie backdrop URI string for next-up cards (null for non-visual items). */
+    val backdropImageUri: String? = null,
+    /** Series name for episodes, used in next-up panel display. */
+    val seriesName: String? = null,
 ) : Parcelable

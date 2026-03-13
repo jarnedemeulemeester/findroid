@@ -56,6 +56,10 @@ dependencies {
     implementation(libs.androidx.xr.scenecore)
     implementation(libs.androidx.xr.compose)
 
+    // Image loading (for next-episode artwork in the next-up panel)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

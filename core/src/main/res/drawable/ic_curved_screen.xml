@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!--
+        Cinema curved screen icon: a concave arc band representing a
+        cylindrical screen viewed from slightly above (the viewer's
+        perspective inside the cylinder).
+    -->
+    <!-- Outer arc (screen surface) -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M2,20 Q12,6 22,20 L22,22 Q12,8 2,22 Z"/>
+    <!-- Left pillar -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M1,14 L3,14 L3,22 L1,22 Z"/>
+    <!-- Right pillar -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M21,14 L23,14 L23,22 L21,22 Z"/>
+</vector>

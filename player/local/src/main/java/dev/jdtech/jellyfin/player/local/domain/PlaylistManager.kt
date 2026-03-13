@@ -5,12 +5,14 @@ import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerPerson
 import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
@@ -262,12 +264,36 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            people = when (this) {
+                is FindroidMovie -> people.toPlayerPeople()
+                is FindroidEpisode -> people.toPlayerPeople()
+                else -> emptyList()
+            },
+            overview = overview,
+            backdropImageUri = when (this) {
+                is FindroidEpisode -> (images.backdrop ?: images.primary)?.toString()
+                is FindroidMovie -> (images.backdrop ?: images.primary)?.toString()
+                else -> null
+            },
+            seriesName = if (this is FindroidEpisode) seriesName else null,
         )
     }
 
     private fun List<FindroidChapter>.toPlayerChapters(): List<PlayerChapter> {
         return this.map { chapter ->
             PlayerChapter(startPosition = chapter.startPosition, name = chapter.name)
+        }
+    }
+
+    private fun List<FindroidItemPerson>.toPlayerPeople(): List<PlayerPerson> {
+        return this.map { person ->
+            PlayerPerson(
+                name = person.name,
+                role = person.role,
+                // PersonKind.toString() returns the serial name: "Actor", "Director", etc.
+                type = person.type.toString(),
+                imageUri = person.image.uri?.toString(),
+            )
         }
     }
 }

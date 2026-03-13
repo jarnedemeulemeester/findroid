@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -78,19 +79,32 @@ import androidx.xr.runtime.math.Vector3
 import androidx.xr.scenecore.SpatialCapability
 import androidx.xr.scenecore.SpatialEnvironment
 import androidx.xr.scenecore.SurfaceEntity
+import androidx.xr.scenecore.GroupEntity
+import androidx.xr.compose.subspace.SceneCoreEntity
 import androidx.xr.scenecore.scene
 import dev.jdtech.jellyfin.player.local.domain.getTrackNames
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
+import java.util.UUID
 import kotlinx.coroutines.delay
 import timber.log.Timber
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerPerson
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.local.R as LocalR
+
+// ── Next-episode panel threshold ───────────────────────────────────────────────────
+private const val NEXT_EPISODE_THRESHOLD_MS = 2 * 60 * 1_000L  // show in last 2 minutes
 
 /**
  * SpatialPlayerScreen — IMAX-style immersive XR playback experience.
  *
  * Architecture:
- *  - SurfaceEntity (SceneCore): high-fidelity video surface, user-movable
+ *  - GroupEntity (SceneCore): high-fidelity video root, user-movable
+ *  - SurfaceEntity (SceneCore): high-fidelity video surface, child of GroupEntity
  *  - Subtitle SpatialPanel: perspective-scaled, follows video pose via state
  *  - Control SpatialPanel: floats below the video with:
  *      • Orbiter (End): secondary controls (audio / subtitle / speed)
@@ -103,9 +117,13 @@ fun SpatialPlayerScreen(
     viewModel: PlayerViewModel,
     session: Session,
     initialStereoMode: String,
+    itemId: UUID,
+    itemKind: String,
+    startFromBeginning: Boolean,
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val player by viewModel.playerFlow.collectAsState()
     val xrSubtitleSize = viewModel.appPreferences.getValue(viewModel.appPreferences.xrSubtitleSize).toFloat()
 
     // Build caption style from user preferences so the selected colours / background
@@ -148,6 +166,18 @@ fun SpatialPlayerScreen(
     var isLocked by remember { mutableStateOf(false) }
     var hideTimestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
+    // --- Next episode panel state ---
+    var nextEpisodePanelDismissed by remember { mutableStateOf(false) }
+    // Reset dismissal whenever the title changes (user started a new episode).
+    LaunchedEffect(uiState.currentItemTitle) { nextEpisodePanelDismissed = false }
+    // Show the panel during the last NEXT_EPISODE_THRESHOLD_MS of an episode when a next
+    // episode exists — but not for movies, very short content, or when controls are locked.
+    val showNextEpisodePanel = !nextEpisodePanelDismissed &&
+        !isLocked &&
+        uiState.nextEpisode != null &&
+        duration > NEXT_EPISODE_THRESHOLD_MS &&
+        (duration - currentPosition) in 0L..NEXT_EPISODE_THRESHOLD_MS
+
     // --- Dialog state (lifted here so SpatialDialog lives inside the control SpatialPanel) ---
     var activeDialog by remember { mutableStateOf<String?>(null) }
 
@@ -176,78 +206,117 @@ fun SpatialPlayerScreen(
     }
 
     // Subtitle cue listener
-    DisposableEffect(viewModel.player) {
+    DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onCues(cueGroup: CueGroup) {
                 currentCues = cueGroup.cues
             }
         }
-        viewModel.player.addListener(listener)
-        onDispose { viewModel.player.removeListener(listener) }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
     }
 
     // Poll playback state (position, duration, isPlaying, segments)
-    LaunchedEffect(Unit) {
+    LaunchedEffect(player) {
         while (true) {
-            currentPosition = viewModel.player.currentPosition
-            duration = viewModel.player.duration.coerceAtLeast(0L)
-            isPlaying = viewModel.player.isPlaying
+            currentPosition = player.currentPosition
+            duration = player.duration.coerceAtLeast(0L)
+            isPlaying = player.isPlaying
             viewModel.updateCurrentSegment()
             delay(500)
         }
     }
 
     // --- SceneCore video entity ---
-    var videoPose by remember { mutableStateOf(Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity)) }
+    val rootEntity = remember { mutableStateOf<GroupEntity?>(null) }
     val videoEntity = remember { mutableStateOf<SurfaceEntity?>(null) }
 
     DisposableEffect(session) {
         val initialShape = SurfaceEntity.Shape.Quad(FloatSize2d(10.0f, 5.625f))
         try {
+            // Place root at the origin. UIs will be offset manually relative to the root.
+            val root = GroupEntity.create(session, "PlayerRoot", Pose(Vector3(0f, 0f, 0f), Quaternion.Identity))
+            val movable = androidx.xr.scenecore.MovableComponent.createSystemMovable(session)
+            root.addComponent(movable)
+            rootEntity.value = root
+
+            // Place the video at -5.0f relative to the root.
             val entity = SurfaceEntity.create(
                 session = session,
-                pose = videoPose,
+                pose = Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity),
                 shape = initialShape,
                 stereoMode = mapStereoMode(currentStereoMode) ?: SurfaceEntity.StereoMode.MONO,
-            )
-            val movable = androidx.xr.scenecore.MovableComponent.createSystemMovable(session)
-            entity.addComponent(movable)
-            // Update Compose state immediately when the user moves the screen — all child
-            // panels react synchronously via state recomposition.
-            movable.addMoveListener(object : androidx.xr.scenecore.EntityMoveListener {
-                override fun onMoveUpdate(
-                    movedEntity: androidx.xr.scenecore.Entity,
-                    ray: androidx.xr.runtime.math.Ray,
-                    pose: Pose,
-                    scale: Float,
-                ) {
-                    videoPose = pose
-                }
-            })
+            ).apply {
+                mediaBlendingMode = SurfaceEntity.MediaBlendingMode.OPAQUE
+            }
+            root.addChild(entity)
             videoEntity.value = entity
-            viewModel.player.setVideoSurface(entity.getSurface())
+            
+            // Initial surface attachment
+            player.setVideoSurface(entity.getSurface())
+
+            // Initialize the player now that the surface is guaranteed to be ready
+            // to avoid MPV crashing due to a race condition (missing surface pointer).
+            viewModel.initializePlayer(
+                itemId = itemId,
+                itemKind = itemKind,
+                startFromBeginning = startFromBeginning,
+            )
         } catch (_: Exception) {}
 
         onDispose {
             videoEntity.value?.dispose()
             videoEntity.value = null
+            rootEntity.value?.dispose()
+            rootEntity.value = null
             try { session.scene.spatialEnvironment.preferredSpatialEnvironment = null } catch (_: Exception) {}
         }
     }
 
-    // Update SurfaceEntity shape when video dimensions change
-    LaunchedEffect(viewModel.player.videoSize) {
-        val videoSize = viewModel.player.videoSize
+    // Safety net: re-attach the surface whenever the player instance changes (e.g. if the
+    // player is replaced for reasons outside the onPlayerReplaced callback path). Does not
+    // run for dimension changes — videoWidth/videoHeight are not keys here, which avoids
+    // triggering an MPV VO reinit (and the resulting solid-color flash) on every resize.
+    LaunchedEffect(player, videoEntity.value) {
+        videoEntity.value?.let { entity ->
+            player.setVideoSurface(entity.getSurface())
+        }
+    }
+
+    // Inform MPV of the target resolution separately so dimension changes don't trigger
+    // a VO reinit. setSurfacePixelDimensions only updates the viewport hint, not the surface.
+    LaunchedEffect(player, videoWidth, videoHeight) {
+        if (player is dev.jdtech.jellyfin.player.local.mpv.MPVPlayer) {
+            val pixelsPerMeter = 384f // ~3840px / 10m
+            val pixelWidth = (videoWidth * pixelsPerMeter).toInt()
+            val pixelHeight = (videoHeight * pixelsPerMeter).toInt()
+            (player as dev.jdtech.jellyfin.player.local.mpv.MPVPlayer).setSurfacePixelDimensions(pixelWidth, pixelHeight)
+        }
+    }
+
+    // Update SurfaceEntity shape when video dimensions or stereo mode changes.
+    // Both are consolidated here to avoid races between separate LaunchedEffects.
+    LaunchedEffect(player.videoSize, currentStereoMode) {
+        // 1. Recalculate video dimensions from the player if available.
+        val videoSize = player.videoSize
+        
         if (videoSize.width > 0 && videoSize.height > 0) {
             var aspectRatio = videoSize.width.toFloat() / videoSize.height.toFloat()
             if (currentStereoMode == "sbs" && aspectRatio > 3.0f) aspectRatio /= 2f
             else if (currentStereoMode == "top_bottom" && videoSize.height > videoSize.width) aspectRatio *= 2f
-            val quadWidth = 10.0f
-            val quadHeight = quadWidth / aspectRatio
-            videoWidth = quadWidth
-            videoHeight = quadHeight
-            videoEntity.value?.shape = SurfaceEntity.Shape.Quad(FloatSize2d(quadWidth, quadHeight))
+            videoWidth = 10.0f
+            videoHeight = videoWidth / aspectRatio
+        } else {
+            videoWidth = 10.0f
+            videoHeight = videoWidth / (16f / 9f)
         }
+
+        // 2. Apply the correct shape and pose to the entity.
+        val entity = videoEntity.value ?: return@LaunchedEffect
+        // Flat mode — simple quad with entity-level stereo mode.
+        entity.shape = SurfaceEntity.Shape.Quad(FloatSize2d(videoWidth, videoHeight))
+        entity.stereoMode = mapStereoMode(currentStereoMode) ?: SurfaceEntity.StereoMode.MONO
+        entity.setPose(Pose(Vector3(0f, 0f, -5.0f), Quaternion.Identity))
     }
 
     // --- Layout calculations ---
@@ -259,23 +328,28 @@ fun SpatialPlayerScreen(
     val subtitlePanelWidthDp = scaledVideoWidthDp.coerceAtMost(2500f)
     val subtitlePanelHeightDp = scaledVideoHeightDp.coerceAtMost(2500f)
     val finalSubtitleSize = xrSubtitleSize * (subtitlePanelHeightDp / 600f).coerceAtLeast(1f)
-    // Controls sit just below the video surface
-    val controlsPanelY = -(scaledVideoHeightDp / 2f + 400f)
+    // Controls sit further below the video surface to prevent overlap
+    val controlsPanelY = -(scaledVideoHeightDp / 2f + 800f)
+
+    // Flat mode Z depth: -2.0 meters (-2000 dp) from user, which is -2000 offset relative to 0,0,0 root
+    val uiAnchorZDp = -2000f
+
+    // Controls sit closer to the user to avoid intersecting the curved screen
+    val controlsZDp = -2000f
 
     Subspace {
+        val root = rootEntity.value
+        if (root != null) {
+            SceneCoreEntity(factory = { root }, modifier = SubspaceModifier) {
         // ── Subtitle Panel ──────────────────────────────────────────────────────────
         // Spans the full projected video area so PGS cue positions map correctly.
+        // In curved mode the panel sits at the front of the cylinder (uiAnchorZDp already
+        // incorporates the depth; uiExtraZDp is 0).
         SpatialPanel(
             modifier = SubspaceModifier
                 .width(subtitlePanelWidthDp.dp)
                 .height(subtitlePanelHeightDp.dp)
-                .offset(
-                    x = (videoPose.translation.x * 1000f).dp,
-                    y = (videoPose.translation.y * 1000f).dp,
-                    z = (videoPose.translation.z * 1000f).dp,
-                )
-                .rotate(quaternion = videoPose.rotation)
-                .offset(y = 0.dp, z = 3000.dp),
+                .offset(x = 0.dp, y = 0.dp, z = uiAnchorZDp.dp),
         ) {
             AndroidView(
                 factory = { context ->
@@ -336,13 +410,7 @@ fun SpatialPlayerScreen(
             modifier = SubspaceModifier
                 .width(1400.dp)
                 .height(600.dp)
-                .offset(
-                    x = (videoPose.translation.x * 1000f).dp,
-                    y = (videoPose.translation.y * 1000f).dp,
-                    z = (videoPose.translation.z * 1000f).dp,
-                )
-                .rotate(quaternion = videoPose.rotation)
-                .offset(x = 0.dp, y = controlsPanelY.dp, z = 3000.dp),
+                .offset(x = 0.dp, y = controlsPanelY.dp, z = controlsZDp.dp),
             resizePolicy = ResizePolicy(),
         ) {
             // ── Orbiter: secondary controls (right edge, hidden when locked/controls hidden) ──
@@ -356,6 +424,7 @@ fun SpatialPlayerScreen(
                         onAudioClick = { activeDialog = "audio"; resetAutoHide() },
                         onSubtitleClick = { activeDialog = "subtitle"; resetAutoHide() },
                         onSpeedClick = { activeDialog = "speed"; resetAutoHide() },
+                        onCastCrewClick = { activeDialog = "cast_crew"; resetAutoHide() },
                     )
                 }
             }
@@ -390,6 +459,7 @@ fun SpatialPlayerScreen(
                 ) {
                     ControlPanelUI(
                         viewModel = viewModel,
+                        player = player,
                         uiState = uiState,
                         isPlaying = isPlaying,
                         currentPosition = currentPosition,
@@ -426,7 +496,7 @@ fun SpatialPlayerScreen(
                 SpatialDialog(onDismissRequest = { activeDialog = null }) {
                     TrackSelectionDialogContent(
                         title = stringResource(LocalR.string.select_audio_track),
-                        player = viewModel.player,
+                        player = player,
                         trackType = C.TRACK_TYPE_AUDIO,
                         onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_AUDIO, index) },
                         onDismiss = { activeDialog = null },
@@ -437,7 +507,7 @@ fun SpatialPlayerScreen(
                 SpatialDialog(onDismissRequest = { activeDialog = null }) {
                     TrackSelectionDialogContent(
                         title = stringResource(LocalR.string.select_subtitle_track),
-                        player = viewModel.player,
+                        player = player,
                         trackType = C.TRACK_TYPE_TEXT,
                         onTrackSelected = { index -> viewModel.switchToTrack(C.TRACK_TYPE_TEXT, index) },
                         onDismiss = { activeDialog = null },
@@ -453,6 +523,16 @@ fun SpatialPlayerScreen(
                     )
                 }
             }
+            if (activeDialog == "cast_crew") {
+                SpatialDialog(onDismissRequest = { activeDialog = null }) {
+                    CastCrewDialogContent(
+                        title = uiState.currentItemTitle,
+                        overview = uiState.currentOverview,
+                        people = uiState.currentPeople,
+                        onDismiss = { activeDialog = null },
+                    )
+                }
+            }
         }
 
         // ── Contextual Skip Panel ────────────────────────────────────────────────
@@ -461,13 +541,7 @@ fun SpatialPlayerScreen(
                 modifier = SubspaceModifier
                     .width(360.dp)
                     .height(120.dp)
-                    .offset(
-                        x = (videoPose.translation.x * 1000f).dp,
-                        y = (videoPose.translation.y * 1000f).dp,
-                        z = (videoPose.translation.z * 1000f).dp,
-                    )
-                    .rotate(quaternion = videoPose.rotation)
-                    .offset(x = 950.dp, y = controlsPanelY.dp, z = 3000.dp),
+                    .offset(x = 950.dp, y = controlsPanelY.dp, z = controlsZDp.dp),
             ) {
                 Surface(
                     onClick = { viewModel.skipSegment(segment); resetAutoHide() },
@@ -497,17 +571,61 @@ fun SpatialPlayerScreen(
                 }
             }
         }
+
+        // ── Next Episode Panel ───────────────────────────────────────────────────
+        // Floats to the LEFT of the control panel during the last 2 minutes of an episode.
+        if (showNextEpisodePanel) {
+            SpatialPanel(
+                modifier = SubspaceModifier
+                    .width(700.dp)
+                    .height(440.dp)
+                    .offset(x = (-1150).dp, y = controlsPanelY.dp, z = controlsZDp.dp),
+            ) {
+                NextEpisodePanelContent(
+                    nextEpisode = uiState.nextEpisode!!,
+                    onPlayNext = {
+                        player.seekToNextMediaItem()
+                        nextEpisodePanelDismissed = true
+                    },
+                    onDismiss = { nextEpisodePanelDismissed = true },
+                )
+            }
+                }
+            }
+
+        // ── Cast & Info Panel (auto-visible when paused) ──────────────────────────
+        // Placed OUTSIDE the SceneCoreEntity so the MovableComponent on the root
+        // GroupEntity does not intercept scroll gestures or button taps on this panel.
+        // z = -1000 dp (1 m) puts it clearly in front of the video (-5 m) and controls
+        // (-2 m) so depth-ordering also unambiguously gives it input priority.
+        if (!isPlaying && (uiState.currentPeople.isNotEmpty() || uiState.currentOverview.isNotBlank())) {
+            SpatialPanel(
+                modifier = SubspaceModifier
+                    .width(1400.dp)
+                    .height(1600.dp)
+                    .offset(x = 0.dp, y = 0.dp, z = (-1000).dp),
+            ) {
+                CastCrewPanelContent(
+                    title = uiState.currentItemTitle,
+                    overview = uiState.currentOverview,
+                    people = uiState.currentPeople,
+                    onResume = { player.play() },
+                )
+            }
+        }
+        }
     }
 }
 
 // ── Secondary Controls Orbiter ────────────────────────────────────────────────────
 // Floats to the right of the control panel. Keeps the main panel clean while still
-// giving one-glance access to audio, subtitle, and speed.
+// giving one-glance access to audio, subtitle, speed, and cast & crew info.
 @Composable
 private fun SecondaryControlsOrbiter(
     onAudioClick: () -> Unit,
     onSubtitleClick: () -> Unit,
     onSpeedClick: () -> Unit,
+    onCastCrewClick: () -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(40.dp),
@@ -543,6 +661,14 @@ private fun SecondaryControlsOrbiter(
                     modifier = Modifier.size(48.dp),
                 )
             }
+            IconButton(onClick = onCastCrewClick, modifier = Modifier.size(80.dp)) {
+                Icon(
+                    painterResource(CoreR.drawable.ic_user),
+                    contentDescription = "Cast & crew",
+                    tint = Color.White,
+                    modifier = Modifier.size(48.dp),
+                )
+            }
         }
     }
 }
@@ -553,6 +679,7 @@ private fun SecondaryControlsOrbiter(
 @Composable
 private fun ControlPanelUI(
     viewModel: PlayerViewModel,
+    player: Player,
     uiState: PlayerViewModel.UiState,
     isPlaying: Boolean,
     currentPosition: Long,
@@ -638,6 +765,7 @@ private fun ControlPanelUI(
             if (!isLocked) {
                 ProgressSection(
                     viewModel = viewModel,
+                    player = player,
                     currentPosition = currentPosition,
                     duration = duration,
                     resetAutoHide = resetAutoHide,
@@ -654,7 +782,7 @@ private fun ControlPanelUI(
             ) {
                 if (!isLocked) {
                     IconButton(
-                        onClick = { viewModel.player.seekBack(); resetAutoHide() },
+                        onClick = { player.seekBack(); resetAutoHide() },
                         modifier = Modifier.size(96.dp),
                     ) {
                         Icon(
@@ -669,7 +797,7 @@ private fun ControlPanelUI(
 
                 FilledIconButton(
                     onClick = {
-                        if (isPlaying) viewModel.player.pause() else viewModel.player.play()
+                        if (isPlaying) player.pause() else player.play()
                         resetAutoHide()
                     },
                     modifier = Modifier.size(120.dp),
@@ -686,7 +814,7 @@ private fun ControlPanelUI(
                 if (!isLocked) {
                     Spacer(Modifier.width(48.dp))
                     IconButton(
-                        onClick = { viewModel.player.seekForward(); resetAutoHide() },
+                        onClick = { player.seekForward(); resetAutoHide() },
                         modifier = Modifier.size(96.dp),
                     ) {
                         Icon(
@@ -847,22 +975,414 @@ private fun SpeedDialogContent(
     }
 }
 
+// ── Shared cast content helpers ───────────────────────────────────────────────────
+
+@Composable
+private fun PersonPhoto(imageUri: String?, sizeDp: Int) {
+    val shape = androidx.compose.foundation.shape.CircleShape
+    if (imageUri != null) {
+        AsyncImage(
+            model = imageUri,
+            contentDescription = null,
+            modifier = Modifier.size(sizeDp.dp).clip(shape),
+            contentScale = ContentScale.Crop,
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .size(sizeDp.dp)
+                .clip(shape)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_user),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size((sizeDp * 0.55f).dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text.uppercase(),
+        style = MaterialTheme.typography.headlineMedium,
+        color = Color(0xFF90CAF9),   // light blue — clearly distinct from body text
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = 36.dp, bottom = 16.dp),
+    )
+}
+
+/** Compact row used for Directors, Writers and other crew. */
+@Composable
+private fun CrewRow(person: PlayerPerson) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        PersonPhoto(imageUri = person.imageUri, sizeDp = 96)
+        Column {
+            Text(
+                text = person.name,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (person.role.isNotBlank()) {
+                Text(
+                    text = person.role,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White.copy(alpha = 0.65f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+/** Large card used for cast members — photo + name + character stacked. */
+@Composable
+private fun ActorCard(person: PlayerPerson, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        PersonPhoto(imageUri = person.imageUri, sizeDp = 160)
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = person.name,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.White,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        if (person.role.isNotBlank()) {
+            Text(
+                text = person.role,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.White.copy(alpha = 0.65f),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+// ── Full-size info panel shown beside the video when paused ───────────────────────
+@Composable
+private fun CastCrewPanelContent(
+    title: String,
+    overview: String,
+    people: List<PlayerPerson>,
+    onResume: () -> Unit,
+) {
+    val directors = people.filter { it.type == "Director" }
+    val writers   = people.filter { it.type == "Writer" }
+    val cast      = people.filter { it.type == "Actor" }
+    val crew      = people.filter { it.type !in listOf("Director", "Writer", "Actor") }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        shape = RoundedCornerShape(32.dp),
+        color = Color(0xFF1C1C26),
+        tonalElevation = 16.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 36.dp, vertical = 28.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            // Header row: title + resume button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(Modifier.width(24.dp))
+                Button(onClick = onResume) {
+                    Text("▶  Resume", style = MaterialTheme.typography.headlineSmall)
+                }
+            }
+
+            // Overview
+            if (overview.isNotBlank()) {
+                Spacer(Modifier.height(28.dp))
+                Text(
+                    text = overview,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White.copy(alpha = 0.85f),
+                    lineHeight = MaterialTheme.typography.headlineSmall.fontSize * 1.55f,
+                )
+            }
+
+            // Crew sections (Director, Writer, other)
+            if (directors.isNotEmpty()) {
+                SectionHeader("Direction")
+                directors.forEach { CrewRow(it) }
+            }
+            if (writers.isNotEmpty()) {
+                SectionHeader("Writing")
+                writers.forEach { CrewRow(it) }
+            }
+            if (crew.isNotEmpty()) {
+                SectionHeader("Crew")
+                crew.forEach { CrewRow(it) }
+            }
+
+            // Cast grid — two cards per row
+            if (cast.isNotEmpty()) {
+                SectionHeader("Cast")
+                cast.chunked(2).forEach { pair ->
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        ActorCard(
+                            person = pair[0],
+                            modifier = Modifier.weight(1f),
+                        )
+                        if (pair.size > 1) {
+                            ActorCard(
+                                person = pair[1],
+                                modifier = Modifier.weight(1f),
+                            )
+                        } else {
+                            Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+
+            if (people.isEmpty() && overview.isBlank()) {
+                Spacer(Modifier.height(32.dp))
+                Text(
+                    text = "No information available.",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White.copy(alpha = 0.5f),
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+// ── Compact Cast & Crew Dialog (opened via button in controls) ────────────────────
+@Composable
+private fun CastCrewDialogContent(
+    title: String,
+    overview: String,
+    people: List<PlayerPerson>,
+    onDismiss: () -> Unit,
+) {
+    val directors = people.filter { it.type == "Director" }
+    val writers   = people.filter { it.type == "Writer" }
+    val cast      = people.filter { it.type == "Actor" }
+    val crew      = people.filter { it.type !in listOf("Director", "Writer", "Actor") }
+
+    Surface(
+        modifier = Modifier.width(800.dp),
+        shape = RoundedCornerShape(32.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 12.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(36.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+
+            if (overview.isNotBlank()) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = overview,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            if (directors.isNotEmpty()) {
+                SectionHeader("Direction")
+                directors.forEach { CrewRow(it) }
+            }
+            if (writers.isNotEmpty()) {
+                SectionHeader("Writing")
+                writers.forEach { CrewRow(it) }
+            }
+            if (crew.isNotEmpty()) {
+                SectionHeader("Crew")
+                crew.forEach { CrewRow(it) }
+            }
+            if (cast.isNotEmpty()) {
+                SectionHeader("Cast")
+                cast.chunked(2).forEach { pair ->
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        ActorCard(person = pair[0], modifier = Modifier.weight(1f))
+                        if (pair.size > 1) {
+                            ActorCard(person = pair[1], modifier = Modifier.weight(1f))
+                        } else {
+                            Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+
+            if (people.isEmpty() && overview.isBlank()) {
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = "No information available.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+            TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                Text("CLOSE", style = MaterialTheme.typography.labelLarge)
+            }
+        }
+    }
+}
+
+// ── Next Episode Panel Content ────────────────────────────────────────────────────
+@Composable
+private fun NextEpisodePanelContent(
+    nextEpisode: PlayerItem,
+    onPlayNext: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(32.dp),
+        color = Color.Black.copy(alpha = 0.92f),
+        tonalElevation = 8.dp,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Column(modifier = Modifier.padding(32.dp)) {
+            // Backdrop image
+            if (nextEpisode.backdropImageUri != null) {
+                AsyncImage(
+                    model = nextEpisode.backdropImageUri,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(20.dp)),
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            Text(
+                text = "Up Next",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(Modifier.height(4.dp))
+
+            // Build display title: "Series Name — S1E2 Episode Name" for episodes
+            val episodeLabel = nextEpisode.parentIndexNumber?.let { s ->
+                nextEpisode.indexNumber?.let { ep -> "S${s}E${ep} " }
+            } ?: ""
+            val displayTitle = if (nextEpisode.seriesName != null) {
+                "${nextEpisode.seriesName} — $episodeLabel${nextEpisode.name}"
+            } else {
+                nextEpisode.name
+            }
+            Text(
+                text = displayTitle,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(72.dp),
+                ) {
+                    Text("Dismiss", style = MaterialTheme.typography.titleLarge)
+                }
+                Button(
+                    onClick = onPlayNext,
+                    modifier = Modifier
+                        .weight(2f)
+                        .height(72.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(CoreR.drawable.ic_play),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text("Play Next", style = MaterialTheme.typography.titleLarge)
+                }
+            }
+        }
+    }
+}
+
 // ── Progress / Trickplay ──────────────────────────────────────────────────────────
 @Composable
 private fun ProgressSection(
     viewModel: PlayerViewModel,
+    player: Player,
     currentPosition: Long,
     duration: Long,
     resetAutoHide: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val chapters = uiState.currentChapters
     var sliderValue by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
 
     val progress = if (duration > 0) currentPosition.toFloat() / duration.toFloat() else 0f
     if (!isDragging) sliderValue = progress
 
+    // Chapter resolved from the scrub target (when dragging) or playback position.
+    val displayPositionMs = if (isDragging && duration > 0) (sliderValue * duration).toLong()
+                            else currentPosition
+    val currentChapterName = remember(displayPositionMs, chapters) {
+        chapters.lastOrNull { it.startPosition <= displayPositionMs }?.name
+    }
+
     Column {
+        // Chapter title row — shown with full opacity while scrubbing, dimmed otherwise.
+        if (currentChapterName != null) {
+            Text(
+                text = currentChapterName,
+                style = MaterialTheme.typography.labelLarge,
+                color = if (isDragging) Color.White else Color.White.copy(alpha = 0.55f),
+                modifier = Modifier.padding(bottom = 6.dp),
+            )
+        }
+
+        // Trickplay thumbnail — only visible while the user is dragging the scrubber.
         if (isDragging && uiState.currentTrickplay != null) {
             val trickplay = uiState.currentTrickplay!!
             val totalThumbnails = trickplay.images.size
@@ -891,22 +1411,53 @@ private fun ProgressSection(
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White.copy(alpha = 0.8f),
             )
-            Slider(
-                value = sliderValue,
-                onValueChange = {
-                    isDragging = true
-                    sliderValue = it
-                    resetAutoHide()
-                },
-                onValueChangeFinished = {
-                    viewModel.player.seekTo((sliderValue * duration).toLong())
-                    isDragging = false
-                    resetAutoHide()
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 24.dp),
-            )
+            // Slider wrapped in a Box so we can overlay chapter tick marks on the track.
+            Box(modifier = Modifier.weight(1f)) {
+                // Chapter tick marks — drawn behind the slider so touch events pass through.
+                if (chapters.isNotEmpty() && duration > 0) {
+                    val sliderHPad = 24.dp
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp)
+                            .align(Alignment.Center),
+                    ) {
+                        // The slider track occupies the width minus the horizontal padding on
+                        // each side (same value as the Slider's own padding modifier below).
+                        val padPx = sliderHPad.toPx()
+                        val trackWidth = size.width - 2 * padPx
+                        val markerH = 14f
+                        val markerW = 3f
+                        val centerY = size.height / 2f
+                        chapters.forEach { chapter ->
+                            val fraction = (chapter.startPosition.toFloat() / duration.toFloat())
+                                .coerceIn(0f, 1f)
+                            val x = padPx + fraction * trackWidth
+                            drawRect(
+                                color = Color.White.copy(alpha = 0.55f),
+                                topLeft = Offset(x - markerW / 2, centerY - markerH / 2),
+                                size = Size(markerW, markerH),
+                            )
+                        }
+                    }
+                }
+                Slider(
+                    value = sliderValue,
+                    onValueChange = {
+                        isDragging = true
+                        sliderValue = it
+                        resetAutoHide()
+                    },
+                    onValueChangeFinished = {
+                        player.seekTo((sliderValue * duration).toLong())
+                        isDragging = false
+                        resetAutoHide()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                )
+            }
             Text(
                 formatTime(duration),
                 style = MaterialTheme.typography.titleLarge,

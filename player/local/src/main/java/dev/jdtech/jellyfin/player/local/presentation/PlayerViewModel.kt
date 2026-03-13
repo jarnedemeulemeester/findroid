@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerPerson
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
@@ -56,8 +57,13 @@ constructor(
     val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
+    private val _playerFlow: MutableStateFlow<Player>
+    val playerFlow: kotlinx.coroutines.flow.StateFlow<Player>
     var player: Player
-        private set
+        get() = _playerFlow.value
+        private set(value) {
+            _playerFlow.value = value
+        }
 
     private val _uiState =
         MutableStateFlow(
@@ -67,6 +73,9 @@ constructor(
                 currentSkipButtonStringRes = R.string.player_controls_skip_intro,
                 currentTrickplay = null,
                 currentChapters = emptyList(),
+                currentPeople = emptyList(),
+                currentOverview = "",
+                nextEpisode = null,
                 fileLoaded = false,
             )
         )
@@ -81,6 +90,10 @@ constructor(
         val currentSkipButtonStringRes: Int,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
+        val currentPeople: List<PlayerPerson>,
+        val currentOverview: String,
+        /** Next episode in the playlist, or null for movies / last episode of a season. */
+        val nextEpisode: PlayerItem?,
         val fileLoaded: Boolean,
     )
 
@@ -104,6 +117,13 @@ constructor(
 
     var isInPictureInPictureMode: Boolean = false
 
+    private val audioAttributes =
+        AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+            .setUsage(C.USAGE_MEDIA)
+            .setSpatializationBehavior(C.SPATIALIZATION_BEHAVIOR_AUTO)
+            .build()
+
     init {
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes =
@@ -115,13 +135,6 @@ constructor(
             appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipType)
         segmentsAutoSkipMode =
             appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkipMode)
-
-        val audioAttributes =
-            AudioAttributes.Builder()
-                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                .setUsage(C.USAGE_MEDIA)
-                .setSpatializationBehavior(C.SPATIALIZATION_BEHAVIOR_AUTO)
-                .build()
 
         trackSelector.setParameters(
             trackSelector
@@ -135,42 +148,42 @@ constructor(
                 )
         )
 
-        if (appPreferences.getValue(appPreferences.playerMpv)) {
-            player =
-                MPVPlayer.Builder(application)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelectionParameters(trackSelector.parameters)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
-                    .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
-                    .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
-                    .build()
+        val initialPlayer = if (appPreferences.getValue(appPreferences.playerMpv)) {
+            MPVPlayer.Builder(application)
+                .setAudioAttributes(audioAttributes, true)
+                .setTrackSelectionParameters(trackSelector.parameters)
+                .setSeekBackIncrementMs(
+                    appPreferences.getValue(appPreferences.playerSeekBackInc)
+                )
+                .setSeekForwardIncrementMs(
+                    appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                )
+                .setPauseAtEndOfMediaItems(true)
+                .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
+                .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
+                .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
+                .build()
         } else {
             val renderersFactory =
                 DefaultRenderersFactory(application)
                     .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            player =
-                ExoPlayer.Builder(application, renderersFactory)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelector(trackSelector)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .build()
-            
-            // Add comprehensive logging for network, buffering, and dropped frames
-            (player as? ExoPlayer)?.addAnalyticsListener(EventLogger(trackSelector))
+            ExoPlayer.Builder(application, renderersFactory)
+                .setAudioAttributes(audioAttributes, true)
+                .setTrackSelector(trackSelector)
+                .setSeekBackIncrementMs(
+                    appPreferences.getValue(appPreferences.playerSeekBackInc)
+                )
+                .setSeekForwardIncrementMs(
+                    appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                )
+                .setPauseAtEndOfMediaItems(true)
+                .build()
         }
+        _playerFlow = MutableStateFlow(initialPlayer)
+        playerFlow = _playerFlow.asStateFlow()
+        
+        // Add comprehensive logging for network, buffering, and dropped frames for ExoPlayer
+        (player as? ExoPlayer)?.addAnalyticsListener(EventLogger(trackSelector))
     }
 
     fun replacePlayer(newPlayer: Player) {
@@ -370,6 +383,8 @@ constructor(
                                 currentItemTitle = itemTitle,
                                 currentSegment = null,
                                 currentChapters = item.chapters,
+                                currentPeople = item.people,
+                                currentOverview = item.overview,
                                 fileLoaded = false,
                             )
                         }
@@ -396,6 +411,8 @@ constructor(
                         }
 
                         val nextItem = playlistManager.getNextPlayerItem()
+                        // Expose the next episode (if any) so the XR next-up panel can display it.
+                        _uiState.update { it.copy(nextEpisode = nextItem) }
                         if (nextItem != null) {
                             items.add(player.currentMediaItemIndex + 1, nextItem)
                             player.addMediaItem(

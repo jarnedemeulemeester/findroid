@@ -53,9 +53,9 @@ class MPVPlayer(
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
     private val pauseAtEndOfMediaItems: Boolean = false,
-    videoOutput: String = "gpu",
-    audioOutput: String = "audiotrack",
-    hwDec: String = "mediacodec",
+    private val videoOutput: String = "gpu",
+    private val audioOutput: String = "audiotrack",
+    private val hwDec: String = "mediacodec",
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
@@ -162,7 +162,13 @@ class MPVPlayer(
         MPVLib.setOptionString("opengl-es", "yes")
 
         // Hardware video decoding
-        MPVLib.setOptionString("hwdec", hwDec)
+        // Adreno 740 (Gen2/Gen3) has a known bug with aimagereader where pixel formats
+        // are misinterpreted, causing solid color flashing. Disabling it forces
+        // the safer mediacodec-copy path and bypassing interop ensures we don't use
+        // the broken aimagereader backend for zero-copy.
+        MPVLib.setOptionString("vd-lavc-dr", "no")
+        MPVLib.setOptionString("gpu-hwdec-interop", "no")
+        MPVLib.setOptionString("hwdec", "mediacodec-copy")
         MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
 
         // TLS
@@ -1222,6 +1228,19 @@ class MPVPlayer(
     }
 
     /**
+     * Set the pixel dimensions of the surface.
+     *
+     * @param width The width in pixels.
+     * @param height The height in pixels.
+     */
+    fun setSurfacePixelDimensions(width: Int, height: Int) {
+        if (width > 0 && height > 0) {
+            Timber.d("Setting MPV surface size to ${width}x${height}")
+            MPVLib.setOptionString("android-surface-size", "${width}x${height}")
+        }
+    }
+
+    /**
      * Sets the [Surface] onto which video will be rendered. The caller is responsible for tracking
      * the lifecycle of the surface, and must clear the surface by calling `setVideoSurface(null)`
      * if the surface is destroyed.
@@ -1234,7 +1253,15 @@ class MPVPlayer(
      * @param surface The [Surface].
      */
     override fun setVideoSurface(surface: Surface?) {
-        TODO("Not yet implemented")
+        if (surface != null) {
+            MPVLib.attachSurface(surface)
+            MPVLib.setOptionString("force-window", "yes")
+            MPVLib.setOptionString("vo", videoOutput)
+        } else {
+            MPVLib.setOptionString("vo", "null")
+            MPVLib.setOptionString("force-window", "no")
+            MPVLib.detachSurface()
+        }
     }
 
     /**

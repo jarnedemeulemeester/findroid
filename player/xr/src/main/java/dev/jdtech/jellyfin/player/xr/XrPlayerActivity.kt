@@ -58,7 +58,10 @@ class XrPlayerActivity : AppCompatActivity() {
                 
                 // Request full space mode for 3D support and immersive playback
                 try {
-                    xrSession?.scene?.requestFullSpaceMode()
+                    val capabilities = xrSession?.scene?.spatialCapabilities
+                    if (capabilities?.contains(androidx.xr.scenecore.SpatialCapability.SPATIAL_3D_CONTENT) == true) {
+                        xrSession?.scene?.requestFullSpaceMode()
+                    }
                 } catch (e: Exception) {
                     Timber.w(e, "Failed to request full space mode")
                 }
@@ -75,6 +78,9 @@ class XrPlayerActivity : AppCompatActivity() {
                         viewModel = viewModel,
                         session = session,
                         initialStereoMode = currentStereoMode,
+                        itemId = itemId,
+                        itemKind = itemKind,
+                        startFromBeginning = startFromBeginning,
                         onBackClick = { finish() }
                     )
                 } else {
@@ -89,12 +95,6 @@ class XrPlayerActivity : AppCompatActivity() {
                 }
             }
         }
-
-        viewModel.initializePlayer(
-            itemId = itemId,
-            itemKind = itemKind,
-            startFromBeginning = startFromBeginning,
-        )
     }
 
     override fun onStart() {

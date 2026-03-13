@@ -34,6 +34,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.jellyfin.core)
-    implementation(libs.libmpv)
+    api(libs.libmpv)
     implementation(libs.timber)
 }
