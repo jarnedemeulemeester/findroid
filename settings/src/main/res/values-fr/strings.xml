@@ -59,10 +59,8 @@
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
     <string name="player_start_maximized_summary">Ouvrir la vidéo en plein écran par défaut</string>
     <string name="player_start_maximized">Démarrer en plein écran</string>
-    <string name="player_gestures_chapter_skip_summary">Appuyer longtemps sur les côtés de l\'écran pour passer le chapitre (cela remplace le geste de vitesse 2x)</string>
     <string name="pref_player_chapter_markers">Marqueurs de chapitre</string>
     <string name="pref_player_chapter_markers_summary">Afficher les marqueurs de chapitre sur la barre temporelle</string>
-    <string name="player_gestures_chapter_skip">Geste du chapitre</string>
     <string name="pref_player_trickplay_summary">Afficher les images de prévisualisation pendant le balayage</string>
     <string name="pref_player_trickplay">Vignettes d’aperçu</string>
     <string name="trickplay">Vignettes d’aperçu</string>
