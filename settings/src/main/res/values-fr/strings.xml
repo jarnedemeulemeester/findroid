@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Paramètres</string>
     <string name="title_download">Téléchargements</string>
@@ -53,7 +53,7 @@
     <string name="amoled_theme">Thème foncé OLED</string>
     <string name="amoled_theme_summary">Utilisez le thème foncé AMOLED avec un fond purement noir</string>
     <string name="app_language">Langue de l\'application</string>
-    <string name="offline_mode">Mode hors-ligne</string>
+    <string name="offline_mode">Mode hors ligne</string>
     <string name="picture_in_picture">Fenêtre flottante</string>
     <string name="picture_in_picture_gesture">Geste de retour à l\'accueil depuis la fenêtre flottante</string>
     <string name="picture_in_picture_gesture_summary">Lors de la lecture, utilisez le bouton d\'accueil ou la navigation gestuelle pour lancer la fenêtre flottante</string>
@@ -68,4 +68,36 @@
     <string name="trickplay">Vignettes d’aperçu</string>
     <string name="pref_player_gestures_seek_trickplay">Vignettes d’aperçu lors du déplacement du curseur de lecture</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Afficher des vignettes d’aperçu lors du déplacement du curseur de lecture</string>
+    <string name="none">Aucun</string>
+    <string name="cancel">Annuler</string>
+    <string name="settings_category_interface">Interface</string>
+    <string name="users">Utilisateurs</string>
+    <string name="home">Accueil</string>
+    <string name="home_suggestions">Afficher les suggestions</string>
+    <string name="home_continue_watching">Afficher reprendre la lecture</string>
+    <string name="home_next_up">Afficher à suivre</string>
+    <string name="home_latest">Afficher derniers ajoutés</string>
+    <string name="offline_mode_summary">Regarder des films et séries sans connexion au serveur</string>
+    <string name="mb">Mo</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Sauvegarder</string>
+    <string name="media_segments">Segments du média</string>
+    <string name="pref_player_media_segments_skip_button">Montrer le bouton passer</string>
+    <string name="pref_player_media_segments_skip_button_summary">Montrer un bouton pour passer facilement certaines parties</string>
+    <string name="pref_player_media_segments_skip_button_type">Type de segment pour afficher le bouton passer</string>
+    <string name="pref_player_media_segments_skip_button_duration">Afficher le bouton passer pour</string>
+    <string name="pref_player_media_segments_auto_skip">Saut automatique</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Activer le saut automatique pour les types de segments choisis</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Quand sauter automatiquement</string>
+    <string name="pref_player_media_segments_auto_skip_type">Type de segment à sauter automatiquement</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Sauter au seuil du prochain épisode</string>
+    <string name="media_segments_auto_skip_pip">seulement en mode PiP</string>
+    <string name="media_segments_auto_skip_always">toujours</string>
+    <string name="media_segments_type_unknown">autres</string>
+    <string name="media_segments_type_commercial">Publicité</string>
+    <string name="media_segments_type_preview">Aperçu</string>
+    <string name="media_segments_type_recap">Résumé</string>
+    <string name="media_segments_type_outro">Séquence de fin</string>
+    <string name="media_segments_type_intro">Introduction</string>
 </resources>

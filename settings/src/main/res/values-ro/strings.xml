@@ -69,4 +69,5 @@
     <string name="privacy_policy">Politica de confidențialitate</string>
     <string name="amoled_theme">Tema întunecată AMOLED</string>
     <string name="amoled_theme_summary">Folsește tema AMOLED cu un fundal negru</string>
+    <string name="none">Niciunul</string>
 </resources>

@@ -16,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.8'
+          ruby-version: '4.0.1'
           bundler-cache: true
 
       - name: Set up JDK 21
@@ -50,6 +50,12 @@ jobs:
           FINDROID_KEY_ALIAS: ${{ secrets.FINDROID_KEY_ALIAS }}
           FINDROID_KEY_PASSWORD: ${{ secrets.FINDROID_KEY_PASSWORD }}
           FINDROID_PLAY_API_CREDENTIALS: ${{ steps.findroid_play_api_credentials.outputs.filePath }}
+
+      - name: Rename apk files
+        working-directory: ./app/phone/build/outputs/apk/libre/release/
+        run: |
+          rename -- 'phone' 'findroid' *.apk
+          rename -- '-release' '' *.apk
 
       - name: Create release
         uses: softprops/action-gh-release@v2

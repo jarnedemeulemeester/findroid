@@ -97,4 +97,15 @@
     <string name="not_set">Nu se aplica</string>
     <string name="title_download">Descărcări</string>
     <string name="offline_mode">Modul Offline</string>
+    <string name="season_number">Sezonul %1$d</string>
+    <string name="episode_number">Episodul %1$d</string>
+    <string name="runtime_minutes_left">%1$d min rămase</string>
+    <string name="delete_download">Șterge descărcarea</string>
+    <string name="delete_download_message">Sigur vrei să ștergi această descărcare de pe dispozitivul tău?</string>
+    <string name="none">Niciunul</string>
+    <string name="manage_servers">Gestionați serverele</string>
+    <string name="download_pending">În așteptare…</string>
+    <string name="download_paused">Pauzat</string>
+    <string name="download_downloading">Se descarcă…</string>
+    <string name="download_failed">Descărcarea a eșuat</string>
 </resources>

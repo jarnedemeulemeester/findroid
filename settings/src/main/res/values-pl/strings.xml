@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_preferred_audio_language">Preferowany język ścieżki audio</string>
     <string name="settings_use_cache_summary">Przechowuj obrazy w pamięci podręcznej by przyspieszyć ładowanie. Zadziała po ponownym uruchomieniu aplikacji.</string>
@@ -68,4 +68,36 @@
     <string name="pref_player_gestures_seek_trickplay">Trickplay przy gestach przewijania</string>
     <string name="trickplay">Trickplay</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Wyświetlaj miniaturki przy gestach przewijania</string>
+    <string name="settings_category_interface">Interfejs</string>
+    <string name="cancel">Anuluj</string>
+    <string name="users">Użytkownicy</string>
+    <string name="home">Start</string>
+    <string name="home_suggestions">Wyświetl propozycje</string>
+    <string name="home_continue_watching">Wyświetlaj oglądaj dalej</string>
+    <string name="home_next_up">Wyświetl następny</string>
+    <string name="home_latest">Wyświetl najnowszą pozycję</string>
+    <string name="offline_mode_summary">Oglądaj filmy i seriale bez połączenia z serwerem</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Zapisz</string>
+    <string name="media_segments">Segmenty mediów</string>
+    <string name="pref_player_media_segments_skip_button">Pokazuj przycisk pomiń</string>
+    <string name="pref_player_media_segments_skip_button_summary">Udostępnij przycisk łatwego pomijania fragmentów</string>
+    <string name="pref_player_media_segments_skip_button_type">Typy segmentów z przyciskiem pomijania</string>
+    <string name="pref_player_media_segments_skip_button_duration">Wyświetl przycisk pomiń dla</string>
+    <string name="pref_player_media_segments_auto_skip">Automatyczne pomijanie</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Włącz automatyczne pomijanie dla wybranych rodzai segmentów</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Kiedy pomijać automatycznie</string>
+    <string name="pref_player_media_segments_auto_skip_type">Rodzaj segmentu do automatycznego pomijania</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Przejdź do następnego odcinka</string>
+    <string name="media_segments_auto_skip_pip">tylko w trybie PiP</string>
+    <string name="media_segments_auto_skip_always">zawsze</string>
+    <string name="media_segments_type_unknown">Inne</string>
+    <string name="media_segments_type_commercial">Reklamy</string>
+    <string name="media_segments_type_preview">Podgląd</string>
+    <string name="media_segments_type_recap">Powtórka</string>
+    <string name="media_segments_type_outro">Napisy końcowe</string>
+    <string name="media_segments_type_intro">Czołówka</string>
+    <string name="none">Żadne</string>
 </resources>
