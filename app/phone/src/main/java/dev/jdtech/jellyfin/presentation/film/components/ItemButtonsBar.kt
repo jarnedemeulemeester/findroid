@@ -191,7 +191,7 @@ fun ItemButtonsBar(
                                 contentDescription = null,
                             )
                         }
-                    } else if (item.canDownload && item.sources.indexOfFirst { it.size > 0 } > -1) {
+                    } else if (item.canDownload) {
                         FilledTonalIconButton(
                             onClick = {
                                 mediaActionKind = MediaActionKind.DOWNLOAD
