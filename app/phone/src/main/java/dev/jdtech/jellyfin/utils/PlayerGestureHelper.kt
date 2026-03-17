@@ -383,8 +383,13 @@ class PlayerGestureHelper(
                                         ) / 255
                                 }
                         }
+
+                        // Reach 100% sensitivity at 15% brightness and above
+                        val normalizedBrightness = (swipeGestureValueTrackerBrightness / 0.15f).coerceAtMost(1.0f)
+                        val sensitivityMultiplier = 0.10f + (0.90f * normalizedBrightness * normalizedBrightness)
+
                         swipeGestureValueTrackerBrightness =
-                            (swipeGestureValueTrackerBrightness + ratioChange).coerceIn(
+                            (swipeGestureValueTrackerBrightness + ratioChange * sensitivityMultiplier).coerceIn(
                                 brightnessRange
                             )
                         val lp = window.attributes
@@ -393,13 +398,12 @@ class PlayerGestureHelper(
 
                         activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
                         activity.binding.gestureBrightnessProgressBar.max =
-                            BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
+                            BRIGHTNESS_OVERRIDE_FULL.times(1000).toInt()
                         activity.binding.gestureBrightnessProgressBar.progress =
-                            lp.screenBrightness.times(100).toInt()
-                        val process =
-                            (lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()
-                        activity.binding.gestureBrightnessText.text = "$process%"
-                        activity.binding.gestureBrightnessImage.setImageLevel(process)
+                            lp.screenBrightness.times(1000).toInt()
+                        val process = (lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100)
+                        activity.binding.gestureBrightnessText.text = String.format("%.1f%%", process)
+                        activity.binding.gestureBrightnessImage.setImageLevel(process.toInt())
 
                         swipeGestureBrightnessOpen = true
                     }
