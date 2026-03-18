@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -44,6 +45,7 @@ import dev.jdtech.jellyfin.presentation.setup.components.ServerBottomSheet
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.setup.R as SetupR
+import dev.jdtech.jellyfin.presentation.utils.launchAdminDashboardCustomTab
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersState
@@ -97,8 +99,9 @@ private fun ServersScreenLayout(
     val sheetState = rememberModalBottomSheetState()
     var openDeleteDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedServer by remember { mutableStateOf<ServerWithAddresses?>(null) }
+    var selectedServerId by remember { mutableStateOf<String?>(null) }
 
+    val context = LocalContext.current
     RootLayout {
         Column(
             modifier =
@@ -133,13 +136,13 @@ private fun ServersScreenLayout(
                     items(state.servers) { server ->
                         ServerItem(
                             name = server.server.name,
-                            address = server.addresses.first().address,
+                            address = server.currentAddress?.address ?: "",
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 onAction(ServersAction.OnServerClick(serverId = server.server.id))
                             },
                             onLongClick = {
-                                selectedServer = server
+                                selectedServerId = server.server.id
                                 showBottomSheet = true
                             },
                         )
@@ -166,6 +169,7 @@ private fun ServersScreenLayout(
         )
     }
 
+    val selectedServer = state.servers.find { it.server.id == selectedServerId }
     if (openDeleteDialog && selectedServer != null) {
         AlertDialog(
             title = { Text(text = stringResource(SetupR.string.remove_server_dialog)) },
@@ -174,7 +178,7 @@ private fun ServersScreenLayout(
                     text =
                         stringResource(
                             SetupR.string.remove_server_dialog_text,
-                            selectedServer!!.server.name,
+                            selectedServer.server.name,
                         )
                 )
             },
@@ -182,7 +186,6 @@ private fun ServersScreenLayout(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        openDeleteDialog = false
                         scope
                             .launch { sheetState.hide() }
                             .invokeOnCompletion {
@@ -190,7 +193,7 @@ private fun ServersScreenLayout(
                                     showBottomSheet = false
                                 }
                             }
-                        onAction(ServersAction.DeleteServer(selectedServer!!.server.id))
+                        onAction(ServersAction.DeleteServer(selectedServer.server.id))
                     }
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
@@ -206,14 +209,18 @@ private fun ServersScreenLayout(
 
     if (showBottomSheet && selectedServer != null) {
         ServerBottomSheet(
-            name = selectedServer!!.server.name,
-            address = selectedServer!!.addresses.first().address,
+            name = selectedServer.server.name,
+            address = selectedServer.addresses.first().address,
             onAddresses = {
                 showBottomSheet = false
-                onAction(ServersAction.NavigateToAddresses(selectedServer!!.server.id))
+                onAction(ServersAction.NavigateToAddresses(selectedServer.server.id))
             },
             onRemoveServer = { openDeleteDialog = true },
             onDismissRequest = { showBottomSheet = false },
+            onOpenServerDashboard = {
+                selectedServer.currentAddress
+                    ?.let { context.launchAdminDashboardCustomTab(it.address) }
+            },
             sheetState = sheetState,
         )
     }
@@ -232,6 +239,7 @@ private fun ServersScreenLayoutPreview() {
                                 server = dummyServer,
                                 addresses = listOf(dummyServerAddress),
                                 user = null,
+                                dummyServerAddress,
                             )
                         )
                 ),
