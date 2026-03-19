@@ -408,22 +408,7 @@ constructor(
                 reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
                 player.playbackState == ExoPlayer.STATE_READY
         ) {
-            viewModelScope.launch {
-                val mediaId = player.currentMediaItem?.mediaId
-                val position = player.currentPosition
-                val duration = player.duration
-                try {
-                    repository.postPlaybackStop(
-                        UUID.fromString(mediaId),
-                        position.times(10000),
-                        position.div(duration.toFloat()).times(100).toInt(),
-                    )
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-                player.seekToNextMediaItem()
-                player.play()
-            }
+            moveToNextMediaItem(reportCurrentStop = true, autoplay = true)
         }
     }
 
@@ -538,11 +523,64 @@ constructor(
 
     fun skipSegment(segment: FindroidSegment) {
         if (shouldSkipToNextEpisode(segment)) {
-            player.seekToNextMediaItem()
+            moveToNextMediaItem(reportCurrentStop = true, autoplay = false)
         } else {
             player.seekTo(segment.endTicks)
         }
         _uiState.update { it.copy(currentSegment = null) }
+    }
+
+    fun seekToNextMediaItemWithStopReport() {
+        moveToNextMediaItem(reportCurrentStop = true, autoplay = false)
+    }
+
+    fun seekToPreviousWithStopReport() {
+        val shouldTransitionToPreviousItem =
+            player.hasPreviousMediaItem() && player.currentPosition <= player.maxSeekToPreviousPosition
+
+        if (shouldTransitionToPreviousItem) {
+            reportCurrentItemPlaybackStopped()
+        }
+
+        player.seekToPrevious()
+    }
+
+    private fun moveToNextMediaItem(reportCurrentStop: Boolean, autoplay: Boolean) {
+        if (!player.hasNextMediaItem()) {
+            return
+        }
+
+        if (reportCurrentStop) {
+            reportCurrentItemPlaybackStopped()
+        }
+
+        player.seekToNextMediaItem()
+
+        if (autoplay) {
+            player.play()
+        }
+    }
+
+    private fun reportCurrentItemPlaybackStopped() {
+        val mediaId = player.currentMediaItem?.mediaId ?: return
+        val position = player.currentPosition
+        val duration = player.duration
+
+        if (duration <= 0L) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                repository.postPlaybackStop(
+                    UUID.fromString(mediaId),
+                    position.times(10000),
+                    position.div(duration.toFloat()).times(100).toInt(),
+                )
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
     }
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration
