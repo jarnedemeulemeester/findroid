@@ -30,6 +30,7 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -79,18 +80,33 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            val movieDeferred = async {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId)
+                    .content
+                    .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            }
+            val localTrailerDeferred = async {getLocalTrailer(itemId)}
+
+            val movie = movieDeferred.await()
+            val localTrailer = localTrailerDeferred.await()
+            if (localTrailer != null) movie.copy(trailer = localTrailer.id.toString()) else movie
         }
+
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidShow(this@JellyfinRepositoryImpl)
+            val showDeferred = async {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId)
+                    .content
+                    .toFindroidShow(this@JellyfinRepositoryImpl)
+            }
+            val localTrailerDeferred = async {getLocalTrailer(itemId)}
+
+            val show = showDeferred.await()
+            val localTrailer = localTrailerDeferred.await()
+            if (localTrailer != null) show.copy(trailer = localTrailer.id.toString()) else show
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
@@ -390,6 +406,12 @@ class JellyfinRepositoryImpl(
                 return@withContext null
             }
         }
+
+    private suspend fun getLocalTrailer(itemId: UUID): FindroidItem? =
+        jellyfinApi.userLibraryApi.getLocalTrailers(itemId, jellyfinApi.userId)
+            .content
+            .firstOrNull()
+            ?.toFindroidItem(this@JellyfinRepositoryImpl)
 
     override suspend fun postCapabilities() {
         Timber.d("Sending capabilities")
