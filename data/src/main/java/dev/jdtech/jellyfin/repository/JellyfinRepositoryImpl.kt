@@ -93,7 +93,6 @@ class JellyfinRepositoryImpl(
             if (localTrailer != null) movie.copy(trailer = localTrailer.id.toString()) else movie
         }
 
-
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
             val showDeferred = async {
