@@ -30,6 +30,9 @@
     <string name="mpv_player">mpv player</string>
     <string name="download_mobile_data">Download using mobile data</string>
     <string name="download_roaming">Download when roaming</string>
+    <string name="pref_download_storage_location">Download storage location</string>
+    <string name="pref_download_internal_storage">Internal storage (%s free)</string>
+    <string name="pref_download_sd_card">SD card %1$d (%2$s free)</string>
     <string name="mpv_player_summary">Use the experimental mpv player to play videos. mpv has support for more video, audio and subtitle codecs.</string>
     <string name="gestures">Gestures</string>
     <string name="player_gestures">Player gestures</string>

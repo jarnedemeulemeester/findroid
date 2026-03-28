@@ -1,16 +1,21 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.StatFs
 import android.provider.Settings
+import android.text.format.Formatter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceDynamicSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
@@ -25,8 +30,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(private val appPreferences: AppPreferences) :
-    ViewModel() {
+class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val appPreferences: AppPreferences,
+) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
 
@@ -590,16 +597,25 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                 ),
                                                 PreferenceSwitch(
                                                     nameStringResource = R.string.download_roaming,
-                                                    dependencies =
-                                                        listOf(
-                                                            appPreferences.downloadOverMobileData
-                                                        ),
+                                                    dependencies = listOf(appPreferences.downloadOverMobileData),
                                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                                                     backendPreference =
                                                         appPreferences.downloadWhenRoaming,
                                                 ),
                                             )
-                                    )
+                                    ),
+                                    PreferenceGroup(
+                                        preferences =
+                                            listOf(
+                                                PreferenceDynamicSelect(
+                                                    nameStringResource = R.string.pref_download_storage_location,
+                                                    iconDrawableId = R.drawable.ic_hard_drive,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference = appPreferences.downloadStorageIndex,
+                                                    dynamicOptions = emptyList(), // filled in loadPreferences
+                                                ),
+                                            )
+                                    ),
                                 ),
                         )
                     )
@@ -711,6 +727,25 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
             ),
         )
 
+    private fun getStorageOptions(): List<Pair<String?, String>> {
+        val dirs = context.getExternalFilesDirs(null)
+        return dirs.mapIndexedNotNull { index, dir ->
+            if (dir == null) return@mapIndexedNotNull null
+            val free = try {
+                Formatter.formatFileSize(context, StatFs(dir.path).availableBytes)
+            } catch (_: Exception) {
+                return@mapIndexedNotNull null
+            }
+            val label = if (index == 0) {
+                context.getString(R.string.pref_download_internal_storage, free)
+            } else {
+                // index + 1 for 1-based display ("SD card 1", "SD card 2", ...)
+                context.getString(R.string.pref_download_sd_card, index + 1, free)
+            }
+            Pair(index.toString(), label)
+        }
+    }
+
     fun loadPreferences(indexes: IntArray = intArrayOf(), deviceType: DeviceType) {
         viewModelScope.launch {
             var preferences = topLevelPreferences
@@ -806,6 +841,14 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         ),
                                                 )
                                             }
+                                            is PreferenceDynamicSelect -> {
+                                                preference.copy(
+                                                    enabled = preference.enabled &&
+                                                        preference.dependencies.all { appPreferences.getValue(it) },
+                                                    dynamicOptions = getStorageOptions(),
+                                                    value = appPreferences.getValue(preference.backendPreference),
+                                                )
+                                            }
                                             else -> preference
                                         }
                                     }
@@ -842,6 +885,11 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             action.preference.value,
                         )
                     is PreferenceLongInput ->
+                        appPreferences.setValue(
+                            action.preference.backendPreference,
+                            action.preference.value,
+                        )
+                    is PreferenceDynamicSelect ->
                         appPreferences.setValue(
                             action.preference.backendPreference,
                             action.preference.value,

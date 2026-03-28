@@ -66,19 +66,27 @@ class DownloaderImpl(
                 } else {
                     null
                 }
-            val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
-            if (
-                storageLocation == null ||
-                    Environment.getExternalStorageState(storageLocation) !=
-                        Environment.MEDIA_MOUNTED
-            ) {
-                return@coroutineScope Pair(
-                    -1,
-                    UiText.StringResource(CoreR.string.storage_unavailable),
-                )
-            }
-            val path =
-                Uri.fromFile(File(storageLocation, "downloads/${item.id}.${source.id}.download"))
+            val dirs = context.getExternalFilesDirs(null)
+            val storageLocation = run {
+                // Try requested index first; silently fall back to index 0 if unavailable.
+                val requested = dirs.getOrNull(storageIndex)
+                if (
+                    requested != null &&
+                    Environment.getExternalStorageState(requested) == Environment.MEDIA_MOUNTED
+                ) {
+                    requested
+                } else {
+                    dirs.getOrNull(0)?.takeIf {
+                        Environment.getExternalStorageState(it) == Environment.MEDIA_MOUNTED
+                    }
+                }
+            } ?: return@coroutineScope Pair(
+                -1,
+                UiText.StringResource(CoreR.string.storage_unavailable),
+            )
+            val destFile = File(storageLocation, "downloads/${item.id}.${source.id}.download")
+            destFile.parentFile?.mkdirs()
+            val path = Uri.fromFile(destFile)
             val stats = StatFs(storageLocation.path)
             if (stats.availableBytes < source.size) {
                 return@coroutineScope Pair(
@@ -138,7 +146,8 @@ class DownloaderImpl(
             database.insertSource(sourceDto.copy(downloadId = downloadId))
             database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
 
-            downloadExternalMediaStreams(item, source, storageIndex)
+            val resolvedStorageIndex = dirs.indexOf(storageLocation)
+            downloadExternalMediaStreams(item, source, resolvedStorageIndex)
 
             segments.forEach { database.insertSegment(it.toFindroidSegmentsDto(item.id)) }
 
@@ -252,12 +261,18 @@ class DownloaderImpl(
         source: FindroidSource,
         storageIndex: Int = 0,
     ) {
-        val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
+        val dirs = context.getExternalFilesDirs(null)
+        val storageLocation = dirs.getOrNull(storageIndex)
+            ?.takeIf { Environment.getExternalStorageState(it) == Environment.MEDIA_MOUNTED }
+            ?: dirs.getOrNull(0)?.takeIf { Environment.getExternalStorageState(it) == Environment.MEDIA_MOUNTED }
+            ?: return
+        val downloadsDir = File(storageLocation, "downloads")
+        downloadsDir.mkdirs()
         for (mediaStream in source.mediaStreams.filter { it.isExternal }) {
             val id = UUID.randomUUID()
             val streamPath =
                 Uri.fromFile(
-                    File(storageLocation, "downloads/${item.id}.${source.id}.$id.download")
+                    File(downloadsDir, "${item.id}.${source.id}.$id.download")
                 )
             database.insertMediaStream(
                 mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty())

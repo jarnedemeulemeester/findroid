@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.Downloader
 import javax.inject.Inject
 import kotlinx.coroutines.Runnable
@@ -19,7 +20,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DownloaderViewModel @Inject constructor(private val downloader: Downloader) : ViewModel() {
+class DownloaderViewModel @Inject constructor(
+    private val downloader: Downloader,
+    private val appPreferences: AppPreferences,
+) : ViewModel() {
     private val _state = MutableStateFlow(DownloaderState())
     val state = _state.asStateFlow()
 
@@ -42,9 +46,11 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
         }
     }
 
-    private fun download(item: FindroidItem, storageIndex: Int = 0) {
+    private fun download(item: FindroidItem) {
         viewModelScope.launch {
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
+            val storageIndex =
+                appPreferences.getValue(appPreferences.downloadStorageIndex)?.toIntOrNull() ?: 0
             val (downloadId, uiText) =
                 downloader.downloadItem(
                     item = item,
@@ -114,7 +120,7 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
 
     fun onAction(action: DownloaderAction) {
         when (action) {
-            is DownloaderAction.Download -> download(action.item, action.storageIndex)
+            is DownloaderAction.Download -> download(action.item)
             is DownloaderAction.DeleteDownload -> deleteDownload(action.item)
             is DownloaderAction.CancelDownload -> cancelDownload(action.item)
         }
