@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceDynamicSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
@@ -72,6 +73,15 @@ fun SettingsGroupCard(
                         )
                     is PreferenceSelect ->
                         SettingsSelectCard(
+                            preference = preference,
+                            onUpdate = { value ->
+                                onAction(SettingsAction.OnUpdate(preference.copy(value = value)))
+                                preference.onUpdate(value)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    is PreferenceDynamicSelect ->
+                        SettingsDynamicSelectCard(
                             preference = preference,
                             onUpdate = { value ->
                                 onAction(SettingsAction.OnUpdate(preference.copy(value = value)))

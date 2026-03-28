@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.Downloader
 import javax.inject.Inject
 import kotlinx.coroutines.Runnable
@@ -19,7 +20,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DownloaderViewModel @Inject constructor(private val downloader: Downloader) : ViewModel() {
+class DownloaderViewModel @Inject constructor(
+    private val downloader: Downloader,
+    private val appPreferences: AppPreferences,
+) : ViewModel() {
     private val _state = MutableStateFlow(DownloaderState())
     val state = _state.asStateFlow()
 
@@ -45,11 +49,16 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
     private fun download(item: FindroidItem, storageIndex: Int = 0) {
         viewModelScope.launch {
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
+            // Use the per-call storageIndex if explicitly non-zero; otherwise fall back to the
+            // global preference (which itself defaults to 0 = internal storage).
+            val resolvedIndex = storageIndex.takeIf { it != 0 }
+                ?: appPreferences.getValue(appPreferences.downloadStorageIndex)?.toIntOrNull()
+                ?: 0
             val (downloadId, uiText) =
                 downloader.downloadItem(
                     item = item,
                     sourceId = item.sources.first().id,
-                    storageIndex = storageIndex,
+                    storageIndex = resolvedIndex,
                 )
             if (downloadId != -1L) {
                 this@DownloaderViewModel.downloadId = downloadId

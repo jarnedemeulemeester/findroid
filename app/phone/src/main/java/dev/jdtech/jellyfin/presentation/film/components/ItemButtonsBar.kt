@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -35,6 +36,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -191,6 +193,29 @@ fun ItemButtonsBar(
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
+                }
+            }
+            if (downloaderState != null && !downloaderState.isDownloading && item.isDownloaded()) {
+                val localSource = item.sources.firstOrNull {
+                    it.type == FindroidSourceType.LOCAL && !it.path.endsWith(".download")
+                }
+                if (localSource != null) {
+                    val label = remember(localSource.path) {
+                        val dir = storageLocations.firstOrNull { dir ->
+                            dir != null && localSource.path.startsWith(dir.path)
+                        }
+                        val isExternal = dir != null && Environment.isExternalStorageRemovable(dir)
+                        context.getString(
+                            CoreR.string.downloaded_to,
+                            if (isExternal) context.getString(CoreR.string.external)
+                            else context.getString(CoreR.string.internal),
+                        )
+                    }
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }
