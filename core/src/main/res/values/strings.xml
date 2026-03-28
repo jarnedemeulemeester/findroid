@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Findroid</string>
+    <string name="app_name" translatable="false">Findroid CE</string>
     <string name="app_description">Third-party native Jellyfin app</string>
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="remove">Remove</string>
@@ -88,6 +88,7 @@
     <string name="external">External</string>
     <string name="storage_name">%1$s (%2$d MB free)</string>
     <string name="downloaded_to">Saved to: %s</string>
+    <string name="select_seasons">Select seasons</string>
     <string name="preparing_download">Preparing download</string>
     <string name="cancel_download">Cancel download</string>
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>

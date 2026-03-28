@@ -15,7 +15,7 @@ android {
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        applicationId = "dev.jdtech.jellyfin"
+        applicationId = "nl.midasvo.findroid.ce"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
 
