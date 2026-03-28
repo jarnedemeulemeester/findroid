@@ -12,6 +12,30 @@ android {
     compileSdk = Versions.COMPILE_SDK
     buildToolsVersion = Versions.BUILD_TOOLS
 
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val envKeystoreFile = System.getenv("KEYSTORE_FILE")
+
+    if (envKeystoreFile != null || keystorePropertiesFile.exists()) {
+        signingConfigs {
+            create("release") {
+                if (envKeystoreFile != null) {
+                    storeFile = file(envKeystoreFile)
+                    storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    keyAlias = System.getenv("KEY_ALIAS")
+                    keyPassword = System.getenv("KEY_PASSWORD")
+                } else {
+                    val props = java.util.Properties().apply {
+                        keystorePropertiesFile.inputStream().use(::load)
+                    }
+                    storeFile = rootProject.file(props["storeFile"] as String)
+                    storePassword = props["storePassword"] as String
+                    keyAlias = props["keyAlias"] as String
+                    keyPassword = props["keyPassword"] as String
+                }
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = Versions.MIN_SDK
@@ -24,6 +48,7 @@ android {
     buildTypes {
         named("debug") { applicationIdSuffix = ".debug" }
         named("release") {
+            signingConfigs.findByName("release")?.let { signingConfig = it }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
