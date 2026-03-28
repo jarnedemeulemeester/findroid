@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import android.app.DownloadManager
 import android.os.Environment
-import android.os.StatFs
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,7 +45,7 @@ fun ItemButtonsBar(
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
-    onDownloadClick: (storageIndex: Int) -> Unit,
+    onDownloadClick: () -> Unit,
     onDownloadCancelClick: () -> Unit,
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
@@ -69,11 +67,9 @@ fun ItemButtonsBar(
             else -> null
         }
 
-    var storageSelectionDialogOpen by remember { mutableStateOf(false) }
     var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
     var deleteDownloadDialogOpen by remember { mutableStateOf(false) }
 
-    var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
@@ -164,17 +160,7 @@ fun ItemButtonsBar(
                             )
                         }
                     } else if (item.canDownload) {
-                        FilledTonalIconButton(
-                            onClick = {
-                                storageLocations = context.getExternalFilesDirs(null)
-                                if (storageLocations.size > 1) {
-                                    storageSelectionDialogOpen = true
-                                } else {
-                                    selectedStorageIndex = 0
-                                    onDownloadClick(selectedStorageIndex)
-                                }
-                            }
-                        ) {
+                        FilledTonalIconButton(onClick = onDownloadClick) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_download),
                                 contentDescription = null,
@@ -189,7 +175,7 @@ fun ItemButtonsBar(
                         DownloaderCard(
                             state = downloaderState,
                             onCancelClick = { cancelDownloadDialogOpen = true },
-                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
+                            onRetryClick = onDownloadClick,
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
@@ -218,29 +204,6 @@ fun ItemButtonsBar(
                     )
                 }
             }
-        }
-        if (storageSelectionDialogOpen) {
-            val locations = remember {
-                storageLocations.map { dir ->
-                    val locationStringRes =
-                        if (Environment.isExternalStorageRemovable(dir)) CoreR.string.external
-                        else CoreR.string.internal
-                    val locationString = context.getString(locationStringRes)
-
-                    val stat = StatFs(dir.path)
-                    val availableMegaBytes = stat.availableBytes.div(1000000)
-                    context.getString(CoreR.string.storage_name, locationString, availableMegaBytes)
-                }
-            }
-            StorageSelectionDialog(
-                storageLocations = locations,
-                onSelect = { storageIndex ->
-                    selectedStorageIndex = storageIndex
-                    onDownloadClick(selectedStorageIndex)
-                    storageSelectionDialogOpen = false
-                },
-                onDismiss = { storageSelectionDialogOpen = false },
-            )
         }
         if (cancelDownloadDialogOpen) {
             CancelDownloadDialog(

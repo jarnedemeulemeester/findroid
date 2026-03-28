@@ -46,19 +46,16 @@ class DownloaderViewModel @Inject constructor(
         }
     }
 
-    private fun download(item: FindroidItem, storageIndex: Int = 0) {
+    private fun download(item: FindroidItem) {
         viewModelScope.launch {
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
-            // Use the per-call storageIndex if explicitly non-zero; otherwise fall back to the
-            // global preference (which itself defaults to 0 = internal storage).
-            val resolvedIndex = storageIndex.takeIf { it != 0 }
-                ?: appPreferences.getValue(appPreferences.downloadStorageIndex)?.toIntOrNull()
-                ?: 0
+            val storageIndex =
+                appPreferences.getValue(appPreferences.downloadStorageIndex)?.toIntOrNull() ?: 0
             val (downloadId, uiText) =
                 downloader.downloadItem(
                     item = item,
                     sourceId = item.sources.first().id,
-                    storageIndex = resolvedIndex,
+                    storageIndex = storageIndex,
                 )
             if (downloadId != -1L) {
                 this@DownloaderViewModel.downloadId = downloadId
@@ -123,7 +120,7 @@ class DownloaderViewModel @Inject constructor(
 
     fun onAction(action: DownloaderAction) {
         when (action) {
-            is DownloaderAction.Download -> download(action.item, action.storageIndex)
+            is DownloaderAction.Download -> download(action.item)
             is DownloaderAction.DeleteDownload -> deleteDownload(action.item)
             is DownloaderAction.CancelDownload -> cancelDownload(action.item)
         }
