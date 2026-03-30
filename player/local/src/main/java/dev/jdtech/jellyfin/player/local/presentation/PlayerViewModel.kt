@@ -408,7 +408,7 @@ constructor(
                 reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
                 player.playbackState == ExoPlayer.STATE_READY
         ) {
-            moveToNextMediaItem(reportCurrentStop = true, autoplay = true)
+            moveToNextMediaItem(autoplay = true)
         }
     }
 
@@ -523,7 +523,7 @@ constructor(
 
     fun skipSegment(segment: FindroidSegment) {
         if (shouldSkipToNextEpisode(segment)) {
-            moveToNextMediaItem(reportCurrentStop = true, autoplay = false)
+            moveToNextMediaItem(autoplay = false)
         } else {
             player.seekTo(segment.endTicks)
         }
@@ -531,37 +531,42 @@ constructor(
     }
 
     fun seekToNextMediaItemWithStopReport() {
-        moveToNextMediaItem(reportCurrentStop = true, autoplay = false)
+        moveToNextMediaItem(autoplay = false)
     }
 
     fun seekToPreviousWithStopReport() {
-        val shouldTransitionToPreviousItem =
-            player.hasPreviousMediaItem() && player.currentPosition <= player.maxSeekToPreviousPosition
+        viewModelScope.launch (Dispatchers.Main) {
+            val shouldTransitionToPreviousItem =
+                player.hasPreviousMediaItem() && player.currentPosition <= player.maxSeekToPreviousPosition
 
-        if (shouldTransitionToPreviousItem) {
-            reportCurrentItemPlaybackStopped()
+            if (shouldTransitionToPreviousItem) {
+                reportCurrentItemPlaybackStopped()
+            }
+
+            player.seekToPrevious()
         }
 
-        player.seekToPrevious()
     }
 
-    private fun moveToNextMediaItem(reportCurrentStop: Boolean, autoplay: Boolean) {
-        if (!player.hasNextMediaItem()) {
-            return
-        }
+    private fun moveToNextMediaItem(autoplay: Boolean) {
+        viewModelScope.launch (Dispatchers.Main) {
+            if (!player.hasNextMediaItem()) {
+                return@launch
+            }
 
-        if (reportCurrentStop) {
+
             reportCurrentItemPlaybackStopped()
-        }
 
-        player.seekToNextMediaItem()
 
-        if (autoplay) {
-            player.play()
+            player.seekToNextMediaItem()
+
+            if (autoplay) {
+                player.play()
+            }
         }
     }
 
-    private fun reportCurrentItemPlaybackStopped() {
+    private suspend fun reportCurrentItemPlaybackStopped() {
         val mediaId = player.currentMediaItem?.mediaId ?: return
         val position = player.currentPosition
         val duration = player.duration
@@ -570,16 +575,14 @@ constructor(
             return
         }
 
-        viewModelScope.launch {
-            try {
-                repository.postPlaybackStop(
-                    UUID.fromString(mediaId),
-                    position.times(10000),
-                    position.div(duration.toFloat()).times(100).toInt(),
-                )
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+        try {
+            repository.postPlaybackStop(
+                UUID.fromString(mediaId),
+                position.times(10000),
+                position.div(duration.toFloat()).times(100).toInt(),
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
