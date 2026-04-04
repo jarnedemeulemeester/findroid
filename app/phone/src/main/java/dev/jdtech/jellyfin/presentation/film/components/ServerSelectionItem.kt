@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.launchAdminDashboardCustomTab
 import java.util.UUID
 
 @Composable
@@ -125,6 +129,19 @@ fun ServerSelectionItem(
                     }
                 }
             }
+            if (selected) {
+                val context = LocalContext.current
+                FilledTonalButton(
+                    onClick = {
+                        server.currentAddress?.address?.let {
+                            context.launchAdminDashboardCustomTab(it)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(CoreR.string.open_dashboard))
+                }
+            }
         }
     }
 }
@@ -139,6 +156,7 @@ private fun ServerSelectionItemPreview() {
                     server = dummyServer,
                     addresses = listOf(dummyServerAddress),
                     user = null,
+                    dummyServerAddress,
                 ),
             selected = false,
             onClick = {},
@@ -157,6 +175,7 @@ private fun ServerSelectionItemSelectedPreview() {
                     server = dummyServer,
                     addresses = listOf(dummyServerAddress, dummyServerAddress),
                     user = null,
+                    dummyServerAddress,
                 ),
             selected = true,
             onClick = {},

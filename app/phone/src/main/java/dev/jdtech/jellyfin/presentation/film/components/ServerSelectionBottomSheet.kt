@@ -120,6 +120,7 @@ private fun ServerSelectionBottomSheetPreview() {
                                 server = dummyServer,
                                 addresses = listOf(dummyServerAddress),
                                 user = null,
+                                currentAddress = dummyServerAddress
                             )
                         )
                 ),

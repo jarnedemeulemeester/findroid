@@ -36,6 +36,7 @@ fun ServerBottomSheet(
     onAddresses: () -> Unit,
     onRemoveServer: () -> Unit,
     onDismissRequest: () -> Unit,
+    onOpenServerDashboard: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
@@ -51,6 +52,11 @@ fun ServerBottomSheet(
                     icon = painterResource(CoreR.drawable.ic_globe),
                     text = stringResource(SetupR.string.addresses),
                     onClick = onAddresses,
+                )
+                ServerBottomSheetItem(
+                    icon = painterResource(CoreR.drawable.ic_dashboard),
+                    text = stringResource(SetupR.string.open_dashboard),
+                    onClick = onOpenServerDashboard,
                 )
                 ServerBottomSheetItem(
                     icon = painterResource(CoreR.drawable.ic_trash),
@@ -93,6 +99,7 @@ private fun ServerBottomSheetPreview() {
             onAddresses = {},
             onRemoveServer = {},
             onDismissRequest = {},
+            onOpenServerDashboard = {},
             sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),
         )
     }
