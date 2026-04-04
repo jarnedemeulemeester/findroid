@@ -80,6 +80,13 @@ fun SeasonScreen(
                 is SeasonAction.OnHomeClick -> navigateHome()
                 is SeasonAction.NavigateToItem -> navigateToItem(action.item)
                 is SeasonAction.NavigateToSeries -> navigateToSeries(action.seriesId)
+                is SeasonAction.Shuffle -> {
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", seasonId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
+                    intent.putExtra("shuffle", true)
+                    context.startActivity(intent)
+                }
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -162,9 +169,13 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                         onDownloadClick = {},
                         onDownloadCancelClick = {},
                         onDownloadDeleteClick = {},
+                        onShuffleClick = { startFromBeginning ->
+                            onAction(SeasonAction.Shuffle(startFromBeginning = startFromBeginning))
+                        },
                         modifier =
                             Modifier.padding(start = paddingStart, end = paddingEnd).fillMaxWidth(),
                         canPlay = state.episodes.isNotEmpty(),
+                        canShuffle = state.episodes.isNotEmpty()
                     )
                 }
                 items(items = state.episodes, key = { episode -> episode.id }) { episode ->

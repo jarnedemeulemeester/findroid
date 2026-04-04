@@ -49,9 +49,11 @@ fun ItemButtonsBar(
     onDownloadCancelClick: () -> Unit,
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
+    onShuffleClick: (startFromBeginning: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
     canPlay: Boolean = true,
+    canShuffle: Boolean = item.canShuffle,
 ) {
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -180,6 +182,14 @@ fun ItemButtonsBar(
                         }
                     }
                 }
+                if (canShuffle){
+                    FilledTonalIconButton(onClick = { onShuffleClick(false) }) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_shuffle),
+                            contentDescription = null,
+                        )
+                    }
+                }
             }
             if (downloaderState != null) {
                 AnimatedVisibility(downloaderState.isDownloading) {
@@ -251,6 +261,7 @@ private fun ItemButtonsBarPreview() {
             onDownloadCancelClick = {},
             onDownloadDeleteClick = {},
             onTrailerClick = {},
+            onShuffleClick = {},
         )
     }
 }
@@ -270,6 +281,7 @@ private fun ItemButtonsBarDownloadingPreview() {
             onDownloadCancelClick = {},
             onDownloadDeleteClick = {},
             onTrailerClick = {},
+            onShuffleClick = {},
         )
     }
 }

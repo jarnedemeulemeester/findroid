@@ -181,6 +181,7 @@ fun PlayerScreen(
                         itemId = itemId,
                         itemKind = itemKind,
                         startFromBeginning = startFromBeginning,
+                        shuffle = false
                     )
                     playerView.setBackgroundColor(
                         context.resources.getColor(android.R.color.black, context.theme)
