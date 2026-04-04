@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.ui
 
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,17 +54,22 @@ import dev.jdtech.jellyfin.core.presentation.theme.Yellow
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
+import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.utils.format
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 
 @Composable
 fun MovieScreen(
     movieId: UUID,
-    navigateToPlayer: (itemId: UUID) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind, startFromBeginning: Boolean) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
@@ -70,7 +79,22 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    navigateToPlayer(movieId)
+                    navigateToPlayer(movieId, BaseItemKind.MOVIE, false)
+                }
+                is MovieAction.PlayTrailer -> {
+                    if (Patterns.WEB_URL.matcher(action.trailer).matches()) {
+                        try {
+                            uriHandler.openUri(action.trailer)
+                        } catch (e: IllegalArgumentException) {
+                            Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        navigateToPlayer(
+                            UUID.fromString(action.trailer),
+                            BaseItemKind.TRAILER,
+                            true
+                        )
+                    }
                 }
                 else -> Unit
             }
