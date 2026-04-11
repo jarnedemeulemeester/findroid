@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.player.local.mpv
 
-import android.app.Application
 import android.content.Context
 import android.content.res.AssetManager
 import android.media.AudioManager
@@ -36,6 +35,8 @@ import androidx.media3.common.util.ListenerSet
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.Util
 import dev.jdtech.mpv.MPVLib
+import dev.jdtech.mpv.MPVLib.MpvFormat
+import dev.jdtech.mpv.MPVLib.MpvEvent
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
@@ -43,6 +44,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.io.IOException
 
 class MPVPlayer(
     context: Context,
@@ -53,15 +55,15 @@ class MPVPlayer(
     private val seekBackIncrement: Long = C.DEFAULT_SEEK_BACK_INCREMENT_MS,
     private val seekForwardIncrement: Long = C.DEFAULT_SEEK_FORWARD_INCREMENT_MS,
     private val pauseAtEndOfMediaItems: Boolean = false,
-    videoOutput: String = "gpu",
-    audioOutput: String = "audiotrack",
+    videoOutput: String = "gpu-next",
+    audioOutput: String = "aaudio",
     hwDec: String = "mediacodec",
 ) : BasePlayer(), MPVLib.EventObserver, AudioManager.OnAudioFocusChangeListener {
-
+    private val mpvLib: MPVLib
     private val audioManager: AudioManager by lazy { context.getSystemService()!! }
     private var audioFocusCallback: () -> Unit = {}
     private lateinit var audioFocusRequest: AudioFocusRequestCompat
-    private val handler = Handler(context.mainLooper)
+    private val handler: Handler = Handler(context.mainLooper)
 
     private constructor(
         builder: Builder
@@ -97,10 +99,10 @@ class MPVPlayer(
         var pauseAtEndOfMediaItems: Boolean = false
             private set
 
-        var videoOutput: String = "gpu"
+        var videoOutput: String = "gpu-next"
             private set
 
-        var audioOutput: String = "audiotrack"
+        var audioOutput: String = "aaudio"
             private set
 
         var hwDec: String = "mediacodec"
@@ -139,83 +141,85 @@ class MPVPlayer(
     }
 
     init {
-        require(context is Application)
-        val mpvDir = File(context.getExternalFilesDir(null) ?: context.filesDir, "mpv")
-        Timber.i("mpv config dir: $mpvDir")
-        if (!mpvDir.exists()) mpvDir.mkdirs()
-        arrayOf("mpv.conf", "subfont.ttf").forEach { fileName ->
-            val file = File(mpvDir, fileName)
-            if (file.exists()) return@forEach
-            context.assets
-                .open(fileName, AssetManager.ACCESS_STREAMING)
-                .copyTo(FileOutputStream(file))
-        }
-        MPVLib.create(context)
+        val configDir = File(context.filesDir, "mpv")
+        val cacheDir = File(context.cacheDir, "mpv")
+
+        setupDirectories(context, configDir, cacheDir)
+
+        mpvLib = MPVLib.create(context) ?: throw IllegalStateException("MPVLib.create() returned null")
 
         // General
-        MPVLib.setOptionString("config", "yes")
-        MPVLib.setOptionString("config-dir", mpvDir.path)
-        MPVLib.setOptionString("profile", "fast")
-        MPVLib.setOptionString("vo", videoOutput)
-        MPVLib.setOptionString("ao", audioOutput)
-        MPVLib.setOptionString("gpu-context", "android")
-        MPVLib.setOptionString("opengl-es", "yes")
+        mpvLib.setOptionString("config", "yes")
+        mpvLib.setOptionString("config-dir", configDir.path)
+        for (opt in arrayOf("gpu-shader-cache-dir", "icc-cache-dir"))
+            mpvLib.setOptionString(opt, cacheDir.path)
+        mpvLib.setOptionString("profile", "fast")
+        mpvLib.setOptionString("vo", videoOutput)
+        mpvLib.setOptionString("ao", audioOutput)
+        mpvLib.setOptionString("gpu-context", "android")
+        mpvLib.setOptionString("opengl-es", "yes")
 
         // Hardware video decoding
-        MPVLib.setOptionString("hwdec", hwDec)
-        MPVLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
+        mpvLib.setOptionString("hwdec", hwDec)
+        mpvLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
 
         // TLS
-        MPVLib.setOptionString("tls-verify", "no")
+        mpvLib.setOptionString("tls-verify", "no")
 
         // Cache
-        MPVLib.setOptionString("cache", "yes")
-        MPVLib.setOptionString("cache-pause-initial", "yes")
-        MPVLib.setOptionString("demuxer-max-bytes", "32MiB")
-        MPVLib.setOptionString("demuxer-max-back-bytes", "32MiB")
+        mpvLib.setOptionString("cache", "yes")
+        mpvLib.setOptionString("cache-pause-initial", "yes")
+        mpvLib.setOptionString("demuxer-max-bytes", "64MiB")
+        mpvLib.setOptionString("demuxer-max-back-bytes", "32MiB")
 
         // Subs
-        MPVLib.setOptionString("sub-scale-with-window", "yes")
-        MPVLib.setOptionString("sub-use-margins", "no")
+        mpvLib.setOptionString("sub-scale-with-window", "yes")
+        mpvLib.setOptionString("sub-use-margins", "no")
 
         // Language
         // Split on "-" and use last part because media3 does some weird mapping
         // See
         // https://github.com/androidx/media/blob/1.4.0/libraries/common/src/main/java/androidx/media3/common/util/Util.java#L3742
         trackSelectionParameters.preferredAudioLanguages.firstOrNull()?.let {
-            MPVLib.setOptionString("alang", it.split("-").last())
+            mpvLib.setOptionString("alang", it.split("-").last())
         }
         trackSelectionParameters.preferredTextLanguages.firstOrNull()?.let {
             println(it.split("-").last())
-            MPVLib.setOptionString("slang", it.split("-").last())
+            mpvLib.setOptionString("slang", it.split("-").last())
         }
 
         // Other options
-        MPVLib.setOptionString("force-window", "no")
-        MPVLib.setOptionString("keep-open", "always")
-        MPVLib.setOptionString("save-position-on-quit", "no")
-        MPVLib.setOptionString("sub-font-provider", "none")
-        MPVLib.setOptionString("ytdl", "no")
+        mpvLib.setOptionString("force-window", "no")
+        mpvLib.setOptionString("keep-open", "always")
+        mpvLib.setOptionString("save-position-on-quit", "no")
+        mpvLib.setOptionString("ytdl", "no")
+        mpvLib.setOptionString("audio-set-media-role", "yes")
 
-        MPVLib.init()
+        mpvLib.init()
 
-        MPVLib.addObserver(this)
+        mpvLib.addObserver(this)
 
         // Observe properties
-        data class Property(val name: String, @param:MPVLib.Format val format: Int)
+        data class Property(val name: String, val format: Int)
         arrayOf(
-                Property("track-list", MPVLib.MPV_FORMAT_STRING),
-                Property("paused-for-cache", MPVLib.MPV_FORMAT_FLAG),
-                Property("eof-reached", MPVLib.MPV_FORMAT_FLAG),
-                Property("seekable", MPVLib.MPV_FORMAT_FLAG),
-                Property("time-pos", MPVLib.MPV_FORMAT_INT64),
-                Property("duration", MPVLib.MPV_FORMAT_INT64),
-                Property("demuxer-cache-time", MPVLib.MPV_FORMAT_INT64),
-                Property("speed", MPVLib.MPV_FORMAT_DOUBLE),
-                Property("playlist-count", MPVLib.MPV_FORMAT_INT64),
-                Property("playlist-current-pos", MPVLib.MPV_FORMAT_INT64),
+                Property("track-list", MpvFormat.MPV_FORMAT_STRING),
+                Property("paused-for-cache", MpvFormat.MPV_FORMAT_FLAG),
+                Property("eof-reached", MpvFormat.MPV_FORMAT_FLAG),
+                Property("seekable", MpvFormat.MPV_FORMAT_FLAG),
+                Property("time-pos", MpvFormat.MPV_FORMAT_INT64),
+                Property("duration", MpvFormat.MPV_FORMAT_INT64),
+                Property("demuxer-cache-time", MpvFormat.MPV_FORMAT_INT64),
+                Property("speed", MpvFormat.MPV_FORMAT_DOUBLE),
+                Property("playlist-count", MpvFormat.MPV_FORMAT_INT64),
+                Property("playlist-current-pos", MpvFormat.MPV_FORMAT_INT64),
             )
-            .forEach { (name, format) -> MPVLib.observeProperty(name, format) }
+            .forEach { (name, format) -> mpvLib.observeProperty(name, format) }
+
+        val audioSessionId = audioManager.generateAudioSessionId()
+        if (audioSessionId != AudioManager.ERROR) {
+            mpvLib.setPropertyInt("audiotrack-session-id", audioSessionId)
+            mpvLib.setPropertyInt("aaudio-session-id", audioSessionId)
+        }
 
         if (handleAudioFocus) {
             audioFocusRequest =
@@ -225,8 +229,68 @@ class MPVPlayer(
                     .build()
             val res = AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest)
             if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                MPVLib.setPropertyBoolean("pause", true)
+                mpvLib.setPropertyBoolean("pause", true)
             }
+        }
+    }
+
+    private fun setupDirectories(context: Context, configDir: File, cacheDir: File) {
+        Timber.i("mpv config dir: $configDir")
+        Timber.i("mpv cache dir: $cacheDir")
+
+        if (!configDir.exists()) configDir.mkdirs()
+        if (!cacheDir.exists()) cacheDir.mkdirs()
+
+        arrayOf("mpv.conf").forEach { fileName ->
+            val file = File(configDir, fileName)
+            if (file.exists()) return@forEach
+            context.assets
+                .open(fileName, AssetManager.ACCESS_STREAMING)
+                .copyTo(FileOutputStream(file))
+        }
+
+        writeFontsConf(context, configDir)
+    }
+
+    private fun writeFontsConf(context: Context, configDir: File) {
+        val configFile = File(configDir, "fonts.conf")
+        if (configFile.exists()) return
+
+        val cacheDir = File(context.cacheDir, "fontconfig")
+        if (!cacheDir.exists()) cacheDir.mkdirs()
+
+        val config = """
+            <fontconfig>
+                <dir>/system/fonts/</dir>
+                <dir>/product/fonts/</dir>
+
+                <cachedir>${cacheDir.path}</cachedir>
+
+                <alias>
+                    <family>serif</family>
+                    <prefer><family>Noto Serif</family></prefer>
+                </alias>
+
+                <alias>
+                    <family>sans-serif</family>
+                    <prefer>
+                        <family>Roboto</family>
+                        <family>Noto Sans</family>
+                    </prefer>
+                </alias>
+
+                <alias>
+                    <family>monospace</family>
+                    <prefer><family>Droid Sans Mono</family></prefer>
+                </alias>
+
+            </fontconfig>
+        """.trimIndent()
+
+        try {
+            configFile.writeText(config)
+        } catch (e: IOException) {
+            Timber.w("Failed to write fonts.conf: $e")
         }
     }
 
@@ -377,35 +441,35 @@ class MPVPlayer(
         }
     }
 
-    override fun event(@MPVLib.Event eventId: Int) {
+    override fun event(eventId: Int) {
         handler.post {
             when (eventId) {
-                MPVLib.MPV_EVENT_START_FILE -> {
+                MpvEvent.MPV_EVENT_START_FILE -> {
                     if (!isPlayerReady) {
                         for (command in initialCommands) {
-                            MPVLib.command(command)
+                            mpvLib.command(command)
                         }
                     }
                 }
-                MPVLib.MPV_EVENT_FILE_LOADED -> {
-                    isSeekable = MPVLib.getPropertyBoolean("seekable")
+                MpvEvent.MPV_EVENT_FILE_LOADED -> {
+                    isSeekable = mpvLib.getPropertyBoolean("seekable") == true
                     currentDurationMs =
-                        (MPVLib.getPropertyDouble("duration") * C.MILLIS_PER_SECOND).toLong()
+                        (mpvLib.getPropertyDouble("duration")?.times(C.MILLIS_PER_SECOND))?.toLong()
                 }
-                MPVLib.MPV_EVENT_SEEK -> {
+                MpvEvent.MPV_EVENT_SEEK -> {
                     setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
                     listeners.sendEvent(EVENT_POSITION_DISCONTINUITY) { listener ->
                         @Suppress("DEPRECATION")
                         listener.onPositionDiscontinuity(DISCONTINUITY_REASON_SEEK)
                     }
                 }
-                MPVLib.MPV_EVENT_PLAYBACK_RESTART -> {
+                MpvEvent.MPV_EVENT_PLAYBACK_RESTART -> {
                     if (!isPlayerReady) {
                         isPlayerReady = true
                         seekTo(C.TIME_UNSET)
                         if (playWhenReady) {
                             Timber.d("Starting playback...")
-                            MPVLib.setPropertyBoolean("pause", false)
+                            mpvLib.setPropertyBoolean("pause", false)
                         }
                         for (videoListener in videoListeners) {
                             videoListener.onRenderedFirstFrame()
@@ -462,7 +526,7 @@ class MPVPlayer(
      * @return true if the track is or was already selected
      */
     private fun selectTrack(trackType: MPVTrackType, id: String) {
-        MPVLib.setPropertyString(trackType.type, id)
+        mpvLib.setPropertyString(trackType.type, id)
     }
 
     // Timeline wrapper
@@ -574,20 +638,20 @@ class MPVPlayer(
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
                 val oldAudioFocusCallback = audioFocusCallback
                 val wasPlaying = isPlaying
-                MPVLib.setPropertyBoolean("pause", true)
+                mpvLib.setPropertyBoolean("pause", true)
                 setPlayerStateAndNotifyIfChanged(
                     playWhenReady = false,
                     playWhenReadyChangeReason = PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS,
                 )
                 audioFocusCallback = {
                     oldAudioFocusCallback()
-                    if (wasPlaying) MPVLib.setPropertyBoolean("pause", false)
+                    if (wasPlaying) mpvLib.setPropertyBoolean("pause", false)
                 }
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                MPVLib.command(arrayOf("multiply", "volume", "$AUDIO_FOCUS_DUCKING"))
+                mpvLib.command(arrayOf("multiply", "volume", "$AUDIO_FOCUS_DUCKING"))
                 audioFocusCallback = {
-                    MPVLib.command(arrayOf("multiply", "volume", "${1f / AUDIO_FOCUS_DUCKING}"))
+                    mpvLib.command(arrayOf("multiply", "volume", "${1f / AUDIO_FOCUS_DUCKING}"))
                 }
             }
             AudioManager.AUDIOFOCUS_GAIN -> {
@@ -637,8 +701,8 @@ class MPVPlayer(
      *   [.getCurrentWindowIndex] and [.getCurrentPosition].
      */
     override fun setMediaItems(mediaItems: MutableList<MediaItem>, resetPosition: Boolean) {
-        MPVLib.command(arrayOf("playlist-clear"))
-        MPVLib.command(arrayOf("playlist-remove", "current"))
+        mpvLib.command(arrayOf("playlist-clear"))
+        mpvLib.command(arrayOf("playlist-remove", "current"))
         internalMediaItems = mediaItems
     }
 
@@ -660,11 +724,11 @@ class MPVPlayer(
         startWindowIndex: Int,
         startPositionMs: Long,
     ) {
-        MPVLib.command(arrayOf("playlist-clear"))
-        MPVLib.command(arrayOf("playlist-remove", "current"))
+        mpvLib.command(arrayOf("playlist-clear"))
+        mpvLib.command(arrayOf("playlist-remove", "current"))
         internalMediaItems = mediaItems
         initialIndex = startWindowIndex
-        initialSeekTo = startPositionMs / 1000
+        initialSeekTo = startPositionMs
     }
 
     /**
@@ -677,7 +741,7 @@ class MPVPlayer(
     override fun addMediaItems(index: Int, mediaItems: MutableList<MediaItem>) {
         internalMediaItems.addAll(index, mediaItems)
         mediaItems.forEach { mediaItem ->
-            MPVLib.command(
+            mpvLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
@@ -780,7 +844,7 @@ class MPVPlayer(
     /** Prepares the player. */
     override fun prepare() {
         internalMediaItems.forEachIndexed { index, mediaItem ->
-            MPVLib.command(
+            mpvLib.command(
                 arrayOf(
                     "loadfile",
                     "${mediaItem.localConfiguration?.uri}",
@@ -844,12 +908,12 @@ class MPVPlayer(
                 if (handleAudioFocus && playWhenReady) {
                     val res = AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest)
                     if (res != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                        MPVLib.setPropertyBoolean("pause", true)
+                        mpvLib.setPropertyBoolean("pause", true)
                     } else {
-                        MPVLib.setPropertyBoolean("pause", false)
+                        mpvLib.setPropertyBoolean("pause", false)
                     }
                 } else {
-                    MPVLib.setPropertyBoolean("pause", !playWhenReady)
+                    mpvLib.setPropertyBoolean("pause", !playWhenReady)
                 }
             }
         }
@@ -873,16 +937,16 @@ class MPVPlayer(
     override fun setRepeatMode(repeatMode: Int) {
         when (repeatMode) {
             REPEAT_MODE_OFF -> {
-                MPVLib.setOptionString("loop-file", "no")
-                MPVLib.setOptionString("loop-playlist", "no")
+                mpvLib.setOptionString("loop-file", "no")
+                mpvLib.setOptionString("loop-playlist", "no")
             }
             REPEAT_MODE_ONE -> {
-                MPVLib.setOptionString("loop-file", "inf")
-                MPVLib.setOptionString("loop-playlist", "no")
+                mpvLib.setOptionString("loop-file", "inf")
+                mpvLib.setOptionString("loop-playlist", "no")
             }
             REPEAT_MODE_ALL -> {
-                MPVLib.setOptionString("loop-file", "no")
-                MPVLib.setOptionString("loop-playlist", "inf")
+                mpvLib.setOptionString("loop-file", "no")
+                mpvLib.setOptionString("loop-playlist", "inf")
             }
         }
     }
@@ -947,7 +1011,7 @@ class MPVPlayer(
                 if (positionMs != C.TIME_UNSET) positionMs else initialSeekTo
             initialSeekTo =
                 if (isPlayerReady) {
-                    MPVLib.command(arrayOf("seek", "${seekTo.toDouble().div(C.MILLIS_PER_SECOND)}", "absolute"))
+                    mpvLib.command(arrayOf("seek", "${seekTo.toDouble().div(C.MILLIS_PER_SECOND)}", "absolute"))
                     0L
                 } else {
                     seekTo
@@ -979,7 +1043,7 @@ class MPVPlayer(
             // duplicate
             // external subtitle entries.
             if (currentMediaItemIndex != index) {
-                MPVLib.command(arrayOf("playlist-play-index", "$index"))
+                mpvLib.command(arrayOf("playlist-play-index", "$index"))
             }
             setPlayerStateAndNotifyIfChanged(playbackState = STATE_BUFFERING)
         }
@@ -1009,7 +1073,7 @@ class MPVPlayer(
      */
     override fun setPlaybackParameters(playbackParameters: PlaybackParameters) {
         if (getPlaybackParameters().speed != playbackParameters.speed) {
-            MPVLib.setPropertyDouble("speed", playbackParameters.speed.toDouble())
+            mpvLib.setPropertyDouble("speed", playbackParameters.speed.toDouble())
         }
     }
 
@@ -1023,7 +1087,7 @@ class MPVPlayer(
     }
 
     override fun stop() {
-        MPVLib.command(arrayOf("stop", "keep-playlist"))
+        mpvLib.command(arrayOf("stop", "keep-playlist"))
     }
 
     /**
@@ -1035,8 +1099,8 @@ class MPVPlayer(
             AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
         }
         resetInternalState()
-        MPVLib.removeObserver(this)
-        MPVLib.destroy()
+        mpvLib.removeObserver(this)
+        mpvLib.destroy()
     }
 
     override fun getCurrentTracks(): Tracks {
@@ -1200,7 +1264,7 @@ class MPVPlayer(
      * @return The linear gain applied to all audio channels.
      */
     override fun getVolume(): Float {
-        return MPVLib.getPropertyInt("volume") / 100F
+        return mpvLib.getPropertyInt("volume")?.div(100f) ?: 0f
     }
 
     /**
@@ -1306,14 +1370,14 @@ class MPVPlayer(
      * @see Player.Listener.onVideoSizeChanged
      */
     override fun getVideoSize(): VideoSize {
-        val width = MPVLib.getPropertyInt("width")
-        val height = MPVLib.getPropertyInt("height")
+        val width = mpvLib.getPropertyInt("width")
+        val height = mpvLib.getPropertyInt("height")
         if (width == null || height == null) return VideoSize.UNKNOWN
         return VideoSize(width, height)
     }
 
     override fun getSurfaceSize(): Size {
-        val mpvSize = MPVLib.getPropertyString("android-surface-size").split("x")
+        val mpvSize = mpvLib.getPropertyString("android-surface-size")?.split("x") ?: return Size.UNKNOWN
         return try {
             Size(mpvSize[0].toInt(), mpvSize[1].toInt())
         } catch (_: IndexOutOfBoundsException) {
@@ -1346,12 +1410,12 @@ class MPVPlayer(
      * device is returned.
      */
     override fun getDeviceVolume(): Int {
-        return MPVLib.getPropertyInt("volume")
+        return mpvLib.getPropertyInt("volume") ?: 0
     }
 
     /** Gets whether the device is muted or not. */
     override fun isDeviceMuted(): Boolean {
-        return MPVLib.getPropertyBoolean("mute")
+        return mpvLib.getPropertyBoolean("mute") ?: false
     }
 
     /**
@@ -1367,7 +1431,7 @@ class MPVPlayer(
     }
 
     override fun setDeviceVolume(volume: Int, flags: Int) {
-        MPVLib.setPropertyInt("volume", volume)
+        mpvLib.setPropertyInt("volume", volume)
     }
 
     /** Increases the volume of the device. */
@@ -1407,15 +1471,15 @@ class MPVPlayer(
     }
 
     override fun setDeviceMuted(muted: Boolean, flags: Int) {
-        return MPVLib.setPropertyBoolean("mute", muted)
+        return mpvLib.setPropertyBoolean("mute", muted)
     }
 
     override fun mute() {
-        MPVLib.setPropertyBoolean("mute", true)
+        mpvLib.setPropertyBoolean("mute", true)
     }
 
     override fun unmute() {
-        MPVLib.setPropertyBoolean("mute", false)
+        mpvLib.setPropertyBoolean("mute", false)
     }
 
     override fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) {
@@ -1424,13 +1488,13 @@ class MPVPlayer(
 
     fun updateZoomMode(enabled: Boolean) {
         if (enabled) {
-            MPVLib.setOptionString("panscan", "1")
-            MPVLib.setOptionString("sub-use-margins", "yes")
-            MPVLib.setOptionString("sub-ass-force-margins", "yes")
+            mpvLib.setOptionString("panscan", "1")
+            mpvLib.setOptionString("sub-use-margins", "yes")
+            mpvLib.setOptionString("sub-ass-force-margins", "yes")
         } else {
-            MPVLib.setOptionString("panscan", "0")
-            MPVLib.setOptionString("sub-use-margins", "no")
-            MPVLib.setOptionString("sub-ass-force-margins", "no")
+            mpvLib.setOptionString("panscan", "0")
+            mpvLib.setOptionString("sub-use-margins", "no")
+            mpvLib.setOptionString("sub-ass-force-margins", "no")
         }
     }
 
@@ -1445,9 +1509,9 @@ class MPVPlayer(
              * @param holder The SurfaceHolder whose surface is being created.
              */
             override fun surfaceCreated(holder: SurfaceHolder) {
-                MPVLib.attachSurface(holder.surface)
-                MPVLib.setOptionString("force-window", "yes")
-                MPVLib.setOptionString("vo", videoOutput)
+                mpvLib.attachSurface(holder.surface)
+                mpvLib.setOptionString("force-window", "yes")
+                mpvLib.setOptionString("vo", videoOutput)
             }
 
             /**
@@ -1466,7 +1530,7 @@ class MPVPlayer(
                 width: Int,
                 height: Int,
             ) {
-                MPVLib.setPropertyString("android-surface-size", "${width}x$height")
+                mpvLib.setPropertyString("android-surface-size", "${width}x$height")
             }
 
             /**
@@ -1478,9 +1542,9 @@ class MPVPlayer(
              * @param holder The SurfaceHolder whose surface is being destroyed.
              */
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                MPVLib.setOptionString("vo", "null")
-                MPVLib.setOptionString("force-window", "no")
-                MPVLib.detachSurface()
+                mpvLib.setOptionString("vo", "null")
+                mpvLib.setOptionString("force-window", "no")
+                mpvLib.detachSurface()
             }
         }
 
