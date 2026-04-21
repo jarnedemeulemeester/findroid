@@ -193,7 +193,6 @@ constructor(
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
 
-              // --- ORIGINAL CODE ---
             val mediaItems = mutableListOf<MediaItem>()
             try {
                 for (item in items) {
@@ -213,7 +212,6 @@ constructor(
             player.setMediaItems(mediaItems, 0, startPosition)
             player.prepare()
             player.play()
-              // --- END ORIGINAL CODE ---
         }
     }
 
