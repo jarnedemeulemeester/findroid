@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Agregar servidor</string>
+   <string name="add_server_btn_connect">Conectar</string>
+   <string name="add_server_error_empty_address">Dirección del servidor vacia</string>
+   <string name="add_server_error_no_id">El servidor no tiene identificador, ocurrió un error en el servidor</string>
+   <string name="add_server_error_not_found">Servidor no encontrado</string>
+   <string name="add_server_error_not_jellyfin">No es un servidor Jellyfin: %1$s</string>
+   <string name="add_server_error_outdated">Versión del servidor desactualizada: %1$s. Por favor actualice su servidor</string>
+   <string name="add_server_error_slow">Servidor muy lento al responder: %1$s</string>
+   <string name="add_server_error_version">Versión del servidor sin soporte: %1$s. Por favor actualice su servidor</string>
+   <string name="edit_text_password_hint">Contraseña</string>
+   <string name="edit_text_server_address_hint">Dirección del servidor</string>
+   <string name="edit_text_username_hint">Usuario</string>
+   <string name="login">Acceso</string>
+   <string name="login_btn_login">Acceder</string>
+   <string name="login_btn_quick_connect">Conexión rápida</string>
+   <string name="login_error_wrong_username_password">Usuario o contraseña erroneos</string>
+   <string name="servers_no_servers">No se encontraron servidores</string>
+   <string name="users">Usuarios</string>
+   <string name="users_btn_add_user">Agregar usuario</string>
+   <string name="remove_user_dialog">Quitar usuario</string>
+   <string name="remove_user_dialog_text">¿Está seguro de querer remover el usuario %1$s</string>
+   <string name="users_no_users">No se encontraron usuarios</string>
+   <string name="remove_server_dialog">Quitar servidor</string>
+   <string name="remove_server_dialog_text">¿Está seguro de quitar el servidor %1$s</string>
+   <string name="addresses">Direcciones</string>
+   <string name="add_address">Agregar dirección</string>
+   <string name="add_server_address">Agregar dirección del servidor</string>
+   <string name="remove_server_address_dialog_text">¿Está seguro de remover el servidor con dirección %1$s</string>
+   <string name="remove_server_address">Remover dirección del servidor</string>
+</resources>

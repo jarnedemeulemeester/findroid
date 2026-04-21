@@ -1,0 +1,14 @@
+Improvements:
+- Support HTML in media descriptions
+
+Fixes:
+- Library media items too small on tablet when in portrait mode
+
+Translations:
+- Chinese
+- French
+- German
+- Hungarian
+- Portuguese
+- Spanish (Mexico)
+- Turkish

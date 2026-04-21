@@ -1,0 +1,80 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe your issue
+      placeholder: A clear and concise description of what the issue is
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: A clear and concise description of what you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem
+  - type: dropdown
+    id: player
+    attributes:
+      label: Player
+      description: If the issue is related to the player, please select all that apply
+      multiple: true
+      options:
+        - default (ExoPlayer)
+        - mpv
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      placeholder: Add any other context about the problem here
+  - type: markdown
+    attributes:
+      value: |
+        ## Device info
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: Google Pixel 9
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version
+      placeholder: "15"
+    validations:
+      required: true
+  - type: input
+    id: app
+    attributes:
+      label: App version
+      placeholder: v0.15.3 (29)
+    validations:
+      required: true
+  - type: input
+    id: jellyfin
+    attributes:
+      label: Jellyfin version
+      placeholder: 10.9.11
+    validations:
+      required: true

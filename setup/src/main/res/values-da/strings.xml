@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Tilføj server</string>
+   <string name="add_server_btn_connect">Forbind</string>
+   <string name="add_server_error_empty_address">Tom server-adresse</string>
+   <string name="add_server_error_no_id">Server har ikke noget id. Der ser ud til at være noget galt med serveren</string>
+   <string name="add_server_error_not_found">Server ikke fundet</string>
+   <string name="add_server_error_not_jellyfin">Ikke en Jellyfin-server: %1$s</string>
+   <string name="add_server_error_outdated">Serverversion outdated: %1$s. Opdater venligst din server</string>
+   <string name="add_server_error_slow">Server er for langsom til at svare: %1$s</string>
+   <string name="add_server_error_version">Ikke-understøttet serverversion: %1$s. Opdater venligst din server</string>
+   <string name="edit_text_password_hint">Adgangskode</string>
+   <string name="edit_text_server_address_hint">Server-adresse</string>
+   <string name="edit_text_username_hint">Brugernavn</string>
+   <string name="login">Login</string>
+   <string name="login_btn_login">Login</string>
+   <string name="login_error_wrong_username_password">Forkert brugernavn eller adgangskode</string>
+   <string name="servers_no_servers">Ingen servere fundet</string>
+   <string name="remove_user_dialog">Fjern bruger</string>
+   <string name="remove_user_dialog_text">Er du sikker på, at du vil fjerne brugeren %1$s</string>
+   <string name="users_no_users">Ingen brugere fundet</string>
+   <string name="users">Brugere</string>
+   <string name="users_btn_add_user">Tilføj bruger</string>
+   <string name="remove_server_dialog">Fjern server</string>
+   <string name="remove_server_dialog_text">Er du sikker på, at du vil fjerne serveren %1$s</string>
+   <string name="addresses">Adresser</string>
+   <string name="add_address">Tilføj adresse</string>
+   <string name="add_server_address">Tilføj server-adresse</string>
+   <string name="remove_server_address">Fjern server-adresse</string>
+   <string name="remove_server_address_dialog_text">Er du sikker på, at du vil fjerne server-adressen %1$s</string>
+</resources>

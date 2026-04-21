@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Sunucu ekle</string>
+    <string name="login">Giriş yap</string>
+    <string name="edit_text_server_address_hint">Sunucu adresi</string>
+    <string name="edit_text_password_hint">Şifre</string>
+    <string name="add_server_btn_connect">Bağlan</string>
+    <string name="login_btn_login">Giriş yap</string>
+    <string name="add_server_error_not_found">Sunucu bulunamadı</string>
+    <string name="edit_text_username_hint">Kullanıcı adı</string>
+    <string name="login_error_wrong_username_password">Hatalı kullanıcı adı veya şifre</string>
+    <string name="add_server_error_version">Desteklenmeyen sunucu sürümü: %1$s. Lütfen sunucunuzu güncelleyin</string>
+    <string name="add_server_error_empty_address">Boş sunucu adresi</string>
+    <string name="add_server_error_outdated">Sunucu sürümü güncel değil: %1$s. Lütfen sunucunuzu güncelleyin</string>
+    <string name="add_server_error_not_jellyfin">Jellyfin sunucusu değil: %1$s</string>
+    <string name="add_server_error_slow">Sunucu yanıt vermekte çok yavaş: %1$s</string>
+    <string name="remove_user_dialog">Kullanıcıyı kaldır</string>
+    <string name="remove_user_dialog_text">%1$s kullanıcısını kaldırmak istediğinizden emin misiniz</string>
+    <string name="users">Kullanıcılar</string>
+    <string name="users_btn_add_user">Kullanıcı ekle</string>
+    <string name="users_no_users">Kullanıcı bulunamadı</string>
+    <string name="remove_server_dialog">Sunucuyu kaldır</string>
+    <string name="remove_server_dialog_text">%1$s sunucusunu kaldırmak istediğinizden emin misiniz</string>
+    <string name="add_address">Adres ekle</string>
+    <string name="add_server_address">Sunucu adresi ekle</string>
+    <string name="addresses">Adresler</string>
+    <string name="remove_server_address">Sunucu adresini kaldır</string>
+    <string name="remove_server_address_dialog_text">%1$s sunucu adresini kaldırmak istediğinizden emin misiniz</string>
+</resources>

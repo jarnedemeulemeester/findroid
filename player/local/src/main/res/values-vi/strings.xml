@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_subtitle_track">Chọn dòng phụ đề</string>
+    <string name="select_playback_speed">Chọn tốc độ phát</string>
+    <string name="select_a_version">Chọn phiên bản</string>
+    <string name="external">Ngoại</string>
+    <string name="select_audio_track">Chọn dòng âm thanh</string>
+    <string name="player_controls_exit">Thoát khỏi trình xem</string>
+    <string name="player_controls_rewind">Tua lùi</string>
+    <string name="player_controls_fast_forward">Tua tới</string>
+    <string name="player_controls_skip_intro">Bỏ qua đoạn mở đầu</string>
+    <string name="player_controls_skip_back">Bỏ qua / Trở về</string>
+    <string name="player_controls_lock">Khoá trình phát</string>
+    <string name="player_controls_play_pause">Phát / Tạm dừng</string>
+    <string name="player_controls_picture_in_picture">Vào chế độ Hình trong Hình</string>
+    <string name="player_controls_skip_forward">Tiến tới</string>
+    <string name="player_trickplay">Tua mượt mà</string>
+    <string name="player_controls_progress">Thanh tiến trình</string>
+    <string name="none">Trống</string>
+</resources>

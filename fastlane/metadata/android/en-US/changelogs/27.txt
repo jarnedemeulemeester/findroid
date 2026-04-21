@@ -1,0 +1,7 @@
+Fixes:
+- Some language codes were incorrectly mapped for mpv
+- Add error handling to trickplay images
+- Fix multiple crashes related to mpv
+- Fix crashes when navigating fragments
+
+Plus a few translation updates

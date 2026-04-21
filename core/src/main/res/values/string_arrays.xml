@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_by_options">
+        <item>@string/sort_by_options_0</item>
+        <item>@string/sort_by_options_1</item>
+        <item>@string/sort_by_options_2</item>
+        <item>@string/sort_by_options_3</item>
+        <item>@string/sort_by_options_4</item>
+        <item>@string/sort_by_options_5</item>
+    </string-array>
+    <string-array name="sort_order_options">
+        <item>@string/ascending</item>
+        <item>@string/descending</item>
+    </string-array>
+</resources>

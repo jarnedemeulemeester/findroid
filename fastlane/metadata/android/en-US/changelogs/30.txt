@@ -1,0 +1,7 @@
+⚠️ This update requires Jellyfin Server 10.11.0+. Please update your server before installing.
+
+What’s New:
+- Fresh New Look: Enjoy a complete redesign of the main user interface for a smoother experience.
+- Jellyfin 10.11 Support: Full compatibility with the latest server features.
+- Media Segments: Now uses the Media Segments API for skipping intros, outros, and credits.
+- Stability & Localizations: Various fixes and new translations included.

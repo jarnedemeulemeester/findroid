@@ -1,0 +1,16 @@
+New features:
+- Picture-in-picture support
+- Double tap center to play/pause
+
+Improvements:
+- Ripple effect when double tapping in player
+- Improvements to hiding system bars
+- Show episode size when extra info is enabled
+
+Fixes:
+- Fix playback position reset on process death or device lock
+- Fix playback sync of download being too far ahead
+- ...
+
+Translations:
+- Chinese, Dutch, French, Hebrew, Hungarian, Italian, Korean, Polish, Portuguese, Romanian, Russion, Slovak, Spanish, Ukranian

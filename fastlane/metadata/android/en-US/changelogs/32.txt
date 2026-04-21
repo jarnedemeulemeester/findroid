@@ -1,0 +1,4 @@
+Fixes:
+- Fixed a crash when trying to play a media file without connection to the server.
+
+Plus a bunch of new translations.

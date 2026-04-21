@@ -1,0 +1,14 @@
+New features:
+- Allow logging in with Quick Connect
+- Support for ConfusedPolarBears intro-skipper
+
+Improvements:
+- Updated mpv release (now includes all codecs in FFmpeg)
+  - Including an experimental AV1 hardware decoder.
+- Respect "Allow media playback"
+
+Translations: Chinese, Dutch, French, Italian, Korean, Polish, Portuguese, Spanish
+
+Fixes:
+- Fix playback position reporting not closing properly.
+- Optimized the loading of app preferences (backend, not the settings screen)

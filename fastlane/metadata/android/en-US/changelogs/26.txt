@@ -1,0 +1,12 @@
+New features:
+- Login disclaimer support
+- Native 10.9 trickplay
+- New intro skipper implementation
+- Display trickplay during seek gesture
+
+Improvements:
+- Jellyfin 10.9 support
+
+Various other improvements, fixes and translations.
+
+This version requires Jellyfin 10.9.0 or newer.

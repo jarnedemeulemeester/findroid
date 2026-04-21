@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="match_parent" type="dimen">-1</item>
+    <item name="wrap_content" type="dimen">-2</item>
+    <dimen name="setup_container_width">@dimen/match_parent</dimen>
+    <dimen name="overview_media_width">150dp</dimen>
+    <item name="server_columns" type="integer">3</item>
+    <item name="collection_columns" type="integer">2</item>
+    <item name="library_columns" type="integer">2</item>
+    <dimen name="person_detail_overview_height">72dp</dimen>
+</resources>

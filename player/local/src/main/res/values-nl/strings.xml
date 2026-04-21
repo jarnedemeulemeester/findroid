@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_a_version">Kies een versie</string>
+    <string name="select_audio_track">Selecteer audiotrack</string>
+    <string name="select_subtitle_track">Selecteer ondertiteling</string>
+    <string name="select_playback_speed">Selecteer afspeelsnelheid</string>
+    <string name="external">Extern</string>
+    <string name="player_controls_exit">Sluit speler</string>
+    <string name="player_controls_rewind">Terugspoelen</string>
+    <string name="player_controls_fast_forward">Snel vooruit</string>
+    <string name="player_controls_skip_intro">Intro overslaan</string>
+    <string name="player_controls_progress">Voortgangsbalk</string>
+    <string name="none">Geen</string>
+    <string name="player_controls_picture_in_picture">Scherm-in-scherm openen</string>
+    <string name="player_controls_lock">Vergrendelt de speler</string>
+    <string name="player_controls_skip_back">Achteruit springen</string>
+    <string name="player_controls_play_pause">Speel pauze</string>
+    <string name="player_controls_skip_forward">Vooruit springen</string>
+    <string name="player_trickplay">Trickplay</string>
+    <string name="player_controls_skip_outro">Outro overslaan</string>
+    <string name="player_controls_next_episode">Volgende aflevering</string>
+    <string name="player_controls_skip_recap">Samenvatting overslaan</string>
+    <string name="player_controls_skip_preview">Preview overslaan</string>
+    <string name="player_controls_skip_commercial">Reclame overslaan</string>
+    <string name="player_controls_skip_unknown">Overslaan</string>
+</resources>

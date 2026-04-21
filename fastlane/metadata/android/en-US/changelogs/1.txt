@@ -1,0 +1,9 @@
+Features:
+- Completely native interface
+- Supported media items: movies, series, seasons, episodes
+- Video codes: H.263, H.264, H.265, VP8, VP9, AV1
+- Audio codes: Vorbis, Opus, FLAC, ALAC, PCM µ-law, PCM A-law, MP1, MP2, MP3, AMR-NB, AMR-WB, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+- Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
+- Support for multiple servers
+- Set preferred audio and subtitle language
+- Light & dark theme

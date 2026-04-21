@@ -1,0 +1,10 @@
+Fixes:
+- Multiple crashes
+- Offline mode snackbar not visible in landscape mode
+- Incorrect popup background in player when using dark mode
+- Playback resets
+- Deleted server stays visible
+- Stuck on login screen when server has no user
+
+Translations:
+- Chinese, Czech, Hebrew, Hungarian, Italian, Korean, Portuguese, Slovak, Slovenian

@@ -1,0 +1,2 @@
+Fixes:
+- Fix mpv player crashing

@@ -1,0 +1,18 @@
+New features:
+- Item metadata chips
+- Seek gesture toggle
+- AMOLED dark theme
+- Scrubbing preview (trick play)
+- Downloads rework
+
+Improvements:
+- Material 3 styling in preferences
+- Gesture exclusion zones
+
+Fixes:
+- 500 error when trying to play an item
+- mpv memory leak, anr and stuck loading icon
+- And more
+
+Translations:
+- Chinese (Simplified), Dutch, French, German, Hebrew, Italian, Polish, Portuguese, Russian, Slovak, Slovenian, Spanish, Swedish, Vietnamese

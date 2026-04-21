@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="title_download">İndirilenler</string>
+    <string name="settings_category_language">Dil</string>
+    <string name="app_language">Uygulama dili</string>
+    <string name="settings_preferred_audio_language">Tercih edilen ses dili</string>
+    <string name="settings_category_download">İndirilenler</string>
+    <string name="title_settings">Ayarlar</string>
+    <string name="theme">Tema</string>
+    <string name="settings_category_device">Cihaz</string>
+    <string name="about">Hakkında</string>
+    <string name="player_brightness_remember">Parlaklık seviyesini hatırla</string>
+    <string name="settings_category_servers">Sunucular</string>
+    <string name="subtitles">Altyazılar</string>
+    <string name="settings_preferred_subtitle_language">Tercih edilen altyazı dili</string>
+    <string name="settings_category_player">Oynatıcı</string>
+    <string name="settings_category_appearance">Görünüş</string>
+    <string name="amoled_theme">AMOLED karanlık tema</string>
+    <string name="theme_dark">Karanlık</string>
+    <string name="theme_light">Aydınlık</string>
+    <string name="theme_system">Sistemi takip et</string>
+    <string name="settings_category_cache">Önbellek</string>
+    <string name="settings_use_cache_title">Resimleri önbelleğe al</string>
+    <string name="privacy_policy">Gizlilik politikası</string>
+    <string name="download_mobile_data">Mobil veri kullanarak indir</string>
+    <string name="gestures">Hareketler</string>
+    <string name="player_gestures_zoom">Yakınlaştırma hareketi</string>
+    <string name="dynamic_colors">Dinamik renkler</string>
+    <string name="subtitles_summary">Altyazıların görünümünü özelleştir</string>
+    <string name="settings_category_network">Ağ</string>
+    <string name="settings_cache_size">Önbellek boyutu</string>
+    <string name="player_gestures">Oynatıcı hareketleri</string>
+    <string name="player_gestures_vb">Ses ve parlaklık hareketleri</string>
+</resources>

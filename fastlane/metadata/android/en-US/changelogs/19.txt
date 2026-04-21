@@ -1,0 +1,13 @@
+Improvements:
+- Search in offline mode
+- App language setting for devices running Android 13+
+- Show movie size in extra info and improve size formatting
+
+Fixes:
+- Navigation to collection
+- Text overflowing into "View all"
+- Text overlapping in movie and show screens
+- AMOLED theme not taking Material 3 colors
+- NullPointerException on episodes which do not contain a seriesId or seasonId
+
+Translations: Hungarian, Polish, Portuguese (Brazil), Russian, Slovak, Spanish

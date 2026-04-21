@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">Pokračovat ve sledování</string>
+    <string name="next_up">Další na řadě</string>
+    <string name="latest_library">Nejnovější %1$s</string>
+</resources>

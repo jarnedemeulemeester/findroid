@@ -1,0 +1,15 @@
+Improvements:
+- Request audio focus in mpv
+- Sort items in collections by release date
+- Improve landscape library layout on mobile
+- Reduce community rating to one decimal place
+
+Fixes:
+- Set correct surface colors when using dynamic colors or AMOLED theme
+- Fix crash when setting picture-in-picture params
+- Check address when adding extra addresses to server
+- Display correct empty collection string
+
+Translations:
+- Dutch
+- Portuguese (Brazil)

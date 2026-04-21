@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="continue_watching">המשך לצפות</string>
+    <string name="next_up">הבא בתור</string>
+    <string name="latest_library">%1$s שיצאו לאחרונה</string>
+</resources>

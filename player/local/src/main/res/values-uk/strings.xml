@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_audio_track">Вибрати звукову доріжку</string>
+    <string name="select_subtitle_track">Вибрати доріжку субтитрів</string>
+    <string name="select_playback_speed">Вибрати швидкість перегляду</string>
+    <string name="select_a_version">Вибрати версію</string>
+    <string name="external">Зовнішнє</string>
+    <string name="player_controls_rewind">Перемотати назад</string>
+    <string name="player_controls_fast_forward">Перемотати вперед</string>
+    <string name="player_controls_exit">Вийти з плеєра</string>
+    <string name="player_controls_skip_intro">Пропустити вступ</string>
+    <string name="none">Нічого</string>
+    <string name="player_controls_picture_in_picture">Режим картинки в картинці</string>
+    <string name="player_controls_skip_back">Перейти назад</string>
+    <string name="player_controls_play_pause">Грати / пауза</string>
+    <string name="player_controls_skip_forward">Перемотати вперед</string>
+    <string name="player_controls_progress">Стрічка прогресу</string>
+    <string name="player_controls_skip_outro">Пропустити закінчення</string>
+    <string name="player_controls_next_episode">Наступний епізод</string>
+    <string name="player_controls_skip_recap">Пропустити коротке повторення</string>
+    <string name="player_controls_skip_preview">Пропустити анонс</string>
+    <string name="player_controls_skip_commercial">Пропустити рекламу</string>
+    <string name="player_controls_skip_unknown">Пропустити</string>
+    <string name="player_controls_lock">Блокує програвач</string>
+    <string name="player_trickplay">Попередній перегляд</string>
+</resources>

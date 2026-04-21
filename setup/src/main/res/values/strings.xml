@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string name="add_server">Add server</string>
+   <string name="add_server_btn_connect">Connect</string>
+   <string name="add_server_error_empty_address">Empty server address</string>
+   <string name="add_server_error_no_id">Server has no id, something seems to be wrong with the server</string>
+   <string name="add_server_error_not_found">Server not found</string>
+   <string name="add_server_error_not_jellyfin">Not a Jellyfin server: %1$s</string>
+   <string name="add_server_error_outdated">Server version outdated: %1$s. Please update your server</string>
+   <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
+   <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
+   <string name="edit_text_password_hint">Password</string>
+   <string name="edit_text_server_address_hint">Server address</string>
+   <string name="edit_text_username_hint">Username</string>
+   <string name="login">Login</string>
+   <string name="login_btn_login">Login</string>
+   <string name="login_btn_quick_connect">Quick Connect</string>
+   <string name="login_error_wrong_username_password">Wrong username or password</string>
+   <string name="servers">Servers</string>
+   <string name="servers_no_servers">No servers found</string>
+   <string name="servers_btn_add_server">Add server</string>
+   <string name="remove_server_dialog">Remove server</string>
+   <string name="remove_server_dialog_text">Are you sure you want to remove the server %s?</string>
+   <string name="welcome">Welcome to Findroid</string>
+   <string name="welcome_btn_continue">Continue</string>
+   <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
+   <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
+   <string name="confirm">Confirm</string>
+   <string name="cancel">Cancel</string>
+   <string name="or">OR</string>
+   <string name="server_subtitle">Server: %s</string>
+   <string name="users">Users</string>
+   <string name="users_no_users">No users found</string>
+   <string name="users_btn_add_user">Add user</string>
+   <string name="remove_user_dialog">Remove user</string>
+   <string name="remove_user_dialog_text">Are you sure you want to remove the user %s?</string>
+   <string name="addresses">Addresses</string>
+   <string name="add_address">Add address</string>
+   <string name="add_server_address">Add server address</string>
+   <string name="remove_server_address">Remove server address</string>
+   <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
+</resources>

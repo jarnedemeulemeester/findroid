@@ -1,0 +1,16 @@
+New features:
+- Disable audio track
+- Long press for 2x speed
+- Chapters
+  - Markers are displayed on the timebar
+  - Gestures
+- Support for mixed libraries
+
+Improvements:
+- Custom track selection dialog
+- Make PiP remember zoom and brightness levels
+- Improve PiP transition when using home gesture
+- Increase the limit of items displayed on the home screen
+
+Translations:
+- Bulgarian, Chinese, Danish, French, Hungarian, Italian, Korean, Portuguese, Slovak, Spanish, Turkish, Vietnamese

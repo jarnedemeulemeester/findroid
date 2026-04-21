@@ -1,0 +1,13 @@
+New features:
+- Split gesture option into volume & brightness and zoom
+- Add support for external subtitles (only ExoPlayer)
+- Customize the seeking increments
+- Add option to disable subtitles in mpv
+
+Improvements:
+- Lot's of translations (Bulgarian, Chinese, French, German, Hungarian, Italian, Polish, Portuguese, Spanish)
+- Provide better error messages with stacktrace
+- Display downloaded episodes by series
+- Add paging support to the library
+
+Also fixed a few crashes

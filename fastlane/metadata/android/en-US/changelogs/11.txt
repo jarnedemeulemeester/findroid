@@ -1,0 +1,14 @@
+New features:
+- Allow seeking video by swiping or tapping
+- Material You Dynamic colors
+- Display public users on login screen
+- Display discovered servers on add server screen
+
+Improvements:
+- Layout improvements for larger screens
+- Bring back Android TV (fix crashes and improvements)
+
+Translations: Chinese (Simplified), French, Italian, Korean, Russian
+
+Fixes:
+- Fix crash when navigating to login screen (and other screens)

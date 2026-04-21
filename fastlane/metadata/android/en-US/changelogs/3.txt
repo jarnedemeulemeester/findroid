@@ -1,0 +1,15 @@
+Improvements:
+- Improved home screen loading
+- Added missing episode icon
+- Reworked player items preparation:
+  - Supports intros
+  - Improved loading speed
+- Show complete detailed error messages
+- Ask for login if server responds with 401
+
+Fixes:
+- Fixed playing episodes if missing episodes occur in the season
+- Fixed missing images in some places
+- Fixed library broken when media items are grouped in folders
+- Removed Live TV section from home screen
+- Fixed underlined "View detail" text

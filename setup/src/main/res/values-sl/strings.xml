@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server_error_not_jellyfin">Ni strežnik Jellyfin: %1$s</string>
+    <string name="add_server_error_version">Nepodprta različica strežnika: %1$s. Prosim posodobite vaš strežnik</string>
+    <string name="add_server_error_slow">Strežnik je prepočasen za odziv: %1$s</string>
+    <string name="add_server_error_empty_address">Prazen naslov strežnika</string>
+    <string name="add_server_error_not_found">Strežnika ni mogoče najti</string>
+    <string name="login">Prijava</string>
+    <string name="login_error_wrong_username_password">Napačno uporabniško ime ali geslo</string>
+    <string name="edit_text_server_address_hint">Naslov strežnika</string>
+    <string name="edit_text_username_hint">Uporabniško ime</string>
+    <string name="add_server_btn_connect">Poveži</string>
+    <string name="login_btn_login">Prijava</string>
+    <string name="login_btn_quick_connect">Hitra povezava</string>
+    <string name="add_server">Dodaj strežnik</string>
+    <string name="add_server_error_outdated">Različica strežnika je zastarela:%1$s. Prosim posodobite vaš strežnik</string>
+    <string name="add_server_error_no_id">Strežnik nima ID-ja, nekaj je narobe s strežnikom</string>
+    <string name="edit_text_password_hint">Geslo</string>
+    <string name="remove_user_dialog">Odstrani uporabnika</string>
+    <string name="remove_user_dialog_text">Ali ste prepričani, da želite odstraniti uporabnika %1$s</string>
+    <string name="users">Uporabniki</string>
+    <string name="users_btn_add_user">Dodaj uporabnika</string>
+    <string name="remove_server_dialog">Odstrani strežnik</string>
+    <string name="remove_server_dialog_text">Ali ste prepričani, da želite odstraniti strežnik %1$s</string>
+    <string name="addresses">Naslovi</string>
+    <string name="add_address">Dodaj naslov</string>
+    <string name="add_server_address">Dodajte naslov strežnika</string>
+    <string name="remove_server_address">Odstrani naslov strežnika</string>
+    <string name="remove_server_address_dialog_text">Ali ste prepričani, da želite odstraniti naslov strežnika %1$s</string>
+</resources>
