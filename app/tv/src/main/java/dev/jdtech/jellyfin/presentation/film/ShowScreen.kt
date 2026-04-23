@@ -71,15 +71,23 @@ import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.getShowDateString
 import java.util.UUID
 
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.BaseItemKind
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+
 @Composable
 fun ShowScreen(
     showId: UUID,
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel() // Injected here
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val coroutineScope = rememberCoroutineScope()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -90,7 +98,19 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    navigateToPlayer(showId)
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = showId,
+                            itemKind = BaseItemKind.SERIES,
+                            startFromBeginning = false,
+                            launchInternalPlayer = {
+                                navigateToPlayer(showId)
+                            }
+                        )
+                    }
                 }
                 is ShowAction.PlayTrailer -> {
                     try {
