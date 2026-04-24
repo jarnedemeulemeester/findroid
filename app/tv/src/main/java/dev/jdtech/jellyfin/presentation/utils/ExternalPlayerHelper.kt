@@ -63,6 +63,8 @@ suspend fun launchExternalPlayerIfEnabled(
                         putExtra("subs.enable", arrayOf(parcels[0]))
                         putExtra("subtitles_location", subUris[0].toString())
                     }
+                    // Pass playback position to external player (milliseconds)
+                    putExtra("position", startItem.playbackPosition.toInt())
                 }
 
                 val chooserIntent = Intent.createChooser(intent, "Select Video Player").apply {

@@ -61,6 +61,9 @@ suspend fun launchExternalPlayerIfEnabled(
                     // FIX 3: Replaced Uri.parse() with the KTX extension .toUri()
                     setDataAndType(videoUrl.toUri(), "video/*")
 
+                    // Pass playback position to external player (milliseconds)
+                    putExtra("position", startItem.playbackPosition.toInt())
+
                     if (subUris.isNotEmpty()) {
                         val parcels = Array<android.os.Parcelable>(subUris.size) { subUris[it] }
 
