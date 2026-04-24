@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,14 +13,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel  // original — do not change
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jellyfin.sdk.model.api.BaseItemKind
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisodes
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
@@ -27,6 +31,8 @@ import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
 import dev.jdtech.jellyfin.ui.components.EpisodeCard
 import java.util.UUID
 
@@ -35,8 +41,12 @@ fun SeasonScreen(
     seasonId: UUID,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
@@ -44,7 +54,22 @@ fun SeasonScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                is SeasonAction.NavigateToItem -> navigateToPlayer(action.item.id)
+                is SeasonAction.NavigateToItem -> {
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = action.item.id,
+                            // FIX: .serialName gives "Episode" but API needs "episode"
+                            itemKind = BaseItemKind.EPISODE,
+                            startFromBeginning = false,
+                            launchInternalPlayer = {
+                                navigateToPlayer(action.item.id)
+                            }
+                        )
+                    }
+                }
                 else -> Unit
             }
         },

@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import kotlinx.coroutines.launch
 import android.view.KeyEvent
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -55,7 +56,9 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.compose.runtime.rememberCoroutineScope
 import coil3.compose.AsyncImage
+import org.jellyfin.sdk.model.api.BaseItemKind
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
@@ -66,6 +69,8 @@ import dev.jdtech.jellyfin.film.presentation.show.ShowViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.getShowDateString
@@ -77,9 +82,11 @@ fun ShowScreen(
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel() // Injected here
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val coroutineScope = rememberCoroutineScope()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -90,7 +97,19 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    navigateToPlayer(showId)
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = showId,
+                            itemKind = BaseItemKind.SERIES,
+                            startFromBeginning = false,
+                            launchInternalPlayer = {
+                                navigateToPlayer(showId)
+                            }
+                        )
+                    }
                 }
                 is ShowAction.PlayTrailer -> {
                     try {

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import javax.inject.Inject
 import timber.log.Timber
+import androidx.core.content.edit
 
 class AppPreferences @Inject constructor(val sharedPreferences: SharedPreferences) {
     // Server
@@ -24,6 +25,9 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
 
     // Player
     val playerBrightness = Preference("pref_player_brightness", -1.0f)
+
+    // Player - External
+    val playerExternal = Preference("pref_player_external", false)
 
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", false)
@@ -134,17 +138,17 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     }
 
     inline fun <reified T> setValue(preference: Preference<T>, value: T) {
-        val editor = sharedPreferences.edit()
-        @Suppress("UNCHECKED_CAST")
-        when (preference.defaultValue) {
-            is Boolean -> editor.putBoolean(preference.backendName, value as Boolean)
-            is Int -> editor.putInt(preference.backendName, value as Int)
-            is Long -> editor.putLong(preference.backendName, value as Long)
-            is Float -> editor.putFloat(preference.backendName, value as Float)
-            is String? -> editor.putString(preference.backendName, value as String?)
-            is Set<*> -> editor.putStringSet(preference.backendName, value as Set<String>)
-            else -> throw Exception()
+        sharedPreferences.edit {
+            @Suppress("UNCHECKED_CAST")
+            when (preference.defaultValue) {
+                is Boolean -> putBoolean(preference.backendName, value as Boolean)
+                is Int -> putInt(preference.backendName, value as Int)
+                is Long -> putLong(preference.backendName, value as Long)
+                is Float -> putFloat(preference.backendName, value as Float)
+                is String? -> putString(preference.backendName, value as String?)
+                is Set<*> -> putStringSet(preference.backendName, value as Set<String>)
+                else -> throw Exception()
+            }
         }
-        editor.apply()
     }
 }

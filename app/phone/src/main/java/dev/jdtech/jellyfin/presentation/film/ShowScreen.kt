@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import kotlinx.coroutines.launch
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
@@ -60,6 +62,8 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.getShowDateString
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 
@@ -74,6 +78,8 @@ fun ShowScreen(
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val coroutineScope = rememberCoroutineScope()
+    val externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -84,10 +90,22 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", showId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
-                    context.startActivity(intent)
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = showId,
+                            itemKind = BaseItemKind.SERIES,
+                            startFromBeginning = action.startFromBeginning,
+                            launchInternalPlayer = {
+                                val intent = Intent(context, PlayerActivity::class.java)
+                                intent.putExtra("itemId", showId.toString())
+                                intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
                 }
                 is ShowAction.PlayTrailer -> {
                     try {

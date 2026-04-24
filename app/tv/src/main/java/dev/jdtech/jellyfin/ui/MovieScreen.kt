@@ -55,13 +55,24 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
 
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
+import org.jellyfin.sdk.model.api.BaseItemKind
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+
 @Composable
 fun MovieScreen(
     movieId: UUID,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel() // Injected here
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -70,7 +81,20 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    navigateToPlayer(movieId)
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = movieId,
+                            itemKind = BaseItemKind.MOVIE,
+                            startFromBeginning = action.startFromBeginning,
+                            launchInternalPlayer = {
+                                // Uses Compose Navigation instead of an Intent!
+                                navigateToPlayer(movieId)
+                            }
+                        )
+                    }
                 }
                 else -> Unit
             }
