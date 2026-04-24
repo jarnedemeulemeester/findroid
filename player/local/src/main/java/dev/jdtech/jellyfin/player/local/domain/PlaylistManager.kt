@@ -252,6 +252,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             }
         return PlayerItem(
             name = name,
+            seriesName = if (this is FindroidEpisode) seriesName else null,
             itemId = id,
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,

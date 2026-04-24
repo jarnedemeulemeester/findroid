@@ -57,10 +57,23 @@ suspend fun launchExternalPlayerIfEnabled(
                     it.title.ifBlank { it.language.ifBlank { "External Sub" } }
                 }.toTypedArray()
 
+                val title = if (startItem.parentIndexNumber != null && startItem.indexNumber != null) {
+                    val identifier = if (startItem.indexNumberEnd == null) {
+                        "S${startItem.parentIndexNumber}:E${startItem.indexNumber}"
+                    } else {
+                        "S${startItem.parentIndexNumber}:E${startItem.indexNumber}-${startItem.indexNumberEnd}"
+                    }
+                    if (startItem.seriesName != null) "${ startItem.seriesName} - $identifier" else identifier
+                } else {
+                    startItem.name
+                }
+
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     // FIX 3: Replaced Uri.parse() with the KTX extension .toUri()
                     setDataAndType(videoUrl.toUri(), "video/*")
 
+                    // pass filename/title to external player
+                    putExtra("title", title)
                     // Pass playback position to external player (milliseconds)
                     putExtra("position", startItem.playbackPosition.toInt())
 

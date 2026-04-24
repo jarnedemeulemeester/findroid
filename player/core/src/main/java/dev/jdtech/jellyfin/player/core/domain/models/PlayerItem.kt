@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PlayerItem(
     val name: String,
+    val seriesName: String? = null,
     val itemId: UUID,
     val mediaSourceId: String,
     val playbackPosition: Long,
